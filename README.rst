@@ -6,18 +6,23 @@ Introduction
 :Authors: Jürgen Hackl
 :Contact: hackl.j@gmx.at
 :Web site: http://github.com/hackl/pyre
+:Documentation: http://hackl.github.io/pyre/
 :Copyright: This document has been placed in the public domain.
 :License: PyRe is released under the GNU General Public Licence.
 :Version: 5.0.1
 
-.. warning::
 
-   This is a preliminary program code!
 
-   I wrote ``pyre`` for my Master's Thesis.
-   The work isn't finished yet, so changes in the code are very likely! 
+Warning
+=======
 
-.. note::
+This is a preliminary program code!
+
+I wrote ``pyre`` for my Master's Thesis.
+The work isn't finished yet, so changes in the code are very likely! 
+
+Note
+----
 
    If you have any problems, found bugs in the code or have feature request
    comments or questions, please feel free to send a mail to `Jürgen Hackl`_.
@@ -99,11 +104,25 @@ as possible. Here is a short list of some of its features:
 Getting started
 ===============
 
-This guide provides all the information needed to install PyRe, code a
+This `Documentation`_ provides all the information needed to install PyRe, code a
 reliability model, run the sampler, save and visualize the results. In
 addition, it contains a list of the statistical distributions currently
 available.
 
+.. _`Documentation`: http://hackl.github.io/pyre/
+
 .. _`FERUM`: http://www.ce.berkeley.edu/projects/ferum/
 
 .. _`IFMA`: http://www.ifma.fr/Recherche/Labos/FERUM
+
+
+List of References
+==================
+
+.. [Bourinet2009] J.-M. Bourinet, C. Mattrand, and V Dubourg. A review of recent features and improvements added to FERUM software. In Proc. of the 10th International Conference on Structural Safety and Reliability (ICOSSAR’09), Osaka, Japan, 2009.
+
+.. [Bourinet2010] J.-M. Bourinet. FERUM 4.1 User’s Guide, 2010.
+
+.. [DerKiureghian2006] A. Der Kiureghian, T. Haukaas, and K. Fujimura. Structural reliability software at the University of California, Berkeley. Structural Safety, 28(1-2):44–67, 2006.
+
+.. [Hackl2013] J. Hackl. Risk based decision framework for the optimal management of aging reinforced concrete structures. Master’s thesis, Norwegian University of Science and Technolog, Trondheim, Norway, 2013. (in work)
