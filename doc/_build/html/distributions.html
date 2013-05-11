@@ -1,0 +1,1002 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>7. Probability distributions &mdash; PyRe 5.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '5.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="PyRe 5.0.1 documentation" href="index.html" />
+    <link rel="next" title="8. List of References" href="references.html" />
+    <link rel="prev" title="6. Calculations" href="calculations.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="references.html" title="8. List of References"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="calculations.html" title="6. Calculations"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">PyRe 5.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="probability-distributions">
+<span id="chap-distributions"></span><h1>7. Probability distributions<a class="headerlink" href="#probability-distributions" title="Permalink to this headline">¶</a></h1>
+<p>PyRe provides a large suite of built-in probability distributions. For each distribution, it provides:</p>
+<ul class="simple">
+<li>A function that evaluates its marginal distribution.</li>
+<li>A function that evaluates its probability density function.</li>
+<li>A function that evaluates its cumulative distribution function.</li>
+<li>A function that compute its jacobian.</li>
+<li>A function that transform from from u to x space.</li>
+<li>A function that transform from from x to u space.</li>
+</ul>
+<div class="section" id="normal-distribution">
+<h2>7.1. Normal distribution<a class="headerlink" href="#normal-distribution" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">pyre.distributions.normal.</tt><tt class="descname">Normal</tt><big>(</big><em>name</em>, <em>mean</em>, <em>stdv</em>, <em>input_type=None</em>, <em>startpoint=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/normal.html#Normal"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Normal distribution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes :</th><td class="field-body"><ul class="first last simple">
+<li>name (str):         Name of the random variable</li>
+<li>mean (float):       Mean</li>
+<li>stdv (float):       Standard deviation</li>
+<li>input_type (any):   Change meaning of mean and stdv</li>
+<li>startpoint (float): Start point for seach</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Normal.</tt><tt class="descname">cdf</tt><big>(</big><em>x</em>, <em>mean=None</em>, <em>stdv=None</em>, <em>var_3=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/normal.html#Normal.cdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>cumulative distribution function</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Normal.</tt><tt class="descname">inv_cdf</tt><big>(</big><em>P</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/normal.html#Normal.inv_cdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>inverse cumulative distribution function</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Normal.</tt><tt class="descname">jacobian</tt><big>(</big><em>u</em>, <em>x</em>, <em>marg</em>, <em>J=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/normal.html#Normal.jacobian"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the Jacobian</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Normal.</tt><tt class="descname">pdf</tt><big>(</big><em>x</em>, <em>mean=None</em>, <em>stdv=None</em>, <em>var_3=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/normal.html#Normal.pdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>probability density function</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">Normal.</tt><tt class="descname">setMarginalDistribution</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyre/distributions/normal.html#Normal.setMarginalDistribution"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the marginal distribution</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Normal.</tt><tt class="descname">u_to_x</tt><big>(</big><em>u</em>, <em>marg</em>, <em>x=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/normal.html#Normal.u_to_x"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from u to x</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Normal.</tt><tt class="descname">x_to_u</tt><big>(</big><em>x</em>, <em>marg</em>, <em>u=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/normal.html#Normal.x_to_u"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from x to u</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="lognormal-distribution">
+<h2>7.2. Lognormal distribution<a class="headerlink" href="#lognormal-distribution" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">pyre.distributions.lognormal.</tt><tt class="descname">Lognormal</tt><big>(</big><em>name</em>, <em>mean</em>, <em>stdv</em>, <em>input_type=None</em>, <em>startpoint=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/lognormal.html#Lognormal"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Lognormal distribution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><ul class="first last simple">
+<li>name (str):         Name of the random variable</li>
+<li>mean (float):       Mean or lamb</li>
+<li>stdv (float):       Standard deviation or zeta</li>
+<li>input_type (any):   Change meaning of mean and stdv</li>
+<li>startpoint (float): Start point for seach</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Lognormal.</tt><tt class="descname">cdf</tt><big>(</big><em>x</em>, <em>lamb=None</em>, <em>zeta=None</em>, <em>var_3=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/lognormal.html#Lognormal.cdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>cumulative distribution function</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Lognormal.</tt><tt class="descname">jacobian</tt><big>(</big><em>u</em>, <em>x</em>, <em>marg</em>, <em>J=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/lognormal.html#Lognormal.jacobian"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the Jacobian</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Lognormal.</tt><tt class="descname">pdf</tt><big>(</big><em>x</em>, <em>lamb=None</em>, <em>zeta=None</em>, <em>var_3=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/lognormal.html#Lognormal.pdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>probability density function</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">Lognormal.</tt><tt class="descname">setMarginalDistribution</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyre/distributions/lognormal.html#Lognormal.setMarginalDistribution"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the marginal distribution</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Lognormal.</tt><tt class="descname">u_to_x</tt><big>(</big><em>u</em>, <em>marg</em>, <em>x=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/lognormal.html#Lognormal.u_to_x"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from u to x</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Lognormal.</tt><tt class="descname">x_to_u</tt><big>(</big><em>x</em>, <em>marg</em>, <em>u=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/lognormal.html#Lognormal.x_to_u"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from x to u</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="gamma-distribution">
+<h2>7.3. Gamma distribution<a class="headerlink" href="#gamma-distribution" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">pyre.distributions.gamma.</tt><tt class="descname">Gamma</tt><big>(</big><em>name</em>, <em>mean</em>, <em>stdv</em>, <em>input_type=None</em>, <em>startpoint=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/gamma.html#Gamma"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Gamma distribution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes :</th><td class="field-body"><ul class="first last simple">
+<li>name (str):         Name of the random variable</li>
+<li>mean (float):       Mean or lamb</li>
+<li>stdv (float):       Standard deviation or k</li>
+<li>input_type (any):   Change meaning of mean and stdv</li>
+<li>startpoint (float): Start point for seach</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Gamma.</tt><tt class="descname">cdf</tt><big>(</big><em>x</em>, <em>lamb=None</em>, <em>k=None</em>, <em>var_3=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/gamma.html#Gamma.cdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>cumulative distribution function</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Gamma.</tt><tt class="descname">jacobian</tt><big>(</big><em>u</em>, <em>x</em>, <em>marg</em>, <em>J=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/gamma.html#Gamma.jacobian"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the Jacobian</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Gamma.</tt><tt class="descname">pdf</tt><big>(</big><em>x</em>, <em>lamb=None</em>, <em>k=None</em>, <em>var_3=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/gamma.html#Gamma.pdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>probability density function</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">Gamma.</tt><tt class="descname">setMarginalDistribution</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyre/distributions/gamma.html#Gamma.setMarginalDistribution"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the marginal distribution</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Gamma.</tt><tt class="descname">u_to_x</tt><big>(</big><em>u</em>, <em>marg</em>, <em>x=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/gamma.html#Gamma.u_to_x"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from u to x</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Gamma.</tt><tt class="descname">x_to_u</tt><big>(</big><em>x</em>, <em>marg</em>, <em>u=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/gamma.html#Gamma.x_to_u"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from x to u</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="shifted-exponential-distribution">
+<h2>7.4. Shifted exponential distribution<a class="headerlink" href="#shifted-exponential-distribution" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">pyre.distributions.shiftedexponential.</tt><tt class="descname">ShiftedExponential</tt><big>(</big><em>name</em>, <em>mean</em>, <em>stdv</em>, <em>input_type=None</em>, <em>startpoint=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/shiftedexponential.html#ShiftedExponential"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Shifted exponential distribution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes :</th><td class="field-body"><ul class="first last simple">
+<li>name (str):         Name of the random variable</li>
+<li>mean (float):       Mean or lamb</li>
+<li>stdv (float):       Standard deviation or x_zero</li>
+<li>input_type (any):   Change meaning of mean and stdv</li>
+<li>startpoint (float): Start point for seach</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">ShiftedExponential.</tt><tt class="descname">cdf</tt><big>(</big><em>x</em>, <em>lamb=None</em>, <em>x_zero=None</em>, <em>var_3=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/shiftedexponential.html#ShiftedExponential.cdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>cumulative distribution function</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">ShiftedExponential.</tt><tt class="descname">jacobian</tt><big>(</big><em>u</em>, <em>x</em>, <em>marg</em>, <em>J=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/shiftedexponential.html#ShiftedExponential.jacobian"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the Jacobian</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">ShiftedExponential.</tt><tt class="descname">pdf</tt><big>(</big><em>x</em>, <em>lamb=None</em>, <em>x_zero=None</em>, <em>var_3=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/shiftedexponential.html#ShiftedExponential.pdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>probability density function</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">ShiftedExponential.</tt><tt class="descname">setMarginalDistribution</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyre/distributions/shiftedexponential.html#ShiftedExponential.setMarginalDistribution"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the marginal distribution</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">ShiftedExponential.</tt><tt class="descname">u_to_x</tt><big>(</big><em>u</em>, <em>marg</em>, <em>x=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/shiftedexponential.html#ShiftedExponential.u_to_x"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from u to x</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">ShiftedExponential.</tt><tt class="descname">x_to_u</tt><big>(</big><em>x</em>, <em>marg</em>, <em>u=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/shiftedexponential.html#ShiftedExponential.x_to_u"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from x to u</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="shifted-rayleigh-distribution">
+<h2>7.5. Shifted Rayleigh distribution<a class="headerlink" href="#shifted-rayleigh-distribution" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">pyre.distributions.shiftedrayleigh.</tt><tt class="descname">ShiftedRayleigh</tt><big>(</big><em>name</em>, <em>mean</em>, <em>stdv</em>, <em>input_type=None</em>, <em>startpoint=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/shiftedrayleigh.html#ShiftedRayleigh"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Shifted Rayleigh distribution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes :</th><td class="field-body"><ul class="first last simple">
+<li>name (str):   Name of the random variable</li>
+<li>mean (float): Mean or a</li>
+<li>stdv (float): Standard deviation or x_zero</li>
+<li>input_type (any): Change meaning of mean and stdv</li>
+<li>startpoint (float): Start point for seach</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">ShiftedRayleigh.</tt><tt class="descname">cdf</tt><big>(</big><em>x</em>, <em>a=None</em>, <em>x_zero=None</em>, <em>var_3=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/shiftedrayleigh.html#ShiftedRayleigh.cdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>cumulative distribution function</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">ShiftedRayleigh.</tt><tt class="descname">jacobian</tt><big>(</big><em>u</em>, <em>x</em>, <em>marg</em>, <em>J=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/shiftedrayleigh.html#ShiftedRayleigh.jacobian"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the Jacobian</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">ShiftedRayleigh.</tt><tt class="descname">pdf</tt><big>(</big><em>x</em>, <em>a=None</em>, <em>x_zero=None</em>, <em>var_3=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/shiftedrayleigh.html#ShiftedRayleigh.pdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>probability density function</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">ShiftedRayleigh.</tt><tt class="descname">setMarginalDistribution</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyre/distributions/shiftedrayleigh.html#ShiftedRayleigh.setMarginalDistribution"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the marginal distribution</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">ShiftedRayleigh.</tt><tt class="descname">u_to_x</tt><big>(</big><em>u</em>, <em>marg</em>, <em>x=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/shiftedrayleigh.html#ShiftedRayleigh.u_to_x"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from u to x</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">ShiftedRayleigh.</tt><tt class="descname">x_to_u</tt><big>(</big><em>x</em>, <em>marg</em>, <em>u=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/shiftedrayleigh.html#ShiftedRayleigh.x_to_u"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from x to u</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="uniform-distribution">
+<h2>7.6. Uniform distribution<a class="headerlink" href="#uniform-distribution" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">pyre.distributions.uniform.</tt><tt class="descname">Uniform</tt><big>(</big><em>name</em>, <em>mean</em>, <em>stdv</em>, <em>input_type=None</em>, <em>startpoint=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/uniform.html#Uniform"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Uniform distribution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes :</th><td class="field-body"><ul class="first last simple">
+<li>name (str):   Name of the random variable</li>
+<li>mean (float): Mean or a</li>
+<li>stdv (float): Standard deviation or b</li>
+<li>input_type (any): Change meaning of mean and stdv</li>
+<li>startpoint (float): Start point for seach</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Uniform.</tt><tt class="descname">cdf</tt><big>(</big><em>x</em>, <em>a=None</em>, <em>b=None</em>, <em>var_3=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/uniform.html#Uniform.cdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>cumulative distribution function</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Uniform.</tt><tt class="descname">jacobian</tt><big>(</big><em>u</em>, <em>x</em>, <em>marg</em>, <em>J=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/uniform.html#Uniform.jacobian"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the Jacobian</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Uniform.</tt><tt class="descname">pdf</tt><big>(</big><em>x</em>, <em>a=None</em>, <em>b=None</em>, <em>var_3=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/uniform.html#Uniform.pdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>probability density function</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">Uniform.</tt><tt class="descname">setMarginalDistribution</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyre/distributions/uniform.html#Uniform.setMarginalDistribution"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the marginal distribution</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Uniform.</tt><tt class="descname">u_to_x</tt><big>(</big><em>u</em>, <em>marg</em>, <em>x=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/uniform.html#Uniform.u_to_x"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from u to x</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Uniform.</tt><tt class="descname">x_to_u</tt><big>(</big><em>x</em>, <em>marg</em>, <em>u=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/uniform.html#Uniform.x_to_u"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from x to u</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="beta-distribution">
+<h2>7.7. Beta distribution<a class="headerlink" href="#beta-distribution" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">pyre.distributions.beta.</tt><tt class="descname">Beta</tt><big>(</big><em>name</em>, <em>mean</em>, <em>stdv</em>, <em>a=0</em>, <em>b=1</em>, <em>input_type=None</em>, <em>startpoint=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/beta.html#Beta"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Beta distribution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes :</th><td class="field-body"><ul class="first last simple">
+<li>name (str):   Name of the random variable</li>
+<li>mean (float): Mean or q</li>
+<li>stdv (float): Standard deviation or r</li>
+<li>a (float):    Lower boundary</li>
+<li>b (float):    Uper boundary</li>
+<li>input_type (any): Change meaning of mean and stdv</li>
+<li>startpoint (float): Start point for seach</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Beta.</tt><tt class="descname">cdf</tt><big>(</big><em>x</em>, <em>q=None</em>, <em>r=None</em>, <em>a=None</em>, <em>b=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/beta.html#Beta.cdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>cumulative distribution function</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Beta.</tt><tt class="descname">jacobian</tt><big>(</big><em>u</em>, <em>x</em>, <em>marg</em>, <em>J=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/beta.html#Beta.jacobian"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the Jacobian</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Beta.</tt><tt class="descname">pdf</tt><big>(</big><em>x</em>, <em>q=None</em>, <em>r=None</em>, <em>a=None</em>, <em>b=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/beta.html#Beta.pdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>probability density function</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">Beta.</tt><tt class="descname">setMarginalDistribution</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyre/distributions/beta.html#Beta.setMarginalDistribution"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the marginal distribution</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Beta.</tt><tt class="descname">u_to_x</tt><big>(</big><em>u</em>, <em>marg</em>, <em>x=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/beta.html#Beta.u_to_x"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from u to x</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Beta.</tt><tt class="descname">x_to_u</tt><big>(</big><em>x</em>, <em>marg</em>, <em>u=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/beta.html#Beta.x_to_u"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from x to u</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="chi-square-distribution">
+<h2>7.8. Chi square distribution<a class="headerlink" href="#chi-square-distribution" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">pyre.distributions.chisquare.</tt><tt class="descname">ChiSquare</tt><big>(</big><em>name</em>, <em>mean</em>, <em>stdv=None</em>, <em>input_type=None</em>, <em>startpoint=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/chisquare.html#ChiSquare"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Chi-Square distribution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes :</th><td class="field-body"><ul class="first last simple">
+<li>name (str):   Name of the random variable</li>
+<li>mean (float): Mean or nu</li>
+<li>stdv (float): Standard deviation</li>
+<li>input_type (any): Change meaning of mean and stdv</li>
+<li>startpoint (float): Start point for seach</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">ChiSquare.</tt><tt class="descname">cdf</tt><big>(</big><em>x</em>, <em>nu=None</em>, <em>var_2=None</em>, <em>var_3=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/chisquare.html#ChiSquare.cdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>cumulative distribution function</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">ChiSquare.</tt><tt class="descname">jacobian</tt><big>(</big><em>u</em>, <em>x</em>, <em>marg</em>, <em>J=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/chisquare.html#ChiSquare.jacobian"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the Jacobian</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">ChiSquare.</tt><tt class="descname">pdf</tt><big>(</big><em>x</em>, <em>nu=None</em>, <em>var_2=None</em>, <em>var_3=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/chisquare.html#ChiSquare.pdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>probability density function</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">ChiSquare.</tt><tt class="descname">setMarginalDistribution</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyre/distributions/chisquare.html#ChiSquare.setMarginalDistribution"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the marginal distribution</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">ChiSquare.</tt><tt class="descname">u_to_x</tt><big>(</big><em>u</em>, <em>marg</em>, <em>x=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/chisquare.html#ChiSquare.u_to_x"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from u to x</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">ChiSquare.</tt><tt class="descname">x_to_u</tt><big>(</big><em>x</em>, <em>marg</em>, <em>u=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/chisquare.html#ChiSquare.x_to_u"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from x to u</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="type-i-largest-value-distribution">
+<h2>7.9. Type I largest value distribution<a class="headerlink" href="#type-i-largest-value-distribution" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">pyre.distributions.typeilargestvalue.</tt><tt class="descname">TypeIlargestValue</tt><big>(</big><em>name</em>, <em>mean</em>, <em>stdv</em>, <em>input_type=None</em>, <em>startpoint=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeilargestvalue.html#TypeIlargestValue"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Type I largest value distribution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes :</th><td class="field-body"><ul class="first last simple">
+<li>name (str):   Name of the random variable</li>
+<li>mean (float): Mean or u_n</li>
+<li>stdv (float): Standard deviation or a_n</li>
+<li>input_type (any): Change meaning of mean and stdv</li>
+<li>startpoint (float): Start point for seach</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">TypeIlargestValue.</tt><tt class="descname">cdf</tt><big>(</big><em>x</em>, <em>u_n=None</em>, <em>a_n=None</em>, <em>var_3=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeilargestvalue.html#TypeIlargestValue.cdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>cumulative distribution function</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">TypeIlargestValue.</tt><tt class="descname">jacobian</tt><big>(</big><em>u</em>, <em>x</em>, <em>marg</em>, <em>J=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeilargestvalue.html#TypeIlargestValue.jacobian"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the Jacobian</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">TypeIlargestValue.</tt><tt class="descname">pdf</tt><big>(</big><em>x</em>, <em>u_n=None</em>, <em>a_n=None</em>, <em>var_3=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeilargestvalue.html#TypeIlargestValue.pdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>probability density function</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">TypeIlargestValue.</tt><tt class="descname">setMarginalDistribution</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeilargestvalue.html#TypeIlargestValue.setMarginalDistribution"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the marginal distribution</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">TypeIlargestValue.</tt><tt class="descname">u_to_x</tt><big>(</big><em>u</em>, <em>marg</em>, <em>x=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeilargestvalue.html#TypeIlargestValue.u_to_x"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from u to x</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">TypeIlargestValue.</tt><tt class="descname">x_to_u</tt><big>(</big><em>x</em>, <em>marg</em>, <em>u=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeilargestvalue.html#TypeIlargestValue.x_to_u"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from x to u</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="type-i-smallest-value-distribution">
+<h2>7.10. Type I smallest value distribution<a class="headerlink" href="#type-i-smallest-value-distribution" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">pyre.distributions.typeismallestvalue.</tt><tt class="descname">TypeIsmallestValue</tt><big>(</big><em>name</em>, <em>mean</em>, <em>stdv</em>, <em>input_type=None</em>, <em>startpoint=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeismallestvalue.html#TypeIsmallestValue"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Type I smallest value distribution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes :</th><td class="field-body"><ul class="first last simple">
+<li>name (str):   Name of the random variable</li>
+<li>mean (float): Mean or u_1</li>
+<li>stdv (float): Standard deviation or a_1</li>
+<li>input_type (any): Change meaning of mean and stdv</li>
+<li>startpoint (float): Start point for seach</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">TypeIsmallestValue.</tt><tt class="descname">cdf</tt><big>(</big><em>x</em>, <em>u_1=None</em>, <em>a_1=None</em>, <em>var_3=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeismallestvalue.html#TypeIsmallestValue.cdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>cumulative distribution function</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">TypeIsmallestValue.</tt><tt class="descname">jacobian</tt><big>(</big><em>u</em>, <em>x</em>, <em>marg</em>, <em>J=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeismallestvalue.html#TypeIsmallestValue.jacobian"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the Jacobian</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">TypeIsmallestValue.</tt><tt class="descname">pdf</tt><big>(</big><em>x</em>, <em>u_1=None</em>, <em>a_1=None</em>, <em>var_3=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeismallestvalue.html#TypeIsmallestValue.pdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>probability density function</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">TypeIsmallestValue.</tt><tt class="descname">setMarginalDistribution</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeismallestvalue.html#TypeIsmallestValue.setMarginalDistribution"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the marginal distribution</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">TypeIsmallestValue.</tt><tt class="descname">u_to_x</tt><big>(</big><em>u</em>, <em>marg</em>, <em>x=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeismallestvalue.html#TypeIsmallestValue.u_to_x"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from u to x</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">TypeIsmallestValue.</tt><tt class="descname">x_to_u</tt><big>(</big><em>x</em>, <em>marg</em>, <em>u=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeismallestvalue.html#TypeIsmallestValue.x_to_u"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from x to u</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="type-ii-largest-value-distribution">
+<h2>7.11. Type II largest value distribution<a class="headerlink" href="#type-ii-largest-value-distribution" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">pyre.distributions.typeiilargestvalue.</tt><tt class="descname">TypeIIlargestValue</tt><big>(</big><em>name</em>, <em>mean</em>, <em>stdv</em>, <em>input_type=None</em>, <em>startpoint=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeiilargestvalue.html#TypeIIlargestValue"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Type II largest value distribution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes :</th><td class="field-body"><ul class="first last simple">
+<li>name (str):   Name of the random variable</li>
+<li>mean (float): Mean or u_n</li>
+<li>stdv (float): Standard deviation or k</li>
+<li>input_type (any): Change meaning of mean and stdv</li>
+<li>startpoint (float): Start point for seach</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">TypeIIlargestValue.</tt><tt class="descname">cdf</tt><big>(</big><em>x</em>, <em>u_n=None</em>, <em>k=None</em>, <em>var_3=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeiilargestvalue.html#TypeIIlargestValue.cdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>cumulative distribution function</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">TypeIIlargestValue.</tt><tt class="descname">jacobian</tt><big>(</big><em>u</em>, <em>x</em>, <em>marg</em>, <em>J=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeiilargestvalue.html#TypeIIlargestValue.jacobian"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the Jacobian</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">TypeIIlargestValue.</tt><tt class="descname">pdf</tt><big>(</big><em>x</em>, <em>u_n=None</em>, <em>k=None</em>, <em>var_3=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeiilargestvalue.html#TypeIIlargestValue.pdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>probability density function</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">TypeIIlargestValue.</tt><tt class="descname">setMarginalDistribution</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeiilargestvalue.html#TypeIIlargestValue.setMarginalDistribution"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the marginal distribution</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">TypeIIlargestValue.</tt><tt class="descname">u_to_x</tt><big>(</big><em>u</em>, <em>marg</em>, <em>x=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeiilargestvalue.html#TypeIIlargestValue.u_to_x"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from u to x</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">TypeIIlargestValue.</tt><tt class="descname">x_to_u</tt><big>(</big><em>x</em>, <em>marg</em>, <em>u=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeiilargestvalue.html#TypeIIlargestValue.x_to_u"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from x to u</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="type-iii-smallest-value-distribution">
+<h2>7.12. Type III smallest value distribution<a class="headerlink" href="#type-iii-smallest-value-distribution" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">pyre.distributions.typeiiismallestvalue.</tt><tt class="descname">TypeIIIsmallestValue</tt><big>(</big><em>name</em>, <em>mean</em>, <em>stdv</em>, <em>epsilon=0</em>, <em>input_type=None</em>, <em>startpoint=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeiiismallestvalue.html#TypeIIIsmallestValue"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Type III smallest value distribution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes :</th><td class="field-body"><ul class="first last simple">
+<li>name (str):   Name of the random variable</li>
+<li>mean (float): Mean or u_1</li>
+<li>stdv (float): Standard deviation or k</li>
+<li>epsilon (float): Epsilon</li>
+<li>input_type (any): Change meaning of mean and stdv</li>
+<li>startpoint (float): Start point for seach</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">TypeIIIsmallestValue.</tt><tt class="descname">cdf</tt><big>(</big><em>x</em>, <em>u_1=None</em>, <em>k=None</em>, <em>epsilon=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeiiismallestvalue.html#TypeIIIsmallestValue.cdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>cumulative distribution function</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">TypeIIIsmallestValue.</tt><tt class="descname">jacobian</tt><big>(</big><em>u</em>, <em>x</em>, <em>marg</em>, <em>J=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeiiismallestvalue.html#TypeIIIsmallestValue.jacobian"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the Jacobian</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">TypeIIIsmallestValue.</tt><tt class="descname">pdf</tt><big>(</big><em>x</em>, <em>u_1=None</em>, <em>k=None</em>, <em>epsilon=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeiiismallestvalue.html#TypeIIIsmallestValue.pdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>probability density function</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">TypeIIIsmallestValue.</tt><tt class="descname">setMarginalDistribution</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeiiismallestvalue.html#TypeIIIsmallestValue.setMarginalDistribution"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the marginal distribution</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">TypeIIIsmallestValue.</tt><tt class="descname">u_to_x</tt><big>(</big><em>u</em>, <em>marg</em>, <em>x=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeiiismallestvalue.html#TypeIIIsmallestValue.u_to_x"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from u to x</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">TypeIIIsmallestValue.</tt><tt class="descname">x_to_u</tt><big>(</big><em>x</em>, <em>marg</em>, <em>u=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/typeiiismallestvalue.html#TypeIIIsmallestValue.x_to_u"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from x to u</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="gumbel-distribution">
+<h2>7.13. Gumbel distribution<a class="headerlink" href="#gumbel-distribution" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">pyre.distributions.gumbel.</tt><tt class="descname">Gumbel</tt><big>(</big><em>name</em>, <em>mean</em>, <em>stdv</em>, <em>input_type=None</em>, <em>startpoint=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/gumbel.html#Gumbel"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Gumbel distribution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes :</th><td class="field-body"><ul class="first last simple">
+<li>name (str):   Name of the random variable</li>
+<li>mean (float): Mean or u_n</li>
+<li>stdv (float): Standard deviation or a_n</li>
+<li>input_type (any): Change meaning of mean and stdv</li>
+<li>startpoint (float): Start point for seach</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Gumbel.</tt><tt class="descname">cdf</tt><big>(</big><em>x</em>, <em>u_n=None</em>, <em>a_n=None</em>, <em>var_3=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/gumbel.html#Gumbel.cdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>cumulative distribution function</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Gumbel.</tt><tt class="descname">jacobian</tt><big>(</big><em>u</em>, <em>x</em>, <em>marg</em>, <em>J=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/gumbel.html#Gumbel.jacobian"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the Jacobian</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Gumbel.</tt><tt class="descname">pdf</tt><big>(</big><em>x</em>, <em>u_n=None</em>, <em>a_n=None</em>, <em>var_3=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/gumbel.html#Gumbel.pdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>probability density function</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">Gumbel.</tt><tt class="descname">setMarginalDistribution</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyre/distributions/gumbel.html#Gumbel.setMarginalDistribution"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the marginal distribution</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Gumbel.</tt><tt class="descname">u_to_x</tt><big>(</big><em>u</em>, <em>marg</em>, <em>x=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/gumbel.html#Gumbel.u_to_x"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from u to x</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Gumbel.</tt><tt class="descname">x_to_u</tt><big>(</big><em>x</em>, <em>marg</em>, <em>u=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/gumbel.html#Gumbel.x_to_u"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from x to u</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="weibull-distribution">
+<h2>7.14. Weibull distribution<a class="headerlink" href="#weibull-distribution" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">pyre.distributions.weibull.</tt><tt class="descname">Weibull</tt><big>(</big><em>name</em>, <em>mean</em>, <em>stdv</em>, <em>epsilon=0</em>, <em>input_type=None</em>, <em>startpoint=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/weibull.html#Weibull"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Weibull distribution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes :</th><td class="field-body"><ul class="first last simple">
+<li>name (str):   Name of the random variable</li>
+<li>mean (float): Mean or u_1</li>
+<li>stdv (float): Standard deviation or k</li>
+<li>epsilon (float): Epsilon</li>
+<li>input_type (any): Change meaning of mean and stdv</li>
+<li>startpoint (float): Start point for seach</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Weibull.</tt><tt class="descname">cdf</tt><big>(</big><em>x</em>, <em>u_1=None</em>, <em>k=None</em>, <em>epsilon=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/weibull.html#Weibull.cdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>cumulative distribution function</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Weibull.</tt><tt class="descname">jacobian</tt><big>(</big><em>u</em>, <em>x</em>, <em>marg</em>, <em>J=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/weibull.html#Weibull.jacobian"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the Jacobian</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Weibull.</tt><tt class="descname">pdf</tt><big>(</big><em>x</em>, <em>u_1=None</em>, <em>k=None</em>, <em>epsilon=None</em>, <em>var_4=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/weibull.html#Weibull.pdf"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>probability density function</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">Weibull.</tt><tt class="descname">setMarginalDistribution</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyre/distributions/weibull.html#Weibull.setMarginalDistribution"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the marginal distribution</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Weibull.</tt><tt class="descname">u_to_x</tt><big>(</big><em>u</em>, <em>marg</em>, <em>x=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/weibull.html#Weibull.u_to_x"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from u to x</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Weibull.</tt><tt class="descname">x_to_u</tt><big>(</big><em>x</em>, <em>marg</em>, <em>u=None</em><big>)</big><a class="reference internal" href="_modules/pyre/distributions/weibull.html#Weibull.x_to_u"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transformation from x to u</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/Logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">7. Probability distributions</a><ul>
+<li><a class="reference internal" href="#normal-distribution">7.1. Normal distribution</a></li>
+<li><a class="reference internal" href="#lognormal-distribution">7.2. Lognormal distribution</a></li>
+<li><a class="reference internal" href="#gamma-distribution">7.3. Gamma distribution</a></li>
+<li><a class="reference internal" href="#shifted-exponential-distribution">7.4. Shifted exponential distribution</a></li>
+<li><a class="reference internal" href="#shifted-rayleigh-distribution">7.5. Shifted Rayleigh distribution</a></li>
+<li><a class="reference internal" href="#uniform-distribution">7.6. Uniform distribution</a></li>
+<li><a class="reference internal" href="#beta-distribution">7.7. Beta distribution</a></li>
+<li><a class="reference internal" href="#chi-square-distribution">7.8. Chi square distribution</a></li>
+<li><a class="reference internal" href="#type-i-largest-value-distribution">7.9. Type I largest value distribution</a></li>
+<li><a class="reference internal" href="#type-i-smallest-value-distribution">7.10. Type I smallest value distribution</a></li>
+<li><a class="reference internal" href="#type-ii-largest-value-distribution">7.11. Type II largest value distribution</a></li>
+<li><a class="reference internal" href="#type-iii-smallest-value-distribution">7.12. Type III smallest value distribution</a></li>
+<li><a class="reference internal" href="#gumbel-distribution">7.13. Gumbel distribution</a></li>
+<li><a class="reference internal" href="#weibull-distribution">7.14. Weibull distribution</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="calculations.html"
+                        title="previous chapter">6. Calculations</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="references.html"
+                        title="next chapter">8. List of References</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/distributions.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="references.html" title="8. List of References"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="calculations.html" title="6. Calculations"
+             >previous</a> |</li>
+        <li><a href="index.html">PyRe 5.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Juergen Hackl.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

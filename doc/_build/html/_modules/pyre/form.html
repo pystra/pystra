@@ -1,0 +1,331 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyre.form &mdash; PyRe 5.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="PyRe 5.0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">PyRe 5.0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pyre.form</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/python -tt</span>
+<span class="c"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">scipy.optimize</span> <span class="kn">as</span> <span class="nn">opt</span>
+<span class="kn">import</span> <span class="nn">scipy.special</span> <span class="kn">as</span> <span class="nn">spec</span>
+
+<span class="kn">from</span> <span class="nn">model</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">correlation</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">distributions</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">cholesky</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">limitstate</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">stepsize</span> <span class="kn">import</span> <span class="o">*</span>
+
+<div class="viewcode-block" id="Form"><a class="viewcode-back" href="../../calculations.html#pyre.form.Form">[docs]</a><span class="k">class</span> <span class="nc">Form</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">analysis_options</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">limit_state</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">stochastic_model</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># The stochastic model</span>
+    <span class="k">if</span> <span class="n">stochastic_model</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">StochasticModel</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">stochastic_model</span>
+
+    <span class="c"># Options for the calculation</span>
+    <span class="k">if</span> <span class="n">analysis_options</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">AnalysisOptions</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">analysis_options</span>
+
+    <span class="c"># The limit state function</span>
+    <span class="k">if</span> <span class="n">stochastic_model</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">limitstate</span> <span class="o">=</span> <span class="n">LimitState</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">limitstate</span> <span class="o">=</span> <span class="n">limit_state</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">i</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">J</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">G</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">Go</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">gradient</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">Pf</span> <span class="o">=</span> <span class="bp">None</span>
+    
+    <span class="c"># Computation of modified correlation matrix R0</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">computeModifiedCorrelationMatrix</span><span class="p">()</span>
+
+    <span class="c"># Cholesky decomposition</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">computeCholeskyDecomposition</span><span class="p">()</span>
+
+    <span class="c"># Compute starting point for the algorithm</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">computeStartingPoint</span><span class="p">()</span>
+
+    <span class="c"># Iterations</span>
+    <span class="c"># Set parameters for the iterative loop</span>
+    <span class="c"># Initialize counter</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="c"># Convergence is achieved when convergence is set to True</span>
+    <span class="n">convergence</span> <span class="o">=</span> <span class="bp">False</span>
+
+    <span class="c"># loope</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">convergence</span><span class="p">:</span>
+      <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">printOutput</span><span class="p">():</span>
+        <span class="k">print</span> <span class="s">&#39;.......................................&#39;</span>
+        <span class="k">print</span> <span class="s">&#39;Now carrying out iteration number:&#39;</span><span class="p">,</span><span class="n">i</span>
+
+      <span class="c"># comoute Transformation from u to x space</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">computeTransformation</span><span class="p">()</span>
+
+      <span class="c"># compute the Jacobian</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">computeJacobian</span><span class="p">()</span>
+
+      <span class="c"># Evaluate limit-state function and its gradient</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">computeLimitState</span><span class="p">()</span>
+
+      <span class="c"># Set scale parameter Go and inform about struct. resp.</span>
+      <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Go</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">printOutput</span><span class="p">():</span>
+          <span class="k">print</span> <span class="s">&#39;Value of limit-state function in the first step:&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span>
+      <span class="c"># Compute alpha vector</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">computeAlpha</span><span class="p">()</span>
+
+      <span class="c"># Compute gamma vector</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">computeGamma</span><span class="p">()</span>
+
+      <span class="c"># Check convergence</span>
+
+      <span class="n">condition1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">G</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Go</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">&lt;</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getE1</span><span class="p">()</span>
+      <span class="n">condition2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">))</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getE2</span><span class="p">()</span>
+      <span class="n">condition3</span> <span class="o">=</span> <span class="n">i</span><span class="o">==</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getImax</span><span class="p">()</span>
+
+      <span class="k">if</span> <span class="n">condition1</span> <span class="ow">and</span> <span class="n">condition2</span> <span class="ow">or</span> <span class="n">condition3</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">i</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="n">convergence</span> <span class="o">=</span> <span class="bp">True</span>
+
+      <span class="c"># space for some recording stuf</span>
+
+      <span class="c"># Take a step if convergence is not achieved</span>
+      <span class="k">if</span> <span class="ow">not</span> <span class="n">convergence</span><span class="p">:</span>
+        <span class="c"># Determine search direction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">computeSearchDirection</span><span class="p">()</span>
+
+        <span class="c"># Determine step size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">computeStepSize</span><span class="p">()</span>
+
+        <span class="c"># Determine new trial point</span>
+        <span class="n">u_new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span>
+
+        <span class="c"># Prepare for a new round in the loop</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">u_new</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="c">#np.transpose(u_new)</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+      <span class="c">#   print self.u</span>
+      <span class="c"># if i == 5:</span>
+      <span class="c">#    convergence = True</span>
+
+    <span class="c"># Compute beta value</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">computeBeta</span><span class="p">()</span>
+
+    <span class="c"># Compute failure probability</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">computeFailureProbability</span><span class="p">()</span>
+
+    <span class="c"># Show Results</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">printOutput</span><span class="p">():</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">showResults</span><span class="p">()</span>
+
+
+  <span class="k">def</span> <span class="nf">computeModifiedCorrelationMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">printOutput</span><span class="p">():</span>
+      <span class="k">print</span> <span class="s">&#39;==================================================&#39;</span>
+      <span class="k">print</span> <span class="s">&#39;&#39;</span>
+      <span class="k">print</span> <span class="s">&#39;        RUNNING FORM RELIABILITY ANALYSIS&#39;</span>
+      <span class="k">print</span> <span class="s">&#39;&#39;</span>
+      <span class="k">print</span> <span class="s">&#39;==================================================&#39;</span>
+      <span class="k">print</span> <span class="s">&#39;&#39;</span>
+      <span class="k">print</span> <span class="s">&#39; Computation of modified correlation matrix R0&#39;</span>
+      <span class="k">print</span> <span class="s">&#39; Takes some time if sensitivities are to be computed&#39;</span>
+      <span class="k">print</span> <span class="s">&#39; with gamma (3), beta (7) or chi-square (8)&#39;</span>
+      <span class="k">print</span> <span class="s">&#39; distributions.&#39;</span>
+      <span class="k">print</span> <span class="s">&#39; Please wait... (Ctrl+C breaks)&#39;</span>
+      <span class="k">print</span> <span class="s">&#39;&#39;</span>
+    <span class="c"># Compute corrected correlation coefficients</span>
+    <span class="n">Ro</span> <span class="o">=</span> <span class="n">getModifiedCorrelationMatrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">setModifiedCorrelation</span><span class="p">(</span><span class="n">Ro</span><span class="p">)</span>
+    <span class="c">#print self.model.getModifiedCorrelation()</span>
+
+  <span class="k">def</span> <span class="nf">computeCholeskyDecomposition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">Ro</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">getModifiedCorrelation</span><span class="p">()</span>
+    <span class="n">Lo</span><span class="p">,</span> <span class="n">ierr</span> <span class="o">=</span> <span class="n">CholeskyDecomposition</span><span class="p">(</span><span class="n">Ro</span><span class="p">)</span>
+    <span class="k">if</span>  <span class="n">ierr</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="k">print</span> <span class="s">&#39;Error: Cholesky decomposition&#39;</span><span class="p">,</span><span class="n">ierr</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">setLowerTriangularMatrix</span><span class="p">(</span><span class="n">Lo</span><span class="p">)</span>
+    <span class="n">iLo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">Lo</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">setInvLowerTriangularMatrix</span><span class="p">(</span><span class="n">iLo</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">computeStartingPoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+    <span class="n">marg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">getMarginalDistributions</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">marg</span><span class="p">)):</span>
+      <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">marg</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">getStartPoint</span><span class="p">())</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">x_to_u</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">computeTransformation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">([</span><span class="n">u_to_x</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)]);</span>
+
+  <span class="k">def</span> <span class="nf">computeJacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">J_u_x</span> <span class="o">=</span> <span class="n">jacobian</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">);</span>
+    <span class="n">J_x_u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">J_u_x</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">J</span> <span class="o">=</span> <span class="n">J_x_u</span>
+
+  <span class="k">def</span> <span class="nf">computeLimitState</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">G</span><span class="p">,</span> <span class="n">gradient</span> <span class="o">=</span> <span class="n">evaluateLimitState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">limitstate</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">G</span> <span class="o">=</span> <span class="n">G</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">gradient</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">gradient</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">J</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">computeAlpha</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">gradient</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gradient</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">computeGamma</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">J</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">J</span><span class="p">)))))</span>
+    <span class="c"># Importance vector gamma</span>
+    <span class="n">matmult</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">J</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">gamma</span><span class="p">)</span>
+    <span class="n">importance_vector_gamma</span> <span class="o">=</span> <span class="p">(</span><span class="n">matmult</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">matmult</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+
+  <span class="k">def</span> <span class="nf">computeSearchDirection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="o">=</span> <span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gradient</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">)</span> <span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span>
+
+  <span class="k">def</span> <span class="nf">computeStepSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getStepSize</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">getStepSize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">G</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">gradient</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">limitstate</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getStepSize</span><span class="p">()</span>
+
+  <span class="k">def</span> <span class="nf">computeBeta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">computeFailureProbability</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">Pf</span> <span class="o">=</span> <span class="n">Normal</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">showResults</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">print</span> <span class="s">&#39;&#39;</span>
+    <span class="k">print</span> <span class="s">&#39;==================================================&#39;</span>
+    <span class="k">print</span> <span class="s">&#39;&#39;</span>
+    <span class="k">print</span> <span class="s">&#39; RESULTS FROM RUNNING FORM RELIABILITY ANALYSIS&#39;</span>
+    <span class="k">print</span> <span class="s">&#39;&#39;</span>
+    <span class="k">print</span> <span class="s">&#39; Number of iterations:     &#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">i</span>
+    <span class="k">print</span> <span class="s">&#39; Reliability index beta:   &#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">print</span> <span class="s">&#39; Failure probability:      &#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Pf</span>
+    <span class="k">print</span> <span class="s">&#39; Number of calls to the limit-state function:&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">getCallFunction</span><span class="p">()</span>
+    <span class="k">print</span> <span class="s">&#39;&#39;</span>
+    <span class="k">print</span> <span class="s">&#39;==================================================&#39;</span>
+    <span class="k">print</span> <span class="s">&#39;&#39;</span>
+
+
+
+  <span class="k">def</span> <span class="nf">getBeta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+  <span class="k">def</span> <span class="nf">getFailure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pf</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/Logo.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">PyRe 5.0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Juergen Hackl.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
