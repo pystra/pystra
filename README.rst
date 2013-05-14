@@ -1,6 +1,6 @@
-************
-Introduction
-************
+*******************************************
+Structural Reliability Analysis with Python
+*******************************************
 
 :Date: 11 May 2013
 :Authors: Jürgen Hackl
@@ -35,7 +35,7 @@ Note
 Purpose
 =======
 
-PyRe (python Reliability) is a python module for structural reliability
+PyRe (Python Reliability) is a python module for structural reliability
 analysis. Its flexibility and extensibility make it applicable to a large
 suite of problems. Along with core reliability analysis functionality, PyRe
 includes methods for summarizing output.
