@@ -3,6 +3,16 @@
 
 import numpy as np
 
+def computeCholeskyDecomposition(self):
+  Ro = self.model.getModifiedCorrelation()
+  Lo, ierr = CholeskyDecomposition(Ro)
+  if  ierr > 0:
+    print 'Error: Cholesky decomposition',ierr
+
+  self.model.setLowerTriangularMatrix(Lo)
+  iLo = np.linalg.inv(Lo)
+  self.model.setInvLowerTriangularMatrix(iLo)
+
 def CholeskyDecomposition(A):
   n,n = A.shape
   ierr = 0

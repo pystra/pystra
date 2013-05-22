@@ -5,6 +5,11 @@
 from pyre import *
 
 
+import time
+import datetime
+start_time = time.time()
+
+
 # Define a main() function.
 def main():
 
@@ -30,11 +35,17 @@ def main():
   #options.printResults(False)
 
   # Performe FORM analysis
-  Analysis = Form(options)
+  # Analysis = Form(options)
+
+  # Performe Crude Monte Carlo Simulation
+  Analysis = CrudeMonteCarlo(options)
 
   # Some single results:
-  beta = Analysis.getBeta()
-  failure = Analysis.getFailure()
+  # beta = Analysis.getBeta()
+  # failure = Analysis.getFailure()
+
+  run_time = time.time() - start_time
+  print str(datetime.timedelta(seconds=run_time))
 
 
   # This is the standard boilerplate that calls the main() function.

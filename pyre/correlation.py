@@ -91,3 +91,22 @@ def absoluteIntegralValue(rho0,*args):
 
   f = np.absolute( rho_target - rho_integral(rho0,margi,margj,Z1,Z2,X1,X2,WIP,detJ) )
   return f
+
+def computeModifiedCorrelationMatrix(self):
+  if self.options.printOutput():
+    print '=================================================='
+    print ''
+    print '           RUNNING RELIABILITY ANALYSIS'
+    print ''
+    print '=================================================='
+    print ''
+    print ' Computation of modified correlation matrix R0'
+    print ' Takes some time if sensitivities are to be computed'
+    print ' with gamma (3), beta (7) or chi-square (8)'
+    print ' distributions.'
+    print ' Please wait... (Ctrl+C breaks)'
+    print ''
+  # Compute corrected correlation coefficients
+  Ro = getModifiedCorrelationMatrix(self.model)
+  self.model.setModifiedCorrelation(Ro)
+  #print self.model.getModifiedCorrelation()

@@ -55,10 +55,10 @@ class Form(object):
     self.Pf = None
     
     # Computation of modified correlation matrix R0
-    self.computeModifiedCorrelationMatrix()
+    computeModifiedCorrelationMatrix(self)
 
     # Cholesky decomposition
-    self.computeCholeskyDecomposition()
+    computeCholeskyDecomposition(self)
 
     # Compute starting point for the algorithm
     self.computeStartingPoint()
@@ -137,34 +137,34 @@ class Form(object):
       self.showResults()
 
 
-  def computeModifiedCorrelationMatrix(self):
-    if self.options.printOutput():
-      print '=================================================='
-      print ''
-      print '        RUNNING FORM RELIABILITY ANALYSIS'
-      print ''
-      print '=================================================='
-      print ''
-      print ' Computation of modified correlation matrix R0'
-      print ' Takes some time if sensitivities are to be computed'
-      print ' with gamma (3), beta (7) or chi-square (8)'
-      print ' distributions.'
-      print ' Please wait... (Ctrl+C breaks)'
-      print ''
-    # Compute corrected correlation coefficients
-    Ro = getModifiedCorrelationMatrix(self.model)
-    self.model.setModifiedCorrelation(Ro)
-    #print self.model.getModifiedCorrelation()
+  # def computeModifiedCorrelationMatrix(self):
+  #   if self.options.printOutput():
+  #     print '=================================================='
+  #     print ''
+  #     print '        RUNNING FORM RELIABILITY ANALYSIS'
+  #     print ''
+  #     print '=================================================='
+  #     print ''
+  #     print ' Computation of modified correlation matrix R0'
+  #     print ' Takes some time if sensitivities are to be computed'
+  #     print ' with gamma (3), beta (7) or chi-square (8)'
+  #     print ' distributions.'
+  #     print ' Please wait... (Ctrl+C breaks)'
+  #     print ''
+  #   # Compute corrected correlation coefficients
+  #   Ro = getModifiedCorrelationMatrix(self.model)
+  #   self.model.setModifiedCorrelation(Ro)
+  #   #print self.model.getModifiedCorrelation()
 
-  def computeCholeskyDecomposition(self):
-    Ro = self.model.getModifiedCorrelation()
-    Lo, ierr = CholeskyDecomposition(Ro)
-    if  ierr > 0:
-      print 'Error: Cholesky decomposition',ierr
+  # def computeCholeskyDecomposition(self):
+  #   Ro = self.model.getModifiedCorrelation()
+  #   Lo, ierr = CholeskyDecomposition(Ro)
+  #   if  ierr > 0:
+  #     print 'Error: Cholesky decomposition',ierr
 
-    self.model.setLowerTriangularMatrix(Lo)
-    iLo = np.linalg.inv(Lo)
-    self.model.setInvLowerTriangularMatrix(iLo)
+  #   self.model.setLowerTriangularMatrix(Lo)
+  #   iLo = np.linalg.inv(Lo)
+  #   self.model.setInvLowerTriangularMatrix(iLo)
 
   def computeStartingPoint(self):
     x = np.array([])
@@ -174,6 +174,7 @@ class Form(object):
     self.u = x_to_u(x,self.model)
 
   def computeTransformation(self):
+    print 'u', self.u
     self.x = np.transpose([u_to_x(self.u,self.model)]);
 
   def computeJacobian(self):

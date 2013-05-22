@@ -38,6 +38,9 @@ class StochasticModel(object):
   def getNames(self):
     return self.names
 
+  def getLenMarginalDistributions(self):
+    return len(self.marg)
+    
   def getMarginalDistributions(self):
     return self.marg
 
@@ -156,9 +159,11 @@ class AnalysisOptions(object):
     """
 
     self.Recorded_u = True
-    # 0: u-vector not recorded at all iterations, 1: u-vector recorded at all iterations
+    # 0: u-vector not recorded at all iterations,
+    # 1: u-vector recorded at all iterations
     self.Recorded_x = True
-    # 0: x-vector not recorded at all iterations, 1: x-vector recorded at all iterations
+    # 0: x-vector not recorded at all iterations,
+    # 1: x-vector recorded at all iterations
 
     # FORM, SORM analysis options
     self.differentation_modus = 'ffd'
@@ -170,7 +175,7 @@ class AnalysisOptions(object):
 
     self.ffdpara = 1000
     """ Parameter for computation
-    
+
     Parameter for computation of FFD estimates of gradients - Perturbation =
     stdv/analysisopt.ffdpara\n
     Recommended values:
@@ -184,6 +189,36 @@ class AnalysisOptions(object):
     # or 1/analysisopt.ffdpara_thetag if thetag == 0;
     # Recommended values: 1000 for basic limit-state functions,
     #100 for FE-based limit-state functions
+
+    # Simulation analysis (MC,IS,DS,SS) and distribution analysis options
+    self.samples = 100000
+    """Number of samples (MC,IS)
+
+    Number of samples per subset step (SS) or number of directions (DS)
+    """
+
+    self.random_generator = 0
+    """Kind of Random generator
+
+    - 0: default rand matlab function,\n
+    - 1: Mersenne Twister (to be preferred)\n
+    """
+
+    # Simulation analysis (MC, IS) and distribution analysis options
+    self.sim_point = 'origin'
+    """Start point for the simulation
+
+    - 'dspt': design point,\n
+    - 'origin': origin in standard normal space (simulation analysis)\n
+    """
+
+    self.stdv_sim = 1
+    """Standard deviation of sampling distribution in simulation analysis"""
+
+    # Simulation analysis (MC, IS)
+    self.target_cov = 0.05
+    """ Target coefficient of variation for failure probability"""
+
 
   # getter
   def printOutput(self):
@@ -206,7 +241,6 @@ class AnalysisOptions(object):
 
   def getStepSize(self):
     return self.step_size
-
 
   def getDifferentationModus(self):
     return self.differentation_modus
@@ -241,6 +275,21 @@ class AnalysisOptions(object):
 
   def setffdpara(self,ffdpara):
     self.ffdpara = ffdpara
+
+    def getSamples(self):
+    return self.samples
+
+  def getRandomGenerator(self):
+    return self.random_generator
+
+  def getSimulationPoint(self):
+    return self.sim_point
+
+  def getSimulationStdv(self):
+    return self.stdv_sim
+
+  def getSimulationCov(self):
+    return self.target_cov
 
 class LimitState(object):
   """
