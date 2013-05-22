@@ -43,9 +43,9 @@ includes methods for summarizing output.
 Note
 ----
 
-   At the moment only First-Order Reliability Methods are supported!
-   Second-Order Reliability Methods and Monte Carlo Simulation will hopefully
-   follow soon :)
+   At the moment only First-Order Reliability Methods and Crude Monte Carlos
+   Simulations are supported! Second-Order Reliability Methods and other
+   Simulations will hopefully follow soon :)
 
 
 
@@ -86,15 +86,17 @@ Features
 PyRe provides functionalities to make structural reliability analysis as easy
 as possible. Here is a short list of some of its features:
 
-* Perform reliability analysis with First-Order Reliability Methods
+* Perform reliability analysis with First-Order Reliability Methods.
+
+* Perform reliability analysis with Crude Monte Carlo Simulation.
 
 * Includes a large suite of well-documented statistical distributions.
 
 * Uses NumPy for numerics wherever possible.
 
-* No limitation on the limit state function
+* No limitation on the limit state function.
 
-* Correlation between the random variables are possible
+* Correlation between the random variables are possible.
 
 * Traces can be saved to the disk as plain text.
 
