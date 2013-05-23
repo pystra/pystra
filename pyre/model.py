@@ -276,7 +276,7 @@ class AnalysisOptions(object):
   def setffdpara(self,ffdpara):
     self.ffdpara = ffdpara
 
-    def getSamples(self):
+  def getSamples(self):
     return self.samples
 
   def getRandomGenerator(self):

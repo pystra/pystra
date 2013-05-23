@@ -147,6 +147,13 @@ class CrudeMonteCarlo(object):
       print 'Error: function not yet implemented'
 
   def computeTransformation(self):
+    """Transformation u to x
+
+    .. note::
+
+       TODO: this method takes a lot of time, find something better
+
+    """
     self.x = np.zeros((self.nrv,self.block_size))
 
     for i in range(self.block_size):
