@@ -108,7 +108,7 @@ class AnalysisOptions(object):
       - 1: exact, solved numerically\n
     """
 
-    self.flag_sens   = 1
+    self.flag_sens   = True
     """ Flag for computation of sensitivities
     
     w.r.t. means, standard deviations, parameters and correlation coefficients
@@ -224,6 +224,9 @@ class AnalysisOptions(object):
   def printOutput(self):
     return self.print_output
 
+  def getFlagSens(self):
+    return self.flag_sens
+    
   def getMultiProc(self):
     return self.multi_proc
 

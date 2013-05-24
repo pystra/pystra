@@ -43,7 +43,7 @@ def getModifiedCorrelationMatrix(stochastic_model):
   nvr = len(marg)
   n,m = np.shape(R)
   Ro = np.eye(n,m)
-
+  flag_sens = True
   for i in range(nvr):
     for j in range(i):
       rho = R[i][j]

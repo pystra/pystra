@@ -174,7 +174,6 @@ class Form(object):
     self.u = x_to_u(x,self.model)
 
   def computeTransformation(self):
-    print 'u', self.u
     self.x = np.transpose([u_to_x(self.u,self.model)]);
 
   def computeJacobian(self):

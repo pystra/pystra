@@ -35,12 +35,13 @@ def getStepSize(G,gradient,u,d,stochastic_model,analysis_options,limit_state):
 
     trial_step_size = Trial_step_size[0][0]
     merit_new = Merit_new[0]
-    j = 1
+
+    j = 0
 
 
     while merit_new > merit and j < ntrial:
-      trial_step_size = Trial_step_size[0][1+j];
-      merit_new = Merit_new[1+j];
+      trial_step_size = Trial_step_size[0][j];
+      merit_new = Merit_new[j];
       j += 1
       if j == ntrial and merit_new > merit:
         if analysis_options.printOutput():
