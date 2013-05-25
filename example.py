@@ -26,16 +26,16 @@ def main():
 
   # Define limit state function
   # - case 1: define directly
-  g = LimitStateFunction('1 - X2*(1000*X3)**(-1) - (X1*(200*X3)**(-1))**2')
+  # g = LimitStateFunction('1 - X2*(1000*X3)**(-1) - (X1*(200*X3)**(-1))**2')
   # - case 2: define load function, wich is defined in function.py
-  # g = LimitStateFunction('function(X1,X2,X3)')
+  g = LimitStateFunction('function(X1,X2,X3)')
 
   # Set some options (optional)
   options = AnalysisOptions()
   #options.printResults(False)
 
   # Performe FORM analysis
-  # Analysis = Form(options)
+  Analysis = Form(options)
 
   # Performe Crude Monte Carlo Simulation
   Analysis = CrudeMonteCarlo(options)

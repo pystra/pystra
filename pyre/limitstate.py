@@ -1,13 +1,28 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
-
-import os, sys, inspect
 import numpy as np
-sys.path.append( os.path.abspath(os.path.join('part', os.pardir)) )
 
-from function import *
+import os, sys
+sys.path.append (os.path.join(os.getcwd(), "functions") )
+from functions.function import *
+
+# def import_file(full_path_to_module):
+#     try:
+#         import os
+#         module_dir, module_file = os.path.split(full_path_to_module)
+#         module_name, module_ext = os.path.splitext(module_file)
+#         save_cwd = os.getcwd()
+#         os.chdir(module_dir)
+#         module_obj = __import__(module_name)
+#         module_obj.__file__ = full_path_to_module
+#         globals()[module_name] = module_obj
+#         os.chdir(save_cwd)
+#     except:
+#         raise ImportError
+
 
 def evaluateLimitState(x,stochastic_model,analysis_options,limit_state,modus=None):
+
   global nfun
   names = stochastic_model.getNames()
   expression = limit_state.getExpression()
