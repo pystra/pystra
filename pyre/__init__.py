@@ -27,7 +27,7 @@ from correlation import *
 
 # Inputparameter
 from model import *
-from function import *
+#from function import *
 
 # Calculations
 from limitstate import *

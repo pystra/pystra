@@ -1,7 +1,10 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 
+import os, sys, inspect
 import numpy as np
+sys.path.append( os.path.abspath(os.path.join('part', os.pardir)) )
+
 from function import *
 
 def evaluateLimitState(x,stochastic_model,analysis_options,limit_state,modus=None):
