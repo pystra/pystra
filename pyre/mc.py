@@ -16,7 +16,7 @@ from limitstate import *
 from stepsize import *
 from form import *
 
-class CrudeMonteCarlo(object):
+class MonteCarlo(object):
   """
   """
 
@@ -64,6 +64,9 @@ class CrudeMonteCarlo(object):
     self.q = None
     self.Pf = None
     self.beta = None
+    self.all_X = None
+    self.all_G = None
+    self.bins = None
 
     # Computation of modified correlation matrix R0
     computeModifiedCorrelationMatrix(self)
@@ -71,74 +74,11 @@ class CrudeMonteCarlo(object):
     # Cholesky decomposition
     computeCholeskyDecomposition(self)
 
-    # Set point for crude Monte Carlo / importance sampling
-    self.setPoint()
-
-    # Initialize variables
-    self.initializeVariables()
-
-    self.k = 0
-    while self.k < self.options.getSamples():
-      self.block_size = min(self.options.getBlockSize(), self.options.getSamples() - self.k)
-      self.k += self.block_size
-
-      # Computation of the random numbers
-      self.computeRandomNumbers()
-
-      # Comoute Transformation from u to x space
-      self.computeTransformation()
-
-      # Evaluate limit-state function and its gradient
-      self.computeLimitState()
-
-      # Collect result of sampling: if g < 0 , I = 1 , else I = 0
-      self.computeResults()
-
-      # Update sums
-      self.computeSumUpdate()
-
-      # Compute coefficient of variation (of pf)
-      self.computeCoefficientOfVariation()
-
-      # Coumpute percent done
-      self.computePercentDone()
-
-      # Check convergence
-      if self.cov_q_bar[self.k-1] <= self.options.getSimulationCov():
-        break
-
-    # Compute failure probability
-    self.computeFailureProbability()
-
-    # Compute beta value
-    self.computeBeta()
-
-    # Show Results
-    if self.options.printOutput():
-      self.showResults()
-
-  def setPoint(self):
-    self.point = np.zeros((self.nrv,1))
-
-  def initializeVariables(self):
-    stdv = self.options.getSimulationStdv()
-    samples = self.options.getSamples()
-    # Establish covariance matrix, its Cholesky decomposition, and its inverse
-    self.covariance = stdv**2 * np.eye(self.nrv)
-    self.cholesky_covariance = stdv * np.eye(self.nrv);  # chol_covariance = chol(covariance);
-    self.inverse_covariance = 1*(stdv**2)**(-1) * np.eye(self.nrv); # inv_covariance = inv(covariance);
-
-    # Initializations
-    self.sum_q = 0
-    self.sum_q2 = 0
-    self.q_bar = np.zeros(samples)
-    self.cov_q_bar = np.empty(samples)
-    self.cov_q_bar[:] = np.nan
-
-    # Pre-compute some factors to minimize computations inside simulation loop
-    self.factors = stdv**self.nrv
-    self.cov_q_bar[0] = 1.0
-    self.done = 0
+  def setPoint(self,point=None):
+    if point == None:
+      self.point = np.zeros((self.nrv,1))
+    else:
+      self.point = point
 
   def computeRandomNumbers(self):
     if self.options.getRandomGenerator() == 0:
@@ -213,6 +153,95 @@ class CrudeMonteCarlo(object):
     else:
       self.beta = 0
 
+  def getBeta(self):
+    return self.beta
+
+  def getFailure(self):
+    return self.Pf
+
+  def getDistributionData(self):
+    return self.all_G
+
+  def getBins(self):
+    return self.bins
+
+
+class CrudeMonteCarlo(MonteCarlo):
+  """
+  """
+
+  def __init__(self,analysis_options=None,limit_state=None,stochastic_model=None,point=None):
+    """
+
+    """
+
+    MonteCarlo.__init__(self,analysis_options=None,limit_state=None,stochastic_model=None)
+
+    # Set point for crude Monte Carlo / importance sampling
+    self.setPoint(point)
+
+    # Initialize variables
+    self.initializeVariables()
+
+    self.k = 0
+    while self.k < self.options.getSamples():
+      self.block_size = min(self.options.getBlockSize(), self.options.getSamples() - self.k)
+      self.k += self.block_size
+
+      # Computation of the random numbers
+      self.computeRandomNumbers()
+
+      # Comoute Transformation from u to x space
+      self.computeTransformation()
+
+      # Evaluate limit-state function and its gradient
+      self.computeLimitState()
+
+      # Collect result of sampling: if g < 0 , I = 1 , else I = 0
+      self.computeResults()
+
+      # Update sums
+      self.computeSumUpdate()
+
+      # Compute coefficient of variation (of pf)
+      self.computeCoefficientOfVariation()
+
+      # Coumpute percent done
+      self.computePercentDone()
+
+      # Check convergence
+      if self.cov_q_bar[self.k-1] <= self.options.getSimulationCov():
+        break
+
+    # Compute failure probability
+    self.computeFailureProbability()
+
+    # Compute beta value
+    self.computeBeta()
+
+    # Show Results
+    if self.options.printOutput():
+      self.showResults()
+
+  def initializeVariables(self):
+    stdv = self.options.getSimulationStdv()
+    samples = self.options.getSamples()
+    # Establish covariance matrix, its Cholesky decomposition, and its inverse
+    self.covariance = stdv**2 * np.eye(self.nrv)
+    self.cholesky_covariance = stdv * np.eye(self.nrv);  # chol_covariance = chol(covariance);
+    self.inverse_covariance = 1*(stdv**2)**(-1) * np.eye(self.nrv); # inv_covariance = inv(covariance);
+
+    # Initializations
+    self.sum_q = 0
+    self.sum_q2 = 0
+    self.q_bar = np.zeros(samples)
+    self.cov_q_bar = np.empty(samples)
+    self.cov_q_bar[:] = np.nan
+
+    # Pre-compute some factors to minimize computations inside simulation loop
+    self.factors = stdv**self.nrv
+    self.cov_q_bar[0] = 1.0
+    self.done = 0
 
   def showResults(self):
     print ''
@@ -261,9 +290,135 @@ class CrudeMonteCarlo(object):
     plt.grid(True)
     plt.show()
 
+class ImportanceSampling(CrudeMonteCarlo):
+  """
+  """
 
-  def getBeta(self):
-    return self.beta
+  def __init__(self,analysis_options=None,limit_state=None,stochastic_model=None):
+    """
 
-  def getFailure(self):
-    return self.Pf
+    """
+    FormAnalysis = Form(analysis_options,limit_state,stochastic_model)
+    u = FormAnalysis.getDesignPoint()
+    u = np.transpose([u])
+    
+    CrudeMonteCarlo.__init__(self,analysis_options,limit_state,stochastic_model,u)
+
+
+class DistributionAnalysis(MonteCarlo):
+  """
+  """
+
+  def __init__(self,analysis_options=None,limit_state=None,stochastic_model=None):
+    """
+
+    """
+    MonteCarlo.__init__(self,analysis_options=None,limit_state=None,stochastic_model=None)
+
+    # Set point for crude Monte Carlo / importance sampling
+    self.setPoint()
+
+    # Initialize variables # Different
+    self.initializeVariables()
+
+    self.k = 0
+    while self.k < self.options.getSamples():
+      self.block_size = min(self.options.getBlockSize(), self.options.getSamples() - self.k)
+      self.k += self.block_size
+
+      # Computation of the random numbers
+      self.computeRandomNumbers()
+
+      # Comoute Transformation from u to x space
+      self.computeTransformation()
+
+      # Evaluate limit-state function and its gradient
+      self.computeLimitState()
+
+      # Collect Data
+      self.coumputeDataUpdate()
+
+      # Coumpute percent done
+      self.computePercentDone()
+
+    # Compute Distribution Data
+    self.computeDistributionData()
+
+    # Show Results # Different
+    if self.options.printOutput():
+      self.showResults()
+
+
+  def initializeVariables(self):
+    stdv = self.options.getSimulationStdv()
+    samples = self.options.getSamples()
+    # Establish covariance matrix, its Cholesky decomposition, and its inverse
+    self.covariance = stdv**2 * np.eye(self.nrv)
+    self.cholesky_covariance = stdv * np.eye(self.nrv);  # chol_covariance = chol(covariance);
+
+    ng = 1
+
+    self.all_X = np.zeros((self.nrv,samples))
+    self.all_G = np.zeros((ng,samples))
+
+    self.done = 0
+    self.bins = getBins(self.options.getSamples())
+
+
+  def coumputeDataUpdate(self):
+    indx = range((self.k-self.block_size),self.k)
+    self.all_X[:,indx] = self.x
+    self.all_G[:,indx] = self.G
+
+  def computeDistributionData(self):
+    x = self.all_G
+    x = np.transpose(x)
+    self.all_G = x
+
+  def showResults(self):
+    print ''
+    print '=================================================='
+    print ''
+    print ' RESULTS FROM RUNNING DISTRIBUTION ANALYSIS'
+    print ''
+    print ' Number of simulations:        ',self.k
+    print ' Approximated number of bins   ',self.bins
+    print ''
+    print '=================================================='
+    print ''
+
+
+    npts = 200
+    marg = self.model.getMarginalDistributions()
+
+    for i in range(self.nrv):
+      # Plot simulatet distribution
+      xi = self.all_X[i]
+      minx = np.min(xi)
+      maxx = np.max(xi)
+      n, bins, patches = plt.hist(xi, self.bins, normed=True, facecolor='green', alpha=0.75)
+
+      # Plot reference distribution
+      xr = np.linspace(minx,maxx,npts)
+      reference_pdf = pdf(xr,marg[i])
+
+      plt.plot(xr, reference_pdf,'r-')
+
+      name = self.model.getNames()[i]
+      string = 'Distribution Analysis for '+name
+      plt.title(string)
+      plt.xlabel('Random Values')
+      plt.ylabel('Probability Density')
+      plt.grid(True)
+
+      plt.show()
+
+    xg = self.all_G
+
+    n, bins, patches = plt.hist(xg, self.bins, normed=True, facecolor='green', alpha=0.75)
+
+    plt.title('Distribution Analysis for the Limit State Function')
+    plt.xlabel('Random Values')
+    plt.ylabel('Probability Density')
+
+    plt.show()

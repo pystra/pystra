@@ -231,3 +231,6 @@ class Form(object):
 
   def getFailure(self):
     return self.Pf
+
+  def getDesignPoint(self):
+    return self.u

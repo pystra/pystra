@@ -55,7 +55,13 @@ class Uniform(Distribution):
   def pdf(self,x,a=None,b=None,var_3=None,var_4=None):
     """probability density function
     """
-    p = 1 * (b-a)**(-1)
+    if len(x) == 1:
+      p = 1 * (b-a)**(-1)
+    else:
+      p = []
+      for i in range(len(x)):
+        p.append(1 * (b-a)**(-1))
+
     return p
 
   @classmethod

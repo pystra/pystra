@@ -8,6 +8,10 @@ import scipy.special as spec
 
 from distributions import *
 
+def pdf(x,marg):
+  p = eval(getDistributionType(marg.getType())).pdf(x,marg.getP1(),marg.getP2(),marg.getP3(),marg.getP4())
+  return p
+
 def z_to_x(z,marg):
   x = eval(getDistributionType(marg.getType())).u_to_x(z,marg)
   return x
@@ -48,3 +52,6 @@ def jacobian(u,x,stochastic_model):
   J_u_x = np.dot(iLo,J_u_x)
   return J_u_x
 
+def getBins(samples):
+  bins = np.ceil(4*np.sqrt(np.sqrt(samples)))
+  return bins

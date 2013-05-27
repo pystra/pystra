@@ -35,10 +35,16 @@ def main():
   #options.printResults(False)
 
   # Performe FORM analysis
-  Analysis = Form(options)
+  # Analysis = Form(options)
+
+  # Performe Distribution analysis
+  # Analysis = DistributionAnalysis(options)
 
   # Performe Crude Monte Carlo Simulation
-  Analysis = CrudeMonteCarlo(options)
+  # Analysis = CrudeMonteCarlo(options)
+
+  # Performe Importance Sampling
+  Analysis = ImportanceSampling(options)
 
   # Some single results:
   # beta = Analysis.getBeta()

@@ -20,7 +20,6 @@ class StochasticModel(object):
     self.Lo = None
     self.iLo = None
     self.call_function = 0
-
     self.addVariableNames()
     self.addMarginalDistributions()
     self.setCorrelation()
@@ -356,5 +355,4 @@ class LimitStateFunction(object):
 
   def getExpression(self):
     return self.expression
-
 
