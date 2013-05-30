@@ -35,7 +35,7 @@ class TypeIIlargestValue(Distribution):
     """
     if self.input_type == None:
       mean = self.mean
-      stdv = marg[i][2]
+      stdv = self.stdv
       parameter_guess = [2.000001]#, 10**7]
       par = opt.fsolve(typIIlargest_parameter,parameter_guess, args =(mean,stdv))
       k = par[0]
