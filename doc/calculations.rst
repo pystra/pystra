@@ -4,12 +4,8 @@
 Calculations
 *************************
 
-
-Reliability
-===========
-
 First-Order Reliability Method (FORM)
--------------------------------------
+=====================================
 .. automodule:: pyre.form
    :members:
 
@@ -19,8 +15,15 @@ First-Order Reliability Method (FORM)
 .. automodule:: pyre.stepsize
    :members:
 
-Second-Order Reliability Method (FORM)
---------------------------------------
+Second-Order Reliability Method (SORM)
+======================================
+
+Crude Monte Carlo Simulation (CMC)
+==================================
+
+Importance Sampling (IS)
+========================
+
 
 Matrices Operators
 ==================
