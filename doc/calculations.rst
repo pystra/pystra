@@ -1,32 +1,18 @@
 .. _chap_calculations:
 
-*************************
+************
 Calculations
-*************************
-
-First-Order Reliability Method (FORM)
-=====================================
-.. automodule:: pyre.form
-   :members:
-
-.. automodule:: pyre.limitstate
-   :members:
-
-.. automodule:: pyre.stepsize
-   :members:
-
-Second-Order Reliability Method (SORM)
-======================================
-
-Crude Monte Carlo Simulation (CMC)
-==================================
-
-Importance Sampling (IS)
-========================
-
+************
 
 Matrices Operators
 ==================
+
+
+Correlation Matrix
+------------------
+
+.. automodule:: pyre.correlation
+   :members:
 
 Cholesky decomposition
 ----------------------
@@ -47,4 +33,13 @@ Numerical Integration
    :members:
 
 .. automodule:: pyre.integration
+   :members:
+
+Limit State
+===========
+
+.. automodule:: pyre.stepsize
+   :members:
+
+.. automodule:: pyre.limitstate
    :members:

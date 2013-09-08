@@ -8,9 +8,7 @@ from distributions import *
 from correlation import *
 
 class StochasticModel(object):
-  """
-
-  """
+  """Stochastic model"""
 
   def __init__(self):
     self.names = []
@@ -39,7 +37,7 @@ class StochasticModel(object):
 
   def getLenMarginalDistributions(self):
     return len(self.marg)
-    
+
   def getMarginalDistributions(self):
     return self.marg
 
@@ -84,8 +82,9 @@ class StochasticModel(object):
 
 
 class AnalysisOptions(object):
-  """
+  """Options
 
+  Options for the structural reliability analysis. 
   """
 
   def __init__(self):
@@ -93,33 +92,36 @@ class AnalysisOptions(object):
     self.transf_type = 3
     """Type of joint distribution
 
-    transf_types:
+    :Type:
       - 1: jointly normal (no longer supported)\n
       - 2: independent non-normal (no longer supported)\n
-      - 3: Nataf joint distribution (only available option)\n
+      - 3: Nataf joint distribution (only available option)
     """
 
     self.Ro_method   = 1
     """Method for computation of the modified Nataf correlation matrix
 
-    Ro_methods:
+    :Methods:
       - 0: use of approximations from ADK's paper (no longer supported)\n
-      - 1: exact, solved numerically\n
+      - 1: exact, solved numerically
     """
 
     self.flag_sens   = True
     """ Flag for computation of sensitivities
-    
+
     w.r.t. means, standard deviations, parameters and correlation coefficients
+
+    :Flag:
       - 1: all sensitivities assessed,\n
-      - 0: no sensitivities assessment\n
+      - 0: no sensitivities assessment
     """
-    
+
     self.print_output = True
     """Print comments during calculation
-    
-    - True: FERUM interactive mode,\n
-    - False: FERUM silent mode\n
+
+    :Values:
+      - True: FERUM interactive mode,\n
+      - False: FERUM silent mode
     """
 
     self.multi_proc = 1
@@ -168,8 +170,9 @@ class AnalysisOptions(object):
     self.differentation_modus = 'ffd'
     """ Kind of differentiation
 
-    - 'ddm': direct differentiation,\n
-    - 'ffd': forward finite difference\n
+    :Type:
+      - 'ddm': direct differentiation,\n
+      - 'ffd': forward finite difference
     """
 
     self.ffdpara = 1000
@@ -177,9 +180,10 @@ class AnalysisOptions(object):
 
     Parameter for computation of FFD estimates of gradients - Perturbation =
     stdv/analysisopt.ffdpara\n
-    Recommended values:
+
+    :Values:
       - 1000 for basic limit-state functions,\n
-      -  50 for FE-based limit-state functions\n
+      -  50 for FE-based limit-state functions
     """
 
     self.ffdpara_thetag = 1000
@@ -199,16 +203,18 @@ class AnalysisOptions(object):
     self.random_generator = 0
     """Kind of Random generator
 
-    - 0: default rand matlab function,\n
-    - 1: Mersenne Twister (to be preferred)\n
+    :Type:
+      - 0: default rand matlab function,\n
+      - 1: Mersenne Twister (to be preferred)
     """
 
     # Simulation analysis (MC, IS) and distribution analysis options
     self.sim_point = 'origin'
     """Start point for the simulation
 
-    - 'dspt': design point,\n
-    - 'origin': origin in standard normal space (simulation analysis)\n
+    :Start:
+      - 'dspt': design point,\n
+      - 'origin': origin in standard normal space (simulation analysis)
     """
 
     self.stdv_sim = 1
@@ -225,7 +231,7 @@ class AnalysisOptions(object):
 
   def getFlagSens(self):
     return self.flag_sens
-    
+
   def getMultiProc(self):
     return self.multi_proc
 
@@ -294,21 +300,14 @@ class AnalysisOptions(object):
     return self.target_cov
 
 class LimitState(object):
-  """
-  """
-  
+  """Limit state"""
+
   def __init__(self):
     self.evaluator  = 'basic'
     """Type of limit-state function evaluator:
-    
-    'basic': the limit-state function is defined by means of an analytical
-             expression or a Matlab m-function, using
-             gfundata(lsf).expression. The function gfun.m calls gfunbasic.m,
-             which evaluates gfundata(lsf).expression.
-    'xxx':   the limit-state function evaluation requires a call to an
-             external code.  The function gfun.m calls gfunxxx.m, which
-             evaluates gfundata(lsf).expression where gext variable is a
-             result of the external code.
+
+    :Args:
+      basic: the limit-state function is defined by means of an analytical expression or a Python function.
     """
 
     # Do no change this field!
@@ -319,8 +318,10 @@ class LimitState(object):
 
     self.flag_sens  = True
     """Flag for computation of sensitivities
-    
-    w.r.t. thetag parameters of the limit-state function
+
+    w.r.t. Tag parameters of the limit-state function
+
+    :Tag:
       - 1: all sensitivities assessed,\n
       - 0: no sensitivities assessment\n
     """
@@ -328,7 +329,6 @@ class LimitState(object):
     # Set limit state function
     self.setExpression()
 
-    
   def getEvaluator(self):
     return self.evaluator
 
@@ -344,6 +344,7 @@ class LimitState(object):
         break
     if not inlist:
       print 'Attention: No limit state function is defined'
+
 
 class LimitStateFunction(object):
 

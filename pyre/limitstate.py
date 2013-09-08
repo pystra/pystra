@@ -1,12 +1,14 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
-import numpy as np
 
+import numpy as np
 import os, sys
+
 sys.path.append (os.path.join(os.getcwd(), "functions") )
 from functions.function import *
 
 def evaluateLimitState(x,stochastic_model,analysis_options,limit_state,modus=None):
+  """Evaluate the limit state"""
 
   global nfun
   names = stochastic_model.getNames()
@@ -19,7 +21,7 @@ def evaluateLimitState(x,stochastic_model,analysis_options,limit_state,modus=Non
     modus =  analysis_options.getDifferentationModus()
   else:
     modus = 'no'
-    
+
   if analysis_options.getMultiProc() == 0:
     print 'Error: function not yet implemented'
   if analysis_options.getMultiProc() == 1:
@@ -91,6 +93,7 @@ def evaluateLimitState(x,stochastic_model,analysis_options,limit_state,modus=Non
 
 
 def computeLimitStateFunction(x,variable_names,expression):
+  """Compute the limit state function"""
   nrv = np.shape(x)[0]
   for i in range(nrv):
     globals()[variable_names[i]] = x[i:i+1]

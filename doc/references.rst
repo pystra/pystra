@@ -10,7 +10,7 @@ List of References
 
 .. [DerKiureghian2006] A. Der Kiureghian, T. Haukaas, and K. Fujimura. Structural reliability software at the University of California, Berkeley. Structural Safety, 28(1-2):44–67, 2006.
 
-.. [Hackl2013] J. Hackl. Risk based decision framework for the optimal management of aging reinforced concrete structures. Master’s thesis, Norwegian University of Science and Technolog, Trondheim, Norway, 2013. (in work)
+.. [Hackl2013] J. Hackl. Generic Framework for Stochastic Modeling of Reinforced Concrete Deterioration Caused by Corrosion. Master’s thesis, Norwegian University of Science and Technology, Trondheim, Norway, 2013.
 
 .. [Langtangen2009] Hans Petter Langtangen. Python Scripting for Computational Science. Springer-Verlag, 2009.
 

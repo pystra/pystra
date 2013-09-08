@@ -6,10 +6,20 @@ from limitstate import *
 from transformation import *
 
 def getStepSize(G,gradient,u,d,stochastic_model,analysis_options,limit_state):
+  """Return the step size for the calculation
+
+  :Returns:
+    - step_size (float): Returns the value of the step size.
+  """
   c = ( np.linalg.norm(u) * np.linalg.norm(gradient)**(-1) ) * 2 + 10
   merit = 0.5 * (np.linalg.norm(u))**2 + c * np.absolute(G)
-  # TODO: change fix value to variable
+
   ntrial = 6
+  """
+  .. note::
+
+     TODO: change fix value to a variable
+  """
 
   Trial_step_size = np.array([0.5**np.arange(0,ntrial)])
 
@@ -48,4 +58,3 @@ def getStepSize(G,gradient,u,d,stochastic_model,analysis_options,limit_state):
           print 'The step size has been reduced by a factor of 1/',2**ntrial
   step_size = trial_step_size
   return step_size
-

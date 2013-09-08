@@ -400,7 +400,7 @@ function. However, it is sometimes extremely difficult or impossible to find
 In this case, Equation :eq:`eq:2_70` may also be
 estimated by numerical simulation methods. A large variety of simulation
 techniques can be found in the literature, indeed, the most commonly used
-method is the Monte Carlo method. [Faber2009]
+method is the Monte Carlo method. [Faber2009]_
 
 The principle of simulation methods is to carry out random sampling in the
 physical (or standardized) space. For each of the samples the limit state

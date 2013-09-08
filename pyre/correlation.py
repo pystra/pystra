@@ -6,16 +6,19 @@ import numpy as np
 from integration import *
 
 class CorrelationMatrix(object):
+  """Correlation matrix
+
+  The correlation matrix of :math:`n` random variables :math:`X_1, \dots, X_n`
+  is the :math:`n \\times n` matrix whose :math:`i,j` entry is
+  :math:`\\text{corr}(X_i, X_j)`.
+
+  :Attributes:
+    - matrix (mat): correlation matrix
+
   """
-  """
-  
+
   def __init__(self, matrix=None):
-    """
-    
-    
-    Arguments:
-      - `matrix`:
-    """
+
     self.matrix = matrix
     self.mu = None
     self.sigma = None
@@ -34,10 +37,23 @@ class CorrelationMatrix(object):
     self.matrix[key] = item
 
   def getMatrix(self):
+    """Return correlation matrix
+
+    :Returns:
+      - matrix (mat): Return a matrix from type correlation matrix.
+    """
     return self.matrix
 
 
 def getModifiedCorrelationMatrix(stochastic_model):
+  """Modified correlation matrix
+
+  :Args:
+    - stochastic_model (StochasticModel): Information about the model
+  
+  :Returns:
+    - Ro (mat): Return a modified correlation matrix.
+  """
   marg = stochastic_model.getMarginalDistributions()
   R = stochastic_model.getCorrelation()
   nvr = len(marg)
@@ -85,6 +101,7 @@ def getModifiedCorrelationMatrix(stochastic_model):
 
 def absoluteIntegralValue(rho0,*args):
   """Absolute rho-integral value
+
   Compute the absolute value of the bi-folded rho-integral by 2D numerical integration
   """
   rho_target,margi,margj,Z1,Z2,X1,X2,WIP,detJ = args
@@ -93,6 +110,7 @@ def absoluteIntegralValue(rho0,*args):
   return f
 
 def computeModifiedCorrelationMatrix(self):
+  """Compute modified correlation matrix"""
   if self.options.printOutput():
     print '=================================================='
     print ''
@@ -106,7 +124,7 @@ def computeModifiedCorrelationMatrix(self):
     print ' distributions.'
     print ' Please wait... (Ctrl+C breaks)'
     print ''
+
   # Compute corrected correlation coefficients
   Ro = getModifiedCorrelationMatrix(self.model)
   self.model.setModifiedCorrelation(Ro)
-  #print self.model.getModifiedCorrelation()

@@ -4,9 +4,10 @@
 import numpy as np
 
 def quadratureRule(n,wfun=None,alpha=None,beta=None):
+  """Quadrature rule"""
   #  bp = base points (abscissas)
   #  wf = weight factors
-  #  n  = number of base points (abscissas) (integrates a (2n-1)th orde
+  #  n  = number of base points (abscissas) (integrates a (2n-1)th order
 
   if beta == None:
     beta = 0
@@ -59,7 +60,6 @@ def quadratureRule(n,wfun=None,alpha=None,beta=None):
       bp[m-1]=0
     if (m+m) != n:
       m=m-1
-    #jj=range(m)
     jj = np.arange(m)
     jj = jj.astype(int)
     n1j=(m-1-jj)

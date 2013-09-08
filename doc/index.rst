@@ -15,6 +15,7 @@ Contents:
    tutorial
    theory
    model
+   analysis
    calculations
    distributions
    references

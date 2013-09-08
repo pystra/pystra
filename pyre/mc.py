@@ -17,13 +17,33 @@ from stepsize import *
 from form import *
 
 class MonteCarlo(object):
-  """
+  """Monte Carlo Simulation
+
+  The preceding sections describe some methods for determining the reliability
+  index :math:`\\beta` for some common forms of the limit state
+  function. However, it is sometimes extremely difficult or impossible to find
+  :math:`\\beta`. [Nowak2000]_
+
+  In this case, the probability of failure :math:`p_f` may also be estimated
+  by numerical simulation methods. A large variety of simulation techniques
+  can be found in the literature, indeed, the most commonly used method is the
+  Monte Carlo method. [Faber2009]_
+
+  The principle of simulation methods is to carry out random sampling in the
+  physical (or standardized) space. For each of the samples the limit state
+  function is evaluated to figure out, whether the configuration is desired or
+  undesired. The probability of failure :math:`p_f` is estimated by the number
+  of undesired configurations, respected to the total numbers of
+  samples. [Lemaire2010]_
+
+  :Attributes:
+    - analysis_option (AnalysisOption): Option for the structural analysis
+    - limit_state (LimitState): Information about the limit state
+    - stochastic_model (StochasticModel): Information about the model
   """
 
   def __init__(self,analysis_options=None,limit_state=None,stochastic_model=None):
-    """
 
-    """
     # The stochastic model
     if stochastic_model == None:
       self.model = StochasticModel()
@@ -75,23 +95,25 @@ class MonteCarlo(object):
     computeCholeskyDecomposition(self)
 
   def setPoint(self,point=None):
+    """Set design point"""
     if point == None:
       self.point = np.zeros((self.nrv,1))
     else:
       self.point = point
 
   def computeRandomNumbers(self):
+    """Compute random numbers"""
     if self.options.getRandomGenerator() == 0:
       self.u = np.dot(self.point,[np.ones(self.block_size)])+np.dot(self.cholesky_covariance,np.random.randn(self.nrv, self.block_size))
     elif self.options.getRandomGenerator() == 1:
       print 'Error: function not yet implemented'
 
   def computeTransformation(self):
-    """Transformation u to x
+    """Compute transformation from u to x space
 
     .. note::
 
-       TODO: this method takes a lot of time, find something better
+       TODO: this method takes a lot of time, find some better solution.
 
     """
     self.x = np.zeros((self.nrv,self.block_size))
@@ -100,15 +122,18 @@ class MonteCarlo(object):
       self.x[:,i] = u_to_x(self.u[:,i],self.model)
 
   def computeLimitState(self):
+    """Evaluate limit-state function"""
     G, gradient = evaluateLimitState(self.x,self.model,self.options,self.limitstate,'no')
     self.G = G
 
   def computeResults(self):
+    """Collect result of sampling"""
     self.I = np.zeros(self.block_size)
     indx=np.where(self.G[0] < 0)
     self.I[indx] = 1;
 
   def computeSumUpdate(self):
+    """Update summation"""
     part1 = np.zeros(self.block_size)
     for i in range(self.block_size):
       part1[i] = np.vdot(self.u[:,i],self.u[:,i])
@@ -124,6 +149,7 @@ class MonteCarlo(object):
     self.sum_q2 += np.sum(self.q**2)
 
   def computeCoefficientOfVariation(self):
+    """Compute Coefficient of Variation"""
     n = self.k-1
     if self.sum_q > 0:
       self.q_bar[n] = 1*self.k**(-1) * self.sum_q
@@ -136,44 +162,87 @@ class MonteCarlo(object):
       self.cov_q_bar[n] = 1.0
 
   def computePercentDone(self):
+    """Compute percent done"""
     if np.floor( self.k * self.options.getSamples()**(-1)*20) > self.done:
       self.done = np.floor( self.k * self.options.getSamples()**(-1)*20)
       if self.options.printOutput():
           print self.done*5,'% complete'
 
   def computeFailureProbability(self):
+    """Compute probability of failure"""
     if self.sum_q > 0:
       self.Pf = self.q_bar[self.k-1]
     else:
       self.Pf = 0
 
   def computeBeta(self):
+    """Compute beta value"""
     if self.sum_q > 0:
       self.beta = -Normal.inv_cdf(self.Pf)
     else:
       self.beta = 0
 
   def getBeta(self):
+    """Returns the beta value
+
+    :Returns:
+      - beta (float): Returns the beta value
+    """
     return self.beta
 
   def getFailure(self):
+    """Returns the probability of failure
+
+    :Returns:
+      - Pf (float): Returns the probability of failure
+    """
     return self.Pf
 
   def getDistributionData(self):
+    """Returns data for the failure
+
+    :Returns:
+      - all_G (float): Returns data from the distribution
+    """
     return self.all_G
 
   def getBins(self):
+    """Returns the amount on bins
+
+    :Returns:
+      - bins (int): Returns the amount on bins (histogram)
+    """
     return self.bins
 
 
 class CrudeMonteCarlo(MonteCarlo):
-  """
+  """Crude Monte Carlo simulation (CMC)
+
+  The Crude Monte Carlo simulation (CMC) is the most simple form and
+  corresponds to a direct application of Equation (24). A large number
+  :math:`n` of samples are simulated for the set of random variables
+  :math:`{\\bf X}`. All samples that lead to a failure are counted :math:`n_f`
+  and after all simulations the probability of failure :math:`p_f` may be
+  estimated by [Faber2009]_
+
+  .. math::
+     :label: eq:2_93
+
+             \\tilde{p}_f = \\frac{n_f}{n}
+
+  Theoretically, an infinite number of simulations will provide an exact
+  probability of failure. However, time and the power of computers are
+  limited; therefore, a suitable amount of simulations :math:`n` are required
+  to achieve an acceptable level of accuracy.
+
+  :Attributes:
+    - analysis_option (AnalysisOption): Option for the structural analysis
+    - limit_state (LimitState): Information about the limit state
+    - stochastic_model (StochasticModel): Information about the model
+    - point (vec): Design point for the simulation
   """
 
   def __init__(self,analysis_options=None,limit_state=None,stochastic_model=None,point=None):
-    """
-
-    """
 
     MonteCarlo.__init__(self,analysis_options=None,limit_state=None,stochastic_model=None)
 
@@ -191,10 +260,10 @@ class CrudeMonteCarlo(MonteCarlo):
       # Computation of the random numbers
       self.computeRandomNumbers()
 
-      # Comoute Transformation from u to x space
+      # Compute transformation from u to x space
       self.computeTransformation()
 
-      # Evaluate limit-state function and its gradient
+      # Evaluate limit-state function
       self.computeLimitState()
 
       # Collect result of sampling: if g < 0 , I = 1 , else I = 0
@@ -224,6 +293,7 @@ class CrudeMonteCarlo(MonteCarlo):
       self.showResults()
 
   def initializeVariables(self):
+    """Initialization of the simulation variables"""
     stdv = self.options.getSimulationStdv()
     samples = self.options.getSamples()
     # Establish covariance matrix, its Cholesky decomposition, and its inverse
@@ -244,6 +314,7 @@ class CrudeMonteCarlo(MonteCarlo):
     self.done = 0
 
   def showResults(self):
+    """Show results and plots"""
     print ''
     print '=================================================='
     print ''
@@ -291,28 +362,42 @@ class CrudeMonteCarlo(MonteCarlo):
     plt.show()
 
 class ImportanceSampling(CrudeMonteCarlo):
-  """
+  """Importance Sampling
+
+  To decrease the number of simulations and the coefficient of variation,
+  other methods can be performed. One commonly applied method is the
+  Importance Sampling simulation method (IS).
+
+  :Attributes:
+    - analysis_option (AnalysisOption): Option for the structural analysis
+    - limit_state (LimitState): Information about the limit state
+    - stochastic_model (StochasticModel): Information about the model
   """
 
   def __init__(self,analysis_options=None,limit_state=None,stochastic_model=None):
-    """
 
-    """
     FormAnalysis = Form(analysis_options,limit_state,stochastic_model)
     u = FormAnalysis.getDesignPoint()
     u = np.transpose([u])
-    
+
     CrudeMonteCarlo.__init__(self,analysis_options,limit_state,stochastic_model,u)
 
 
 class DistributionAnalysis(MonteCarlo):
-  """
+  """Distribution Analysis
+
+  To analyze the random variables, used in the limit state function, a
+  numerical distribution analysis based on Monte Carlo simulation can be
+  performed.
+
+  :Attributes:
+    - analysis_option (AnalysisOption): Option for the structural analysis
+    - limit_state (LimitState): Information about the limit state
+    - stochastic_model (StochasticModel): Information about the model
   """
 
   def __init__(self,analysis_options=None,limit_state=None,stochastic_model=None):
-    """
 
-    """
     MonteCarlo.__init__(self,analysis_options=None,limit_state=None,stochastic_model=None)
 
     # Set point for crude Monte Carlo / importance sampling
@@ -350,6 +435,7 @@ class DistributionAnalysis(MonteCarlo):
 
 
   def initializeVariables(self):
+    """Initialization of the simulation variables"""
     stdv = self.options.getSimulationStdv()
     samples = self.options.getSamples()
     # Establish covariance matrix, its Cholesky decomposition, and its inverse
@@ -366,16 +452,19 @@ class DistributionAnalysis(MonteCarlo):
 
 
   def coumputeDataUpdate(self):
+    """Update data"""
     indx = range((self.k-self.block_size),self.k)
     self.all_X[:,indx] = self.x
     self.all_G[:,indx] = self.G
 
   def computeDistributionData(self):
+    """Compute data for the distributions"""
     x = self.all_G
     x = np.transpose(x)
     self.all_G = x
 
   def showResults(self):
+    """Show results and plots"""
     print ''
     print '=================================================='
     print ''

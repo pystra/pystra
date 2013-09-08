@@ -2,24 +2,15 @@
 Structural Reliability Analysis with Python
 *******************************************
 
-:Date: 11 May 2013
+:Date: September 2013
 :Authors: Jürgen Hackl
 :Contact: hackl.j@gmx.at
 :Web site: http://github.com/hackl/pyre
 :Documentation: http://hackl.github.io/pyre/
 :Copyright: This document has been placed in the public domain.
 :License: PyRe is released under the GNU General Public Licence.
-:Version: 5.0.1
+:Version: 5.0.2
 
-
-
-Warning
-=======
-
-This is a preliminary program code!
-
-I wrote ``pyre`` for my Master's Thesis.
-The work isn't finished yet, so changes in the code are very likely! 
 
 Note
 ----
@@ -43,10 +34,9 @@ includes methods for summarizing output.
 Note
 ----
 
-   At the moment only First-Order Reliability Methods and Crude Monte Carlos
-   Simulations are supported! Second-Order Reliability Methods and other
-   Simulations will hopefully follow soon :)
-
+   At the moment First-Order Reliability Methods Crude Monte Carlo Simulation
+   and Importance Sampling are supported! Second-Order Reliability Methods and
+   some different sensitivity analysis will hopefully follow soon :)
 
 
 
@@ -71,9 +61,11 @@ Sensitivity Analysis and reliability assessment based on Support Vector
 Machine (SVM) surrogates, etc. Beyond the new methods implemented in this
 Matlab code. [Bourinet2009]
 
-Of the purpose, to use structural reliability analysis for the project "Risk
-based decision framework for the optimal management of aging reinforced
-concrete structures" [Hackl2013] a python version of FERUM has been created.
+Of the purpose, to use structural reliability analysis for the project
+"Generic Framework for Stochastic Modeling of Reinforced Concrete
+Deterioration Caused by Corrosion" [Hackl2013] a python version of FERUM has
+been created.
+
 
 The focus here lies on the reliability analysis and not more on the finite
 element method, so only the core function of FERUM are implemented.
@@ -86,7 +78,7 @@ Features
 PyRe provides functionalities to make structural reliability analysis as easy
 as possible. Here is a short list of some of its features:
 
-* Perform reliability analysis with First-Order Reliability Methods.
+* Perform reliability analysis with different kinds of Reliability Methods.
 
 * Perform reliability analysis with Crude Monte Carlo Simulation.
 
@@ -128,4 +120,4 @@ List of References
 
 [DerKiureghian2006] A. Der Kiureghian, T. Haukaas, and K. Fujimura. Structural reliability software at the University of California, Berkeley. Structural Safety, 28(1-2):44–67, 2006.
 
-[Hackl2013] J. Hackl. Risk based decision framework for the optimal management of aging reinforced concrete structures. Master’s thesis, Norwegian University of Science and Technolog, Trondheim, Norway, 2013. (in work)
+[Hackl2013] J. Hackl. Generic Framework for Stochastic Modeling of Reinforced Concrete Deterioration Caused by Corrosion. Master’s thesis, Norwegian University of Science and Technology, Trondheim, Norway, 2013.

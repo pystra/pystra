@@ -9,14 +9,25 @@ import scipy.special as spec
 from distributions import *
 
 def pdf(x,marg):
+  """probability density function
+
+  :Args:
+    - x (vec): Vector with random values\n
+    - marg (mat): Matrix with the marginal distributions
+
+  :Returns:
+    - p (mat): Returns a matrix with the pdfs of the marginal distributions
+  """
   p = eval(getDistributionType(marg.getType())).pdf(x,marg.getP1(),marg.getP2(),marg.getP3(),marg.getP4())
   return p
 
 def z_to_x(z,marg):
+  """Transformation from z to x space"""
   x = eval(getDistributionType(marg.getType())).u_to_x(z,marg)
   return x
 
 def x_to_u(x,stochastic_model):
+  """Transformation from x to u space"""
   marg = stochastic_model.getMarginalDistributions()
   nrv = len(marg)
   u = np.zeros(nrv)
@@ -28,6 +39,7 @@ def x_to_u(x,stochastic_model):
   return u
 
 def u_to_x(u,stochastic_model):
+  """Transformation from x to u space"""
   marg = stochastic_model.getMarginalDistributions()
   nrv = len(marg)
   x = np.zeros(nrv)
@@ -39,6 +51,7 @@ def u_to_x(u,stochastic_model):
   return x
 
 def jacobian(u,x,stochastic_model):
+  """Jacobian for the transformation"""
   marg = stochastic_model.getMarginalDistributions()
   nrv = len(marg)
   Lo = stochastic_model.getLowerTriangularMatrix()
@@ -53,5 +66,10 @@ def jacobian(u,x,stochastic_model):
   return J_u_x
 
 def getBins(samples):
+  """Return an optimal amount of bins for a histogram
+
+  :Returns:
+    - bins (int): Returns amount on bins
+  """
   bins = np.ceil(4*np.sqrt(np.sqrt(samples)))
   return bins

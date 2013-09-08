@@ -15,13 +15,37 @@ from limitstate import *
 from stepsize import *
 
 class Form(object):
-  """
+  """First Order Reliability Method (FORM)
+
+  Let :math:`{\\bf Z}` be a set of uncorrelated and standardized normally
+  distributed random variables :math:`( Z_1 ,\dots, Z_n )` in the normalized
+  z-space, corresponding to any set of random variables :math:`{\\bf X} = (
+  X_1 , \dots , X_n )` in the physical x-space, then the limit state surface
+  in x-space is also mapped on the corresponding limit state surface in
+  z-space.
+
+  The reliability index :math:`\\beta` is the minimum distance from the
+  z-origin to the failure surface. This distance :math:`\\beta` can directly
+  be mapped to a probability of failure
+
+  .. math::
+     :label: eq:2_90
+
+            p_f \\approx p_{f1} = \Phi(-\\beta)
+
+  this corresponds to a linearization of the failure surface. The
+  linearization point is the design point :math:`{\\bf z}^*`. This procedure
+  is called First Order Reliability Method (FORM) and :math:`\beta` is the
+  First Order Reliability Index. [Madsen2006]_
+
+  :Attributes:
+    - analysis_option (AnalysisOption): Option for the structural analysis
+    - limit_state (LimitState): Information about the limit state
+    - stochastic_model (StochasticModel): Information about the model
   """
 
   def __init__(self,analysis_options=None,limit_state=None,stochastic_model=None):
-    """
-    
-    """
+
     # The stochastic model
     if stochastic_model == None:
       self.model = StochasticModel()
@@ -53,7 +77,7 @@ class Form(object):
     self.step = None
     self.beta = None
     self.Pf = None
-    
+
     # Computation of modified correlation matrix R0
     computeModifiedCorrelationMatrix(self)
 
@@ -76,10 +100,10 @@ class Form(object):
         print '.......................................'
         print 'Now carrying out iteration number:',i
 
-      # comoute Transformation from u to x space
+      # Compute Transformation from u to x space
       self.computeTransformation()
 
-      # compute the Jacobian
+      # Compute the Jacobian
       self.computeJacobian()
 
       # Evaluate limit-state function and its gradient
@@ -90,6 +114,7 @@ class Form(object):
         self.Go = self.G
         if self.options.printOutput():
           print 'Value of limit-state function in the first step:', self.G
+
       # Compute alpha vector
       self.computeAlpha()
 
@@ -97,7 +122,6 @@ class Form(object):
       self.computeGamma()
 
       # Check convergence
-
       condition1 = np.absolute(self.G*self.Go**(-1))<self.options.getE1()
       condition2 = np.linalg.norm(self.u-self.alpha.dot(self.u).dot(self.alpha)) < self.options.getE2()
       condition3 = i==self.options.getImax()
@@ -106,7 +130,7 @@ class Form(object):
         self.i = i
         convergence = True
 
-      # space for some recording stuf
+      # space for some recording stuff
 
       # Take a step if convergence is not achieved
       if not convergence:
@@ -122,9 +146,6 @@ class Form(object):
         # Prepare for a new round in the loop
         self.u = u_new[0]#np.transpose(u_new)
         i += 1
-      #   print self.u
-      # if i == 5:
-      #    convergence = True
 
     # Compute beta value
     self.computeBeta()
@@ -137,36 +158,8 @@ class Form(object):
       self.showResults()
 
 
-  # def computeModifiedCorrelationMatrix(self):
-  #   if self.options.printOutput():
-  #     print '=================================================='
-  #     print ''
-  #     print '        RUNNING FORM RELIABILITY ANALYSIS'
-  #     print ''
-  #     print '=================================================='
-  #     print ''
-  #     print ' Computation of modified correlation matrix R0'
-  #     print ' Takes some time if sensitivities are to be computed'
-  #     print ' with gamma (3), beta (7) or chi-square (8)'
-  #     print ' distributions.'
-  #     print ' Please wait... (Ctrl+C breaks)'
-  #     print ''
-  #   # Compute corrected correlation coefficients
-  #   Ro = getModifiedCorrelationMatrix(self.model)
-  #   self.model.setModifiedCorrelation(Ro)
-  #   #print self.model.getModifiedCorrelation()
-
-  # def computeCholeskyDecomposition(self):
-  #   Ro = self.model.getModifiedCorrelation()
-  #   Lo, ierr = CholeskyDecomposition(Ro)
-  #   if  ierr > 0:
-  #     print 'Error: Cholesky decomposition',ierr
-
-  #   self.model.setLowerTriangularMatrix(Lo)
-  #   iLo = np.linalg.inv(Lo)
-  #   self.model.setInvLowerTriangularMatrix(iLo)
-
   def computeStartingPoint(self):
+    """Compute starting point for the algorithm"""
     x = np.array([])
     marg = self.model.getMarginalDistributions()
     for i in range(len(marg)):
@@ -174,43 +167,53 @@ class Form(object):
     self.u = x_to_u(x,self.model)
 
   def computeTransformation(self):
+    """Compute transformation from u to x space"""
     self.x = np.transpose([u_to_x(self.u,self.model)]);
 
   def computeJacobian(self):
+    """Compute the Jacobian"""
     J_u_x = jacobian(self.u,self.x,self.model);
     J_x_u = np.linalg.inv(J_u_x)
     self.J = J_x_u
 
   def computeLimitState(self):
+    """Evaluate limit-state function and its gradient"""
     G, gradient = evaluateLimitState(self.x,self.model,self.options,self.limitstate)
     self.G = G
     self.gradient = np.dot(np.transpose(gradient),self.J)
 
   def computeAlpha(self):
+    """Compute alpha vector"""
     self.alpha = -self.gradient * np.linalg.norm(self.gradient)**(-1)
 
   def computeGamma(self):
+    """Compute gamma vector"""
     self.gamma = np.diag(np.diag(np.sqrt(np.dot(self.J,np.transpose(self.J)))))
     # Importance vector gamma
     matmult = np.dot(np.dot(self.alpha,self.J),self.gamma)
     importance_vector_gamma = (matmult*np.linalg.norm(matmult)**(-1))
 
   def computeSearchDirection(self):
+    """Determine search direction"""
     self.d = ( self.G * np.linalg.norm(self.gradient)**(-1) + self.alpha.dot(self.u) ) * self.alpha - self.u
 
   def computeStepSize(self):
+    """Determine step size"""
     if self.options.getStepSize() == 0:
       self.step = getStepSize(self.G,self.gradient,self.u,self.d,self.model,self.options,self.limitstate)
     else:
       self.step = self.options.getStepSize()
 
   def computeBeta(self):
+    """Compute beta value"""
     self.beta = np.dot(self.alpha,self.u)
 
   def computeFailureProbability(self):
+    """Compute probability of failure"""
     self.Pf = Normal.cdf(-self.beta,0,1)
 
   def showResults(self):
+    """Show results"""
     print ''
     print '=================================================='
     print ''
@@ -225,12 +228,26 @@ class Form(object):
     print ''
 
 
-
   def getBeta(self):
+    """Returns the beta value
+
+    :Returns:
+      - beta (float): Returns the beta value
+    """
     return self.beta[0]
 
   def getFailure(self):
+    """Returns the probability of failure
+
+    :Returns:
+      - Pf (float): Returns the probability of failure
+    """
     return self.Pf
 
   def getDesignPoint(self):
+    """Returns the design point
+
+    :Returns:
+      - u (float): Returns the design point
+    """
     return self.u

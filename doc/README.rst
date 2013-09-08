@@ -2,20 +2,13 @@
 Introduction
 ************
 
-:Date: 11 May 2013
+:Date: September 2013
 :Authors: Jürgen Hackl
 :Contact: hackl.j@gmx.at
 :Web site: http://github.com/hackl/pyre
 :Copyright: This document has been placed in the public domain.
 :License: PyRe is released under the GNU General Public Licence.
-:Version: 5.0.1
-
-.. warning::
-
-   This is a preliminary program code!
-
-   I wrote ``pyre`` for my Master's Thesis.
-   The work isn't finished yet, so changes in the code are very likely! 
+:Version: 5.0.2
 
 .. note::
 
@@ -37,11 +30,9 @@ includes methods for summarizing output.
 
 .. note::
 
-   At the moment only First-Order Reliability Methods are supported!
-   Second-Order Reliability Methods and Monte Carlo Simulation will hopefully
-   follow soon :)
-
-
+   At the moment First-Order Reliability Methods Crude Monte Carlo Simulation
+   and Importance Sampling are supported! Second-Order Reliability Methods and
+   some different sensitivity analysis will hopefully follow soon :)
 
 
 History
@@ -65,9 +56,10 @@ Sensitivity Analysis and reliability assessment based on Support Vector
 Machine (SVM) surrogates, etc. Beyond the new methods implemented in this
 Matlab code. [Bourinet2009]_
 
-Of the purpose, to use structural reliability analysis for the project "Risk
-based decision framework for the optimal management of aging reinforced
-concrete structures" [Hackl2013]_ a python version of FERUM has been created.
+Of the purpose, to use structural reliability analysis for the project
+"Generic Framework for Stochastic Modeling of Reinforced Concrete
+Deterioration Caused by Corrosion" [Hackl2013]_ a python version of FERUM has
+been created.
 
 The focus here lies on the reliability analysis and not more on the finite
 element method, so only the core function of FERUM are implemented.
@@ -80,7 +72,7 @@ Features
 PyRe provides functionalities to make structural reliability analysis as easy
 as possible. Here is a short list of some of its features:
 
-* Perform reliability analysis with First-Order Reliability Methods
+* Perform reliability analysis with different kinds of Reliability Methods.
 
 * Includes a large suite of well-documented statistical distributions.
 
