@@ -267,6 +267,21 @@ class AnalysisOptions(object):
       self.bins = bins
       return self.bins
 
+  def getSamples(self):
+    return self.samples
+
+  def getRandomGenerator(self):
+    return self.random_generator
+
+  def getSimulationPoint(self):
+    return self.sim_point
+
+  def getSimulationStdv(self):
+    return self.stdv_sim
+
+  def getSimulationCov(self):
+    return self.target_cov
+
   # setter
   def printResults(self,tof):
     self.print_output = tof
@@ -295,20 +310,12 @@ class AnalysisOptions(object):
   def setffdpara(self,ffdpara):
     self.ffdpara = ffdpara
 
-  def getSamples(self):
-    return self.samples
+  def setBins(self,bins):
+    self.bins = bins
 
-  def getRandomGenerator(self):
-    return self.random_generator
+  def setSamples(self,samples):
+    self.samples = samples
 
-  def getSimulationPoint(self):
-    return self.sim_point
-
-  def getSimulationStdv(self):
-    return self.stdv_sim
-
-  def getSimulationCov(self):
-    return self.target_cov
 
 class LimitState(object):
   """Limit state"""
