@@ -224,6 +224,9 @@ class AnalysisOptions(object):
     self.target_cov = 0.05
     """ Target coefficient of variation for failure probability"""
 
+    # Bins of the histogram
+    self.bins = None
+    """Amount on bins for the histogram"""
 
   # getter
   def printOutput(self):
@@ -255,6 +258,14 @@ class AnalysisOptions(object):
 
   def getffdpara(self):
     return self.ffdpara
+
+  def getBins(self):
+    if self.bins != None:
+      return self.bins
+    else:
+      bins = np.ceil(4*np.sqrt(np.sqrt(self.samples)))
+      self.bins = bins
+      return self.bins
 
   # setter
   def printResults(self,tof):
