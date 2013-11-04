@@ -244,7 +244,7 @@ class CrudeMonteCarlo(MonteCarlo):
 
   def __init__(self,analysis_options=None,limit_state=None,stochastic_model=None,point=None):
 
-    MonteCarlo.__init__(self,analysis_options=None,limit_state=None,stochastic_model=None)
+    MonteCarlo.__init__(self,analysis_options=analysis_options,limit_state=limit_state,stochastic_model=stochastic_model)
 
     # Set point for crude Monte Carlo / importance sampling
     self.setPoint(point)
