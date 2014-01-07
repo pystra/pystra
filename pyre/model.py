@@ -25,12 +25,14 @@ class StochasticModel(object):
   def addMarginalDistributions(self):
     for obj in gc.get_objects():
       if isinstance(obj, Distribution):
-        self.marg.append(obj.getMarginalDistribution())
+        if len(self.marg) < len(self.names):
+          self.marg.append(obj.getMarginalDistribution())
 
   def addVariableNames(self):
     for obj in gc.get_objects():
       if isinstance(obj, Distribution):
-        self.names.append(obj.getName())
+        if not obj.getName() in self.names:
+          self.names.append(obj.getName())
 
   def getNames(self):
     return self.names
