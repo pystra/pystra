@@ -22,7 +22,7 @@ class TypeIlargestValue(Distribution):
 
   def __init__(self, name,mean,stdv,input_type=None,startpoint=None):
     self.type = 11
-    self.distirbution = {11:'TypeIlargestValue'}
+    self.distribution = {11:'TypeIlargestValue'}
     self.name = name
     self.mean = mean
     self.stdv = stdv

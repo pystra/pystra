@@ -22,7 +22,7 @@ class Gamma(Distribution):
 
   def __init__(self, name,mean,stdv,input_type=None,startpoint=None):
     self.type = 3
-    self.distirbution = {3:'Gamma'}
+    self.distribution = {3:'Gamma'}
     self.name = name
     self.mean = mean
     self.stdv = stdv

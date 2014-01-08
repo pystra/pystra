@@ -22,7 +22,7 @@ class ShiftedExponential(Distribution):
 
   def __init__(self, name,mean,stdv,input_type=None,startpoint=None):
     self.type = 4
-    self.distirbution = {4:'ShiftedExponential'}
+    self.distribution = {4:'ShiftedExponential'}
     self.name = name
     self.mean = mean
     self.stdv = stdv

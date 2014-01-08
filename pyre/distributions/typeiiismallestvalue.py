@@ -23,7 +23,7 @@ class TypeIIIsmallestValue(Distribution):
 
   def __init__(self, name,mean,stdv,epsilon=0,input_type=None,startpoint=None):
     self.type = 14
-    self.distirbution = {14:'TypeIIIsmallestValue'}
+    self.distribution = {14:'TypeIIIsmallestValue'}
     self.name = name
     self.mean = mean
     self.stdv = stdv

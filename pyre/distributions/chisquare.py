@@ -22,7 +22,7 @@ class ChiSquare(Distribution):
 
   def __init__(self, name,mean,stdv=None,input_type=None,startpoint=None):
     self.type = 8
-    self.distirbution = {8:'ChiSquare'}
+    self.distribution = {8:'ChiSquare'}
     self.name = name
     self.mean = mean
     self.stdv = stdv

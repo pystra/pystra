@@ -24,7 +24,7 @@ class Beta(Distribution):
 
   def __init__(self, name,mean,stdv,a=0,b=1,input_type=None,startpoint=None):
     self.type = 7
-    self.distirbution = {7:'Beta'}
+    self.distribution = {7:'Beta'}
     self.name = name
     self.mean = mean
     self.stdv = stdv

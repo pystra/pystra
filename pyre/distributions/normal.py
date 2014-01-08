@@ -21,7 +21,7 @@ class Normal(Distribution):
 
   def __init__(self, name,mean,stdv,input_type=None,startpoint=None):
     self.type = 1
-    self.distirbution = {1:'Normal'}
+    self.distribution = {1:'Normal'}
     self.mean = mean
     self.stdv = stdv
     mean,stdv,p1,p2,p3,p4 = self.setMarginalDistribution()

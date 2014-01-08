@@ -23,7 +23,7 @@ class Weibull(Distribution):
 
   def __init__(self, name,mean,stdv,epsilon=0,input_type=None,startpoint=None):
     self.type = 16
-    self.distirbution = {16:'Weibull'}
+    self.distribution = {16:'Weibull'}
     self.name = name
     self.mean = mean
     self.stdv = stdv

@@ -22,7 +22,7 @@ class Gumbel(Distribution):
 
   def __init__(self, name,mean,stdv,input_type=None,startpoint=None):
     self.type = 15
-    self.distirbution = {15:'Gumbel'}
+    self.distribution = {15:'Gumbel'}
     self.name = name
     self.mean = mean
     self.stdv = stdv

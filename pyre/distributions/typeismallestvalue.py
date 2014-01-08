@@ -22,7 +22,7 @@ class TypeIsmallestValue(Distribution):
 
   def __init__(self, name,mean,stdv,input_type=None,startpoint=None):
     self.type = 12
-    self.distirbution = {12:'TypeIsmallestValue'}
+    self.distribution = {12:'TypeIsmallestValue'}
     self.name = name
     self.mean = mean
     self.stdv = stdv

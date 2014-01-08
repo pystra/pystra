@@ -22,7 +22,7 @@ class Uniform(Distribution):
   
   def __init__(self, name,mean,stdv,input_type=None,startpoint=None):
     self.type = 6
-    self.distirbution = {6:'Uniform'}
+    self.distribution = {6:'Uniform'}
     self.name = name
     self.mean = mean
     self.stdv = stdv

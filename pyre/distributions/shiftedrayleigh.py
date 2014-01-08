@@ -22,7 +22,7 @@ class ShiftedRayleigh(Distribution):
 
   def __init__(self, name,mean,stdv,input_type=None,startpoint=None):
     self.type = 5
-    self.distirbution = {5:'ShiftedRayleigh'}
+    self.distribution = {5:'ShiftedRayleigh'}
     self.name = name
     self.mean = mean
     self.stdv = stdv

@@ -22,7 +22,7 @@ class Lognormal(Distribution):
 
   def __init__(self, name,mean,stdv,input_type=None,startpoint=None):
     self.type = 2
-    self.distirbution = {2:'Lognormal'}
+    self.distribution = {2:'Lognormal'}
     self.name = name
     self.mean = mean
     self.stdv = stdv
