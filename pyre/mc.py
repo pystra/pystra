@@ -57,7 +57,7 @@ class MonteCarlo(object):
       self.options = analysis_options
 
     # The limit state function
-    if stochastic_model == None:
+    if limit_state == None:
       self.limitstate = LimitState()
     else:
       self.limitstate = limit_state

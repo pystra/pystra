@@ -3,6 +3,7 @@
 
 import numpy as np
 import os, sys
+from types import FunctionType, StringType
 
 sys.path.append (os.path.join(os.getcwd(), "functions") )
 from functions.function import *
@@ -76,7 +77,8 @@ def evaluateLimitState(x,stochastic_model,analysis_options,limit_state,modus=Non
 
         if limit_state.getEvaluator() == 'basic':
           blockG ,dummy = computeLimitStateFunction(blockx,names,expression)
-        allG[:,indx] = blockG
+            
+        allG[:,indx] = blockG.squeeze()
         k += block_size
 
       indx = range(0,(1+(nx-1)*(1+nrv)),(1+nrv))
@@ -95,10 +97,18 @@ def evaluateLimitState(x,stochastic_model,analysis_options,limit_state,modus=Non
 def computeLimitStateFunction(x,variable_names,expression):
   """Compute the limit state function"""
   nrv = np.shape(x)[0]
-  for i in range(nrv):
-    globals()[variable_names[i]] = x[i:i+1]
 
-  G = eval(expression)[0]
+  if type(expression) == StringType:
+    # string expression, for backward compatibility
+    for i in range(nrv):
+      globals()[variable_names[i]] = x[i:i+1]
+    G = eval(expression)[0]
+  elif type(expression) == FunctionType:
+    # function expression, recommended to use
+    inpdict = dict()
+    for i in range(nrv):
+      inpdict[variable_names[i]] = x[i:i+1]
+    G = expression(**inpdict)
   gradient = 0
   return G,gradient
 

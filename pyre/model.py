@@ -1,16 +1,17 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 
-import gc
 import numpy as np
 
 from distributions import *
 from correlation import *
+from collections import OrderedDict
 
 class StochasticModel(object):
   """Stochastic model"""
 
   def __init__(self):
+    self.variables = OrderedDict() # use ordered dictionary to make sure that the order corresponds to the correlation matrix
     self.names = []
     self.marg = []
     self.correlation = None
@@ -18,22 +19,24 @@ class StochasticModel(object):
     self.Lo = None
     self.iLo = None
     self.call_function = 0
-    self.addVariableNames()
-    self.addMarginalDistributions()
-    self.setCorrelation()
-
-  def addMarginalDistributions(self):
-    for obj in gc.get_objects():
-      if isinstance(obj, Distribution):
-        if len(self.marg) < len(self.names):
-          self.marg.append(obj.getMarginalDistribution())
-
-  def addVariableNames(self):
-    for obj in gc.get_objects():
-      if isinstance(obj, Distribution):
-        if not obj.getName() in self.names:
-          self.names.append(obj.getName())
-
+  
+  def addVariable(self, obj):
+    """
+    add stochastic variable
+    """
+    if not isinstance(obj, Distribution):
+      raise Exception('input is not of type %s'%type(Distribution))
+    if obj.getName() in self.names:
+      raise Exception('variable name "%s" already exists'%obj.getName())
+    # append the variable name
+    self.names.append(obj.getName())
+    # append marginal distribution
+    self.marg.append(obj.getMarginalDistribution())
+    # append the Distribution object to the variables (ordered) dictionary
+    self.variables[obj.getName()] = obj
+    # update the default correlation matrix, in accordance with the number of variables
+    self.correlation = np.eye(len(self.marg))
+    
   def getNames(self):
     return self.names
 
@@ -46,13 +49,8 @@ class StochasticModel(object):
   def setMarginalDistributions(self,marg):
     self.marg = marg
 
-  def setCorrelation(self):
-    for obj in gc.get_objects():
-      if isinstance(obj, CorrelationMatrix):
-        self.correlation = np.array(obj.getMatrix())
-      else:
-        if self.correlation == None:
-          self.correlation = np.eye(len(self.marg))
+  def setCorrelation(self, obj):
+    self.correlation = np.array(obj.getMatrix())
 
   def getCorrelation(self):
     return self.correlation
@@ -322,7 +320,7 @@ class AnalysisOptions(object):
 class LimitState(object):
   """Limit state"""
 
-  def __init__(self):
+  def __init__(self, expression=None):
     self.evaluator  = 'basic'
     """Type of limit-state function evaluator:
 
@@ -333,7 +331,7 @@ class LimitState(object):
     # Do no change this field!
     self.type       = 'expression'
 
-    self.expression = None
+    self.expression = expression
     """Expression of the limit-state function"""
 
     self.flag_sens  = True
@@ -346,24 +344,22 @@ class LimitState(object):
       - 0: no sensitivities assessment\n
     """
 
-    # Set limit state function
-    self.setExpression()
-
   def getEvaluator(self):
     return self.evaluator
 
   def getExpression(self):
     return self.expression
 
-  def setExpression(self):
-    inlist = False
-    for obj in gc.get_objects():
-      if isinstance(obj, LimitStateFunction):
-        self.expression = obj.getExpression()
-        inlist = True
-        break
-    if not inlist:
-      print 'Attention: No limit state function is defined'
+  def setExpression(self, expression):
+    self.expression = expression
+#    inlist = False
+#    for obj in gc.get_objects():
+#      if isinstance(obj, LimitStateFunction):
+#        self.expression = obj.getExpression()
+#        inlist = True
+#        break
+#    if not inlist:
+#      print 'Attention: No limit state function is defined'
 
 
 class LimitStateFunction(object):
