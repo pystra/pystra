@@ -9,42 +9,48 @@ import time
 import datetime
 start_time = time.time()
 
+def example_limitstatefunction(X1,X2,X3):
+    """
+    example limit state function
+    """
+    return 1 - X2*(1000*X3)**(-1) - (X1*(200*X3)**(-1))**2
+
 
 # Define a main() function.
 def main():
 
-  # Define random variables
-  X1 = Lognormal('X1',500,100)
-  X2 = Normal('X2',2000,400)
-  X3 = Uniform('X3',5,0.5)
-
-  # If the random variables are correlatet, then define a correlation matrix,
-  # else no correlatin matrix is needed
-  Corr = CorrelationMatrix([[1.0, 0.3, 0.2],
-                            [0.3, 1.0, 0.2],
-                            [0.2, 0.2, 1.0]])
-
   # Define limit state function
-  # - case 1: define directly
-  # g = LimitStateFunction('1 - X2*(1000*X3)**(-1) - (X1*(200*X3)**(-1))**2')
-  # - case 2: define load function, wich is defined in function.py
-  g = LimitStateFunction('function(X1,X2,X3)')
+  # - case 1: define directly as lambda function
+  #limit_state = LimitState(lambda X1,X2,X3: 1 - X2*(1000*X3)**(-1) - (X1*(200*X3)**(-1))**2)
+  # - case 2: use predefined function
+  limit_state = LimitState(example_limitstatefunction)
 
   # Set some options (optional)
   options = AnalysisOptions()
   # options.printResults(False)
+  
+  stochastic_model = StochasticModel()
+  # Define random variables
+  stochastic_model.addVariable( Lognormal('X1',500,100) )
+  stochastic_model.addVariable( Normal('X2',2000,400) )
+  stochastic_model.addVariable( Uniform('X3',5,0.5) )
+
+  # If the random variables are correlatet, then define a correlation matrix,
+  # else no correlatin matrix is needed
+  stochastic_model.setCorrelation( CorrelationMatrix([[1.0, 0.3, 0.2],
+                            [0.3, 1.0, 0.2],
+                            [0.2, 0.2, 1.0]]) )
 
   # Performe FORM analysis
-  Analysis = Form(options)
+  #Analysis = Form(analysis_options=options, stochastic_model=stochastic_model, limit_state=limit_state)
 
   # Performe Distribution analysis
-  # Analysis = DistributionAnalysis(options)
-
+  # Analysis = DistributionAnalysis(analysis_options=options, stochastic_model=stochastic_model, limit_state=limit_state)
   # Performe Crude Monte Carlo Simulation
-  # Analysis = CrudeMonteCarlo(options)
+  # Analysis = CrudeMonteCarlo(analysis_options=options, stochastic_model=stochastic_model, limit_state=limit_state)
 
   # Performe Importance Sampling
-  # Analysis = ImportanceSampling(options)
+  # Analysis = ImportanceSampling(analysis_options=options, stochastic_model=stochastic_model, limit_state=limit_state)
 
   # Some single results:
   # beta = Analysis.getBeta()
