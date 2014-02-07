@@ -78,11 +78,11 @@ def evaluateLimitState(x,stochastic_model,analysis_options,limit_state,modus=Non
         if limit_state.getEvaluator() == 'basic':
           blockG ,dummy = computeLimitStateFunction(blockx,names,expression)
             
-        allG[:,indx] = blockG.squeeze()
+        allG[indx] = blockG.squeeze()
         k += block_size
 
       indx = range(0,(1+(nx-1)*(1+nrv)),(1+nrv))
-      G = allG[:,indx]
+      G = allG[indx]
       grad_g = np.zeros((nrv,nx))
 
       for j in range(nrv):
