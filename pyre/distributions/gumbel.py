@@ -36,7 +36,7 @@ class Gumbel(Distribution):
     if self.input_type == None:
       mean = self.mean
       stdv = self.stdv
-      a_n = np.pi*stdv*(np.sqrt(6))**(-1)
+      a_n = np.pi*(stdv*np.sqrt(6))**(-1)
       u_n = mean - (0.5772156649*stdv*np.sqrt(6))*(np.pi)**(-1)
       p3 = 0
       p4 = 0
