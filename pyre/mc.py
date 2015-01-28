@@ -76,14 +76,18 @@ class MonteCarlo(object):
     self.done = None
     self.block_size = None
     self.u = None
+    self.u_all = None########################################################################## 
     self.x = None
     self.beta = None
     self.Pf = None
     self.G = None
+    self.all_G1 = None##########################################################################   
     self.I = None
     self.q = None
     self.Pf = None
     self.beta = None
+    self.approxMC_beta = None
+    self.approxMC_beta_all=None
     self.all_X = None
     self.all_G = None
     self.bins = None
@@ -256,7 +260,6 @@ class CrudeMonteCarlo(MonteCarlo):
     while self.k < self.options.getSamples():
       self.block_size = min(self.options.getBlockSize(), self.options.getSamples() - self.k)
       self.k += self.block_size
-
       # Computation of the random numbers
       self.computeRandomNumbers()
 
@@ -277,11 +280,34 @@ class CrudeMonteCarlo(MonteCarlo):
 
       # Coumpute percent done
       self.computePercentDone()
+      
+      # stroing all values of the limit state function
+      if self.u_all == None:
+          self.all_G1 = self.G
+      else:
+         self.all_G1 = np.append(self.all_G1,self.G)
+     
+      # storing all input values in the gaussian space
+      if self.u_all == None:
+          self.u_all=self.u
+      else:
+          self.u_all = np.append(self.u_all,self.u)
+          
+      # compute approximative beta
+      self.approxMC_beta = np.array([np.sum(self.u[:,i]**2) for i in range(self.u[0,:].__len__())])
+#      self.approxMC_beta[:,np.nonzero(self.G<-0.002)[0]]=9999      
+#      self.approxMC_beta[:,np.nonzero(self.G>-0.002)[0]]=9999      
+
+      # storing approximative beta if G <1.05 & G>0.95
+      if self.approxMC_beta_all == None:
+          self.approxMC_beta_all=self.approxMC_beta
+      else:
+          self.approxMC_beta_all = np.append(self.approxMC_beta_all,self.approxMC_beta)                                      
 
       # Check convergence
       if self.cov_q_bar[self.k-1] <= self.options.getSimulationCov():
         break
-
+        
     # Compute failure probability
     self.computeFailureProbability()
 
