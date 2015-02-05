@@ -78,6 +78,7 @@ class MonteCarlo(object):
     self.u = None
     self.u_all = None########################################################################## 
     self.x = None
+    self.x_all = None########################################################################## 
     self.beta = None
     self.Pf = None
     self.G = None
@@ -287,18 +288,21 @@ class CrudeMonteCarlo(MonteCarlo):
       else:
          self.all_G1 = np.append(self.all_G1,self.G)
      
-      # storing all input values in the gaussian space
+      # storing all input values in the Gaussian space
       if self.u_all == None:
           self.u_all=self.u
       else:
           self.u_all = np.append(self.u_all,self.u)
+
+      # storing all input values in the physical space
+      if self.x_all == None:
+          self.x_all=self.x
+      else:
+          self.x_all = np.append(self.x_all,self.u)
           
       # compute approximative beta
-      self.approxMC_beta = np.array([np.sum(self.u[:,i]**2) for i in range(self.u[0,:].__len__())])
-#      self.approxMC_beta[:,np.nonzero(self.G<-0.002)[0]]=9999      
-#      self.approxMC_beta[:,np.nonzero(self.G>-0.002)[0]]=9999      
-
-      # storing approximative beta if G <1.05 & G>0.95
+      self.approxMC_beta = np.sqrt(np.array([np.sum(self.u[:,i]**2) for i in range(self.u[0,:].__len__())]))
+      # storing approximative beta
       if self.approxMC_beta_all == None:
           self.approxMC_beta_all=self.approxMC_beta
       else:
