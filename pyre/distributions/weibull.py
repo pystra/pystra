@@ -27,7 +27,7 @@ class Weibull(Distribution):
     self.name = name
     self.mean = mean
     self.stdv = stdv
-    self.epsilon
+    self.epsilon = epsilon
     self.input_type = input_type
     mean,stdv,p1,p2,p3,p4 = self.setMarginalDistribution()
     Distribution.__init__(self,name,self.type,mean,stdv,startpoint,p1,p2,p3,p4,input_type)
