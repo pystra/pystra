@@ -43,14 +43,14 @@ class Weibull(Distribution):
       parameter_guess = [0.1]#, 10**7]
       par = opt.fsolve(weibull_parameter,parameter_guess, args =(meaneps,stdv))
       k = par[0]
-      u_1 = meaneps*(math.gamma(1+1*k**(-1)))**(-1)+epsilon
+      u_1 = meaneps*(spec.gamma(1+1*k**(-1)))**(-1)+epsilon
       p4 = 0
     else:
       u_1     = self.mean
       k       = self.stdv
       epsilon = self.epsilon
-      mean = epsilon + (u_1-epsilon)*math.gamma(1+1*k**(-1))
-      stdv = (u_1-epsilon)*(math.gamma(1+2*k**(-1))-math.gamma(1+1*k**(-1))**2)**0.5
+      mean = epsilon + (u_1-epsilon)*spec.gamma(1+1*k**(-1))
+      stdv = (u_1-epsilon)*(spec.gamma(1+2*k**(-1))-spec.gamma(1+1*k**(-1))**2)**0.5
       p4 = 0
     return mean, stdv, u_1, k,epsilon,p4
 
@@ -107,5 +107,5 @@ class Weibull(Distribution):
 
 def weibull_parameter(x,*args):
   meaneps,stdv = args
-  f = (math.gamma(1+2*x**(-1))-(math.gamma(1+1*x**(-1)))**2)**0.5 - (stdv*meaneps**(-1))*math.gamma(1+1*x**(-1))
+  f = (spec.gamma(1+2*x**(-1))-(spec.gamma(1+1*x**(-1)))**2)**0.5 - (stdv*meaneps**(-1))*spec.gamma(1+1*x**(-1))
   return f
