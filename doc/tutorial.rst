@@ -4,7 +4,7 @@
 Tutorial
 ********
 
-This tutorial will guide you through a typical PyMC application. Familiarity
+This tutorial will guide you through a typical PyRe application. Familiarity
 with Python is assumed, so if you are new to Python, books such as [Lutz2007]_
 or [Langtangen2009]_ are the place to start. Plenty of online documentation
 can also be found on the `Python documentation`_ page.
@@ -58,7 +58,7 @@ In case 1 we load ``pyre`` like a normal library: ::
 
   import pyre
 
-here we must write for each command ``pyre.my_command()``. A much nicer way to
+here we must write for each command ``pyre.my_command()``. A shorter way to
 load the package is case 2: ::
 
   # import pyre library
@@ -66,13 +66,43 @@ load the package is case 2: ::
 
 here, we import all available objects from ``pyre``.
 
-To define the random variables from :eq:`random_variables` we can use
-following syntax: ::
+Two ways to define the limit state function are available: 
+
+* Direct in the ``main`` code,
+* as a separate ``function``.
+
+In the first case the input will look like: ::
+
+  # Define limit state function
+  # - case 1: define directly
+  limit_state = LimitState(lambda X1,X2,X3: 1 - X2*(1000*X3)**(-1) - (X1*(200*X3)**(-1))**2)
+
+and in the second case like this: ::
+
+  # Define limit state function
+  # - case 2: use predefined function
+  limit_state = LimitState(example_limitstatefunction)
+
+The function ``example_limitstatefunction`` has be defined in advance
+as a seperate function such as:::
+
+  def example_limitstatefunction(X1,X2,X3):
+      return 1 - X2*(1000*X3)**(-1) - (X1*(200*X3)**(-1))**2
+
+This case can be useful if the limit state function is quiet complex
+or need more then one line to define it.
+
+In the next step the stochastic model has to be initialized ::
+
+  stochastic_model = StochasticModel()
+
+and the random variables have to be assigned. To define the random
+variables from :eq:`random_variables` we can use following syntax: ::
 
   # Define random variables
-  X1 = Lognormal('X1',500,100)
-  X2 = Normal('X2',2000,400)
-  X3 = Uniform('X3',5,0.5)
+  stochastic_model.addVariable( Lognormal('X1',500,100) )
+  stochastic_model.addVariable( Normal('X2',2000,400) )
+  stochastic_model.addVariable( Uniform('X3',5,0.5) )
 
 The first parameter is the name of the random variable. The name has to be a
 string, so the input looks like ``'X3'``.
@@ -96,48 +126,29 @@ There are all currently available distributions listed.
 In the same way, we can add the correlation matrix to our model: ::
 
   # Define Correlation Matrix
-  Corr = CorrelationMatrix([[1.0, 0.3, 0.2],
-                            [0.3, 1.0, 0.2],
-                            [0.2, 0.2, 1.0]])
+  stochastic_model.setCorrelation( CorrelationMatrix([[1.0, 0.3, 0.2],
+                                                      [0.3, 1.0, 0.2],
+                                                      [0.2, 0.2, 1.0]]) )
 
 Are the variables uncorrelated, you don't have to add a correlation matrix to
 the model.
 
-At least we have to define the limit state function. Therefore are two ways:
-
-* Direct in the ``main`` code,
-* in a separate ``function``.
-
-In the first case the input will look like: ::
-
-  # Define limit state function
-  # - case 1: define directly
-  g = LimitStateFunction('1 - X2*(1000*X3)**(-1) - (X1*(200*X3)**(-1))**2')
-
-and in the second case like this: ::
-
-  # Define limit state function
-  # - case 2: define load function, wich is defined in function.py
-  g = LimitStateFunction('function(X1,X2,X3)')
-
-The function ``'function(X1,X2,X3)'`` can be found in ``'function.py'``. This
-case can be useful if the limit state function is quiet complex or need more
-then one line to define it. Here ``'function.py'`` is defined as: ::
-
-  def function(X1,X2,X3):
-    g = 1 - X2*(1000*X3)**(-1) - (X1*(200*X3)**(-1))**2
-    return g
-
 At this stage our model is complete defined and we can start the analysis.
-
 
 Reliability Analysis
 --------------------
 
+To change some options, a object must be initialized which stores the
+customized options. ::
+
+  # Set some options (optional)
+  options = AnalysisOptions()
+  # options.printResults(False)
+
 To store the results from the analysis an object must be initialized: ::
 
   # Performe FORM analysis
-  Analysis = Form()
+  Analysis = Form(analysis_options=options, stochastic_model=stochastic_model, limit_state=limit_state)
 
 Now the code can be compiled and the FORM analysis will be preformed. In this
 example we will get following results: ::
@@ -156,18 +167,6 @@ example we will get following results: ::
 If we don't like to see the results in the terminal the option
 ``printResults(False)`` has set to be ``False``. There are also some other
 options which can be modified (see :ref:`chap_model`).
-
-To change some options, a object must be initialized which stores the
-customized options. ::
-
-  # Set some options (optional)
-  options = AnalysisOptions()
-  options.printResults(False)
-
-and This options must be implemented in our analysis: ::
-
-  # Performe FORM analysis
-  Analysis = Form(options)
 
 To use the results for further calculations, plots etc. the results can get by
 some getter methods (see :ref:`chap_calculations`) ::

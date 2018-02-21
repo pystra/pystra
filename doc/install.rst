@@ -2,14 +2,6 @@
 Installation
 ************
 
-:Date: 11 May 2013
-:Authors: Jürgen Hackl
-:Contact: hackl.j@gmx.at
-:Web site: http://github.com/hackl/pyre
-:Copyright: This document has been placed in the public domain.
-:License: PyRe is released under the GNU General Public Licence.
-:Version: 5.0.1
-
 PyRe is known to run on Mac OS X, Linux and Windows, but in theory should be
 able to work on just about any platform for which Python, a Fortran compiler
 and the NumPy SciPy, and Math modules are available. However, installing some
@@ -21,11 +13,11 @@ through the installation process.
 Dependencies
 ============
 
-PyMC requires some prerequisite packages to be present on the system.
+PyRe requires some prerequisite packages to be present on the system.
 Fortunately, there are currently only a few hard dependencies, and all are
 freely available online.
 
-* `Python`_ version 2.6 or later.
+* `Python`_ version 3.4 or later.
 
 * `NumPy`_ : The fundamental scientific programming package, it
   provides a multidimensional array type and many useful functions for
@@ -47,33 +39,20 @@ freely available online.
 
 
 
-Installation using EasyInstall
-==============================
+Installation using pip
+======================
 
-Not available at the moment.
+PyRe is pure python code. It has no platform-specific dependencies and should thus work on all platforms. It builds on `numpy` and `scipy`. The latest version of `pyre` can be installed by typing:::
 
+   pip install git+git://github.com/hackl/pyre.git
 
-Installing from pre-built binaries
-==================================
-
-Not available at the moment.
-
-
-Compiling the source code
-=========================
+Installation using setup.py
+===========================
 
 First download the source code from `GitHub`_ and unpack it. Then move
-into the unpacked directory and follow the platform specific instructions.
+into the unpacked directory and run:::
 
-Windows
--------
-
-Not available at the moment.
-
-Mac OS X or Linux
------------------
-
-Not available at the moment.
+  python setup.py install
 
 
 Development version

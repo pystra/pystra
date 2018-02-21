@@ -2,24 +2,6 @@
 Introduction
 ************
 
-:Date: September 2013
-:Authors: Jürgen Hackl
-:Contact: hackl.j@gmx.at
-:Web site: http://github.com/hackl/pyre
-:Copyright: This document has been placed in the public domain.
-:License: PyRe is released under the GNU General Public Licence.
-:Version: 5.0.2
-
-.. note::
-
-   If you have any problems, found bugs in the code or have feature request
-   comments or questions, please feel free to send a mail to `Jürgen Hackl`_.
-
-
-.. _`Jürgen Hackl`: hackl.j@gmx.at
-
-
-
 Purpose
 =======
 

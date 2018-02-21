@@ -28,7 +28,7 @@ def main():
   # Set some options (optional)
   options = AnalysisOptions()
   # options.printResults(False)
-  
+
   stochastic_model = StochasticModel()
   # Define random variables
   stochastic_model.addVariable( Lognormal('X1',500,100) )
@@ -38,8 +38,8 @@ def main():
   # If the random variables are correlatet, then define a correlation matrix,
   # else no correlatin matrix is needed
   stochastic_model.setCorrelation( CorrelationMatrix([[1.0, 0.3, 0.2],
-                            [0.3, 1.0, 0.2],
-                            [0.2, 0.2, 1.0]]) )
+                                                      [0.3, 1.0, 0.2],
+                                                      [0.2, 0.2, 1.0]]) )
 
   # Performe FORM analysis
   Analysis = Form(analysis_options=options, stochastic_model=stochastic_model, limit_state=limit_state)
