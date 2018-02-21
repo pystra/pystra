@@ -39,14 +39,14 @@ class TypeIIlargestValue(Distribution):
       parameter_guess = [2.000001]#, 10**7]
       par = opt.fsolve(typIIlargest_parameter,parameter_guess, args =(mean,stdv))
       k = par[0]
-      u_n = mean*(math.gamma(1-1*k**(-1)))**(-1)
+      u_n = mean*(spec.gamma(1-1*k**(-1)))**(-1)
       p3 = 0
       p4 = 0
     else:
       u_n = self.mean
       k   = self.stdv
-      mean = u_n*math.gamma(1-1*k**(-1))
-      stdv = u_n*(math.gamma(1-2*k**(-1))-(math.gamma(1-1*k**(-1)))**2)**0.5
+      mean = u_n*spec.gamma(1-1*k**(-1))
+      stdv = u_n*(spec.gamma(1-2*k**(-1))-(spec.gamma(1-1*k**(-1)))**2)**0.5
       p3 = 0
       p4 = 0
     return mean, stdv, u_n, k,p3,p4
@@ -103,5 +103,5 @@ class TypeIIlargestValue(Distribution):
 
 def typIIlargest_parameter(x,*args):
   mean,stdv = args
-  f = (math.gamma(1-2*x**(-1))-(math.gamma(1-1*x**(-1)))**2)**0.5 - (stdv*mean**(-1))*math.gamma(1-1*x**(-1))
+  f = (spec.gamma(1-2*x**(-1))-(spec.gamma(1-1*x**(-1)))**2)**0.5 - (stdv*mean**(-1))*spec.gamma(1-1*x**(-1))
   return f

@@ -5,6 +5,7 @@ import numpy as np
 import math
 import scipy.optimize as opt
 import scipy.special as spec
+import scipy.stats as ss
 
 from distribution import *
 from normal import *
@@ -51,23 +52,27 @@ class Beta(Distribution):
       r = self.stdv
       a = self.a
       b = self.b
-      mean = a + q*(b-a)*(q+r)**(-1)
-      stdv = ((b-a)*(q+r)**(-1))*(q*r*(q+r+1)**(-1))**0.5
+      # mean = a + q*(b-a)*(q+r)**(-1)
+      # stdv = ((b-a)*(q+r)**(-1))*(q*r*(q+r+1)**(-1))**0.5
+      mean = ss.beta(q, r, loc=a, scale=b-a).mean
+      stdv = ss.beta(q, r, loc=a, scale=b-a).std
     return mean, stdv, q, r,a,b
 
   @classmethod
   def pdf(self,x,q=None,r=None,a=None,b=None):
     """probability density function
     """
-    p = (x-a)**(q-1) * (b-x)**(r-1) * ( (math.gamma(q)*math.gamma(r) *(math.gamma(q+r))**(-1)) * (b-a)**(q+r-1) )**(-1)
+    #p = (x-a)**(q-1) * (b-x)**(r-1) * ( (math.gamma(q)*math.gamma(r) *(math.gamma(q+r))**(-1)) * (b-a)**(q+r-1) )**(-1)
+    p = ss.beta.pdf(x, q, r, loc=a, scale=b-a)
     return p
 
   @classmethod
   def cdf(self,x,q=None,r=None,a=None,b=None):
     """cumulative distribution function
     """
-    x01 = (x-a) * (b-a)**(-1)
-    P = spec.betainc(q, r, x01)
+    # x01 = (x-a) * (b-a)**(-1)
+    # P = spec.betainc(q, r, x01)
+    P = ss.beta.cdf(x, q, r, loc=a, scale=b-a)
     return P
 
   @classmethod
@@ -81,11 +86,12 @@ class Beta(Distribution):
       r = marg.getP2()
       a = marg.getP3()
       b = marg.getP4()
-      mean = marg.getMean()
-      normal_val = Normal.cdf(u[i],0,1)
-      par = opt.fminbound(zero_beta, 0,1, args =(q,r,normal_val),disp=False)
-      x01 = par
-      x[i] = a+x01*(b-a)
+      # mean = marg.getMean()
+      # normal_val = Normal.cdf(u[i],0,1)
+      # par = opt.fminbound(zero_beta, 0,1, args =(q,r,normal_val),disp=False)
+      # x01 = par
+      # x[i] = a+x01*(b-a)
+      x[i] = ss.beta.ppf(x, q, r, loc=a, scale=b-a)
     return x
 
   @classmethod

@@ -54,7 +54,7 @@ class Gamma(Distribution):
   def pdf(self,x,lamb=None,k=None,var_3=None,var_4=None):
     """probability density function
     """
-    p = lamb * (lamb*x)**(k-1) *(math.gamma(k))**(-1) * np.exp(-lamb*x)
+    p = lamb * (lamb*x)**(k-1) *(spec.gamma(k))**(-1) * np.exp(-lamb*x)
     return p
 
   @classmethod

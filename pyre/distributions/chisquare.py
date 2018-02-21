@@ -60,7 +60,7 @@ class ChiSquare(Distribution):
     """
     lamb = 0.5
     k      = nu*0.5
-    p = lamb * (lamb*x)**(k-1) * np.exp(-lamb*x) *(math.gamma(k))**(-1)
+    p = lamb * (lamb*x)**(k-1) * np.exp(-lamb*x) *(spec.gamma(k))**(-1)
     return p
 
   @classmethod
