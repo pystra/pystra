@@ -3,10 +3,7 @@
 
 import numpy as np
 import os, sys
-
-sys.path.append (os.path.join(os.getcwd(), "functions") )
 import types
-from functions.function import *
 
 def evaluateLimitState(x,stochastic_model,analysis_options,limit_state,modus=None):
   """Evaluate the limit state"""

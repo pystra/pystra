@@ -1,2 +1,0 @@
-# Inputparameter
-from function import *
