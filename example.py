@@ -27,7 +27,7 @@ def main():
 
   # Set some options (optional)
   options = AnalysisOptions()
-  #options.printResults(False)
+  # options.printResults(False)
   
   stochastic_model = StochasticModel()
   # Define random variables
@@ -56,7 +56,7 @@ def main():
   beta = Analysis.getBeta()
   failure = Analysis.getFailure()
 
-  print(beta,failure)
+  print("Beta is {}, corresponding to a failure probability of {}".format(beta,failure))
   run_time = time.time() - start_time
   print(str(datetime.timedelta(seconds=run_time)))
 

@@ -38,7 +38,14 @@ Note
    and Importance Sampling are supported! Second-Order Reliability Methods and
    some different sensitivity analysis will hopefully follow soon :)
 
+Installation
+------------
 
+PyRe is pure python code. It has no platform-specific dependencies and should
+thus work on all platforms. It builds on `numpy` and `scipy`. The latest
+version of `pyre` can be installed by typing: ::
+
+  $ pip install git+git://github.com/hackl/pyre.git
 
 History
 =======
