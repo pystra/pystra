@@ -27,7 +27,7 @@ def main():
 
   # Set some options (optional)
   options = AnalysisOptions()
-  # options.printResults(False)
+  #options.printResults(False)
   
   stochastic_model = StochasticModel()
   # Define random variables
@@ -42,22 +42,23 @@ def main():
                             [0.2, 0.2, 1.0]]) )
 
   # Performe FORM analysis
-  #Analysis = Form(analysis_options=options, stochastic_model=stochastic_model, limit_state=limit_state)
+  # Analysis = Form(analysis_options=options, stochastic_model=stochastic_model, limit_state=limit_state)
 
   # Performe Distribution analysis
   # Analysis = DistributionAnalysis(analysis_options=options, stochastic_model=stochastic_model, limit_state=limit_state)
   # Performe Crude Monte Carlo Simulation
-  # Analysis = CrudeMonteCarlo(analysis_options=options, stochastic_model=stochastic_model, limit_state=limit_state)
+  #Analysis = CrudeMonteCarlo(analysis_options=options, stochastic_model=stochastic_model, limit_state=limit_state)
 
   # Performe Importance Sampling
-  # Analysis = ImportanceSampling(analysis_options=options, stochastic_model=stochastic_model, limit_state=limit_state)
+  #Analysis = ImportanceSampling(analysis_options=options, stochastic_model=stochastic_model, limit_state=limit_state)
 
   # Some single results:
-  # beta = Analysis.getBeta()
-  # failure = Analysis.getFailure()
+  #beta = Analysis.getBeta()
+  #failure = Analysis.getFailure()
 
+  #print(beta,failure)
   run_time = time.time() - start_time
-  print str(datetime.timedelta(seconds=run_time))
+  print(str(datetime.timedelta(seconds=run_time)))
 
 
   # This is the standard boilerplate that calls the main() function.

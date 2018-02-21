@@ -6,8 +6,8 @@ import math
 import scipy.optimize as opt
 import scipy.special as spec
 
-from distribution import *
-from normal import *
+from .distribution import *
+from .normal import *
 
 class TypeIsmallestValue(Distribution):
   """Type I smallest value distribution

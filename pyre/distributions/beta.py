@@ -7,8 +7,8 @@ import scipy.optimize as opt
 import scipy.special as spec
 import scipy.stats as ss
 
-from distribution import *
-from normal import *
+from .distribution import *
+from .normal import *
 
 class Beta(Distribution):
   """Beta distribution

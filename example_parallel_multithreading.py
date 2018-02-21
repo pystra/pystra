@@ -9,7 +9,7 @@ import threading
 import uuid
 import numpy as np
 #import multiprocessing as mp
-import Queue
+import queue
 import threading
 import multiprocessing as mp
 import subprocess
@@ -31,7 +31,7 @@ def example_limitstatefunction(X1,X2,X3):
     #function
     def LSF(j,X1,X2,X3):
         LSF_ = 1 - X2*(1000*X3)**(-1) - (X1*(200*X3)**(-1))**2
-        print 'thread %s'%j
+        print('thread %s'%j)
         return output.put((j, LSF_))
     ###########################################################
     """
@@ -105,8 +105,8 @@ def main():
   # This is the standard boilerplate that calls the main() function.
 if __name__ == '__main__':
     time_ = time.time()
-    time.t
+    #time.t
     Analysis= main()
-    print "Done in %s seconds"%(time.time()-time_)   
-    print Analysis.x
+    print("Done in %s seconds"%(time.time()-time_))   
+    print(Analysis.x)
 

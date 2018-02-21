@@ -14,7 +14,7 @@ def quadratureRule(n,wfun=None,alpha=None,beta=None):
   if alpha == None:
     alpha = 0
   if alpha <= -1 or beta <= -1:
-    print 'Error: alpha and beta must be greater than -1'
+    print('Error: alpha and beta must be greater than -1')
   if wfun == None:
     wfun = 1
 

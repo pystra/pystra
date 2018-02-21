@@ -3,8 +3,8 @@
 
 import numpy as np
 
-from distributions import *
-from correlation import *
+from .distributions import *
+from .correlation import *
 from collections import OrderedDict
 
 class StochasticModel(object):

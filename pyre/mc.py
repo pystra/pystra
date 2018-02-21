@@ -8,13 +8,13 @@ import scipy.optimize as opt
 import scipy.special as spec
 import matplotlib.pyplot as plt
 
-from model import *
-from correlation import *
-from distributions import *
-from cholesky import *
-from limitstate import *
-from stepsize import *
-from form import *
+from .model import *
+from .correlation import *
+from .distributions import *
+from .cholesky import *
+from .limitstate import *
+from .stepsize import *
+from .form import *
 
 class MonteCarlo(object):
   """Monte Carlo Simulation
@@ -45,19 +45,19 @@ class MonteCarlo(object):
   def __init__(self,analysis_options=None,limit_state=None,stochastic_model=None):
 
     # The stochastic model
-    if stochastic_model == None:
+    if stochastic_model is None:
       self.model = StochasticModel()
     else:
       self.model = stochastic_model
 
     # Options for the calculation
-    if analysis_options == None:
+    if analysis_options is None:
       self.options = AnalysisOptions()
     else:
       self.options = analysis_options
 
     # The limit state function
-    if limit_state == None:
+    if limit_state is None:
       self.limitstate = LimitState()
     else:
       self.limitstate = limit_state
@@ -101,7 +101,7 @@ class MonteCarlo(object):
 
   def setPoint(self,point=None):
     """Set design point"""
-    if point == None:
+    if point is None:
       self.point = np.zeros((self.nrv,1))
     else:
       self.point = point
@@ -111,7 +111,7 @@ class MonteCarlo(object):
     if self.options.getRandomGenerator() == 0:
       self.u = np.dot(self.point,[np.ones(self.block_size)])+np.dot(self.cholesky_covariance,np.random.randn(self.nrv, self.block_size))
     elif self.options.getRandomGenerator() == 1:
-      print 'Error: function not yet implemented'
+      print('Error: function not yet implemented')
 
   def computeTransformation(self):
     """Compute transformation from u to x space
@@ -168,10 +168,10 @@ class MonteCarlo(object):
 
   def computePercentDone(self):
     """Compute percent done"""
-    if np.floor( self.k * self.options.getSamples()**(-1)*20) > self.done:
-      self.done = np.floor( self.k * self.options.getSamples()**(-1)*20)
+    if np.int( self.k * self.options.getSamples()**(-1)*20) > self.done:
+      self.done = np.int( self.k * self.options.getSamples()**(-1)*20)
       if self.options.printOutput():
-          print self.done*5,'% complete'
+          print(self.done*5,'% complete')
 
   def computeFailureProbability(self):
     """Compute probability of failure"""
@@ -283,19 +283,19 @@ class CrudeMonteCarlo(MonteCarlo):
       self.computePercentDone()
       
       # stroing all values of the limit state function
-      if self.u_all == None:
+      if self.u_all is None:
           self.all_G1 = self.G
       else:
          self.all_G1 = np.append(self.all_G1,self.G)
      
       # storing all input values in the Gaussian space
-      if self.u_all == None:
+      if self.u_all is None:
           self.u_all=self.u
       else:
           self.u_all = np.append(self.u_all,self.u)
 
       # storing all input values in the physical space
-      if self.x_all == None:
+      if self.x_all is None:
           self.x_all=self.x
       else:
           self.x_all = np.append(self.x_all,self.u)
@@ -303,7 +303,7 @@ class CrudeMonteCarlo(MonteCarlo):
       # compute approximative beta
       self.approxMC_beta = np.sqrt(np.array([np.sum(self.u[:,i]**2) for i in range(self.u[0,:].__len__())]))
       # storing approximative beta
-      if self.approxMC_beta_all == None:
+      if self.approxMC_beta_all is None:
           self.approxMC_beta_all=self.approxMC_beta
       else:
           self.approxMC_beta_all = np.append(self.approxMC_beta_all,self.approxMC_beta)                                      
@@ -345,18 +345,18 @@ class CrudeMonteCarlo(MonteCarlo):
 
   def showResults(self):
     """Show results and plots"""
-    print ''
-    print '=================================================='
-    print ''
-    print ' RESULTS FROM RUNNING CRUDE MONTE CARLO SIMULATION'
-    print ''
-    print ' Reliability index beta:       ',self.beta
-    print ' Failure probability:          ',self.Pf
-    print ' Coefficient of variation of Pf',self.cov_q_bar[self.k-1]
-    print ' Number of simulations:        ',self.k
-    print ''
-    print '=================================================='
-    print ''
+    print('')
+    print('==================================================')
+    print('')
+    print(' RESULTS FROM RUNNING CRUDE MONTE CARLO SIMULATION')
+    print('')
+    print(' Reliability index beta:       ',self.beta)
+    print(' Failure probability:          ',self.Pf)
+    print(' Coefficient of variation of Pf',self.cov_q_bar[self.k-1])
+    print(' Number of simulations:        ',self.k)
+    print('')
+    print('==================================================')
+    print('')
 
     npts = 200
     x = np.arange(0, self.k, self.block_size, dtype=int)
@@ -483,7 +483,7 @@ class DistributionAnalysis(MonteCarlo):
 
   def coumputeDataUpdate(self):
     """Update data"""
-    indx = range((self.k-self.block_size),self.k)
+    indx = list(range((self.k-self.block_size),self.k))
     self.all_X[:,indx] = self.x
     self.all_G[:,indx] = self.G
 
@@ -495,16 +495,16 @@ class DistributionAnalysis(MonteCarlo):
 
   def showResults(self):
     """Show results and plots"""
-    print ''
-    print '=================================================='
-    print ''
-    print ' RESULTS FROM RUNNING DISTRIBUTION ANALYSIS'
-    print ''
-    print ' Number of simulations:        ',self.k
-    print ' Approximated number of bins   ',self.bins
-    print ''
-    print '=================================================='
-    print ''
+    print('')
+    print('==================================================')
+    print('')
+    print(' RESULTS FROM RUNNING DISTRIBUTION ANALYSIS')
+    print('')
+    print(' Number of simulations:        ',self.k)
+    print(' Approximated number of bins   ',self.bins)
+    print('')
+    print('==================================================')
+    print('')
 
 
     npts = 200
@@ -515,7 +515,7 @@ class DistributionAnalysis(MonteCarlo):
       xi = self.all_X[i]
       minx = np.min(xi)
       maxx = np.max(xi)
-      n, bins, patches = plt.hist(xi, self.bins, normed=True, facecolor='green', alpha=0.75)
+      n, bins, patches = plt.hist(xi, int(self.bins), normed=True, facecolor='green', alpha=0.75)
 
       # Plot reference distribution
       xr = np.linspace(minx,maxx,npts)
@@ -534,7 +534,7 @@ class DistributionAnalysis(MonteCarlo):
 
     xg = self.all_G
 
-    n, bins, patches = plt.hist(xg, self.bins, normed=True, facecolor='green', alpha=0.75)
+    n, bins, patches = plt.hist(xg, int(self.bins), normed=True, facecolor='green', alpha=0.75)
 
     plt.title('Distribution Analysis for the Limit State Function')
     plt.xlabel('Random Values')

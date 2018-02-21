@@ -3,7 +3,7 @@ Structural Reliability Analysis with Python.
 
 """
 
-__version__ = '5.0.1'
+__version__ = '5.0.3'
 
 
 try:
@@ -18,23 +18,23 @@ except ImportError:
 # from .normal import *
 
 # Distributions
-from distributions import *
-from correlation import *
+from .distributions import *
+from .correlation import *
 
 # Inputparameter
-from model import *
+from .model import *
 #from function import *
 
 # Calculations
-from limitstate import *
-from cholesky import *
-from stepsize import *
-from quadrature import *
-from integration import *
+from .limitstate import *
+from .cholesky import *
+from .stepsize import *
+from .quadrature import *
+from .integration import *
 
 # Transformation
-from transformation import *
+from .transformation import *
 
 # Analysis
-from form import *
-from mc import *
+from .form import *
+from .mc import *

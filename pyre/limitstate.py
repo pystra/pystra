@@ -3,9 +3,9 @@
 
 import numpy as np
 import os, sys
-from types import FunctionType, StringType
 
 sys.path.append (os.path.join(os.getcwd(), "functions") )
+import types
 from functions.function import *
 
 def evaluateLimitState(x,stochastic_model,analysis_options,limit_state,modus=None):
@@ -24,7 +24,7 @@ def evaluateLimitState(x,stochastic_model,analysis_options,limit_state,modus=Non
     modus = 'no'
 
   if analysis_options.getMultiProc() == 0:
-    print 'Error: function not yet implemented'
+    print('Error: function not yet implemented')
   if analysis_options.getMultiProc() == 1:
     block_size = analysis_options.getBlockSize()
     if modus == 'no':
@@ -34,7 +34,7 @@ def evaluateLimitState(x,stochastic_model,analysis_options,limit_state,modus=Non
         k = 0
         while k < nx:
           block_size = np.min([block_size,nx-k])
-          indx = range(k,k+block_size)
+          indx = list(range(k,k+block_size))
           blockx = x[:,indx]
 
           if limit_state.getEvaluator() == 'basic':
@@ -46,7 +46,7 @@ def evaluateLimitState(x,stochastic_model,analysis_options,limit_state,modus=Non
         grad_g = dummy
         stochastic_model.addCallFunction(nx)
     elif modus == 'ddm':
-      print 'Error: ddm function not yet implemented'
+      print('Error: ddm function not yet implemented')
     elif modus == 'ffd':
       ffdpara = analysis_options.getffdpara()
       allx = np.zeros((nrv,nx*(1+nrv)))
@@ -64,7 +64,7 @@ def evaluateLimitState(x,stochastic_model,analysis_options,limit_state,modus=Non
         # TODO marg
         allh[j] = marg[j][2]*ffdpara**(-1)
         x[j]= x[j] + allh[j]*np.ones(nx)
-        indx = range(j+1,1+(1+j+(nx-1)*(1+nrv)),(1+nrv))
+        indx = list(range(j+1,1+(1+j+(nx-1)*(1+nrv)),(1+nrv)))
         allx[j,indx] = x[j]
 
       allG = np.zeros(nx*(1+nrv))
@@ -72,21 +72,21 @@ def evaluateLimitState(x,stochastic_model,analysis_options,limit_state,modus=Non
       k = 0
       while k < (nx*(1+nrv)):
         block_size = np.min([block_size,nx*(1+nrv)-k])
-        indx = range(k,k+block_size)
+        indx = list(range(k,k+block_size))
         blockx = allx[:,indx]
 
         if limit_state.getEvaluator() == 'basic':
           blockG ,dummy = computeLimitStateFunction(blockx,names,expression)
-            
+
         allG[indx] = blockG.squeeze()
         k += block_size
 
-      indx = range(0,(1+(nx-1)*(1+nrv)),(1+nrv))
+      indx = list(range(0,(1+(nx-1)*(1+nrv)),(1+nrv)))
       G = allG[indx]
       grad_g = np.zeros((nrv,nx))
 
       for j in range(nrv):
-        indx = range(j+1,1+(1+j+(nx-1)*(1+nrv)),(1+nrv))
+        indx = list(range(j+1,1+(1+j+(nx-1)*(1+nrv)),(1+nrv)))
         grad_g[j,:] = (allG[indx] - G) * (allh[j])**(-1)
 
       stochastic_model.addCallFunction(nx*(1+nrv))
@@ -98,12 +98,12 @@ def computeLimitStateFunction(x,variable_names,expression):
   """Compute the limit state function"""
   nrv = np.shape(x)[0]
 
-  if type(expression) == StringType:
+  if isinstance(expression, str):
     # string expression, for backward compatibility
     for i in range(nrv):
       globals()[variable_names[i]] = x[i:i+1]
     G = eval(expression)[0]
-  elif type(expression) == FunctionType:
+  elif isinstance(expression, types.FunctionType):
     # function expression, recommended to use
     inpdict = dict()
     for i in range(nrv):

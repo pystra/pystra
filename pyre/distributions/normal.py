@@ -6,7 +6,7 @@ import math
 import scipy.optimize as opt
 import scipy.special as spec
 
-from distribution import *
+from .distribution import *
 
 class Normal(Distribution):
   """Normal distribution

@@ -1,8 +1,8 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 #from alt import *
-from transformation import *
-from quadrature import *
+from .transformation import *
+from .quadrature import *
 
 import numpy as np
 

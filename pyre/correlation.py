@@ -3,7 +3,7 @@
 
 import numpy as np
 
-from integration import *
+from .integration import *
 
 class CorrelationMatrix(object):
   """Correlation matrix
@@ -112,18 +112,18 @@ def absoluteIntegralValue(rho0,*args):
 def computeModifiedCorrelationMatrix(self):
   """Compute modified correlation matrix"""
   if self.options.printOutput():
-    print '=================================================='
-    print ''
-    print '           RUNNING RELIABILITY ANALYSIS'
-    print ''
-    print '=================================================='
-    print ''
-    print ' Computation of modified correlation matrix R0'
-    print ' Takes some time if sensitivities are to be computed'
-    print ' with gamma (3), beta (7) or chi-square (8)'
-    print ' distributions.'
-    print ' Please wait... (Ctrl+C breaks)'
-    print ''
+    print('==================================================')
+    print('')
+    print('           RUNNING RELIABILITY ANALYSIS')
+    print('')
+    print('==================================================')
+    print('')
+    print(' Computation of modified correlation matrix R0')
+    print(' Takes some time if sensitivities are to be computed')
+    print(' with gamma (3), beta (7) or chi-square (8)')
+    print(' distributions.')
+    print(' Please wait... (Ctrl+C breaks)')
+    print('')
 
   # Compute corrected correlation coefficients
   Ro = getModifiedCorrelationMatrix(self.model)

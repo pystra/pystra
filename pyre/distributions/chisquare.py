@@ -6,8 +6,8 @@ import math
 import scipy.optimize as opt
 import scipy.special as spec
 
-from distribution import *
-from normal import *
+from .distribution import *
+from .normal import *
 
 class ChiSquare(Distribution):
   """Chi-Square distribution
@@ -39,7 +39,7 @@ class ChiSquare(Distribution):
       lamb = 0.5
       mean_test = lamb*stdv**2
       if mean*mean_test**(-1) < 0.95 or mean*mean_test**(-1) > 1.05:
-        print 'Error when using Chi-square distribution. Mean and stdv should be given such that mean = 0.5*stdv.**2\n'
+        print('Error when using Chi-square distribution. Mean and stdv should be given such that mean = 0.5*stdv.**2\n')
       nu = 2*((mean**2)*(stdv**2)**(-1))
       p2 = 0
       p3 = 0

@@ -6,7 +6,7 @@ import math
 import scipy.optimize as opt
 import scipy.special as spec
 
-from distributions import *
+from .distributions import *
 
 def pdf(x,marg):
   """probability density function

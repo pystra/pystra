@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from limitstate import *
-from transformation import *
+from .limitstate import *
+from .transformation import *
 
 def getStepSize(G,gradient,u,d,stochastic_model,analysis_options,limit_state):
   """Return the step size for the calculation
@@ -34,7 +34,7 @@ def getStepSize(G,gradient,u,d,stochastic_model,analysis_options,limit_state):
     Trial_x[:,j] = np.transpose(trial_x)
 
   if analysis_options.getMultiProc() == 0:
-    print 'Error: function not yet implemented'
+    print('Error: function not yet implemented')
   if analysis_options.getMultiProc() == 1:
     Trial_G, dummy = evaluateLimitState(Trial_x,stochastic_model,analysis_options,limit_state,'no')
     Merit_new = np.zeros(ntrial)
@@ -55,6 +55,6 @@ def getStepSize(G,gradient,u,d,stochastic_model,analysis_options,limit_state):
       j += 1
       if j == ntrial and merit_new > merit:
         if analysis_options.printOutput():
-          print 'The step size has been reduced by a factor of 1/',2**ntrial
+          print('The step size has been reduced by a factor of 1/',2**ntrial)
   step_size = trial_step_size
   return step_size

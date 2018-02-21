@@ -6,7 +6,7 @@ requires = [
     ]
 
 setup(name='pyre',
-      version='5.0.2',
+      version='5.0.3',
       description='PyRe (Python Reliability) is a python module for structural reliability analysis',
       long_description=open('README.rst').read(),
       license=open('LICENSE').read(),

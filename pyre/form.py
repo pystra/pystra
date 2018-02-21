@@ -7,12 +7,12 @@ import math
 import scipy.optimize as opt
 import scipy.special as spec
 
-from model import *
-from correlation import *
-from distributions import *
-from cholesky import *
-from limitstate import *
-from stepsize import *
+from .model import *
+from .correlation import *
+from .distributions import *
+from .cholesky import *
+from .limitstate import *
+from .stepsize import *
 
 class Form(object):
   """First Order Reliability Method (FORM)
@@ -47,19 +47,19 @@ class Form(object):
   def __init__(self,analysis_options=None,limit_state=None,stochastic_model=None):
 
     # The stochastic model
-    if stochastic_model == None:
+    if stochastic_model is None:
       self.model = StochasticModel()
     else:
       self.model = stochastic_model
 
     # Options for the calculation
-    if analysis_options == None:
+    if analysis_options is None:
       self.options = AnalysisOptions()
     else:
       self.options = analysis_options
 
     # The limit state function
-    if limit_state == None:
+    if limit_state is None:
       self.limitstate = LimitState()
     else:
       self.limitstate = limit_state
@@ -97,8 +97,8 @@ class Form(object):
     # loope
     while not convergence:
       if self.options.printOutput():
-        print '.......................................'
-        print 'Now carrying out iteration number:',i
+        print('.......................................')
+        print('Now carrying out iteration number:',i)
 
       # Compute Transformation from u to x space
       self.computeTransformation()
@@ -113,7 +113,7 @@ class Form(object):
       if i == 1:
         self.Go = self.G
         if self.options.printOutput():
-          print 'Value of limit-state function in the first step:', self.G
+          print('Value of limit-state function in the first step:', self.G)
 
       # Compute alpha vector
       self.computeAlpha()
@@ -214,18 +214,18 @@ class Form(object):
 
   def showResults(self):
     """Show results"""
-    print ''
-    print '=================================================='
-    print ''
-    print ' RESULTS FROM RUNNING FORM RELIABILITY ANALYSIS'
-    print ''
-    print ' Number of iterations:     ',self.i
-    print ' Reliability index beta:   ',self.beta[0]
-    print ' Failure probability:      ',self.Pf
-    print ' Number of calls to the limit-state function:',self.model.getCallFunction()
-    print ''
-    print '=================================================='
-    print ''
+    print('')
+    print('==================================================')
+    print('')
+    print(' RESULTS FROM RUNNING FORM RELIABILITY ANALYSIS')
+    print('')
+    print(' Number of iterations:     ',self.i)
+    print(' Reliability index beta:   ',self.beta[0])
+    print(' Failure probability:      ',self.Pf)
+    print(' Number of calls to the limit-state function:',self.model.getCallFunction())
+    print('')
+    print('==================================================')
+    print('')
 
 
   def getBeta(self):
