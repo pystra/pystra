@@ -515,7 +515,7 @@ class DistributionAnalysis(MonteCarlo):
       xi = self.all_X[i]
       minx = np.min(xi)
       maxx = np.max(xi)
-      n, bins, patches = plt.hist(xi, int(self.bins), normed=True, facecolor='green', alpha=0.75)
+      n, bins, patches = plt.hist(xi, int(self.bins), density=True, facecolor='green', alpha=0.75)
 
       # Plot reference distribution
       xr = np.linspace(minx,maxx,npts)
@@ -534,7 +534,7 @@ class DistributionAnalysis(MonteCarlo):
 
     xg = self.all_G
 
-    n, bins, patches = plt.hist(xg, int(self.bins), normed=True, facecolor='green', alpha=0.75)
+    n, bins, patches = plt.hist(xg, int(self.bins), density=True, facecolor='green', alpha=0.75)
 
     plt.title('Distribution Analysis for the Limit State Function')
     plt.xlabel('Random Values')
