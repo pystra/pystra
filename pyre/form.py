@@ -233,6 +233,33 @@ class Form(object):
         print('')
         print('==================================================')
         print('')
+        
+    def showDetailedOutput(self):
+        """Get detailed output to console"""
+        names = self.model.getNames()
+        u_star = self.getDesignPoint()
+        x_star = u_to_x(u_star,self.model)
+        alpha = self.getAlpha()
+        
+        n_hyphen = 53
+        print("=" * n_hyphen)
+        print("FORM")
+        print("=" * n_hyphen)
+        print("{:15s} \t {:1.10f}".format("Pf",self.Pf))
+        print("{:15s} \t {:2.10f}".format("BetaHL",self.beta[0]))
+        print("{:15s} \t {:d}".format('Model Evaluations',
+                                      self.model.getCallFunction()))
+        print("-" * n_hyphen)
+        print("{:10s} \t {:>9s} \t {:>12s} \t {:>9s}".format("Variable",
+                                                            'U_star',
+                                                            'X_star',
+                                                            'alpha'))
+        for i, name in enumerate(names):
+            print("{:10s} \t {: 5.6f} \t {:12.6f} \t {:+5.6f}".format(name,
+                                                                   u_star[i],
+                                                                   x_star[i],
+                                                                   alpha[i]))
+        print("=" * n_hyphen)
 
     def getBeta(self):
         """Returns the beta value
