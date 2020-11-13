@@ -175,6 +175,22 @@ some getter methods (see :ref:`chap_calculations`) ::
   beta = Analysis.getBeta()
   failure = Analysis.getFailure()
 
+There is also the possibility to output more detailed results using 
+``showDetailedOutput()``: ::
+
+  =====================================================
+  FORM
+  =====================================================
+  Pf                       0.0397172978
+  BetaHL                   1.7539761407
+  Model Evaluations        164
+  -----------------------------------------------------
+  Variable            U_star             X_star        alpha
+  X1                1.278045         631.504135    +0.728414
+  X2                0.407819        2310.352495    +0.232354
+  X3               -1.129920           4.517374    -0.644534
+  =====================================================
+
 Finally...
 ----------
 
