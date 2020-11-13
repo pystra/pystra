@@ -10,8 +10,6 @@ setup(name='pyre',
       description='PyRe (Python Reliability) is a python module for structural reliability analysis',
       long_description=open('README.rst').read(),
       license=open('LICENSE').read(),
-      long_description=open('README.rst').read(),
-      license=open('LICENSE').read(),
       classifiers=[
         "Programming Language :: Python",
         "Natural Language :: English",
