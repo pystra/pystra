@@ -123,10 +123,11 @@ class Form(object):
             self.computeGamma()
 
             # Check convergence
-            condition1 = np.absolute(
-                self.G*self.Go**(-1)) < self.options.getE1()
-            condition2 = np.linalg.norm(
-                self.u-self.alpha.dot(self.u).dot(self.alpha)) < self.options.getE2()
+            e1 = np.absolute(self.G*self.Go**(-1))[0]
+            e2 = np.linalg.norm(self.u-self.alpha.dot(self.u).dot(self.alpha))
+            print(f"e1 = {e1:1.6e} , e2 = {e2:1.6e}")
+            condition1 = e1 < self.options.getE1()
+            condition2 = e2 < self.options.getE2()
             condition3 = i == self.options.getImax()
 
             if condition1 and condition2 or condition3:
@@ -220,8 +221,9 @@ class Form(object):
 
     def showResults(self):
         """Show results"""
+        n_hyphen = 54
         print('')
-        print('==================================================')
+        print("=" * n_hyphen)
         print('')
         print(' RESULTS FROM RUNNING FORM RELIABILITY ANALYSIS')
         print('')
@@ -231,21 +233,22 @@ class Form(object):
         print(' Number of calls to the limit-state function:',
               self.model.getCallFunction())
         print('')
-        print('==================================================')
+        print("=" * n_hyphen)
         print('')
         
     def showDetailedOutput(self):
         """Get detailed output to console"""
         names = self.model.getNames()
         u_star = self.getDesignPoint()
-        x_star = u_to_x(u_star,self.model)
+        x_star = self.getDesignPoint(uspace=False)
         alpha = self.getAlpha()
         
-        n_hyphen = 53
+        n_hyphen = 54
+        print('')
         print("=" * n_hyphen)
         print("FORM")
         print("=" * n_hyphen)
-        print("{:15s} \t {:1.10f}".format("Pf",self.Pf))
+        print("{:15s} \t {:1.10e}".format("Pf",self.Pf))
         print("{:15s} \t {:2.10f}".format("BetaHL",self.beta[0]))
         print("{:15s} \t {:d}".format('Model Evaluations',
                                       self.model.getCallFunction()))
@@ -260,6 +263,7 @@ class Form(object):
                                                                    x_star[i],
                                                                    alpha[i]))
         print("=" * n_hyphen)
+        print('')
 
     def getBeta(self):
         """Returns the beta value
@@ -277,13 +281,16 @@ class Form(object):
         """
         return self.Pf
 
-    def getDesignPoint(self):
-        """Returns the design point
+    def getDesignPoint(self,uspace=True):
+        """Returns the design point, defaults to u-space
 
         :Returns:
-          - u (float): Returns the design point
+          - u (float): Returns the design point in u- or x-space
         """
-        return self.u
+        if uspace:
+            return self.u
+        else:
+            return u_to_x(self.u,self.model)
 
     def getAlpha(self):
         """Returns the alpha vector
