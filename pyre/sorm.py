@@ -74,9 +74,20 @@ class Sorm(object):
         self.betag_breitung_m = 0
         # Could add Tvedt too
 
-    def run(self):
+    def run(self,fit_type='cf'):
         """
-        Run SORM analysis
+        Run SORM analysis using either:
+            Curve-fitting: fit_type == 'cf'
+            Point-fitting: fit_type == 'pf'
+        """
+        if fit_type != 'cf':
+            raise ValueError("Point-Fitting not yet supported")
+        else:
+            self.run_curvefit()
+
+    def run_curvefit(self):
+        """
+        Run SORM analysis using curve fitting
         """
         hess_G = self.computeHessian()
         R1 = self.orthonormal_matrix()
