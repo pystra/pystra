@@ -42,18 +42,28 @@ def main():
                                                        [0.3, 1.0, 0.2],
                                                        [0.2, 0.2, 1.0]]))
 
-    # Performe FORM analysis
+    # Perform FORM analysis
     Analysis = Form(analysis_options=options,
                     stochastic_model=stochastic_model, limit_state=limit_state)
+    # More detailed output
+    Analysis.showDetailedOutput()
 
-    # Performe Distribution analysis
+    # Perform SORM analysis, passing FORM result if it exists
+    sorm = Sorm(analysis_options=options,stochastic_model=stochastic_model, 
+                limit_state=limit_state, form=Analysis)
+    sorm.run()
+    # Detailed output
+    sorm.showDetailedOutput()
+
+    # Perform Distribution analysis
     Analysis = DistributionAnalysis(
         analysis_options=options, stochastic_model=stochastic_model, limit_state=limit_state)
-    # Performe Crude Monte Carlo Simulation
+
+    # Perform Crude Monte Carlo Simulation
     Analysis = CrudeMonteCarlo(
         analysis_options=options, stochastic_model=stochastic_model, limit_state=limit_state)
 
-    # Performe Importance Sampling
+    # Perform Importance Sampling
     Analysis = ImportanceSampling(
         analysis_options=options, stochastic_model=stochastic_model, limit_state=limit_state)
 

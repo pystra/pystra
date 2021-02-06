@@ -147,7 +147,7 @@ customized options. ::
 
 To store the results from the analysis an object must be initialized: ::
 
-  # Performe FORM analysis
+  # Perform FORM analysis
   Analysis = Form(analysis_options=options, stochastic_model=stochastic_model, limit_state=limit_state)
 
 Now the code can be compiled and the FORM analysis will be preformed. In this
@@ -178,18 +178,68 @@ some getter methods (see :ref:`chap_calculations`) ::
 There is also the possibility to output more detailed results using 
 ``showDetailedOutput()``: ::
 
-  =====================================================
+  ======================================================
   FORM
-  =====================================================
-  Pf                       0.0397172978
-  BetaHL                   1.7539761407
-  Model Evaluations        164
-  -----------------------------------------------------
-  Variable            U_star             X_star        alpha
-  X1                1.278045         631.504135    +0.728414
-  X2                0.407819        2310.352495    +0.232354
-  X3               -1.129920           4.517374    -0.644534
-  =====================================================
+  ======================================================
+  Pf              	 3.9717297753e-02
+  BetaHL          	 1.7539761407
+  Model Evaluations 	 164
+  ------------------------------------------------------
+  Variable   	    U_star 	       X_star 	     alpha
+  X1         	  1.278045 	   631.504135 	 +0.728414
+  X2         	  0.407819 	  2310.352495 	 +0.232354
+  X3         	 -1.129920 	     4.517374 	 -0.644534
+  ======================================================
+
+A Second-Order Reliability Method (SORM) can also be performed, passing in the 
+results of a FORM analysis object if it exists, fo; efficiency (otherwise, SORM
+will perform a FORM analysis first): ::
+
+    sorm = Sorm(analysis_options=options,stochastic_model=stochastic_model, 
+                limit_state=limit_state, form=Analysis)
+    sorm.run()
+
+for the example, this produces the output: ::
+
+  ======================================================
+  
+  RESULTS FROM RUNNING SECOND ORDER RELIABILITY METHOD
+  
+  Generalized reliability index:  1.8489979688766982
+  Probability of failure:         0.0322290530029448
+  
+  Curavture 1: -0.04143130882429444
+  Curavture 2: 0.36356407501548915
+  ======================================================
+
+Similar to FORM, we can also get more detailed output for diagnostics: ::
+
+    sorm.showDetailedOutput()
+
+which for the example gives: ::
+
+  ======================================================
+  FORM/SORM
+  ======================================================
+  Pf FORM         		 3.9717297753e-02
+  Pf SORM Breitung 		 3.2229053003e-02
+  Pf SORM Breitung HR 	 3.1158626124e-02
+  Beta_HL         		 1.7539761407
+  Beta_G Breitung 		 1.8489979689
+  Beta_G Breitung HR 	 1.8640317040
+  Model Evaluations 	 180
+  ------------------------------------------------------
+  Curvature 1: -0.04143130882429444
+  Curvature 2: 0.36356407501548915
+  ------------------------------------------------------
+  Variable   	    U_star 	       X_star 	     alpha
+  X1         	  1.278045 	   631.504135 	 +0.728414
+  X2         	  0.407819 	  2310.352495 	 +0.232354
+  X3         	 -1.129920 	     4.517374 	 -0.644534
+  ======================================================
+
+in which `HR` refers to the Hohenbichler-Rackwitz modification to Breitung's
+formula.
 
 Finally...
 ----------
