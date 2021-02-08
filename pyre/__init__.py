@@ -38,3 +38,4 @@ from .transformation import *
 # Analysis
 from .form import *
 from .mc import *
+from .sorm import *
