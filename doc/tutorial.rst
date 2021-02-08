@@ -105,10 +105,10 @@ variables from :eq:`random_variables` we can use following syntax: ::
   stochastic_model.addVariable( Uniform('X3',5,0.5) )
 
 The first parameter is the name of the random variable. The name has to be a
-string, so the input looks like ``'X3'``.
+string and match the arguments in the limit state function, so the input looks like ``'X3'``.
 
 By default, the next to values are the first and second moment of the
-distribution, here mean and standard deviation. Are mean and standard
+distribution, here mean and standard deviation. If mean and standard
 deviation unknown but the distribution parameter known, then the
 ``input_type`` has to be changed.
 
@@ -123,14 +123,22 @@ to get the same results as before. To see which parameters are needed and in
 which order the must insert, take a look at Chapter :ref:`chap_distributions`.
 There are all currently available distributions listed.
 
-In the same way, we can add the correlation matrix to our model: ::
+If the nominal value, bias, and coefficient of variation are instead known,
+then the random variable can be instantiated following this example: ::
+
+  X2 = Normal('X2',*500*1.00*np.array([1, 0.2]))
+
+where nominal value is 500, bias is 1.00, and coefficient of variation is 0.2. 
+Notice the initial `*` character is used to dereference the output array.
+
+To add the correlation matrix to our model: ::
 
   # Define Correlation Matrix
   stochastic_model.setCorrelation( CorrelationMatrix([[1.0, 0.3, 0.2],
                                                       [0.3, 1.0, 0.2],
                                                       [0.2, 0.2, 1.0]]) )
 
-Are the variables uncorrelated, you don't have to add a correlation matrix to
+If the variables uncorrelated, you don't have to add a correlation matrix to
 the model.
 
 At this stage our model is complete defined and we can start the analysis.
