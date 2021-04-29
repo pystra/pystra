@@ -98,6 +98,48 @@ class Sorm(object):
         self.pf_breitung(self.betaHL,self.kappa)
         self.pf_breitung_m(self.betaHL,self.kappa)
         self.showResults()
+        
+        
+    def run_pointfit(self):
+        threshold = 10 ** -6
+        stop_flag = 0
+        
+        beta = self.form.beta
+        alpha = self.form.alpha
+        R1 = self.orthonormal_matrix()
+        
+        nrv = self.model.getLenMarginalDistributions()
+        
+        #i = num;
+
+        #if num <= nrv-1      % Negative axis
+        #    counter = i;
+        #    sign = -1;
+        #else                 % Positive axis
+        #    counter = i-nrv+1;
+        #    sign = 1;
+        #end
+        
+        vect = np.zeroes((nrv,1))            
+        #u_prime_i = U_prime_1(:,i);    
+        a = u_prime_i(counter);
+        b = u_prime_i(nrv);
+        
+        u = np.transpose(R1) * u_prime_i
+        x = u_to_x(u, self.model)
+        J_u_x = jacobian(u, x, self.model)
+        J_x_u = np.linalg.inv(J_u_x)
+        G, gradient = evaluateLimitState(
+            x, self.model, self.options, self.limitstate)
+        gradient = R1 *
+        
+        # Case where G is negative at the starting points
+        if G < 0 :
+            
+        
+        
+        
+    
 
     def pf_breitung(self,beta,kappa):
         """
