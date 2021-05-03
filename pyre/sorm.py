@@ -104,10 +104,10 @@ class Sorm(object):
         threshold = 10 ** -6
         stop_flag = 0
         
+        # Useful parameters after Form Analysis
         beta = self.form.beta
         alpha = self.form.alpha
         R1 = self.orthonormal_matrix()
-        
         nrv = self.model.getLenMarginalDistributions()
         
         #i = num;
@@ -125,19 +125,61 @@ class Sorm(object):
         a = u_prime_i(counter);
         b = u_prime_i(nrv);
         
-        u = np.transpose(R1) * u_prime_i
+        #u = np.transpose(R1) * u_prime_i
         x = u_to_x(u, self.model)
         J_u_x = jacobian(u, x, self.model)
         J_x_u = np.linalg.inv(J_u_x)
-        G, gradient = evaluateLimitState(
-            x, self.model, self.options, self.limitstate)
-        gradient = R1 *
+        G, grad = self.evaluateLSF(x,
+        grad = R1 *
         
         # Case where G is negative at the starting points
         if G < 0 :
             
         
+    def run_pointfit_mod(self):
+        # Useful parameters after Form analysis
+        beta = self.form.beta
+        alpha = self.form.pf
+        alpha = self.form.alpha
+        itera = self.form.i
         
+        # Design point
+        dsptx = self.form.x
+        dsptu = self.form.u
+        
+        # Rotation matrix obtained by Gram-Schmidt scheme
+        R1 = self.orthonormal_matrix()
+        nrv = self.model.getLenMarginalDistributions()
+        
+        # Determination of the coefficient k
+        if abs(beta) < 1:
+            k = 1 / abs(beta)
+        elif abs(beta) >= 1 and abs(beta) <= 3:
+            k = 1
+        else:
+            k = 3 / abs(beta)
+        end
+        
+        # Initial trial points of ordinates +beta
+        
+        
+        
+        # Determination of the fitting points in the rotated space
+        
+        
+        # Compute the fitting points on the negative side of axes and then on positive side of axes
+        
+        
+        # Compute the curvatures a_i_+/-
+        
+        
+        # Along minus axis
+        
+        
+        # Along plus axis
+        
+        
+        # Breitung
         
     
 
