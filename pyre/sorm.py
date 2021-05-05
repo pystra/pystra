@@ -100,7 +100,7 @@ class Sorm(object):
         self.showResults()
         
         
-    def run_pointfit(self):
+    def run_fittingpoint(self):
         threshold = 10 ** -6
         stop_flag = 0
         
@@ -120,7 +120,7 @@ class Sorm(object):
         #    sign = 1;
         #end
         
-        vect = np.zeroes((nrv,1))            
+        vect = np.zeros((nrv,1))            
         #u_prime_i = U_prime_1(:,i);    
         a = u_prime_i(counter);
         b = u_prime_i(nrv);
@@ -161,21 +161,36 @@ class Sorm(object):
         end
         
         # Initial trial points of ordinates +beta
-        
+        U_prime_1 = [[-k*beta*np.eye(nrv-1);beta*np.ones(1,nrv-1)][k*beta*np.eye(nrv-1);beta*np.ones(1,nrv-1)]]
         
         
         # Determination of the fitting points in the rotated space
-        
-        
         # Compute the fitting points on the negative side of axes and then on positive side of axes
-        
+        for i in range(2*nrv-1):
+            num = i
+            u_prime_i = self.fittingpoint.u_prime_i
+            G_u = self.fittingpoint.G_u
+            u_prime_final[:,i] = u_prime_i
+            g_final[i] = G_u
+        end
         
         # Compute the curvatures a_i_+/-
+        for i in range(nrv-1):
+             a_curvatures_minus[i] = 2 * (U_prime_final_negative(nrv, i) - beta) / (U_prime_final_negative(i, i)) ** 2
+             a_curvatures_plus[i] = 2 * (U_prime_final_positive(nrv, i) - beta) / (U_prime_final_positive(i, i)) ** 2
+        end
+        a_curvatures_plus()
+        a_curvatures_minus()
+        
+        kappa_plus_minus[1,:] = a_curvatures_plus
+        kappa_plus_minus[2,:] = a_curvatures_minus
         
         
         # Along minus axis
-        
-        
+        U_prime_minus =  np.zeros((nrv-1,5))
+        minus_array = [*range(1,nrv,1)]
+        minus_arrayt = np.transpose(minus_array)
+        U_prime_minus[:,1] = round(minus_arrayt)
         # Along plus axis
         
         
