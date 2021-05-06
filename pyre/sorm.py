@@ -131,7 +131,7 @@ class Sorm(object):
         J_u_x = jacobian(u, x, self.model)
         J_x_u = np.linalg.inv(J_u_x)
         G, grad = self.evaluateLSF(x,
-        grad = R1 * np.transpose(grad_g*J_x_u)
+        grad = R1 * np.transpose(grad*J_x_u)
         
         
         # Case where G is negative at the starting points
@@ -157,7 +157,7 @@ class Sorm(object):
             J_x_u = inv(J_u_x)
 
             G, grad = self.evaluateLSF(x,
-            grad_G = R1 * np.transpose(grad_g*J_x_u)
+            grad_G = R1 * np.transpose(grad*J_x_u)
 
 
         if abs(G) < threshold:
@@ -192,7 +192,7 @@ class Sorm(object):
             J_x_u = inv(J_u_x)
 
             G, grad = self.evaluateLSF(x,
-            grad_G = R1 * np.transpose(grad_g * J_x_u)
+            grad_G = R1 * np.transpose(grad * J_x_u)
 
         if abs(G) < threshold:
             stop_flag = 1
@@ -231,8 +231,8 @@ class Sorm(object):
         end
         
         # Initial trial points of ordinates +beta
-        U_prime_1 = [[-k*beta*np.eye(nrv-1);beta*np.ones(1,nrv-1)][k*beta*np.eye(nrv-1);beta*np.ones(1,nrv-1)]]
-        
+        U_prime_1 = np.array([[-k*beta*np.eye(nrv-1),k*beta*np.eye(nrv-1)],[beta*np.ones(1,nrv-1),beta*np.ones(1,nrv-1)]])
+
         
         # Determination of the fitting points in the rotated space
         # Compute the fitting points on the negative side of axes and then on positive side of axes
@@ -263,7 +263,7 @@ class Sorm(object):
         U_prime_minus[:,1] = round(minus_arrayt)
         
         for i in range(nrv-1):
-            U_prime_minus[i,2] = U_prime_final(i,i)
+            U_prime_minus[i,2] = U_prime_final[i][i]
         end
         
         U_prime_minus[:,3] = np.transpose(U_prime_final_negative[nrv])
