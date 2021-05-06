@@ -110,30 +110,100 @@ class Sorm(object):
         R1 = self.orthonormal_matrix()
         nrv = self.model.getLenMarginalDistributions()
         
-        #i = num;
-
-        #if num <= nrv-1      % Negative axis
-        #    counter = i;
-        #    sign = -1;
-        #else                 % Positive axis
-        #    counter = i-nrv+1;
-        #    sign = 1;
-        #end
+        # Determine the side of the axis the fitting point belongs to with respect to the matrix U_prime_1 construction
+        i = num
+        
+        if num <= nrv - 1:    # Negative axis
+            counter = i
+            sign = -1
+        else:                 # Positive axis
+            counter = i - nrv + 1
+            sign = 1
+        end
         
         vect = np.zeros((nrv,1))            
-        #u_prime_i = U_prime_1(:,i);    
-        a = u_prime_i(counter);
-        b = u_prime_i(nrv);
+        u_prime_i = U_prime_1[:,i]   # Define the coordinates of the fitting point in the rotated space
+        a = u_prime_i[counter]
+        b = u_prime_i[nrv]
         
-        #u = np.transpose(R1) * u_prime_i
+        u = np.transpose(R1) * u_prime_i   # Rotation to the standard normal space
         x = u_to_x(u, self.model)
         J_u_x = jacobian(u, x, self.model)
         J_x_u = np.linalg.inv(J_u_x)
         G, grad = self.evaluateLSF(x,
-        grad = R1 *
+        grad = R1 * np.transpose(grad_g*J_x_u)
+        
         
         # Case where G is negative at the starting points
-        if G < 0 :
+        if G < 0:
+            a = sign * k * beta
+            dadb = 0
+
+            vect[counter] = dadb
+            vect[nrv] = 1
+
+        while stop_flag == 0:
+            # for j = 1:4
+            b = b - G / (np.transpose(grad_G) * vect)
+            a = sign * k * beta
+
+            # new point coordinates
+            u_prime_i[counter] = a
+            u_prime_i[nrv] = b
+
+            u = np.transpose(R1) * u_prime_i
+            x = u_to_x(u, self.model)
+            J_u_x = jacobian(x, u, self.model)
+            J_x_u = inv(J_u_x)
+
+            G, grad = self.evaluateLSF(x,
+            grad_G = R1 * np.transpose(grad_g*J_x_u)
+
+
+        if abs(G) < threshold:
+            stop_flag = 1
+        end
+
+        end
+        u_prime_i()
+        G_u = G
+
+        # Case where G is positive at the starting points      
+        else:    
+            a = sign * ((k * beta) ** 2 - (b - beta) ** 2) ** 0.5
+            dadb = sign * (-(b - beta) / ((k * beta) ** 2 - (b - beta) ** 2) ** 0.5)
+
+            vect[counter] = dadb
+            vect[nrv] = 1
+
+        while stop_flag == 0:
+            #  for j = 1:4
+
+            b = b - G / (np.transpose(grad_G) * vect)
+            a = sign * ((k * beta) ** 2 - (b - beta) ** 2) ** 0.5
+
+            # New point coordinates
+            u_prime_i[counter] = a
+            u_prime_i[nrv] = b
+
+            u = np.transpose(R1) * u_prime_i
+            x = u_to_x(u, self.model)
+            J_u_x = jacobian(x, u, self.model)
+            J_x_u = inv(J_u_x)
+
+            G, grad = self.evaluateLSF(x,
+            grad_G = R1 * np.transpose(grad_g * J_x_u)
+
+        if abs(G) < threshold:
+            stop_flag = 1
+        end
+
+            dadb = sign * (-(b - beta) / ((k * beta) ** 2 - (b - beta) ** 2) ** 0.5)
+            vect[counter] = dadb
+        end
+        
+        u_prime_i()
+        G_u = G
             
         
     def run_pointfit_mod(self):
@@ -191,9 +261,31 @@ class Sorm(object):
         minus_array = [*range(1,nrv,1)]
         minus_arrayt = np.transpose(minus_array)
         U_prime_minus[:,1] = round(minus_arrayt)
+        
+        for i in range(nrv-1):
+            U_prime_minus[i,2] = U_prime_final(i,i)
+        end
+        
+        U_prime_minus[:,3] = np.transpose(U_prime_final_negative[nrv])
+        U_prime_minus[:,4] = np.transpose(g_final[1:nrv-1])
+        U_prime_mminuys[:,5] = np.transpose(a_curvatures_minus)
+        U_prime_min()
+        
         # Along plus axis
+        U_prime_plus = np.zeros((nrv-1,5))
+        plus_array = [*range(1,nrv,1)]
+        U_prime_plus[:,1] = np.transpose(plus_array)
         
+        for i in range(nrv,2*(nrv-1)):
+            U_prime_plus[i-nrv+1,2] = U_prime_final[i-nrv+1][i]
+        end
         
+        U_prime_plus[:,3] = np.transpose(U_prime_final_positive[nrv])
+        U_prime_plus[:,4] = np.transpose(g_final[nrv:2*(nrv-1)])
+        U_prime_plus[:,5] = np.transpose(a_curvatures_plus)
+        U_prime_plus()
+            
+
         # Breitung
         
     
