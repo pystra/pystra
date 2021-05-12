@@ -98,118 +98,11 @@ class Sorm(object):
         self.pf_breitung(self.betaHL,self.kappa)
         self.pf_breitung_m(self.betaHL,self.kappa)
         self.showResults()
-        
-        
-    def run_fittingpoint(self):
-        threshold = 10 ** -6
-        stop_flag = 0
-        
-        # Useful parameters after Form Analysis
-        beta = self.form.beta
-        alpha = self.form.alpha
-        R1 = self.orthonormal_matrix()
-        nrv = self.model.getLenMarginalDistributions()
-        
-        # Determine the side of the axis the fitting point belongs to with respect to the matrix U_prime_1 construction
-        i = num
-        
-        if num <= nrv - 1:    # Negative axis
-            counter = i
-            sign = -1
-        else:                 # Positive axis
-            counter = i - nrv + 1
-            sign = 1
-        end
-        
-        vect = np.zeros((nrv,1))            
-        u_prime_i = U_prime_1[:,i]   # Define the coordinates of the fitting point in the rotated space
-        a = u_prime_i[counter]
-        b = u_prime_i[nrv]
-        
-        u = np.transpose(R1) * u_prime_i   # Rotation to the standard normal space
-        x = u_to_x(u, self.model)
-        J_u_x = jacobian(u, x, self.model)
-        J_x_u = np.linalg.inv(J_u_x)
-        G, grad = self.evaluateLSF(x,
-        grad = R1 * np.transpose(grad*J_x_u)
-        
-        
-        # Case where G is negative at the starting points
-        if G < 0:
-            a = sign * k * beta
-            dadb = 0
 
-            vect[counter] = dadb
-            vect[nrv] = 1
-
-        while stop_flag == 0:
-            # for j = 1:4
-            b = b - G / (np.transpose(grad_G) * vect)
-            a = sign * k * beta
-
-            # new point coordinates
-            u_prime_i[counter] = a
-            u_prime_i[nrv] = b
-
-            u = np.transpose(R1) * u_prime_i
-            x = u_to_x(u, self.model)
-            J_u_x = jacobian(x, u, self.model)
-            J_x_u = inv(J_u_x)
-
-            G, grad = self.evaluateLSF(x,
-            grad_G = R1 * np.transpose(grad*J_x_u)
-
-
-        if abs(G) < threshold:
-            stop_flag = 1
-        end
-
-        end
-        u_prime_i()
-        G_u = G
-
-        # Case where G is positive at the starting points      
-        else:    
-            a = sign * ((k * beta) ** 2 - (b - beta) ** 2) ** 0.5
-            dadb = sign * (-(b - beta) / ((k * beta) ** 2 - (b - beta) ** 2) ** 0.5)
-
-            vect[counter] = dadb
-            vect[nrv] = 1
-
-        while stop_flag == 0:
-            #  for j = 1:4
-
-            b = b - G / (np.transpose(grad_G) * vect)
-            a = sign * ((k * beta) ** 2 - (b - beta) ** 2) ** 0.5
-
-            # New point coordinates
-            u_prime_i[counter] = a
-            u_prime_i[nrv] = b
-
-            u = np.transpose(R1) * u_prime_i
-            x = u_to_x(u, self.model)
-            J_u_x = jacobian(x, u, self.model)
-            J_x_u = inv(J_u_x)
-
-            G, grad = self.evaluateLSF(x,
-            grad_G = R1 * np.transpose(grad * J_x_u)
-
-        if abs(G) < threshold:
-            stop_flag = 1
-        end
-
-            dadb = sign * (-(b - beta) / ((k * beta) ** 2 - (b - beta) ** 2) ** 0.5)
-            vect[counter] = dadb
-        end
-        
-        u_prime_i()
-        G_u = G
-            
-        
     def run_pointfit_mod(self):
         # Useful parameters after Form analysis
         beta = self.form.beta
-        alpha = self.form.pf
+        pf1 = self.form.pf
         alpha = self.form.alpha
         itera = self.form.i
         
@@ -228,7 +121,7 @@ class Sorm(object):
             k = 1
         else:
             k = 3 / abs(beta)
-        end
+        
         
         # Initial trial points of ordinates +beta
         U_prime_1 = np.array([[-k*beta*np.eye(nrv-1),k*beta*np.eye(nrv-1)],[beta*np.ones(1,nrv-1),beta*np.ones(1,nrv-1)]])
@@ -242,13 +135,13 @@ class Sorm(object):
             G_u = self.fittingpoint.G_u
             u_prime_final[:,i] = u_prime_i
             g_final[i] = G_u
-        end
+        
         
         # Compute the curvatures a_i_+/-
         for i in range(nrv-1):
              a_curvatures_minus[i] = 2 * (U_prime_final_negative(nrv, i) - beta) / (U_prime_final_negative(i, i)) ** 2
              a_curvatures_plus[i] = 2 * (U_prime_final_positive(nrv, i) - beta) / (U_prime_final_positive(i, i)) ** 2
-        end
+        
         a_curvatures_plus()
         a_curvatures_minus()
         
@@ -264,7 +157,7 @@ class Sorm(object):
         
         for i in range(nrv-1):
             U_prime_minus[i,2] = U_prime_final[i][i]
-        end
+        
         
         U_prime_minus[:,3] = np.transpose(U_prime_final_negative[nrv])
         U_prime_minus[:,4] = np.transpose(g_final[1:nrv-1])
@@ -278,7 +171,7 @@ class Sorm(object):
         
         for i in range(nrv,2*(nrv-1)):
             U_prime_plus[i-nrv+1,2] = U_prime_final[i-nrv+1][i]
-        end
+        
         
         U_prime_plus[:,3] = np.transpose(U_prime_final_positive[nrv])
         U_prime_plus[:,4] = np.transpose(g_final[nrv:2*(nrv-1)])
@@ -287,8 +180,124 @@ class Sorm(object):
             
 
         # Breitung
+        pf2_breitung = Normal.cdf(-beta, 0, 1)*np.prod(0.5*((1+beta*a_curvatures_plus)**(-0.5)+(1+beta*a_curvatures_minus)**(-0.5)))
+        betag_breitung = -Normal.inv_cdf(pf2_breitung)    
         
+        print('Generalized reliability index: ', self.betag_breitung)
+        print('Probability of failure:        ', self.pf2_breitung)
+        
+        
+    def run_fittingpoint(self):
+        threshold = 10 ** -6
+        stop_flag = 0
+        
+        k = self.run_pointfit_mod.k
+        num = self.run_pointfit_mod.num
+        U_prime_1 = self.run_pointfit.mod.U_prime_1
     
+        
+        # Useful parameters after Form Analysis
+        beta = self.form.beta
+        alpha = self.form.alpha
+        R1 = self.orthonormal_matrix()
+        nrv = self.model.getLenMarginalDistributions()
+        
+        # Determine the side of the axis the fitting point belongs to with respect to the matrix U_prime_1 construction
+        i = num
+        
+        if num <= nrv - 1:    # Negative axis
+            counter = i
+            sign = -1
+        else:                 # Positive axis
+            counter = i - nrv + 1
+            sign = 1
+        
+        
+        vect = np.zeros((nrv,1))            
+        u_prime_i = U_prime_1[:,i]   # Define the coordinates of the fitting point in the rotated space
+        a = u_prime_i[counter]
+        b = u_prime_i[nrv]
+        
+        u = np.transpose(R1) * u_prime_i   # Rotation to the standard normal space
+        x = u_to_x(u, self.model)
+        J_u_x = jacobian(u, x, self.model)
+        J_x_u = np.linalg.inv(J_u_x)
+        G, grad = self.evaluateLSF(x,calc_gradient=True)
+        grad = R1 * np.transpose(grad*J_x_u)
+        
+        
+        # Case where G is negative at the starting points
+        if G < 0:
+            a = sign * k * beta
+            dadb = 0
+
+            vect[counter] = dadb
+            vect[nrv] = 1
+
+            while stop_flag == 0:
+                # for j = 1:4
+                b = b - G / (np.transpose(grad) * vect)
+                a = sign * k * beta
+
+                # new point coordinates
+                u_prime_i[counter] = a
+                u_prime_i[nrv] = b
+
+                u = np.transpose(R1) * u_prime_i
+                x = u_to_x(u, self.model)
+                J_u_x = jacobian(x, u, self.model)
+                J_x_u = np.linalg.inv(J_u_x)
+
+                G, grad = self.evaluateLSF(x,calc_gradient=True)
+                grad_G = R1 * np.transpose(grad*J_x_u)
+
+
+                if abs(G) < threshold:
+                    stop_flag = 1
+                
+
+            u_prime_i()
+            G_u = G
+           
+
+           # Case where G is positive at the starting points      
+        elif G > 0:    
+           a = sign * ((k * beta) ** 2 - (b - beta) ** 2) ** 0.5
+           dadb = sign * (-(b - beta) / ((k * beta) ** 2 - (b - beta) ** 2) ** 0.5)
+
+           vect[counter] = dadb
+           vect[nrv] = 1
+
+           while stop_flag == 0:
+               #  for j = 1:4
+
+               b = b - G / (np.transpose(grad) * vect)
+               a = sign * ((k * beta) ** 2 - (b - beta) ** 2) ** 0.5
+
+               # New point coordinates
+               u_prime_i[counter] = a
+               u_prime_i[nrv] = b
+
+               u = np.transpose(R1) * u_prime_i
+               x = u_to_x(u, self.model)
+               J_u_x = jacobian(x, u, self.model)
+               J_x_u = np.linalg.inv(J_u_x)
+
+               G, grad = self.evaluateLSF(x,calc_gradient=True)
+               grad_G = R1 * np.transpose(grad * J_x_u)
+
+               if abs(G) < threshold:
+                   stop_flag = 1
+               
+
+               dadb = sign * (-(b - beta) / ((k * beta) ** 2 - (b - beta) ** 2) ** 0.5)
+               vect[counter] = dadb
+          
+        
+           u_prime_i()
+           G_u = G
+            
+        
 
     def pf_breitung(self,beta,kappa):
         """
