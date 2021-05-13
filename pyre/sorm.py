@@ -74,14 +74,14 @@ class Sorm(object):
         self.betag_breitung_m = 0
         # Could add Tvedt too
 
-    def run(self,fit_type='cf'):
+    def run(self,fit_type='pf'):
         """
         Run SORM analysis using either:
             Curve-fitting: fit_type == 'cf'
             Point-fitting: fit_type == 'pf'
         """
-        if fit_type != 'cf':
-            raise ValueError("Point-Fitting not yet supported")
+        if fit_type == 'pf':
+            self.run_pointfit_mod()
         else:
             self.run_curvefit()
 
@@ -102,7 +102,6 @@ class Sorm(object):
     def run_pointfit_mod(self):
         # Useful parameters after Form analysis
         beta = self.form.beta
-        pf1 = self.form.pf
         alpha = self.form.alpha
         itera = self.form.i
         
@@ -115,6 +114,7 @@ class Sorm(object):
         nrv = self.model.getLenMarginalDistributions()
         
         # Determination of the coefficient k
+        global k
         if abs(beta) < 1:
             k = 1 / abs(beta)
         elif abs(beta) >= 1 and abs(beta) <= 3:
@@ -124,15 +124,15 @@ class Sorm(object):
         
         
         # Initial trial points of ordinates +beta
-        U_prime_1 = np.array([[-k*beta*np.eye(nrv-1),k*beta*np.eye(nrv-1)],[beta*np.ones(1,nrv-1),beta*np.ones(1,nrv-1)]])
+        U_prime_1 = np.array([[-k*beta*np.eye(nrv-1),k*beta*np.eye(nrv-1)],[beta*np.ones((1,nrv-1)),beta*np.ones((1,nrv-1))]])
 
         
         # Determination of the fitting points in the rotated space
         # Compute the fitting points on the negative side of axes and then on positive side of axes
         for i in range(2*nrv-1):
+            global num
             num = i
-            u_prime_i = self.fittingpoint.u_prime_i
-            G_u = self.fittingpoint.G_u
+            u_prime_i, G_u = self.run_fittingpoint()
             u_prime_final[:,i] = u_prime_i
             g_final[i] = G_u
         
@@ -191,11 +191,6 @@ class Sorm(object):
         threshold = 10 ** -6
         stop_flag = 0
         
-        k = self.run_pointfit_mod.k
-        num = self.run_pointfit_mod.num
-        U_prime_1 = self.run_pointfit.mod.U_prime_1
-    
-        
         # Useful parameters after Form Analysis
         beta = self.form.beta
         alpha = self.form.alpha
@@ -212,6 +207,7 @@ class Sorm(object):
             counter = i - nrv + 1
             sign = 1
         
+        U_prime_1 = np.array([[-k*beta*np.eye(nrv-1),k*beta*np.eye(nrv-1)],[beta*np.ones((1,nrv-1)),beta*np.ones((1,nrv-1))]])  
         
         vect = np.zeros((nrv,1))            
         u_prime_i = U_prime_1[:,i]   # Define the coordinates of the fitting point in the rotated space
@@ -296,7 +292,9 @@ class Sorm(object):
         
            u_prime_i()
            G_u = G
-            
+           
+        return u_prime_i
+        return G_u
         
 
     def pf_breitung(self,beta,kappa):
