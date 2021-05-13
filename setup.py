@@ -8,7 +8,7 @@ requires = [
 setup(name='pyre',
       version='5.0.3',
       description='PyRe (Python Reliability) is a python module for structural reliability analysis',
-      long_description=open('README.rst').read(),
+      long_description=open('README.rst').read().decode('utf8'),
       license=open('LICENSE').read(),
       classifiers=[
         "Programming Language :: Python",
