@@ -97,7 +97,7 @@ class Sorm(object):
         self.kappa = np.sort(kappa)
         self.pf_breitung(self.betaHL,self.kappa)
         self.pf_breitung_m(self.betaHL,self.kappa)
-        self.showResults()
+        self.showResults() 
 
     def run_pointfit_mod(self):
         # Useful parameters after Form analysis
@@ -122,9 +122,6 @@ class Sorm(object):
         else:
             k = 3 / abs(beta)
         
-        
-        # Initial trial points of ordinates +beta
-        U_prime_1 = np.array([[-k*beta*np.eye(nrv-1),k*beta*np.eye(nrv-1)],[beta*np.ones((1,nrv-1)),beta*np.ones((1,nrv-1))]])
 
         
         # Determination of the fitting points in the rotated space
@@ -206,20 +203,26 @@ class Sorm(object):
         else:                 # Positive axis
             counter = i - nrv + 1
             sign = 1
-        
-        U_prime_1 = np.array([[-k*beta*np.eye(nrv-1),k*beta*np.eye(nrv-1)],[beta*np.ones((1,nrv-1)),beta*np.ones((1,nrv-1))]])  
+            
+        # Initial trial points of ordinates +beta
+        top_matrix1 = np.array(-k*beta*np.eye(nrv-1))
+        bot_matrix = np.array(beta*np.ones((1,nrv-1)))
+        combine1 = np.vstack((top_matrix1,bot_matrix))
+        top_matrix2 = np.array(k*beta*np.eye(nrv-1))
+        combine2 = np.vstack((top_matrix2,bot_matrix))
+        U_prime_1 = np.hstack((combine1,combine2))
         
         vect = np.zeros((nrv,1))            
         u_prime_i = U_prime_1[:,i]   # Define the coordinates of the fitting point in the rotated space
         a = u_prime_i[counter]
-        b = u_prime_i[nrv]
+        b = u_prime_i[nrv-1]
         
-        u = np.transpose(R1) * u_prime_i   # Rotation to the standard normal space
+        u = np.transpose(R1) @ u_prime_i   # Rotation to the standard normal space
         x = u_to_x(u, self.model)
         J_u_x = jacobian(u, x, self.model)
         J_x_u = np.linalg.inv(J_u_x)
         G, grad = self.evaluateLSF(x,calc_gradient=True)
-        grad = R1 * np.transpose(grad*J_x_u)
+        grad_G = R1 @ np.transpose(grad*J_x_u)
         
         
         # Case where G is negative at the starting points
@@ -228,7 +231,7 @@ class Sorm(object):
             dadb = 0
 
             vect[counter] = dadb
-            vect[nrv] = 1
+            vect[nrv-1] = 1
 
             while stop_flag == 0:
                 # for j = 1:4
@@ -241,11 +244,11 @@ class Sorm(object):
 
                 u = np.transpose(R1) * u_prime_i
                 x = u_to_x(u, self.model)
-                J_u_x = jacobian(x, u, self.model)
+                J_u_x = jacobian(u, x, self.model)
                 J_x_u = np.linalg.inv(J_u_x)
 
                 G, grad = self.evaluateLSF(x,calc_gradient=True)
-                grad_G = R1 * np.transpose(grad*J_x_u)
+                grad_G = R1 @ np.transpose(grad*J_x_u)
 
 
                 if abs(G) < threshold:
@@ -276,11 +279,11 @@ class Sorm(object):
 
                u = np.transpose(R1) * u_prime_i
                x = u_to_x(u, self.model)
-               J_u_x = jacobian(x, u, self.model)
+               J_u_x = jacobian(u, x, self.model)
                J_x_u = np.linalg.inv(J_u_x)
 
                G, grad = self.evaluateLSF(x,calc_gradient=True)
-               grad_G = R1 * np.transpose(grad * J_x_u)
+               grad_G = R1 @ np.transpose(grad * J_x_u)
 
                if abs(G) < threshold:
                    stop_flag = 1
