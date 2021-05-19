@@ -122,66 +122,76 @@ class Sorm(object):
         else:
             k = 3 / abs(beta)
         
-
+        U_prime_final = np.zeros((nrv,2*(nrv-1)))
+        g_final = np.zeros((1,2*(nrv-1)))
+        g_final = g_final.reshape(-1,1)
+        a_curvatures_minus = np.zeros((1,nrv-1))
+        a_curvatures_minus = a_curvatures_minus.reshape(-1,1)
+        a_curvatures_plus = np.zeros((1,nrv-1))
+        a_curvatures_plus = a_curvatures_plus.reshape(-1,1)
+        kappa_plus_minus = np.zeros((nrv-1,nrv-1))
         
         # Determination of the fitting points in the rotated space
         # Compute the fitting points on the negative side of axes and then on positive side of axes
-        for i in range(2*nrv-1):
+        for i in range(2*(nrv-1)):
             global num
             num = i
             u_prime_i, G_u = self.run_fittingpoint()
-            u_prime_final[:,i] = u_prime_i
+            U_prime_final[:,i] = u_prime_i
             g_final[i] = G_u
         
+        U_prime_final_negative = U_prime_final[:,[0,nrv-2]]
+        U_prime_final_positive = U_prime_final[:,[nrv-1,nrv]]
         
         # Compute the curvatures a_i_+/-
         for i in range(nrv-1):
-             a_curvatures_minus[i] = 2 * (U_prime_final_negative(nrv, i) - beta) / (U_prime_final_negative(i, i)) ** 2
-             a_curvatures_plus[i] = 2 * (U_prime_final_positive(nrv, i) - beta) / (U_prime_final_positive(i, i)) ** 2
+             a_curvatures_minus[i] = 2 * (U_prime_final_negative[nrv-1][i] - beta) / (U_prime_final_negative[i][i]) ** 2
+             a_curvatures_plus[i] = 2 * (U_prime_final_positive[nrv-1][i] - beta) / (U_prime_final_positive[i][i]) ** 2
         
-        a_curvatures_plus()
-        a_curvatures_minus()
+        #a_curvatures_plus()
+        #a_curvatures_minus()
         
-        kappa_plus_minus[1,:] = a_curvatures_plus
-        kappa_plus_minus[2,:] = a_curvatures_minus
+        a_curvatures_minus = a_curvatures_minus.reshape(1,-1)
+        a_curvatures_plus = a_curvatures_plus.reshape(1,-1)
+        
+        kappa_plus_minus[0,:] = a_curvatures_plus
+        kappa_plus_minus[1,:] = a_curvatures_minus
         
         
         # Along minus axis
         U_prime_minus =  np.zeros((nrv-1,5))
         minus_array = [*range(1,nrv,1)]
-        minus_arrayt = np.transpose(minus_array)
-        U_prime_minus[:,1] = round(minus_arrayt)
+        U_prime_minus[:,0] = np.transpose(minus_array)
         
         for i in range(nrv-1):
-            U_prime_minus[i,2] = U_prime_final[i][i]
+            U_prime_minus[i,1] = U_prime_final[i][i]
         
-        
-        U_prime_minus[:,3] = np.transpose(U_prime_final_negative[nrv])
-        U_prime_minus[:,4] = np.transpose(g_final[1:nrv-1])
-        U_prime_mminuys[:,5] = np.transpose(a_curvatures_minus)
-        U_prime_min()
+        U_prime_minus[:,2] = np.transpose(U_prime_final_negative[nrv-1,:])
+        U_prime_minus[:,3] = np.transpose(g_final[0:nrv-1])
+        U_prime_minus[:,4] = np.transpose(a_curvatures_minus[0])
+        #U_prime_min()
         
         # Along plus axis
         U_prime_plus = np.zeros((nrv-1,5))
         plus_array = [*range(1,nrv,1)]
-        U_prime_plus[:,1] = np.transpose(plus_array)
+        U_prime_plus[:,0] = np.transpose(plus_array)
         
-        for i in range(nrv,2*(nrv-1)):
-            U_prime_plus[i-nrv+1,2] = U_prime_final[i-nrv+1][i]
+        for i in range(nrv-1,2*(nrv-1)):
+            U_prime_plus[i-nrv+1,1] = U_prime_final[i-nrv+1][i]
         
         
-        U_prime_plus[:,3] = np.transpose(U_prime_final_positive[nrv])
-        U_prime_plus[:,4] = np.transpose(g_final[nrv:2*(nrv-1)])
-        U_prime_plus[:,5] = np.transpose(a_curvatures_plus)
-        U_prime_plus()
+        U_prime_plus[:,2] = np.transpose(U_prime_final_positive[nrv-1,:])
+        U_prime_plus[:,3] = np.transpose(g_final[nrv-1:])
+        U_prime_plus[:,4] = np.transpose(a_curvatures_plus[0])
+        #U_prime_plus()
             
 
         # Breitung
         pf2_breitung = Normal.cdf(-beta, 0, 1)*np.prod(0.5*((1+beta*a_curvatures_plus)**(-0.5)+(1+beta*a_curvatures_minus)**(-0.5)))
         betag_breitung = -Normal.inv_cdf(pf2_breitung)    
         
-        print('Generalized reliability index: ', self.betag_breitung)
-        print('Probability of failure:        ', self.pf2_breitung)
+        print('Generalized reliability index: ',betag_breitung)
+        print('Probability of failure:        ',pf2_breitung)
         
         
     def run_fittingpoint(self):
