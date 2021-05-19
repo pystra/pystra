@@ -218,11 +218,12 @@ class Sorm(object):
         b = u_prime_i[nrv-1]
         
         u = np.transpose(R1) @ u_prime_i   # Rotation to the standard normal space
-        x = u_to_x(u, self.model)
+        x = u_to_x(u,self.model)
+        x = x.reshape(-1,1)
         J_u_x = jacobian(u, x, self.model)
         J_x_u = np.linalg.inv(J_u_x)
         G, grad = self.evaluateLSF(x,calc_gradient=True)
-        grad_G = R1 @ np.transpose(grad*J_x_u)
+        grad_G = R1 @ np.transpose(grad @ J_x_u)
         
         
         # Case where G is negative at the starting points
@@ -255,7 +256,7 @@ class Sorm(object):
                     stop_flag = 1
                 
 
-            u_prime_i()
+            #u_prime_i()
             G_u = G
            
 
@@ -265,25 +266,26 @@ class Sorm(object):
            dadb = sign * (-(b - beta) / ((k * beta) ** 2 - (b - beta) ** 2) ** 0.5)
 
            vect[counter] = dadb
-           vect[nrv] = 1
+           vect[nrv-1] = 1
 
            while stop_flag == 0:
                #  for j = 1:4
 
-               b = b - G / (np.transpose(grad) * vect)
+               b = b - G / (np.transpose(grad_G) @ vect)
                a = sign * ((k * beta) ** 2 - (b - beta) ** 2) ** 0.5
 
                # New point coordinates
                u_prime_i[counter] = a
-               u_prime_i[nrv] = b
+               u_prime_i[nrv-1] = b
 
-               u = np.transpose(R1) * u_prime_i
+               u = np.transpose(R1) @ u_prime_i
                x = u_to_x(u, self.model)
+               x = x.reshape(-1,1)
                J_u_x = jacobian(u, x, self.model)
                J_x_u = np.linalg.inv(J_u_x)
-
+               
                G, grad = self.evaluateLSF(x,calc_gradient=True)
-               grad_G = R1 @ np.transpose(grad * J_x_u)
+               grad_G = R1 @ np.transpose(grad @ J_x_u)
 
                if abs(G) < threshold:
                    stop_flag = 1
@@ -293,11 +295,11 @@ class Sorm(object):
                vect[counter] = dadb
           
         
-           u_prime_i()
+           #u_prime_i()
            G_u = G
            
-        return u_prime_i
-        return G_u
+        return u_prime_i, G_u
+        
         
 
     def pf_breitung(self,beta,kappa):
