@@ -189,6 +189,7 @@ class Sorm(object):
         # Breitung
         pf2_breitung = Normal.cdf(-beta, 0, 1)*np.prod(0.5*((1+beta*a_curvatures_plus)**(-0.5)+(1+beta*a_curvatures_minus)**(-0.5)))
         betag_breitung = -Normal.inv_cdf(pf2_breitung)    
+        self.kappa = kappa_plus_minus
         
         print('Generalized reliability index: ',betag_breitung)
         print('Probability of failure:        ',pf2_breitung)
@@ -246,20 +247,21 @@ class Sorm(object):
 
             while stop_flag == 0:
                 # for j = 1:4
-                b = b - G / (np.transpose(grad) * vect)
+                b = b - G / (np.transpose(grad_G) @ vect)
                 a = sign * k * beta
 
                 # new point coordinates
                 u_prime_i[counter] = a
-                u_prime_i[nrv] = b
+                u_prime_i[nrv-1] = b
 
-                u = np.transpose(R1) * u_prime_i
+                u = np.transpose(R1) @ u_prime_i
                 x = u_to_x(u, self.model)
+                x = x.reshape(-1,1)
                 J_u_x = jacobian(u, x, self.model)
                 J_x_u = np.linalg.inv(J_u_x)
 
                 G, grad = self.evaluateLSF(x,calc_gradient=True)
-                grad_G = R1 @ np.transpose(grad*J_x_u)
+                grad_G = R1 @ np.transpose(grad@J_x_u)
 
 
                 if abs(G) < threshold:
