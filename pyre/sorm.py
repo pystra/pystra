@@ -74,16 +74,16 @@ class Sorm(object):
         self.betag_breitung_m = 0
         # Could add Tvedt too
 
-    def run(self,fit_type='pf'):
+    def run(self,fit_type='cf'):
         """
         Run SORM analysis using either:
             Curve-fitting: fit_type == 'cf'
             Point-fitting: fit_type == 'pf'
         """
-        if fit_type == 'pf':
-            self.run_pointfit_mod()
-        else:
+        if fit_type == 'cf':
             self.run_curvefit()
+        else:
+            self.run_pointfit()
 
     def run_curvefit(self):
         """
@@ -99,7 +99,11 @@ class Sorm(object):
         self.pf_breitung_m(self.betaHL,self.kappa)
         self.showResults() 
 
-    def run_pointfit_mod(self):
+    def run_pointfit(self):
+        """
+        Run SORM analysis using curve fitting
+    
+        """
         # Useful parameters after Form analysis
         beta = self.form.beta
         alpha = self.form.alpha
