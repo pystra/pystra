@@ -10,12 +10,13 @@ import datetime
 start_time = time.time()
 
 
-def example_limitstatefunction(m1, m2, p, gamma):
+def example_limitstatefunction(m1, m2, p, y1):
     """
     example limit state function
     """
-    return 1 - (m1/(0.030*gamma))-(m2/(0.015*gamma))-(p/(0.190*gamma))**(2)
-    #return 1 - X2*(1000*X3)**(-1) - (X1*(200*X3)**(-1))**2
+    return 1 - (m1/(0.030*y1))-(m2/(0.015*y1))-(p/(0.190*y1))**(2)
+    
+    
 
 
 # Define a main() function.
@@ -36,15 +37,17 @@ def main():
     stochastic_model.addVariable(Normal('m1', 250, 75))
     stochastic_model.addVariable(Normal('m2', 125, 37.5))
     stochastic_model.addVariable(Gumbel('p', 2500, 500))
-    stochastic_model.addVariable(Weibull('gamma', 40, 4))
+    stochastic_model.addVariable(Weibull('y1', 40, 4))
     
 
     # If the random variables are correlatet, then define a correlation matrix,
     # else no correlatin matrix is needed
-    stochastic_model.setCorrelation(CorrelationMatrix([[1.0, 0, 0, 0],
-                                                       [0.5, 1.0, 0, 0],
-                                                       [0.3, 0.3, 1.0, 0],
-                                                       [0, 0, 0, 1.0]]))
+
+
+    stochastic_model.setCorrelation(CorrelationMatrix([[1.0, 0.0, 0.0, 0.0],
+                                                       [0.5, 1.0, 0.0, 0.0],
+                                                       [0.3, 0.3, 1.0, 0.0],
+                                                       [0.0, 0.0, 0.0, 1.0]]))
 
     # Perform FORM analysis
     Analysis = Form(analysis_options=options,
