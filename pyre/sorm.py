@@ -101,7 +101,7 @@ class Sorm(object):
 
     def run_pointfit(self):
         """
-        Run SORM analysis using curve fitting
+        Run SORM analysis using point fitting
     
         """
         # Useful parameters after Form analysis
@@ -152,8 +152,6 @@ class Sorm(object):
              a_curvatures_minus[i] = 2 * (U_prime_final_negative[nrv-1][i] - beta) / (U_prime_final_negative[i][i]) ** 2
              a_curvatures_plus[i] = 2 * (U_prime_final_positive[nrv-1][i] - beta) / (U_prime_final_positive[i][i]) ** 2
         
-        #a_curvatures_plus()
-        #a_curvatures_minus()
         
         a_curvatures_minus = a_curvatures_minus.reshape(1,-1)
         a_curvatures_plus = a_curvatures_plus.reshape(1,-1)
@@ -173,7 +171,7 @@ class Sorm(object):
         U_prime_minus[:,2] = np.transpose(U_prime_final_negative[nrv-1,:])
         U_prime_minus[:,3] = np.transpose(g_final[0:nrv-1])
         U_prime_minus[:,4] = np.transpose(a_curvatures_minus[0])
-        #U_prime_min()
+        
         
         # Along plus axis
         U_prime_plus = np.zeros((nrv-1,5))
@@ -187,7 +185,7 @@ class Sorm(object):
         U_prime_plus[:,2] = np.transpose(U_prime_final_positive[nrv-1,:])
         U_prime_plus[:,3] = np.transpose(g_final[nrv-1:])
         U_prime_plus[:,4] = np.transpose(a_curvatures_plus[0])
-        #U_prime_plus()
+        
             
 
         # Breitung
@@ -200,6 +198,9 @@ class Sorm(object):
         
         
     def run_fittingpoint(self):
+        """
+        Computes the fitting points
+        """
         threshold = 10 ** -6
         stop_flag = 0
         
@@ -272,7 +273,7 @@ class Sorm(object):
                     stop_flag = 1
                 
 
-            #u_prime_i()
+        
             G_u = G
            
 
@@ -311,7 +312,7 @@ class Sorm(object):
                vect[counter] = dadb
           
         
-           #u_prime_i()
+           
            G_u = G
            
         return u_prime_i, G_u

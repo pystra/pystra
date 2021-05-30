@@ -52,6 +52,7 @@ def main():
     sorm = Sorm(analysis_options=options,stochastic_model=stochastic_model, 
                 limit_state=limit_state, form=Analysis)
     sorm.run(fit_type='pf')
+    
     # Detailed output
     sorm.showDetailedOutput()
 
