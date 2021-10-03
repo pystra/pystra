@@ -98,8 +98,8 @@ class Form(object):
         # loope
         while not convergence:
             if self.options.printOutput():
-                print('.......................................')
-                print('Now carrying out iteration number:', i)
+                print(".......................................")
+                print("Now carrying out iteration number:", i)
 
             # Compute Transformation from u to x space
             self.computeTransformation()
@@ -114,7 +114,7 @@ class Form(object):
             if i == 1:
                 self.Go = self.G
                 if self.options.printOutput():
-                    print('Value of limit-state function in the first step:', self.G)
+                    print("Value of limit-state function in the first step:", self.G)
 
             # Compute alpha vector
             self.computeAlpha()
@@ -123,8 +123,8 @@ class Form(object):
             self.computeGamma()
 
             # Check convergence
-            e1 = np.absolute(self.G*self.Go**(-1))[0]
-            e2 = np.linalg.norm(self.u-self.alpha.dot(self.u).dot(self.alpha))
+            e1 = np.absolute(self.G * self.Go ** (-1))[0]
+            e2 = np.linalg.norm(self.u - self.alpha.dot(self.u).dot(self.alpha))
             print(f"e1 = {e1:1.6e} , e2 = {e2:1.6e}")
             condition1 = e1 < self.options.getE1()
             condition2 = e2 < self.options.getE2()
@@ -182,32 +182,40 @@ class Form(object):
     def computeLimitState(self):
         """Evaluate limit-state function and its gradient"""
         G, gradient = evaluateLimitState(
-            self.x, self.model, self.options, self.limitstate)
+            self.x, self.model, self.options, self.limitstate
+        )
         self.G = G
         self.gradient = np.dot(np.transpose(gradient), self.J)
 
     def computeAlpha(self):
         """Compute alpha vector"""
-        self.alpha = -self.gradient * np.linalg.norm(self.gradient)**(-1)
+        self.alpha = -self.gradient * np.linalg.norm(self.gradient) ** (-1)
 
     def computeGamma(self):
         """Compute gamma vector"""
-        self.gamma = np.diag(
-            np.diag(np.sqrt(np.dot(self.J, np.transpose(self.J)))))
+        self.gamma = np.diag(np.diag(np.sqrt(np.dot(self.J, np.transpose(self.J)))))
         # Importance vector gamma
         matmult = np.dot(np.dot(self.alpha, self.J), self.gamma)
-        importance_vector_gamma = (matmult*np.linalg.norm(matmult)**(-1))
+        importance_vector_gamma = matmult * np.linalg.norm(matmult) ** (-1)
 
     def computeSearchDirection(self):
         """Determine search direction"""
-        self.d = (self.G * np.linalg.norm(self.gradient)**(-1) +
-                  self.alpha.dot(self.u)) * self.alpha - self.u
+        self.d = (
+            self.G * np.linalg.norm(self.gradient) ** (-1) + self.alpha.dot(self.u)
+        ) * self.alpha - self.u
 
     def computeStepSize(self):
         """Determine step size"""
         if self.options.getStepSize() == 0:
             self.step = getStepSize(
-                self.G, self.gradient, self.u, self.d, self.model, self.options, self.limitstate)
+                self.G,
+                self.gradient,
+                self.u,
+                self.d,
+                self.model,
+                self.options,
+                self.limitstate,
+            )
         else:
             self.step = self.options.getStepSize()
 
@@ -222,48 +230,53 @@ class Form(object):
     def showResults(self):
         """Show results"""
         n_hyphen = 54
-        print('')
+        print("")
         print("=" * n_hyphen)
-        print('')
-        print(' RESULTS FROM RUNNING FORM RELIABILITY ANALYSIS')
-        print('')
-        print(' Number of iterations:     ', self.i)
-        print(' Reliability index beta:   ', self.beta[0])
-        print(' Failure probability:      ', self.Pf)
-        print(' Number of calls to the limit-state function:',
-              self.model.getCallFunction())
-        print('')
+        print("")
+        print(" RESULTS FROM RUNNING FORM RELIABILITY ANALYSIS")
+        print("")
+        print(" Number of iterations:     ", self.i)
+        print(" Reliability index beta:   ", self.beta[0])
+        print(" Failure probability:      ", self.Pf)
+        print(
+            " Number of calls to the limit-state function:",
+            self.model.getCallFunction(),
+        )
+        print("")
         print("=" * n_hyphen)
-        print('')
-        
+        print("")
+
     def showDetailedOutput(self):
         """Get detailed output to console"""
         names = self.model.getNames()
         u_star = self.getDesignPoint()
         x_star = self.getDesignPoint(uspace=False)
         alpha = self.getAlpha()
-        
+
         n_hyphen = 54
-        print('')
+        print("")
         print("=" * n_hyphen)
         print("FORM")
         print("=" * n_hyphen)
-        print("{:15s} \t {:1.10e}".format("Pf",self.Pf))
-        print("{:15s} \t {:2.10f}".format("BetaHL",self.beta[0]))
-        print("{:15s} \t {:d}".format('Model Evaluations',
-                                      self.model.getCallFunction()))
+        print("{:15s} \t {:1.10e}".format("Pf", self.Pf))
+        print("{:15s} \t {:2.10f}".format("BetaHL", self.beta[0]))
+        print(
+            "{:15s} \t {:d}".format("Model Evaluations", self.model.getCallFunction())
+        )
         print("-" * n_hyphen)
-        print("{:10s} \t {:>9s} \t {:>12s} \t {:>9s}".format("Variable",
-                                                            'U_star',
-                                                            'X_star',
-                                                            'alpha'))
+        print(
+            "{:10s} \t {:>9s} \t {:>12s} \t {:>9s}".format(
+                "Variable", "U_star", "X_star", "alpha"
+            )
+        )
         for i, name in enumerate(names):
-            print("{:10s} \t {: 5.6f} \t {:12.6f} \t {:+5.6f}".format(name,
-                                                                   u_star[i],
-                                                                   x_star[i],
-                                                                   alpha[i]))
+            print(
+                "{:10s} \t {: 5.6f} \t {:12.6f} \t {:+5.6f}".format(
+                    name, u_star[i], x_star[i], alpha[i]
+                )
+            )
         print("=" * n_hyphen)
-        print('')
+        print("")
 
     def getBeta(self):
         """Returns the beta value
@@ -281,7 +294,7 @@ class Form(object):
         """
         return self.Pf
 
-    def getDesignPoint(self,uspace=True):
+    def getDesignPoint(self, uspace=True):
         """Returns the design point, defaults to u-space
 
         :Returns:
@@ -290,12 +303,17 @@ class Form(object):
         if uspace:
             return self.u
         else:
-            return u_to_x(self.u,self.model)
+            return u_to_x(self.u, self.model)
 
-    def getAlpha(self):
+    def getAlpha(self, as_dict=False):
         """Returns the alpha vector
 
         :Returns:
           - alpha (np.array): Returns the alpha vector
         """
+        if as_dict:
+            names = self.model.getNames()
+            alphas = self.alpha[0]
+            alpha_dict = {name: alpha for alpha, name in zip(alphas, names)}
+            return alpha_dict
         return self.alpha[0]
