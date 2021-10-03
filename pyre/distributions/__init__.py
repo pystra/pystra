@@ -15,3 +15,4 @@ from .typeiiismallestvalue import *
 from .gumbel import *
 from .weibull import *
 from .normaln import *
+from .maximum import *

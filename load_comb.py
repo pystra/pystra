@@ -30,7 +30,8 @@ def load_repeats(n):
     # Define random variables
     prob_model.addVariable(pr.Normal("Mf", 20, 2))
     prob_model.addVariable(pr.Normal("P1", 3, 0.3))
-    prob_model.addVariable(pr.NormalN("P2", 2, 0.2, n))
+    # prob_model.addVariable(pr.NormalN("P2", 2, 0.2, n))
+    prob_model.addVariable(pr.Maximum("P2", pr.Normal("P2parent", 2, 0.2), n))
 
     # Perform FORM
     form = pr.Form(stochastic_model=prob_model, limit_state=limit_state)

@@ -64,8 +64,8 @@ class NormalN(Distribution):
             sd = marg.getP2()
             n = marg.getP3()
             mean = marg.getMean()
-            normal_val = Normal.cdf(u[i], 0, 1)
-            par = opt.fmin(zero_normaln, mean, args=(mu, sd, n, normal_val), disp=False)
+            p = Normal.cdf(u[i], 0, 1)
+            par = opt.fmin(zero_normaln, mean, args=(mu, sd, n, p), disp=False)
             x[i] = par[0]
         return x
 

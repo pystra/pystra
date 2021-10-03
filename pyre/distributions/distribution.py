@@ -24,6 +24,7 @@ def getDistributionType(type):
         15: "Gumbel",
         16: "Weibull",
         17: "NormalN",
+        18: "Maximum",
     }
     return listOfDistributions[type]
 
@@ -49,6 +50,7 @@ class Distribution(object):
                     15:'Gumbel'\n
                     16:'Weibull'\n
                     17: 'NormalN' \n
+                    18: 'Maximum' \n
     mean (float): Mean or other variable\n
     stdv (float): Standard deviation or other variable\n
     startpoint (float): Start point for seach\n
