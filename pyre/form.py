@@ -6,6 +6,7 @@ import numpy as np
 import math
 import scipy.optimize as opt
 import scipy.special as spec
+from scipy.stats import norm
 
 from .model import *
 from .correlation import *
@@ -225,7 +226,7 @@ class Form(object):
 
     def computeFailureProbability(self):
         """Compute probability of failure"""
-        self.Pf = Normal.cdf(-self.beta, 0, 1)
+        self.Pf = norm.cdf(-self.beta)
 
     def showResults(self):
         """Show results"""
@@ -237,7 +238,7 @@ class Form(object):
         print("")
         print(" Number of iterations:     ", self.i)
         print(" Reliability index beta:   ", self.beta[0])
-        print(" Failure probability:      ", self.Pf)
+        print(" Failure probability:      ", self.Pf[0])
         print(
             " Number of calls to the limit-state function:",
             self.model.getCallFunction(),
@@ -258,7 +259,7 @@ class Form(object):
         print("=" * n_hyphen)
         print("FORM")
         print("=" * n_hyphen)
-        print("{:15s} \t {:1.10e}".format("Pf", self.Pf))
+        print("{:15s} \t {:1.10e}".format("Pf", self.Pf[0]))
         print("{:15s} \t {:2.10f}".format("BetaHL", self.beta[0]))
         print(
             "{:15s} \t {:d}".format("Model Evaluations", self.model.getCallFunction())

@@ -4,104 +4,80 @@
 import numpy as np
 import math
 import scipy.optimize as opt
-import scipy.special as spec
+from scipy import special as sp
 
 
-def getDistributionType(type):
-    listOfDistributions = {
-        1: "Normal",
-        2: "Lognormal",
-        3: "Gamma",
-        4: "ShiftedExponential",
-        5: "ShiftedRayleigh",
-        6: "Uniform",
-        7: "Beta",
-        8: "ChiSquare",
-        11: "TypeIlargestValue",
-        12: "TypeIsmallestValue",
-        13: "TypeIIlargestValue",
-        14: "TypeIIIsmallestValue",
-        15: "Gumbel",
-        16: "Weibull",
-        17: "NormalN",
-        18: "Maximum",
-    }
-    return listOfDistributions[type]
+class StdNormal:
+    """
+    A performant implementation of the standard normal distribution providing
+    the basic functions PDF, CDF, and inverse CDF, since these are used
+    frequently in the algorithms.
+    """
+
+    @staticmethod
+    def pdf(u):
+        p = np.exp(-0.5 * u ** 2) / np.sqrt(2 * np.pi)
+        return p
+
+    @staticmethod
+    def cdf(u):
+        p = 0.5 + sp.erf(u / np.sqrt(2)) / 2
+        return p
+
+    @staticmethod
+    def inv_cdf(p):
+        u = sp.erfinv(2 * p - 1) * np.sqrt(2)
+        return u
 
 
-class Distribution(object):
+class Distribution:
     """Probability distribution
 
-  Attributes:
-    name (str):   Name of the random variable\n
-    type (int):   Type of probability distribution\n
-                     1:'Normal'\n
-                     2:'Lognormal'\n
-                     3:'Gamma'\n
-                     4:'ShiftedExponential'\n
-                     5:'ShiftedRayleigh'\n
-                     6:'Uniform'\n
-                     7:'Beta'\n
-                     8:'ChiSquare'\n
-                    11:'TypeIlargestValue'\n
-                    12:'TypeIsmallestValue'\n
-                    13:'TypeIIlargestValue'\n
-                    14:'TypeIIIsmallestValue'\n
-                    15:'Gumbel'\n
-                    16:'Weibull'\n
-                    17: 'NormalN' \n
-                    18: 'Maximum' \n
-    mean (float): Mean or other variable\n
-    stdv (float): Standard deviation or other variable\n
-    startpoint (float): Start point for seach\n
-    p1 (float):   Parameter for the distribution\n
-    p2 (float):   Parameter for the distribution\n
-    p3 (float):   Parameter for the distribution\n
-    p4 (float):   Parameter for the distribution\n
-    input_type (any): Change meaning of mean and stdv\n
+    Attributes:
+      name (str):   Name of the random variable\n
+      dist_obj (SciPy rv): if subclassing SciPy distribution
+      mean (float): Mean or other variable\n
+      stdv (float): Standard deviation or other variable\n
+      startpoint (float): Start point for seach\n
+      p1 (float):   Parameter for the distribution\n
+      p2 (float):   Parameter for the distribution\n
+      p3 (float):   Parameter for the distribution\n
+      p4 (float):   Parameter for the distribution\n
+      input_type (any): Change meaning of mean and stdv\n
 
-    Default: all values
+      Default: all values
+    """
 
-  """
+    std_normal = StdNormal()
 
     def __init__(
-        self,
-        name=None,
-        type=None,
-        mean=None,
-        stdv=None,
-        startpoint=None,
-        p1=None,
-        p2=None,
-        p3=None,
-        p4=None,
-        input_type=None,
+        self, name="", dist_obj=None, mean=None, stdv=None, startpoint=None,
     ):
         self.name = name
-        self.type = type
-        self.mean = mean
-        self.stdv = stdv
+        self.dist_type = "BaseCls"
 
-        self.startpoint = None
+        # This is the key object that is to be defined in derived classes that
+        # are using the base class functionality
+        self.dist_obj = dist_obj
+
+        if self.dist_obj is not None:
+            self.mean = self.dist_obj.mean()
+            self.stdv = self.dist_obj.std()
+        elif mean is None or stdv is None:
+            raise Exception("Mean and std dev must be defined in derived classes")
+        else:
+            self.mean = mean
+            self.stdv = stdv
+
         self.setStartPoint(startpoint)
 
-        self.p1 = p1
-        self.p2 = p2
-        self.p3 = p3
-        self.p4 = p4
-        self.input_type = input_type
-
     def __repr__(self):
-        type = getDistributionType(self.type)
-        string = self.name + ": " + type + " distribution"
-        return string  # repr(self.matrix)
+        string = self.name + ": " + self.dist_type + " distribution"
+        return string
 
     def getName(self):
         return self.name
 
-    def getType(self):
-        return self.type
-
     def getMean(self):
         return self.mean
 
@@ -111,110 +87,45 @@ class Distribution(object):
     def getStartPoint(self):
         return self.startpoint
 
-    def getP1(self):
-        return self.p1
-
-    def getP2(self):
-        return self.p2
-
-    def getP3(self):
-        return self.p3
-
-    def getP4(self):
-        return self.p4
-
-    def getMarginalDistribution(self):
-        marg = MarginalDistribution(
-            self.type,
-            self.mean,
-            self.stdv,
-            self.startpoint,
-            self.p1,
-            self.p2,
-            self.p3,
-            self.p4,
-        )
-        return marg
-
     def setStartPoint(self, startpoint=None):
-        if startpoint == None:
+        if startpoint is None:
             self.startpoint = self.mean
         else:
             self.startpoint = startpoint
 
+    # The following can be overridden by derived classes to implement more
+    # efficient calculations where desirable
 
-class MarginalDistribution(object):
-    """
-  """
-
-    def __init__(self, type, mean, stdv, startpoint, p1, p2, p3, p4):
+    def pdf(self, x):
         """
+        Probability density function
+        """
+        return self.dist_obj.pdf(x)
 
-    Arguments:
-      - `type`:
-      - `mean`:
-      - `stdv`:
-      - `startpoint`:
-      - `p1`:
-      - `p2`:
-      - `p3`:
-      - `p4`:
-    """
-        self.type = type
-        self.mean = mean
-        self.stdv = stdv
-        self.startpoint = startpoint
-        self.p1 = p1
-        self.p2 = p2
-        self.p3 = p3
-        self.p4 = p4
-        self.marg = [type, mean, stdv, startpoint, p1, p2, p3, p4]
+    def cdf(self, x):
+        """
+        Cumulative distribution function
+        """
+        return self.dist_obj.cdf(x)
 
-    def __repr__(self):
-        return repr(self.marg)
+    def u_to_x(self, u):
+        """
+        Transformation from u to x
+        """
+        return self.dist_obj.ppf(self.std_normal.cdf(u))
 
-    def __getitem__(self, key):
-        return self.marg[key]
+    def x_to_u(self, x):
+        """
+        Transformation from x to u
+        """
+        u = self.std_normal.inv_cdf(self.cdf(x))
+        return u
 
-    def __setitem__(self, key, item):
-        self.marg[key] = item
-
-    def __len__(self):
-        return 1
-
-    def getMarg(self):
-        marg = [
-            self.type,
-            self.mean,
-            self.stdv,
-            self.startpoint,
-            self.p1,
-            self.p2,
-            self.p3,
-            self.p4,
-        ]
-        return marg
-
-    def getType(self):
-        return self.type
-
-    def getMean(self):
-        return self.mean
-
-    def getStdv(self):
-        return self.stdv
-
-    def getStartPoint(self):
-        return self.startpoint
-
-    def getP1(self):
-        return self.p1
-
-    def getP2(self):
-        return self.p2
-
-    def getP3(self):
-        return self.p3
-
-    def getP4(self):
-        return self.p4
+    def jacobian(self, u, x):
+        """
+        Compute the Jacobian
+        """
+        pdf1 = self.pdf(x)
+        pdf2 = self.std_normal.pdf(u)
+        J = np.diag(pdf1 / pdf2)
+        return J

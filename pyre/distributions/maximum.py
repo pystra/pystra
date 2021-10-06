@@ -5,7 +5,6 @@ import numpy as np
 import scipy.optimize as opt
 
 from .distribution import Distribution
-from .normal import Normal
 
 
 class Maximum(Distribution):
@@ -22,6 +21,9 @@ class Maximum(Distribution):
     """
 
     def __init__(self, name, parent, N, input_type=None, startpoint=None):
+
+        self.dist_type = "Maximum"
+
         if not isinstance(parent, Distribution):
             raise Exception(
                 f"Maximum parent requires input of type {type(Distribution)}"
@@ -29,103 +31,66 @@ class Maximum(Distribution):
         if N < 1.0:
             raise Exception("Maximum exponent must be >= 1.0")
 
-        self.type = 18
-        self.distribution = {18: "Maximum"}
-        self.name = name
         self.parent = parent
         self.N = N
-        self.mean, self.stdv = self._get_stats()
-        self.input_type = None
-
-        mean, stdv, p1, p2, p3, p4 = self.setMarginalDistribution()
+        m, s = self._get_stats()
 
         super().__init__(
-            name, self.type, mean, stdv, startpoint, p1, p2, p3, p4, input_type
+            name=name, mean=m, stdv=s, startpoint=startpoint,
         )
 
-    def setMarginalDistribution(self):
-        """
-        Compute the marginal distribution
-        """
-        return self.mean, self.stdv, self.parent, self.N, None, None
-
-    @classmethod
-    def pdf(self, x, parent=None, N=None, var_3=None, var_4=None):
+    def pdf(self, x):
         """
         Probability density function
         """
-        pdf = parent.pdf(
-            x, parent.getP1(), parent.getP2(), parent.getP3(), parent.getP4()
-        )
+        pdf = self.parent.pdf(x)
         cdf = 1.0
-        if N > 1.0:
-            cdf = parent.cdf(
-                x, parent.getP1(), parent.getP2(), parent.getP3(), parent.getP4()
-            )
-        p = N * pdf * cdf ** (N - 1)
+        if self.N > 1.0:
+            cdf = self.parent.cdf(x)
+        p = self.N * pdf * cdf ** (self.N - 1)
         return p
 
-    @classmethod
-    def cdf(self, x, parent=None, N=None, var_3=None, var_4=None):
+    def cdf(self, x):
         """
         Cumulative distribution function
         """
-        P = (
-            parent.cdf(
-                x, parent.getP1(), parent.getP2(), parent.getP3(), parent.getP4()
-            )
-        ) ** N
+        P = (self.parent.cdf(x)) ** self.N
         return P
 
-    def _inv_cdf(self, p):
+    def inv_cdf(self, p):
         """
         inverse cumulative distribution function
         """
-        x = np.zeros(len(p))
+        p = np.atleast_1d(p)
+        x = np.zeros_like(p)
         x0 = self.parent.mean
-        for i in range(len(p)):
-            par = opt.fmin(zero_distn, x0, args=(self.parent, self.N, p[i]), disp=False)
+        for i, p_val in enumerate(p):
+            par = opt.fmin(self.zero_distn, x0, args=(p_val,), disp=False)
             x[i] = par[0]
         return x
 
-    @classmethod
-    def u_to_x(self, u, marg, x=None):
+    def u_to_x(self, u):
         """
         Transformation from u to x
         """
-        if x is None:
-            x = np.zeros(len(u))
-        for i in range(len(u)):
-            parent = marg.getP1()
-            n = marg.getP2()
-            x0 = marg.getMean()
-            p = Normal.cdf(u[i], 0, 1)
-            par = opt.fmin(zero_distn, x0, args=(parent, n, p), disp=False)
-            x[i] = par[0]
+        p = self.std_normal.cdf(u)
+        x = self.inv_cdf(p)
         return x
 
-    @classmethod
-    def x_to_u(self, x, marg, u=None):
+    def x_to_u(self, x):
         """
         Transformation from x to u
         """
-        if u is None:
-            u = np.zeros(len(x))
-        for i in range(len(x)):
-            u[i] = Normal.inv_cdf(Maximum.cdf(x[i], marg.getP1(), marg.getP2()))
+        u = self.std_normal.ppf(self.cdf(x))
         return u
 
-    @classmethod
-    def jacobian(self, u, x, marg, J=None):
+    def jacobian(self, u, x):
         """
         Compute the Jacobian (e.g. Lemaire, eq. 4.9)
         """
-        if J is None:
-            J = np.zeros((len(marg), len(marg)))
-        for i in range(len(marg)):
-            pdf1 = Maximum.pdf(x[i], marg.getP1(), marg.getP2())
-            pdf2 = Normal.pdf(u[i], 0, 1)
-            J[i][i] = pdf1 * (pdf2) ** (-1)
+        pdf1 = self.pdf(x)
+        pdf2 = self.std_normal.pdf(u)
+        J = np.diag(pdf1 / pdf2)
         return J
 
     def _get_stats(self):
@@ -135,15 +100,14 @@ class Maximum(Distribution):
         them for default starting points, just estimate through simulation.
         """
         p = np.random.random(100)
-        x = self._inv_cdf(p)
+        x = self.inv_cdf(p)
         mean = x.mean()
         stdv = x.std()
 
         return mean, stdv
 
-
-def zero_distn(x, *args):
-    parent, n, p = args
-    cdf = Maximum.cdf(x, parent, n)
-    zero = np.absolute(cdf - p)
-    return zero
+    def zero_distn(self, x, *args):
+        p = args
+        cdf = self.cdf(x)
+        zero = np.absolute(cdf - p)
+        return zero

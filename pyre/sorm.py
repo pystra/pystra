@@ -7,7 +7,7 @@ from .form import Form
 from .model import StochasticModel, AnalysisOptions, LimitState
 from .limitstate import evaluateLimitState, computeLimitStateFunction
 from .transformation import jacobian, x_to_u, u_to_x
-from .distributions import Normal
+from scipy.stats import norm as normal
 
 
 class Sorm(object):
@@ -112,10 +112,10 @@ class Sorm(object):
         """
         is_invalid = np.any(kappa < -1 / beta)
         if not is_invalid:
-            self.pf2_breitung = Normal.cdf(-beta, 0, 1) * np.prod(
+            self.pf2_breitung = normal.cdf(-beta) * np.prod(
                 (1 + beta * kappa) ** (-0.5)
             )
-            self.betag_breitung = -Normal.inv_cdf(self.pf2_breitung)
+            self.betag_breitung = -normal.ppf(self.pf2_breitung)
         else:
             print("*** SORM Breitung error, excessive curavtures")
             self.pf2_breitung = 0
@@ -131,13 +131,11 @@ class Sorm(object):
         reliability estimates by importance sampling.
         J. Eng. Mech. ASCE 14, 2195–2199.
         """
-        k = Normal.pdf(beta, 0, 1) / Normal.cdf(-beta, 0, 1)
+        k = normal.pdf(beta) / normal.cdf(-beta)
         is_invalid = np.any(kappa < -1 / k)
         if not is_invalid:
-            self.pf2_breitung_m = Normal.cdf(-beta, 0, 1) * np.prod(
-                (1 + k * kappa) ** (-0.5)
-            )
-            self.betag_breitung_m = -Normal.inv_cdf(self.pf2_breitung_m)
+            self.pf2_breitung_m = normal.cdf(-beta) * np.prod((1 + k * kappa) ** (-0.5))
+            self.betag_breitung_m = -normal.ppf(self.pf2_breitung_m)
         else:
             print("*** SORM Breitung Modified error")
             self.pf2_breitung_m = 0
@@ -150,8 +148,8 @@ class Sorm(object):
         print("")
         print("RESULTS FROM RUNNING SECOND ORDER RELIABILITY METHOD")
         print("")
-        print("Generalized reliability index: ", self.betag_breitung)
-        print("Probability of failure:        ", self.pf2_breitung)
+        print("Generalized reliability index: ", self.betag_breitung[0])
+        print("Probability of failure:        ", self.pf2_breitung[0])
         print("")
         for i, k in enumerate(self.kappa):
             print(f"Curavture {i+1}: {k}")
@@ -172,13 +170,17 @@ class Sorm(object):
         print("=" * n_hyphen)
         print("FORM/SORM")
         print("=" * n_hyphen)
-        print("{:15s} \t\t {:1.10e}".format("Pf FORM", pfFORM))
-        print("{:15s} \t\t {:1.10e}".format("Pf SORM Breitung", self.pf2_breitung))
-        print("{:15s} \t {:1.10e}".format("Pf SORM Breitung HR", self.pf2_breitung_m))
-        print("{:15s} \t\t {:2.10f}".format("Beta_HL", betaHL))
-        print("{:15s} \t\t {:2.10f}".format("Beta_G Breitung", self.betag_breitung))
+        print("{:15s} \t\t {:1.10e}".format("Pf FORM", pfFORM[0]))
+        print("{:15s} \t\t {:1.10e}".format("Pf SORM Breitung", self.pf2_breitung[0]))
         print(
-            "{:15s} \t\t {:2.10f}".format("Beta_G Breitung HR", self.betag_breitung_m)
+            "{:15s} \t {:1.10e}".format("Pf SORM Breitung HR", self.pf2_breitung_m[0])
+        )
+        print("{:15s} \t\t {:2.10f}".format("Beta_HL", betaHL))
+        print("{:15s} \t\t {:2.10f}".format("Beta_G Breitung", self.betag_breitung[0]))
+        print(
+            "{:15s} \t\t {:2.10f}".format(
+                "Beta_G Breitung HR", self.betag_breitung_m[0]
+            )
         )
         print(
             "{:15s} \t\t {:d}".format("Model Evaluations", self.model.getCallFunction())
