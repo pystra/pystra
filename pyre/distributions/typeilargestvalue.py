@@ -20,7 +20,11 @@ class TypeIlargestValue(Distribution):
     def __init__(self, name, mean, stdv, input_type=None, startpoint=None):
 
         self.dist_type = "TypeIlargestValue"
-        self.normal = Normal(mean=0, stdv=1)
 
         # This distribution is the same as the Gumbel - keep for backwards compat
-        self.dist_obj = Gumbel(name, mean, stdv, input_type, startpoint)
+        dist = Gumbel(name, mean, stdv, input_type, startpoint)
+        self.dist_obj = dist.dist_obj
+
+        super().__init__(
+            name=name, dist_obj=self.dist_obj, startpoint=startpoint,
+        )

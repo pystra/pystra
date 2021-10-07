@@ -24,4 +24,9 @@ class TypeIIIsmallestValue(Distribution):
         self.dist_type = "TypeIIIsmallestValue"
 
         # This distribution is the same as the Weibull - keep for backwards compat
-        self.weibull = Weibull(name, mean, stdv, epsilon, input_type, startpoint)
+        dist = Weibull(name, mean, stdv, epsilon, input_type, startpoint)
+        self.dist_obj = dist.dist_obj
+
+        super().__init__(
+            name=name, dist_obj=self.dist_obj, startpoint=startpoint,
+        )
