@@ -11,11 +11,11 @@ import pyre as pr
 from scipy.stats import genextreme as gev
 
 
-def lsf(X1, X2):
+def lsf(X1, X2, C):
     """
     Basic R-S
     """
-    return X1 - X2
+    return X1 - X2 - C
 
 
 limit_state = pr.LimitState(lsf)
@@ -23,6 +23,11 @@ limit_state = pr.LimitState(lsf)
 model = pr.StochasticModel()
 model.addVariable(pr.Normal("X1", 500, 100))
 model.addVariable(pr.ScipyDist("X2", gev(c=0.1, loc=200, scale=50)))
+model.addVariable(pr.Constant("C", 50))
 
 form = pr.Form(stochastic_model=model, limit_state=limit_state)
 form.showDetailedOutput()
+
+sorm = pr.Sorm(stochastic_model=model, limit_state=limit_state, form=form)
+sorm.run()
+sorm.showDetailedOutput()

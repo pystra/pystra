@@ -249,7 +249,8 @@ class Form(object):
 
     def showDetailedOutput(self):
         """Get detailed output to console"""
-        names = self.model.getNames()
+        names = self.model.getVariables().keys()
+        consts = self.model.getConstants()
         u_star = self.getDesignPoint()
         x_star = self.getDesignPoint(uspace=False)
         alpha = self.getAlpha()
@@ -276,6 +277,8 @@ class Form(object):
                     name, u_star[i], x_star[i], alpha[i]
                 )
             )
+        for name, val in consts.items():
+            print(f"{name:10s} \t {'---':>9s} \t {val:12.6f} \t {'---':>9s}")
         print("=" * n_hyphen)
         print("")
 

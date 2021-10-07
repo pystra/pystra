@@ -158,7 +158,8 @@ class Sorm(object):
 
     def showDetailedOutput(self):
         """Get detailed output to console"""
-        names = self.form.model.getNames()
+        names = self.model.getVariables().keys()
+        consts = self.model.getConstants()
         u_star = self.form.getDesignPoint()
         x_star = self.form.getDesignPoint(uspace=False)
         alpha = self.form.getAlpha()
@@ -202,6 +203,8 @@ class Sorm(object):
                     name, u_star[i], x_star[i], alpha[i]
                 )
             )
+        for name, val in consts.items():
+            print(f"{name:10s} \t {'---':>9s} \t {val:12.6f} \t {'---':>9s}")
         print("=" * n_hyphen)
         print("")
 

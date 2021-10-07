@@ -3,8 +3,9 @@
 
 import numpy as np
 
-from .distributions import *
-from .correlation import *
+from .distributions import Distribution, Constant
+
+# from .correlation import *
 from collections import OrderedDict
 
 
@@ -12,9 +13,11 @@ class StochasticModel(object):
     """Stochastic model"""
 
     def __init__(self):
-        self.variables = (
-            OrderedDict()
-        )  # use ordered dictionary to make sure that the order corresponds to the correlation matrix
+        """
+        Use ordered dictionary to make sure that the order corresponds to the
+        correlation matrix
+        """
+        self.variables = OrderedDict()
         self.names = []
         self.marg = []
         self.correlation = None
@@ -22,23 +25,37 @@ class StochasticModel(object):
         self.Lo = None
         self.iLo = None
         self.call_function = 0
+        self.consts = {}
 
     def addVariable(self, obj):
         """
-    add stochastic variable
-    """
-        if not isinstance(obj, Distribution):
-            raise Exception(f"input is not of type {type(Distribution)}")
+        add stochastic variable
+        """
+
+        if not (isinstance(obj, Distribution) or isinstance(obj, Constant)):
+            raise Exception("Input is not a Distribution or Constant object")
+
         if obj.getName() in self.names:
             raise Exception(f'variable name "{obj.getName()}" already exists')
+
         # append the variable name
         self.names.append(obj.getName())
-        # append marginal distribution
-        self.marg.append(obj)
-        # append the Distribution object to the variables (ordered) dictionary
-        self.variables[obj.getName()] = obj
-        # update the default correlation matrix, in accordance with the number of variables
-        self.correlation = np.eye(len(self.marg))
+
+        if isinstance(obj, Distribution):
+            # append marginal distribution
+            self.marg.append(obj)
+            # append the Distribution object to the variables (ordered) dictionary
+            self.variables[obj.getName()] = obj
+            # update the default correlation matrix, in accordance with the number of variables
+            self.correlation = np.eye(len(self.marg))
+        elif isinstance(obj, Constant):
+            self.consts[obj.getName()] = obj.getValue()
+
+    def getConstants(self):
+        return self.consts
+
+    def getVariables(self):
+        return self.variables
 
     def getNames(self):
         return self.names
@@ -86,8 +103,8 @@ class StochasticModel(object):
 class AnalysisOptions(object):
     """Options
 
-  Options for the structural reliability analysis. 
-  """
+    Options for the structural reliability analysis.
+    """
 
     def __init__(self):
 
@@ -262,7 +279,7 @@ class AnalysisOptions(object):
         return self.ffdpara
 
     def getBins(self):
-        if self.bins != None:
+        if self.bins is not None:
             return self.bins
         else:
             bins = np.ceil(4 * np.sqrt(np.sqrt(self.samples)))
@@ -326,9 +343,10 @@ class LimitState(object):
         self.evaluator = "basic"
         """Type of limit-state function evaluator:
 
-    :Args:
-      basic: the limit-state function is defined by means of an analytical expression or a Python function.
-    """
+        :Args:
+          basic: the limit-state function is defined by means of an analytical
+          expression or a Python function.
+        """
 
         # Do no change this field!
         self.type = "expression"
@@ -366,12 +384,12 @@ class LimitState(object):
 #      print 'Attention: No limit state function is defined'
 
 
-class LimitStateFunction(object):
-    def __init__(self, expression):
-        self.expression = expression
+# class LimitStateFunction(object):
+#     def __init__(self, expression):
+#         self.expression = expression
 
-    def __repr__(self):
-        return self.expression
+#     def __repr__(self):
+#         return self.expression
 
-    def getExpression(self):
-        return self.expression
+#     def getExpression(self):
+#         return self.expression

@@ -30,6 +30,22 @@ class StdNormal:
         return u
 
 
+class Constant:
+    """
+    A deterministic variable in the limit state function
+    """
+
+    def __init__(self, name, val):
+        self.name = name
+        self.val = val
+
+    def getName(self):
+        return self.name
+
+    def getValue(self):
+        return self.val
+
+
 class Distribution:
     """Probability distribution
 
