@@ -3,11 +3,11 @@ from setuptools import setup, find_packages
 requires = [
     'numpy',
     'scipy',
-    ]
+]
 
-setup(name='pyre',
-      version='5.0.3',
-      description='PyRe (Python Reliability) is a python module for structural reliability analysis',
+setup(name='pystra',
+      version='0.0.1',
+      description='PyStRA (Python Structural Reliability Analysis) is a python module for structural reliability analysis',
       long_description=open('README.rst', encoding='utf8').read(),
       license=open('LICENSE', encoding='utf8').read(),
       classifiers=[
@@ -19,7 +19,7 @@ setup(name='pyre',
         ],
       author='Juergen Hackl',
       author_email='hackl.j@gmx.at',
-      url='http://github.com/hackl/pyre',
+      url='http://github.com/pystra/pystra',
       keywords='structural reliability analysis',
       install_requires = requires,
       packages=find_packages(),
