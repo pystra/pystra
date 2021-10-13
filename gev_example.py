@@ -6,7 +6,7 @@ Created on Wed Oct  6 22:50:35 2021
 @author: ccaprani
 """
 
-import pyre as pr
+import pystra as pr
 
 from scipy.stats import genextreme as gev
 
