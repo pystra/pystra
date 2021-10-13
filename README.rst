@@ -1,6 +1,6 @@
-*******************************************
-Structural Reliability Analysis with Python
-*******************************************
+***********************************************
+PyStRA - Python Structural Reliability Analysis
+***********************************************
 
 :Date: February 2018
 :Authors: Jürgen Hackl
