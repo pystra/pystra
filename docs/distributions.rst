@@ -16,97 +16,97 @@ PyRe provides a large suite of built-in probability distributions. For each dist
 Normal distribution
 ===================
 
-.. automodule:: pyre.distributions.normal
+.. automodule:: pystra.distributions.normal
    :members:
    :noindex:
 
 Lognormal distribution
 ======================
 
-.. automodule:: pyre.distributions.lognormal
+.. automodule:: pystra.distributions.lognormal
    :members:
    :noindex:
 
 Gamma distribution
 ==================
 
-.. automodule:: pyre.distributions.gamma
+.. automodule:: pystra.distributions.gamma
    :members:
    :noindex:
 
 Shifted exponential distribution
 ================================
 
-.. automodule:: pyre.distributions.shiftedexponential
+.. automodule:: pystra.distributions.shiftedexponential
    :members:
    :noindex:
 
 Shifted Rayleigh distribution
 =============================
 
-.. automodule:: pyre.distributions.shiftedrayleigh
+.. automodule:: pystra.distributions.shiftedrayleigh
    :members:
    :noindex:
 
 Uniform distribution
 ====================
 
-.. automodule:: pyre.distributions.uniform
+.. automodule:: pystra.distributions.uniform
    :members:
    :noindex:
 
 Beta distribution
 =================
 
-.. automodule:: pyre.distributions.beta
+.. automodule:: pystra.distributions.beta
    :members:
    :noindex:
 
 Chi square distribution
 =======================
 
-.. automodule:: pyre.distributions.chisquare
+.. automodule:: pystra.distributions.chisquare
    :members:
    :noindex:
 
 Type I largest value distribution
 =================================
 
-.. automodule:: pyre.distributions.typeilargestvalue
+.. automodule:: pystra.distributions.typeilargestvalue
    :members:
    :noindex:
 
 Type I smallest value distribution
 ==================================
 
-.. automodule:: pyre.distributions.typeismallestvalue
+.. automodule:: pystra.distributions.typeismallestvalue
    :members:
    :noindex:
 
 Type II largest value distribution
 ==================================
 
-.. automodule:: pyre.distributions.typeiilargestvalue
+.. automodule:: pystra.distributions.typeiilargestvalue
    :members:
    :noindex:
 
 Type III smallest value distribution
 ====================================
 
-.. automodule:: pyre.distributions.typeiiismallestvalue
+.. automodule:: pystra.distributions.typeiiismallestvalue
    :members:
    :noindex:
 
 Gumbel distribution
 ===================
 
-.. automodule:: pyre.distributions.gumbel
+.. automodule:: pystra.distributions.gumbel
    :members:
    :noindex:
 
 Weibull distribution
 ====================
 
-.. automodule:: pyre.distributions.weibull
+.. automodule:: pystra.distributions.weibull
    :members:
    :noindex:

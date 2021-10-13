@@ -11,35 +11,35 @@ Matrices Operators
 Correlation Matrix
 ------------------
 
-.. automodule:: pyre.correlation
+.. automodule:: pystra.correlation
    :members:
 
 Cholesky decomposition
 ----------------------
 
-.. automodule:: pyre.cholesky
+.. automodule:: pystra.cholesky
    :members:
 
 Transformation
 --------------
 
-.. automodule:: pyre.transformation
+.. automodule:: pystra.transformation
    :members:
 
 Numerical Integration
 =====================
 
-.. automodule:: pyre.quadrature
+.. automodule:: pystra.quadrature
    :members:
 
-.. automodule:: pyre.integration
+.. automodule:: pystra.integration
    :members:
 
 Limit State
 ===========
 
-.. automodule:: pyre.stepsize
+.. automodule:: pystra.stepsize
    :members:
 
-.. automodule:: pyre.limitstate
+.. automodule:: pystra.limitstate
    :members:

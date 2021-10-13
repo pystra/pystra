@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # import pyre library
-from pyre import *
+from pystra import *
 
 
 import time

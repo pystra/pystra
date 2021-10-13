@@ -11,7 +11,7 @@ Structural Reliability
 Structural reliability analysis (SRA) is an important part to handle
 structural engineering applications. This section provides a brief
 introduction to this topic and is also the theoretical background for the
-Python library, Structural Reliability Analysis with Python (PyRe).
+Python library, Python Structural Reliability Analysis (Pystra).
 
 Limit States
 ------------

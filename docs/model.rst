@@ -7,18 +7,18 @@ Reliability Model
 Options
 =======
 
-.. autoclass:: pyre.model.AnalysisOptions
+.. autoclass:: pystra.model.AnalysisOptions
    :members:
 
 
 Inputparameter
 ==============
 
-.. autoclass:: pyre.model.StochasticModel
+.. autoclass:: pystra.model.StochasticModel
    :members:
 
 Limit State
 ===========
 
-.. autoclass:: pyre.model.LimitState
+.. autoclass:: pystra.model.LimitState
    :members:

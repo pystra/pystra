@@ -6,8 +6,8 @@ requires = [
 ]
 
 setup(name='pystra',
-      version='0.0.1',
-      description='PyStRA (Python Structural Reliability Analysis) is a python module for structural reliability analysis',
+      version='0.1.0',
+      description='Pystra (Python Structural Reliability Analysis) is a python module for structural reliability analysis',
       long_description='Coming Soon',
       license='AGPL-3.0+',
       classifiers=[

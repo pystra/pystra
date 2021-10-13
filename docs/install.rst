@@ -2,10 +2,10 @@
 Installation
 ************
 
-PyRe is known to run on Mac OS X, Linux and Windows, but in theory should be
+Pystra is known to run on Mac OS X, Linux and Windows, but in theory should be
 able to work on just about any platform for which Python, a Fortran compiler
 and the NumPy SciPy, and Math modules are available. However, installing some
-extra depencies can greatly improve PyRe's performance and versatility. The
+extra depencies can greatly improve Pystra's performance and versatility. The
 following describes the required and optional dependencies and takes you
 through the installation process.
 
@@ -13,7 +13,7 @@ through the installation process.
 Dependencies
 ============
 
-PyRe requires some prerequisite packages to be present on the system.
+Pystra requires some prerequisite packages to be present on the system.
 Fortunately, there are currently only a few hard dependencies, and all are
 freely available online.
 
@@ -42,9 +42,9 @@ freely available online.
 Installation using pip
 ======================
 
-PyRe is pure python code. It has no platform-specific dependencies and should thus work on all platforms. It builds on `numpy` and `scipy`. The latest version of `pyre` can be installed by typing:::
+Pystra is pure python code. It has no platform-specific dependencies and should thus work on all platforms. It builds on `numpy` and `scipy`. The latest version of `pystra` can be installed by typing:::
 
-   pip install git+git://github.com/hackl/pyre.git
+   pip install git+git://github.com/pystra/pystra.git
 
 Installation using setup.py
 ===========================
@@ -61,18 +61,16 @@ Development version
 You can check out the development version of the code from the `GitHub`_
 repository::
 
-    git clone git://github.com/hackl/pyre.git
+    git clone git://github.com/pystra/pystra.git
 
-.. _`GitHub`: https://github.com/hackl/pyre
+.. _`GitHub`: https://github.com/pystra/pystra
 
 
 Bugs and feature requests
 =========================
 
 Report problems with the installation, bugs in the code or feature request at
-the `issue tracker`_. Comments and questions are welcome and should be
-addressed to `Jürgen Hackl`_.
+the `issue tracker`_. 
 
-.. _`issue tracker`: http://github.com/hackl/pyre/issues
+.. _`issue tracker`: http://github.com/pystra/pystra/issues
 
-.. _`Jürgen Hackl`: hackl.j@gmx.at

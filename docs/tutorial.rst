@@ -4,7 +4,7 @@
 Tutorial
 ********
 
-This tutorial will guide you through a typical PyRe application. Familiarity
+This tutorial will guide you through a typical Pystra application. Familiarity
 with Python is assumed, so if you are new to Python, books such as [Lutz2007]_
 or [Langtangen2009]_ are the place to start. Plenty of online documentation
 can also be found on the `Python documentation`_ page.
@@ -24,8 +24,8 @@ Consider the following random variables:
             X_3 &\sim \text{Uniform}(5,0.5)
             \end{align}
 
-Additionaly those variables are relatet to each other. Therefore the
-correlationmatrix :math:`{\bf C}` is given:
+Additionally those variables are related to each other. Therefore the
+correlation matrix :math:`{\bf C}` is given:
 
 .. math::
     :label: correlation_matrix
@@ -84,7 +84,7 @@ and in the second case like this: ::
   limit_state = LimitState(example_limitstatefunction)
 
 The function ``example_limitstatefunction`` has be defined in advance
-as a seperate function such as:::
+as a separate function such as:::
 
   def example_limitstatefunction(X1,X2,X3):
       return 1 - X2*(1000*X3)**(-1) - (X1*(200*X3)**(-1))**2
@@ -259,4 +259,4 @@ Let's have fun ;)
 
 .. _`Python documentation`: http://www.python.org/doc/
 
-.. _`GitHub`: https://github.com/hackl/pyre
+.. _`GitHub`: https://github.com/pystra/pystra
