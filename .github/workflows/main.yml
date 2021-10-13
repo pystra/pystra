@@ -1,0 +1,37 @@
+name: Deploy to GitHub Pages
+on:
+  push:	
+    branches:	
+      - master
+  pull_request:
+    branches: [ master ]
+jobs:
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest    
+    steps:
+    - uses: actions/checkout@master
+    
+    - uses: ammaraskar/sphinx-action@master
+      with:
+        docs-folder: "doc/"
+    - name: Commit documentation changes
+      run: |
+        git clone https://github.com/pystra/pystra.git --single localbranch --branch gh-pages 
+        cp -r doc/build/html/* localbranch/
+        cd localbranch
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git branch --all
+        git add .
+        git commit -m "Update documentation" -a || true
+
+        # The above command will fail if no changes were present, so we ignore
+        # the return code.
+    
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        branch: gh-pages
+        directory: localbranch
+        github_token: ${{ secrets.GITHUB_TOKEN }}
