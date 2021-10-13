@@ -17,12 +17,11 @@ jobs:
         docs-folder: "doc/"
     - name: Commit documentation changes
       run: |
-        git clone https://github.com/pystra/pystra.git --single localbranch --branch gh-pages 
-        cp -r doc/build/html/* localbranch/
-        cd localbranch
+        git clone https://github.com/pystra/pystra.git --branch gh-pages --single-branch gh-pages
+        cp -r doc/build/html/* gh-pages/
+        cd gh-pages
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git branch --all
         git add .
         git commit -m "Update documentation" -a || true
 
@@ -33,5 +32,5 @@ jobs:
       uses: ad-m/github-push-action@master
       with:
         branch: gh-pages
-        directory: localbranch
+        directory: gh-pages
         github_token: ${{ secrets.GITHUB_TOKEN }}
