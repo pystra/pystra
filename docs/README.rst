@@ -5,17 +5,10 @@ Introduction
 Purpose
 =======
 
-PyRe (python Reliability) is a python module for structural reliability
-analysis. Its flexibility and extensibility make it applicable to a large
-suite of problems. Along with core reliability analysis functionality, PyRe
-includes methods for summarizing output.
-
-.. note::
-
-   At the moment First-Order Reliability Methods Crude Monte Carlo Simulation
-   and Importance Sampling are supported! Second-Order Reliability Methods and
-   some different sensitivity analysis will hopefully follow soon :)
-
+Pystra (Python Structural Reliability Analysis) is a python module for structural reliability analysis. Its flexibility and extensibility make it applicable to a large
+suite of problems. Along with core reliability analysis functionality, Pystra
+includes methods for summarizing output. Pystra is also closely integrated with the usual python scientific packages workflow, numpy and scipy; in particular, all
+statistical distributions in Scipy can be used in reliability modeling.
 
 History
 =======
@@ -38,45 +31,44 @@ Sensitivity Analysis and reliability assessment based on Support Vector
 Machine (SVM) surrogates, etc. Beyond the new methods implemented in this
 Matlab code. [Bourinet2009]_
 
-Of the purpose, to use structural reliability analysis for the project
+
+To use structural reliability analysis for the project
 "Generic Framework for Stochastic Modeling of Reinforced Concrete
-Deterioration Caused by Corrosion" [Hackl2013]_ a python version of FERUM has
-been created.
-
-The focus here lies on the reliability analysis and not more on the finite
-element method, so only the core function of FERUM are implemented.
-
+Deterioration Caused by Corrosion" [Hackl2013]_ a python version of FERUM was
+created, called PyRe. PyRe was developed to v5.0.3 over 8 years and with its
+success and wider adoption evolved into Pystra to make it more widely available
+as a benchmark implementation of structural reliability analysis in python.
 
 
 Features
 ========
 
-PyRe provides functionalities to make structural reliability analysis as easy
+Pystra provides functionalities to make structural reliability analysis as easy
 as possible. Here is a short list of some of its features:
 
 * Perform reliability analysis with different kinds of Reliability Methods.
 
 * Includes a large suite of well-documented statistical distributions.
 
+* Includes a wrapper for all statistical distributions supported in Scipy.
+
 * Uses NumPy for numerics wherever possible.
 
-* No limitation on the limit state function
+* No limitation on the form of the limit state function
 
 * Correlation between the random variables are possible
 
 * Traces can be saved to the disk as plain text.
 
-* PyRe can be embedded in larger programs, and results can be analyzed
+* Pystra can be embedded in larger programs, and results can be analyzed
   with the full power of Python.
 
 
 Getting started
 ===============
 
-This guide provides all the information needed to install PyRe, code a
-reliability model, run the sampler, save and visualize the results. In
-addition, it contains a list of the statistical distributions currently
-available.
+This guide provides all the information needed to install Pystra, code a
+reliability model, run the sampler, save and visualize the results. 
 
 .. _`FERUM`: http://www.ce.berkeley.edu/projects/ferum/
 
