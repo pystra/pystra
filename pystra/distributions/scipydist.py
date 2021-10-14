@@ -30,5 +30,7 @@ class ScipyDist(Distribution):
             raise Exception(f"ScipyDist {name} requires a continuous distribution")
 
         super().__init__(
-            name=name, dist_obj=dist_obj, startpoint=startpoint,
+            name=name,
+            dist_obj=dist_obj,
+            startpoint=startpoint,
         )

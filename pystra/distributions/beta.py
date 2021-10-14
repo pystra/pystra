@@ -46,7 +46,9 @@ class Beta(Distribution):
         self.dist_obj = beta(q, r, loc=a, scale=b - a)
 
         super().__init__(
-            name=name, dist_obj=self.dist_obj, startpoint=startpoint,
+            name=name,
+            dist_obj=self.dist_obj,
+            startpoint=startpoint,
         )
 
     def beta_parameter(self, q, *args):

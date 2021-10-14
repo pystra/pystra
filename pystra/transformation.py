@@ -10,7 +10,7 @@ def pdf(x, marg):
     :Args:
       - x (vec): Vector with random values\n
       - marg (mat): Matrix with the marginal distributions
-      
+
     :Returns:
       - p (mat): Returns a matrix with the pdfs of the marginal distributions
     """
@@ -69,8 +69,8 @@ def jacobian(u, x, stochastic_model):
 def getBins(samples):
     """Return an optimal amount of bins for a histogram
 
-  :Returns:
-    - bins (int): Returns amount on bins
-  """
+    :Returns:
+      - bins (int): Returns amount on bins
+    """
     bins = np.ceil(4 * np.sqrt(np.sqrt(samples)))
     return bins

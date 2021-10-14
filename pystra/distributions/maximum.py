@@ -36,7 +36,10 @@ class Maximum(Distribution):
         m, s = self._get_stats()
 
         super().__init__(
-            name=name, mean=m, stdv=s, startpoint=startpoint,
+            name=name,
+            mean=m,
+            stdv=s,
+            startpoint=startpoint,
         )
 
     def pdf(self, x):

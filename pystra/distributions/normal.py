@@ -27,7 +27,10 @@ class Normal(Distribution):
         self.dist_type = "Normal"
 
         super().__init__(
-            name=name, mean=mean, stdv=stdv, startpoint=startpoint,
+            name=name,
+            mean=mean,
+            stdv=stdv,
+            startpoint=startpoint,
         )
 
     def pdf(self, x):
