@@ -160,6 +160,7 @@ class Distribution:
         samples = self.dist_obj.ppf(u)
         x = np.linspace(np.min(samples), np.max(samples), 100)
         if ax is None:
-            fig, ax = plt.subplots()
+            _, ax = plt.subplots()
         ax.plot(x, self.pdf(x))
         ax.set_title(self.name)
+        plt.show()
