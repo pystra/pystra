@@ -77,13 +77,13 @@ class MonteCarlo(object):
         self.done = None
         self.block_size = None
         self.u = None
-        self.u_all = None  ##########################################################################
+        self.u_all = None
         self.x = None
-        self.x_all = None  ##########################################################################
+        self.x_all = None
         self.beta = None
         self.Pf = None
         self.G = None
-        self.all_G1 = None  ##########################################################################
+        self.all_G1 = None
         self.I = None
         self.q = None
         self.Pf = None

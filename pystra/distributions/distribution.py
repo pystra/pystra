@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-import math
-import scipy.optimize as opt
 from scipy import special as sp
+import matplotlib.pyplot as plt
 
 
 class StdNormal:
@@ -145,3 +144,17 @@ class Distribution:
         pdf2 = self.std_normal.pdf(u)
         J = np.diag(pdf1 / pdf2)
         return J
+
+    def plot(self, ax=None):
+        """
+        Plots the PDF of the distribution
+        """
+        # auto-range
+        n = 1000
+        u = np.random.rand(n)
+        samples = self.dist_obj.ppf(u)
+        x = np.linspace(np.min(samples), np.max(samples), 100)
+        if ax is None:
+            fig, ax = plt.subplots()
+        ax.plot(x, self.pdf(x))
+        ax.set_title(self.name)
