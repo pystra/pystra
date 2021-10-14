@@ -44,7 +44,8 @@ class Lognormal(Distribution):
         self.dist_obj = lognorm(scale=np.exp(lamb), s=zeta)
 
         super().__init__(
-            name=name, dist_obj=self.dist_obj,
+            name=name,
+            dist_obj=self.dist_obj,
         )
 
     # Overriding base class implementations for speed

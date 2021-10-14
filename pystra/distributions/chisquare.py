@@ -39,5 +39,7 @@ class ChiSquare(Distribution):
         self.dist_obj = chi2(df=nu)
 
         super().__init__(
-            name=name, dist_obj=self.dist_obj, startpoint=startpoint,
+            name=name,
+            dist_obj=self.dist_obj,
+            startpoint=startpoint,
         )

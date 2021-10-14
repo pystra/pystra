@@ -32,5 +32,7 @@ class ShiftedExponential(Distribution):
         self.dist_obj = expon(loc=x_zero, scale=1 / lamb)
 
         super().__init__(
-            name=name, dist_obj=self.dist_obj, startpoint=startpoint,
+            name=name,
+            dist_obj=self.dist_obj,
+            startpoint=startpoint,
         )

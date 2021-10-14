@@ -9,14 +9,14 @@ from .integration import zi_and_xi, rho_integral
 
 class CorrelationMatrix(object):
     """Correlation matrix
-    
+
     The correlation matrix of :math:`n` random variables :math:`X_1, \dots, X_n`
     is the :math:`n \\times n` matrix whose :math:`i,j` entry is
     :math:`\\text{corr}(X_i, X_j)`.
-    
+
     :Attributes:
       - matrix (mat): correlation matrix
-    
+
     """
 
     def __init__(self, matrix=None):
@@ -41,18 +41,18 @@ class CorrelationMatrix(object):
     def getMatrix(self):
         """Return correlation matrix
 
-    :Returns:
-      - matrix (mat): Return a matrix from type correlation matrix.
-    """
+        :Returns:
+          - matrix (mat): Return a matrix from type correlation matrix.
+        """
         return self.matrix
 
 
 def getModifiedCorrelationMatrix(stochastic_model):
     """Modified correlation matrix
-    
+
     :Args:
       - stochastic_model (StochasticModel): Information about the model
-    
+
     :Returns:
       - Ro (mat): Return a modified correlation matrix.
     """
@@ -109,7 +109,7 @@ def getModifiedCorrelationMatrix(stochastic_model):
 
 def absoluteIntegralValue(rho0, *args):
     """Absolute rho-integral value
-    
+
     Compute the absolute value of the bi-folded rho-integral by 2D numerical integration
     """
     rho_target, margi, margj, Z1, Z2, X1, X2, WIP, detJ = args

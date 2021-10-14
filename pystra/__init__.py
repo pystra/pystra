@@ -3,13 +3,13 @@ Structural Reliability Analysis with Python.
 
 """
 
-__version__ = '5.0.3'
+__version__ = "5.0.3"
 
 
 try:
     import numpy as np
 except ImportError:
-    raise ImportError('NumPy does not seem to be installed. Please see the user guide.')
+    raise ImportError("NumPy does not seem to be installed. Please see the user guide.")
 
 # __modules__ = ['distribution',
 #                'normal']
@@ -23,7 +23,8 @@ from .correlation import *
 
 # Inputparameter
 from .model import *
-#from function import *
+
+# from function import *
 
 # Calculations
 from .limitstate import *

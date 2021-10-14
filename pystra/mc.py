@@ -20,28 +20,28 @@ from .form import *
 class MonteCarlo(object):
     """Monte Carlo Simulation
 
-  The preceding sections describe some methods for determining the reliability
-  index :math:`\\beta` for some common forms of the limit state
-  function. However, it is sometimes extremely difficult or impossible to find
-  :math:`\\beta`. [Nowak2000]_
+    The preceding sections describe some methods for determining the reliability
+    index :math:`\\beta` for some common forms of the limit state
+    function. However, it is sometimes extremely difficult or impossible to find
+    :math:`\\beta`. [Nowak2000]_
 
-  In this case, the probability of failure :math:`p_f` may also be estimated
-  by numerical simulation methods. A large variety of simulation techniques
-  can be found in the literature, indeed, the most commonly used method is the
-  Monte Carlo method. [Faber2009]_
+    In this case, the probability of failure :math:`p_f` may also be estimated
+    by numerical simulation methods. A large variety of simulation techniques
+    can be found in the literature, indeed, the most commonly used method is the
+    Monte Carlo method. [Faber2009]_
 
-  The principle of simulation methods is to carry out random sampling in the
-  physical (or standardized) space. For each of the samples the limit state
-  function is evaluated to figure out, whether the configuration is desired or
-  undesired. The probability of failure :math:`p_f` is estimated by the number
-  of undesired configurations, respected to the total numbers of
-  samples. [Lemaire2010]_
+    The principle of simulation methods is to carry out random sampling in the
+    physical (or standardized) space. For each of the samples the limit state
+    function is evaluated to figure out, whether the configuration is desired or
+    undesired. The probability of failure :math:`p_f` is estimated by the number
+    of undesired configurations, respected to the total numbers of
+    samples. [Lemaire2010]_
 
-  :Attributes:
-    - analysis_option (AnalysisOption): Option for the structural analysis
-    - limit_state (LimitState): Information about the limit state
-    - stochastic_model (StochasticModel): Information about the model
-  """
+    :Attributes:
+      - analysis_option (AnalysisOption): Option for the structural analysis
+      - limit_state (LimitState): Information about the limit state
+      - stochastic_model (StochasticModel): Information about the model
+    """
 
     def __init__(self, analysis_options=None, limit_state=None, stochastic_model=None):
 
@@ -119,11 +119,11 @@ class MonteCarlo(object):
     def computeTransformation(self):
         """Compute transformation from u to x space
 
-    .. note::
+        .. note::
 
-       TODO: this method takes a lot of time, find some better solution.
+           TODO: this method takes a lot of time, find some better solution.
 
-    """
+        """
         self.x = np.zeros((self.nrv, self.block_size))
 
         for i in range(self.block_size):
@@ -205,62 +205,62 @@ class MonteCarlo(object):
     def getBeta(self):
         """Returns the beta value
 
-    :Returns:
-      - beta (float): Returns the beta value
-    """
+        :Returns:
+          - beta (float): Returns the beta value
+        """
         return self.beta
 
     def getFailure(self):
         """Returns the probability of failure
 
-    :Returns:
-      - Pf (float): Returns the probability of failure
-    """
+        :Returns:
+          - Pf (float): Returns the probability of failure
+        """
         return self.Pf
 
     def getDistributionData(self):
         """Returns data for the failure
 
-    :Returns:
-      - all_G (float): Returns data from the distribution
-    """
+        :Returns:
+          - all_G (float): Returns data from the distribution
+        """
         return self.all_G
 
     def getBins(self):
         """Returns the amount on bins
 
-    :Returns:
-      - bins (int): Returns the amount on bins (histogram)
-    """
+        :Returns:
+          - bins (int): Returns the amount on bins (histogram)
+        """
         return self.bins
 
 
 class CrudeMonteCarlo(MonteCarlo):
     """Crude Monte Carlo simulation (CMC)
 
-  The Crude Monte Carlo simulation (CMC) is the most simple form and
-  corresponds to a direct application of Equation (24). A large number
-  :math:`n` of samples are simulated for the set of random variables
-  :math:`{\\bf X}`. All samples that lead to a failure are counted :math:`n_f`
-  and after all simulations the probability of failure :math:`p_f` may be
-  estimated by [Faber2009]_
+    The Crude Monte Carlo simulation (CMC) is the most simple form and
+    corresponds to a direct application of Equation (24). A large number
+    :math:`n` of samples are simulated for the set of random variables
+    :math:`{\\bf X}`. All samples that lead to a failure are counted :math:`n_f`
+    and after all simulations the probability of failure :math:`p_f` may be
+    estimated by [Faber2009]_
 
-  .. math::
-     :label: eq:2_93
+    .. math::
+       :label: eq:2_93
 
-             \\tilde{p}_f = \\frac{n_f}{n}
+               \\tilde{p}_f = \\frac{n_f}{n}
 
-  Theoretically, an infinite number of simulations will provide an exact
-  probability of failure. However, time and the power of computers are
-  limited; therefore, a suitable amount of simulations :math:`n` are required
-  to achieve an acceptable level of accuracy.
+    Theoretically, an infinite number of simulations will provide an exact
+    probability of failure. However, time and the power of computers are
+    limited; therefore, a suitable amount of simulations :math:`n` are required
+    to achieve an acceptable level of accuracy.
 
-  :Attributes:
-    - analysis_option (AnalysisOption): Option for the structural analysis
-    - limit_state (LimitState): Information about the limit state
-    - stochastic_model (StochasticModel): Information about the model
-    - point (vec): Design point for the simulation
-  """
+    :Attributes:
+      - analysis_option (AnalysisOption): Option for the structural analysis
+      - limit_state (LimitState): Information about the limit state
+      - stochastic_model (StochasticModel): Information about the model
+      - point (vec): Design point for the simulation
+    """
 
     def __init__(
         self, analysis_options=None, limit_state=None, stochastic_model=None, point=None
@@ -427,15 +427,15 @@ class CrudeMonteCarlo(MonteCarlo):
 class ImportanceSampling(CrudeMonteCarlo):
     """Importance Sampling
 
-  To decrease the number of simulations and the coefficient of variation,
-  other methods can be performed. One commonly applied method is the
-  Importance Sampling simulation method (IS).
+    To decrease the number of simulations and the coefficient of variation,
+    other methods can be performed. One commonly applied method is the
+    Importance Sampling simulation method (IS).
 
-  :Attributes:
-    - analysis_option (AnalysisOption): Option for the structural analysis
-    - limit_state (LimitState): Information about the limit state
-    - stochastic_model (StochasticModel): Information about the model
-  """
+    :Attributes:
+      - analysis_option (AnalysisOption): Option for the structural analysis
+      - limit_state (LimitState): Information about the limit state
+      - stochastic_model (StochasticModel): Information about the model
+    """
 
     def __init__(self, analysis_options=None, limit_state=None, stochastic_model=None):
 
@@ -451,15 +451,15 @@ class ImportanceSampling(CrudeMonteCarlo):
 class DistributionAnalysis(MonteCarlo):
     """Distribution Analysis
 
-  To analyze the random variables, used in the limit state function, a
-  numerical distribution analysis based on Monte Carlo simulation can be
-  performed.
+    To analyze the random variables, used in the limit state function, a
+    numerical distribution analysis based on Monte Carlo simulation can be
+    performed.
 
-  :Attributes:
-    - analysis_option (AnalysisOption): Option for the structural analysis
-    - limit_state (LimitState): Information about the limit state
-    - stochastic_model (StochasticModel): Information about the model
-  """
+    :Attributes:
+      - analysis_option (AnalysisOption): Option for the structural analysis
+      - limit_state (LimitState): Information about the limit state
+      - stochastic_model (StochasticModel): Information about the model
+    """
 
     def __init__(self, analysis_options=None, limit_state=None, stochastic_model=None):
 

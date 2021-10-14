@@ -35,7 +35,9 @@ class Uniform(Distribution):
         self.dist_obj = uniform(loc=a, scale=b - a)
 
         super().__init__(
-            name=name, dist_obj=self.dist_obj, startpoint=startpoint,
+            name=name,
+            dist_obj=self.dist_obj,
+            startpoint=startpoint,
         )
 
     # Overriding these for performance
