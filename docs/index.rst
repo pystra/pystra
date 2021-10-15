@@ -1,6 +1,11 @@
 .. Pystra documentation master file, created by
    sphinx-quickstart on Tue Apr 16 14:00:44 2013.
 
+.. figure:: _images/logo_name_pystra.*
+   :alt:Pystra logo
+   :align: center
+   :scale: 50
+
 Pystra documentation
 ========================================
 

@@ -4,7 +4,7 @@
 Probability distributions
 *************************
 
-PyRe provides a large suite of built-in probability distributions. For each distribution, it provides:
+In addition to all statistical distributions in Scipy, Pystra provides a large suite of built-in probability distributions. For each distribution, it provides:
 
 * A function that evaluates its marginal distribution.
 * A function that evaluates its probability density function.
@@ -110,3 +110,20 @@ Weibull distribution
 .. automodule:: pystra.distributions.weibull
    :members:
    :noindex:
+   
+Scipy distribution
+====================
+
+.. automodule:: pystra.distributions.scipydist
+   :members:
+   :noindex:
+   
+Maximum distribution
+====================
+
+.. automodule:: pystra.distributions.maximum
+   :members:
+   :noindex:
+   
+
+
