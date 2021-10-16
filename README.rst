@@ -1,3 +1,8 @@
+.. figure:: docs/_images/logo/logo_pystra_mid.png
+   :alt: Pystra logo
+   :align: center
+   :scale: 50
+
 ***********************************************
 Pystra - Python Structural Reliability Analysis
 ***********************************************

@@ -4,6 +4,8 @@
 # import pyre library
 from pystra import *
 
+from scipy.stats import norm, lognorm, uniform
+import numpy as np
 
 import time
 import datetime
@@ -11,11 +13,11 @@ import datetime
 start_time = time.time()
 
 
-def example_limitstatefunction(X1, X2, X3):
+def example_limitstatefunction(g, X1, X2, X3):
     """
     example limit state function
     """
-    return 1 - X2 * (1000 * X3) ** (-1) - (X1 * (200 * X3) ** (-1)) ** 2
+    return g - X2 * (1000 * X3) ** (-1) - (X1 * (200 * X3) ** (-1)) ** 2
 
 
 # Define a main() function.
@@ -36,6 +38,9 @@ def main():
     stochastic_model.addVariable(Lognormal("X1", 500, 100))
     stochastic_model.addVariable(Normal("X2", 2000, 400))
     stochastic_model.addVariable(Uniform("X3", 5, 0.5))
+    
+    # Define constants
+    stochastic_model.addVariable(Constant("g", 1))
 
     # If the random variables are correlatet, then define a correlation matrix,
     # else no correlatin matrix is needed

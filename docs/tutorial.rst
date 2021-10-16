@@ -40,31 +40,33 @@ correlation matrix :math:`{\bf C}` is given:
             \end{align}
 
 Now, we like to compute the reliability index :math:`\beta` and the failure
-probability :math:`P_f`, by given limit state function :math:`g(X_1,X_2,X_3)`:
+probability :math:`P_f`, by given limit state function :math:`g(\gamma, X_1,X_2,X_3)`:
 
 .. math::
     :label: limit_state_function
 
-            g(X_1,X_2,X_3) = 1 - \frac{X_2}{1000 \cdot X_3} - 
+            g(\gamma X_1,X_2,X_3) = \gamma - \frac{X_2}{1000 \cdot X_3} - 
             \left( \frac{X_1}{200 \cdot X_3} \right)^2
+
+where :math:`\gamma` is a real constant. For this example, let :math:`\gamma = 1`.
 
 Let's model
 -----------
 
-Before we start with the modeling, we have to import the ``pyre``
+Before we start with the modeling, we have to import the ``pystra``
 package. Therefore are two different methods available:
 
-In case 1 we load ``pyre`` like a normal library: ::
+In case 1 we load ``pystra`` like a normal library: ::
 
-  import pyre
+  import pystra
 
-here we must write for each command ``pyre.my_command()``. A shorter way to
+here we must write for each command ``pystra.my_command()``. A shorter way to
 load the package is case 2: ::
 
-  # import pyre library
-  from pyre import *
+  # import pystra library
+  from pystra import *
 
-here, we import all available objects from ``pyre``.
+here, we import all available objects from ``pystra``.
 
 Two ways to define the limit state function are available: 
 
@@ -75,7 +77,7 @@ In the first case the input will look like: ::
 
   # Define limit state function
   # - case 1: define directly
-  limit_state = LimitState(lambda X1,X2,X3: 1 - X2*(1000*X3)**(-1) - (X1*(200*X3)**(-1))**2)
+  limit_state = LimitState(lambda g,X1,X2,X3: g - X2*(1000*X3)**(-1) - (X1*(200*X3)**(-1))**2)
 
 and in the second case like this: ::
 
@@ -86,8 +88,8 @@ and in the second case like this: ::
 The function ``example_limitstatefunction`` has be defined in advance
 as a separate function such as:::
 
-  def example_limitstatefunction(X1,X2,X3):
-      return 1 - X2*(1000*X3)**(-1) - (X1*(200*X3)**(-1))**2
+  def example_limitstatefunction(g,X1,X2,X3):
+      return g - X2*(1000*X3)**(-1) - (X1*(200*X3)**(-1))**2
 
 This case can be useful if the limit state function is quiet complex
 or need more then one line to define it.
@@ -130,6 +132,12 @@ then the random variable can be instantiated following this example: ::
 
 where nominal value is 500, bias is 1.00, and coefficient of variation is 0.2. 
 Notice the initial `*` character is used to dereference the output array.
+
+We will also define our constant using ``Constant``:  ::
+
+  # Define constants
+  stochastic_model.addVariable( Constant('g',1) )
+
 
 To add the correlation matrix to our model: ::
 
@@ -197,6 +205,7 @@ There is also the possibility to output more detailed results using
   X1         	  1.278045 	   631.504135 	 +0.728414
   X2         	  0.407819 	  2310.352495 	 +0.232354
   X3         	 -1.129920 	     4.517374 	 -0.644534
+  g          	       --- 	     1.000000 	       ---
   ======================================================
 
 A Second-Order Reliability Method (SORM) can also be performed, passing in the 
@@ -244,6 +253,7 @@ which for the example gives: ::
   X1         	  1.278045 	   631.504135 	 +0.728414
   X2         	  0.407819 	  2310.352495 	 +0.232354
   X3         	 -1.129920 	     4.517374 	 -0.644534
+  g          	       --- 	     1.000000 	       ---
   ======================================================
 
 in which `HR` refers to the Hohenbichler-Rackwitz modification to Breitung's
@@ -252,7 +262,7 @@ formula.
 Finally...
 ----------
 
-This was a short introduction how to use ``pyre``. The tutorial above is also
+This was a short introduction how to use ``pystra``. The tutorial above is also
 available on `GitHub`_ under ``example.py``.
 
 Let's have fun ;)
