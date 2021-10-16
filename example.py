@@ -38,7 +38,7 @@ def main():
     stochastic_model.addVariable(Lognormal("X1", 500, 100))
     stochastic_model.addVariable(Normal("X2", 2000, 400))
     stochastic_model.addVariable(Uniform("X3", 5, 0.5))
-    
+
     # Define constants
     stochastic_model.addVariable(Constant("g", 1))
 
