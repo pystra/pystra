@@ -88,9 +88,8 @@ def main():
     print(
         "Beta is {}, corresponding to a failure probability of {}".format(beta, failure)
     )
-    
+
 
 # This is the standard boilerplate that calls the main() function.
 if __name__ == "__main__":
     main()
-
