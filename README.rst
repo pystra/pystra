@@ -1,4 +1,4 @@
-.. figure:: _images/logo/logo_pystra_mid.*
+.. figure:: docs/_images/logo/logo_pystra_mid.png
    :alt: Pystra logo
    :align: center
    :scale: 50
