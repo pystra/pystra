@@ -35,22 +35,9 @@ def main():
 
     stochastic_model = StochasticModel()
     # Define random variables
-    #stochastic_model.addVariable(Lognormal("X1", 500, 100))
-    #stochastic_model.addVariable(Normal("X2", 2000, 400))
-    #stochastic_model.addVariable(Uniform("X3", 5, 0.5))
-    
-    # Define random variables (using Scipy)
-    ## Lognormal
-    zeta = (np.log(1+(100/500)**2))**0.5
-    lamb = np.log(500) - 0.5*zeta**2
-    stochastic_model.addVariable(ScipyDist("X1", lognorm(s=zeta,
-                                                         scale=np.exp(lamb))))
-    # Normal
-    stochastic_model.addVariable(ScipyDist("X2", norm(loc=2000, scale=400)))
-    ## Uniform
-    a_b = (0.5**2*12)**(1/2)
-    a = (2*5-a_b)/2
-    stochastic_model.addVariable(ScipyDist("X3", uniform(loc=a,scale=a_b)))
+    stochastic_model.addVariable(Lognormal("X1", 500, 100))
+    stochastic_model.addVariable(Normal("X2", 2000, 400))
+    stochastic_model.addVariable(Uniform("X3", 5, 0.5))
     
     # Define constants
     stochastic_model.addVariable(Constant("g", 1))
