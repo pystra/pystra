@@ -1,19 +1,22 @@
-name: Lint
+name: Lint on push
 on:
   push:
     branches: 
       - master
+      
 jobs:
   build:
-    name: runner / black
+    name: Black with PRs
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      
       - name: Check files using the black formatter
         uses: rickstaa/action-black@v1
         id: action_black
         with:
           black_args: "."
+          
       - name: Create Pull Request
         if: steps.action_black.outputs.is_formatted == 'true'
         uses: peter-evans/create-pull-request@v3

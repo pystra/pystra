@@ -7,7 +7,7 @@ on:
       
 jobs:
   linter_name:
-    name: runner / black
+    name: Black & WMS
     
     runs-on: ubuntu-latest
     
@@ -26,3 +26,9 @@ jobs:
         uses: reviewdog/action-suggester@v1
         with:
           tool_name: blackfmt
+          
+      - uses: wemake-services/wemake-python-styleguide@0.15.3
+        with:
+          reporter: 'github-pr-review'
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
