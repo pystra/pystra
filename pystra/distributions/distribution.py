@@ -66,12 +66,7 @@ class Distribution:
     std_normal = StdNormal()
 
     def __init__(
-        self,
-        name="",
-        dist_obj=None,
-        mean=None,
-        stdv=None,
-        startpoint=None,
+        self, name="", dist_obj=None, mean=None, stdv=None, startpoint=None,
     ):
         self.name = name
         self.dist_type = "BaseCls"
@@ -88,6 +83,9 @@ class Distribution:
         else:
             self.mean = mean
             self.stdv = stdv
+
+        if not np.isfinite(self.stdv):
+            raise Exception("Std. deviation must be a positive noninfinite number.")
 
         self.setStartPoint(startpoint)
 
