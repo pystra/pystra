@@ -66,7 +66,12 @@ class Distribution:
     std_normal = StdNormal()
 
     def __init__(
-        self, name="", dist_obj=None, mean=None, stdv=None, startpoint=None,
+        self,
+        name="",
+        dist_obj=None,
+        mean=None,
+        stdv=None,
+        startpoint=None,
     ):
         self.name = name
         self.dist_type = "BaseCls"
