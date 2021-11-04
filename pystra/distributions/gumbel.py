@@ -31,7 +31,9 @@ class Gumbel(Distribution):
         self.dist_obj = gumbel(loc=mu, scale=1 / beta)
 
         super().__init__(
-            name=name, dist_obj=self.dist_obj, startpoint=startpoint,
+            name=name,
+            dist_obj=self.dist_obj,
+            startpoint=startpoint,
         )
 
         self.dist_type = "Gumbel"

@@ -40,7 +40,9 @@ class TypeIIlargestValue(Distribution):
         self.dist_obj = frechet(c=-k - 2, loc=0, scale=u_n)
 
         super().__init__(
-            name=name, dist_obj=self.dist_obj, startpoint=startpoint,
+            name=name,
+            dist_obj=self.dist_obj,
+            startpoint=startpoint,
         )
 
         self.dist_type = "TypeIIlargestValue"

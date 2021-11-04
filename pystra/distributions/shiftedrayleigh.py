@@ -31,7 +31,9 @@ class ShiftedRayleigh(Distribution):
         self.dist_obj = rayleigh(loc=x_zero, scale=a)
 
         super().__init__(
-            name=name, dist_obj=self.dist_obj, startpoint=startpoint,
+            name=name,
+            dist_obj=self.dist_obj,
+            startpoint=startpoint,
         )
 
         self.dist_type = "ShiftedRayleigh"
