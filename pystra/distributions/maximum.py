@@ -34,7 +34,10 @@ class Maximum(Distribution):
         m, s = self._get_stats()
 
         super().__init__(
-            name=name, mean=m, stdv=s, startpoint=startpoint,
+            name=name,
+            mean=m,
+            stdv=s,
+            startpoint=startpoint,
         )
 
         self.dist_type = "Maximum"
@@ -106,14 +109,14 @@ class Maximum(Distribution):
 
         return mean, stdv
 
-    def set_location(self,loc=0):
+    def set_location(self, loc=0):
         """
         Updating the parent distribution location parameter.
         """
         self.parent.set_location(loc)
         self.update_stats()
 
-    def set_scale(self,scale=1):
+    def set_scale(self, scale=1):
         """
         Updating the parent distribution scale parameter.
         """
@@ -122,7 +125,7 @@ class Maximum(Distribution):
 
     def update_stats(self):
         """
-        Updates the mean and stdv estimates - used for sensitivity analysis 
+        Updates the mean and stdv estimates - used for sensitivity analysis
         where the parent distribution params may change after instantiation
         """
         m, s = self._get_stats()

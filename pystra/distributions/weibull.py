@@ -44,7 +44,9 @@ class Weibull(Distribution):
         self.dist_obj = weibull(c=k, loc=epsilon, scale=u_1 - epsilon)
 
         super().__init__(
-            name=name, dist_obj=self.dist_obj, startpoint=startpoint,
+            name=name,
+            dist_obj=self.dist_obj,
+            startpoint=startpoint,
         )
 
         self.dist_type = "Weibull"

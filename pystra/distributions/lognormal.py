@@ -39,7 +39,9 @@ class Lognormal(Distribution):
         self.dist_obj = lognorm(scale=np.exp(self.lamb), s=self.zeta)
 
         super().__init__(
-            name=name, dist_obj=self.dist_obj, startpoint=startpoint,
+            name=name,
+            dist_obj=self.dist_obj,
+            startpoint=startpoint,
         )
 
         self.dist_type = "Lognormal"

@@ -11,19 +11,19 @@ import copy
 class SensitivityAnalysis:
     """
     Implements sensitivity analyses for the reliability index.
-    
+
     Current implementation is numerical and for FORM only, and only covers the
-    first and second moments. 
-    
-    Future extensions are to extend to SORM; to include correlation 
-    coefficients; to add the analytical method of Bourinet (2017); 
+    first and second moments.
+
+    Future extensions are to extend to SORM; to include correlation
+    coefficients; to add the analytical method of Bourinet (2017);
     to cover all distribution parameters, and include Sobol indices.
-    
-    Bourinet (2017), FORM Sensitivities to Distribution Parameters with the 
-    Nataf Transformation, P. Gardoni (ed.), Risk and Reliability Analysis: 
-        Theory and Applications, Springer Series in Reliability Engineering, 
+
+    Bourinet (2017), FORM Sensitivities to Distribution Parameters with the
+    Nataf Transformation, P. Gardoni (ed.), Risk and Reliability Analysis:
+        Theory and Applications, Springer Series in Reliability Engineering,
         DOI 10.1007/978-3-319-52425-2_12
-    
+
     """
 
     def __init__(self, limit_state, stochastic_model, analysis_options=None):
