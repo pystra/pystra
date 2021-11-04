@@ -20,8 +20,6 @@ class ScipyDist(Distribution):
 
     def __init__(self, name, dist_obj, startpoint=None):
 
-        self.dist_type = "ScipyDist"
-
         if not isinstance(dist_obj, rv_frozen):
             raise Exception(
                 f"ScipyDist {name} requires a frozen Scipy distribution object"
@@ -30,7 +28,7 @@ class ScipyDist(Distribution):
             raise Exception(f"ScipyDist {name} requires a continuous distribution")
 
         super().__init__(
-            name=name,
-            dist_obj=dist_obj,
-            startpoint=startpoint,
+            name=name, dist_obj=dist_obj, startpoint=startpoint,
         )
+
+        self.dist_type = "ScipyDist"

@@ -4,6 +4,7 @@
 import numpy as np
 from scipy import special as sp
 import matplotlib.pyplot as plt
+from scipy.stats._distn_infrastructure import rv_frozen
 
 
 class StdNormal:
@@ -65,9 +66,7 @@ class Distribution:
 
     std_normal = StdNormal()
 
-    def __init__(
-        self, name="", dist_obj=None, mean=None, stdv=None, startpoint=None,
-    ):
+    def __init__(self, name="", dist_obj=None, mean=None, stdv=None, startpoint=None):
         self.name = name
         self.dist_type = "BaseCls"
 
@@ -75,6 +74,14 @@ class Distribution:
         # are using the base class functionality
         self.dist_obj = dist_obj
 
+        self._update_moments(mean, stdv)
+        self.setStartPoint(startpoint)
+
+    def __repr__(self):
+        string = self.name + ": " + self.dist_type + " distribution"
+        return string
+
+    def _update_moments(self, mean=None, stdv=None):
         if self.dist_obj is not None:
             self.mean = self.dist_obj.mean()
             self.stdv = self.dist_obj.std()
@@ -86,12 +93,6 @@ class Distribution:
 
         if not np.isfinite(self.stdv):
             raise Exception("Std. deviation must be a positive noninfinite number.")
-
-        self.setStartPoint(startpoint)
-
-    def __repr__(self):
-        string = self.name + ": " + self.dist_type + " distribution"
-        return string
 
     def getName(self):
         return self.name
@@ -148,17 +149,42 @@ class Distribution:
         J = np.diag(pdf1 / pdf2)
         return J
 
+    def sample(self, n=1000):
+        """
+        Return a sample of the distribution of length n
+        """
+        u = np.random.rand(n)
+        samples = self.dist_obj.ppf(u)
+        return samples
+
     def plot(self, ax=None):
         """
         Plots the PDF of the distribution
         """
         # auto-range
-        n = 1000
-        u = np.random.rand(n)
-        samples = self.dist_obj.ppf(u)
+        samples = self.sample()
         x = np.linspace(np.min(samples), np.max(samples), 100)
         if ax is None:
             _, ax = plt.subplots()
         ax.plot(x, self.pdf(x))
         ax.set_title(self.name)
         plt.show()
+
+    # The following must be overidden in derived classes that are not based on a
+    # SciPy distribution object, or using the SciPy object for calculations.
+
+    def set_location(self, loc=0):
+        if isinstance(self.dist_obj, rv_frozen):
+            pdict = self.dist_obj.kwds
+            pdict["loc"] = loc
+            self._update_moments()
+        else:
+            raise Exception("Distribution is not a SciPy object")
+
+    def set_scale(self, scale=1):
+        if isinstance(self.dist_obj, rv_frozen):
+            pdict = self.dist_obj.kwds
+            pdict["scale"] = scale
+            self._update_moments()
+        else:
+            raise Exception("Distribution is not a SciPy object")

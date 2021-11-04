@@ -19,8 +19,6 @@ class ShiftedExponential(Distribution):
 
     def __init__(self, name, mean, stdv, input_type=None, startpoint=None):
 
-        self.dist_type = "ShiftedExponential"
-
         if input_type is None:
             x_zero = mean - stdv
             lamb = 1 / stdv
@@ -32,7 +30,7 @@ class ShiftedExponential(Distribution):
         self.dist_obj = expon(loc=x_zero, scale=1 / lamb)
 
         super().__init__(
-            name=name,
-            dist_obj=self.dist_obj,
-            startpoint=startpoint,
+            name=name, dist_obj=self.dist_obj, startpoint=startpoint,
         )
+
+        self.dist_type = "ShiftedExponential"

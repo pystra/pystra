@@ -22,8 +22,6 @@ class Maximum(Distribution):
 
     def __init__(self, name, parent, N, input_type=None, startpoint=None):
 
-        self.dist_type = "Maximum"
-
         if not isinstance(parent, Distribution):
             raise Exception(
                 f"Maximum parent requires input of type {type(Distribution)}"
@@ -36,11 +34,10 @@ class Maximum(Distribution):
         m, s = self._get_stats()
 
         super().__init__(
-            name=name,
-            mean=m,
-            stdv=s,
-            startpoint=startpoint,
+            name=name, mean=m, stdv=s, startpoint=startpoint,
         )
+
+        self.dist_type = "Maximum"
 
     def pdf(self, x):
         """
@@ -108,6 +105,29 @@ class Maximum(Distribution):
         stdv = x.std()
 
         return mean, stdv
+
+    def set_location(self,loc=0):
+        """
+        Updating the parent distribution location parameter.
+        """
+        self.parent.set_location(loc)
+        self.update_stats()
+
+    def set_scale(self,scale=1):
+        """
+        Updating the parent distribution scale parameter.
+        """
+        self.parent.set_scale(scale)
+        self.update_stats()
+
+    def update_stats(self):
+        """
+        Updates the mean and stdv estimates - used for sensitivity analysis 
+        where the parent distribution params may change after instantiation
+        """
+        m, s = self._get_stats()
+        self.mean = m
+        self.stdv = s
 
     def zero_distn(self, x, *args):
         p = args

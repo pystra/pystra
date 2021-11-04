@@ -62,7 +62,7 @@ def evaluateLimitState(x, stochastic_model, analysis_options, limit_state, modus
             for j in range(nrv):
                 x = original_x
                 # TODO marg
-                allh[j] = marg[j].stdv * ffdpara ** (-1)
+                allh[j] = marg[j].stdv / ffdpara
                 x[j] = x[j] + allh[j] * np.ones(nx)
                 indx = list(range(j + 1, 1 + (1 + j + (nx - 1) * (1 + nrv)), (1 + nrv)))
                 allx[j, indx] = x[j]
@@ -89,7 +89,7 @@ def evaluateLimitState(x, stochastic_model, analysis_options, limit_state, modus
 
             for j in range(nrv):
                 indx = list(range(j + 1, 1 + (1 + j + (nx - 1) * (1 + nrv)), (1 + nrv)))
-                grad_g[j, :] = (allG[indx] - G) * (allh[j]) ** (-1)
+                grad_g[j, :] = (allG[indx] - G) / allh[j]
 
             stochastic_model.addCallFunction(nx * (1 + nrv))
 

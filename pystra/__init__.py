@@ -40,3 +40,4 @@ from .transformation import *
 from .form import *
 from .mc import *
 from .sorm import *
+from .sensitivity import *

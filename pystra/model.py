@@ -57,6 +57,9 @@ class StochasticModel(object):
     def getVariables(self):
         return self.variables
 
+    def getVariable(self, name):
+        return self.variables[name]
+
     def getNames(self):
         return self.names
 

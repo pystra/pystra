@@ -24,14 +24,10 @@ class Normal(Distribution):
         """
         Leave initialization to the base class
         """
-        self.dist_type = "Normal"
-
         super().__init__(
-            name=name,
-            mean=mean,
-            stdv=stdv,
-            startpoint=startpoint,
+            name=name, mean=mean, stdv=stdv, startpoint=startpoint,
         )
+        self.dist_type = "Normal"
 
     def pdf(self, x):
         """
@@ -79,3 +75,17 @@ class Normal(Distribution):
         """
         J = np.diag(np.repeat(1 / self.stdv, u.size))
         return J
+
+    def set_location(self, loc=0):
+        """
+        Updating the distribution location parameter. For Normal, there is no need to
+        update other properties as a result of this change.
+        """
+        self.mean = loc
+
+    def set_scale(self, scale=1):
+        """
+        Updating the distribution scale parameter. For Normal, there is no need to
+        update other properties as a result of this change.
+        """
+        self.stdv = scale

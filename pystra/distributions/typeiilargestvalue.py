@@ -21,8 +21,6 @@ class TypeIIlargestValue(Distribution):
 
     def __init__(self, name, mean, stdv, input_type=None, startpoint=None):
 
-        self.dist_type = "TypeIIlargestValue"
-
         if input_type is None:
             parameter_guess = [2.000001]
             par = opt.fsolve(
@@ -42,10 +40,10 @@ class TypeIIlargestValue(Distribution):
         self.dist_obj = frechet(c=-k - 2, loc=0, scale=u_n)
 
         super().__init__(
-            name=name,
-            dist_obj=self.dist_obj,
-            startpoint=startpoint,
+            name=name, dist_obj=self.dist_obj, startpoint=startpoint,
         )
+
+        self.dist_type = "TypeIIlargestValue"
 
     def typIIlargest_parameter(self, x, *args):
         mean, stdv = args

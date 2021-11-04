@@ -19,8 +19,6 @@ class Uniform(Distribution):
 
     def __init__(self, name, mean, stdv, input_type=None, startpoint=None):
 
-        self.dist_type = "Uniform"
-
         if input_type is None:
             a = mean - 3 ** 0.5 * stdv
             b = mean + 3 ** 0.5 * stdv
@@ -35,10 +33,10 @@ class Uniform(Distribution):
         self.dist_obj = uniform(loc=a, scale=b - a)
 
         super().__init__(
-            name=name,
-            dist_obj=self.dist_obj,
-            startpoint=startpoint,
+            name=name, dist_obj=self.dist_obj, startpoint=startpoint,
         )
+
+        self.dist_type = "Uniform"
 
     # Overriding these for performance
 

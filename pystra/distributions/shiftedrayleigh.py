@@ -20,8 +20,6 @@ class ShiftedRayleigh(Distribution):
 
     def __init__(self, name, mean, stdv, input_type=None, startpoint=None):
 
-        self.dist_type = "ShiftedRayleigh"
-
         if input_type is None:
             a = stdv / ((2 - np.pi * 0.5) ** 0.5)
             x_zero = mean - stdv * (np.pi / (4 - np.pi)) ** 0.5
@@ -33,7 +31,7 @@ class ShiftedRayleigh(Distribution):
         self.dist_obj = rayleigh(loc=x_zero, scale=a)
 
         super().__init__(
-            name=name,
-            dist_obj=self.dist_obj,
-            startpoint=startpoint,
+            name=name, dist_obj=self.dist_obj, startpoint=startpoint,
         )
+
+        self.dist_type = "ShiftedRayleigh"

@@ -19,8 +19,6 @@ class ChiSquare(Distribution):
 
     def __init__(self, name, mean, stdv=None, input_type=None, startpoint=None):
 
-        self.dist_type = "ChiSquare"
-
         if input_type is None:
             lamb = 0.5
             mean_test = lamb * stdv ** 2
@@ -39,7 +37,7 @@ class ChiSquare(Distribution):
         self.dist_obj = chi2(df=nu)
 
         super().__init__(
-            name=name,
-            dist_obj=self.dist_obj,
-            startpoint=startpoint,
+            name=name, dist_obj=self.dist_obj, startpoint=startpoint,
         )
+
+        self.dist_type = "ChiSquare"

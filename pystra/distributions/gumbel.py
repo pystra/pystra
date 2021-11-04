@@ -20,8 +20,6 @@ class Gumbel(Distribution):
 
     def __init__(self, name, mean, stdv, input_type=None, startpoint=None):
 
-        self.dist_type = "Gumbel"
-
         if input_type is None:
             mu = mean - 0.5772156649 * stdv * np.sqrt(6) / np.pi
             beta = np.pi / (stdv * np.sqrt(6))
@@ -33,7 +31,7 @@ class Gumbel(Distribution):
         self.dist_obj = gumbel(loc=mu, scale=1 / beta)
 
         super().__init__(
-            name=name,
-            dist_obj=self.dist_obj,
-            startpoint=startpoint,
+            name=name, dist_obj=self.dist_obj, startpoint=startpoint,
         )
+
+        self.dist_type = "Gumbel"

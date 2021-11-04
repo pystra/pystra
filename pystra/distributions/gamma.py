@@ -19,8 +19,6 @@ class Gamma(Distribution):
 
     def __init__(self, name, mean, stdv, input_type=None, startpoint=None):
 
-        self.dist_type = "Gamma"
-
         if input_type is None:
             beta = mean / (stdv ** 2)
             alpha = mean ** 2 / (stdv ** 2)
@@ -32,7 +30,7 @@ class Gamma(Distribution):
         self.dist_obj = gamma(a=alpha, scale=1 / beta)
 
         super().__init__(
-            name=name,
-            dist_obj=self.dist_obj,
-            startpoint=startpoint,
+            name=name, dist_obj=self.dist_obj, startpoint=startpoint,
         )
+
+        self.dist_type = "Gamma"

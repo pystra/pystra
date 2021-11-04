@@ -22,8 +22,6 @@ class Beta(Distribution):
 
     def __init__(self, name, mean, stdv, a=0, b=1, input_type=None, startpoint=None):
 
-        self.dist_type = "Beta"
-
         if input_type is None:
             a = a
             b = b
@@ -46,10 +44,10 @@ class Beta(Distribution):
         self.dist_obj = beta(q, r, loc=a, scale=b - a)
 
         super().__init__(
-            name=name,
-            dist_obj=self.dist_obj,
-            startpoint=startpoint,
+            name=name, dist_obj=self.dist_obj, startpoint=startpoint,
         )
+
+        self.dist_type = "Beta"
 
     def beta_parameter(self, q, *args):
         a, b, mean, stdv = args
