@@ -22,6 +22,8 @@ comp1 = pr.Component('A',ls)
 comp2 = pr.Component('B',ls)
 comp3 = pr.Component('C',ls)
 
+comp_list = [comp1,comp2,comp3]
+
 # Define and name random variables network as seen in limit state functions
 
 ## Example parameters
@@ -48,9 +50,28 @@ comp2.addVariable(rv_5)
 comp3.addVariable(rv_3)
 comp3.addVariable(rv_6)
 
+# See betas for interests 
+comp_betas = []
+for c in comp_list:
+    comp_betas.append(c.getProbability()[0])
+
 # Now create system(s)
 
-series_sys = pr.SeriesSystem([comp1,comp2,comp3])
-parallel_sys = pr.ParallelSystem([comp1,comp2,comp3])
+series_sys = pr.SeriesSystem(comp_list)
+parallel_sys = pr.ParallelSystem(comp_list)
 serpar_sys = pr.SeriesSystem([comp1,
                               pr.ParallelSystem([comp2,comp3])])
+
+# For interests, get event probabilities (should be the same since same components!)
+# default is equivalent planes method
+
+series_sys.getEventProbabilities()
+parallel_sys.getEventProbabilities()
+serpar_sys.getEventProbabilities()
+
+
+# calculating system beta and pf
+
+series_reliability = series_sys.getReliability()
+parallel_reliability = parallel_sys.getReliability()
+serpar_reliability = serpar_sys.getReliability()
