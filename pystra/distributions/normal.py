@@ -56,6 +56,14 @@ class Normal(Distribution):
         x = self.stdv * z + self.mean
         return x
 
+    def sample(self, n=1000):
+        """
+        Override sample from base class due to bespoke implementation
+        """
+        u = np.random.rand(n)
+        samples = self.inv_cdf(u)
+        return samples
+
     def u_to_x(self, u):
         """
         Transformation from u to x

@@ -27,7 +27,6 @@ class TypeIIlargestValue(Distribution):
                 self.typIIlargest_parameter,
                 parameter_guess,
                 args=(mean, stdv),
-                disp=False,
             )
             k = par[0]
             u_n = mean / (spec.gamma(1 - 1 / k))

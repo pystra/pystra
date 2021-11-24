@@ -31,7 +31,6 @@ class Weibull(Distribution):
                 self.weibull_parameter,
                 parameter_guess,
                 args=(meaneps, stdv),
-                disp=False,
             )
             k = par[0]
             u_1 = meaneps / (spec.gamma(1 + 1 / k)) + epsilon
