@@ -165,10 +165,9 @@ class System:
         # (correlation between same limit state)
         np.fill_diagonal(self.cmp_correlation_matrix, 1)
 
-    def getReliability(self, method="epm"):
+    def getReliability(self, method="default"):
         """
         Obtains system reliability, expressing as betas and probability of failure
-        epm = equivalent planes method
         
         """
         # event vector obtained through init
@@ -177,11 +176,10 @@ class System:
         system_beta = -norm.ppf(self.system_probability)
         return system_beta, self.system_probability
 
-    def getEventProbabilities(self, method="epm"):
+    def getEventProbabilities(self, method="default"):
         """
         Obtains the probability failure of each MECE event
         for different methods
-        epm = equivalent planes method
         
         """
 
@@ -213,15 +211,16 @@ class System:
 
         self.eventcorrelations(alpha_hat)  # find the component correlations
 
-        if method == "epm":
-            self.eventprobabilities_epm(betas)
+        if method == "default":
+            self.eventprobabilities_default(betas)
         else:
-            print("Only equivalent planes method currently supported")
+            raise ValueError("Only equivalent planes method currently supported")
 
-    def eventprobabilities_epm(self, betas):
+    def eventprobabilities_default(self, betas):
         """
         Obtains the probability failure of each MECE event with
-        epm = equivalent planes method
+        epm = equivalent planes method + 
+        scm = sequential compounding method
 
         """
 

@@ -40,3 +40,10 @@ List of References
 
 .. [Rosenblatt1952] Rosenblatt, Murray (1952). “Remarks on a Multivariate Transformation”. In: The Annals of Mathematical Statistics Vol 23.No 3, pp. 470–472.
 
+.. [Kang2008] Won-Hee Kang, Junho Song, Paolo Gardoni (2008). "Matrix-based system reliability method and applications to bridge networks". In: Reliability Engineering & System Safety Vol 93.No 11, pp. 1584-1593.
+
+.. [Kang2010] Kang, W.H., Song, J., (2010). "Evaluation of multivariate normal integrals for general systems by sequential compounding". In: Structural Safety Vol.32, pp. 35–41.
+
+.. [Roscoe2015] Roscoe, K., Diermanse, F., Vrouwenvelder, T., (2015). "System reliability with correlated components: Accuracy of the equivalent planes method. In: Structural Safety 57, 53–64.
+
+

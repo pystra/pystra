@@ -257,3 +257,8 @@ series_sys.setCorrelation(np.array(autocorr))
 # calculating system beta and pf
 
 print(series_sys.getReliability())
+
+# Results from paper
+# β1 3.25, β2 3.19, and ρ12 0.64 
+# the failure probability 8.2 × 10−4
+# not matching...hmmm...
