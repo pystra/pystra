@@ -56,9 +56,6 @@ A mixed-system is defined as: ::
 								  pr.ParallelSystem([comp2,comp3])])
 
 
-The system reliability index and probability of failure is then obtained by calling the ``.getReliability()`` method.
-
-
 Component Correlations and Autocorrelation
 ------------------------------------------
 
@@ -80,10 +77,76 @@ where the list values is the autocorrelation of the random variable in order as 
    Autocorrelations not equal to 0 and 1 have not been validated.
 
 
+System Reliability
+------------------------------------------
+
+Bounds are obtained by calling the ``.getBounds()`` method.
+
+.. note::
+
+   Bounds cannot be calculated for mixed systems. Only components in series, or components in parallel.
+
+By default, simple bounds are used. Using the `method` keyword, Ditlevsen bounds can be calculated for series systems. ::
+
+	series_sys.getBounds(method = "ditlevsen")
+
+Using first-order system reliabilty, an estimate of the exact reliability index and probability of failure for a system (series, parallel, or mixed) is obtained by calling the ``.getReliability()`` method. 
+
+
+
 Theoretical Background
 ==================
 
-The system reliability analysis is based on the Matrix-Based System Reliability (MSR) Method [Kang2008]_.
+System Bounds
+------------------------------------------
+
+Simple lower and upper bounds for *series* systems are: 
+
+.. math::
+    :label: series_bounds
+
+            \max^n_{i=1,n}P_{f,i}\le P(E_{sys})\le 1 - \prod_{i=1}^{n}\left( 1- P_{f,i}\right) 
+
+whilst for *parallel* systems: 
+
+.. math::
+    :label: parallel_bounds
+
+            \prod_{i=1}^{n}P_{f,i} \le P(E_{sys}) \le \min^n_{i=1,n}P_{f,i}
+
+
+where :math:`P_{f,i}` is the probability of failure for component *i*.
+
+These bounds are usually rather wide because they correspond,
+respectively, to perfect dependence between all components and no dependence between any pair
+of components [Thoft-Christensen]_. An alternative for *series* sytems only are narrower *Ditlevsen* bounds: 
+
+.. math::
+    :label: ditlevsen_bounds
+
+            \sum_{i=1}^{n}P_{f,i}- \sum_{i=2}^{n} \max_{j < i} P_{f}(i \cap j) \le P(E_{sys}) \le P_{f,1} + \sum_{i=2}^{n} \max \left[  P_{f,i} - \sum_{j=1} ^ {i-1} P_f(i \cap j),0\right] 
+
+where :math:`P_{f,i}` is ordered from largest to smallest, and :math:`P_f(i ∩ j)` is the joint failure probabilities of two components i
+and j, determined using the first-order system reliability [Lemaire2010]_: 
+
+.. math::
+    :label: first-order system reliability
+
+            P(i ∩ j)` \approx \Phi_2\left(\beta_i,\beta_j,p\right)
+
+:math:\beta_i is the component reliability indicies (found using FORM), and 
+:math:p is the correlation between components found as:
+
+.. math::
+    :label: rho_calc
+            \rho_{ab} = \sum_{k=1}^{V} \alpha_{a,k}\alpha_{b,j}
+			
+with :math:\alpha_{i,k} is the influence coefficient (directional cosine) for random variable *k* in the component *i* (found using FORM).
+
+Estimating Exact Reliability
+------------------------------------------
+
+The exact system reliability analysis is based on the Matrix-Based System Reliability (MSR) Method [Kang2008]_.
 Consider a systems event with *n* components, assuming each component has two
 distinct states, i.e. failure and survival, the sample space can be subdivide into :math:`v = 2^n` and the failure
 mutually exclusive and collectively exhaustive (MECE) “basic” events, :math:`e_j`, :math:`j = 1, … , v`.
@@ -126,9 +189,9 @@ Note that in a mixed-system, these equations are still valid, with the system ev
 Quantifying MECE Probabilities
 -------------------------------
 
-By default, the probabilities of each MECE event is calculated 
-using a procedure extending from the equivalent planes method (EPM) [Roscoe2015]_
-and the sequential compounding method (SCM) [Kang2010]_.
+By default, the probabilities of each MECE event is calculated
+based on first-order system probability [Lemaire2010]_
+
 
 .. math::
     :label: msr_probs
@@ -141,7 +204,7 @@ where :math:[s] indicates the row vector describing the MECE event using 1 and/o
 :math:\boldsymbol{P} is the covariance matrix describing the correlation between components with entries found as:
 
 .. math::
-    :label: rho_calc
+    :label: rho_matrix_calc
             \rho_{ab} = \sum_{k=1}^{V} \alpha_{a,k}\alpha_{b,j} \rho_{ab,k}
 
 with :math:\alpha_{i,k} is the influence coefficient (directional cosine) for random variable *k* in the component *i* (found using FORM),
@@ -150,5 +213,8 @@ and :math:\rho_{ab,k} the autocorrelation of the random variable *k*.
 If $\boldsymbol{P}$ is singular due to correlation values, then closest variance-covariance matrix is sought.
 
 .. note::
-   Alternative procedures such as Monte Carlo simulation (MCS) are yet to be explored.
+   Alternative procedures such as Monte Carlo simulation (MCS),
+   equivalent planes method (EPM) [Roscoe2015]_, sequential compounding method (SCM) [Kang2010]_, 
+   improved equivalent component approach [Gong2017]_ etc,
+   are yet to be explored.
 

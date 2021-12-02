@@ -44,6 +44,6 @@ List of References
 
 .. [Kang2010] Kang, W.H., Song, J., (2010). "Evaluation of multivariate normal integrals for general systems by sequential compounding". In: Structural Safety Vol.32, pp. 35–41.
 
-.. [Roscoe2015] Roscoe, K., Diermanse, F., Vrouwenvelder, T., (2015). "System reliability with correlated components: Accuracy of the equivalent planes method. In: Structural Safety 57, 53–64.
+.. [Roscoe2015] Roscoe, K., Diermanse, F., Vrouwenvelder, T., (2015). "System reliability with correlated components: Accuracy of the equivalent planes method". In: Structural Safety 57, 53–64.
 
-
+.. [Gong2017] Gong, C and Zhou, W (2017) "Improvement of equivalent component approach for reliability analyses of series systems". In: Structural Safety 68, 65-72.

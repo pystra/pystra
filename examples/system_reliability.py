@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-This file examplifies the system reliability module. 
+This file examplifies the system reliability module.
 
 """
 import pystra as pr
@@ -13,10 +13,10 @@ import matplotlib.pyplot as plt
 options = pr.AnalysisOptions()
 options.print_output = False
 
-#%%
+# %%
 """
-Series system and parallel system 
-correlated random variables in each limit state function 
+Series system and parallel system
+correlated random variables in each limit state function
 same random variables in limit state
 Problem 3 from Bora Gencturk - FERUM manual on MSR
 """
@@ -103,15 +103,17 @@ for s in systems:
 # Series: 1.034 x 10-1
 # Parallel: 7.677 x 10-3
 
-#%%
+# %%
 
 """
-Series system and parallel system with correlated variables: 
+Series system and parallel system with correlated variables:
 Thoft-Christensen and Sorenson (1982)
 "Reliability of structural systems with correlated elements"
 """
 
 # Define and create limit state function (the same for all components)
+
+
 def lsf(r, s):
     return r - s
 
@@ -194,9 +196,9 @@ plt.savefig("system_validation_plot.pdf")
 # series system matches
 # parallel system does not. (ductile system?)
 
-#%%
+# %%
 """
-Series system with correlated random variables of same type: 
+Series system with correlated random variables of same type:
 Example 1 from Zhou, Gong & Hong (2017)
 "New Perspective on Application of First-Order Reliability
 Method for Estimating System Reliability"
@@ -207,8 +209,9 @@ Method for Estimating System Reliability"
 d_mu = np.array([0.25, 0.30]) * tn  # for defects 1 and 2
 
 # Define and create limit state function (the same for all components)
-def lsf(D, t, s, p, l, d, x):
 
+
+def lsf(D, t, s, p, l, d, x):
     geo_term = l ** 2 / (D * t)
 
     # case for less than 50 (since geo_term is nominal)
@@ -256,9 +259,155 @@ series_sys.setCorrelation(np.array(autocorr))
 
 # calculating system beta and pf
 
+print(series_sys.getBounds())
+
+print(series_sys.getBounds("ditlevsen"))
+
 print(series_sys.getReliability())
 
 # Results from paper
-# β1 3.25, β2 3.19, and ρ12 0.64 
+# β1 3.25, β2 3.19, and ρ12 0.64
 # the failure probability 8.2 × 10−4
 # not matching...hmmm...
+
+# %%
+"""
+Series system bounds
+Example 8.1 from Thoft-Christensen & Baker
+"Structural Reliability Theory and its Applications"
+"""
+
+
+def lsf(r, s):
+    return r - s
+
+
+ls = pr.LimitState(lsf)
+
+N = 2
+comp_list = []
+for n in range(0, N):
+    comp_list.append(pr.Component("B " + str(n), ls, options))
+
+    # Create variables such that component beta is the same
+component_beta = 3.0
+sd_R = 10  # Dummy Standard deviation resistance
+mu_R = 90  # Dummy mean resistance (same for all)
+S = mu_R - component_beta * sd_R  # dummy loading
+
+# create random variables and add to component
+for c in comp_list:
+    c.addVariable(pr.Normal("r", mu_R, sd_R))
+    c.addVariable(pr.Constant("s", S))
+
+# See betas for interests
+comp_betas = []
+for c in comp_list:
+    comp_betas.append(c.getProbability()[0])
+
+# Now create system(s)
+
+sys = pr.SeriesSystem(comp_list)
+
+print(sys.getBounds())  # correct
+# 0.00135 to 0.00270
+
+print(sys.getBounds("ditlevsen"))
+
+# %%
+"""
+Parallel system bounds
+Example 8.2 from Thoft-Christensen & Baker
+"Structural Reliability Theory and its Applications"
+"""
+
+
+def lsf(r, s):
+    return r - s
+
+
+ls = pr.LimitState(lsf)
+
+N = 2
+comp_list = []
+for n in range(0, N):
+    comp_list.append(pr.Component("B " + str(n), ls, options))
+
+    # Create variables such that component beta is the same
+component_beta = 2.85
+sd_R = 10  # Dummy Standard deviation resistance
+mu_R = 90  # Dummy mean resistance (same for all)
+S = mu_R - component_beta * sd_R  # dummy loading
+
+# create random variables and add to component
+for c in comp_list:
+    c.addVariable(pr.Normal("r", mu_R, sd_R))
+    c.addVariable(pr.Constant("s", S))
+
+# See betas for interests
+comp_betas = []
+for c in comp_list:
+    comp_betas.append(c.getProbability()[0])
+
+# Now create system(s)
+
+sys = pr.ParallelSystem(comp_list)
+
+print(sys.getBounds())  # correct
+# 4.8e-6 to 0.219e-2
+
+print(sys.getBounds("ditlevsen"))  # not available
+
+# %%
+"""
+Ditlevsen bounds with known component correlations
+Example 8.4 from Thoft-Christensen & Baker
+"Structural Reliability Theory and its Applications"
+"""
+
+
+def lsf(r, s):
+    return r - s
+
+
+ls = pr.LimitState(lsf)
+
+N = 5
+comp_list = []
+for n in range(0, N):
+    comp_list.append(pr.Component("B " + str(n), ls, options))
+
+    # Create variables such that component beta is the same
+component_beta = 3.0
+sd_R = 10  # Dummy Standard deviation resistance
+mu_R = 90  # Dummy mean resistance (same for all)
+S = mu_R - component_beta * sd_R  # dummy loading
+
+# create random variables and add to component
+for c in comp_list:
+    c.addVariable(pr.Normal("r", mu_R, sd_R))
+    c.addVariable(pr.Constant("s", S))
+
+# See betas for interests
+comp_betas = []
+for c in comp_list:
+    comp_betas.append(c.getProbability()[0])
+
+# Now create system(s)
+
+sys = pr.SeriesSystem(comp_list)
+
+sys.setCorrelation(
+    np.array(
+        [
+            [1, 0.5, 0.2, 0.1, 0],
+            [0.5, 1, 0.5, 0.2, 0.1],
+            [0.2, 0.5, 1, 0.5, 0.2],
+            [0.1, 0.2, 0.5, 1, 0.5],
+            [0, 0.1, 0.2, 0.5, 1],
+        ]
+    ),
+    of_components=True,
+)
+print(sys.getBounds("ditlevsen"))  # correct
+# 63.8e-4 to 64.2e-4

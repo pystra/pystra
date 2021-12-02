@@ -3,14 +3,14 @@
 
 import numpy as np
 import pandas as pd
-from itertools import product
+from itertools import product, combinations
 from scipy.stats import multivariate_normal, norm
 
 from ..model import *
 from ..form import *
 
 
-class Component:
+class Component():
     """
     A component within a system described by a limit state
     """
@@ -24,7 +24,7 @@ class Component:
         limit_state : LimitState class object
             Information about the limit state
         analysis_option: AnalysisOption class object
-            Information about the analysis options. 
+            Information about the analysis options.
             Defaults when not provided.
         """
         self.name = name
@@ -71,7 +71,7 @@ class Component:
         Parameters
         ----------
         analysis_option: AnalysisOption class object
-            Information about the analysis options. 
+            Information about the analysis options.
         """
         self.options = analysis_options
 
@@ -85,6 +85,7 @@ class Component:
             limit_state=self.limit_state,
         )
         beta = float(analysis.beta)
+        pf = analysis.Pf
 
         # Get unique variable names for alphas (used for alpha_hat)
         variable_list = list(self.stochastic_model.variables.keys())
@@ -92,12 +93,12 @@ class Component:
         # Make dataframe for alphas to concat with others later
         alphas = pd.DataFrame(analysis.alpha, columns=arg_names)
 
-        return beta, alphas
+        return beta, alphas, pf
 
 
-class System:
+class System():
     """
-    Abstract base class for a collection of components 
+    Abstract base class for a collection of components
     (either in series/paralel/both)
     """
 
@@ -105,7 +106,7 @@ class System:
 
         self.components = []  # list of components objs
         self.event_vectors = []  # list of individual event_vectors
-        self.event_vector = None  #  specific system event vectors
+        self.event_vector = None  # specific system event vectors
         # used to describe which MECE components events occurs in event
         self.rvs_autocorrelation_matrix = None
         # autocorrelation matrix between random variables
@@ -114,6 +115,9 @@ class System:
 
         self.addComponents(obj_list)
         # populate component list
+
+        # indicator if a mixed-system
+        self.ismixed = len(obj_list) < len(self.components)
 
     def addComponents(self, obj_list):
         """Append component objects to system list."""
@@ -140,11 +144,12 @@ class System:
 
         Parameters
         ----------
-        cm_obj : 1D array or Correlation Matrix object
+        cm_obj : array
             correlation matrix in correct order.
+            1D for autocorrelation. 2D for component correlation.
         of_components : bool, optional
             whether the correlation of the system components
-            rather than of the autocorrelation of variables. 
+            rather than of the autocorrelation of variables.
             The default is False. Correlation of components is then calculated.
         """
 
@@ -155,54 +160,79 @@ class System:
             self.rvs_autocorrelation_matrix = np.diagflat(cm_obj)
 
     def eventcorrelations(self, alpha_hat):
-        """Convert correlations between random variables to correlations 
+        """Convert correlations between random variables to correlations
         between component events (limit states), if not specified"""
 
         a = alpha_hat
         pk = self.rvs_autocorrelation_matrix
-        self.cmp_correlation_matrix = np.dot(np.dot(a, pk), a.T)
+        if self.cmp_correlation_matrix is None:
+            self.cmp_correlation_matrix = np.dot(np.dot(a, pk), a.T)
         # and now replace the diagonal with ones
         # (correlation between same limit state)
         np.fill_diagonal(self.cmp_correlation_matrix, 1)
 
+    def getBounds(self, method="default"):
+        """
+        Obtain system bounds. Not accepted for mixed systems.
+
+        Parameters
+        ----------
+        method : string, optional
+            Method used. "default" is simple bounds.
+
+        Returns
+        -------
+        bounds: tuple
+
+        """
+        if self.ismixed:
+            raise TypeError("Cannot provide bounds for mixed system")
+        else:
+            (lower, upper) = eval("self.bounds_" + method + "()")
+            return (lower, upper)
+
     def getReliability(self, method="default"):
         """
-        Obtains system reliability, expressing as betas and probability of failure
-        
+        Obtains system reliability,
+        expressing as betas and probability of failure
         """
         # event vector obtained through init
         self.getEventProbabilities(method)
-        self.system_probability = np.sum(self.event_probabilities * self.event_vector)
+        self.system_probability = np.sum(
+            self.event_probabilities * self.event_vector)
         system_beta = -norm.ppf(self.system_probability)
         return system_beta, self.system_probability
 
-    def getEventProbabilities(self, method="default"):
+    def componentprobabilities(self):
         """
-        Obtains the probability failure of each MECE event
-        for different methods
-        
+        Calculate and populate multiple component reliabilties
+        and their correlation
         """
 
         betas = []  # Pre-allocated beta list of floats
+        pfs = []  # Pre-allocated beta list of floats
         alphas = []  # Pre-allocated alpha list of dataframes
 
         for component in self.components:
             # Run individual independent FORM analysis
-            beta, alpha = component.getProbability()
+            beta, alpha, pf = component.getProbability()
 
             betas.append(beta)  # Append
+            pfs.append(pf)  # Append
             alphas.append(alpha)
 
         alpha_hat = pd.concat(alphas).fillna(0)
         # get the alpha matrix for system
 
         # Get the random variable order for correlation matirx
-        self.random_variables = list(alpha_hat.columns)  # unique random variables
+        self.random_variables = list(alpha_hat.columns)
+        # unique random variables
         n_rvs = len(self.random_variables)
 
         # Convert to arrays
         betas = np.array(betas)
         alpha_hat = np.array(alpha_hat)
+        pfs = np.array(pfs)
 
         # Correlation
         if self.rvs_autocorrelation_matrix is None:  # set default correlation
@@ -211,16 +241,25 @@ class System:
 
         self.eventcorrelations(alpha_hat)  # find the component correlations
 
+        return betas, alpha_hat, pfs
+
+    def getEventProbabilities(self, method="default"):
+        """
+        Obtains the probability failure of each MECE event
+        for different methods
+        """
+
+        betas, _, _ = self.componentprobabilities()
+
         if method == "default":
             self.eventprobabilities_default(betas)
         else:
-            raise ValueError("Only equivalent planes method currently supported")
+            raise ValueError("Only default method currently supported")
 
     def eventprobabilities_default(self, betas):
         """
         Obtains the probability failure of each MECE event with
-        epm = equivalent planes method + 
-        scm = sequential compounding method
+        first-order system reliability
 
         """
 
@@ -245,7 +284,8 @@ class System:
             # allow_singular provides nearest positive definite
 
         # database mapping
-        event_probs = combs.apply(event_prob, b=betas, v=self.cmp_correlation_matrix)
+        event_probs = combs.apply(event_prob,
+                                  b=betas, v=self.cmp_correlation_matrix)
         # convert to list
         self.event_probabilities = list(event_probs)
 
@@ -269,8 +309,8 @@ class SeriesSystem(System):
     def getEventVector(self):
         """
         Establish the event vector for series system as
-        1 - (1 - e1)*(1 - e2)....(1 - en) 
-        where e is the component/system event (and columns of combo_array) 
+        1 - (1 - e1)*(1 - e2)....(1 - en)
+        where e is the component/system event (and columns of combo_array)
         """
         one_array = np.ones_like(self.combo_array)
         # create an ones array size of combo_array
@@ -279,6 +319,53 @@ class SeriesSystem(System):
 
         return one_vector - np.prod((one_array - self.combo_array), axis=1)
         # calculate series system event vector
+
+    def bounds_default(self):
+        "simple bounds for series system"
+
+        # get component probabilities
+        _, _, pfs = self.componentprobabilities()
+
+        lower = np.max(pfs)  # lower bound
+        upper = 1 - np.prod(1 - pfs)  # upper bound
+
+        return lower, upper
+
+    def bounds_ditlevsen(self):
+        "ditlevsen bounds for series system"
+
+        # get component probabilities
+        betas, _, pfs = self.componentprobabilities()
+
+        pfs[::-1].sort()  # sort in descending
+        betas.sort()  # sort in ascending
+
+        # get selected joint probabilties
+        indices = range(0, len(betas))
+        combs = list(combinations(indices, 2))  # get unique indicies pairs
+
+        joint_probs = np.zeros((len(betas), len(betas)))  # preallocated
+
+        for c in combs:
+
+            # correlation
+            v = self.cmp_correlation_matrix[c]
+            cov_m = np.array([[1, v], [v, 1]])
+
+            # bivariate calculation of unique pairs
+            joint_probs[c] = multivariate_normal.cdf(
+                -betas[list(c)], cov=cov_m, allow_singular=True
+            )
+
+        # upper bound
+        upper = np.sum(pfs) - np.sum(np.max(joint_probs, axis=0))
+
+        # lower bound
+        lower = float(pfs[0]) + np.sum(
+            np.maximum(pfs[1:].T - np.sum(joint_probs, axis=0)[1:], 0)
+        )
+
+        return lower, upper
 
 
 class ParallelSystem(System):
@@ -300,8 +387,19 @@ class ParallelSystem(System):
     def getEventVector(self):
         """
         Establish the event vector for parallel system as
-        (e1)*(e2)....(en) 
-        where e is the component/system event (and columns of combo_array) 
+        (e1)*(e2)....(en)
+        where e is the component/system event (and columns of combo_array)
         """
         return np.prod(self.combo_array, axis=1)
         # calculate parallel system event vector
+
+    def bounds_default(self):
+        "simple bounds for parallel system"
+
+        # get component probabilities
+        _, _, pfs = self.componentprobabilities()
+
+        upper = np.min(pfs)  # upper bound
+        lower = np.prod(pfs)  # lower bound
+
+        return lower, upper
