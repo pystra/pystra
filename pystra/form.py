@@ -126,10 +126,11 @@ class Form(object):
             # Check convergence
             e1 = np.absolute(self.G * self.Go ** (-1))[0]
             e2 = np.linalg.norm(self.u - self.alpha.dot(self.u).dot(self.alpha))
-            print(f"e1 = {e1:1.6e} , e2 = {e2:1.6e}")
             condition1 = e1 < self.options.getE1()
             condition2 = e2 < self.options.getE2()
             condition3 = i == self.options.getImax()
+            if self.options.printOutput():
+                print(f"e1 = {e1:1.6e} , e2 = {e2:1.6e}")
 
             if condition1 and condition2 or condition3:
                 self.i = i
