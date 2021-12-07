@@ -171,7 +171,7 @@ class System():
         # (correlation between same limit state)
         np.fill_diagonal(self.cmp_correlation_matrix, 1)
 
-    def getBounds(self, method="default"):
+    def getBounds(self, bounds_type="basic"):
         """
         Obtain system bounds. Not accepted for mixed systems.
 
@@ -188,7 +188,7 @@ class System():
         if self.ismixed:
             raise TypeError("Cannot provide bounds for mixed system")
         else:
-            (lower, upper) = eval("self.bounds_" + method + "()")
+            (lower, upper) = eval("self.bounds_" + bounds_type + "()")
             return (lower, upper)
 
     def getReliability(self, method="default"):
@@ -320,7 +320,7 @@ class SeriesSystem(System):
         return one_vector - np.prod((one_array - self.combo_array), axis=1)
         # calculate series system event vector
 
-    def bounds_default(self):
+    def bounds_basic(self):
         "simple bounds for series system"
 
         # get component probabilities
@@ -393,7 +393,7 @@ class ParallelSystem(System):
         return np.prod(self.combo_array, axis=1)
         # calculate parallel system event vector
 
-    def bounds_default(self):
+    def bounds_basic(self):
         "simple bounds for parallel system"
 
         # get component probabilities
