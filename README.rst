@@ -1,4 +1,4 @@
-.. figure:: docs/_images/logo/logo_pystra_mid.png
+.. figure:: docs/source/images/logo/logo_pystra_mid.png
    :alt: Pystra logo
    :align: center
    :scale: 50
@@ -14,11 +14,9 @@ includes methods for summarizing output. Pystra is also closely integrated with 
 Installation
 ============
 
-Pystra is pure python code. It has no platform-specific dependencies and should
-thus work on all platforms. It builds on `numpy` and `scipy`. The latest
-version of `pyre` can be installed by typing: ::
+To install *Pystra* just do:
 
-  $ pip install git+git://github.com/pystra/pystra.git
+  $ pip install pystra
 
 Features
 ========
