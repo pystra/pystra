@@ -220,11 +220,7 @@
         <span class="n">sensitivities</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;std&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">}</span>
 
         <span class="c1"># Get the base result</span>
-        <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span>
-            <span class="n">stochastic_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
-            <span class="n">limit_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">limitstate</span><span class="p">,</span>
-            <span class="n">analysis_options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">stochastic_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">limitstate</span><span class="p">)</span>
         <span class="n">beta0</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">getBeta</span><span class="p">()</span>
 
         <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="s2">&quot;std&quot;</span><span class="p">]:</span>
@@ -235,11 +231,7 @@
                 <span class="n">delta_actual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_change_param</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">delta</span><span class="p">)</span>
 
                 <span class="c1"># Calculate and store the sensitivity</span>
-                <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span>
-                    <span class="n">stochastic_model</span><span class="o">=</span><span class="n">model1</span><span class="p">,</span>
-                    <span class="n">limit_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">limitstate</span><span class="p">,</span>
-                    <span class="n">analysis_options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
-                <span class="p">)</span>
+                <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">stochastic_model</span><span class="o">=</span><span class="n">model1</span><span class="p">,</span> <span class="n">limit_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">limitstate</span><span class="p">)</span>
                 <span class="n">beta1</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">getBeta</span><span class="p">()</span>
                 <span class="n">sens</span> <span class="o">=</span> <span class="p">(</span><span class="n">beta1</span> <span class="o">-</span> <span class="n">beta0</span><span class="p">)</span> <span class="o">/</span> <span class="n">delta_actual</span>
                 <span class="n">sensitivities</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="n">sens</span>

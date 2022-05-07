@@ -173,18 +173,20 @@
 
 
 <div class="viewcode-block" id="Sorm"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm">[docs]</a><span class="k">class</span> <span class="nc">Sorm</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Second Order Reliability Method (SORM)</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Second Order Reliability Method (SORM)</span>
 
 <span class="sd">    Unlike FORM, this method approximates the failure surface in standard</span>
 <span class="sd">    normal space using a quadratic surface. The basic approximation is given</span>
 <span class="sd">    by [Breitung1984]_:</span>
 
 <span class="sd">        .. math::</span>
+<span class="sd">       :label: eq:2_91</span>
 
-<span class="sd">              p_f \\approx p_{f2} = \\Phi(-\\beta) \\Pi_{i=1}^{n-1}[ 1 + \\kappa_i \\beta ]^{-0.5}</span>
+<span class="sd">              p_f \\approx p_{f2} = \Phi(-\\beta) \\Pi_{i=1}^{n-1}\\[ 1 + \\kappa_i \\beta \\]^{-0.5}</span>
 
 <span class="sd">    The corresponding generalized reliability index</span>
-<span class="sd">    :math:`\\beta_G = -\\Phi^{-1}( 1-p_{f2})` is reported. The Breitung</span>
+<span class="sd">    :math:`\\beta_G \\= -\\Phi^{-1}\\( 1-p_{f2}\\)` is reported. The Breitung</span>
 <span class="sd">    approximation is asymptotic and accurate for higher values of \\beta.</span>
 <span class="sd">    Also reported is the Hohenbichler and Rackwitz modification to Brietung&#39;s</span>
 <span class="sd">    formula, which is more accurate for lower values of \\beta.</span>
@@ -259,8 +261,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">kappa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">kappa</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pf_breitung</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">betaHL</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kappa</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pf_breitung_m</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">betaHL</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kappa</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">printOutput</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">showResults</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">showResults</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Sorm.pf_breitung"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm.pf_breitung">[docs]</a>    <span class="k">def</span> <span class="nf">pf_breitung</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">kappa</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
