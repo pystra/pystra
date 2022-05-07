@@ -65,7 +65,7 @@ def quadratureRule(n, wfun=None, alpha=None, beta=None):
                 + (h * 3 ** (-1)) * (d2pn + (h * 4 ** (-1)) * (d3pn + (0.2 * h) * d4pn))
             )
         )
-        wf = 2 * (1 - bp ** 2) * (fx * fx) ** (-1)
+        wf = 2 * (1 - bp**2) * (fx * fx) ** (-1)
         if ((m - 1) + (m - 1)) > (n - 1):
             bp[m - 1] = 0
         if (m + m) != n:

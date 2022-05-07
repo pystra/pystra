@@ -16,7 +16,7 @@ class StdNormal:
 
     @staticmethod
     def pdf(u):
-        p = np.exp(-0.5 * u ** 2) / np.sqrt(2 * np.pi)
+        p = np.exp(-0.5 * u**2) / np.sqrt(2 * np.pi)
         return p
 
     @staticmethod

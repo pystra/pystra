@@ -62,14 +62,14 @@ def run_scipy():
     stochastic_model = pr.StochasticModel()
     # Lognormal
     zeta = (np.log(1 + (100 / 500) ** 2)) ** 0.5
-    lamb = np.log(500) - 0.5 * zeta ** 2
+    lamb = np.log(500) - 0.5 * zeta**2
     stochastic_model.addVariable(
         pr.ScipyDist("X1", lognorm(s=zeta, scale=np.exp(lamb)))
     )
     # Normal
     stochastic_model.addVariable(pr.ScipyDist("X2", norm(loc=2000, scale=400)))
     ## Uniform
-    a_b = (0.5 ** 2 * 12) ** (1 / 2)
+    a_b = (0.5**2 * 12) ** (1 / 2)
     a = (2 * 5 - a_b) / 2
     stochastic_model.addVariable(pr.ScipyDist("X3", uniform(loc=a, scale=a_b)))
     # Constant

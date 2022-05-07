@@ -277,7 +277,7 @@ class Sorm(object):
             # Now use finite differences to estimate hessian
             for i in range(nrv):
                 # Second-order central difference
-                hess_G[i, i] = (all_G_plus[i] - 2 * G + all_G_minus[i]) / h ** 2
+                hess_G[i, i] = (all_G_plus[i] - 2 * G + all_G_minus[i]) / h**2
                 for j in range(i):
                     # Second order forward difference
                     hess_G[i, j] = (
@@ -285,7 +285,7 @@ class Sorm(object):
                         - all_G_plus[j]
                         - all_G_plus[i]
                         + G
-                    ) / h ** 2
+                    ) / h**2
                     hess_G[j, i] = hess_G[i, j]
 
         return hess_G

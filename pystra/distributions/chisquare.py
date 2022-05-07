@@ -21,13 +21,13 @@ class ChiSquare(Distribution):
 
         if input_type is None:
             lamb = 0.5
-            mean_test = lamb * stdv ** 2
+            mean_test = lamb * stdv**2
             if mean / mean_test < 0.95 or mean / mean_test > 1.05:
                 print(
                     "Error when using Chi-square distribution. "
                     "Mean and stdv should be given such that mean = 0.5*stdv.**2\n"
                 )
-            nu = 2 * (mean ** 2) / (stdv ** 2)
+            nu = 2 * (mean**2) / (stdv**2)
         else:
             nu = mean
 
