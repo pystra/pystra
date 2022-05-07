@@ -3,7 +3,7 @@ Structural Reliability Analysis with Python.
 
 """
 
-__version__ = "5.0.3"
+__version__ = "1.0.0"
 
 
 try:
