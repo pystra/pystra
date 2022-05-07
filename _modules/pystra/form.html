@@ -1,0 +1,519 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pystra.form &#8212; PySTRA 1.0.0 documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+
+<a class="navbar-brand" href="../../index.html">
+  <img src="../../_static/icon_pystra_small.png" class="logo" alt="logo">
+</a>
+
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../install.html">
+  Installation
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../tutorial.html">
+  Tutorials
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../api.html">
+  API Reference
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../theory.html">
+  Theoretical Background
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../references.html">
+  References
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/pystra/pystra" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://twitter.com/ccaprani" rel="noopener" target="_blank" title="Twitter"><span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <h1>Source code for pystra.form</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python -tt</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.optimize</span> <span class="k">as</span> <span class="nn">opt</span>
+<span class="kn">import</span> <span class="nn">scipy.special</span> <span class="k">as</span> <span class="nn">spec</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span>
+
+<span class="kn">from</span> <span class="nn">.model</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.correlation</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.distributions</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.cholesky</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.limitstate</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.stepsize</span> <span class="kn">import</span> <span class="o">*</span>
+
+
+<div class="viewcode-block" id="Form"><a class="viewcode-back" href="../../gen/pystra.form.Form.html#pystra.form.Form">[docs]</a><span class="k">class</span> <span class="nc">Form</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;First Order Reliability Method (FORM)</span>
+
+<span class="sd">    Let :math:`{\\bf Z}` be a set of uncorrelated and standardized normally</span>
+<span class="sd">    distributed random variables :math:`( Z_1 ,\dots, Z_n )` in the normalized</span>
+<span class="sd">    z-space, corresponding to any set of random variables :math:`{\\bf X} = (</span>
+<span class="sd">    X_1 , \dots , X_n )` in the physical x-space, then the limit state surface</span>
+<span class="sd">    in x-space is also mapped on the corresponding limit state surface in</span>
+<span class="sd">    z-space.</span>
+
+<span class="sd">    The reliability index :math:`\\beta` is the minimum distance from the</span>
+<span class="sd">    z-origin to the failure surface. This distance :math:`\\beta` can directly</span>
+<span class="sd">    be mapped to a probability of failure</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">              p_f \\approx p_{f1} = \Phi(-\\beta)</span>
+
+<span class="sd">    this corresponds to a linearization of the failure surface. The</span>
+<span class="sd">    linearization point is the design point :math:`{\\bf z}^*`. This procedure</span>
+<span class="sd">    is called First Order Reliability Method (FORM) and :math:`\beta` is the</span>
+<span class="sd">    First Order Reliability Index. [Madsen2006]_</span>
+
+<span class="sd">    :Attributes:</span>
+<span class="sd">      - analysis_option (AnalysisOption): Option for the structural analysis</span>
+<span class="sd">      - limit_state (LimitState): Information about the limit state</span>
+<span class="sd">      - stochastic_model (StochasticModel): Information about the model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">analysis_options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stochastic_model</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="c1"># The stochastic model</span>
+        <span class="k">if</span> <span class="n">stochastic_model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">StochasticModel</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">stochastic_model</span>
+
+        <span class="c1"># Options for the calculation</span>
+        <span class="k">if</span> <span class="n">analysis_options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">AnalysisOptions</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">analysis_options</span>
+
+        <span class="c1"># The limit state function</span>
+        <span class="k">if</span> <span class="n">limit_state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">limitstate</span> <span class="o">=</span> <span class="n">LimitState</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">limitstate</span> <span class="o">=</span> <span class="n">limit_state</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">i</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">J</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">G</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Go</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gradient</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Pf</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Computation of modified correlation matrix R0</span>
+        <span class="n">computeModifiedCorrelationMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># Cholesky decomposition</span>
+        <span class="n">computeCholeskyDecomposition</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># Compute starting point for the algorithm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">computeStartingPoint</span><span class="p">()</span>
+
+        <span class="c1"># Iterations</span>
+        <span class="c1"># Set parameters for the iterative loop</span>
+        <span class="c1"># Initialize counter</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># Convergence is achieved when convergence is set to True</span>
+        <span class="n">convergence</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># loope</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">convergence</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">printOutput</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;.......................................&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Now carrying out iteration number:&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+
+            <span class="c1"># Compute Transformation from u to x space</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">computeTransformation</span><span class="p">()</span>
+
+            <span class="c1"># Compute the Jacobian</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">computeJacobian</span><span class="p">()</span>
+
+            <span class="c1"># Evaluate limit-state function and its gradient</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">computeLimitState</span><span class="p">()</span>
+
+            <span class="c1"># Set scale parameter Go and inform about struct. resp.</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Go</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">printOutput</span><span class="p">():</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Value of limit-state function in the first step:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span><span class="p">)</span>
+
+            <span class="c1"># Compute alpha vector</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">computeAlpha</span><span class="p">()</span>
+
+            <span class="c1"># Compute gamma vector</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">computeGamma</span><span class="p">()</span>
+
+            <span class="c1"># Check convergence</span>
+            <span class="n">e1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">G</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">Go</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">e2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">))</span>
+            <span class="n">condition1</span> <span class="o">=</span> <span class="n">e1</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getE1</span><span class="p">()</span>
+            <span class="n">condition2</span> <span class="o">=</span> <span class="n">e2</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getE2</span><span class="p">()</span>
+            <span class="n">condition3</span> <span class="o">=</span> <span class="n">i</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getImax</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">printOutput</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;e1 = </span><span class="si">{e1:1.6e}</span><span class="s2"> , e2 = </span><span class="si">{e2:1.6e}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">condition1</span> <span class="ow">and</span> <span class="n">condition2</span> <span class="ow">or</span> <span class="n">condition3</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">i</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="n">convergence</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="c1"># space for some recording stuff</span>
+
+            <span class="c1"># Take a step if convergence is not achieved</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">convergence</span><span class="p">:</span>
+                <span class="c1"># Determine search direction</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">computeSearchDirection</span><span class="p">()</span>
+
+                <span class="c1"># Determine step size</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">computeStepSize</span><span class="p">()</span>
+
+                <span class="c1"># Determine new trial point</span>
+                <span class="n">u_new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span>
+
+                <span class="c1"># Prepare for a new round in the loop</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">u_new</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># np.transpose(u_new)</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Compute beta value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">computeBeta</span><span class="p">()</span>
+
+        <span class="c1"># Compute failure probability</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">computeFailureProbability</span><span class="p">()</span>
+
+        <span class="c1"># Show Results</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">printOutput</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">showResults</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Form.computeStartingPoint"><a class="viewcode-back" href="../../gen/pystra.form.Form.html#pystra.form.Form.computeStartingPoint">[docs]</a>    <span class="k">def</span> <span class="nf">computeStartingPoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute starting point for the algorithm&quot;&quot;&quot;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+        <span class="n">marg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">getMarginalDistributions</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">marg</span><span class="p">)):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">marg</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">getStartPoint</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">x_to_u</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Form.computeTransformation"><a class="viewcode-back" href="../../gen/pystra.form.Form.html#pystra.form.Form.computeTransformation">[docs]</a>    <span class="k">def</span> <span class="nf">computeTransformation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute transformation from u to x space&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">([</span><span class="n">u_to_x</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)])</span></div>
+
+<div class="viewcode-block" id="Form.computeJacobian"><a class="viewcode-back" href="../../gen/pystra.form.Form.html#pystra.form.Form.computeJacobian">[docs]</a>    <span class="k">def</span> <span class="nf">computeJacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute the Jacobian&quot;&quot;&quot;</span>
+        <span class="n">J_u_x</span> <span class="o">=</span> <span class="n">jacobian</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+        <span class="n">J_x_u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">J_u_x</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">J</span> <span class="o">=</span> <span class="n">J_x_u</span></div>
+
+<div class="viewcode-block" id="Form.computeLimitState"><a class="viewcode-back" href="../../gen/pystra.form.Form.html#pystra.form.Form.computeLimitState">[docs]</a>    <span class="k">def</span> <span class="nf">computeLimitState</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Evaluate limit-state function and its gradient&quot;&quot;&quot;</span>
+        <span class="n">G</span><span class="p">,</span> <span class="n">gradient</span> <span class="o">=</span> <span class="n">evaluateLimitState</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">limitstate</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">G</span> <span class="o">=</span> <span class="n">G</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gradient</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">gradient</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">J</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Form.computeAlpha"><a class="viewcode-back" href="../../gen/pystra.form.Form.html#pystra.form.Form.computeAlpha">[docs]</a>    <span class="k">def</span> <span class="nf">computeAlpha</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute alpha vector&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">gradient</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gradient</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Form.computeGamma"><a class="viewcode-back" href="../../gen/pystra.form.Form.html#pystra.form.Form.computeGamma">[docs]</a>    <span class="k">def</span> <span class="nf">computeGamma</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute gamma vector&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">J</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">J</span><span class="p">)))))</span>
+        <span class="c1"># Importance vector gamma</span>
+        <span class="n">matmult</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">J</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span><span class="p">)</span>
+        <span class="n">importance_vector_gamma</span> <span class="o">=</span> <span class="n">matmult</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">matmult</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Form.computeSearchDirection"><a class="viewcode-back" href="../../gen/pystra.form.Form.html#pystra.form.Form.computeSearchDirection">[docs]</a>    <span class="k">def</span> <span class="nf">computeSearchDirection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Determine search direction&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">G</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gradient</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">)</span>
+        <span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span></div>
+
+<div class="viewcode-block" id="Form.computeStepSize"><a class="viewcode-back" href="../../gen/pystra.form.Form.html#pystra.form.Form.computeStepSize">[docs]</a>    <span class="k">def</span> <span class="nf">computeStepSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Determine step size&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getStepSize</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">getStepSize</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">G</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">gradient</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">limitstate</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getStepSize</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Form.computeBeta"><a class="viewcode-back" href="../../gen/pystra.form.Form.html#pystra.form.Form.computeBeta">[docs]</a>    <span class="k">def</span> <span class="nf">computeBeta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute beta value&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Form.computeFailureProbability"><a class="viewcode-back" href="../../gen/pystra.form.Form.html#pystra.form.Form.computeFailureProbability">[docs]</a>    <span class="k">def</span> <span class="nf">computeFailureProbability</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute probability of failure&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Pf</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Form.showResults"><a class="viewcode-back" href="../../gen/pystra.form.Form.html#pystra.form.Form.showResults">[docs]</a>    <span class="k">def</span> <span class="nf">showResults</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Show results&quot;&quot;&quot;</span>
+        <span class="n">n_hyphen</span> <span class="o">=</span> <span class="mi">54</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="n">n_hyphen</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; RESULTS FROM RUNNING FORM RELIABILITY ANALYSIS&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; Number of iterations:     &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">i</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; Reliability index beta:   &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; Failure probability:      &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pf</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="s2">&quot; Number of calls to the limit-state function:&quot;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">getCallFunction</span><span class="p">(),</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="n">n_hyphen</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Form.showDetailedOutput"><a class="viewcode-back" href="../../gen/pystra.form.Form.html#pystra.form.Form.showDetailedOutput">[docs]</a>    <span class="k">def</span> <span class="nf">showDetailedOutput</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get detailed output to console&quot;&quot;&quot;</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">getVariables</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="n">consts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">getConstants</span><span class="p">()</span>
+        <span class="n">u_star</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDesignPoint</span><span class="p">()</span>
+        <span class="n">x_star</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDesignPoint</span><span class="p">(</span><span class="n">uspace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAlpha</span><span class="p">()</span>
+
+        <span class="n">n_hyphen</span> <span class="o">=</span> <span class="mi">54</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="n">n_hyphen</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;FORM&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="n">n_hyphen</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:15s}</span><span class="s2"> </span><span class="se">\t</span><span class="s2"> </span><span class="si">{:1.10e}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;Pf&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pf</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:15s}</span><span class="s2"> </span><span class="se">\t</span><span class="s2"> </span><span class="si">{:2.10f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;BetaHL&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="s2">&quot;</span><span class="si">{:15s}</span><span class="s2"> </span><span class="se">\t</span><span class="s2"> </span><span class="si">{:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;Model Evaluations&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">getCallFunction</span><span class="p">())</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="n">n_hyphen</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="s2">&quot;</span><span class="si">{:10s}</span><span class="s2"> </span><span class="se">\t</span><span class="s2"> </span><span class="si">{:&gt;9s}</span><span class="s2"> </span><span class="se">\t</span><span class="s2"> </span><span class="si">{:&gt;12s}</span><span class="s2"> </span><span class="se">\t</span><span class="s2"> </span><span class="si">{:&gt;9s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">&quot;Variable&quot;</span><span class="p">,</span> <span class="s2">&quot;U_star&quot;</span><span class="p">,</span> <span class="s2">&quot;X_star&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha&quot;</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">{:10s}</span><span class="s2"> </span><span class="se">\t</span><span class="s2"> </span><span class="si">{: 5.6f}</span><span class="s2"> </span><span class="se">\t</span><span class="s2"> </span><span class="si">{:12.6f}</span><span class="s2"> </span><span class="se">\t</span><span class="s2"> </span><span class="si">{:+5.6f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">name</span><span class="p">,</span> <span class="n">u_star</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">x_star</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">consts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{name:10s}</span><span class="s2"> </span><span class="se">\t</span><span class="s2"> {&#39;---&#39;:&gt;9s} </span><span class="se">\t</span><span class="s2"> </span><span class="si">{val:12.6f}</span><span class="s2"> </span><span class="se">\t</span><span class="s2"> {&#39;---&#39;:&gt;9s}&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="n">n_hyphen</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Form.getBeta"><a class="viewcode-back" href="../../gen/pystra.form.Form.html#pystra.form.Form.getBeta">[docs]</a>    <span class="k">def</span> <span class="nf">getBeta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the beta value</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">          - beta (float): Returns the beta value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Form.getFailure"><a class="viewcode-back" href="../../gen/pystra.form.Form.html#pystra.form.Form.getFailure">[docs]</a>    <span class="k">def</span> <span class="nf">getFailure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the probability of failure</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">          - Pf (float): Returns the probability of failure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pf</span></div>
+
+<div class="viewcode-block" id="Form.getDesignPoint"><a class="viewcode-back" href="../../gen/pystra.form.Form.html#pystra.form.Form.getDesignPoint">[docs]</a>    <span class="k">def</span> <span class="nf">getDesignPoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uspace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the design point, defaults to u-space</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">          - u (float): Returns the design point in u- or x-space</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">uspace</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">u_to_x</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Form.getAlpha"><a class="viewcode-back" href="../../gen/pystra.form.Form.html#pystra.form.Form.getAlpha">[docs]</a>    <span class="k">def</span> <span class="nf">getAlpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_dict</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the alpha vector</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">          - alpha (np.array): Returns the alpha vector</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">as_dict</span><span class="p">:</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">getNames</span><span class="p">()</span>
+            <span class="n">alphas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">alpha_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">alpha</span> <span class="k">for</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">alphas</span><span class="p">,</span> <span class="n">names</span><span class="p">)}</span>
+            <span class="k">return</span> <span class="n">alpha_dict</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div></div>
+</pre></div>
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2022, The PySTRA Developers.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

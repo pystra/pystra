@@ -1,0 +1,525 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Introductory Turorial &#8212; PySTRA 1.0.0 documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Example from the Tutorial" href="ex_intro.html" />
+    <link rel="prev" title="Tutorials" href="../tutorial.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+
+<a class="navbar-brand" href="../index.html">
+  <img src="../_static/icon_pystra_small.png" class="logo" alt="logo">
+</a>
+
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../install.html">
+  Installation
+ </a>
+</li>
+
+<li class="toctree-l1 current active nav-item">
+ <a class="reference internal nav-link" href="../tutorial.html">
+  Tutorials
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../api.html">
+  API Reference
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../theory.html">
+  Theoretical Background
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../references.html">
+  References
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/pystra/pystra" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://twitter.com/ccaprani" rel="noopener" target="_blank" title="Twitter"><span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Introductory Turorial
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="ex_intro.html">
+   Example from the Tutorial
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="ex_scipy_distributions.html">
+   SciPy Distribution Example
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="ex_sensitivity.html">
+   Sensitivity Analysis
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="ex_timing.html">
+   Pystra Timing
+  </a>
+ </li>
+</ul>
+
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#an-example-reliability-model">
+   An example reliability model
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#let-s-model">
+   Let’s model
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#reliability-analysis">
+   Reliability Analysis
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#finally">
+   Finally…
+  </a>
+ </li>
+</ul>
+
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+
+<div class="tocsection editthispage">
+    <a href="https://github.com/pystra/pystra/edit/main/docs/source/notebooks/intro.rst">
+        <i class="fas fa-pencil-alt"></i> Edit this page
+    </a>
+</div>
+
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <div class="section" id="introductory-turorial">
+<h1>Introductory Turorial<a class="headerlink" href="#introductory-turorial" title="Permalink to this headline">#</a></h1>
+<p>This tutorial will guide you through a typical Pystra application. Familiarity
+with Python is assumed, so if you are new to Python, books such as <a class="reference internal" href="../references.html#lutz2007" id="id1"><span>[Lutz2007]</span></a>
+or <a class="reference internal" href="../references.html#langtangen2009" id="id2"><span>[Langtangen2009]</span></a> are the place to start. Plenty of online documentation
+can also be found on the <a class="reference external" href="http://www.python.org/doc/">Python documentation</a> page.</p>
+<div class="section" id="an-example-reliability-model">
+<h2>An example reliability model<a class="headerlink" href="#an-example-reliability-model" title="Permalink to this headline">#</a></h2>
+<p>Consider the following random variables:</p>
+<div class="math notranslate nohighlight" id="equation-random-variables">
+<span class="eqno">(1)<a class="headerlink" href="#equation-random-variables" title="Permalink to this equation">#</a></span>\[\begin{split}        \begin{align}
+        X_1 &amp;\sim \text{Logormal}(500,100)\\
+        X_2 &amp;\sim \text{Normal}(2000,400)\\
+        X_3 &amp;\sim \text{Uniform}(5,0.5)
+        \end{align}\end{split}\]</div>
+<p>Additionally those variables are related to each other. Therefore the
+correlation matrix <span class="math notranslate nohighlight">\({\bf C}\)</span> is given:</p>
+<div class="math notranslate nohighlight" id="equation-correlation-matrix">
+<span class="eqno">(2)<a class="headerlink" href="#equation-correlation-matrix" title="Permalink to this equation">#</a></span>\[\begin{split}        \begin{align}
+        {\bf C} =
+        \begin{pmatrix}
+        1.0 &amp; 0.3 &amp; 0.2\\
+        0.3 &amp; 1.0 &amp; 0.2\\
+        0.2 &amp; 0.2 &amp; 1.0
+        \end{pmatrix}
+        \end{align}\end{split}\]</div>
+<p>Now, we like to compute the reliability index <span class="math notranslate nohighlight">\(\beta\)</span> and the failure
+probability <span class="math notranslate nohighlight">\(P_f\)</span>, by given limit state function <span class="math notranslate nohighlight">\(g(\gamma, X_1,X_2,X_3)\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-limit-state-function">
+<span class="eqno">(3)<a class="headerlink" href="#equation-limit-state-function" title="Permalink to this equation">#</a></span>\[        g(\gamma X_1,X_2,X_3) = \gamma - \frac{X_2}{1000 \cdot X_3} -
+        \left( \frac{X_1}{200 \cdot X_3} \right)^2\]</div>
+<p>where <span class="math notranslate nohighlight">\(\gamma\)</span> is a real constant. For this example, let <span class="math notranslate nohighlight">\(\gamma = 1\)</span>.</p>
+</div>
+<div class="section" id="let-s-model">
+<h2>Let’s model<a class="headerlink" href="#let-s-model" title="Permalink to this headline">#</a></h2>
+<p>Before we start with the modeling, we have to import the <code class="docutils literal notranslate"><span class="pre">pystra</span></code>
+package. Therefore are two different methods available:</p>
+<p>In case 1 we load <code class="docutils literal notranslate"><span class="pre">pystra</span></code> like a normal library:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pystra</span>
+</pre></div>
+</div>
+<p>here we must write for each command <code class="docutils literal notranslate"><span class="pre">pystra.my_command()</span></code>. A shorter way to
+load the package is case 2:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># import pystra library</span>
+<span class="kn">from</span> <span class="nn">pystra</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+<p>here, we import all available objects from <code class="docutils literal notranslate"><span class="pre">pystra</span></code>.</p>
+<p>Two ways to define the limit state function are available:</p>
+<ul class="simple">
+<li><p>Direct in the <code class="docutils literal notranslate"><span class="pre">main</span></code> code,</p></li>
+<li><p>as a separate <code class="docutils literal notranslate"><span class="pre">function</span></code>.</p></li>
+</ul>
+<p>In the first case the input will look like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define limit state function</span>
+<span class="c1"># - case 1: define directly</span>
+<span class="n">limit_state</span> <span class="o">=</span> <span class="n">LimitState</span><span class="p">(</span><span class="k">lambda</span> <span class="n">g</span><span class="p">,</span><span class="n">X1</span><span class="p">,</span><span class="n">X2</span><span class="p">,</span><span class="n">X3</span><span class="p">:</span> <span class="n">g</span> <span class="o">-</span> <span class="n">X2</span><span class="o">*</span><span class="p">(</span><span class="mi">1000</span><span class="o">*</span><span class="n">X3</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">X1</span><span class="o">*</span><span class="p">(</span><span class="mi">200</span><span class="o">*</span><span class="n">X3</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and in the second case like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define limit state function</span>
+<span class="c1"># - case 2: use predefined function</span>
+<span class="n">limit_state</span> <span class="o">=</span> <span class="n">LimitState</span><span class="p">(</span><span class="n">example_limitstatefunction</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The function <code class="docutils literal notranslate"><span class="pre">example_limitstatefunction</span></code> has be defined in advance
+as a separate function such as::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">example_limitstatefunction</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="n">X1</span><span class="p">,</span><span class="n">X2</span><span class="p">,</span><span class="n">X3</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">g</span> <span class="o">-</span> <span class="n">X2</span><span class="o">*</span><span class="p">(</span><span class="mi">1000</span><span class="o">*</span><span class="n">X3</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">X1</span><span class="o">*</span><span class="p">(</span><span class="mi">200</span><span class="o">*</span><span class="n">X3</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span>
+</pre></div>
+</div>
+<p>This case can be useful if the limit state function is quiet complex
+or need more then one line to define it.</p>
+<p>In the next step the stochastic model has to be initialized</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">stochastic_model</span> <span class="o">=</span> <span class="n">StochasticModel</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>and the random variables have to be assigned. To define the random
+variables from <a class="reference internal" href="#equation-random-variables">(1)</a> we can use following syntax:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define random variables</span>
+<span class="n">stochastic_model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span> <span class="n">Lognormal</span><span class="p">(</span><span class="s1">&#39;X1&#39;</span><span class="p">,</span><span class="mi">500</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span> <span class="p">)</span>
+<span class="n">stochastic_model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span> <span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;X2&#39;</span><span class="p">,</span><span class="mi">2000</span><span class="p">,</span><span class="mi">400</span><span class="p">)</span> <span class="p">)</span>
+<span class="n">stochastic_model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span> <span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;X3&#39;</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">)</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p>The first parameter is the name of the random variable. The name has to be a
+string and match the arguments in the limit state function, so the input looks like <code class="docutils literal notranslate"><span class="pre">'X3'</span></code>.</p>
+<p>By default, the next to values are the first and second moment of the
+distribution, here mean and standard deviation. If mean and standard
+deviation unknown but the distribution parameter known, then the
+<code class="docutils literal notranslate"><span class="pre">input_type</span></code> has to be changed.</p>
+<p>For example random variable <span class="math notranslate nohighlight">\(X_3\)</span> is uniform distributed. Above we
+assume that <span class="math notranslate nohighlight">\(X_3\)</span> is defined by mean and standard deviation. But we can
+describe the distribution with the parameter <span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(b\)</span>. In this
+case the code will look like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">X3</span> <span class="o">=</span> <span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;X3&#39;</span><span class="p">,</span><span class="mf">4.133974596215562</span><span class="p">,</span> <span class="mf">5.866025403784438</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>to get the same results as before. To see which parameters are needed and in
+which order the must insert, take a look at Chapter <span class="xref std std-ref">chap_distributions</span>.
+There are all currently available distributions listed.</p>
+<p>If the nominal value, bias, and coefficient of variation are instead known,
+then the random variable can be instantiated following this example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">X2</span> <span class="o">=</span> <span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;X2&#39;</span><span class="p">,</span><span class="o">*</span><span class="mi">500</span><span class="o">*</span><span class="mf">1.00</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p>where nominal value is 500, bias is 1.00, and coefficient of variation is 0.2.
+Notice the initial <cite>*</cite> character is used to dereference the output array.</p>
+<p>We will also define our constant using <code class="docutils literal notranslate"><span class="pre">Constant</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define constants</span>
+<span class="n">stochastic_model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span> <span class="n">Constant</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p>To add the correlation matrix to our model:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define Correlation Matrix</span>
+<span class="n">stochastic_model</span><span class="o">.</span><span class="n">setCorrelation</span><span class="p">(</span> <span class="n">CorrelationMatrix</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+                                                    <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+                                                    <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]])</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p>If the variables uncorrelated, you don’t have to add a correlation matrix to
+the model.</p>
+<p>At this stage our model is complete defined and we can start the analysis.</p>
+</div>
+<div class="section" id="reliability-analysis">
+<h2>Reliability Analysis<a class="headerlink" href="#reliability-analysis" title="Permalink to this headline">#</a></h2>
+<p>To change some options, a object must be initialized which stores the
+customized options.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set some options (optional)</span>
+<span class="n">options</span> <span class="o">=</span> <span class="n">AnalysisOptions</span><span class="p">()</span>
+<span class="c1"># options.printResults(False)</span>
+</pre></div>
+</div>
+<p>To store the results from the analysis an object must be initialized:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Perform FORM analysis</span>
+<span class="n">Analysis</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">analysis_options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span> <span class="n">stochastic_model</span><span class="o">=</span><span class="n">stochastic_model</span><span class="p">,</span> <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now the code can be compiled and the FORM analysis will be preformed. In this
+example we will get following results:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">==================================================</span>
+
+ <span class="n">RESULTS</span> <span class="n">FROM</span> <span class="n">RUNNING</span> <span class="n">FORM</span> <span class="n">RELIABILITY</span> <span class="n">ANALYSIS</span>
+
+ <span class="n">Number</span> <span class="n">of</span> <span class="n">iterations</span><span class="p">:</span>      <span class="mi">17</span>
+ <span class="n">Reliability</span> <span class="n">index</span> <span class="n">beta</span><span class="p">:</span>    <span class="mf">1.75397614074</span>
+ <span class="n">Failure</span> <span class="n">probability</span><span class="p">:</span>       <span class="mf">0.039717297753</span>
+ <span class="n">Number</span> <span class="n">of</span> <span class="n">calls</span> <span class="n">to</span> <span class="n">the</span> <span class="n">limit</span><span class="o">-</span><span class="n">state</span> <span class="n">function</span><span class="p">:</span> <span class="mi">164</span>
+
+<span class="o">==================================================</span>
+</pre></div>
+</div>
+<p>If we don’t like to see the results in the terminal the option
+<code class="docutils literal notranslate"><span class="pre">printResults(False)</span></code> has set to be <code class="docutils literal notranslate"><span class="pre">False</span></code>. There are also some other
+options which can be modified (see <span class="xref std std-ref">chap_model</span>).</p>
+<p>To use the results for further calculations, plots etc. the results can get by
+some getter methods (see <span class="xref std std-ref">chap_calculations</span>)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Some single results:</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="n">Analysis</span><span class="o">.</span><span class="n">getBeta</span><span class="p">()</span>
+<span class="n">failure</span> <span class="o">=</span> <span class="n">Analysis</span><span class="o">.</span><span class="n">getFailure</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>There is also the possibility to output more detailed results using
+<code class="docutils literal notranslate"><span class="pre">showDetailedOutput()</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">======================================================</span>
+<span class="n">FORM</span>
+<span class="o">======================================================</span>
+<span class="n">Pf</span>                     <span class="mf">3.9717297753e-02</span>
+<span class="n">BetaHL</span>                 <span class="mf">1.7539761407</span>
+<span class="n">Model</span> <span class="n">Evaluations</span>      <span class="mi">164</span>
+<span class="o">------------------------------------------------------</span>
+<span class="n">Variable</span>          <span class="n">U_star</span>             <span class="n">X_star</span>        <span class="n">alpha</span>
+<span class="n">X1</span>              <span class="mf">1.278045</span>         <span class="mf">631.504135</span>    <span class="o">+</span><span class="mf">0.728414</span>
+<span class="n">X2</span>              <span class="mf">0.407819</span>        <span class="mf">2310.352495</span>    <span class="o">+</span><span class="mf">0.232354</span>
+<span class="n">X3</span>             <span class="o">-</span><span class="mf">1.129920</span>           <span class="mf">4.517374</span>    <span class="o">-</span><span class="mf">0.644534</span>
+<span class="n">g</span>                    <span class="o">---</span>           <span class="mf">1.000000</span>          <span class="o">---</span>
+<span class="o">======================================================</span>
+</pre></div>
+</div>
+<p>A Second-Order Reliability Method (SORM) can also be performed, passing in the
+results of a FORM analysis object if it exists, fo; efficiency (otherwise, SORM
+will perform a FORM analysis first):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sorm</span> <span class="o">=</span> <span class="n">Sorm</span><span class="p">(</span><span class="n">analysis_options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span><span class="n">stochastic_model</span><span class="o">=</span><span class="n">stochastic_model</span><span class="p">,</span>
+            <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">Analysis</span><span class="p">)</span>
+<span class="n">sorm</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>for the example, this produces the output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">======================================================</span>
+
+<span class="n">RESULTS</span> <span class="n">FROM</span> <span class="n">RUNNING</span> <span class="n">SECOND</span> <span class="n">ORDER</span> <span class="n">RELIABILITY</span> <span class="n">METHOD</span>
+
+<span class="n">Generalized</span> <span class="n">reliability</span> <span class="n">index</span><span class="p">:</span>  <span class="mf">1.8489979688766982</span>
+<span class="n">Probability</span> <span class="n">of</span> <span class="n">failure</span><span class="p">:</span>         <span class="mf">0.0322290530029448</span>
+
+<span class="n">Curavture</span> <span class="mi">1</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.04143130882429444</span>
+<span class="n">Curavture</span> <span class="mi">2</span><span class="p">:</span> <span class="mf">0.36356407501548915</span>
+<span class="o">======================================================</span>
+</pre></div>
+</div>
+<p>Similar to FORM, we can also get more detailed output for diagnostics:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sorm</span><span class="o">.</span><span class="n">showDetailedOutput</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>which for the example gives:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">======================================================</span>
+<span class="n">FORM</span><span class="o">/</span><span class="n">SORM</span>
+<span class="o">======================================================</span>
+<span class="n">Pf</span> <span class="n">FORM</span>                        <span class="mf">3.9717297753e-02</span>
+<span class="n">Pf</span> <span class="n">SORM</span> <span class="n">Breitung</span>               <span class="mf">3.2229053003e-02</span>
+<span class="n">Pf</span> <span class="n">SORM</span> <span class="n">Breitung</span> <span class="n">HR</span>    <span class="mf">3.1158626124e-02</span>
+<span class="n">Beta_HL</span>                        <span class="mf">1.7539761407</span>
+<span class="n">Beta_G</span> <span class="n">Breitung</span>                <span class="mf">1.8489979689</span>
+<span class="n">Beta_G</span> <span class="n">Breitung</span> <span class="n">HR</span>     <span class="mf">1.8640317040</span>
+<span class="n">Model</span> <span class="n">Evaluations</span>      <span class="mi">180</span>
+<span class="o">------------------------------------------------------</span>
+<span class="n">Curvature</span> <span class="mi">1</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.04143130882429444</span>
+<span class="n">Curvature</span> <span class="mi">2</span><span class="p">:</span> <span class="mf">0.36356407501548915</span>
+<span class="o">------------------------------------------------------</span>
+<span class="n">Variable</span>          <span class="n">U_star</span>             <span class="n">X_star</span>        <span class="n">alpha</span>
+<span class="n">X1</span>              <span class="mf">1.278045</span>         <span class="mf">631.504135</span>    <span class="o">+</span><span class="mf">0.728414</span>
+<span class="n">X2</span>              <span class="mf">0.407819</span>        <span class="mf">2310.352495</span>    <span class="o">+</span><span class="mf">0.232354</span>
+<span class="n">X3</span>             <span class="o">-</span><span class="mf">1.129920</span>           <span class="mf">4.517374</span>    <span class="o">-</span><span class="mf">0.644534</span>
+<span class="n">g</span>                    <span class="o">---</span>           <span class="mf">1.000000</span>          <span class="o">---</span>
+<span class="o">======================================================</span>
+</pre></div>
+</div>
+<p>in which <cite>HR</cite> refers to the Hohenbichler-Rackwitz modification to Breitung’s
+formula.</p>
+</div>
+<div class="section" id="finally">
+<h2>Finally…<a class="headerlink" href="#finally" title="Permalink to this headline">#</a></h2>
+<p>This was a short introduction how to use <code class="docutils literal notranslate"><span class="pre">pystra</span></code>. The tutorial above is also
+available on <a class="reference external" href="https://github.com/pystra/pystra">GitHub</a> under <code class="docutils literal notranslate"><span class="pre">example.py</span></code>.</p>
+<p>Let’s have fun ;)</p>
+</div>
+</div>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="../tutorial.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Tutorials</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="ex_intro.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Example from the Tutorial</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2022, The PySTRA Developers.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

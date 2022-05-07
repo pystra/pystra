@@ -1,0 +1,598 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pystra.model &#8212; PySTRA 1.0.0 documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+
+<a class="navbar-brand" href="../../index.html">
+  <img src="../../_static/icon_pystra_small.png" class="logo" alt="logo">
+</a>
+
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../install.html">
+  Installation
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../tutorial.html">
+  Tutorials
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../api.html">
+  API Reference
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../theory.html">
+  Theoretical Background
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../references.html">
+  References
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/pystra/pystra" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://twitter.com/ccaprani" rel="noopener" target="_blank" title="Twitter"><span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <h1>Source code for pystra.model</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python -tt</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">.distributions</span> <span class="kn">import</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">Constant</span>
+
+<span class="c1"># from .correlation import *</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+
+
+<div class="viewcode-block" id="StochasticModel"><a class="viewcode-back" href="../../gen/pystra.model.StochasticModel.html#pystra.model.StochasticModel">[docs]</a><span class="k">class</span> <span class="nc">StochasticModel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Stochastic model&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Use ordered dictionary to make sure that the order corresponds to the</span>
+<span class="sd">        correlation matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">marg</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">correlation</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ro</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Lo</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iLo</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">call_function</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">consts</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="StochasticModel.addVariable"><a class="viewcode-back" href="../../gen/pystra.model.StochasticModel.html#pystra.model.StochasticModel.addVariable">[docs]</a>    <span class="k">def</span> <span class="nf">addVariable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        add stochastic variable</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Distribution</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Constant</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Input is not a Distribution or Constant object&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;variable name &quot;{obj.getName()}&quot; already exists&#39;</span><span class="p">)</span>
+
+        <span class="c1"># append the variable name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">getName</span><span class="p">())</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Distribution</span><span class="p">):</span>
+            <span class="c1"># append marginal distribution</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">marg</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+            <span class="c1"># append the Distribution object to the variables (ordered) dictionary</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">getName</span><span class="p">()]</span> <span class="o">=</span> <span class="n">obj</span>
+            <span class="c1"># update the default correlation matrix, in accordance with the number of variables</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">correlation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marg</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Constant</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">consts</span><span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">getName</span><span class="p">()]</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">getConstants</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">consts</span>
+
+    <span class="k">def</span> <span class="nf">getVariables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span>
+
+    <span class="k">def</span> <span class="nf">getVariable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">getNames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span>
+
+    <span class="k">def</span> <span class="nf">getLenMarginalDistributions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marg</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getMarginalDistributions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">marg</span>
+
+    <span class="k">def</span> <span class="nf">setMarginalDistributions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marg</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">marg</span> <span class="o">=</span> <span class="n">marg</span>
+
+    <span class="k">def</span> <span class="nf">setCorrelation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">correlation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">getMatrix</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">getCorrelation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">correlation</span>
+
+    <span class="k">def</span> <span class="nf">setModifiedCorrelation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">correlation</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ro</span> <span class="o">=</span> <span class="n">correlation</span>
+
+    <span class="k">def</span> <span class="nf">getModifiedCorrelation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ro</span>
+
+    <span class="k">def</span> <span class="nf">setLowerTriangularMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Lo</span> <span class="o">=</span> <span class="n">matrix</span>
+
+    <span class="k">def</span> <span class="nf">getLowerTriangularMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lo</span>
+
+    <span class="k">def</span> <span class="nf">setInvLowerTriangularMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iLo</span> <span class="o">=</span> <span class="n">matrix</span>
+
+    <span class="k">def</span> <span class="nf">getInvLowerTriangularMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iLo</span>
+
+    <span class="k">def</span> <span class="nf">addCallFunction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">add</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">call_function</span> <span class="o">+=</span> <span class="n">add</span>
+
+    <span class="k">def</span> <span class="nf">getCallFunction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">call_function</span></div>
+
+
+<div class="viewcode-block" id="AnalysisOptions"><a class="viewcode-back" href="../../gen/pystra.model.AnalysisOptions.html#pystra.model.AnalysisOptions">[docs]</a><span class="k">class</span> <span class="nc">AnalysisOptions</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Options</span>
+
+<span class="sd">    Options for the structural reliability analysis.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">transf_type</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="sd">&quot;&quot;&quot;Type of joint distribution</span>
+
+<span class="sd">    :Type:</span>
+<span class="sd">      - 1: jointly normal (no longer supported)\n</span>
+<span class="sd">      - 2: independent non-normal (no longer supported)\n</span>
+<span class="sd">      - 3: Nataf joint distribution (only available option)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ro_method</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="sd">&quot;&quot;&quot;Method for computation of the modified Nataf correlation matrix</span>
+
+<span class="sd">    :Methods:</span>
+<span class="sd">      - 0: use of approximations from ADK&#39;s paper (no longer supported)\n</span>
+<span class="sd">      - 1: exact, solved numerically</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">flag_sens</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="sd">&quot;&quot;&quot; Flag for computation of sensitivities</span>
+
+<span class="sd">    w.r.t. means, standard deviations, parameters and correlation coefficients</span>
+
+<span class="sd">    :Flag:</span>
+<span class="sd">      - 1: all sensitivities assessed,\n</span>
+<span class="sd">      - 0: no sensitivities assessment</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">print_output</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="sd">&quot;&quot;&quot;Print comments during calculation</span>
+
+<span class="sd">    :Values:</span>
+<span class="sd">      - True: FERUM interactive mode,\n</span>
+<span class="sd">      - False: FERUM silent mode</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">multi_proc</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="sd">&quot;&quot;&quot; Amount of g-calls</span>
+
+<span class="sd">    :Values:</span>
+<span class="sd">        - 1: block_size g-calls sent simultaneously</span>
+<span class="sd">           - gfunbasic.m is used and a vectorized version of gfundata.expression</span>
+<span class="sd">             is available. The number of g-calls sent simultaneously (block_size)</span>
+<span class="sd">             depends on the memory available on the computer running FERUM.</span>
+<span class="sd">           - gfunxxx.m user-specific g-function is used and able to handle</span>
+<span class="sd">             block_size computations            sent simultaneously, on a cluster</span>
+<span class="sd">             of PCs or any other multiprocessor computer platform.</span>
+<span class="sd">        - 0: g-calls sent sequentially</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">block_size</span> <span class="o">=</span> <span class="mi">1000</span>
+        <span class="sd">&quot;&quot;&quot; Block size</span>
+
+<span class="sd">    Number of g-calls to be sent simultaneously</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+        <span class="c1"># FORM analysis options</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">i_max</span> <span class="o">=</span> <span class="mi">100</span>
+        <span class="sd">&quot;&quot;&quot;Maximum number of iterations allowed in the search algorithm&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">e1</span> <span class="o">=</span> <span class="mf">0.001</span>
+        <span class="sd">&quot;&quot;&quot;Tolerance on how close design point is to limit-state surface&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">e2</span> <span class="o">=</span> <span class="mf">0.001</span>
+        <span class="sd">&quot;&quot;&quot;Tolerance on how accurately the gradient points towards the origin&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">step_size</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="sd">&quot;&quot;&quot; Step size</span>
+
+<span class="sd">    0: step size by Armijo rule, otherwise: given value is the step size</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Recorded_u</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="c1"># 0: u-vector not recorded at all iterations,</span>
+        <span class="c1"># 1: u-vector recorded at all iterations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Recorded_x</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="c1"># 0: x-vector not recorded at all iterations,</span>
+        <span class="c1"># 1: x-vector recorded at all iterations</span>
+
+        <span class="c1"># FORM, SORM analysis options</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">differentation_modus</span> <span class="o">=</span> <span class="s2">&quot;ffd&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Kind of differentiation</span>
+
+<span class="sd">    :Type:</span>
+<span class="sd">      - &#39;ddm&#39;: direct differentiation,\n</span>
+<span class="sd">      - &#39;ffd&#39;: forward finite difference</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ffdpara</span> <span class="o">=</span> <span class="mi">1000</span>
+        <span class="sd">&quot;&quot;&quot; Parameter for computation</span>
+
+<span class="sd">    Parameter for computation of FFD estimates of gradients - Perturbation =</span>
+<span class="sd">    stdv/analysisopt.ffdpara\n</span>
+
+<span class="sd">    :Values:</span>
+<span class="sd">      - 1000 for basic limit-state functions,\n</span>
+<span class="sd">      -  50 for FE-based limit-state functions</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ffdpara_thetag</span> <span class="o">=</span> <span class="mi">1000</span>
+        <span class="c1"># Parameter for computation of FFD estimates of dbeta_dthetag</span>
+        <span class="c1"># perturbation = thetag/analysisopt.ffdpara_thetag if thetag ~= 0</span>
+        <span class="c1"># or 1/analysisopt.ffdpara_thetag if thetag == 0;</span>
+        <span class="c1"># Recommended values: 1000 for basic limit-state functions,</span>
+        <span class="c1"># 100 for FE-based limit-state functions</span>
+
+        <span class="c1"># Simulation analysis (MC,IS,DS,SS) and distribution analysis options</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">samples</span> <span class="o">=</span> <span class="mi">100000</span>
+        <span class="sd">&quot;&quot;&quot;Number of samples (MC,IS)</span>
+
+<span class="sd">    Number of samples per subset step (SS) or number of directions (DS)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_generator</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="sd">&quot;&quot;&quot;Kind of Random generator</span>
+
+<span class="sd">    :Type:</span>
+<span class="sd">      - 0: default rand matlab function,\n</span>
+<span class="sd">      - 1: Mersenne Twister (to be preferred)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+        <span class="c1"># Simulation analysis (MC, IS) and distribution analysis options</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sim_point</span> <span class="o">=</span> <span class="s2">&quot;origin&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Start point for the simulation</span>
+
+<span class="sd">    :Start:</span>
+<span class="sd">      - &#39;dspt&#39;: design point,\n</span>
+<span class="sd">      - &#39;origin&#39;: origin in standard normal space (simulation analysis)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">stdv_sim</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="sd">&quot;&quot;&quot;Standard deviation of sampling distribution in simulation analysis&quot;&quot;&quot;</span>
+
+        <span class="c1"># Simulation analysis (MC, IS)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_cov</span> <span class="o">=</span> <span class="mf">0.05</span>
+        <span class="sd">&quot;&quot;&quot; Target coefficient of variation for failure probability&quot;&quot;&quot;</span>
+
+        <span class="c1"># Bins of the histogram</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bins</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="sd">&quot;&quot;&quot;Amount on bins for the histogram&quot;&quot;&quot;</span>
+
+    <span class="c1"># getter</span>
+    <span class="k">def</span> <span class="nf">printOutput</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_output</span>
+
+    <span class="k">def</span> <span class="nf">getFlagSens</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag_sens</span>
+
+    <span class="k">def</span> <span class="nf">getMultiProc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">multi_proc</span>
+
+    <span class="k">def</span> <span class="nf">getBlockSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">block_size</span>
+
+    <span class="k">def</span> <span class="nf">getImax</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">i_max</span>
+
+    <span class="k">def</span> <span class="nf">getE1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">e1</span>
+
+    <span class="k">def</span> <span class="nf">getE2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">e2</span>
+
+    <span class="k">def</span> <span class="nf">getStepSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_size</span>
+
+    <span class="k">def</span> <span class="nf">getDifferentationModus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">differentation_modus</span>
+
+    <span class="k">def</span> <span class="nf">getffdpara</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ffdpara</span>
+
+    <span class="k">def</span> <span class="nf">getBins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bins</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bins</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bins</span> <span class="o">=</span> <span class="n">bins</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bins</span>
+
+    <span class="k">def</span> <span class="nf">getSamples</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples</span>
+
+    <span class="k">def</span> <span class="nf">getRandomGenerator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_generator</span>
+
+    <span class="k">def</span> <span class="nf">getSimulationPoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_point</span>
+
+    <span class="k">def</span> <span class="nf">getSimulationStdv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stdv_sim</span>
+
+    <span class="k">def</span> <span class="nf">getSimulationCov</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_cov</span>
+
+    <span class="c1"># setter</span>
+    <span class="k">def</span> <span class="nf">printResults</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tof</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">print_output</span> <span class="o">=</span> <span class="n">tof</span>
+
+    <span class="k">def</span> <span class="nf">setMultiProc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">multi_proc</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">multi_proc</span> <span class="o">=</span> <span class="n">multi_proc</span>
+
+    <span class="k">def</span> <span class="nf">setBlockSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block_size</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">block_size</span> <span class="o">=</span> <span class="n">block_size</span>
+
+    <span class="k">def</span> <span class="nf">setImax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i_max</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">i_max</span> <span class="o">=</span> <span class="n">i_max</span>
+
+    <span class="k">def</span> <span class="nf">setE1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e1</span> <span class="o">=</span> <span class="n">e1</span>
+
+    <span class="k">def</span> <span class="nf">setE2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e2</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e2</span> <span class="o">=</span> <span class="n">e2</span>
+
+    <span class="k">def</span> <span class="nf">setStepSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step_size</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step_size</span> <span class="o">=</span> <span class="n">step_size</span>
+
+    <span class="k">def</span> <span class="nf">setDifferentationModus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">differentation_modus</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">differentation_modus</span> <span class="o">=</span> <span class="n">differentation_modus</span>
+
+    <span class="k">def</span> <span class="nf">setffdpara</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ffdpara</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ffdpara</span> <span class="o">=</span> <span class="n">ffdpara</span>
+
+    <span class="k">def</span> <span class="nf">setBins</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bins</span> <span class="o">=</span> <span class="n">bins</span>
+
+    <span class="k">def</span> <span class="nf">setSamples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">samples</span> <span class="o">=</span> <span class="n">samples</span></div>
+
+
+<div class="viewcode-block" id="LimitState"><a class="viewcode-back" href="../../gen/pystra.model.LimitState.html#pystra.model.LimitState">[docs]</a><span class="k">class</span> <span class="nc">LimitState</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Limit state&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evaluator</span> <span class="o">=</span> <span class="s2">&quot;basic&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Type of limit-state function evaluator:</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">          basic: the limit-state function is defined by means of an analytical</span>
+<span class="sd">          expression or a Python function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Do no change this field!</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s2">&quot;expression&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">expression</span> <span class="o">=</span> <span class="n">expression</span>
+        <span class="sd">&quot;&quot;&quot;Expression of the limit-state function&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">flag_sens</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="sd">&quot;&quot;&quot;Flag for computation of sensitivities</span>
+
+<span class="sd">    w.r.t. Tag parameters of the limit-state function</span>
+
+<span class="sd">    :Tag:</span>
+<span class="sd">      - 1: all sensitivities assessed,\n</span>
+<span class="sd">      - 0: no sensitivities assessment\n</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">getEvaluator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluator</span>
+
+    <span class="k">def</span> <span class="nf">getExpression</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">expression</span>
+
+    <span class="k">def</span> <span class="nf">setExpression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expression</span> <span class="o">=</span> <span class="n">expression</span></div>
+
+
+<span class="c1">#    inlist = False</span>
+<span class="c1">#    for obj in gc.get_objects():</span>
+<span class="c1">#      if isinstance(obj, LimitStateFunction):</span>
+<span class="c1">#        self.expression = obj.getExpression()</span>
+<span class="c1">#        inlist = True</span>
+<span class="c1">#        break</span>
+<span class="c1">#    if not inlist:</span>
+<span class="c1">#      print &#39;Attention: No limit state function is defined&#39;</span>
+
+
+<span class="c1"># class LimitStateFunction(object):</span>
+<span class="c1">#     def __init__(self, expression):</span>
+<span class="c1">#         self.expression = expression</span>
+
+<span class="c1">#     def __repr__(self):</span>
+<span class="c1">#         return self.expression</span>
+
+<span class="c1">#     def getExpression(self):</span>
+<span class="c1">#         return self.expression</span>
+</pre></div>
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2022, The PySTRA Developers.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

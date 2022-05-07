@@ -1,0 +1,737 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pystra.form.Form &#8212; PySTRA 1.0.0 documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pystra.sorm" href="pystra.sorm.html" />
+    <link rel="prev" title="pystra.form" href="pystra.form.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+
+<a class="navbar-brand" href="../index.html">
+  <img src="../_static/icon_pystra_small.png" class="logo" alt="logo">
+</a>
+
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../install.html">
+  Installation
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../tutorial.html">
+  Tutorials
+ </a>
+</li>
+
+<li class="toctree-l1 current active nav-item">
+ <a class="reference internal nav-link" href="../api.html">
+  API Reference
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../theory.html">
+  Theoretical Background
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../references.html">
+  References
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/pystra/pystra" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://twitter.com/ccaprani" rel="noopener" target="_blank" title="Twitter"><span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="pystra.form.html">
+   pystra.form
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     pystra.form.Form
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="pystra.sorm.html">
+   pystra.sorm
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.sorm.Sorm.html">
+     pystra.sorm.Sorm
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="pystra.cholesky.html">
+   pystra.cholesky
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.cholesky.CholeskyDecomposition.html">
+     pystra.cholesky.CholeskyDecomposition
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.cholesky.computeCholeskyDecomposition.html">
+     pystra.cholesky.computeCholeskyDecomposition
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="pystra.correlation.html">
+   pystra.correlation
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <label for="toctree-checkbox-4">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.correlation.absoluteIntegralValue.html">
+     pystra.correlation.absoluteIntegralValue
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.correlation.computeModifiedCorrelationMatrix.html">
+     pystra.correlation.computeModifiedCorrelationMatrix
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.correlation.getModifiedCorrelationMatrix.html">
+     pystra.correlation.getModifiedCorrelationMatrix
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.correlation.CorrelationMatrix.html">
+     pystra.correlation.CorrelationMatrix
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="pystra.integration.html">
+   pystra.integration
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.integration.rho_integral.html">
+     pystra.integration.rho_integral
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.integration.zi_and_xi.html">
+     pystra.integration.zi_and_xi
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="pystra.limitstate.html">
+   pystra.limitstate
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+  <label for="toctree-checkbox-6">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.limitstate.computeLimitStateFunction.html">
+     pystra.limitstate.computeLimitStateFunction
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.limitstate.evaluateLimitState.html">
+     pystra.limitstate.evaluateLimitState
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="pystra.mc.html">
+   pystra.mc
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+  <label for="toctree-checkbox-7">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.mc.CrudeMonteCarlo.html">
+     pystra.mc.CrudeMonteCarlo
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.mc.DistributionAnalysis.html">
+     pystra.mc.DistributionAnalysis
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.mc.ImportanceSampling.html">
+     pystra.mc.ImportanceSampling
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.mc.MonteCarlo.html">
+     pystra.mc.MonteCarlo
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="pystra.model.html">
+   pystra.model
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
+  <label for="toctree-checkbox-8">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.model.AnalysisOptions.html">
+     pystra.model.AnalysisOptions
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.model.LimitState.html">
+     pystra.model.LimitState
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.model.StochasticModel.html">
+     pystra.model.StochasticModel
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="pystra.quadrature.html">
+   pystra.quadrature
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+  <label for="toctree-checkbox-9">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.quadrature.quadratureRule.html">
+     pystra.quadrature.quadratureRule
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="pystra.sensitivity.html">
+   pystra.sensitivity
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/>
+  <label for="toctree-checkbox-10">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.sensitivity.SensitivityAnalysis.html">
+     pystra.sensitivity.SensitivityAnalysis
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="pystra.stepsize.html">
+   pystra.stepsize
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/>
+  <label for="toctree-checkbox-11">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.stepsize.getStepSize.html">
+     pystra.stepsize.getStepSize
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="pystra.transformation.html">
+   pystra.transformation
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/>
+  <label for="toctree-checkbox-12">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.transformation.getBins.html">
+     pystra.transformation.getBins
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.transformation.jacobian.html">
+     pystra.transformation.jacobian
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.transformation.pdf.html">
+     pystra.transformation.pdf
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.transformation.u_to_x.html">
+     pystra.transformation.u_to_x
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.transformation.x_to_u.html">
+     pystra.transformation.x_to_u
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pystra.transformation.z_to_x.html">
+     pystra.transformation.z_to_x
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+
+<nav id="bd-toc-nav">
+    
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+
+<div class="tocsection editthispage">
+    <a href="https://github.com/pystra/pystra/edit/main/docs/source/gen/pystra.form.Form.rst">
+        <i class="fas fa-pencil-alt"></i> Edit this page
+    </a>
+</div>
+
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <div class="section" id="pystra-form-form">
+<h1>pystra.form.Form<a class="headerlink" href="#pystra-form-form" title="Permalink to this headline">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pystra.form.Form">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Form</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">analysis_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stochastic_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/form.html#Form"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.form.Form" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>First Order Reliability Method (FORM)</p>
+<p>Let <span class="math notranslate nohighlight">\({\bf Z}\)</span> be a set of uncorrelated and standardized normally
+distributed random variables <span class="math notranslate nohighlight">\(( Z_1 ,\dots, Z_n )\)</span> in the normalized
+z-space, corresponding to any set of random variables <span class="math notranslate nohighlight">\({\bf X} = (
+X_1 , \dots , X_n )\)</span> in the physical x-space, then the limit state surface
+in x-space is also mapped on the corresponding limit state surface in
+z-space.</p>
+<p>The reliability index <span class="math notranslate nohighlight">\(\beta\)</span> is the minimum distance from the
+z-origin to the failure surface. This distance <span class="math notranslate nohighlight">\(\beta\)</span> can directly
+be mapped to a probability of failure</p>
+<div class="math notranslate nohighlight">
+\[p_f \approx p_{f1} = \Phi(-\beta)\]</div>
+<p>this corresponds to a linearization of the failure surface. The
+linearization point is the design point <span class="math notranslate nohighlight">\({\bf z}^*\)</span>. This procedure
+is called First Order Reliability Method (FORM) and <span class="math notranslate nohighlight">\(eta\)</span> is the
+First Order Reliability Index. <a class="reference internal" href="../references.html#madsen2006" id="id1"><span>[Madsen2006]</span></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>analysis_option (AnalysisOption): Option for the structural analysis</p></li>
+<li><p>limit_state (LimitState): Information about the limit state</p></li>
+<li><p>stochastic_model (StochasticModel): Information about the model</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.form.Form.computeAlpha" title="pystra.form.Form.computeAlpha"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeAlpha</span></code></a></p></td>
+<td><p>Compute alpha vector</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.form.Form.computeBeta" title="pystra.form.Form.computeBeta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeBeta</span></code></a></p></td>
+<td><p>Compute beta value</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.form.Form.computeFailureProbability" title="pystra.form.Form.computeFailureProbability"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeFailureProbability</span></code></a></p></td>
+<td><p>Compute probability of failure</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.form.Form.computeGamma" title="pystra.form.Form.computeGamma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeGamma</span></code></a></p></td>
+<td><p>Compute gamma vector</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.form.Form.computeJacobian" title="pystra.form.Form.computeJacobian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeJacobian</span></code></a></p></td>
+<td><p>Compute the Jacobian</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.form.Form.computeLimitState" title="pystra.form.Form.computeLimitState"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeLimitState</span></code></a></p></td>
+<td><p>Evaluate limit-state function and its gradient</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.form.Form.computeSearchDirection" title="pystra.form.Form.computeSearchDirection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeSearchDirection</span></code></a></p></td>
+<td><p>Determine search direction</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.form.Form.computeStartingPoint" title="pystra.form.Form.computeStartingPoint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeStartingPoint</span></code></a></p></td>
+<td><p>Compute starting point for the algorithm</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.form.Form.computeStepSize" title="pystra.form.Form.computeStepSize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeStepSize</span></code></a></p></td>
+<td><p>Determine step size</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.form.Form.computeTransformation" title="pystra.form.Form.computeTransformation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeTransformation</span></code></a></p></td>
+<td><p>Compute transformation from u to x space</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.form.Form.getAlpha" title="pystra.form.Form.getAlpha"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getAlpha</span></code></a></p></td>
+<td><p>Returns the alpha vector</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.form.Form.getBeta" title="pystra.form.Form.getBeta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getBeta</span></code></a></p></td>
+<td><p>Returns the beta value</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.form.Form.getDesignPoint" title="pystra.form.Form.getDesignPoint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getDesignPoint</span></code></a></p></td>
+<td><p>Returns the design point, defaults to u-space</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.form.Form.getFailure" title="pystra.form.Form.getFailure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getFailure</span></code></a></p></td>
+<td><p>Returns the probability of failure</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.form.Form.showDetailedOutput" title="pystra.form.Form.showDetailedOutput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">showDetailedOutput</span></code></a></p></td>
+<td><p>Get detailed output to console</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.form.Form.showResults" title="pystra.form.Form.showResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">showResults</span></code></a></p></td>
+<td><p>Show results</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.form.Form.computeStartingPoint">
+<span class="sig-name descname"><span class="pre">computeStartingPoint</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/form.html#Form.computeStartingPoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.form.Form.computeStartingPoint" title="Permalink to this definition">#</a></dt>
+<dd><p>Compute starting point for the algorithm</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.form.Form.computeTransformation">
+<span class="sig-name descname"><span class="pre">computeTransformation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/form.html#Form.computeTransformation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.form.Form.computeTransformation" title="Permalink to this definition">#</a></dt>
+<dd><p>Compute transformation from u to x space</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.form.Form.computeJacobian">
+<span class="sig-name descname"><span class="pre">computeJacobian</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/form.html#Form.computeJacobian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.form.Form.computeJacobian" title="Permalink to this definition">#</a></dt>
+<dd><p>Compute the Jacobian</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.form.Form.computeLimitState">
+<span class="sig-name descname"><span class="pre">computeLimitState</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/form.html#Form.computeLimitState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.form.Form.computeLimitState" title="Permalink to this definition">#</a></dt>
+<dd><p>Evaluate limit-state function and its gradient</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.form.Form.computeAlpha">
+<span class="sig-name descname"><span class="pre">computeAlpha</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/form.html#Form.computeAlpha"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.form.Form.computeAlpha" title="Permalink to this definition">#</a></dt>
+<dd><p>Compute alpha vector</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.form.Form.computeGamma">
+<span class="sig-name descname"><span class="pre">computeGamma</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/form.html#Form.computeGamma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.form.Form.computeGamma" title="Permalink to this definition">#</a></dt>
+<dd><p>Compute gamma vector</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.form.Form.computeSearchDirection">
+<span class="sig-name descname"><span class="pre">computeSearchDirection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/form.html#Form.computeSearchDirection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.form.Form.computeSearchDirection" title="Permalink to this definition">#</a></dt>
+<dd><p>Determine search direction</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.form.Form.computeStepSize">
+<span class="sig-name descname"><span class="pre">computeStepSize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/form.html#Form.computeStepSize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.form.Form.computeStepSize" title="Permalink to this definition">#</a></dt>
+<dd><p>Determine step size</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.form.Form.computeBeta">
+<span class="sig-name descname"><span class="pre">computeBeta</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/form.html#Form.computeBeta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.form.Form.computeBeta" title="Permalink to this definition">#</a></dt>
+<dd><p>Compute beta value</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.form.Form.computeFailureProbability">
+<span class="sig-name descname"><span class="pre">computeFailureProbability</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/form.html#Form.computeFailureProbability"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.form.Form.computeFailureProbability" title="Permalink to this definition">#</a></dt>
+<dd><p>Compute probability of failure</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.form.Form.showResults">
+<span class="sig-name descname"><span class="pre">showResults</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/form.html#Form.showResults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.form.Form.showResults" title="Permalink to this definition">#</a></dt>
+<dd><p>Show results</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.form.Form.showDetailedOutput">
+<span class="sig-name descname"><span class="pre">showDetailedOutput</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/form.html#Form.showDetailedOutput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.form.Form.showDetailedOutput" title="Permalink to this definition">#</a></dt>
+<dd><p>Get detailed output to console</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.form.Form.getBeta">
+<span class="sig-name descname"><span class="pre">getBeta</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/form.html#Form.getBeta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.form.Form.getBeta" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the beta value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>beta (float): Returns the beta value</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.form.Form.getFailure">
+<span class="sig-name descname"><span class="pre">getFailure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/form.html#Form.getFailure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.form.Form.getFailure" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the probability of failure</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>Pf (float): Returns the probability of failure</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.form.Form.getDesignPoint">
+<span class="sig-name descname"><span class="pre">getDesignPoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uspace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/form.html#Form.getDesignPoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.form.Form.getDesignPoint" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the design point, defaults to u-space</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>u (float): Returns the design point in u- or x-space</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.form.Form.getAlpha">
+<span class="sig-name descname"><span class="pre">getAlpha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">as_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/form.html#Form.getAlpha"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.form.Form.getAlpha" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the alpha vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>alpha (np.array): Returns the alpha vector</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="pystra.form.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">pystra.form</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="pystra.sorm.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">pystra.sorm</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2022, The PySTRA Developers.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

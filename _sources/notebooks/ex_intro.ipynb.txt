@@ -1,0 +1,410 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "6376980d-bbaa-44d1-9d3f-938c45ed2f90",
+   "metadata": {},
+   "source": [
+    "# Example from the Tutorial\n",
+    "\n",
+    "This notebook executes the example from the Introductory Tutorial"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "614cdc71-3111-489c-882a-91707c27debb",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pystra as pr\n",
+    "import numpy as np"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "95ae2a48-aa69-435b-ab7b-099c9f30f49c",
+   "metadata": {},
+   "source": [
+    "## Establish the model"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "f7644250-396a-4640-a31e-737507ab5dc1",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def example_limitstatefunction(r, X1, X2, X3):\n",
+    "    \"\"\"\n",
+    "    example limit state function\n",
+    "    \"\"\"\n",
+    "    return r - X2 * (1000 * X3) ** (-1) - (X1 * (200 * X3) ** (-1)) ** 2"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "7896af68-b68f-4f53-a06b-427044cfbb1d",
+   "metadata": {},
+   "source": [
+    "Define limit state function"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "ed4f574a-8fb8-448b-b05e-41060f56a6e7",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "limit_state = pr.LimitState(example_limitstatefunction)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "f2d0fed6-678c-47dd-9672-b60440c1f9c4",
+   "metadata": {},
+   "source": [
+    "Set some options - here we suppress the console output"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "31ea3f31-71dd-4401-93e6-0f7b7eba87e8",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "options = pr.AnalysisOptions()\n",
+    "options.printResults(False)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "5831c2dc-0c6f-4ee5-b8c9-b636ae36882c",
+   "metadata": {},
+   "source": [
+    "Create the stochamstic model object"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "6d43f515-92ff-40f1-a8ae-399670c1f0d1",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "stochastic_model = pr.StochasticModel()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "9b6a97bd-6672-4e4d-ae76-ebd2d4740229",
+   "metadata": {},
+   "source": [
+    "Define and add random variables to the stochastic model object"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "80e08985-8610-4e2a-ac6a-a687248905ee",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "stochastic_model.addVariable(pr.Lognormal(\"X1\", 500, 100))\n",
+    "stochastic_model.addVariable(pr.Normal(\"X2\", 2000, 400))\n",
+    "stochastic_model.addVariable(pr.Uniform(\"X3\", 5, 0.5))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "c7fd052a-d77b-4dee-a9dc-98b211e8595c",
+   "metadata": {},
+   "source": [
+    "Define constants that can be part of the stochastic model for ease of argument passing"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "8f2127c1-b206-4e30-94a2-37631c3b7278",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "stochastic_model.addVariable(pr.Constant(\"r\", 1))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "fe2414f6-c4c9-4293-8ade-5c0c3a55cd93",
+   "metadata": {},
+   "source": [
+    "If the random variables are correlated, then define a correlation matrix, otherwise no correlatin matrix is needed"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "id": "1e9a8ba5-76cb-43a5-afd7-bca32de15289",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "stochastic_model.setCorrelation(\n",
+    "    pr.CorrelationMatrix([[1.0, 0.3, 0.2], [0.3, 1.0, 0.2], [0.2, 0.2, 1.0]])\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "a0669e68-3d04-41aa-b215-10258a751daa",
+   "metadata": {},
+   "source": [
+    "## FORM Analysis"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "id": "af723959-f6ff-4857-b735-da127b69bc62",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "Analysis = pr.Form(\n",
+    "    analysis_options=options,\n",
+    "    stochastic_model=stochastic_model,\n",
+    "    limit_state=limit_state,\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "6c1d0808-91c3-453f-b2e8-527707a46328",
+   "metadata": {},
+   "source": [
+    "Show detailed output"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "id": "cb8da34b-64cf-4929-a181-a326fa9cf13c",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "======================================================\n",
+      "FORM\n",
+      "======================================================\n",
+      "Pf              \t 3.9717297753e-02\n",
+      "BetaHL          \t 1.7539761407\n",
+      "Model Evaluations \t 164\n",
+      "------------------------------------------------------\n",
+      "Variable   \t    U_star \t       X_star \t     alpha\n",
+      "X1         \t  1.278045 \t   631.504135 \t +0.728414\n",
+      "X2         \t  0.407819 \t  2310.352495 \t +0.232354\n",
+      "X3         \t -1.129920 \t     4.517374 \t -0.644534\n",
+      "r          \t       --- \t     1.000000 \t       ---\n",
+      "======================================================\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "Analysis.showDetailedOutput()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "480f33e6-e25b-4142-8612-4bf558216b8e",
+   "metadata": {},
+   "source": [
+    "## SORM Analysis\n",
+    "For efficiency, we can pass the FORM results object if it exists, otherwise it will be called automatically."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "id": "178f2f9a-0ec7-4888-8331-63992e17a4f6",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "sorm = pr.Sorm(\n",
+    "    analysis_options=options,\n",
+    "    stochastic_model=stochastic_model,\n",
+    "    limit_state=limit_state,\n",
+    "    form=Analysis,\n",
+    ")\n",
+    "sorm.run()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "a9cf8afd-2d9f-44ed-8cf3-ae82926bbc96",
+   "metadata": {},
+   "source": [
+    "Detailed output"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "id": "5aa93de0-c7db-42ea-aac4-30d7d8b32661",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "======================================================\n",
+      "FORM/SORM\n",
+      "======================================================\n",
+      "Pf FORM         \t\t 3.9717297753e-02\n",
+      "Pf SORM Breitung \t\t 3.2229053035e-02\n",
+      "Pf SORM Breitung HR \t 3.1158626160e-02\n",
+      "Beta_HL         \t\t 1.7539761407\n",
+      "Beta_G Breitung \t\t 1.8489979684\n",
+      "Beta_G Breitung HR \t\t 1.8640317035\n",
+      "Model Evaluations \t\t 180\n",
+      "------------------------------------------------------\n",
+      "Curvature 1: -0.0414313089629377\n",
+      "Curvature 2: 0.36356407339249475\n",
+      "------------------------------------------------------\n",
+      "Variable   \t    U_star \t       X_star \t     alpha\n",
+      "X1         \t  1.278045 \t   631.504135 \t +0.728414\n",
+      "X2         \t  0.407819 \t  2310.352495 \t +0.232354\n",
+      "X3         \t -1.129920 \t     4.517374 \t -0.644534\n",
+      "r          \t       --- \t     1.000000 \t       ---\n",
+      "======================================================\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "sorm.showDetailedOutput()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "f3c504b2-22d3-4f12-80a8-758251262ddb",
+   "metadata": {},
+   "source": [
+    "## Distribution Analysis"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "id": "6e9d0604-7e5d-4d19-8238-91a4ce3fe13d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "Analysis = pr.DistributionAnalysis(\n",
+    "    analysis_options=options,\n",
+    "    stochastic_model=stochastic_model,\n",
+    "    limit_state=limit_state,\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "e6f3a715-779c-4fa7-8994-7d5bfacffda0",
+   "metadata": {},
+   "source": [
+    "## Crude Monte Carlo Simulation"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "id": "900d7349-9cae-4233-9767-e80be9b4e6c1",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "Analysis = pr.CrudeMonteCarlo(\n",
+    "    analysis_options=options,\n",
+    "    stochastic_model=stochastic_model,\n",
+    "    limit_state=limit_state,\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "dcba4e9a-d924-4b23-991d-4ec414bc7b0f",
+   "metadata": {},
+   "source": [
+    "## Importance Sampling"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "id": "01836253-ed74-4761-bff4-6b53c351340f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "Analysis = pr.ImportanceSampling(\n",
+    "    analysis_options=options,\n",
+    "    stochastic_model=stochastic_model,\n",
+    "    limit_state=limit_state,\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "92b37a12-cc3e-45de-be2b-6b5e0625672b",
+   "metadata": {},
+   "source": [
+    "## Results"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "id": "b47c3a02-d5a8-482c-8bcf-7182235a744a",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Beta is 1.850093041022854, corresponding to a failure probability of 0.03215007038302135\n"
+     ]
+    }
+   ],
+   "source": [
+    "beta = Analysis.getBeta()\n",
+    "failure = Analysis.getFailure()\n",
+    "\n",
+    "print(f\"Beta is {beta}, corresponding to a failure probability of {failure}\")"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "pystra",
+   "language": "python",
+   "name": "pystra"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.8.13"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

@@ -1,0 +1,197 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "7ed31c3c-c44a-4bdd-83ad-396c2fda7779",
+   "metadata": {},
+   "source": [
+    "# Sensitivity Analysis\n",
+    "\n",
+    "This is Example 2 of Bourinet (2017), which gives analytical solutions as:\n",
+    "\n",
+    "$$ \n",
+    "\\begin{align}\n",
+    "\\frac{\\partial\\beta}{\\partial\\mu_R} &= 0.5184 \\\\\n",
+    "\\frac{\\partial\\beta}{\\partial\\sigma_R} &= −0.2548 \\\\\n",
+    "\\frac{\\partial\\beta}{\\partial\\mu_S} &= −1.3629 \\\\\n",
+    "\\frac{\\partial\\beta}{\\partial\\sigma_S} &= 0.0445 \\\\\n",
+    "\\end{align}\n",
+    "$$\n",
+    "\n",
+    "See: Bourinet (2017), FORM Sensitivities to Distribution Parameters with the Nataf Transformation, P. Gardoni (ed.), Risk and Reliability Analysis:     Theory and Applications, Springer Series in Reliability Engineering, DOI 10.1007/978-3-319-52425-2_12\n",
+    "\n",
+    "Import pystra as usual:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "fe2cd5e4-38e1-4f18-b68d-fbc0d5668fd2",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pystra as pr"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "da6a3888-b4d9-42d5-9b8b-3bc59ebcaa84",
+   "metadata": {},
+   "source": [
+    "Define the limit state function"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "9292fe25-7181-49d8-b04b-3eb6735ef02d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def lsf(R, S):\n",
+    "    return R - S"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "4739902e-831a-4d92-9f87-b6192bca9996",
+   "metadata": {},
+   "source": [
+    "And create the relevant `Pystra` objects:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "f7a0a652-13bf-4ae0-a09b-0343093e0f85",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "limit_state = pr.LimitState(lsf)\n",
+    "\n",
+    "model = pr.StochasticModel()\n",
+    "model.addVariable(pr.Lognormal(\"R\", 5, 5))\n",
+    "model.addVariable(pr.Lognormal(\"S\", 1, 1))\n",
+    "model.setCorrelation(pr.CorrelationMatrix([[1.0, 0.5], [0.5, 1.0]]))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "fc9a1b88-2a1d-4ea8-a5c7-44deed31d7eb",
+   "metadata": {},
+   "source": [
+    "Here we suppress the printed output from the analyses, as the sensitivity analysis runs FORM many times."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "a2e52b93-5ca4-4ffb-98ce-2155ba5f5b1b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "options = pr.AnalysisOptions()\n",
+    "options.printResults(False)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "561267da-6160-455f-979d-ab3dec7179ff",
+   "metadata": {},
+   "source": [
+    "Do a FORM analysis so we have a record of the base result."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "3000be88-2452-411a-8d3c-73576f63774b",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "======================================================\n",
+      "FORM\n",
+      "======================================================\n",
+      "Pf              \t 1.6927788976e-02\n",
+      "BetaHL          \t 2.1217876054\n",
+      "Model Evaluations \t 66\n",
+      "------------------------------------------------------\n",
+      "Variable   \t    U_star \t       X_star \t     alpha\n",
+      "R          \t -0.966683 \t     1.580985 \t -0.455543\n",
+      "S          \t  1.888784 \t     1.580984 \t +0.890214\n",
+      "======================================================\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "form = pr.Form(stochastic_model=model, limit_state=limit_state, analysis_options=options)\n",
+    "form.showDetailedOutput()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "34e46ba1-f942-49f7-b7aa-bd49927f5cc5",
+   "metadata": {
+    "tags": []
+   },
+   "source": [
+    "Finally, we run the sensitivity analysis to find the sensitivity of the FORM result to the parameters of the stochastic model:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "4ace0dc6-9fea-4c4e-b1f1-51b84f48d329",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "sens = pr.SensitivityAnalysis(stochastic_model=model, limit_state=limit_state, analysis_options=options)\n",
+    "results = sens.run_form()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "1b4aed6b-441b-4c9d-aa1a-cb249b5162ae",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{'R': {'mean': 0.5155641831255604, 'std': -0.2545723002165454}, 'S': {'mean': -1.3623019484605414, 'std': 0.04167433447075417}}\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(results)"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "pystra",
+   "language": "python",
+   "name": "pystra"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.8.13"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

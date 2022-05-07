@@ -1,0 +1,225 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "0c344047-edc5-453c-98da-5191ac7e55f0",
+   "metadata": {},
+   "source": [
+    "# Pystra Timing\n",
+    "\n",
+    "This notebook examines the speed up possible when using the built-in distribution\n",
+    "function implementations, rather than the generic (but more comprehensive) ones\n",
+    "provided by SciPy. Where performance is critical, implementation of a \n",
+    "user-defined distribution object that avoids error checks and user input \n",
+    "validation on each call could be beneficial.\n",
+    "\n",
+    "A typical output is (the results will differ by machine):\n",
+    "    \n",
+    "    ```\n",
+    "    Total time taken (s)\n",
+    "    Built-in: 1.8919757150579244; Scipy: 5.2964311360847205\n",
+    "    Average time per call (s):\n",
+    "    Built-in: 0.018919757150579242; Scipy: 0.052964311360847206\n",
+    "    Built-in speed-up: 2.80\n",
+    "    ```\n",
+    "Import the relevant packages (some may need to be installed as they are not part of the `Pystra` installation)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "f3aee1a7-2c6b-43fe-bd5c-f5ab63eedf61",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pystra as pr\n",
+    "from scipy.stats import norm, lognorm, uniform\n",
+    "import numpy as np\n",
+    "import timeit"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "ab4f92cf-bdb3-48c8-b8f9-8a22963061ed",
+   "metadata": {},
+   "source": [
+    "Define a reasonably complex limit state function"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "1df606d3-9b12-438f-afc6-1712137edb0c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def lsf(r, X1, X2, X3):\n",
+    "    g = r - X2 * (1000 * X3) ** (-1) - (X1 * (200 * X3) ** (-1)) ** 2\n",
+    "    return g"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "3998e37e-1674-47c5-9882-b603cd3cef1a",
+   "metadata": {},
+   "source": [
+    "Define some objects common to both sets of analyes:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "fff7b524-d547-4a57-ad68-01b28aec375b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "limit_state = pr.LimitState(lsf)\n",
+    "options = pr.AnalysisOptions()\n",
+    "options.printResults(False)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "9356ebf2-d7b4-464e-9e75-c32b2f18545c",
+   "metadata": {},
+   "source": [
+    "The analysis using the distributions built in to *Pystra*:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "d289fa84-3fe0-46a8-8447-d5708b49846a",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def run_builtin():\n",
+    "    \"\"\"\n",
+    "    The basic example using built-in distributions\n",
+    "    \"\"\"\n",
+    "    stochastic_model = pr.StochasticModel()\n",
+    "    stochastic_model.addVariable(pr.Lognormal(\"X1\", 500, 100))\n",
+    "    stochastic_model.addVariable(pr.Normal(\"X2\", 2000, 400))\n",
+    "    stochastic_model.addVariable(pr.Uniform(\"X3\", 5, 0.5))\n",
+    "    stochastic_model.addVariable(pr.Constant(\"r\", 1))\n",
+    "\n",
+    "    stochastic_model.setCorrelation(\n",
+    "        pr.CorrelationMatrix([[1.0, 0.3, 0.2], [0.3, 1.0, 0.2], [0.2, 0.2, 1.0]])\n",
+    "    )\n",
+    "\n",
+    "    sorm = pr.Sorm(\n",
+    "        stochastic_model=stochastic_model,\n",
+    "        limit_state=limit_state,\n",
+    "        analysis_options=options\n",
+    "    )\n",
+    "    sorm.run()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "a26985ca-6b4b-4018-a558-79acdcb93919",
+   "metadata": {},
+   "source": [
+    "The analysis using the equivalent distributions in *SciPy*"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "c581a36f-7630-439e-a045-80d4dab85ae8",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def run_scipy():\n",
+    "    \"\"\"\n",
+    "    The basic example using Scipy distributions\n",
+    "    \"\"\"\n",
+    "    stochastic_model = pr.StochasticModel()\n",
+    "    # Lognormal\n",
+    "    zeta = (np.log(1 + (100 / 500) ** 2)) ** 0.5\n",
+    "    lamb = np.log(500) - 0.5 * zeta ** 2\n",
+    "    stochastic_model.addVariable(\n",
+    "        pr.ScipyDist(\"X1\", lognorm(s=zeta, scale=np.exp(lamb)))\n",
+    "    )\n",
+    "    # Normal\n",
+    "    stochastic_model.addVariable(pr.ScipyDist(\"X2\", norm(loc=2000, scale=400)))\n",
+    "    ## Uniform\n",
+    "    a_b = (0.5 ** 2 * 12) ** (1 / 2)\n",
+    "    a = (2 * 5 - a_b) / 2\n",
+    "    stochastic_model.addVariable(pr.ScipyDist(\"X3\", uniform(loc=a, scale=a_b)))\n",
+    "    # Constant\n",
+    "    stochastic_model.addVariable(pr.Constant(\"r\", 1))\n",
+    "\n",
+    "    stochastic_model.setCorrelation(\n",
+    "        pr.CorrelationMatrix([[1.0, 0.3, 0.2], [0.3, 1.0, 0.2], [0.2, 0.2, 1.0]])\n",
+    "    )\n",
+    "\n",
+    "    sorm = pr.Sorm(\n",
+    "        stochastic_model=stochastic_model,\n",
+    "        limit_state=limit_state,\n",
+    "        analysis_options=options\n",
+    "    )\n",
+    "    sorm.run()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "37e1ca5a-d083-46dd-aaf9-5a8a1a283978",
+   "metadata": {},
+   "source": [
+    "Now call and compare the timing results"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "7b80074e-32a8-48f9-8f89-4733aa30f7d9",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Total time taken (s)\n",
+      "Built-in: 2.0385516099631786; Scipy: 6.739313833997585\n",
+      "Average time per call (s):\n",
+      "Built-in: 0.020385516099631785; Scipy: 0.06739313833997584\n",
+      "Built-in speed-up: 3.31\n"
+     ]
+    }
+   ],
+   "source": [
+    "number = 100\n",
+    "time_builtin = timeit.timeit(stmt=run_builtin, number=number)\n",
+    "time_scipy = timeit.timeit(stmt=run_scipy, number=number)\n",
+    "\n",
+    "print(\"Total time taken (s)\")\n",
+    "print(f\"Built-in: {time_builtin}; Scipy: {time_scipy}\")\n",
+    "print(\"Average time per call (s):\")\n",
+    "print(f\"Built-in: {time_builtin/number}; Scipy: {time_scipy/number}\")\n",
+    "print(f\"Built-in speed-up: {time_scipy/time_builtin:.2f}\")"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "pystra",
+   "language": "python",
+   "name": "pystra"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.8.13"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
