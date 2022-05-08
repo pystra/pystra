@@ -48,8 +48,8 @@ class Lognormal(Distribution):
 
     def _update_params(self, mean, stdv):
         cov = stdv / mean
-        self.zeta = (np.log(1 + cov ** 2)) ** 0.5
-        self.lamb = np.log(mean) - 0.5 * self.zeta ** 2
+        self.zeta = (np.log(1 + cov**2)) ** 0.5
+        self.lamb = np.log(mean) - 0.5 * self.zeta**2
 
     # Overriding base class implementations for speed
 
@@ -59,7 +59,7 @@ class Lognormal(Distribution):
         Note: asssumes x>0 for performance, scipy manages this appropriately
         """
         z = (np.log(x) - self.lamb) / self.zeta
-        p = np.exp(-0.5 * z ** 2) / (np.sqrt(2 * np.pi) * self.zeta * x)
+        p = np.exp(-0.5 * z**2) / (np.sqrt(2 * np.pi) * self.zeta * x)
         return p  # self.lognormal.pdf(x)
 
     def cdf(self, x):

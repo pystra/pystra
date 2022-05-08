@@ -20,8 +20,8 @@ class Uniform(Distribution):
     def __init__(self, name, mean, stdv, input_type=None, startpoint=None):
 
         if input_type is None:
-            a = mean - 3 ** 0.5 * stdv
-            b = mean + 3 ** 0.5 * stdv
+            a = mean - 3**0.5 * stdv
+            b = mean + 3**0.5 * stdv
         else:
             a = mean
             b = stdv

@@ -11,11 +11,11 @@ def rho_integral(rho0, margi, margj, Z1, Z2, X1, X2, WIP, detJ):
     """Integral for rho0"""
     PHI2 = (
         1
-        * (2 * np.pi * np.sqrt(1 - rho0 ** 2)) ** (-1)
+        * (2 * np.pi * np.sqrt(1 - rho0**2)) ** (-1)
         * np.exp(
             -1
-            * (2 * (1 - rho0 ** 2)) ** (-1)
-            * (Z1 ** 2 - 2 * rho0 * Z1 * Z2 + Z2 ** 2)
+            * (2 * (1 - rho0**2)) ** (-1)
+            * (Z1**2 - 2 * rho0 * Z1 * Z2 + Z2**2)
         )
     )
     rho = np.sum(
