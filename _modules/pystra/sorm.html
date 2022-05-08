@@ -439,7 +439,7 @@
             <span class="c1"># Now use finite differences to estimate hessian</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nrv</span><span class="p">):</span>
                 <span class="c1"># Second-order central difference</span>
-                <span class="n">hess_G</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">all_G_plus</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">G</span> <span class="o">+</span> <span class="n">all_G_minus</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="n">h</span> <span class="o">**</span> <span class="mi">2</span>
+                <span class="n">hess_G</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">all_G_plus</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">G</span> <span class="o">+</span> <span class="n">all_G_minus</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="n">h</span><span class="o">**</span><span class="mi">2</span>
                 <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
                     <span class="c1"># Second order forward difference</span>
                     <span class="n">hess_G</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
@@ -447,7 +447,7 @@
                         <span class="o">-</span> <span class="n">all_G_plus</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
                         <span class="o">-</span> <span class="n">all_G_plus</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
                         <span class="o">+</span> <span class="n">G</span>
-                    <span class="p">)</span> <span class="o">/</span> <span class="n">h</span> <span class="o">**</span> <span class="mi">2</span>
+                    <span class="p">)</span> <span class="o">/</span> <span class="n">h</span><span class="o">**</span><span class="mi">2</span>
                     <span class="n">hess_G</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">hess_G</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="n">hess_G</span></div>
