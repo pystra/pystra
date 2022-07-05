@@ -3,19 +3,13 @@ Structural Reliability Analysis with Python.
 
 """
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 
 try:
     import numpy as np
 except ImportError:
     raise ImportError("NumPy does not seem to be installed. Please see the user guide.")
-
-# __modules__ = ['distribution',
-#                'normal']
-
-# from .distribution import *
-# from .normal import *
 
 # Distributions
 from .distributions import *

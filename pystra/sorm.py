@@ -4,13 +4,13 @@
 import numpy as np
 
 from .form import Form
-from .model import StochasticModel, AnalysisOptions, LimitState
+from .model import StochasticModel, AnalysisOptions, LimitState, AnalysisObject
 from .limitstate import evaluateLimitState, computeLimitStateFunction
 from .transformation import jacobian, x_to_u, u_to_x
 from scipy.stats import norm as normal
 
 
-class Sorm(object):
+class Sorm(AnalysisObject):
     """
     Second Order Reliability Method (SORM)
 
@@ -42,28 +42,16 @@ class Sorm(object):
         """
         Class constructor
         """
-
-        # The stochastic model
-        if stochastic_model is None:
-            self.model = StochasticModel()
-        else:
-            self.model = stochastic_model
-
-        # Options for the calculation
-        if analysis_options is None:
-            self.options = AnalysisOptions()
-        else:
-            self.options = analysis_options
-
-        # The limit state function
-        if limit_state is None:
-            self.limitstate = LimitState()
-        else:
-            self.limitstate = limit_state
+        super().__init__(
+            analysis_options=analysis_options,
+            limit_state=limit_state,
+            stochastic_model=stochastic_model,
+        )
 
         # Has FORM already been run? If it exists it has, otherwise run it now
         if form is None:
             self.form = Form(self.options, self.limitstate, self.model)
+            self.form.run()
         else:
             self.form = form
 
@@ -81,6 +69,8 @@ class Sorm(object):
             Curve-fitting: fit_type == 'cf'
             Point-fitting: fit_type == 'pf'
         """
+        self.results_valid = True
+
         if fit_type != "cf":
             raise ValueError("Point-Fitting not yet supported")
         else:
@@ -99,7 +89,8 @@ class Sorm(object):
         self.kappa = np.sort(kappa)
         self.pf_breitung(self.betaHL, self.kappa)
         self.pf_breitung_m(self.betaHL, self.kappa)
-        self.showResults()
+        if self.options.getPrintOutput():
+            self.showResults()
 
     def pf_breitung(self, beta, kappa):
         """
@@ -142,6 +133,8 @@ class Sorm(object):
             self.betag_breitung_m = 0
 
     def showResults(self):
+        if not self.results_valid:
+            raise ValueError("Analysis not yet run")
         n_hyphen = 54
         print("")
         print("=" * n_hyphen)
@@ -158,6 +151,8 @@ class Sorm(object):
 
     def showDetailedOutput(self):
         """Get detailed output to console"""
+        if not self.results_valid:
+            raise ValueError("Analysis not yet run")
         names = self.model.getVariables().keys()
         consts = self.model.getConstants()
         u_star = self.form.getDesignPoint()
@@ -277,7 +272,7 @@ class Sorm(object):
             # Now use finite differences to estimate hessian
             for i in range(nrv):
                 # Second-order central difference
-                hess_G[i, i] = (all_G_plus[i] - 2 * G + all_G_minus[i]) / h ** 2
+                hess_G[i, i] = (all_G_plus[i] - 2 * G + all_G_minus[i]) / h**2
                 for j in range(i):
                     # Second order forward difference
                     hess_G[i, j] = (
@@ -285,7 +280,7 @@ class Sorm(object):
                         - all_G_plus[j]
                         - all_G_plus[i]
                         + G
-                    ) / h ** 2
+                    ) / h**2
                     hess_G[j, i] = hess_G[i, j]
 
         return hess_G

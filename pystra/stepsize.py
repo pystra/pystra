@@ -58,9 +58,9 @@ def getStepSize(G, gradient, u, d, stochastic_model, analysis_options, limit_sta
             merit_new = Merit_new[j]
             j += 1
             if j == ntrial and merit_new > merit:
-                if analysis_options.printOutput():
+                if analysis_options.getPrintOutput():
                     print(
-                        "The step size has been reduced by a factor of 1/", 2 ** ntrial
+                        "The step size has been reduced by a factor of 1/", 2**ntrial
                     )
     step_size = trial_step_size
     return step_size

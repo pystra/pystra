@@ -2,66 +2,69 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-import os, sys
 import types
 
 
-def evaluateLimitState(x, stochastic_model, analysis_options, limit_state, modus=None):
+def evaluateLimitState(
+    x, stochastic_model, analysis_options, limit_state, diff_mode=None
+):
     """Evaluate the limit state"""
 
-    global nfun
     # names = stochastic_model.getNames()
     expression = limit_state.getExpression()
 
     nx = x.shape[1]
     nrv = x.shape[0]
 
-    if modus == None:
-        modus = analysis_options.getDifferentationModus()
+    G = np.zeros((1, nx))
+    grad_g = np.zeros((nrv, nx))
+
+    if diff_mode == None:
+        diff_mode = analysis_options.getDiffMode()
     else:
-        modus = "no"
+        diff_mode = "no"
 
     if analysis_options.getMultiProc() == 0:
-        print("Error: function not yet implemented")
-    if analysis_options.getMultiProc() == 1:
+        raise NotImplementedError("getMultiProc")
+    else:
         block_size = analysis_options.getBlockSize()
-        if modus == "no":
+        # No differentiation for MCS
+        if diff_mode == "no":
             if nx > 1:
-                G = np.zeros((1, nx))
-                dummy = np.zeros(nx)
                 k = 0
                 while k < nx:
                     block_size = np.min([block_size, nx - k])
                     indx = list(range(k, k + block_size))
                     blockx = x[:, indx]
 
-                    if limit_state.getEvaluator() == "basic":
-                        blockG, blockdummy = computeLimitStateFunction(
-                            blockx, stochastic_model, expression
-                        )
+                    blockG, _ = computeLimitStateFunction(
+                        blockx, stochastic_model, expression
+                    )
 
                     G[:, indx] = blockG
-                    dummy[indx] = blockdummy
+                    # grad_g[indx] = blockdummy
                     k += block_size
-                grad_g = dummy
+
                 stochastic_model.addCallFunction(nx)
-        elif modus == "ddm":
-            print("Error: ddm function not yet implemented")
-        elif modus == "ffd":
+
+        elif diff_mode == "ddm":
+            for k in range(nx):
+                G[k], grad_g[:, k : k + 1] = computeLimitStateFunction(
+                    x[:, k : k + 1], stochastic_model, expression, ddm=True
+                )
+            stochastic_model.addCallFunction(nx)
+
+        elif diff_mode == "ffd":
             ffdpara = analysis_options.getffdpara()
             allx = np.zeros((nrv, nx * (1 + nrv)))
-            # indx = range(0,(1+(nx-1)*(1+nrv)),(1+nrv))
-            # allx[:,indx] = x
             allx[:] = x
             allh = np.zeros(nrv)
 
             marg = stochastic_model.getMarginalDistributions()
 
-            original_x = x
-
+            x0 = x
             for j in range(nrv):
-                x = original_x
-                # TODO marg
+                x = x0
                 allh[j] = marg[j].stdv / ffdpara
                 x[j] = x[j] + allh[j] * np.ones(nx)
                 indx = list(range(j + 1, 1 + (1 + j + (nx - 1) * (1 + nrv)), (1 + nrv)))
@@ -75,17 +78,15 @@ def evaluateLimitState(x, stochastic_model, analysis_options, limit_state, modus
                 indx = list(range(k, k + block_size))
                 blockx = allx[:, indx]
 
-                if limit_state.getEvaluator() == "basic":
-                    blockG, dummy = computeLimitStateFunction(
-                        blockx, stochastic_model, expression
-                    )
+                blockG, _ = computeLimitStateFunction(
+                    blockx, stochastic_model, expression
+                )
 
                 allG[indx] = blockG.squeeze()
                 k += block_size
 
             indx = list(range(0, (1 + (nx - 1) * (1 + nrv)), (1 + nrv)))
             G = allG[indx]
-            grad_g = np.zeros((nrv, nx))
 
             for j in range(nrv):
                 indx = list(range(j + 1, 1 + (1 + j + (nx - 1) * (1 + nrv)), (1 + nrv)))
@@ -96,26 +97,28 @@ def evaluateLimitState(x, stochastic_model, analysis_options, limit_state, modus
     return G, grad_g
 
 
-def computeLimitStateFunction(x, stochastic_model, expression):
+def computeLimitStateFunction(x, stochastic_model, expression, ddm=False):
     """Compute the limit state function"""
-    nrv, nc = np.shape(x)
+    _, nc = np.shape(x)
     variables = stochastic_model.getVariables()
     constants = stochastic_model.getConstants()
 
-    if isinstance(expression, str):
-        # string expression, for backward compatibility
-        for i, var in enumerate(variables):
-            globals()[var] = x[i]
-        for c, val in constants.items():
-            globals()[c] = val * np.ones(nc)
-        G = eval(expression)[0]
-    elif isinstance(expression, types.FunctionType):
-        # function expression, recommended to use
-        inpdict = dict()
-        for i, var in enumerate(variables):
-            inpdict[var] = x[i]
-        for c, val in constants.items():
-            inpdict[c] = val * np.ones(nc)
-        G = expression(**inpdict)
-    gradient = 0
+    inpdict = dict()
+    for i, var in enumerate(variables):
+        inpdict[var] = x[i]
+    for c, val in constants.items():
+        inpdict[c] = val * np.ones(nc)
+    Gvals = expression(**inpdict)
+    try:
+        if ddm:
+            G, gradient = Gvals
+        else:
+            if isinstance(Gvals, tuple):
+                G = Gvals[0]
+            else:
+                G = Gvals
+            gradient = 0
+    except TypeError:
+        raise TypeError("Limit state function return must match differentiation mode")
+
     return G, gradient

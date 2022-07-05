@@ -1,23 +1,18 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 
-import os
 import numpy as np
-import math
-import scipy.optimize as opt
-import scipy.special as spec
-from scipy.stats import norm
-
-from .model import *
-from .correlation import *
-from .distributions import *
-from .cholesky import *
-from .limitstate import *
-from .stepsize import *
+from scipy.stats import norm as normal
+from .model import AnalysisObject
+from .correlation import computeModifiedCorrelationMatrix
+from .transformation import x_to_u, u_to_x, jacobian
+from .cholesky import computeCholeskyDecomposition
+from .limitstate import evaluateLimitState
+from .stepsize import getStepSize
 
 
-class Form(object):
-    """First Order Reliability Method (FORM)
+class Form(AnalysisObject):
+    r"""First Order Reliability Method (FORM)
 
     Let :math:`{\\bf Z}` be a set of uncorrelated and standardized normally
     distributed random variables :math:`( Z_1 ,\dots, Z_n )` in the normalized
@@ -48,23 +43,11 @@ class Form(object):
 
     def __init__(self, analysis_options=None, limit_state=None, stochastic_model=None):
 
-        # The stochastic model
-        if stochastic_model is None:
-            self.model = StochasticModel()
-        else:
-            self.model = stochastic_model
-
-        # Options for the calculation
-        if analysis_options is None:
-            self.options = AnalysisOptions()
-        else:
-            self.options = analysis_options
-
-        # The limit state function
-        if limit_state is None:
-            self.limitstate = LimitState()
-        else:
-            self.limitstate = limit_state
+        super().__init__(
+            analysis_options=analysis_options,
+            limit_state=limit_state,
+            stochastic_model=stochastic_model,
+        )
 
         self.i = None
         self.u = None
@@ -79,6 +62,13 @@ class Form(object):
         self.step = None
         self.beta = None
         self.Pf = None
+
+    def run(self):
+        """
+        Executes the FORM analysis
+        """
+
+        self.results_valid = True
 
         # Computation of modified correlation matrix R0
         computeModifiedCorrelationMatrix(self)
@@ -98,7 +88,7 @@ class Form(object):
 
         # loope
         while not convergence:
-            if self.options.printOutput():
+            if self.options.getPrintOutput():
                 print(".......................................")
                 print("Now carrying out iteration number:", i)
 
@@ -114,7 +104,7 @@ class Form(object):
             # Set scale parameter Go and inform about struct. resp.
             if i == 1:
                 self.Go = self.G
-                if self.options.printOutput():
+                if self.options.getPrintOutput():
                     print("Value of limit-state function in the first step:", self.G)
 
             # Compute alpha vector
@@ -129,7 +119,7 @@ class Form(object):
             condition1 = e1 < self.options.getE1()
             condition2 = e2 < self.options.getE2()
             condition3 = i == self.options.getImax()
-            if self.options.printOutput():
+            if self.options.getPrintOutput():
                 print(f"e1 = {e1:1.6e} , e2 = {e2:1.6e}")
 
             if condition1 and condition2 or condition3:
@@ -160,7 +150,7 @@ class Form(object):
         self.computeFailureProbability()
 
         # Show Results
-        if self.options.printOutput():
+        if self.options.getPrintOutput():
             self.showResults()
 
     def computeStartingPoint(self):
@@ -197,8 +187,8 @@ class Form(object):
         """Compute gamma vector"""
         self.gamma = np.diag(np.diag(np.sqrt(np.dot(self.J, np.transpose(self.J)))))
         # Importance vector gamma
-        matmult = np.dot(np.dot(self.alpha, self.J), self.gamma)
-        importance_vector_gamma = matmult * np.linalg.norm(matmult) ** (-1)
+        # matmult = np.dot(np.dot(self.alpha, self.J), self.gamma)
+        # importance_vector_gamma = matmult / np.linalg.norm(matmult)
 
     def computeSearchDirection(self):
         """Determine search direction"""
@@ -227,10 +217,12 @@ class Form(object):
 
     def computeFailureProbability(self):
         """Compute probability of failure"""
-        self.Pf = norm.cdf(-self.beta)
+        self.Pf = normal.cdf(-self.beta)
 
     def showResults(self):
         """Show results"""
+        if not self.results_valid:
+            raise ValueError("Analysis not yet run")
         n_hyphen = 54
         print("")
         print("=" * n_hyphen)
@@ -242,7 +234,7 @@ class Form(object):
         print(" Failure probability:      ", self.Pf[0])
         print(
             " Number of calls to the limit-state function:",
-            self.model.getCallFunction(),
+            self.getNoFunctionCalls(),
         )
         print("")
         print("=" * n_hyphen)
@@ -250,6 +242,8 @@ class Form(object):
 
     def showDetailedOutput(self):
         """Get detailed output to console"""
+        if not self.results_valid:
+            raise ValueError("Analysis not yet run")
         names = self.model.getVariables().keys()
         consts = self.model.getConstants()
         u_star = self.getDesignPoint()
@@ -322,3 +316,13 @@ class Form(object):
             alpha_dict = {name: alpha for alpha, name in zip(alphas, names)}
             return alpha_dict
         return self.alpha[0]
+
+    def getNoFunctionCalls(self):
+        """
+        Returns the number of function evaluations used
+
+        :Returns:
+          - n (int): Returns the number of function evaluations
+
+        """
+        return self.model.getCallFunction()

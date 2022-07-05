@@ -2,14 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-
 from .distributions import Distribution, Constant
-
-# from .correlation import *
 from collections import OrderedDict
 
 
-class StochasticModel(object):
+class StochasticModel:
     """Stochastic model"""
 
     def __init__(self):
@@ -103,7 +100,7 @@ class StochasticModel(object):
         return self.call_function
 
 
-class AnalysisOptions(object):
+class AnalysisOptions:
     """Options
 
     Options for the structural reliability analysis.
@@ -138,12 +135,12 @@ class AnalysisOptions(object):
       - 0: no sensitivities assessment
     """
 
-        self.print_output = True
-        """Print comments during calculation
+        self.print_output = False
+        """Print output to the console during calculation
 
     :Values:
-      - True: FERUM interactive mode,\n
-      - False: FERUM silent mode
+      - True: prints output to the console (useful, e.g. spyder),\n
+      - False: does not print out (e.g. jupyter notebook)
     """
 
         self.multi_proc = 1
@@ -189,7 +186,7 @@ class AnalysisOptions(object):
         # 1: x-vector recorded at all iterations
 
         # FORM, SORM analysis options
-        self.differentation_modus = "ffd"
+        self.diff_mode = "ffd"
         """ Kind of differentiation
 
     :Type:
@@ -251,7 +248,7 @@ class AnalysisOptions(object):
         """Amount on bins for the histogram"""
 
     # getter
-    def printOutput(self):
+    def getPrintOutput(self):
         return self.print_output
 
     def getFlagSens(self):
@@ -275,8 +272,8 @@ class AnalysisOptions(object):
     def getStepSize(self):
         return self.step_size
 
-    def getDifferentationModus(self):
-        return self.differentation_modus
+    def getDiffMode(self):
+        return self.diff_mode
 
     def getffdpara(self):
         return self.ffdpara
@@ -305,7 +302,7 @@ class AnalysisOptions(object):
         return self.target_cov
 
     # setter
-    def printResults(self, tof):
+    def setPrintOutput(self, tof):
         self.print_output = tof
 
     def setMultiProc(self, multi_proc):
@@ -326,8 +323,8 @@ class AnalysisOptions(object):
     def setStepSize(self, step_size):
         self.step_size = step_size
 
-    def setDifferentationModus(self, differentation_modus):
-        self.differentation_modus = differentation_modus
+    def setDiffMode(self, diff_mode):
+        self.diff_mode = diff_mode
 
     def setffdpara(self, ffdpara):
         self.ffdpara = ffdpara
@@ -339,7 +336,7 @@ class AnalysisOptions(object):
         self.samples = samples
 
 
-class LimitState(object):
+class LimitState:
     """Limit state"""
 
     def __init__(self, expression=None):
@@ -347,8 +344,7 @@ class LimitState(object):
         """Type of limit-state function evaluator:
 
         :Args:
-          basic: the limit-state function is defined by means of an analytical
-          expression or a Python function.
+          basic: the limit-state function is defined by means of a Python function.
         """
 
         # Do no change this field!
@@ -357,19 +353,6 @@ class LimitState(object):
         self.expression = expression
         """Expression of the limit-state function"""
 
-        self.flag_sens = True
-        """Flag for computation of sensitivities
-
-    w.r.t. Tag parameters of the limit-state function
-
-    :Tag:
-      - 1: all sensitivities assessed,\n
-      - 0: no sensitivities assessment\n
-    """
-
-    def getEvaluator(self):
-        return self.evaluator
-
     def getExpression(self):
         return self.expression
 
@@ -377,22 +360,28 @@ class LimitState(object):
         self.expression = expression
 
 
-#    inlist = False
-#    for obj in gc.get_objects():
-#      if isinstance(obj, LimitStateFunction):
-#        self.expression = obj.getExpression()
-#        inlist = True
-#        break
-#    if not inlist:
-#      print 'Attention: No limit state function is defined'
+class AnalysisObject:
+    """
+    A base class for objects that perform a probability of failure estimation
+    """
 
+    def __init__(self, analysis_options=None, limit_state=None, stochastic_model=None):
+        # The stochastic model
+        if stochastic_model is None:
+            self.model = StochasticModel()
+        else:
+            self.model = stochastic_model
 
-# class LimitStateFunction(object):
-#     def __init__(self, expression):
-#         self.expression = expression
+        # Options for the calculation
+        if analysis_options is None:
+            self.options = AnalysisOptions()
+        else:
+            self.options = analysis_options
 
-#     def __repr__(self):
-#         return self.expression
+        # The limit state function
+        if limit_state is None:
+            self.limitstate = LimitState()
+        else:
+            self.limitstate = limit_state
 
-#     def getExpression(self):
-#         return self.expression
+        self.results_valid = False

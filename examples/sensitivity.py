@@ -19,7 +19,7 @@ This is Example 2 of Bourinet (2017), which gives analytical solutions as:
 
 """
 
-import pystra as pr
+import pystra as ra
 
 
 def lsf(R, S):
@@ -29,16 +29,16 @@ def lsf(R, S):
     return R - S
 
 
-limit_state = pr.LimitState(lsf)
+limit_state = ra.LimitState(lsf)
 
-model = pr.StochasticModel()
-model.addVariable(pr.Lognormal("R", 5, 5))
-model.addVariable(pr.Lognormal("S", 1, 1))
-model.setCorrelation(pr.CorrelationMatrix([[1.0, 0.5], [0.5, 1.0]]))
+model = ra.StochasticModel()
+model.addVariable(ra.Lognormal("R", 5, 5))
+model.addVariable(ra.Lognormal("S", 1, 1))
+model.setCorrelation(ra.CorrelationMatrix([[1.0, 0.5], [0.5, 1.0]]))
 
-form = pr.Form(stochastic_model=model, limit_state=limit_state)
+form = ra.Form(stochastic_model=model, limit_state=limit_state)
 form.showDetailedOutput()
 
-sens = pr.SensitivityAnalysis(stochastic_model=model, limit_state=limit_state)
+sens = ra.SensitivityAnalysis(stochastic_model=model, limit_state=limit_state)
 results = sens.run_form()
 print(results)

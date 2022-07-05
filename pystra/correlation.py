@@ -122,7 +122,7 @@ def absoluteIntegralValue(rho0, *args):
 
 def computeModifiedCorrelationMatrix(self):
     """Compute modified correlation matrix"""
-    if self.options.printOutput():
+    if self.options.getPrintOutput():
         print("==================================================")
         print("")
         print("           RUNNING RELIABILITY ANALYSIS")

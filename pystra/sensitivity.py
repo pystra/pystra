@@ -59,6 +59,7 @@ class SensitivityAnalysis:
 
         # Get the base result
         form = Form(stochastic_model=self.model, limit_state=self.limitstate)
+        form.run()
         beta0 = form.getBeta()
 
         for param in ["mean", "std"]:
@@ -70,6 +71,7 @@ class SensitivityAnalysis:
 
                 # Calculate and store the sensitivity
                 form = Form(stochastic_model=model1, limit_state=self.limitstate)
+                form.run()
                 beta1 = form.getBeta()
                 sens = (beta1 - beta0) / delta_actual
                 sensitivities[name][param] = sens

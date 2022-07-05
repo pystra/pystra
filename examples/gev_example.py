@@ -6,7 +6,7 @@ Created on Wed Oct  6 22:50:35 2021
 @author: ccaprani
 """
 
-import pystra as pr
+import pystra as ra
 
 from scipy.stats import genextreme as gev
 
@@ -19,19 +19,19 @@ def lsf(X1, X2, C):
 
 
 # Create GEV variable and plot it is correct
-X2 = pr.ScipyDist("X2", gev(c=0.1, loc=200, scale=50))
+X2 = ra.ScipyDist("X2", gev(c=0.1, loc=200, scale=50))
 X2.plot()
 
-limit_state = pr.LimitState(lsf)
+limit_state = ra.LimitState(lsf)
 
-model = pr.StochasticModel()
-model.addVariable(pr.Normal("X1", 500, 100))
+model = ra.StochasticModel()
+model.addVariable(ra.Normal("X1", 500, 100))
 model.addVariable(X2)
-model.addVariable(pr.Constant("C", 50))
+model.addVariable(ra.Constant("C", 50))
 
-form = pr.Form(stochastic_model=model, limit_state=limit_state)
+form = ra.Form(stochastic_model=model, limit_state=limit_state)
 form.showDetailedOutput()
 
-sorm = pr.Sorm(stochastic_model=model, limit_state=limit_state, form=form)
+sorm = ra.Sorm(stochastic_model=model, limit_state=limit_state, form=form)
 sorm.run()
 sorm.showDetailedOutput()
