@@ -120,8 +120,7 @@ case the code will look like: ::
   X3 = Uniform('X3',4.133974596215562, 5.866025403784438, 1)
 
 to get the same results as before. To see which parameters are needed and in
-which order the must insert, take a look at Chapter :ref:`chap_distributions`.
-There are all currently available distributions listed.
+which order the must insert, refer to the Distributions API.
 
 If the nominal value, bias, and coefficient of variation are instead known,
 then the random variable can be instantiated following this example: ::
@@ -180,10 +179,10 @@ example we will get following results: ::
 
 If we don't like to see the results in the terminal the option
 ``setPrintOutput(False)`` has set to be ``False``. There are also some other
-options which can be modified (see :ref:`chap_model`).
+options which can be modified.
 
 To use the results for further calculations, plots etc. the results can get by
-some getter methods (see :ref:`chap_calculations`) ::
+some getter methods ::
 
   # Some single results:
   beta = Analysis.getBeta()

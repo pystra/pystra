@@ -25,7 +25,6 @@ class Form(AnalysisObject):
     be mapped to a probability of failure
 
     .. math::
-       :label: eq:2_90
 
               p_f \\approx p_{f1} = \Phi(-\\beta)
 

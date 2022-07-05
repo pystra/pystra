@@ -147,13 +147,8 @@ class AnalysisOptions:
         """ Amount of g-calls
 
     1: block_size g-calls sent simultaneously
-       - gfunbasic.m is used and a vectorized version of gfundata.expression
-         is available. The number of g-calls sent simultaneously (block_size)
-         depends on the memory available on the computer running FERUM.
-       - gfunxxx.m user-specific g-function is used and able to handle
-         block_size computations            sent simultaneously, on a cluster
-         of PCs or any other multiprocessor computer platform.
     0: g-calls sent sequentially
+
     """
 
         self.block_size = 1000

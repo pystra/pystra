@@ -13,7 +13,7 @@ from .form import Form
 
 
 class MonteCarlo(AnalysisObject):
-    """Monte Carlo Simulation
+    r"""Monte Carlo Simulation
 
     The preceding sections describe some methods for determining the reliability
     index :math:`\\beta` for some common forms of the limit state
@@ -140,7 +140,7 @@ class MonteCarlo(AnalysisObject):
         self.q = self.I * self.factors * np.exp(-0.5 * part1 + 0.5 * part2)
 
         self.sum_q += np.sum(self.q)
-        self.sum_q2 += np.sum(self.q**2)
+        self.sum_q2 += np.sum(self.q ** 2)
 
     def computeCoefficientOfVariation(self):
         """Compute Coefficient of Variation"""
@@ -227,7 +227,6 @@ class CrudeMonteCarlo(MonteCarlo):
     estimated by [Faber2009]_
 
     .. math::
-       :label: eq:2_93
 
                \\tilde{p}_f = \\frac{n_f}{n}
 
@@ -342,10 +341,10 @@ class CrudeMonteCarlo(MonteCarlo):
         stdv = self.options.getSimulationStdv()
         samples = self.options.getSamples()
         # Establish covariance matrix, its Cholesky decomposition, and its inverse
-        self.covariance = stdv**2 * np.eye(self.nrv)
+        self.covariance = stdv ** 2 * np.eye(self.nrv)
         self.cholesky_covariance = stdv * np.eye(self.nrv)
         # chol_covariance = chol(covariance);
-        self.inverse_covariance = 1 * (stdv**2) ** (-1) * np.eye(self.nrv)
+        self.inverse_covariance = 1 * (stdv ** 2) ** (-1) * np.eye(self.nrv)
         # inv_covariance = inv(covariance);
 
         # Initializations
@@ -356,7 +355,7 @@ class CrudeMonteCarlo(MonteCarlo):
         self.cov_q_bar[:] = np.nan
 
         # Pre-compute some factors to minimize computations inside simulation loop
-        self.factors = stdv**self.nrv
+        self.factors = stdv ** self.nrv
         self.cov_q_bar[0] = 1.0
         self.done = 0
 
@@ -524,7 +523,7 @@ class DistributionAnalysis(MonteCarlo):
         stdv = self.options.getSimulationStdv()
         samples = self.options.getSamples()
         # Establish covariance matrix, its Cholesky decomposition, and its inverse
-        self.covariance = stdv**2 * np.eye(self.nrv)
+        self.covariance = stdv ** 2 * np.eye(self.nrv)
         self.cholesky_covariance = stdv * np.eye(self.nrv)
         # chol_covariance = chol(covariance);
 
