@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SciPy Distribution Example &#8212; PySTRA 1.1.0 documentation</title>
+    <title>Direct Differentiation Method &#8212; PySTRA 1.1.0 documentation</title>
 <script>
   document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
   document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
@@ -38,8 +38,8 @@
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Sensitivity Analysis" href="ex_sensitivity.html" />
-    <link rel="prev" title="Example from the Tutorial" href="ex_intro.html" />
+    <link rel="next" title="Pystra Timing" href="ex_timing.html" />
+    <link rel="prev" title="Sensitivity Analysis" href="ex_sensitivity.html" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="docsearch:language" content="en">
   </head>
@@ -170,8 +170,8 @@
    Example from the Tutorial
   </a>
  </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
+ <li class="toctree-l1">
+  <a class="reference internal" href="ex_scipy_distributions.html">
    SciPy Distribution Example
   </a>
  </li>
@@ -180,8 +180,8 @@
    Sensitivity Analysis
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="ex_ddm.html">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
    Direct Differentiation Method
   </a>
  </li>
@@ -218,7 +218,7 @@
       
 
 <div class="tocsection editthispage">
-    <a href="https://github.com/pystra/pystra/edit/main/docs/source/notebooks/ex_scipy_distributions.ipynb">
+    <a href="https://github.com/pystra/pystra/edit/main/docs/source/notebooks/ex_ddm.ipynb">
         <i class="fas fa-pencil-alt"></i> Edit this page
     </a>
 </div>
@@ -491,78 +491,144 @@ div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
-<div class="section" id="SciPy-Distribution-Example">
-<h1>SciPy Distribution Example<a class="headerlink" href="#SciPy-Distribution-Example" title="Permalink to this heading">#</a></h1>
-<p>This example shows how to use any of the SciPy distributions in <code class="docutils literal notranslate"><span class="pre">Pystra</span></code>. Here, we develop a simple model using the Generalized Extreme Value distribution.</p>
-<p>Start off with the necessary imports:</p>
+<div class="section" id="Direct-Differentiation-Method">
+<h1>Direct Differentiation Method<a class="headerlink" href="#Direct-Differentiation-Method" title="Permalink to this heading">#</a></h1>
+<p>By default, the FORM algorithm uses a Forward Finite Difference (FFD) scheme to determine the gradient of the limit state function. However, in some cases, the derivative of the limit state function with respect to each of its parameters will be available; either as a closed form expression, or as an output from another algorithm (e.g. the <a class="reference external" href="https://openseespydoc.readthedocs.io/en/latest/src/senscmds.html">sensitivity commands</a> in OpenSeesPy). In such cases, a computational saving can be made,
+and can be significant, most especially for large complex finite element analyses.</p>
+<p>This example demonstrates the use of <em>Pystra</em>’s DDM algorithm for a simple closed-form limit state function; and the speed-up possible for even this simple case.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pystra as pr
-from scipy.stats import genextreme as gev
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pystra as ra
+import numpy as np
+import timeit
 </pre></div>
 </div>
 </div>
-<p>Define the limit state function</p>
+<p>Define the limit state function and its gradient. Return both the evaluation of the limit state function, and the gradient vector. Also allow for the limit state function to be called in a vectorized manner, so in the following function the <span class="math notranslate nohighlight">\(Xi,\ i \in \{1,...,6\}\)</span> may be passed with dimension <span class="math notranslate nohighlight">\(n\times 1\)</span>, so that the returned <code class="docutils literal notranslate"><span class="pre">G</span></code> is size <span class="math notranslate nohighlight">\({n\times 1}\)</span> and <code class="docutils literal notranslate"><span class="pre">grad_G</span></code> is size <span class="math notranslate nohighlight">\({6\times n}\)</span>:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def lsf(X1, X2, C):
-    return X1 - X2 - C
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def lsf(r, X1, X2, X3, X4, X5, X6):
+    &quot;&quot;&quot;
+    Calrel example from FERUM
+    &quot;&quot;&quot;
+    G = (
+        r
+        - X2 / (1000 * X3)
+        - (X1 / (200 * X3)) ** 2
+        - X5 / (1000 * X6)
+        - (X4 / (200 * X6)) ** 2
+    )
+    grad_G = np.array(
+        [
+            -X1 / (20000 * X3**2),
+            -1 / (1000 * X3),
+            (20 * X2 * X3 + X1**2) / (20000 * X3**3),
+            -X4 / (20000 * X6**2),
+            -1 / (1000 * X6),
+            (20 * X5 * X6 + X4**2) / (20000 * X6**3),
+        ]
+    )
+    return G, grad_G
 </pre></div>
 </div>
 </div>
-<p>Create the GEV variable and plot that it is defined as intended:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>X2 = pr.ScipyDist(&quot;X2&quot;, gev(c=0.1, loc=200, scale=50))
-X2.plot()
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/notebooks_ex_scipy_distributions_5_0.png" src="../_images/notebooks_ex_scipy_distributions_5_0.png" />
-</div>
-</div>
-<p>Now create the limit state and stochastic model objects, and add the varaiables</p>
+<p>Set up a generic function that establishes and runs the model according to the differentiation type passed <code class="docutils literal notranslate"><span class="pre">diff_mode</span></code>:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>limit_state = pr.LimitState(lsf)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def run(diff_mode):
+    limit_state = ra.LimitState(lsf)
 
-model = pr.StochasticModel()
-model.addVariable(pr.Normal(&quot;X1&quot;, 500, 100))
-model.addVariable(X2)
-model.addVariable(pr.Constant(&quot;C&quot;, 50))
+    # Set some options (optional)
+    options = ra.AnalysisOptions()
+    options.setPrintOutput(False)
+    options.setDiffMode(diff_mode)
+
+    stochastic_model = ra.StochasticModel()
+
+    # Define random variables
+    stochastic_model.addVariable(ra.Lognormal(&quot;X1&quot;, 500, 100))
+    stochastic_model.addVariable(ra.Lognormal(&quot;X2&quot;, 2000, 400))
+    stochastic_model.addVariable(ra.Uniform(&quot;X3&quot;, 5, 0.5))
+    stochastic_model.addVariable(ra.Lognormal(&quot;X4&quot;, 450, 90))
+    stochastic_model.addVariable(ra.Lognormal(&quot;X5&quot;, 1800, 360))
+    stochastic_model.addVariable(ra.Uniform(&quot;X6&quot;, 4.5, 0.45))
+
+    # Define constants
+    stochastic_model.addVariable(ra.Constant(&quot;r&quot;, 1.7))
+
+    stochastic_model.setCorrelation(
+        ra.CorrelationMatrix(
+            [
+                [1.0, 0.3, 0.2, 0, 0, 0],
+                [0.3, 1.0, 0.2, 0, 0, 0],
+                [0.2, 0.2, 1.0, 0, 0, 0],
+                [0, 0, 0, 1.0, 0.3, 0.2],
+                [0, 0, 0, 0.3, 1.0, 0.2],
+                [0, 0, 0, 0.2, 0.2, 1.0],
+            ]
+        )
+    )
+
+    # Set up FORM analysis
+    form = ra.Form(
+        analysis_options=options,
+        stochastic_model=stochastic_model,
+        limit_state=limit_state,
+    )
+    # Run it
+    form.run()
+    return form
 </pre></div>
 </div>
 </div>
-<p>Suppress the console output</p>
+<p>Call the default FFD method:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>options = pr.AnalysisOptions()
-options.setPrintOutput(False)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ffd_count = 0
+def run_ffd():
+    global ffd_count
+    form = run(&quot;ffd&quot;)
+    ffd_count += form.getNoFunctionCalls()
 </pre></div>
 </div>
 </div>
-<p>Execute a FORM analysis</p>
+<p>And the DDM, which makes used of the <code class="docutils literal notranslate"><span class="pre">grad_G</span></code> returned from the <code class="docutils literal notranslate"><span class="pre">lsf</span></code>:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ddm_count = 0
+def run_ddm():
+    global ddm_count
+    form = run(&quot;ddm&quot;)
+    ddm_count += form.getNoFunctionCalls()
+</pre></div>
+</div>
+</div>
+<p>Finally run both 100 times and compare the executation speed difference:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>form = pr.Form(stochastic_model=model, limit_state=limit_state, analysis_options=options)
-form.run()
-form.showDetailedOutput()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>number = 100
+time_ffd = timeit.timeit(stmt=run_ffd, number=number)
+time_ddm = timeit.timeit(stmt=run_ddm, number=number)
+
+print(&quot;Total time taken (s):&quot;)
+print(f&quot;FFD: {time_ffd}; DDM: {time_ddm}&quot;)
+print(&quot;Number of function evaluations:&quot;)
+print(f&quot;FFD: {ffd_count}; DDM: {ddm_count}&quot;)
+print(&quot;Average time per call (s):&quot;)
+print(f&quot;FFD: {time_ffd/number}; DDM: {time_ddm/number}&quot;)
+print(f&quot;DDM speed-up: {time_ffd/time_ddm:.2f}&quot;)
 </pre></div>
 </div>
 </div>
@@ -571,71 +637,16 @@ form.showDetailedOutput()
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-
-======================================================
-FORM
-======================================================
-Pf                       2.4939239502e-02
-BetaHL                   1.9610046625
-Model Evaluations        39
-------------------------------------------------------
-Variable            U_star             X_star        alpha
-X1               -1.592128         340.787183    -0.811736
-X2                1.144844         290.787242    +0.584025
-C                      ---          50.000000          ---
-======================================================
-
+Total time taken (s):
+FFD: 3.8152463799342513; DDM: 3.757767920847982
+Number of function evaluations:
+FFD: 8500; DDM: 4300
+Average time per call (s):
+FFD: 0.03815246379934251; DDM: 0.03757767920847982
+DDM speed-up: 1.02
 </pre></div></div>
 </div>
-<p>And then a SORM analysis (passing the existing FORM object for eficiency)</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sorm = pr.Sorm(stochastic_model=model, limit_state=limit_state, form=form)
-sorm.run()
-sorm.showDetailedOutput()
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-
-======================================================
-
-RESULTS FROM RUNNING SECOND ORDER RELIABILITY METHOD
-
-Generalized reliability index:  1.9257163705247708
-Probability of failure:         0.027069899329046212
-
-Curavture 1: -0.07711553440911698
-======================================================
-
-
-======================================================
-FORM/SORM
-======================================================
-Pf FORM                          2.4939239502e-02
-Pf SORM Breitung                 2.7069899329e-02
-Pf SORM Breitung HR      2.7546692546e-02
-Beta_HL                          1.9610046625
-Beta_G Breitung                  1.9257163705
-Beta_G Breitung HR               1.9181390266
-Model Evaluations                48
-------------------------------------------------------
-Curvature 1: -0.07711553440911698
-------------------------------------------------------
-Variable            U_star             X_star        alpha
-X1               -1.592128         340.787183    -0.811736
-X2                1.144844         290.787242    +0.584025
-C                      ---          50.000000          ---
-======================================================
-
-</pre></div></div>
-</div>
+<p>For the present problem the speed-up is not very significant, but for more complex models, it can be, as may be apparent from the difference in the number of function calls.</p>
 </div>
 
 
@@ -646,17 +657,17 @@ C                      ---          50.000000          ---
               <footer class="bd-footer-article">
                   <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="ex_intro.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="ex_sensitivity.html" title="previous page">
       <i class="fas fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">Example from the Tutorial</p>
+          <p class="prev-next-title">Sensitivity Analysis</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="ex_sensitivity.html" title="next page">
+  <a class='right-next' id="next-link" href="ex_timing.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">Sensitivity Analysis</p>
+      <p class="prev-next-title">Pystra Timing</p>
   </div>
   <i class="fas fa-angle-right"></i>
   </a>

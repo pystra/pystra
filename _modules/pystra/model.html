@@ -1,17 +1,21 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pystra.model &#8212; PySTRA 1.0.0 documentation</title>
-    
-  <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+    <title>pystra.model &#8212; PySTRA 1.1.0 documentation</title>
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
 
-    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
   <link rel="stylesheet"
     href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
   <link rel="preload" as="font" type="font/woff2" crossorigin
@@ -20,45 +24,53 @@
     href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    
+
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
 
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-    
-    <div class="container-fluid" id="banner"></div>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
 
     
-    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
 
   <div id="navbar-start">
     
     
+  
 
-<a class="navbar-brand" href="../../index.html">
-  <img src="../../_static/icon_pystra_small.png" class="logo" alt="logo">
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+    <img src="../../_static/icon_pystra_small.png" class="logo__image only-light" alt="Logo image">
+    <img src="../../_static/icon_pystra_small.png" class="logo__image only-dark" alt="Logo image">
+  
+  
 </a>
-
-
     
   </div>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+    <span class="fas fa-bars"></span>
   </button>
 
   
@@ -106,6 +118,14 @@
     <div id="navbar-end">
       
       <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
         <li class="nav-item">
           <a class="nav-link" href="https://github.com/pystra/pystra" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
@@ -124,13 +144,13 @@
     </nav>
     
 
-    <div class="container-xl">
-      <div class="row">
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
           
-            
-            <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar">
-              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -138,40 +158,36 @@
     
   </div>
 </nav>
-              </div>
-              <div class="sidebar-end-items">
-              </div>
-            </div>
-            
-          
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
 
           
-          <div class="d-none d-xl-block col-xl-2 bd-toc">
-            
-          </div>
-          
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+</div>
+
 
           
           
-            
-          
-          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+          <div class="bd-content col-12 col-md-9 col-xl-7">
               
-              <div>
+              <article class="bd-article" role="main">
                 
   <h1>Source code for pystra.model</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/python -tt</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
 <span class="kn">from</span> <span class="nn">.distributions</span> <span class="kn">import</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">Constant</span>
-
-<span class="c1"># from .correlation import *</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
 
 
-<div class="viewcode-block" id="StochasticModel"><a class="viewcode-back" href="../../gen/pystra.model.StochasticModel.html#pystra.model.StochasticModel">[docs]</a><span class="k">class</span> <span class="nc">StochasticModel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="StochasticModel"><a class="viewcode-back" href="../../gen/pystra.model.StochasticModel.html#pystra.model.StochasticModel">[docs]</a><span class="k">class</span> <span class="nc">StochasticModel</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Stochastic model&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -198,7 +214,7 @@
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Input is not a Distribution or Constant object&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;variable name &quot;{obj.getName()}&quot; already exists&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;variable name &quot;</span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span><span class="si">}</span><span class="s1">&quot; already exists&#39;</span><span class="p">)</span>
 
         <span class="c1"># append the variable name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">getName</span><span class="p">())</span>
@@ -265,7 +281,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">call_function</span></div>
 
 
-<div class="viewcode-block" id="AnalysisOptions"><a class="viewcode-back" href="../../gen/pystra.model.AnalysisOptions.html#pystra.model.AnalysisOptions">[docs]</a><span class="k">class</span> <span class="nc">AnalysisOptions</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="AnalysisOptions"><a class="viewcode-back" href="../../gen/pystra.model.AnalysisOptions.html#pystra.model.AnalysisOptions">[docs]</a><span class="k">class</span> <span class="nc">AnalysisOptions</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Options</span>
 
 <span class="sd">    Options for the structural reliability analysis.</span>
@@ -300,25 +316,20 @@
 <span class="sd">      - 0: no sensitivities assessment</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">print_output</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="sd">&quot;&quot;&quot;Print comments during calculation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">print_output</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="sd">&quot;&quot;&quot;Print output to the console during calculation</span>
 
 <span class="sd">    :Values:</span>
-<span class="sd">      - True: FERUM interactive mode,\n</span>
-<span class="sd">      - False: FERUM silent mode</span>
+<span class="sd">      - True: prints output to the console (useful, e.g. spyder),\n</span>
+<span class="sd">      - False: does not print out (e.g. jupyter notebook)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">multi_proc</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="sd">&quot;&quot;&quot; Amount of g-calls</span>
 
 <span class="sd">    1: block_size g-calls sent simultaneously</span>
-<span class="sd">       - gfunbasic.m is used and a vectorized version of gfundata.expression</span>
-<span class="sd">         is available. The number of g-calls sent simultaneously (block_size)</span>
-<span class="sd">         depends on the memory available on the computer running FERUM.</span>
-<span class="sd">       - gfunxxx.m user-specific g-function is used and able to handle</span>
-<span class="sd">         block_size computations            sent simultaneously, on a cluster</span>
-<span class="sd">         of PCs or any other multiprocessor computer platform.</span>
 <span class="sd">    0: g-calls sent sequentially</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">block_size</span> <span class="o">=</span> <span class="mi">1000</span>
@@ -351,7 +362,7 @@
         <span class="c1"># 1: x-vector recorded at all iterations</span>
 
         <span class="c1"># FORM, SORM analysis options</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">differentation_modus</span> <span class="o">=</span> <span class="s2">&quot;ffd&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diff_mode</span> <span class="o">=</span> <span class="s2">&quot;ffd&quot;</span>
         <span class="sd">&quot;&quot;&quot; Kind of differentiation</span>
 
 <span class="sd">    :Type:</span>
@@ -413,7 +424,7 @@
         <span class="sd">&quot;&quot;&quot;Amount on bins for the histogram&quot;&quot;&quot;</span>
 
     <span class="c1"># getter</span>
-    <span class="k">def</span> <span class="nf">printOutput</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">getPrintOutput</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_output</span>
 
     <span class="k">def</span> <span class="nf">getFlagSens</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -437,8 +448,8 @@
     <span class="k">def</span> <span class="nf">getStepSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_size</span>
 
-    <span class="k">def</span> <span class="nf">getDifferentationModus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">differentation_modus</span>
+    <span class="k">def</span> <span class="nf">getDiffMode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">diff_mode</span>
 
     <span class="k">def</span> <span class="nf">getffdpara</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ffdpara</span>
@@ -467,7 +478,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_cov</span>
 
     <span class="c1"># setter</span>
-    <span class="k">def</span> <span class="nf">printResults</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tof</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">setPrintOutput</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tof</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">print_output</span> <span class="o">=</span> <span class="n">tof</span>
 
     <span class="k">def</span> <span class="nf">setMultiProc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">multi_proc</span><span class="p">):</span>
@@ -488,8 +499,8 @@
     <span class="k">def</span> <span class="nf">setStepSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step_size</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">step_size</span> <span class="o">=</span> <span class="n">step_size</span>
 
-    <span class="k">def</span> <span class="nf">setDifferentationModus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">differentation_modus</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">differentation_modus</span> <span class="o">=</span> <span class="n">differentation_modus</span>
+    <span class="k">def</span> <span class="nf">setDiffMode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diff_mode</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diff_mode</span> <span class="o">=</span> <span class="n">diff_mode</span>
 
     <span class="k">def</span> <span class="nf">setffdpara</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ffdpara</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ffdpara</span> <span class="o">=</span> <span class="n">ffdpara</span>
@@ -501,96 +512,239 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">samples</span> <span class="o">=</span> <span class="n">samples</span></div>
 
 
-<div class="viewcode-block" id="LimitState"><a class="viewcode-back" href="../../gen/pystra.model.LimitState.html#pystra.model.LimitState">[docs]</a><span class="k">class</span> <span class="nc">LimitState</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Limit state&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="LimitState"><a class="viewcode-back" href="../../gen/pystra.model.LimitState.html#pystra.model.LimitState">[docs]</a><span class="k">class</span> <span class="nc">LimitState</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The Limit State function definition class.</span>
+
+<span class="sd">    The limit state function can be defined in two main ways:</span>
+
+<span class="sd">    1. Numerical differentiation (FFD): the limit state function need only return</span>
+<span class="sd">    its value at a set of evaluation points, X. In this form, the function can be</span>
+<span class="sd">    either:</span>
+
+<span class="sd">        (a) A python lambda object;</span>
+<span class="sd">        (b) A python function object.</span>
+
+<span class="sd">    2. Using the Direct Differentiation Method (DDM): the limit state function</span>
+<span class="sd">    is a python function object return both its value and gradient vector at each</span>
+<span class="sd">    of the evaluation points.</span>
+
+<span class="sd">    Note in both cases that each parameter (i.e. function argument) may be passed</span>
+<span class="sd">    as a vector, depending on the algorithm being called.</span>
+
+<span class="sd">    Where a function returns a gradient vector, it is only utilized when DDM is</span>
+<span class="sd">    specified.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">evaluator</span> <span class="o">=</span> <span class="s2">&quot;basic&quot;</span>
-        <span class="sd">&quot;&quot;&quot;Type of limit-state function evaluator:</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">          basic: the limit-state function is defined by means of an analytical</span>
-<span class="sd">          expression or a Python function.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="c1"># Do no change this field!</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s2">&quot;expression&quot;</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">expression</span> <span class="o">=</span> <span class="n">expression</span>
         <span class="sd">&quot;&quot;&quot;Expression of the limit-state function&quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">flag_sens</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="sd">&quot;&quot;&quot;Flag for computation of sensitivities</span>
-
-<span class="sd">    w.r.t. Tag parameters of the limit-state function</span>
-
-<span class="sd">    :Tag:</span>
-<span class="sd">      - 1: all sensitivities assessed,\n</span>
-<span class="sd">      - 0: no sensitivities assessment\n</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">getEvaluator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nrv</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="k">def</span> <span class="nf">getExpression</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">expression</span>
 
     <span class="k">def</span> <span class="nf">setExpression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">expression</span> <span class="o">=</span> <span class="n">expression</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expression</span> <span class="o">=</span> <span class="n">expression</span>
+
+<div class="viewcode-block" id="LimitState.evaluate_lsf"><a class="viewcode-back" href="../../gen/pystra.model.LimitState.html#pystra.model.LimitState.evaluate_lsf">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate_lsf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">stochastic_model</span><span class="p">,</span> <span class="n">analysis_options</span><span class="p">,</span> <span class="n">diff_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Evaluate the limit state&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">stochastic_model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">analysis_options</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+
+        <span class="k">if</span> <span class="n">diff_mode</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">diff_mode</span> <span class="o">=</span> <span class="n">analysis_options</span><span class="o">.</span><span class="n">getDiffMode</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">diff_mode</span> <span class="o">=</span> <span class="s2">&quot;no&quot;</span>
+
+        <span class="k">if</span> <span class="n">analysis_options</span><span class="o">.</span><span class="n">getMultiProc</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;getMultiProc&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># No differentiation for MCS</span>
+            <span class="k">if</span> <span class="n">diff_mode</span> <span class="o">==</span> <span class="s2">&quot;no&quot;</span><span class="p">:</span>
+                <span class="n">G</span><span class="p">,</span> <span class="n">grad_G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_nogradient</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">diff_mode</span> <span class="o">==</span> <span class="s2">&quot;ddm&quot;</span><span class="p">:</span>
+                <span class="n">G</span><span class="p">,</span> <span class="n">grad_G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_ddm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">G</span><span class="p">,</span> <span class="n">grad_G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_ffd</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">G</span><span class="p">,</span> <span class="n">grad_G</span></div>
+
+    <span class="k">def</span> <span class="nf">evaluate_nogradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">nrv</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
+        <span class="n">grad_G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nrv</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
+        <span class="n">block_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getBlockSize</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">nx</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">nx</span><span class="p">:</span>
+                <span class="n">block_size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">([</span><span class="n">block_size</span><span class="p">,</span> <span class="n">nx</span> <span class="o">-</span> <span class="n">k</span><span class="p">])</span>
+                <span class="n">indx</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span> <span class="o">+</span> <span class="n">block_size</span><span class="p">))</span>
+                <span class="n">blockx</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:,</span> <span class="n">indx</span><span class="p">]</span>
+
+                <span class="n">blockG</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_lsf</span><span class="p">(</span><span class="n">blockx</span><span class="p">)</span>
+
+                <span class="n">G</span><span class="p">[:,</span> <span class="n">indx</span><span class="p">]</span> <span class="o">=</span> <span class="n">blockG</span>
+                <span class="c1"># grad_g[indx] = blockdummy</span>
+                <span class="n">k</span> <span class="o">+=</span> <span class="n">block_size</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">addCallFunction</span><span class="p">(</span><span class="n">nx</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">G</span><span class="p">,</span> <span class="n">grad_G</span>
+
+    <span class="k">def</span> <span class="nf">evaluate_ffd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">nrv</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
+        <span class="n">grad_G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nrv</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
+        <span class="n">block_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getBlockSize</span><span class="p">()</span>
+
+        <span class="n">ffdpara</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getffdpara</span><span class="p">()</span>
+        <span class="n">allx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nrv</span><span class="p">,</span> <span class="n">nx</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">nrv</span><span class="p">)))</span>
+        <span class="n">allx</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">allh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nrv</span><span class="p">)</span>
+
+        <span class="n">marg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">getMarginalDistributions</span><span class="p">()</span>
+
+        <span class="n">x0</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nrv</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x0</span>
+            <span class="n">allh</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">marg</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">stdv</span> <span class="o">/</span> <span class="n">ffdpara</span>
+            <span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">allh</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">nx</span><span class="p">)</span>
+            <span class="n">indx</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">j</span> <span class="o">+</span> <span class="p">(</span><span class="n">nx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">nrv</span><span class="p">)),</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">nrv</span><span class="p">)))</span>
+            <span class="n">allx</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">indx</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+
+        <span class="n">allG</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nx</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">nrv</span><span class="p">))</span>
+
+        <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">nx</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">nrv</span><span class="p">)):</span>
+            <span class="n">block_size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">([</span><span class="n">block_size</span><span class="p">,</span> <span class="n">nx</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">nrv</span><span class="p">)</span> <span class="o">-</span> <span class="n">k</span><span class="p">])</span>
+            <span class="n">indx</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span> <span class="o">+</span> <span class="n">block_size</span><span class="p">))</span>
+            <span class="n">blockx</span> <span class="o">=</span> <span class="n">allx</span><span class="p">[:,</span> <span class="n">indx</span><span class="p">]</span>
+
+            <span class="n">blockG</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_lsf</span><span class="p">(</span><span class="n">blockx</span><span class="p">)</span>
+
+            <span class="n">allG</span><span class="p">[</span><span class="n">indx</span><span class="p">]</span> <span class="o">=</span> <span class="n">blockG</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+            <span class="n">k</span> <span class="o">+=</span> <span class="n">block_size</span>
+
+        <span class="n">indx</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">nx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">nrv</span><span class="p">)),</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">nrv</span><span class="p">)))</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="n">allG</span><span class="p">[</span><span class="n">indx</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nrv</span><span class="p">):</span>
+            <span class="n">indx</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">j</span> <span class="o">+</span> <span class="p">(</span><span class="n">nx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">nrv</span><span class="p">)),</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">nrv</span><span class="p">)))</span>
+            <span class="n">grad_G</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">allG</span><span class="p">[</span><span class="n">indx</span><span class="p">]</span> <span class="o">-</span> <span class="n">G</span><span class="p">)</span> <span class="o">/</span> <span class="n">allh</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">addCallFunction</span><span class="p">(</span><span class="n">nx</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">nrv</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">G</span><span class="p">,</span> <span class="n">grad_G</span>
+
+    <span class="k">def</span> <span class="nf">evaluate_ddm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">nrv</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
+        <span class="n">grad_G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nrv</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nx</span><span class="p">):</span>
+            <span class="n">G</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">grad_G</span><span class="p">[:,</span> <span class="n">k</span> <span class="p">:</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_lsf</span><span class="p">(</span><span class="n">x</span><span class="p">[:,</span> <span class="n">k</span> <span class="p">:</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">ddm</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">addCallFunction</span><span class="p">(</span><span class="n">nx</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">G</span><span class="p">,</span> <span class="n">grad_G</span>
+
+<div class="viewcode-block" id="LimitState.compute_lsf"><a class="viewcode-back" href="../../gen/pystra.model.LimitState.html#pystra.model.LimitState.compute_lsf">[docs]</a>    <span class="k">def</span> <span class="nf">compute_lsf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">ddm</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute the limit state function&quot;&quot;&quot;</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">nc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">variables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">getVariables</span><span class="p">()</span>
+        <span class="n">constants</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">getConstants</span><span class="p">()</span>
+
+        <span class="n">inpdict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">var</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">variables</span><span class="p">):</span>
+            <span class="n">inpdict</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">constants</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">inpdict</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">nc</span><span class="p">)</span>
+        <span class="n">Gvals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span class="p">(</span><span class="o">**</span><span class="n">inpdict</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ddm</span><span class="p">:</span>
+                <span class="n">G</span><span class="p">,</span> <span class="n">gradient</span> <span class="o">=</span> <span class="n">Gvals</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Gvals</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                    <span class="n">G</span> <span class="o">=</span> <span class="n">Gvals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">G</span> <span class="o">=</span> <span class="n">Gvals</span>
+                <span class="n">gradient</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Limit state function return must match differentiation mode&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">G</span><span class="p">,</span> <span class="n">gradient</span></div></div>
 
 
-<span class="c1">#    inlist = False</span>
-<span class="c1">#    for obj in gc.get_objects():</span>
-<span class="c1">#      if isinstance(obj, LimitStateFunction):</span>
-<span class="c1">#        self.expression = obj.getExpression()</span>
-<span class="c1">#        inlist = True</span>
-<span class="c1">#        break</span>
-<span class="c1">#    if not inlist:</span>
-<span class="c1">#      print &#39;Attention: No limit state function is defined&#39;</span>
+<div class="viewcode-block" id="AnalysisObject"><a class="viewcode-back" href="../../gen/pystra.model.AnalysisObject.html#pystra.model.AnalysisObject">[docs]</a><span class="k">class</span> <span class="nc">AnalysisObject</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A base class for objects that perform a probability of failure estimation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">analysis_options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stochastic_model</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># The stochastic model</span>
+        <span class="k">if</span> <span class="n">stochastic_model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">StochasticModel</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">stochastic_model</span>
 
-<span class="c1"># class LimitStateFunction(object):</span>
-<span class="c1">#     def __init__(self, expression):</span>
-<span class="c1">#         self.expression = expression</span>
+        <span class="c1"># Options for the calculation</span>
+        <span class="k">if</span> <span class="n">analysis_options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">AnalysisOptions</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">analysis_options</span>
 
-<span class="c1">#     def __repr__(self):</span>
-<span class="c1">#         return self.expression</span>
+        <span class="c1"># The limit state function</span>
+        <span class="k">if</span> <span class="n">limit_state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">limitstate</span> <span class="o">=</span> <span class="n">LimitState</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">limitstate</span> <span class="o">=</span> <span class="n">limit_state</span>
 
-<span class="c1">#     def getExpression(self):</span>
-<span class="c1">#         return self.expression</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results_valid</span> <span class="o">=</span> <span class="kc">False</span></div>
 </pre></div>
 
-              </div>
+              </article>
               
+
               
-              <!-- Previous / next buttons -->
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
 <div class='prev-next-area'>
 </div>
+              </footer>
               
-          </main>
+          </div>
           
-
       </div>
     </div>
+
+  
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-<footer class="footer mt-5 mt-md-0">
-  <div class="container">
-    
-    <div class="footer-item">
-      <p class="copyright">
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
     &copy; Copyright 2022, The PySTRA Developers.<br>
 </p>
-    </div>
-    
-    <div class="footer-item">
-      <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
-</p>
-    </div>
-    
   </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.2.<br>
+</p>
+  </div>
+  
+</div>
 </footer>
   </body>
 </html>

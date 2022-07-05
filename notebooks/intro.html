@@ -1,17 +1,21 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Introductory Turorial &#8212; PySTRA 1.0.0 documentation</title>
-    
-  <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+    <title>Introductory Turorial &#8212; PySTRA 1.1.0 documentation</title>
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
 
-    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
   <link rel="stylesheet"
     href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
   <link rel="preload" as="font" type="font/woff2" crossorigin
@@ -20,13 +24,14 @@
     href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    
+
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -35,34 +40,41 @@
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Example from the Tutorial" href="ex_intro.html" />
     <link rel="prev" title="Tutorials" href="../tutorial.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-    
-    <div class="container-fluid" id="banner"></div>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
 
     
-    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
 
   <div id="navbar-start">
     
     
+  
 
-<a class="navbar-brand" href="../index.html">
-  <img src="../_static/icon_pystra_small.png" class="logo" alt="logo">
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-light" alt="Logo image">
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-dark" alt="Logo image">
+  
+  
 </a>
-
-
     
   </div>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+    <span class="fas fa-bars"></span>
   </button>
 
   
@@ -110,6 +122,14 @@
     <div id="navbar-end">
       
       <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
         <li class="nav-item">
           <a class="nav-link" href="https://github.com/pystra/pystra" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
@@ -128,13 +148,13 @@
     </nav>
     
 
-    <div class="container-xl">
-      <div class="row">
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
           
-            
-            <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar">
-              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -161,6 +181,11 @@
   </a>
  </li>
  <li class="toctree-l1">
+  <a class="reference internal" href="ex_ddm.html">
+   Direct Differentiation Method
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="ex_timing.html">
    Pystra Timing
   </a>
@@ -169,19 +194,20 @@
 
   </div>
 </nav>
-              </div>
-              <div class="sidebar-end-items">
-              </div>
-            </div>
-            
-          
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
 
           
-          <div class="d-none d-xl-block col-xl-2 bd-toc">
-            
-              
-              <div class="toc-item">
-                
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+    
+    <div class="toc-item">
+      
 <div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
@@ -211,10 +237,10 @@
 </ul>
 
 </nav>
-              </div>
-              
-              <div class="toc-item">
-                
+    </div>
+    
+    <div class="toc-item">
+      
 
 <div class="tocsection editthispage">
     <a href="https://github.com/pystra/pystra/edit/main/docs/source/notebooks/intro.rst">
@@ -222,28 +248,26 @@
     </a>
 </div>
 
-              </div>
-              
-            
-          </div>
-          
+    </div>
+    
+  
+</div>
+
 
           
           
-            
-          
-          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+          <div class="bd-content col-12 col-md-9 col-xl-7">
               
-              <div>
+              <article class="bd-article" role="main">
                 
   <div class="section" id="introductory-turorial">
-<h1>Introductory Turorial<a class="headerlink" href="#introductory-turorial" title="Permalink to this headline">#</a></h1>
+<h1>Introductory Turorial<a class="headerlink" href="#introductory-turorial" title="Permalink to this heading">#</a></h1>
 <p>This tutorial will guide you through a typical Pystra application. Familiarity
 with Python is assumed, so if you are new to Python, books such as <a class="reference internal" href="../references.html#lutz2007" id="id1"><span>[Lutz2007]</span></a>
 or <a class="reference internal" href="../references.html#langtangen2009" id="id2"><span>[Langtangen2009]</span></a> are the place to start. Plenty of online documentation
 can also be found on the <a class="reference external" href="http://www.python.org/doc/">Python documentation</a> page.</p>
 <div class="section" id="an-example-reliability-model">
-<h2>An example reliability model<a class="headerlink" href="#an-example-reliability-model" title="Permalink to this headline">#</a></h2>
+<h2>An example reliability model<a class="headerlink" href="#an-example-reliability-model" title="Permalink to this heading">#</a></h2>
 <p>Consider the following random variables:</p>
 <div class="math notranslate nohighlight" id="equation-random-variables">
 <span class="eqno">(1)<a class="headerlink" href="#equation-random-variables" title="Permalink to this equation">#</a></span>\[\begin{split}        \begin{align}
@@ -270,7 +294,7 @@ probability <span class="math notranslate nohighlight">\(P_f\)</span>, by given 
 <p>where <span class="math notranslate nohighlight">\(\gamma\)</span> is a real constant. For this example, let <span class="math notranslate nohighlight">\(\gamma = 1\)</span>.</p>
 </div>
 <div class="section" id="let-s-model">
-<h2>Let’s model<a class="headerlink" href="#let-s-model" title="Permalink to this headline">#</a></h2>
+<h2>Let’s model<a class="headerlink" href="#let-s-model" title="Permalink to this heading">#</a></h2>
 <p>Before we start with the modeling, we have to import the <code class="docutils literal notranslate"><span class="pre">pystra</span></code>
 package. Therefore are two different methods available:</p>
 <p>In case 1 we load <code class="docutils literal notranslate"><span class="pre">pystra</span></code> like a normal library:</p>
@@ -335,8 +359,7 @@ case the code will look like:</p>
 </pre></div>
 </div>
 <p>to get the same results as before. To see which parameters are needed and in
-which order the must insert, take a look at Chapter <span class="xref std std-ref">chap_distributions</span>.
-There are all currently available distributions listed.</p>
+which order the must insert, refer to the Distributions API.</p>
 <p>If the nominal value, bias, and coefficient of variation are instead known,
 then the random variable can be instantiated following this example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">X2</span> <span class="o">=</span> <span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;X2&#39;</span><span class="p">,</span><span class="o">*</span><span class="mi">500</span><span class="o">*</span><span class="mf">1.00</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]))</span>
@@ -361,12 +384,12 @@ the model.</p>
 <p>At this stage our model is complete defined and we can start the analysis.</p>
 </div>
 <div class="section" id="reliability-analysis">
-<h2>Reliability Analysis<a class="headerlink" href="#reliability-analysis" title="Permalink to this headline">#</a></h2>
+<h2>Reliability Analysis<a class="headerlink" href="#reliability-analysis" title="Permalink to this heading">#</a></h2>
 <p>To change some options, a object must be initialized which stores the
 customized options.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set some options (optional)</span>
 <span class="n">options</span> <span class="o">=</span> <span class="n">AnalysisOptions</span><span class="p">()</span>
-<span class="c1"># options.printResults(False)</span>
+<span class="c1"># options.setPrintOutput(False)</span>
 </pre></div>
 </div>
 <p>To store the results from the analysis an object must be initialized:</p>
@@ -389,10 +412,10 @@ example we will get following results:</p>
 </pre></div>
 </div>
 <p>If we don’t like to see the results in the terminal the option
-<code class="docutils literal notranslate"><span class="pre">printResults(False)</span></code> has set to be <code class="docutils literal notranslate"><span class="pre">False</span></code>. There are also some other
-options which can be modified (see <span class="xref std std-ref">chap_model</span>).</p>
+<code class="docutils literal notranslate"><span class="pre">setPrintOutput(False)</span></code> has set to be <code class="docutils literal notranslate"><span class="pre">False</span></code>. There are also some other
+options which can be modified.</p>
 <p>To use the results for further calculations, plots etc. the results can get by
-some getter methods (see <span class="xref std std-ref">chap_calculations</span>)</p>
+some getter methods</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Some single results:</span>
 <span class="n">beta</span> <span class="o">=</span> <span class="n">Analysis</span><span class="o">.</span><span class="n">getBeta</span><span class="p">()</span>
 <span class="n">failure</span> <span class="o">=</span> <span class="n">Analysis</span><span class="o">.</span><span class="n">getFailure</span><span class="p">()</span>
@@ -467,7 +490,7 @@ will perform a FORM analysis first):</p>
 formula.</p>
 </div>
 <div class="section" id="finally">
-<h2>Finally…<a class="headerlink" href="#finally" title="Permalink to this headline">#</a></h2>
+<h2>Finally…<a class="headerlink" href="#finally" title="Permalink to this heading">#</a></h2>
 <p>This was a short introduction how to use <code class="docutils literal notranslate"><span class="pre">pystra</span></code>. The tutorial above is also
 available on <a class="reference external" href="https://github.com/pystra/pystra">GitHub</a> under <code class="docutils literal notranslate"><span class="pre">example.py</span></code>.</p>
 <p>Let’s have fun ;)</p>
@@ -475,51 +498,55 @@ available on <a class="reference external" href="https://github.com/pystra/pystr
 </div>
 
 
-              </div>
+              </article>
               
-              
-              <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="../tutorial.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Tutorials</p>
-        </div>
-    </a>
-    <a class='right-next' id="next-link" href="ex_intro.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Example from the Tutorial</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
-</div>
-              
-          </main>
-          
 
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+  <a class='left-prev' id="prev-link" href="../tutorial.html" title="previous page">
+      <i class="fas fa-angle-left"></i>
+      <div class="prev-next-info">
+          <p class="prev-next-subtitle">previous</p>
+          <p class="prev-next-title">Tutorials</p>
+      </div>
+  </a>
+  <a class='right-next' id="next-link" href="ex_intro.html" title="next page">
+  <div class="prev-next-info">
+      <p class="prev-next-subtitle">next</p>
+      <p class="prev-next-title">Example from the Tutorial</p>
+  </div>
+  <i class="fas fa-angle-right"></i>
+  </a>
+</div>
+              </footer>
+              
+          </div>
+          
       </div>
     </div>
+
+  
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-<footer class="footer mt-5 mt-md-0">
-  <div class="container">
-    
-    <div class="footer-item">
-      <p class="copyright">
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
     &copy; Copyright 2022, The PySTRA Developers.<br>
 </p>
-    </div>
-    
-    <div class="footer-item">
-      <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
-</p>
-    </div>
-    
   </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.2.<br>
+</p>
+  </div>
+  
+</div>
 </footer>
   </body>
 </html>

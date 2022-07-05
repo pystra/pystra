@@ -12,7 +12,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 1,
+   "execution_count": 12,
    "id": "614cdc71-3111-489c-882a-91707c27debb",
    "metadata": {},
    "outputs": [],
@@ -31,7 +31,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 2,
+   "execution_count": 13,
    "id": "f7644250-396a-4640-a31e-737507ab5dc1",
    "metadata": {},
    "outputs": [],
@@ -53,7 +53,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 3,
+   "execution_count": 14,
    "id": "ed4f574a-8fb8-448b-b05e-41060f56a6e7",
    "metadata": {},
    "outputs": [],
@@ -71,13 +71,13 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 4,
+   "execution_count": 15,
    "id": "31ea3f31-71dd-4401-93e6-0f7b7eba87e8",
    "metadata": {},
    "outputs": [],
    "source": [
     "options = pr.AnalysisOptions()\n",
-    "options.printResults(False)"
+    "options.setPrintOutput(False)"
    ]
   },
   {
@@ -90,7 +90,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 5,
+   "execution_count": 16,
    "id": "6d43f515-92ff-40f1-a8ae-399670c1f0d1",
    "metadata": {},
    "outputs": [],
@@ -108,7 +108,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 6,
+   "execution_count": 17,
    "id": "80e08985-8610-4e2a-ac6a-a687248905ee",
    "metadata": {},
    "outputs": [],
@@ -128,7 +128,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 7,
+   "execution_count": 18,
    "id": "8f2127c1-b206-4e30-94a2-37631c3b7278",
    "metadata": {},
    "outputs": [],
@@ -146,7 +146,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 8,
+   "execution_count": 19,
    "id": "1e9a8ba5-76cb-43a5-afd7-bca32de15289",
    "metadata": {},
    "outputs": [],
@@ -166,16 +166,17 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 9,
+   "execution_count": 20,
    "id": "af723959-f6ff-4857-b735-da127b69bc62",
    "metadata": {},
    "outputs": [],
    "source": [
-    "Analysis = pr.Form(\n",
+    "form = pr.Form(\n",
     "    analysis_options=options,\n",
     "    stochastic_model=stochastic_model,\n",
     "    limit_state=limit_state,\n",
-    ")"
+    ")\n",
+    "form.run()"
    ]
   },
   {
@@ -188,7 +189,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 10,
+   "execution_count": 21,
    "id": "cb8da34b-64cf-4929-a181-a326fa9cf13c",
    "metadata": {},
    "outputs": [
@@ -215,7 +216,7 @@
     }
    ],
    "source": [
-    "Analysis.showDetailedOutput()"
+    "form.showDetailedOutput()"
    ]
   },
   {
@@ -229,16 +230,35 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 11,
+   "execution_count": 22,
    "id": "178f2f9a-0ec7-4888-8331-63992e17a4f6",
    "metadata": {},
-   "outputs": [],
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "======================================================\n",
+      "\n",
+      "RESULTS FROM RUNNING SECOND ORDER RELIABILITY METHOD\n",
+      "\n",
+      "Generalized reliability index:  1.848997968430195\n",
+      "Probability of failure:         0.03222905303518171\n",
+      "\n",
+      "Curavture 1: -0.0414313089629377\n",
+      "Curavture 2: 0.36356407339249475\n",
+      "======================================================\n",
+      "\n"
+     ]
+    }
+   ],
    "source": [
     "sorm = pr.Sorm(\n",
     "    analysis_options=options,\n",
     "    stochastic_model=stochastic_model,\n",
     "    limit_state=limit_state,\n",
-    "    form=Analysis,\n",
+    "    form=form,\n",
     ")\n",
     "sorm.run()"
    ]
@@ -253,7 +273,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 12,
+   "execution_count": 23,
    "id": "5aa93de0-c7db-42ea-aac4-30d7d8b32661",
    "metadata": {},
    "outputs": [
@@ -300,16 +320,17 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 13,
+   "execution_count": 24,
    "id": "6e9d0604-7e5d-4d19-8238-91a4ce3fe13d",
    "metadata": {},
    "outputs": [],
    "source": [
-    "Analysis = pr.DistributionAnalysis(\n",
+    "da = pr.DistributionAnalysis(\n",
     "    analysis_options=options,\n",
     "    stochastic_model=stochastic_model,\n",
     "    limit_state=limit_state,\n",
-    ")"
+    ")\n",
+    "da.run()"
    ]
   },
   {
@@ -322,16 +343,17 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 14,
+   "execution_count": 25,
    "id": "900d7349-9cae-4233-9767-e80be9b4e6c1",
    "metadata": {},
    "outputs": [],
    "source": [
-    "Analysis = pr.CrudeMonteCarlo(\n",
+    "cmc = pr.CrudeMonteCarlo(\n",
     "    analysis_options=options,\n",
     "    stochastic_model=stochastic_model,\n",
     "    limit_state=limit_state,\n",
-    ")"
+    ")\n",
+    "cmc.run()"
    ]
   },
   {
@@ -344,16 +366,17 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 15,
+   "execution_count": 26,
    "id": "01836253-ed74-4761-bff4-6b53c351340f",
    "metadata": {},
    "outputs": [],
    "source": [
-    "Analysis = pr.ImportanceSampling(\n",
+    "ismc = pr.ImportanceSampling(\n",
     "    analysis_options=options,\n",
     "    stochastic_model=stochastic_model,\n",
     "    limit_state=limit_state,\n",
-    ")"
+    ")\n",
+    "ismc.run()"
    ]
   },
   {
@@ -366,7 +389,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 16,
+   "execution_count": 28,
    "id": "b47c3a02-d5a8-482c-8bcf-7182235a744a",
    "metadata": {},
    "outputs": [
@@ -374,13 +397,13 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "Beta is 1.850093041022854, corresponding to a failure probability of 0.03215007038302135\n"
+      "Beta is 1.7539761407409615, corresponding to a failure probability of [0.0397173]\n"
      ]
     }
    ],
    "source": [
-    "beta = Analysis.getBeta()\n",
-    "failure = Analysis.getFailure()\n",
+    "beta = form.getBeta()\n",
+    "failure = form.getFailure()\n",
     "\n",
     "print(f\"Beta is {beta}, corresponding to a failure probability of {failure}\")"
    ]
@@ -402,7 +425,7 @@
    "name": "python",
    "nbconvert_exporter": "python",
    "pygments_lexer": "ipython3",
-   "version": "3.8.13"
+   "version": "3.10.5"
   }
  },
  "nbformat": 4,

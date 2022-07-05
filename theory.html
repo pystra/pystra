@@ -1,17 +1,21 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Theoretical Background &#8212; PySTRA 1.0.0 documentation</title>
-    
-  <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+    <title>Theoretical Background &#8212; PySTRA 1.1.0 documentation</title>
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
 
-    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
   <link rel="stylesheet"
     href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
   <link rel="preload" as="font" type="font/woff2" crossorigin
@@ -20,13 +24,14 @@
     href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    
+
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -35,34 +40,41 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="References" href="references.html" />
     <link rel="prev" title="pystra.transformation.z_to_x" href="gen/pystra.transformation.z_to_x.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-    
-    <div class="container-fluid" id="banner"></div>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
 
     
-    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
 
   <div id="navbar-start">
     
     
+  
 
-<a class="navbar-brand" href="index.html">
-  <img src="_static/icon_pystra_small.png" class="logo" alt="logo">
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+    <img src="_static/icon_pystra_small.png" class="logo__image only-light" alt="Logo image">
+    <img src="_static/icon_pystra_small.png" class="logo__image only-dark" alt="Logo image">
+  
+  
 </a>
-
-
     
   </div>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+    <span class="fas fa-bars"></span>
   </button>
 
   
@@ -110,6 +122,14 @@
     <div id="navbar-end">
       
       <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
         <li class="nav-item">
           <a class="nav-link" href="https://github.com/pystra/pystra" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
@@ -128,13 +148,13 @@
     </nav>
     
 
-    <div class="container-xl">
-      <div class="row">
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
           
-            
-            <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar">
-              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -142,19 +162,20 @@
     
   </div>
 </nav>
-              </div>
-              <div class="sidebar-end-items">
-              </div>
-            </div>
-            
-          
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
 
           
-          <div class="d-none d-xl-block col-xl-2 bd-toc">
-            
-              
-              <div class="toc-item">
-                
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+    
+    <div class="toc-item">
+      
 <div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
@@ -228,10 +249,10 @@
 </ul>
 
 </nav>
-              </div>
-              
-              <div class="toc-item">
-                
+    </div>
+    
+    <div class="toc-item">
+      
 
 <div class="tocsection editthispage">
     <a href="https://github.com/pystra/pystra/edit/main/docs/source/theory.rst">
@@ -239,30 +260,28 @@
     </a>
 </div>
 
-              </div>
-              
-            
-          </div>
-          
+    </div>
+    
+  
+</div>
+
 
           
           
-            
-          
-          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+          <div class="bd-content col-12 col-md-9 col-xl-7">
               
-              <div>
+              <article class="bd-article" role="main">
                 
   <div class="section" id="theoretical-background">
-<h1>Theoretical Background<a class="headerlink" href="#theoretical-background" title="Permalink to this headline">#</a></h1>
+<h1>Theoretical Background<a class="headerlink" href="#theoretical-background" title="Permalink to this heading">#</a></h1>
 <div class="section" id="structural-reliability">
-<h2>Structural Reliability<a class="headerlink" href="#structural-reliability" title="Permalink to this headline">#</a></h2>
+<h2>Structural Reliability<a class="headerlink" href="#structural-reliability" title="Permalink to this heading">#</a></h2>
 <p>Structural reliability analysis (SRA) is an important part to handle
 structural engineering applications. This section provides a brief
 introduction to this topic and is also the theoretical background for the
 Python library, Python Structural Reliability Analysis (<cite>Pystra</cite>).</p>
 <div class="section" id="limit-states">
-<h3>Limit States<a class="headerlink" href="#limit-states" title="Permalink to this headline">#</a></h3>
+<h3>Limit States<a class="headerlink" href="#limit-states" title="Permalink to this heading">#</a></h3>
 <p>The word structural reliability refers to the meaning “how
 much reliable is a structure in terms of fulfilling its
 purpose” <a class="reference internal" href="references.html#malioka2009" id="id1"><span>[Malioka2009]</span></a>. The performance of structures and engineering
@@ -319,7 +338,7 @@ lenges. The most common ones are the Monte Carlo simulation method and the
 First Order Reliability Method (FORM).</p>
 </div>
 <div class="section" id="the-classical-approach">
-<h3>The Classical Approach<a class="headerlink" href="#the-classical-approach" title="Permalink to this headline">#</a></h3>
+<h3>The Classical Approach<a class="headerlink" href="#the-classical-approach" title="Permalink to this heading">#</a></h3>
 <p>Before discussing more general methods, the principles are shown on a
 “historical” and simplified limit state function.</p>
 <div class="math notranslate nohighlight" id="equation-eq-2-71">
@@ -363,7 +382,7 @@ Cornell (1969), and is equal to the number of the standard derivation
 </div>
 </div>
 <div class="section" id="hasofer-and-lind-reliability-index">
-<h3>Hasofer and Lind Reliability Index<a class="headerlink" href="#hasofer-and-lind-reliability-index" title="Permalink to this headline">#</a></h3>
+<h3>Hasofer and Lind Reliability Index<a class="headerlink" href="#hasofer-and-lind-reliability-index" title="Permalink to this heading">#</a></h3>
 <p>The reliability index can be interpreted as a measure of the distance to the
 failure surface, as shown in the Figure above. In the one dimensional case the
 standard deviation of the safety margin was used as scale. To obtain a similar
@@ -400,14 +419,14 @@ iterative method must be used. <a class="reference internal" href="references.ht
 </div>
 </div>
 <div class="section" id="probability-transformation">
-<h2>Probability Transformation<a class="headerlink" href="#probability-transformation" title="Permalink to this headline">#</a></h2>
+<h2>Probability Transformation<a class="headerlink" href="#probability-transformation" title="Permalink to this heading">#</a></h2>
 <p>Due to the reliability index <span class="math notranslate nohighlight">\(\beta_{HL}\)</span> , being only defined in a
 normalized space, the basic random variables <span class="math notranslate nohighlight">\(\bf X\)</span> have to be
 transformed into standard normal random variables <span class="math notranslate nohighlight">\(\bf Z\)</span>. Additionally,
 the basic random variables <span class="math notranslate nohighlight">\(\bf Z\)</span> can be correlated and those
 relationships should also be transformed.</p>
 <div class="section" id="transformation-of-dependent-random-variables-using-nataf-approach">
-<h3>Transformation of Dependent Random Variables using Nataf Approach<a class="headerlink" href="#transformation-of-dependent-random-variables-using-nataf-approach" title="Permalink to this headline">#</a></h3>
+<h3>Transformation of Dependent Random Variables using Nataf Approach<a class="headerlink" href="#transformation-of-dependent-random-variables-using-nataf-approach" title="Permalink to this heading">#</a></h3>
 <p>One method to handle this is using the Nataf joint distribution model, if the
 marginal cdfs are known. <a class="reference internal" href="references.html#baker2010" id="id13"><span>[Baker2010]</span></a> The correlated random variables
 <span class="math notranslate nohighlight">\({\bf X} = ( X_1 , \dots , X_n )\)</span> with the correlation matrix <span class="math notranslate nohighlight">\(\bf
@@ -443,7 +462,7 @@ variables <span class="math notranslate nohighlight">\(\bf X\)</span> is known a
 dependence is limited to correlation coefficients. <a class="reference internal" href="references.html#baker2010" id="id15"><span>[Baker2010]</span></a></p>
 </div>
 <div class="section" id="transformation-of-dependent-random-variables-using-rosenblatt-approach">
-<h3>Transformation of Dependent Random Variables using Rosenblatt Approach<a class="headerlink" href="#transformation-of-dependent-random-variables-using-rosenblatt-approach" title="Permalink to this headline">#</a></h3>
+<h3>Transformation of Dependent Random Variables using Rosenblatt Approach<a class="headerlink" href="#transformation-of-dependent-random-variables-using-rosenblatt-approach" title="Permalink to this heading">#</a></h3>
 <p>An alternative to the Nataf approach is to consider the joint pdf of
 <span class="math notranslate nohighlight">\(\bf X\)</span> as a product of conditional pdfs.</p>
 <div class="math notranslate nohighlight" id="equation-eq-2-86">
@@ -483,7 +502,7 @@ transformations may be useful, for example Nataf transformation.
 </div>
 </div>
 <div class="section" id="first-order-reliability-method-form">
-<h2>First-Order Reliability Method (FORM)<a class="headerlink" href="#first-order-reliability-method-form" title="Permalink to this headline">#</a></h2>
+<h2>First-Order Reliability Method (FORM)<a class="headerlink" href="#first-order-reliability-method-form" title="Permalink to this heading">#</a></h2>
 <p>Let <span class="math notranslate nohighlight">\(\bf Z\)</span> be a set of uncorrelated and standardized normally distributed random
 variables <span class="math notranslate nohighlight">\(( Z_1 ,\dots, Z_n )\)</span> in the normalized z-space, corresponding
 to any set of random variables <span class="math notranslate nohighlight">\({\bf X} = ( X_1 , \dots , X_n )\)</span> in the
@@ -519,13 +538,13 @@ surface is transformed into <span class="math notranslate nohighlight">\(g({\bf 
 reliability index <span class="math notranslate nohighlight">\(\beta\)</span> can be computed.</p>
 </div>
 <div class="section" id="second-order-reliability-method-form">
-<h2>Second-Order Reliability Method (FORM)<a class="headerlink" href="#second-order-reliability-method-form" title="Permalink to this headline">#</a></h2>
+<h2>Second-Order Reliability Method (FORM)<a class="headerlink" href="#second-order-reliability-method-form" title="Permalink to this heading">#</a></h2>
 <p>Better results can be obtained by higher order approximations of the failure
 surface. The Second Order Reliability Method (SORM) uses; for example, a
 quadratic approximation of the failure surface. <a class="reference internal" href="references.html#baker2010" id="id19"><span>[Baker2010]</span></a></p>
 </div>
 <div class="section" id="simulation-methods">
-<h2>Simulation Methods<a class="headerlink" href="#simulation-methods" title="Permalink to this headline">#</a></h2>
+<h2>Simulation Methods<a class="headerlink" href="#simulation-methods" title="Permalink to this heading">#</a></h2>
 <p>The preceding sections describe some methods for determining the reliability
 index <span class="math notranslate nohighlight">\(\beta\)</span> for some common forms of the limit state
 function. However, it is sometimes extremely difficult or impossible to find
@@ -553,7 +572,7 @@ failure can be estimated such as <a class="reference internal" href="references.
         \frac{1}{n}\sum_{i=1}^{n} I(g({\bf X})\leq 0)\]</div>
 </div>
 <div class="section" id="crude-monte-carlo-simulation">
-<h2>Crude Monte Carlo Simulation<a class="headerlink" href="#crude-monte-carlo-simulation" title="Permalink to this headline">#</a></h2>
+<h2>Crude Monte Carlo Simulation<a class="headerlink" href="#crude-monte-carlo-simulation" title="Permalink to this heading">#</a></h2>
 <p>The Crude Monte Carlo simulation (CMC) is the most simple form and corresponds
 to a direct application of Equation <a class="reference internal" href="#equation-eq-2-92">(24)</a>. A large number <span class="math notranslate nohighlight">\(n\)</span> of
 samples are simulated for the set of random variables <span class="math notranslate nohighlight">\(\bf X\)</span>. All
@@ -573,7 +592,7 @@ failure. <a class="reference internal" href="references.html#lemaire2010" id="id
         p_f}} \qquad \text{for} \quad p_f \to 0\]</div>
 </div>
 <div class="section" id="importance-sampling">
-<h2>Importance Sampling<a class="headerlink" href="#importance-sampling" title="Permalink to this headline">#</a></h2>
+<h2>Importance Sampling<a class="headerlink" href="#importance-sampling" title="Permalink to this heading">#</a></h2>
 <p>To decrease the number of simulations and the coefficient of variation, other
 methods can be performed. One commonly applied method is the Importance
 Sampling simulation method (IS). Here the prior information about the failure
@@ -614,51 +633,55 @@ the failure domain can be observed.</p>
 </div>
 
 
-              </div>
+              </article>
               
-              
-              <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="gen/pystra.transformation.z_to_x.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">pystra.transformation.z_to_x</p>
-        </div>
-    </a>
-    <a class='right-next' id="next-link" href="references.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">References</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
-</div>
-              
-          </main>
-          
 
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+  <a class='left-prev' id="prev-link" href="gen/pystra.transformation.z_to_x.html" title="previous page">
+      <i class="fas fa-angle-left"></i>
+      <div class="prev-next-info">
+          <p class="prev-next-subtitle">previous</p>
+          <p class="prev-next-title">pystra.transformation.z_to_x</p>
+      </div>
+  </a>
+  <a class='right-next' id="next-link" href="references.html" title="next page">
+  <div class="prev-next-info">
+      <p class="prev-next-subtitle">next</p>
+      <p class="prev-next-title">References</p>
+  </div>
+  <i class="fas fa-angle-right"></i>
+  </a>
+</div>
+              </footer>
+              
+          </div>
+          
       </div>
     </div>
+
+  
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-<footer class="footer mt-5 mt-md-0">
-  <div class="container">
-    
-    <div class="footer-item">
-      <p class="copyright">
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
     &copy; Copyright 2022, The PySTRA Developers.<br>
 </p>
-    </div>
-    
-    <div class="footer-item">
-      <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
-</p>
-    </div>
-    
   </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.2.<br>
+</p>
+  </div>
+  
+</div>
 </footer>
   </body>
 </html>

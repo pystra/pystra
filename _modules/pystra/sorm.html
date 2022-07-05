@@ -1,17 +1,21 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pystra.sorm &#8212; PySTRA 1.0.0 documentation</title>
-    
-  <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+    <title>pystra.sorm &#8212; PySTRA 1.1.0 documentation</title>
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
 
-    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
   <link rel="stylesheet"
     href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
   <link rel="preload" as="font" type="font/woff2" crossorigin
@@ -20,45 +24,53 @@
     href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    
+
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
 
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-    
-    <div class="container-fluid" id="banner"></div>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
 
     
-    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
 
   <div id="navbar-start">
     
     
+  
 
-<a class="navbar-brand" href="../../index.html">
-  <img src="../../_static/icon_pystra_small.png" class="logo" alt="logo">
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+    <img src="../../_static/icon_pystra_small.png" class="logo__image only-light" alt="Logo image">
+    <img src="../../_static/icon_pystra_small.png" class="logo__image only-dark" alt="Logo image">
+  
+  
 </a>
-
-
     
   </div>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+    <span class="fas fa-bars"></span>
   </button>
 
   
@@ -106,6 +118,14 @@
     <div id="navbar-end">
       
       <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
         <li class="nav-item">
           <a class="nav-link" href="https://github.com/pystra/pystra" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
@@ -124,13 +144,13 @@
     </nav>
     
 
-    <div class="container-xl">
-      <div class="row">
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
           
-            
-            <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar">
-              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -138,26 +158,25 @@
     
   </div>
 </nav>
-              </div>
-              <div class="sidebar-end-items">
-              </div>
-            </div>
-            
-          
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
 
           
-          <div class="d-none d-xl-block col-xl-2 bd-toc">
-            
-          </div>
-          
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+</div>
+
 
           
           
-            
-          
-          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+          <div class="bd-content col-12 col-md-9 col-xl-7">
               
-              <div>
+              <article class="bd-article" role="main">
                 
   <h1>Source code for pystra.sorm</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/python -tt</span>
@@ -166,14 +185,13 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">.form</span> <span class="kn">import</span> <span class="n">Form</span>
-<span class="kn">from</span> <span class="nn">.model</span> <span class="kn">import</span> <span class="n">StochasticModel</span><span class="p">,</span> <span class="n">AnalysisOptions</span><span class="p">,</span> <span class="n">LimitState</span>
-<span class="kn">from</span> <span class="nn">.limitstate</span> <span class="kn">import</span> <span class="n">evaluateLimitState</span><span class="p">,</span> <span class="n">computeLimitStateFunction</span>
+<span class="kn">from</span> <span class="nn">.model</span> <span class="kn">import</span> <span class="n">StochasticModel</span><span class="p">,</span> <span class="n">AnalysisOptions</span><span class="p">,</span> <span class="n">LimitState</span><span class="p">,</span> <span class="n">AnalysisObject</span>
 <span class="kn">from</span> <span class="nn">.transformation</span> <span class="kn">import</span> <span class="n">jacobian</span><span class="p">,</span> <span class="n">x_to_u</span><span class="p">,</span> <span class="n">u_to_x</span>
 <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span> <span class="k">as</span> <span class="n">normal</span>
 
 
-<div class="viewcode-block" id="Sorm"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm">[docs]</a><span class="k">class</span> <span class="nc">Sorm</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Sorm"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm">[docs]</a><span class="k">class</span> <span class="nc">Sorm</span><span class="p">(</span><span class="n">AnalysisObject</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Second Order Reliability Method (SORM)</span>
 
 <span class="sd">    Unlike FORM, this method approximates the failure surface in standard</span>
@@ -181,7 +199,6 @@
 <span class="sd">    by [Breitung1984]_:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">       :label: eq:2_91</span>
 
 <span class="sd">              p_f \\approx p_{f2} = \Phi(-\\beta) \\Pi_{i=1}^{n-1}\\[ 1 + \\kappa_i \\beta \\]^{-0.5}</span>
 
@@ -196,6 +213,7 @@
 <span class="sd">      - limit_state (LimitState): Information about the limit state</span>
 <span class="sd">      - stochastic_model (StochasticModel): Information about the model</span>
 <span class="sd">      - form (Form): Form object, if a FORM analysis has already been completed</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -204,28 +222,16 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Class constructor</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="c1"># The stochastic model</span>
-        <span class="k">if</span> <span class="n">stochastic_model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">StochasticModel</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">stochastic_model</span>
-
-        <span class="c1"># Options for the calculation</span>
-        <span class="k">if</span> <span class="n">analysis_options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">AnalysisOptions</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">analysis_options</span>
-
-        <span class="c1"># The limit state function</span>
-        <span class="k">if</span> <span class="n">limit_state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">limitstate</span> <span class="o">=</span> <span class="n">LimitState</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">limitstate</span> <span class="o">=</span> <span class="n">limit_state</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">analysis_options</span><span class="o">=</span><span class="n">analysis_options</span><span class="p">,</span>
+            <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
+            <span class="n">stochastic_model</span><span class="o">=</span><span class="n">stochastic_model</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="c1"># Has FORM already been run? If it exists it has, otherwise run it now</span>
         <span class="k">if</span> <span class="n">form</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">limitstate</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">form</span> <span class="o">=</span> <span class="n">form</span>
 
@@ -243,6 +249,8 @@
 <span class="sd">            Curve-fitting: fit_type == &#39;cf&#39;</span>
 <span class="sd">            Point-fitting: fit_type == &#39;pf&#39;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results_valid</span> <span class="o">=</span> <span class="kc">True</span>
+
         <span class="k">if</span> <span class="n">fit_type</span> <span class="o">!=</span> <span class="s2">&quot;cf&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Point-Fitting not yet supported&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -261,16 +269,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">kappa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">kappa</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pf_breitung</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">betaHL</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kappa</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pf_breitung_m</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">betaHL</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kappa</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">showResults</span><span class="p">()</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getPrintOutput</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">showResults</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Sorm.pf_breitung"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm.pf_breitung">[docs]</a>    <span class="k">def</span> <span class="nf">pf_breitung</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">kappa</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculates the probability of failure and generalized reliability</span>
-<span class="sd">        index using Breitung&#39;s (1984) formula. This formula is good for higher</span>
+<span class="sd">        index using [Breitung1984]_ formula. This formula is good for higher</span>
 <span class="sd">        values of beta.</span>
-
-<span class="sd">        Breitung, K. 1984 Asymptotic approximations for multinormal integrals.</span>
-<span class="sd">        J. Eng. Mech. ASCE 110, 357–367.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">is_invalid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">kappa</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">1</span> <span class="o">/</span> <span class="n">beta</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">is_invalid</span><span class="p">:</span>
@@ -286,12 +292,9 @@
 <div class="viewcode-block" id="Sorm.pf_breitung_m"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm.pf_breitung_m">[docs]</a>    <span class="k">def</span> <span class="nf">pf_breitung_m</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">kappa</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculates the probability of failure and generalized reliability</span>
-<span class="sd">        index using Breitung&#39;s (1984) formula as modified by Hohenbichler and</span>
-<span class="sd">        Rackwitz (1988). This formula is better for lower values of beta.</span>
+<span class="sd">        index using Brietung&#39;s formula ([Breitung1984]_) as modified by Hohenbichler and</span>
+<span class="sd">        Rackwitz [Hohenbichler1988]_. This formula is better for lower values of beta.</span>
 
-<span class="sd">        Hohenbichler, M. &amp; Rackwitz, R. 1988 Improvement of second-order</span>
-<span class="sd">        reliability estimates by importance sampling.</span>
-<span class="sd">        J. Eng. Mech. ASCE 14, 2195–2199.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">normal</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">/</span> <span class="n">normal</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="o">-</span><span class="n">beta</span><span class="p">)</span>
         <span class="n">is_invalid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">kappa</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">1</span> <span class="o">/</span> <span class="n">k</span><span class="p">)</span>
@@ -304,6 +307,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">betag_breitung_m</span> <span class="o">=</span> <span class="mi">0</span></div>
 
     <span class="k">def</span> <span class="nf">showResults</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">results_valid</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Analysis not yet run&quot;</span><span class="p">)</span>
         <span class="n">n_hyphen</span> <span class="o">=</span> <span class="mi">54</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="n">n_hyphen</span><span class="p">)</span>
@@ -314,12 +319,14 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Probability of failure:        &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pf2_breitung</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kappa</span><span class="p">):</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Curavture {i+1}: </span><span class="si">{k}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Curavture </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="n">n_hyphen</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Sorm.showDetailedOutput"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm.showDetailedOutput">[docs]</a>    <span class="k">def</span> <span class="nf">showDetailedOutput</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get detailed output to console&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">results_valid</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Analysis not yet run&quot;</span><span class="p">)</span>
         <span class="n">names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">getVariables</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
         <span class="n">consts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">getConstants</span><span class="p">()</span>
         <span class="n">u_star</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">getDesignPoint</span><span class="p">()</span>
@@ -351,7 +358,7 @@
 
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="n">n_hyphen</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kappa</span><span class="p">):</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Curvature {i+1}: </span><span class="si">{k}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Curvature </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="n">n_hyphen</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span>
@@ -366,7 +373,7 @@
                 <span class="p">)</span>
             <span class="p">)</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">consts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{name:10s}</span><span class="s2"> </span><span class="se">\t</span><span class="s2"> {&#39;---&#39;:&gt;9s} </span><span class="se">\t</span><span class="s2"> </span><span class="si">{val:12.6f}</span><span class="s2"> </span><span class="se">\t</span><span class="s2"> {&#39;---&#39;:&gt;9s}&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">10s</span><span class="si">}</span><span class="s2"> </span><span class="se">\t</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;---&#39;</span><span class="si">:</span><span class="s2">&gt;9s</span><span class="si">}</span><span class="s2"> </span><span class="se">\t</span><span class="s2"> </span><span class="si">{</span><span class="n">val</span><span class="si">:</span><span class="s2">12.6f</span><span class="si">}</span><span class="s2"> </span><span class="se">\t</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;---&#39;</span><span class="si">:</span><span class="s2">&gt;9s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="n">n_hyphen</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
 
@@ -466,7 +473,7 @@
         <span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># avoid modifying argument in func calls below</span>
 
         <span class="k">if</span> <span class="n">calc_gradient</span><span class="p">:</span>
-            <span class="n">G</span><span class="p">,</span> <span class="n">grad</span> <span class="o">=</span> <span class="n">evaluateLimitState</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">limitstate</span><span class="p">)</span>
+            <span class="n">G</span><span class="p">,</span> <span class="n">grad</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">limitstate</span><span class="o">.</span><span class="n">evaluate_lsf</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
             <span class="n">grad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">grad</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">u_space</span><span class="p">:</span>
                 <span class="n">u</span> <span class="o">=</span> <span class="n">x_to_u</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
@@ -474,9 +481,7 @@
                 <span class="n">J_x_u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">J_u_x</span><span class="p">)</span>
                 <span class="n">grad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">grad</span><span class="p">,</span> <span class="n">J_x_u</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">getNames</span><span class="p">()</span>
-            <span class="n">expression</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">limitstate</span><span class="o">.</span><span class="n">getExpression</span><span class="p">()</span>
-            <span class="n">G</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">computeLimitStateFunction</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">expression</span><span class="p">)</span>
+            <span class="n">G</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">limitstate</span><span class="o">.</span><span class="n">evaluate_lsf</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">G</span><span class="p">,</span> <span class="n">grad</span></div>
 
@@ -527,37 +532,41 @@
         <span class="k">return</span> <span class="n">Q</span></div></div>
 </pre></div>
 
-              </div>
+              </article>
               
+
               
-              <!-- Previous / next buttons -->
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
 <div class='prev-next-area'>
 </div>
+              </footer>
               
-          </main>
+          </div>
           
-
       </div>
     </div>
+
+  
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-<footer class="footer mt-5 mt-md-0">
-  <div class="container">
-    
-    <div class="footer-item">
-      <p class="copyright">
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
     &copy; Copyright 2022, The PySTRA Developers.<br>
 </p>
-    </div>
-    
-    <div class="footer-item">
-      <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
-</p>
-    </div>
-    
   </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.2.<br>
+</p>
+  </div>
+  
+</div>
 </footer>
   </body>
 </html>
