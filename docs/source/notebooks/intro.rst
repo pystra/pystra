@@ -157,7 +157,7 @@ customized options. ::
 
   # Set some options (optional)
   options = AnalysisOptions()
-  # options.printResults(False)
+  # options.setPrintOutput(False)
 
 To store the results from the analysis an object must be initialized: ::
 
@@ -179,7 +179,7 @@ example we will get following results: ::
   ==================================================
 
 If we don't like to see the results in the terminal the option
-``printResults(False)`` has set to be ``False``. There are also some other
+``setPrintOutput(False)`` has set to be ``False``. There are also some other
 options which can be modified (see :ref:`chap_model`).
 
 To use the results for further calculations, plots etc. the results can get by

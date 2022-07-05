@@ -16,7 +16,6 @@ The API will appear here
     pystra.cholesky
     pystra.correlation
     pystra.integration
-    pystra.limitstate
     pystra.mc
     pystra.model
     pystra.quadrature

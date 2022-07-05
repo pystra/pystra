@@ -19,14 +19,14 @@ Called as: `$python timing.py` results in output like:
     ```
 
 """
-import pystra as pr
+import pystra as ra
 from scipy.stats import norm, lognorm, uniform
 import numpy as np
 import timeit
 
 
 def lsf(r, X1, X2, X3):
-    g = r - X2 * (1000 * X3) ** (-1) - (X1 * (200 * X3) ** (-1)) ** 2
+    g = r - X2 / (1000 * X3) - (X1 / (200 * X3)) ** 2
     return g
 
 
@@ -34,19 +34,19 @@ def run_builtin():
     """
     The basic example using built-in distributions
     """
-    limit_state = pr.LimitState(lsf)
+    limit_state = ra.LimitState(lsf)
 
-    stochastic_model = pr.StochasticModel()
-    stochastic_model.addVariable(pr.Lognormal("X1", 500, 100))
-    stochastic_model.addVariable(pr.Normal("X2", 2000, 400))
-    stochastic_model.addVariable(pr.Uniform("X3", 5, 0.5))
-    stochastic_model.addVariable(pr.Constant("r", 1))
+    stochastic_model = ra.StochasticModel()
+    stochastic_model.addVariable(ra.Lognormal("X1", 500, 100))
+    stochastic_model.addVariable(ra.Normal("X2", 2000, 400))
+    stochastic_model.addVariable(ra.Uniform("X3", 5, 0.5))
+    stochastic_model.addVariable(ra.Constant("r", 1))
 
     stochastic_model.setCorrelation(
-        pr.CorrelationMatrix([[1.0, 0.3, 0.2], [0.3, 1.0, 0.2], [0.2, 0.2, 1.0]])
+        ra.CorrelationMatrix([[1.0, 0.3, 0.2], [0.3, 1.0, 0.2], [0.2, 0.2, 1.0]])
     )
 
-    sorm = pr.Sorm(
+    sorm = ra.Sorm(
         stochastic_model=stochastic_model,
         limit_state=limit_state,
     )
@@ -57,29 +57,29 @@ def run_scipy():
     """
     The basic example using Scipy distributions
     """
-    limit_state = pr.LimitState(lsf)
+    limit_state = ra.LimitState(lsf)
 
-    stochastic_model = pr.StochasticModel()
+    stochastic_model = ra.StochasticModel()
     # Lognormal
     zeta = (np.log(1 + (100 / 500) ** 2)) ** 0.5
     lamb = np.log(500) - 0.5 * zeta**2
     stochastic_model.addVariable(
-        pr.ScipyDist("X1", lognorm(s=zeta, scale=np.exp(lamb)))
+        ra.ScipyDist("X1", lognorm(s=zeta, scale=np.exp(lamb)))
     )
     # Normal
-    stochastic_model.addVariable(pr.ScipyDist("X2", norm(loc=2000, scale=400)))
+    stochastic_model.addVariable(ra.ScipyDist("X2", norm(loc=2000, scale=400)))
     ## Uniform
     a_b = (0.5**2 * 12) ** (1 / 2)
     a = (2 * 5 - a_b) / 2
-    stochastic_model.addVariable(pr.ScipyDist("X3", uniform(loc=a, scale=a_b)))
+    stochastic_model.addVariable(ra.ScipyDist("X3", uniform(loc=a, scale=a_b)))
     # Constant
-    stochastic_model.addVariable(pr.Constant("r", 1))
+    stochastic_model.addVariable(ra.Constant("r", 1))
 
     stochastic_model.setCorrelation(
-        pr.CorrelationMatrix([[1.0, 0.3, 0.2], [0.3, 1.0, 0.2], [0.2, 0.2, 1.0]])
+        ra.CorrelationMatrix([[1.0, 0.3, 0.2], [0.3, 1.0, 0.2], [0.2, 0.2, 1.0]])
     )
 
-    sorm = pr.Sorm(
+    sorm = ra.Sorm(
         stochastic_model=stochastic_model,
         limit_state=limit_state,
     )

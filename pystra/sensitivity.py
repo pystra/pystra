@@ -21,8 +21,8 @@ class SensitivityAnalysis:
 
     Bourinet (2017), FORM Sensitivities to Distribution Parameters with the
     Nataf Transformation, P. Gardoni (ed.), Risk and Reliability Analysis:
-        Theory and Applications, Springer Series in Reliability Engineering,
-        DOI 10.1007/978-3-319-52425-2_12
+    Theory and Applications, Springer Series in Reliability Engineering,
+    DOI 10.1007/978-3-319-52425-2_12
 
     """
 
@@ -59,6 +59,7 @@ class SensitivityAnalysis:
 
         # Get the base result
         form = Form(stochastic_model=self.model, limit_state=self.limitstate)
+        form.run()
         beta0 = form.getBeta()
 
         for param in ["mean", "std"]:
@@ -70,6 +71,7 @@ class SensitivityAnalysis:
 
                 # Calculate and store the sensitivity
                 form = Form(stochastic_model=model1, limit_state=self.limitstate)
+                form.run()
                 beta1 = form.getBeta()
                 sens = (beta1 - beta0) / delta_actual
                 sensitivities[name][param] = sens

@@ -1,23 +1,18 @@
-#!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 
-import os
 import numpy as np
-import math
-import scipy.optimize as opt
-import scipy.special as spec
 import matplotlib.pyplot as plt
 
-from .model import *
-from .correlation import *
-from .distributions import *
-from .cholesky import *
-from .limitstate import *
-from .stepsize import *
-from .form import *
+from .model import AnalysisObject
+
+from .distributions import StdNormal
+from .transformation import u_to_x, getBins
+from .correlation import computeModifiedCorrelationMatrix
+from .cholesky import computeCholeskyDecomposition
+from .form import Form
 
 
-class MonteCarlo(object):
+class MonteCarlo(AnalysisObject):
     """Monte Carlo Simulation
 
     The preceding sections describe some methods for determining the reliability
@@ -45,23 +40,11 @@ class MonteCarlo(object):
 
     def __init__(self, analysis_options=None, limit_state=None, stochastic_model=None):
 
-        # The stochastic model
-        if stochastic_model is None:
-            self.model = StochasticModel()
-        else:
-            self.model = stochastic_model
-
-        # Options for the calculation
-        if analysis_options is None:
-            self.options = AnalysisOptions()
-        else:
-            self.options = analysis_options
-
-        # The limit state function
-        if limit_state is None:
-            self.limitstate = LimitState()
-        else:
-            self.limitstate = limit_state
+        super().__init__(
+            analysis_options=analysis_options,
+            limit_state=limit_state,
+            stochastic_model=stochastic_model,
+        )
 
         self.nrv = self.model.getLenMarginalDistributions()
         self.point = None
@@ -131,9 +114,7 @@ class MonteCarlo(object):
 
     def computeLimitState(self):
         """Evaluate limit-state function"""
-        G, gradient = evaluateLimitState(
-            self.x, self.model, self.options, self.limitstate, "no"
-        )
+        G, _ = self.limitstate.evaluate_lsf(self.x, self.model, self.options, "no")
         self.G = G
 
     def computeResults(self):
@@ -183,9 +164,9 @@ class MonteCarlo(object):
 
     def computePercentDone(self):
         """Compute percent done"""
-        if np.int(self.k * self.options.getSamples() ** (-1) * 20) > self.done:
-            self.done = np.int(self.k * self.options.getSamples() ** (-1) * 20)
-            if self.options.printOutput():
+        if int(self.k * self.options.getSamples() ** (-1) * 20) > self.done:
+            self.done = int(self.k * self.options.getSamples() ** (-1) * 20)
+            if self.options.getPrintOutput():
                 print(self.done * 5, "% complete")
 
     def computeFailureProbability(self):
@@ -266,15 +247,19 @@ class CrudeMonteCarlo(MonteCarlo):
         self, analysis_options=None, limit_state=None, stochastic_model=None, point=None
     ):
 
-        MonteCarlo.__init__(
-            self,
+        super().__init__(
             analysis_options=analysis_options,
             limit_state=limit_state,
             stochastic_model=stochastic_model,
         )
+        self.point = point
+
+    def run(self):
+
+        self.results_valid = True
 
         # Set point for crude Monte Carlo / importance sampling
-        self.setPoint(point)
+        self.setPoint(self.point)
 
         # Initialize variables
         self.initializeVariables()
@@ -349,7 +334,7 @@ class CrudeMonteCarlo(MonteCarlo):
         self.computeBeta()
 
         # Show Results
-        if self.options.printOutput():
+        if self.options.getPrintOutput():
             self.showResults()
 
     def initializeVariables(self):
@@ -377,6 +362,8 @@ class CrudeMonteCarlo(MonteCarlo):
 
     def showResults(self):
         """Show results and plots"""
+        if not self.results_valid:
+            raise ValueError("Analysis not yet run")
         print("")
         print("==================================================")
         print("")
@@ -413,7 +400,7 @@ class CrudeMonteCarlo(MonteCarlo):
         plt.grid(True)
         plt.show()
 
-        # Plot how pf estimate varies with number of simulations plus confidence intervals
+        # Plot pf estimate varies with number of simulations plus confidence intervals
         plt.clf()
         plt.plot(x, self.q_bar[idx], "ro")
 
@@ -438,14 +425,42 @@ class ImportanceSampling(CrudeMonteCarlo):
     """
 
     def __init__(self, analysis_options=None, limit_state=None, stochastic_model=None):
-
         FormAnalysis = Form(analysis_options, limit_state, stochastic_model)
+        FormAnalysis.run()
         u = FormAnalysis.getDesignPoint()
         u = np.transpose([u])
 
-        CrudeMonteCarlo.__init__(
-            self, analysis_options, limit_state, stochastic_model, u
-        )
+        super().__init__(analysis_options, limit_state, stochastic_model, u)
+
+    def run(self):
+
+        self.results_valid = True
+
+        print_results = self.options.getPrintOutput()
+        # regardless, turn off for CMC run
+        self.options.setPrintOutput(False)
+        CrudeMonteCarlo.run(self)
+        # restore
+        self.options.setPrintOutput(print_results)
+        if self.options.getPrintOutput():
+            self.showResults()
+
+    def showResults(self):
+        """Show results and plots"""
+        if not self.results_valid:
+            raise ValueError("Analysis not yet run")
+        print("")
+        print("==================================================")
+        print("")
+        print(" RESULTS FROM RUNNING IMPORTANCE SAMPLING")
+        print("")
+        print(" Reliability index beta:       ", self.beta)
+        print(" Failure probability:          ", self.Pf)
+        print(" Coefficient of variation of Pf", self.cov_q_bar[self.k - 1])
+        print(" Number of simulations:        ", self.k)
+        print("")
+        print("==================================================")
+        print("")
 
 
 class DistributionAnalysis(MonteCarlo):
@@ -463,7 +478,11 @@ class DistributionAnalysis(MonteCarlo):
 
     def __init__(self, analysis_options=None, limit_state=None, stochastic_model=None):
 
-        MonteCarlo.__init__(self, analysis_options, limit_state, stochastic_model)
+        super().__init__(analysis_options, limit_state, stochastic_model)
+
+    def run(self):
+
+        self.results_valid = True
 
         # Set point for crude Monte Carlo / importance sampling
         self.setPoint()
@@ -497,7 +516,7 @@ class DistributionAnalysis(MonteCarlo):
         self.computeDistributionData()
 
         # Show Results # Different
-        if self.options.printOutput():
+        if self.options.getPrintOutput():
             self.showResults()
 
     def initializeVariables(self):
@@ -531,6 +550,8 @@ class DistributionAnalysis(MonteCarlo):
 
     def showResults(self):
         """Show results and plots"""
+        if not self.results_valid:
+            raise ValueError("Analysis not yet run")
         print("")
         print("==================================================")
         print("")
@@ -557,7 +578,7 @@ class DistributionAnalysis(MonteCarlo):
 
             # Plot reference distribution
             xr = np.linspace(minx, maxx, npts)
-            reference_pdf = pdf(xr, marg[i])
+            reference_pdf = marg[i].pdf(xr)
 
             ax.plot(xr, reference_pdf, "r-")
 

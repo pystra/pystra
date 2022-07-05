@@ -4,14 +4,13 @@
 import numpy as np
 
 from .form import Form
-from .model import StochasticModel, AnalysisOptions, LimitState
-from .limitstate import evaluateLimitState, computeLimitStateFunction
+from .model import StochasticModel, AnalysisOptions, LimitState, AnalysisObject
 from .transformation import jacobian, x_to_u, u_to_x
 from scipy.stats import norm as normal
 
 
-class Sorm(object):
-    """
+class Sorm(AnalysisObject):
+    r"""
     Second Order Reliability Method (SORM)
 
     Unlike FORM, this method approximates the failure surface in standard
@@ -19,7 +18,6 @@ class Sorm(object):
     by [Breitung1984]_:
 
         .. math::
-       :label: eq:2_91
 
               p_f \\approx p_{f2} = \Phi(-\\beta) \\Pi_{i=1}^{n-1}\\[ 1 + \\kappa_i \\beta \\]^{-0.5}
 
@@ -34,6 +32,7 @@ class Sorm(object):
       - limit_state (LimitState): Information about the limit state
       - stochastic_model (StochasticModel): Information about the model
       - form (Form): Form object, if a FORM analysis has already been completed
+
     """
 
     def __init__(
@@ -42,28 +41,16 @@ class Sorm(object):
         """
         Class constructor
         """
-
-        # The stochastic model
-        if stochastic_model is None:
-            self.model = StochasticModel()
-        else:
-            self.model = stochastic_model
-
-        # Options for the calculation
-        if analysis_options is None:
-            self.options = AnalysisOptions()
-        else:
-            self.options = analysis_options
-
-        # The limit state function
-        if limit_state is None:
-            self.limitstate = LimitState()
-        else:
-            self.limitstate = limit_state
+        super().__init__(
+            analysis_options=analysis_options,
+            limit_state=limit_state,
+            stochastic_model=stochastic_model,
+        )
 
         # Has FORM already been run? If it exists it has, otherwise run it now
         if form is None:
             self.form = Form(self.options, self.limitstate, self.model)
+            self.form.run()
         else:
             self.form = form
 
@@ -81,6 +68,8 @@ class Sorm(object):
             Curve-fitting: fit_type == 'cf'
             Point-fitting: fit_type == 'pf'
         """
+        self.results_valid = True
+
         if fit_type != "cf":
             raise ValueError("Point-Fitting not yet supported")
         else:
@@ -99,16 +88,14 @@ class Sorm(object):
         self.kappa = np.sort(kappa)
         self.pf_breitung(self.betaHL, self.kappa)
         self.pf_breitung_m(self.betaHL, self.kappa)
-        self.showResults()
+        if self.options.getPrintOutput():
+            self.showResults()
 
     def pf_breitung(self, beta, kappa):
         """
         Calculates the probability of failure and generalized reliability
-        index using Breitung's (1984) formula. This formula is good for higher
+        index using [Breitung1984]_ formula. This formula is good for higher
         values of beta.
-
-        Breitung, K. 1984 Asymptotic approximations for multinormal integrals.
-        J. Eng. Mech. ASCE 110, 357–367.
         """
         is_invalid = np.any(kappa < -1 / beta)
         if not is_invalid:
@@ -124,12 +111,9 @@ class Sorm(object):
     def pf_breitung_m(self, beta, kappa):
         """
         Calculates the probability of failure and generalized reliability
-        index using Breitung's (1984) formula as modified by Hohenbichler and
-        Rackwitz (1988). This formula is better for lower values of beta.
+        index using Brietung's formula ([Breitung1984]_) as modified by Hohenbichler and
+        Rackwitz [Hohenbichler1988]_. This formula is better for lower values of beta.
 
-        Hohenbichler, M. & Rackwitz, R. 1988 Improvement of second-order
-        reliability estimates by importance sampling.
-        J. Eng. Mech. ASCE 14, 2195–2199.
         """
         k = normal.pdf(beta) / normal.cdf(-beta)
         is_invalid = np.any(kappa < -1 / k)
@@ -142,6 +126,8 @@ class Sorm(object):
             self.betag_breitung_m = 0
 
     def showResults(self):
+        if not self.results_valid:
+            raise ValueError("Analysis not yet run")
         n_hyphen = 54
         print("")
         print("=" * n_hyphen)
@@ -158,6 +144,8 @@ class Sorm(object):
 
     def showDetailedOutput(self):
         """Get detailed output to console"""
+        if not self.results_valid:
+            raise ValueError("Analysis not yet run")
         names = self.model.getVariables().keys()
         consts = self.model.getConstants()
         u_star = self.form.getDesignPoint()
@@ -304,7 +292,7 @@ class Sorm(object):
         x0 = np.copy(x)  # avoid modifying argument in func calls below
 
         if calc_gradient:
-            G, grad = evaluateLimitState(x0, self.model, self.options, self.limitstate)
+            G, grad = self.limitstate.evaluate_lsf(x0, self.model, self.options)
             grad = np.transpose(grad)
             if u_space:
                 u = x_to_u(x0, self.model)
@@ -312,9 +300,7 @@ class Sorm(object):
                 J_x_u = np.linalg.inv(J_u_x)
                 grad = np.dot(grad, J_x_u)
         else:
-            names = self.model.getNames()
-            expression = self.limitstate.getExpression()
-            G, _ = computeLimitStateFunction(x0, names, expression)
+            G, _ = self.limitstate.evaluate_lsf(x0, self.model, self.options)
 
         return G, grad
 

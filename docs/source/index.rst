@@ -59,7 +59,7 @@ Welcome to Pystra's documentation!
 :Web site: http://github.com/pystra/pystra
 :Copyright: This document has been placed in the public domain.
 :License: Pystra is released under the GNU General Public Licence.
-:Version: 1.0.0
+:Version: 1.1.0
 
 Pystra (Python Structural Reliability Analysis) is a python module for structural reliability analysis. Its flexibility and extensibility make it applicable to a large
 suite of problems. Along with core reliability analysis functionality, Pystra

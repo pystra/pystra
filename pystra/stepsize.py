@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from .limitstate import *
-from .transformation import *
+from .transformation import u_to_x
 
 
 def getStepSize(G, gradient, u, d, stochastic_model, analysis_options, limit_state):
@@ -26,8 +25,8 @@ def getStepSize(G, gradient, u, d, stochastic_model, analysis_options, limit_sta
 
     uT = np.reshape([u], (len(u), -1))
     dT = np.transpose(d)  # np.reshape(d,(len(d),-1))
-    zero = np.array([np.ones(ntrial)])
-    zeroT = np.reshape(zero, (len(zero), -1))
+    # zero = np.array([np.ones(ntrial)])
+    # zeroT = np.reshape(zero, (len(zero), -1))
     Trial_u = np.dot(uT, np.array([np.ones(ntrial)])) + np.dot(dT, Trial_step_size)
     Trial_x = np.zeros(Trial_u.shape)
     for j in range(ntrial):
@@ -37,8 +36,8 @@ def getStepSize(G, gradient, u, d, stochastic_model, analysis_options, limit_sta
     if analysis_options.getMultiProc() == 0:
         print("Error: function not yet implemented")
     if analysis_options.getMultiProc() == 1:
-        Trial_G, dummy = evaluateLimitState(
-            Trial_x, stochastic_model, analysis_options, limit_state, "no"
+        Trial_G, _ = limit_state.evaluate_lsf(
+            Trial_x, stochastic_model, analysis_options, "no"
         )
         Merit_new = np.zeros(ntrial)
 
@@ -58,7 +57,7 @@ def getStepSize(G, gradient, u, d, stochastic_model, analysis_options, limit_sta
             merit_new = Merit_new[j]
             j += 1
             if j == ntrial and merit_new > merit:
-                if analysis_options.printOutput():
+                if analysis_options.getPrintOutput():
                     print(
                         "The step size has been reduced by a factor of 1/", 2**ntrial
                     )
