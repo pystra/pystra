@@ -5,13 +5,12 @@ import numpy as np
 
 from .form import Form
 from .model import StochasticModel, AnalysisOptions, LimitState, AnalysisObject
-from .limitstate import evaluateLimitState, computeLimitStateFunction
 from .transformation import jacobian, x_to_u, u_to_x
 from scipy.stats import norm as normal
 
 
 class Sorm(AnalysisObject):
-    """
+    r"""
     Second Order Reliability Method (SORM)
 
     Unlike FORM, this method approximates the failure surface in standard
@@ -19,7 +18,6 @@ class Sorm(AnalysisObject):
     by [Breitung1984]_:
 
         .. math::
-       :label: eq:2_91
 
               p_f \\approx p_{f2} = \Phi(-\\beta) \\Pi_{i=1}^{n-1}\\[ 1 + \\kappa_i \\beta \\]^{-0.5}
 
@@ -34,6 +32,7 @@ class Sorm(AnalysisObject):
       - limit_state (LimitState): Information about the limit state
       - stochastic_model (StochasticModel): Information about the model
       - form (Form): Form object, if a FORM analysis has already been completed
+
     """
 
     def __init__(
@@ -95,11 +94,8 @@ class Sorm(AnalysisObject):
     def pf_breitung(self, beta, kappa):
         """
         Calculates the probability of failure and generalized reliability
-        index using Breitung's (1984) formula. This formula is good for higher
+        index using [Breitung1984]_ formula. This formula is good for higher
         values of beta.
-
-        Breitung, K. 1984 Asymptotic approximations for multinormal integrals.
-        J. Eng. Mech. ASCE 110, 357–367.
         """
         is_invalid = np.any(kappa < -1 / beta)
         if not is_invalid:
@@ -115,12 +111,9 @@ class Sorm(AnalysisObject):
     def pf_breitung_m(self, beta, kappa):
         """
         Calculates the probability of failure and generalized reliability
-        index using Breitung's (1984) formula as modified by Hohenbichler and
-        Rackwitz (1988). This formula is better for lower values of beta.
+        index using Brietung's formula ([Breitung1984]_) as modified by Hohenbichler and
+        Rackwitz [Hohenbichler1988]_. This formula is better for lower values of beta.
 
-        Hohenbichler, M. & Rackwitz, R. 1988 Improvement of second-order
-        reliability estimates by importance sampling.
-        J. Eng. Mech. ASCE 14, 2195–2199.
         """
         k = normal.pdf(beta) / normal.cdf(-beta)
         is_invalid = np.any(kappa < -1 / k)
@@ -272,7 +265,7 @@ class Sorm(AnalysisObject):
             # Now use finite differences to estimate hessian
             for i in range(nrv):
                 # Second-order central difference
-                hess_G[i, i] = (all_G_plus[i] - 2 * G + all_G_minus[i]) / h**2
+                hess_G[i, i] = (all_G_plus[i] - 2 * G + all_G_minus[i]) / h ** 2
                 for j in range(i):
                     # Second order forward difference
                     hess_G[i, j] = (
@@ -280,7 +273,7 @@ class Sorm(AnalysisObject):
                         - all_G_plus[j]
                         - all_G_plus[i]
                         + G
-                    ) / h**2
+                    ) / h ** 2
                     hess_G[j, i] = hess_G[i, j]
 
         return hess_G
@@ -299,7 +292,7 @@ class Sorm(AnalysisObject):
         x0 = np.copy(x)  # avoid modifying argument in func calls below
 
         if calc_gradient:
-            G, grad = evaluateLimitState(x0, self.model, self.options, self.limitstate)
+            G, grad = self.limitstate.evaluate_lsf(x0, self.model, self.options)
             grad = np.transpose(grad)
             if u_space:
                 u = x_to_u(x0, self.model)
@@ -307,9 +300,7 @@ class Sorm(AnalysisObject):
                 J_x_u = np.linalg.inv(J_u_x)
                 grad = np.dot(grad, J_x_u)
         else:
-            names = self.model.getNames()
-            expression = self.limitstate.getExpression()
-            G, _ = computeLimitStateFunction(x0, names, expression)
+            G, _ = self.limitstate.evaluate_lsf(x0, self.model, self.options)
 
         return G, grad
 

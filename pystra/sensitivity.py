@@ -21,8 +21,8 @@ class SensitivityAnalysis:
 
     Bourinet (2017), FORM Sensitivities to Distribution Parameters with the
     Nataf Transformation, P. Gardoni (ed.), Risk and Reliability Analysis:
-        Theory and Applications, Springer Series in Reliability Engineering,
-        DOI 10.1007/978-3-319-52425-2_12
+    Theory and Applications, Springer Series in Reliability Engineering,
+    DOI 10.1007/978-3-319-52425-2_12
 
     """
 

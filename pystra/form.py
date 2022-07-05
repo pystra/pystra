@@ -7,7 +7,6 @@ from .model import AnalysisObject
 from .correlation import computeModifiedCorrelationMatrix
 from .transformation import x_to_u, u_to_x, jacobian
 from .cholesky import computeCholeskyDecomposition
-from .limitstate import evaluateLimitState
 from .stepsize import getStepSize
 
 
@@ -173,9 +172,7 @@ class Form(AnalysisObject):
 
     def computeLimitState(self):
         """Evaluate limit-state function and its gradient"""
-        G, gradient = evaluateLimitState(
-            self.x, self.model, self.options, self.limitstate
-        )
+        G, gradient = self.limitstate.evaluate_lsf(self.x, self.model, self.options)
         self.G = G
         self.gradient = np.dot(np.transpose(gradient), self.J)
 

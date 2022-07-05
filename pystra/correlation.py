@@ -8,7 +8,7 @@ from .integration import zi_and_xi, rho_integral
 
 
 class CorrelationMatrix(object):
-    """Correlation matrix
+    r"""Correlation matrix
 
     The correlation matrix of :math:`n` random variables :math:`X_1, \dots, X_n`
     is the :math:`n \\times n` matrix whose :math:`i,j` entry is
@@ -48,7 +48,7 @@ class CorrelationMatrix(object):
 
 
 def getModifiedCorrelationMatrix(stochastic_model):
-    """Modified correlation matrix
+    r"""Modified correlation matrix
 
     :Args:
       - stochastic_model (StochasticModel): Information about the model
@@ -108,7 +108,7 @@ def getModifiedCorrelationMatrix(stochastic_model):
 
 
 def absoluteIntegralValue(rho0, *args):
-    """Absolute rho-integral value
+    r"""Absolute rho-integral value
 
     Compute the absolute value of the bi-folded rho-integral by 2D numerical integration
     """
@@ -121,7 +121,7 @@ def absoluteIntegralValue(rho0, *args):
 
 
 def computeModifiedCorrelationMatrix(self):
-    """Compute modified correlation matrix"""
+    r"""Compute modified correlation matrix"""
     if self.options.getPrintOutput():
         print("==================================================")
         print("")
