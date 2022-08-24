@@ -80,14 +80,16 @@ def plot_ops_model_results():
     plt.title("Bending moment distribution")
     plt.show()
 
-def lsf(E,P,w,x):
+
+def lsf(E, P, w, x):
     n = len(E)
-    g = np.zeros((n,1))
-    
+    g = np.zeros((n, 1))
+
     for i in range(n):
-        g[i] = single_run(E[i],P[i],w[i],x[i])
-    
+        g[i] = single_run(E[i], P[i], w[i], x[i])
+
     return g.T
+
 
 limit_state = ra.LimitState(lsf)
 options = ra.AnalysisOptions()
