@@ -138,7 +138,7 @@ class Sorm(AnalysisObject):
         print("Probability of failure:        ", self.pf2_breitung[0])
         print("")
         for i, k in enumerate(self.kappa):
-            print(f"Curavture {i+1}: {k}")
+            print(f"Curvature {i+1}: {k}")
         print("=" * n_hyphen)
         print("")
 
