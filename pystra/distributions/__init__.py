@@ -16,3 +16,4 @@ from .gumbel import *
 from .weibull import *
 from .maximum import *
 from .scipydist import *
+from .negative import *
