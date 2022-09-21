@@ -60,7 +60,7 @@ class Maximum(Distribution):
         P = (self.parent.cdf(x)) ** self.N
         return P
 
-    def inv_cdf(self, p):
+    def ppf(self, p):
         """
         inverse cumulative distribution function
         """
@@ -77,7 +77,7 @@ class Maximum(Distribution):
         Transformation from u to x
         """
         p = self.std_normal.cdf(u)
-        x = self.inv_cdf(p)
+        x = self.ppf(p)
         return x
 
     def x_to_u(self, x):
@@ -103,7 +103,7 @@ class Maximum(Distribution):
         them for default starting points, just estimate through simulation.
         """
         p = np.random.random(100)
-        x = self.inv_cdf(p)
+        x = self.ppf(p)
         mean = x.mean()
         stdv = x.std()
 

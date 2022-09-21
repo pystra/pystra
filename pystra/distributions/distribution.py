@@ -16,7 +16,7 @@ class StdNormal:
 
     @staticmethod
     def pdf(u):
-        p = np.exp(-0.5 * u**2) / np.sqrt(2 * np.pi)
+        p = np.exp(-0.5 * u ** 2) / np.sqrt(2 * np.pi)
         return p
 
     @staticmethod
@@ -25,7 +25,7 @@ class StdNormal:
         return p
 
     @staticmethod
-    def inv_cdf(p):
+    def ppf(p):
         u = sp.erfinv(2 * p - 1) * np.sqrt(2)
         return u
 
@@ -127,17 +127,23 @@ class Distribution:
         """
         return self.dist_obj.cdf(x)
 
+    def ppf(self, p):
+        """
+        Inverse CDF (percentage point function, ala SciPy)
+        """
+        return self.dist_obj.ppf(p)
+
     def u_to_x(self, u):
         """
         Transformation from u to x
         """
-        return self.dist_obj.ppf(self.std_normal.cdf(u))
+        return self.ppf(self.std_normal.cdf(u))
 
     def x_to_u(self, x):
         """
         Transformation from x to u
         """
-        u = self.std_normal.inv_cdf(self.cdf(x))
+        u = self.std_normal.ppf(self.cdf(x))
         return u
 
     def jacobian(self, u, x):
@@ -154,7 +160,7 @@ class Distribution:
         Return a sample of the distribution of length n
         """
         u = np.random.rand(n)
-        samples = self.dist_obj.ppf(u)
+        samples = self.ppf(u)
         return samples
 
     def plot(self, ax=None):

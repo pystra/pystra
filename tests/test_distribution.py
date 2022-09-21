@@ -35,32 +35,42 @@ def test_negative():
     """
     Test the negative wrapper distribution
     """
+    mR, sR = 500, 100
+    mS, sS = 200, 50
 
     def run_positive():
         def lsf(R, S):
             return R - S
 
         model = ra.StochasticModel()
-        model.addVariable(ra.Normal("R", 500, 100))
-        model.addVariable(ra.Lognormal("S", 200, 50))
+        model.addVariable(ra.Normal("R", mR, sR))
+        model.addVariable(ra.Normal("S", mS, sS))
 
-        form = ra.Form(stochastic_model=model, limit_state=lsf)
+        limit_state = ra.LimitState(lsf)
+
+        form = ra.Form(
+            stochastic_model=model, limit_state=limit_state, analysis_options=options
+        )
         form.run()
 
         return form.i, form.beta
 
     def run_negative():
         def lsf(R, S):
-            return R + S
+            return R - abs(S)
 
-        Spos = ra.Lognormal("Spos", 200, 50)
+        Spos = ra.Normal("Spos", mS, sS)
         S = ra.Negative("S", Spos)
 
         model = ra.StochasticModel()
-        model.addVariable(ra.Normal("R", 500, 100))
+        model.addVariable(ra.Normal("R", mR, sR))
         model.addVariable(S)
 
-        form = ra.Form(stochastic_model=model, limit_state=lsf)
+        limit_state = ra.LimitState(lsf)
+
+        form = ra.Form(
+            stochastic_model=model, limit_state=limit_state, analysis_options=options
+        )
         form.run()
 
         return form.i, form.beta
