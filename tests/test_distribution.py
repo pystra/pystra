@@ -48,9 +48,7 @@ def test_negative():
 
         limit_state = ra.LimitState(lsf)
 
-        form = ra.Form(
-            stochastic_model=model, limit_state=limit_state, analysis_options=options
-        )
+        form = ra.Form(stochastic_model=model, limit_state=limit_state)
         form.run()
 
         return form.i, form.beta
@@ -68,9 +66,7 @@ def test_negative():
 
         limit_state = ra.LimitState(lsf)
 
-        form = ra.Form(
-            stochastic_model=model, limit_state=limit_state, analysis_options=options
-        )
+        form = ra.Form(stochastic_model=model, limit_state=limit_state)
         form.run()
 
         return form.i, form.beta
