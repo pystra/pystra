@@ -27,8 +27,8 @@ def test_scipy():
     form.run()
 
     # validate results
-    assert form.i == 33
-    assert pytest.approx(form.beta, abs=1e-4) == 3.7347
+    assert form.i == 5
+    assert pytest.approx(form.beta[0], abs=1e-4) == 1.9610
 
 
 def test_negative():
