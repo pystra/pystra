@@ -147,4 +147,4 @@ def test_distribution_analysis():
 
     # validate results
     assert pytest.approx(Analysis.all_G.mean(), abs=2e-2) == 1.03296
-    assert pytest.approx(Analysis.all_G.std(), abs=1e-2) == 0.15989
+    assert pytest.approx(Analysis.all_G.std(), abs=1.5e-2) == 0.15989
