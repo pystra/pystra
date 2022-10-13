@@ -3,12 +3,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from .model import AnalysisObject
-
+from .analysis import AnalysisObject
 from .distributions import StdNormal
-from .transformation import u_to_x, getBins
 from .correlation import computeModifiedCorrelationMatrix
-from .cholesky import computeCholeskyDecomposition
 from .form import Form
 
 
@@ -77,12 +74,6 @@ class MonteCarlo(AnalysisObject):
         self.all_G = None
         self.bins = None
 
-        # Computation of modified correlation matrix R0
-        computeModifiedCorrelationMatrix(self)
-
-        # Cholesky decomposition
-        computeCholeskyDecomposition(self)
-
     def setPoint(self, point=None):
         """Set design point"""
         if point is None:
@@ -110,7 +101,9 @@ class MonteCarlo(AnalysisObject):
         self.x = np.zeros((self.nrv, self.block_size))
 
         for i in range(self.block_size):
-            self.x[:, i] = u_to_x(self.u[:, i], self.model)
+            self.x[:, i] = self.transform.u_to_x(
+                self.u[:, i], self.model.getMarginalDistributions()
+            )
 
     def computeLimitState(self):
         """Evaluate limit-state function"""
@@ -182,6 +175,15 @@ class MonteCarlo(AnalysisObject):
             self.beta = -StdNormal.inv_cdf(self.Pf)
         else:
             self.beta = 0
+
+    def computeBins(samples):
+        """Return an optimal amount of bins for a histogram
+
+        :Returns:
+          - bins (int): Returns amount on bins
+        """
+        bins = np.ceil(4 * np.sqrt(np.sqrt(samples)))
+        return bins
 
     def getBeta(self):
         """Returns the beta value
@@ -256,6 +258,8 @@ class CrudeMonteCarlo(MonteCarlo):
     def run(self):
 
         self.results_valid = True
+
+        self.init_run()
 
         # Set point for crude Monte Carlo / importance sampling
         self.setPoint(self.point)
@@ -434,6 +438,8 @@ class ImportanceSampling(CrudeMonteCarlo):
     def run(self):
 
         self.results_valid = True
+
+        self.init_run()
 
         print_results = self.options.getPrintOutput()
         # regardless, turn off for CMC run

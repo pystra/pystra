@@ -2,9 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from .form import Form
-from .model import AnalysisOptions
-import scipy.stats
-from scipy.stats._distn_infrastructure import rv_frozen
+from .analysis import AnalysisOptions
 import copy
 
 

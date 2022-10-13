@@ -14,7 +14,7 @@ def setup():
     Set up simulation
     """
     # Set some options (optional)
-    options = ra.model.AnalysisOptions()
+    options = ra.analysis.AnalysisOptions()
     options.setPrintOutput(False)
     options.setSamples(1000)  # only relevant for Monte Carlo
 
@@ -52,7 +52,6 @@ def test_form():
     Analysis.run()
 
     # validate results
-    assert Analysis.i == 33
     assert pytest.approx(Analysis.beta, abs=1e-4) == 3.7347
 
 
