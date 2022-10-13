@@ -176,13 +176,17 @@ class MonteCarlo(AnalysisObject):
         else:
             self.beta = 0
 
-    def computeBins(samples):
+    def computeBins(self, samples):
         """Return an optimal amount of bins for a histogram
 
         :Returns:
           - bins (int): Returns amount on bins
         """
-        bins = np.ceil(4 * np.sqrt(np.sqrt(samples)))
+
+        if self.options.bins is not None:
+            bins = self.options.bins
+        else:
+            bins = np.ceil(4 * np.sqrt(np.sqrt(samples)))
         return bins
 
     def getBeta(self):
@@ -489,6 +493,8 @@ class DistributionAnalysis(MonteCarlo):
 
         self.results_valid = True
 
+        self.init_run()
+
         # Set point for crude Monte Carlo / importance sampling
         self.setPoint()
 
@@ -539,7 +545,7 @@ class DistributionAnalysis(MonteCarlo):
         self.all_G = np.zeros((ng, samples))
 
         self.done = 0
-        self.bins = getBins(self.options.getSamples())
+        self.bins = self.computeBins(samples)
 
     def computeDataUpdate(self):
         """Update data"""

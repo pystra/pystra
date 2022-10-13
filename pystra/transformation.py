@@ -14,7 +14,9 @@ class Transformation:
         """
         self.transform_types = ["cholesky", "svd"]
 
-        if transform_type is None:
+        self.transform_type = transform_type
+
+        if self.transform_type is None:
             self.transform_type = "cholesky"
 
         if self.transform_type not in self.transform_types:
@@ -74,7 +76,7 @@ class Transformation:
         except np.linalg.LinAlgError as e:
             print(f"Error: Cholesky decomposition: {e.message}")
 
-        self.T = L.T
+        self.T = np.linalg.inv(L)
         self.inv_T = L
 
     def _computeSVD(self, Ro):
@@ -86,5 +88,8 @@ class Transformation:
         except np.linalg.LinAlgError as e:
             print(f"Error: singular value decomposition: {e.message}")
 
-        self.T = V
-        self.inv_T = U
+        sqrtD = np.sqrt(D) * np.eye(len(D))
+        R = U @ sqrtD
+
+        self.T = np.linalg.inv(R)
+        self.inv_T = R

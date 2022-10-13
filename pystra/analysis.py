@@ -234,15 +234,10 @@ class AnalysisOptions:
     def getffdpara(self):
         return self.ffdpara
 
-    def getBins(self):
-        if self.bins is not None:
-            return self.bins
-        else:
-            bins = np.ceil(4 * np.sqrt(np.sqrt(self.samples)))
-            self.bins = bins
-            return self.bins
-
     def getSamples(self):
+        """
+        Return the number of samples used in MCS
+        """
         return self.samples
 
     def getRandomGenerator(self):
@@ -292,6 +287,9 @@ class AnalysisOptions:
         self.bins = bins
 
     def setSamples(self, samples):
+        """
+        Set the number of samples used in MCS
+        """
         self.samples = samples
 
     def setTransform(self, transform_type):
