@@ -53,8 +53,6 @@ class Sorm(AnalysisObject):
         else:
             self.form = form
 
-        # self.transform = self.form.transform
-
         self.betaHL = 0
         self.kappa = 0
         self.pf2_breitung = 0

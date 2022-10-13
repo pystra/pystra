@@ -14,7 +14,7 @@ def setup():
     Set up simulation
     """
     # Set some options (optional)
-    options = ra.analysis.AnalysisOptions()
+    options = ra.AnalysisOptions()
     options.setPrintOutput(False)
     options.setSamples(1000)  # only relevant for Monte Carlo
 
