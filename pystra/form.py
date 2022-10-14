@@ -3,11 +3,8 @@
 
 import numpy as np
 from scipy.stats import norm as normal
-from .model import AnalysisObject
-from .correlation import computeModifiedCorrelationMatrix
-from .transformation import x_to_u, u_to_x, jacobian
-from .cholesky import computeCholeskyDecomposition
-from .stepsize import getStepSize
+from .analysis import AnalysisObject
+from .correlation import setModifiedCorrelationMatrix
 
 
 class Form(AnalysisObject):
@@ -65,14 +62,9 @@ class Form(AnalysisObject):
         """
         Executes the FORM analysis
         """
-
         self.results_valid = True
 
-        # Computation of modified correlation matrix R0
-        computeModifiedCorrelationMatrix(self)
-
-        # Cholesky decomposition
-        computeCholeskyDecomposition(self)
+        self.init_run()
 
         # Compute starting point for the algorithm
         self.computeStartingPoint()
@@ -132,7 +124,7 @@ class Form(AnalysisObject):
                 self.computeSearchDirection()
 
                 # Determine step size
-                self.computeStepSize()
+                self.getStepSize()
 
                 # Determine new trial point
                 u_new = self.u + self.step * self.d
@@ -157,15 +149,19 @@ class Form(AnalysisObject):
         marg = self.model.getMarginalDistributions()
         for i in range(len(marg)):
             x = np.append(x, marg[i].getStartPoint())
-        self.u = x_to_u(x, self.model)
+        self.u = self.transform.x_to_u(x, marg)
 
     def computeTransformation(self):
         """Compute transformation from u to x space"""
-        self.x = np.transpose([u_to_x(self.u, self.model)])
+        self.x = np.transpose(
+            [self.transform.u_to_x(self.u, self.model.getMarginalDistributions())]
+        )
 
     def computeJacobian(self):
         """Compute the Jacobian"""
-        J_u_x = jacobian(self.u, self.x, self.model)
+        J_u_x = self.transform.jacobian(
+            self.u, self.x, self.model.getMarginalDistributions()
+        )
         J_x_u = np.linalg.inv(J_u_x)
         self.J = J_x_u
 
@@ -192,20 +188,79 @@ class Form(AnalysisObject):
             self.G * np.linalg.norm(self.gradient) ** (-1) + self.alpha.dot(self.u)
         ) * self.alpha - self.u
 
-    def computeStepSize(self):
+    def getStepSize(self):
         """Determine step size"""
         if self.options.getStepSize() == 0:
-            self.step = getStepSize(
+            self.step = self.computeStepSize(
                 self.G,
                 self.gradient,
                 self.u,
                 self.d,
-                self.model,
-                self.options,
-                self.limitstate,
             )
         else:
             self.step = self.options.getStepSize()
+
+    def computeStepSize(self, G, gradient, u, d):
+        """Calculate the step size for the calculation
+
+        :Returns:
+            - step_size (float): Returns the value of the step size.
+        """
+        c = (np.linalg.norm(u) * np.linalg.norm(gradient) ** (-1)) * 2 + 10
+        merit = 0.5 * (np.linalg.norm(u)) ** 2 + c * np.absolute(G)
+
+        ntrial = 6
+        """
+        .. note::
+
+             TODO: change fix value to a variable
+        """
+
+        Trial_step_size = np.array([0.5 ** np.arange(0, ntrial)])
+
+        uT = np.reshape([u], (len(u), -1))
+        dT = np.transpose(d)  # np.reshape(d,(len(d),-1))
+        # zero = np.array([np.ones(ntrial)])
+        # zeroT = np.reshape(zero, (len(zero), -1))
+        Trial_u = np.dot(uT, np.array([np.ones(ntrial)])) + np.dot(dT, Trial_step_size)
+        Trial_x = np.zeros(Trial_u.shape)
+        for j in range(ntrial):
+            trial_x = self.transform.u_to_x(
+                Trial_u[:, j], self.model.getMarginalDistributions()
+            )
+            Trial_x[:, j] = np.transpose(trial_x)
+
+        if self.options.getMultiProc() == 0:
+            print("Error: function not yet implemented")
+        if self.options.getMultiProc() == 1:
+            Trial_G, _ = self.limitstate.evaluate_lsf(
+                Trial_x, self.model, self.options, "no"
+            )
+            Merit_new = np.zeros(ntrial)
+
+            for j in range(ntrial):
+                merit_new = 0.5 * (
+                    np.linalg.norm(Trial_u[:, j])
+                ) ** 2 + c * np.absolute(Trial_G[0][j])
+                Merit_new[j] = merit_new
+
+            trial_step_size = Trial_step_size[0][0]
+            merit_new = Merit_new[0]
+
+            j = 0
+
+            while merit_new > merit and j < ntrial:
+                trial_step_size = Trial_step_size[0][j]
+                merit_new = Merit_new[j]
+                j += 1
+                if j == ntrial and merit_new > merit:
+                    if self.options.getPrintOutput():
+                        print(
+                            "The step size has been reduced by a factor of 1/",
+                            2**ntrial,
+                        )
+        step_size = trial_step_size
+        return step_size
 
     def computeBeta(self):
         """Compute beta value"""
@@ -298,7 +353,7 @@ class Form(AnalysisObject):
         if uspace:
             return self.u
         else:
-            return u_to_x(self.u, self.model)
+            return self.transform.u_to_x(self.u, self.model.getMarginalDistributions())
 
     def getAlpha(self, as_dict=False):
         """Returns the alpha vector

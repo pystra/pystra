@@ -14,7 +14,7 @@ def setup():
     Set up simulation
     """
     # Set some options (optional)
-    options = ra.model.AnalysisOptions()
+    options = ra.AnalysisOptions()
     options.setPrintOutput(False)
     options.setSamples(1000)  # only relevant for Monte Carlo
 
@@ -52,8 +52,47 @@ def test_form():
     Analysis.run()
 
     # validate results
-    assert Analysis.i == 33
     assert pytest.approx(Analysis.beta, abs=1e-4) == 3.7347
+
+
+def test_form_svd():
+    """
+    Perform FORM analysis using SVD transform
+    """
+    options, stochastic_model, limit_state = setup()
+    options.setTransform("svd")
+
+    Analysis = ra.Form(
+        analysis_options=options,
+        stochastic_model=stochastic_model,
+        limit_state=limit_state,
+    )
+    Analysis.run()
+
+    # validate results
+    assert pytest.approx(Analysis.beta, abs=1e-4) == 3.7347
+
+
+def test_sorm():
+    """
+    Perform SORM analysis
+    """
+    options, stochastic_model, limit_state = setup()
+
+    Analysis = ra.Sorm(
+        analysis_options=options,
+        stochastic_model=stochastic_model,
+        limit_state=limit_state,
+    )
+    Analysis.run()
+
+    print(Analysis.betag_breitung)
+    print(Analysis.betag_breitung_m)
+
+    # validate results
+    assert pytest.approx(Analysis.betaHL, abs=1e-4) == 3.7347
+    assert pytest.approx(Analysis.betag_breitung, abs=1e-4) == 3.8537
+    assert pytest.approx(Analysis.betag_breitung_m, abs=2e-4) == 3.8582
 
 
 def test_cmc():
@@ -88,3 +127,24 @@ def test_is():
 
     # validate results
     assert Analysis.x.shape[-1] == 1000
+
+
+def test_distribution_analysis():
+    """
+    Perform distribution analysis
+    """
+
+    options, stochastic_model, limit_state = setup()
+    options.print_output = False
+
+    # Perform Distribution analysis
+    Analysis = ra.DistributionAnalysis(
+        analysis_options=options,
+        stochastic_model=stochastic_model,
+        limit_state=limit_state,
+    )
+    Analysis.run()
+
+    # validate results
+    assert pytest.approx(Analysis.all_G.mean(), abs=2e-2) == 1.03296
+    assert pytest.approx(Analysis.all_G.std(), abs=1.5e-2) == 0.15989

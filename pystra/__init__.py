@@ -19,8 +19,6 @@ from .correlation import *
 from .model import *
 
 # Calculations
-from .cholesky import *
-from .stepsize import *
 from .quadrature import *
 from .integration import *
 
@@ -28,6 +26,7 @@ from .integration import *
 from .transformation import *
 
 # Analysis
+from .analysis import *
 from .form import *
 from .mc import *
 from .sorm import *

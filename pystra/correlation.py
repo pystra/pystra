@@ -47,7 +47,7 @@ class CorrelationMatrix(object):
         return self.matrix
 
 
-def getModifiedCorrelationMatrix(stochastic_model):
+def computeModifiedCorrelationMatrix(stochastic_model):
     r"""Modified correlation matrix
 
     :Args:
@@ -120,22 +120,8 @@ def absoluteIntegralValue(rho0, *args):
     return f
 
 
-def computeModifiedCorrelationMatrix(self):
-    r"""Compute modified correlation matrix"""
-    if self.options.getPrintOutput():
-        print("==================================================")
-        print("")
-        print("           RUNNING RELIABILITY ANALYSIS")
-        print("")
-        print("==================================================")
-        print("")
-        print(" Computation of modified correlation matrix R0")
-        print(" Takes some time if sensitivities are to be computed")
-        print(" with gamma (3), beta (7) or chi-square (8)")
-        print(" distributions.")
-        print(" Please wait... (Ctrl+C breaks)")
-        print("")
+def setModifiedCorrelationMatrix(stochastic_model):
+    """Compute & set modified correlation matrix"""
 
-    # Compute corrected correlation coefficients
-    Ro = getModifiedCorrelationMatrix(self.model)
-    self.model.setModifiedCorrelation(Ro)
+    Ro = computeModifiedCorrelationMatrix(stochastic_model)
+    stochastic_model.setModifiedCorrelation(Ro)

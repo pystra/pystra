@@ -1,7 +1,6 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 
-from .transformation import z_to_x
 from .quadrature import quadratureRule
 
 import numpy as np
@@ -48,8 +47,8 @@ def zi_and_xi(margi, margj, zmax, nIP):
     z1 = zmin * np.ones(len(xIP)) + (zmax - zmin) * (xIP + np.ones(len(xIP))) / 2
     z2 = z1
 
-    x1 = z_to_x(z1, margi)
-    x2 = z_to_x(z2, margj)
+    x1 = margi.u_to_x(z1)
+    x2 = margj.u_to_x(z2)
 
     v1 = np.ones(nIP)
     v2 = np.transpose([v1])
