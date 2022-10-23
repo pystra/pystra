@@ -29,7 +29,7 @@ class AnalysisObject:
             self.limitstate = limit_state
 
         # Create transformation based on user settings in AnalysisOptions
-        self.transform = Transformation(transform_type=analysis_options.getTransform())
+        self.transform = Transformation(transform_type=self.options.getTransform())
 
         self.results_valid = False
 
