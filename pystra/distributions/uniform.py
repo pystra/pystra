@@ -55,5 +55,5 @@ class Uniform(Distribution):
         """
         Transformation from x to u
         """
-        u = self.std_normal.inv_cdf(self.cdf(x))
+        u = self.std_normal.ppf(self.cdf(x))
         return u
