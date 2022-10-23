@@ -27,15 +27,15 @@ class Sorm(AnalysisObject):
     formula, which is more accurate for lower values of \\beta.
 
     :Attributes:
-      - analysis_option (AnalysisOption): Option for the structural analysis
-      - limit_state (LimitState): Information about the limit state
       - stochastic_model (StochasticModel): Information about the model
+      - limit_state (LimitState): Information about the limit state
+      - analysis_option (AnalysisOption): Option for the structural analysis
       - form (Form): Form object, if a FORM analysis has already been completed
 
     """
 
     def __init__(
-        self, analysis_options=None, limit_state=None, stochastic_model=None, form=None
+        self, stochastic_model=None, limit_state=None, analysis_options=None, form=None
     ):
         """
         Class constructor

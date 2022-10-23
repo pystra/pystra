@@ -31,17 +31,17 @@ class Form(AnalysisObject):
     First Order Reliability Index. [Madsen2006]_
 
     :Attributes:
-      - analysis_option (AnalysisOption): Option for the structural analysis
-      - limit_state (LimitState): Information about the limit state
       - stochastic_model (StochasticModel): Information about the model
+      - limit_state (LimitState): Information about the limit state
+      - analysis_option (AnalysisOption): Option for the structural analysis
     """
 
-    def __init__(self, analysis_options=None, limit_state=None, stochastic_model=None):
+    def __init__(self, stochastic_model=None, limit_state=None, analysis_options=None):
 
         super().__init__(
-            analysis_options=analysis_options,
-            limit_state=limit_state,
             stochastic_model=stochastic_model,
+            limit_state=limit_state,
+            analysis_options=analysis_options,
         )
 
         self.i = None
