@@ -25,7 +25,7 @@ class StdNormal:
         return p
 
     @staticmethod
-    def inv_cdf(p):
+    def ppf(p):
         u = sp.erfinv(2 * p - 1) * np.sqrt(2)
         return u
 
@@ -127,6 +127,12 @@ class Distribution:
         """
         return self.dist_obj.cdf(x)
 
+    def ppf(self, u):
+        """
+        Inverse cumulative distribution function
+        """
+        return self.dist_obj.ppf(u)
+
     def u_to_x(self, u):
         """
         Transformation from u to x
@@ -137,7 +143,7 @@ class Distribution:
         """
         Transformation from x to u
         """
-        u = self.std_normal.inv_cdf(self.cdf(x))
+        u = self.std_normal.ppf(self.cdf(x))
         return u
 
     def jacobian(self, u, x):
@@ -154,7 +160,7 @@ class Distribution:
         Return a sample of the distribution of length n
         """
         u = np.random.rand(n)
-        samples = self.dist_obj.ppf(u)
+        samples = self.ppf(u)
         return samples
 
     def plot(self, ax=None):
@@ -164,11 +170,14 @@ class Distribution:
         # auto-range
         samples = self.sample()
         x = np.linspace(np.min(samples), np.max(samples), 100)
+        axs = ax
         if ax is None:
-            _, ax = plt.subplots()
-        ax.plot(x, self.pdf(x))
-        ax.set_title(self.name)
-        plt.show()
+            _, axs = plt.subplots()
+        axs.plot(x, self.pdf(x))
+        axs.set_title(self.name)
+        if ax is None:
+            plt.show()
+        return ax
 
     # The following must be overidden in derived classes that are not based on a
     # SciPy distribution object, or using the SciPy object for calculations.
