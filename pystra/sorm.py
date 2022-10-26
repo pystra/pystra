@@ -48,7 +48,11 @@ class Sorm(AnalysisObject):
 
         # Has FORM already been run? If it exists it has, otherwise run it now
         if form is None:
-            self.form = Form(self.options, self.limitstate, self.model)
+            self.form = Form(
+                stochastic_model=self.model,
+                limit_state=self.limitstate,
+                analysis_options=self.options,
+            )
             self.form.run()
         else:
             self.form = form
