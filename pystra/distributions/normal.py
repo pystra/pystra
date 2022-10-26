@@ -48,11 +48,11 @@ class Normal(Distribution):
         p = self.std_normal.cdf(z)
         return p
 
-    def inv_cdf(self, p):
+    def ppf(self, p):
         """
         inverse cumulative distribution function
         """
-        z = self.std_normal.inv_cdf(p)
+        z = self.std_normal.ppf(p)
         x = self.stdv * z + self.mean
         return x
 
@@ -61,7 +61,7 @@ class Normal(Distribution):
         Override sample from base class due to bespoke implementation
         """
         u = np.random.rand(n)
-        samples = self.inv_cdf(u)
+        samples = self.ppf(u)
         return samples
 
     def u_to_x(self, u):

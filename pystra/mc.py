@@ -172,7 +172,7 @@ class MonteCarlo(AnalysisObject):
     def computeBeta(self):
         """Compute beta value"""
         if self.sum_q > 0:
-            self.beta = -StdNormal.inv_cdf(self.Pf)
+            self.beta = -StdNormal.ppf(self.Pf)
         else:
             self.beta = 0
 
@@ -432,7 +432,11 @@ class ImportanceSampling(CrudeMonteCarlo):
     """
 
     def __init__(self, analysis_options=None, limit_state=None, stochastic_model=None):
-        FormAnalysis = Form(analysis_options, limit_state, stochastic_model)
+        FormAnalysis = Form(
+            stochastic_model=stochastic_model,
+            limit_state=limit_state,
+            analysis_options=analysis_options,
+        )
         FormAnalysis.run()
         u = FormAnalysis.getDesignPoint()
         u = np.transpose([u])

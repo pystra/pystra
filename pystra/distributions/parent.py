@@ -7,29 +7,34 @@ import scipy.optimize as opt
 from .distribution import Distribution
 
 
-class Maximum(Distribution):
-    """Distribution of maximima from the passed in parent distribution
+class MaxParent(Distribution):
+    """Parent distribution of the provided distribution which represents
+    the distribution of maxima of a random variable.
+
+    For example, given an annual maximum distribution of imposed load, find
+    the parent distribution of imposed load, if the load is applied 6 times
+    per year.
 
     :Attributes:
       - name (str):             Name of the random variable\n
       - mean (float):           Mean\n
       - stdv (float):           Standard deviation\n
-      - parent (Distribution):  Parent distribution object
+      - maximum (Distribution): Distribution of maximum object
       - N (float):              Power to which distribution is raised
       - input_type (any):       Change meaning of mean and stdv\n
       - startpoint (float):     Start point for seach\n
     """
 
-    def __init__(self, name, parent, N, input_type=None, startpoint=None):
+    def __init__(self, name, max_dist, N, input_type=None, startpoint=None):
 
-        if not isinstance(parent, Distribution):
+        if not isinstance(max_dist, Distribution):
             raise Exception(
-                f"Maximum parent requires input of type {type(Distribution)}"
+                f"MaxParent distribution of maximum requires input of type {type(Distribution)}"
             )
         if N < 1.0:
-            raise Exception("Maximum exponent must be >= 1.0")
+            raise Exception("MaxParent exponent must be >= 1.0")
 
-        self.parent = parent
+        self.max_dist = max_dist
         self.N = N
         m, s = self._get_stats()
 
@@ -40,24 +45,22 @@ class Maximum(Distribution):
             startpoint=startpoint,
         )
 
-        self.dist_type = "Maximum"
+        self.dist_type = "MaxParent"
 
     def pdf(self, x):
         """
         Probability density function
         """
-        pdf = self.parent.pdf(x)
-        cdf = 1.0
-        if self.N > 1.0:
-            cdf = self.parent.cdf(x)
-        p = self.N * pdf * cdf ** (self.N - 1)
+        pdf = self.max_dist.pdf(x)
+        cdf = self.cdf(x)
+        p = pdf / (self.N * cdf ** (self.N - 1))
         return p
 
     def cdf(self, x):
         """
         Cumulative distribution function
         """
-        P = (self.parent.cdf(x)) ** self.N
+        P = (self.max_dist.cdf(x)) ** (1 / self.N)
         return P
 
     def ppf(self, p):
@@ -66,7 +69,7 @@ class Maximum(Distribution):
         """
         p = np.atleast_1d(p)
         x = np.zeros_like(p)
-        x0 = self.parent.mean
+        x0 = self.max_dist.mean
         for i, p_val in enumerate(p):
             par = opt.fmin(self.zero_distn, x0, args=(p_val,), disp=False)
             x[i] = par[0]
@@ -99,7 +102,7 @@ class Maximum(Distribution):
     def _get_stats(self):
         """
         Since the closed form expression of mean and stdv for the distribution of the
-        maxima from a parent distribution is complex, and since we really only need
+        parent from a maximum distribution is complex, and since we really only need
         them for default starting points, just estimate through simulation.
         """
         p = np.random.random(100)
@@ -113,17 +116,24 @@ class Maximum(Distribution):
         """
         Updating the parent distribution location parameter.
         """
-        self.parent.set_location(loc)
-        self.update_stats()
+        self.max_dist.set_location(loc)
+        self._update_stats()
 
     def set_scale(self, scale=1):
         """
         Updating the parent distribution scale parameter.
         """
-        self.parent.set_scale(scale)
-        self.update_stats()
+        self.max_dist.set_scale(scale)
+        self._update_stats()
 
-    def update_stats(self):
+    def set_exponent(self, N=2):
+        """
+        Update the parent distribution exponent parameter.
+        """
+        self.N = N
+        self._update_stats()
+
+    def _update_stats(self):
         """
         Updates the mean and stdv estimates - used for sensitivity analysis
         where the parent distribution params may change after instantiation

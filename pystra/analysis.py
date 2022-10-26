@@ -9,24 +9,24 @@ class AnalysisObject:
     A base class for objects that perform a probability of failure estimation
     """
 
-    def __init__(self, analysis_options=None, limit_state=None, stochastic_model=None):
+    def __init__(self, stochastic_model=None, limit_state=None, analysis_options=None):
         # The stochastic model
         if stochastic_model is None:
             self.model = StochasticModel()
         else:
             self.model = stochastic_model
 
-        # Options for the calculation
-        if analysis_options is None:
-            self.options = AnalysisOptions()
-        else:
-            self.options = analysis_options
-
         # The limit state function
         if limit_state is None:
             self.limitstate = LimitState()
         else:
             self.limitstate = limit_state
+
+        # Options for the calculation
+        if analysis_options is None:
+            self.options = AnalysisOptions()
+        else:
+            self.options = analysis_options
 
         # Create transformation based on user settings in AnalysisOptions
         self.transform = Transformation(transform_type=self.options.getTransform())
