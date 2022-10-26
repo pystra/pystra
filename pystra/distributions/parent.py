@@ -7,8 +7,9 @@ import scipy.optimize as opt
 from .distribution import Distribution
 
 
-class Parent(Distribution):
-    """Parent distribution from that of maximum distribution
+class MaxParent(Distribution):
+    """Parent distribution of the provided distribution which represents
+    the distribution of maxima of a random variable.
 
     For example, given an annual maximum distribution of imposed load, find
     the parent distribution of imposed load, if the load is applied 6 times
@@ -24,16 +25,16 @@ class Parent(Distribution):
       - startpoint (float):     Start point for seach\n
     """
 
-    def __init__(self, name, maximum, N, input_type=None, startpoint=None):
+    def __init__(self, name, max_dist, N, input_type=None, startpoint=None):
 
-        if not isinstance(maximum, Distribution):
+        if not isinstance(max_dist, Distribution):
             raise Exception(
-                f"Parent maximum requires input of type {type(Distribution)}"
+                f"MaxParent distribution of maximum requires input of type {type(Distribution)}"
             )
         if N < 1.0:
-            raise Exception("Parent exponent must be >= 1.0")
+            raise Exception("MaxParent exponent must be >= 1.0")
 
-        self.maximum = maximum
+        self.max_dist = max_dist
         self.N = N
         m, s = self._get_stats()
 
@@ -44,13 +45,13 @@ class Parent(Distribution):
             startpoint=startpoint,
         )
 
-        self.dist_type = "Parent"
+        self.dist_type = "MaxParent"
 
     def pdf(self, x):
         """
         Probability density function
         """
-        pdf = self.maximum.pdf(x)
+        pdf = self.max_dist.pdf(x)
         cdf = self.cdf(x)
         p = pdf / (self.N * cdf ** (self.N - 1))
         return p
@@ -59,7 +60,7 @@ class Parent(Distribution):
         """
         Cumulative distribution function
         """
-        P = (self.maximum.cdf(x)) ** (1 / self.N)
+        P = (self.max_dist.cdf(x)) ** (1 / self.N)
         return P
 
     def ppf(self, p):
@@ -68,7 +69,7 @@ class Parent(Distribution):
         """
         p = np.atleast_1d(p)
         x = np.zeros_like(p)
-        x0 = self.maximum.mean
+        x0 = self.max_dist.mean
         for i, p_val in enumerate(p):
             par = opt.fmin(self.zero_distn, x0, args=(p_val,), disp=False)
             x[i] = par[0]
@@ -115,17 +116,24 @@ class Parent(Distribution):
         """
         Updating the parent distribution location parameter.
         """
-        self.maximum.set_location(loc)
-        self.update_stats()
+        self.max_dist.set_location(loc)
+        self._update_stats()
 
     def set_scale(self, scale=1):
         """
         Updating the parent distribution scale parameter.
         """
-        self.maximum.set_scale(scale)
-        self.update_stats()
+        self.max_dist.set_scale(scale)
+        self._update_stats()
 
-    def update_stats(self):
+    def set_exponent(self, N=2):
+        """
+        Update the parent distribution exponent parameter.
+        """
+        self.N = N
+        self._update_stats()
+
+    def _update_stats(self):
         """
         Updates the mean and stdv estimates - used for sensitivity analysis
         where the parent distribution params may change after instantiation
