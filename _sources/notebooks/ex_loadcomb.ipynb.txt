@@ -1,0 +1,823 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "51fad553-7640-431b-a253-970c3052c71d",
+   "metadata": {},
+   "source": [
+    "# Code Calibration\n",
+    "\n",
+    "Using examples from Sorensen, J.D. (2004), *Notes in Structural Reliability Theory And Risk Analysis*."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "4d56f265-32d8-4004-a0d5-86073dae6dec",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pystra as pr\n",
+    "import numpy as np\n",
+    "from scipy.optimize import fsolve, minimize\n",
+    "from matplotlib import pyplot as plt\n",
+    "import pandas as pd\n",
+    "from scipy.stats import gumbel_r"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "2d69046a-4cd2-44c3-8267-aed9c2455130",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def calibration(reliability_func,Xk,beta_t,output=False,xtol=1e-4,**kwargs):\n",
+    "    \"\"\"\n",
+    "    Generic reliability calibration function.\n",
+    "    \n",
+    "    Inputs:\n",
+    "    - reliability_func: callable accepting nominal values Xk and returning a Form object\n",
+    "    - Xk: initial values of the nominal variables\n",
+    "    - beta_t: the target reliability index\n",
+    "    - output: diagnostic output\n",
+    "    - kwargs: additional args to be passed to reliability_func\n",
+    "    Return:\n",
+    "    - X_opt: the values of the nominal variables at beta_t\n",
+    "    - form: the form object at the target reliability index\n",
+    "    \"\"\"\n",
+    "    def obj_func(Xk,beta_t):\n",
+    "        form = reliability_func(Xk,**kwargs)        \n",
+    "        if output:\n",
+    "            print(f\"{Xk=} | β = {form.getBeta()} | α = {form.getAlpha()} | x* = {form.getDesignPoint(False)}\")\n",
+    "        return beta_t - form.beta\n",
+    "    \n",
+    "    Xk_opt = fsolve(obj_func,x0=Xk,args=(beta_t),xtol=xtol)\n",
+    "    form = reliability_func(Xk_opt,**kwargs)\n",
+    "    return Xk_opt,form"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "ebe9f2ac-afd2-437f-af84-4c4b2f312df6",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def print_form_results(form):\n",
+    "    print(f\"β = {form.getBeta()} | α = {form.getAlpha()} | x* = {form.getDesignPoint(False)}\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "162f2cf5-07c0-47ad-9766-29089fec3b4e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def sample_maxima(dist,n,n_sample=1000):\n",
+    "    \"\"\"\n",
+    "    Sample the distribution of the maximum of n samples from a pystra `dist` object.\n",
+    "    \n",
+    "    Inputs:\n",
+    "    dist: the pystra distribution object from which samples of maxima are sought\n",
+    "    n: the block size from which to take the maximum\n",
+    "    n_samples: the number of samples to produce\n",
+    "    \"\"\"\n",
+    "    x = dist.sample(n*n_sample).reshape(n,n_sample)\n",
+    "    x_max = np.max(x,axis=0)\n",
+    "    return x_max"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "cf1c7a80-9997-4a66-921e-719e11f16ee9",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def sample_minima(dist,n,n_sample=1000):\n",
+    "    \"\"\"\n",
+    "    Sample the distribution of the minimum of n samples from a pystra `dist` object.\n",
+    "    \n",
+    "    Inputs:\n",
+    "    dist: the pystra distribution object from which samples of minima are sought\n",
+    "    n: the block size from which to take the minimum\n",
+    "    n_samples: the number of samples to produce\n",
+    "    \"\"\"\n",
+    "    x = dist.sample(n*n_sample).reshape(n,n_sample)\n",
+    "    x_min = np.min(x,axis=0)\n",
+    "    return x_min"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "60ca2001-7e10-4772-a825-9061e59990c9",
+   "metadata": {},
+   "source": [
+    "## Partial Factors\n",
+    "\n",
+    "### Example 1\n",
+    "\n",
+    "Taken from Sorensen (2004), Example 1, pp.141-2"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "82aec900-7836-487d-8dc5-f975a23f9885",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def lsf(z,R,G,Q):\n",
+    "    return z*R - (G + Q)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "6d7087f1-3193-4492-81f1-12a09ec0427c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def reliability(z=10.0,V=0.2):\n",
+    "    ls = pr.LimitState(lsf)\n",
+    "    sm = pr.StochasticModel()\n",
+    "    sm.addVariable(pr.Constant(\"z\", z))\n",
+    "    sm.addVariable(pr.Lognormal(\"R\", 1.0,0.15))\n",
+    "    sm.addVariable(pr.Normal(\"G\", *2*np.array([1, 0.1])))\n",
+    "    sm.addVariable(pr.Gumbel(\"Q\",*3*np.array([1,V])))\n",
+    "    \n",
+    "    form = pr.Form(sm,ls)\n",
+    "    form.run()\n",
+    "    \n",
+    "    return form"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "id": "2a046fc4-ff21-4662-b077-c49b42192c4d",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<style type=\"text/css\">\n",
+       "</style>\n",
+       "<table id=\"T_5b16a\">\n",
+       "  <thead>\n",
+       "    <tr>\n",
+       "      <th class=\"blank level0\" >&nbsp;</th>\n",
+       "      <th id=\"T_5b16a_level0_col0\" class=\"col_heading level0 col0\" >β_T</th>\n",
+       "      <th id=\"T_5b16a_level0_col1\" class=\"col_heading level0 col1\" >V</th>\n",
+       "      <th id=\"T_5b16a_level0_col2\" class=\"col_heading level0 col2\" >z</th>\n",
+       "      <th id=\"T_5b16a_level0_col3\" class=\"col_heading level0 col3\" >λ_q</th>\n",
+       "      <th id=\"T_5b16a_level0_col4\" class=\"col_heading level0 col4\" >r*</th>\n",
+       "      <th id=\"T_5b16a_level0_col5\" class=\"col_heading level0 col5\" >g*</th>\n",
+       "      <th id=\"T_5b16a_level0_col6\" class=\"col_heading level0 col6\" >q*</th>\n",
+       "      <th id=\"T_5b16a_level0_col7\" class=\"col_heading level0 col7\" >γR</th>\n",
+       "      <th id=\"T_5b16a_level0_col8\" class=\"col_heading level0 col8\" >γG</th>\n",
+       "      <th id=\"T_5b16a_level0_col9\" class=\"col_heading level0 col9\" >γQ</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th id=\"T_5b16a_level0_row0\" class=\"row_heading level0 row0\" >0</th>\n",
+       "      <td id=\"T_5b16a_row0_col0\" class=\"data row0 col0\" >3.800</td>\n",
+       "      <td id=\"T_5b16a_row0_col1\" class=\"data row0 col1\" >0.200</td>\n",
+       "      <td id=\"T_5b16a_row0_col2\" class=\"data row0 col2\" >11.256</td>\n",
+       "      <td id=\"T_5b16a_row0_col3\" class=\"data row0 col3\" >1.518</td>\n",
+       "      <td id=\"T_5b16a_row0_col4\" class=\"data row0 col4\" >0.702</td>\n",
+       "      <td id=\"T_5b16a_row0_col5\" class=\"data row0 col5\" >2.078</td>\n",
+       "      <td id=\"T_5b16a_row0_col6\" class=\"data row0 col6\" >5.820</td>\n",
+       "      <td id=\"T_5b16a_row0_col7\" class=\"data row0 col7\" >1.103</td>\n",
+       "      <td id=\"T_5b16a_row0_col8\" class=\"data row0 col8\" >1.039</td>\n",
+       "      <td id=\"T_5b16a_row0_col9\" class=\"data row0 col9\" >1.278</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th id=\"T_5b16a_level0_row1\" class=\"row_heading level0 row1\" >1</th>\n",
+       "      <td id=\"T_5b16a_row1_col0\" class=\"data row1 col0\" >4.300</td>\n",
+       "      <td id=\"T_5b16a_row1_col1\" class=\"data row1 col1\" >0.200</td>\n",
+       "      <td id=\"T_5b16a_row1_col2\" class=\"data row1 col2\" >12.747</td>\n",
+       "      <td id=\"T_5b16a_row1_col3\" class=\"data row1 col3\" >1.518</td>\n",
+       "      <td id=\"T_5b16a_row1_col4\" class=\"data row1 col4\" >0.675</td>\n",
+       "      <td id=\"T_5b16a_row1_col5\" class=\"data row1 col5\" >2.080</td>\n",
+       "      <td id=\"T_5b16a_row1_col6\" class=\"data row1 col6\" >6.531</td>\n",
+       "      <td id=\"T_5b16a_row1_col7\" class=\"data row1 col7\" >1.145</td>\n",
+       "      <td id=\"T_5b16a_row1_col8\" class=\"data row1 col8\" >1.040</td>\n",
+       "      <td id=\"T_5b16a_row1_col9\" class=\"data row1 col9\" >1.434</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th id=\"T_5b16a_level0_row2\" class=\"row_heading level0 row2\" >2</th>\n",
+       "      <td id=\"T_5b16a_row2_col0\" class=\"data row2 col0\" >4.800</td>\n",
+       "      <td id=\"T_5b16a_row2_col1\" class=\"data row2 col1\" >0.200</td>\n",
+       "      <td id=\"T_5b16a_row2_col2\" class=\"data row2 col2\" >14.462</td>\n",
+       "      <td id=\"T_5b16a_row2_col3\" class=\"data row2 col3\" >1.518</td>\n",
+       "      <td id=\"T_5b16a_row2_col4\" class=\"data row2 col4\" >0.649</td>\n",
+       "      <td id=\"T_5b16a_row2_col5\" class=\"data row2 col5\" >2.081</td>\n",
+       "      <td id=\"T_5b16a_row2_col6\" class=\"data row2 col6\" >7.306</td>\n",
+       "      <td id=\"T_5b16a_row2_col7\" class=\"data row2 col7\" >1.192</td>\n",
+       "      <td id=\"T_5b16a_row2_col8\" class=\"data row2 col8\" >1.040</td>\n",
+       "      <td id=\"T_5b16a_row2_col9\" class=\"data row2 col9\" >1.604</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th id=\"T_5b16a_level0_row3\" class=\"row_heading level0 row3\" >3</th>\n",
+       "      <td id=\"T_5b16a_row3_col0\" class=\"data row3 col0\" >3.800</td>\n",
+       "      <td id=\"T_5b16a_row3_col1\" class=\"data row3 col1\" >0.300</td>\n",
+       "      <td id=\"T_5b16a_row3_col2\" class=\"data row3 col2\" >13.367</td>\n",
+       "      <td id=\"T_5b16a_row3_col3\" class=\"data row3 col3\" >1.778</td>\n",
+       "      <td id=\"T_5b16a_row3_col4\" class=\"data row3 col4\" >0.740</td>\n",
+       "      <td id=\"T_5b16a_row3_col5\" class=\"data row3 col5\" >2.053</td>\n",
+       "      <td id=\"T_5b16a_row3_col6\" class=\"data row3 col6\" >7.840</td>\n",
+       "      <td id=\"T_5b16a_row3_col7\" class=\"data row3 col7\" >1.046</td>\n",
+       "      <td id=\"T_5b16a_row3_col8\" class=\"data row3 col8\" >1.026</td>\n",
+       "      <td id=\"T_5b16a_row3_col9\" class=\"data row3 col9\" >1.470</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th id=\"T_5b16a_level0_row4\" class=\"row_heading level0 row4\" >4</th>\n",
+       "      <td id=\"T_5b16a_row4_col0\" class=\"data row4 col0\" >4.300</td>\n",
+       "      <td id=\"T_5b16a_row4_col1\" class=\"data row4 col1\" >0.300</td>\n",
+       "      <td id=\"T_5b16a_row4_col2\" class=\"data row4 col2\" >15.468</td>\n",
+       "      <td id=\"T_5b16a_row4_col3\" class=\"data row4 col3\" >1.778</td>\n",
+       "      <td id=\"T_5b16a_row4_col4\" class=\"data row4 col4\" >0.712</td>\n",
+       "      <td id=\"T_5b16a_row4_col5\" class=\"data row4 col5\" >2.054</td>\n",
+       "      <td id=\"T_5b16a_row4_col6\" class=\"data row4 col6\" >8.966</td>\n",
+       "      <td id=\"T_5b16a_row4_col7\" class=\"data row4 col7\" >1.086</td>\n",
+       "      <td id=\"T_5b16a_row4_col8\" class=\"data row4 col8\" >1.027</td>\n",
+       "      <td id=\"T_5b16a_row4_col9\" class=\"data row4 col9\" >1.681</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th id=\"T_5b16a_level0_row5\" class=\"row_heading level0 row5\" >5</th>\n",
+       "      <td id=\"T_5b16a_row5_col0\" class=\"data row5 col0\" >4.800</td>\n",
+       "      <td id=\"T_5b16a_row5_col1\" class=\"data row5 col1\" >0.300</td>\n",
+       "      <td id=\"T_5b16a_row5_col2\" class=\"data row5 col2\" >17.890</td>\n",
+       "      <td id=\"T_5b16a_row5_col3\" class=\"data row5 col3\" >1.778</td>\n",
+       "      <td id=\"T_5b16a_row5_col4\" class=\"data row5 col4\" >0.684</td>\n",
+       "      <td id=\"T_5b16a_row5_col5\" class=\"data row5 col5\" >2.054</td>\n",
+       "      <td id=\"T_5b16a_row5_col6\" class=\"data row5 col6\" >10.187</td>\n",
+       "      <td id=\"T_5b16a_row5_col7\" class=\"data row5 col7\" >1.131</td>\n",
+       "      <td id=\"T_5b16a_row5_col8\" class=\"data row5 col8\" >1.027</td>\n",
+       "      <td id=\"T_5b16a_row5_col9\" class=\"data row5 col9\" >1.910</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th id=\"T_5b16a_level0_row6\" class=\"row_heading level0 row6\" >6</th>\n",
+       "      <td id=\"T_5b16a_row6_col0\" class=\"data row6 col0\" >3.800</td>\n",
+       "      <td id=\"T_5b16a_row6_col1\" class=\"data row6 col1\" >0.400</td>\n",
+       "      <td id=\"T_5b16a_row6_col2\" class=\"data row6 col2\" >15.581</td>\n",
+       "      <td id=\"T_5b16a_row6_col3\" class=\"data row6 col3\" >2.037</td>\n",
+       "      <td id=\"T_5b16a_row6_col4\" class=\"data row6 col4\" >0.761</td>\n",
+       "      <td id=\"T_5b16a_row6_col5\" class=\"data row6 col5\" >2.040</td>\n",
+       "      <td id=\"T_5b16a_row6_col6\" class=\"data row6 col6\" >9.820</td>\n",
+       "      <td id=\"T_5b16a_row6_col7\" class=\"data row6 col7\" >1.017</td>\n",
+       "      <td id=\"T_5b16a_row6_col8\" class=\"data row6 col8\" >1.020</td>\n",
+       "      <td id=\"T_5b16a_row6_col9\" class=\"data row6 col9\" >1.607</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th id=\"T_5b16a_level0_row7\" class=\"row_heading level0 row7\" >7</th>\n",
+       "      <td id=\"T_5b16a_row7_col0\" class=\"data row7 col0\" >4.300</td>\n",
+       "      <td id=\"T_5b16a_row7_col1\" class=\"data row7 col1\" >0.400</td>\n",
+       "      <td id=\"T_5b16a_row7_col2\" class=\"data row7 col2\" >18.295</td>\n",
+       "      <td id=\"T_5b16a_row7_col3\" class=\"data row7 col3\" >2.037</td>\n",
+       "      <td id=\"T_5b16a_row7_col4\" class=\"data row7 col4\" >0.733</td>\n",
+       "      <td id=\"T_5b16a_row7_col5\" class=\"data row7 col5\" >2.040</td>\n",
+       "      <td id=\"T_5b16a_row7_col6\" class=\"data row7 col6\" >11.362</td>\n",
+       "      <td id=\"T_5b16a_row7_col7\" class=\"data row7 col7\" >1.056</td>\n",
+       "      <td id=\"T_5b16a_row7_col8\" class=\"data row7 col8\" >1.020</td>\n",
+       "      <td id=\"T_5b16a_row7_col9\" class=\"data row7 col9\" >1.859</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th id=\"T_5b16a_level0_row8\" class=\"row_heading level0 row8\" >8</th>\n",
+       "      <td id=\"T_5b16a_row8_col0\" class=\"data row8 col0\" >4.800</td>\n",
+       "      <td id=\"T_5b16a_row8_col1\" class=\"data row8 col1\" >0.400</td>\n",
+       "      <td id=\"T_5b16a_row8_col2\" class=\"data row8 col2\" >21.428</td>\n",
+       "      <td id=\"T_5b16a_row8_col3\" class=\"data row8 col3\" >2.037</td>\n",
+       "      <td id=\"T_5b16a_row8_col4\" class=\"data row8 col4\" >0.703</td>\n",
+       "      <td id=\"T_5b16a_row8_col5\" class=\"data row8 col5\" >2.041</td>\n",
+       "      <td id=\"T_5b16a_row8_col6\" class=\"data row8 col6\" >13.028</td>\n",
+       "      <td id=\"T_5b16a_row8_col7\" class=\"data row8 col7\" >1.100</td>\n",
+       "      <td id=\"T_5b16a_row8_col8\" class=\"data row8 col8\" >1.020</td>\n",
+       "      <td id=\"T_5b16a_row8_col9\" class=\"data row8 col9\" >2.132</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n"
+      ],
+      "text/plain": [
+       "<pandas.io.formats.style.Styler at 0x7f96d426bfa0>"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df = pd.DataFrame(columns=['β_T', 'V', 'z', 'λ_q', 'r*','g*','q*','γR','γG','γQ'])\n",
+    "\n",
+    "for V in [0.2,0.3,0.4]:\n",
+    "    for beta_t in [3.8,4.3,4.8]:\n",
+    "        z, form = calibration(reliability,Xk=15.0,beta_t=beta_t,V=V)\n",
+    "        R,G,Q = form.model.getMarginalDistributions()\n",
+    "        Rk = R.ppf(0.05)\n",
+    "        Gk = G.ppf(0.5)\n",
+    "        Qk = Q.ppf(0.98)\n",
+    "        Xk = np.array([Rk,Gk,Qk])\n",
+    "        Xstar = form.getDesignPoint(False)\n",
+    "        γ = Xstar/Xk\n",
+    "\n",
+    "        df.loc[len(df.index)] = [beta_t, V, z[0], Qk/Q.mean,*Xstar,1/γ[0],*γ[1:]]\n",
+    "\n",
+    "df.style.format('{:.3f}')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "11fbaf25-1513-46d3-b674-1eb880c448fd",
+   "metadata": {},
+   "source": [
+    "## Load Combinations"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "567eef62-d982-47bd-90a2-0c6b4bcabde1",
+   "metadata": {},
+   "source": [
+    "### Example 2\n",
+    "Taken from Sorensen (2004), Example 4, pp.190-1. Notes: \n",
+    "\n",
+    "1. The loads described as $Q_1$ and $Q_2$, are not the point-in-time loads, but the annual maxima distributions, from which the point-in-time loads are to be inferred.\n",
+    "2. There is an error in the textbook, and the wind load $Q_2$ is not taken as occurring $r_2 = 360$ times per year as stated, but instead $r_2=2$ per year. \n",
+    "\n",
+    "Only with these adaptations, do the results match."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "id": "93bb2196-3ea6-4d5a-9c10-9aff7df49674",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def lsf(z,R,G,Q1,Q2):\n",
+    "    return z*R - (0.4*G + 0.6*Q1 + 0.3*Q2)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "id": "434797c0-a31a-42e1-9f44-c965437ad320",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Point-in-time & annual max distributions\n",
+    "Q1max = pr.Gumbel(\"Q1\",1,0.2)\n",
+    "Q2max = pr.Gumbel(\"Q2\",1,0.4)\n",
+    "# Parameters of inferred parents\n",
+    "Q1pit = pr.Gumbel(\"Q1\",0.89, 0.2)\n",
+    "Q2pit = pr.Gumbel(\"Q2\",0.77, 0.4)\n",
+    "# Using new Parent distribution from pystra (not yet merged)\n",
+    "#Q1pit = pr.Parent(\"Q1\",Q1max,2)\n",
+    "#Q2pit = pr.Parent(\"Q2\",Q2max,2)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "id": "824a31b8-c1e0-4722-924e-21dac8b1b01d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def reliability(z=1.0,lc=1):\n",
+    "    ls = pr.LimitState(lsf)\n",
+    "    sm = pr.StochasticModel()\n",
+    "    sm.addVariable(pr.Constant(\"z\", z))\n",
+    "    sm.addVariable(pr.Lognormal(\"R\", 1.0,0.15))\n",
+    "    sm.addVariable(pr.Normal(\"G\", 1, 0.1))\n",
+    "    \n",
+    "    # Choose distribution depending on load case\n",
+    "    if lc == 2:\n",
+    "        sm.addVariable(Q1pit)\n",
+    "        sm.addVariable(Q2max) \n",
+    "    else:\n",
+    "        sm.addVariable(Q1max)\n",
+    "        sm.addVariable(Q2pit)\n",
+    "    \n",
+    "    form = pr.Form(sm,ls)\n",
+    "    form.run()\n",
+    "    \n",
+    "    return form"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "id": "f4610f5e-838e-4e34-9a2b-f9fb4f37a091",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "β = 4.2999999997675875 | α = [-0.64155965  0.08627279  0.53896114  0.53896114] | x* = [0.65528626 1.03713177 1.62355976 2.01711952]\n"
+     ]
+    }
+   ],
+   "source": [
+    "lc = 1\n",
+    "Rk_1, form_1 = calibration(reliability,Xk=3.0,beta_t=4.3,lc=lc)\n",
+    "print_form_results(form_1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "id": "2f864085-c752-49e8-8907-cc03e708fe6f",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "β = 4.299999999615988 | α = [-0.64216869  0.08625869  0.53859949  0.53859949] | x* = [0.65502999 1.0371257  1.51291126 2.24582252]\n"
+     ]
+    }
+   ],
+   "source": [
+    "lc = 2\n",
+    "Rk_2, form_2 = calibration(reliability,Xk=3.0,beta_t=4.3,lc=lc)\n",
+    "print_form_results(form_2)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "id": "3eddd5f4-b907-45ca-94be-da16a5cbbe2c",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "array([1.51845518, 2.03691035])"
+      ]
+     },
+     "execution_count": 14,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "Qk = np.array([Q1max.ppf(0.98),Q2max.ppf(0.98)])\n",
+    "Qk"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "id": "d904cbc5-d1ed-447f-aab0-19e387449a19",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "array([[1.62355976, 1.51291126],\n",
+       "       [2.01711952, 2.24582252]])"
+      ]
+     },
+     "execution_count": 15,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "Q_star = np.array([ form_1.getDesignPoint(False)[-2:], form_2.getDesignPoint(False)[-2:] ]).T\n",
+    "Q_star"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "id": "8141b08f-97e0-4ded-a681-3898319b44c7",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "array([[1.0692181 , 0.99634898],\n",
+       "       [0.9902839 , 1.10256326]])"
+      ]
+     },
+     "execution_count": 16,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "γ = Q_star/Qk[:,None]\n",
+    "γ"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "id": "f77ad3b5-5ee3-4cdb-ada5-ae820d231c27",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "array([[1.        , 0.90366604],\n",
+       "       [0.92617577, 1.        ]])"
+      ]
+     },
+     "execution_count": 17,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "ψ = γ/np.diag(γ)\n",
+    "ψ"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "c730f46a-f331-4882-8d50-ca5377d1bcae",
+   "metadata": {},
+   "source": [
+    "### Tuning of Sorensen's parameters\n",
+    "\n",
+    "Because of the error in the textbook, quite a bit of exploratory work was needed to find the cause."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "id": "17f82e5c-dc06-493e-9c9d-f0b84d9600ef",
+   "metadata": {
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "def reliability2(z,x):\n",
+    "    ls = pr.LimitState(lsf)\n",
+    "    sm = pr.StochasticModel()\n",
+    "    sm.addVariable(pr.Constant(\"z\", z))\n",
+    "    sm.addVariable(pr.Lognormal(\"R\", 1.0,0.15))\n",
+    "    sm.addVariable(pr.Normal(\"G\", 1, 0.1))\n",
+    "    \n",
+    "    # To find Sorensen's parameters\n",
+    "    Q1max = pr.Gumbel(\"Q1\",1,0.2)\n",
+    "    Q2max = pr.Gumbel(\"Q2\",1,0.4)\n",
+    "    \n",
+    "    # Opt = 0.57917817, 0.42796312\n",
+    "    # 0.89089033, 0.19967346\n",
+    "    #Q1pit = pr.Gumbel(\"Q1\",x[0],x[1])\n",
+    "    #sm.addVariable(Q1pit)\n",
+    "    #sm.addVariable(Q2max)\n",
+    "    \n",
+    "    # Opt = 0.77089986, 0.40104018\n",
+    "    # 0.57917817, 0.42796312\n",
+    "    Q2pit = pr.Gumbel(\"Q2\",x[0],x[1])\n",
+    "    sm.addVariable(Q1max)\n",
+    "    sm.addVariable(Q2pit)    \n",
+    "    \n",
+    "    form = pr.Form(sm,ls)\n",
+    "    form.run()\n",
+    "    \n",
+    "    return form"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "id": "bca040d4-831b-4ddf-b326-4ba8e1a58d74",
+   "metadata": {
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "x=array([0.5, 0.4]) | x_star=array([0.66232795, 1.03729168, 1.64100382, 1.78200764]) | diff=array([ 0.02100382, -0.24799236])\n",
+      "x=array([0.525, 0.4  ]) | x_star=array([0.66166597, 1.03727721, 1.63939433, 1.80378866]) | diff=array([ 0.01939433, -0.22621134])\n",
+      "x=array([0.5 , 0.42]) | x_star=array([0.66544148, 1.03626096, 1.54713615, 2.07118623]) | diff=array([-0.07286385,  0.04118623])\n",
+      "x=array([0.525, 0.42 ]) | x_star=array([0.66478769, 1.0362482 , 1.54608407, 2.0918623 ]) | diff=array([-0.07391593,  0.0618623 ])\n",
+      "x=array([0.5 , 0.44]) | x_star=array([0.66930354, 1.03509884, 1.46600765, 2.35300155]) | diff=array([-0.15399235,  0.32300155])\n",
+      "x=array([0.51875, 0.41   ]) | x_star=array([0.66327997, 1.03677549, 1.59243344, 1.94129855]) | diff=array([-0.02756656, -0.08870145])\n",
+      "x=array([0.49375, 0.41   ]) | x_star=array([0.66393778, 1.03678912, 1.5937528 , 1.92008426]) | diff=array([-0.0262472 , -0.10991574])\n",
+      "x=array([0.5171875, 0.4175   ]) | x_star=array([0.66455493, 1.03638747, 1.55744632, 2.04957956]) | diff=array([-0.06255368,  0.01957956])\n",
+      "x=array([0.4984375, 0.4275   ]) | x_star=array([0.66686613, 1.03583925, 1.51473512, 2.17784369]) | diff=array([-0.10526488,  0.14784369])\n",
+      "x=array([0.51367188, 0.414375  ]) | x_star=array([0.66411715, 1.03655487, 1.57199515, 2.00107693]) | diff=array([-0.04800485, -0.02892307])\n",
+      "x=array([0.53085937, 0.411875  ]) | x_star=array([0.66325726, 1.03667474, 1.58309353, 1.97855706]) | diff=array([-0.03690647, -0.05144294])\n",
+      "x=array([0.52734375, 0.40875   ]) | x_star=array([0.66286125, 1.03683271, 1.59810869, 1.93003499]) | diff=array([-0.02189131, -0.09996501])\n",
+      "x=array([0.51972656, 0.4153125 ]) | x_star=array([0.66411481, 1.03650258, 1.56740929, 2.01973005]) | diff=array([-0.05259071, -0.01026995])\n",
+      "x=array([0.50253906, 0.4178125 ]) | x_star=array([0.66499265, 1.03637827, 1.55668493, 2.04192436]) | diff=array([-0.06331507,  0.01192436])\n",
+      "x=array([0.5237793 , 0.41335938]) | x_star=array([0.66368437, 1.03660228, 1.57629251, 1.9946361 ]) | diff=array([-0.04370749, -0.0353639 ])\n",
+      "x=array([0.50961914, 0.41632813]) | x_star=array([0.66455012, 1.03645446, 1.56339191, 2.02569273]) | diff=array([-0.05660809, -0.00430727])\n",
+      "x=array([0.52023926, 0.41410156]) | x_star=array([0.66389974, 1.03656561, 1.57293849, 2.00262416]) | diff=array([-0.04706151, -0.02737584])\n",
+      "x=array([0.52629395, 0.41503906]) | x_star=array([0.66389701, 1.03651345, 1.56835008, 2.02126908]) | diff=array([-0.05164992, -0.00873092])\n",
+      "x=array([0.53260498, 0.41537109]) | x_star=array([0.66378758, 1.03649268, 1.56653866, 2.03135067]) | diff=array([-0.05346134,  0.00135067])\n",
+      "x=array([0.52578125, 0.41625   ]) | x_star=array([0.66411362, 1.03645011, 1.56300421, 2.03805401]) | diff=array([-0.05699579,  0.00805401])\n",
+      "x=array([0.52162476, 0.41463867]) | x_star=array([0.66395247, 1.03653689, 1.57040439, 2.01156379]) | diff=array([-0.04959561, -0.01843621])\n",
+      "x=array([0.52819214, 0.41436523]) | x_star=array([0.66373505, 1.03654765, 1.57134511, 2.01311218]) | diff=array([-0.04865489, -0.01688782])\n",
+      "x=array([0.53242493, 0.4138916 ]) | x_star=array([0.66354525, 1.03657014, 1.57342261, 2.00959382]) | diff=array([-0.04657739, -0.02040618])\n",
+      "x=array([0.53709412, 0.41429199]) | x_star=array([0.66348997, 1.03654671, 1.57125405, 2.01951915]) | diff=array([-0.04874595, -0.01048085])\n",
+      "x=array([0.5448288 , 0.41411865]) | x_star=array([0.66325712, 1.03655199, 1.57197036, 2.02289562]) | diff=array([-0.04802964, -0.00710438])\n",
+      "x=array([0.55095978, 0.41297119]) | x_star=array([0.6629098 , 1.0366076 , 1.57674026, 2.0118993 ]) | diff=array([-0.04325974, -0.0181007 ])\n",
+      "x=array([0.56329269, 0.41193726]) | x_star=array([0.66241895, 1.03665393, 1.5811594 , 2.0068347 ]) | diff=array([-0.0388406, -0.0231653])\n",
+      "x=array([0.57569656, 0.41216431]) | x_star=array([0.66213188, 1.03663565, 1.57949208, 2.02055396]) | diff=array([-0.04050792, -0.00944604])\n",
+      "x=array([0.59733238, 0.41130066]) | x_star=array([0.66143039, 1.03666731, 1.5823268 , 2.02649632]) | diff=array([-0.0376732 , -0.00350368])\n",
+      "x=array([0.61579628, 0.40911926]) | x_star=array([0.66060744, 1.03676537, 1.59160755, 2.01056159]) | diff=array([-0.02839245, -0.01943841])\n",
+      "x=array([0.65128002, 0.40661957]) | x_star=array([0.65930885, 1.03686564, 1.60128464, 2.00516695]) | diff=array([-0.01871536, -0.02483305])\n",
+      "x=array([0.68531971, 0.40598297]) | x_star=array([0.65833535, 1.03687592, 1.602188  , 2.02551776]) | diff=array([-0.017812  , -0.00448224])\n",
+      "x=array([0.74633322, 0.40300583]) | x_star=array([0.65633869, 1.03697676, 1.61246693, 2.0360136 ]) | diff=array([-0.00753307,  0.0060136 ])\n",
+      "x=array([0.80028086, 0.39832474]) | x_star=array([0.65433102, 1.03714747, 1.62826409, 2.02308261]) | diff=array([ 0.00826409, -0.00691739])\n",
+      "x=array([0.89533405, 0.394711  ]) | x_star=array([0.65146795, 1.03723526, 1.63794491, 2.05846968]) | diff=array([0.01794491, 0.02846968])\n",
+      "x=array([0.71229353, 0.40364243]) | x_star=array([0.65730277, 1.03696822, 1.61151538, 2.01567265]) | diff=array([-0.00848462, -0.01432735])\n",
+      "x=array([0.83432055, 0.39768814]) | x_star=array([0.65338224, 1.03715298, 1.62883254, 2.04435203]) | diff=array([0.00883254, 0.01435203])\n",
+      "x=array([0.74280028, 0.40215385]) | x_star=array([0.6563113 , 1.03701692, 1.61655139, 2.02125901]) | diff=array([-0.00344861, -0.00874099])\n",
+      "x=array([0.68885264, 0.40683495]) | x_star=array([0.6583702 , 1.03683377, 1.59817282, 2.04031302]) | diff=array([-0.02182718,  0.01031302])\n",
+      "x=array([0.7724238 , 0.40045229]) | x_star=array([0.6552842 , 1.03711075, 1.62200565, 2.02407119]) | diff=array([ 0.00200565, -0.00592881])\n",
+      "x=array([0.76889087, 0.39960032]) | x_star=array([0.65526189, 1.03714967, 1.6248676 , 2.01187934]) | diff=array([ 0.0048676 , -0.01812066])\n",
+      "x=array([0.75197263, 0.40215445]) | x_star=array([0.65607612, 1.03701139, 1.61597496, 2.02921361]) | diff=array([-0.00402504, -0.00078639])\n",
+      "x=array([0.78159615, 0.40045289]) | x_star=array([0.65504934, 1.03710516, 1.62141196, 2.0320543 ]) | diff=array([0.00141196, 0.0020543 ])\n",
+      "x=array([0.80099408, 0.3996024 ]) | x_star=array([0.65444028, 1.03713003, 1.62276948, 2.0398582 ]) | diff=array([0.00276948, 0.0098582 ])\n",
+      "x=array([0.76114498, 0.40215505]) | x_star=array([0.65584122, 1.03700584, 1.6153984 , 2.03716795]) | diff=array([-0.0046016 ,  0.00716795])\n",
+      "x=array([0.7696041 , 0.40087798]) | x_star=array([0.65544701, 1.03705954, 1.62064839, 2.02702115]) | diff=array([ 0.00064839, -0.00297885])\n",
+      "x=array([0.79922762, 0.39917641]) | x_star=array([0.65446417, 1.03711484, 1.62459217, 2.03339245]) | diff=array([0.00459217, 0.00339245])\n",
+      "x=array([0.76378638, 0.40140994]) | x_star=array([0.6556713 , 1.03703742, 1.61880204, 2.02887621]) | diff=array([-0.00119796, -0.00112379])\n",
+      "x=array([0.77577843, 0.40098485]) | x_star=array([0.65530334, 1.03705116, 1.61988431, 2.03361186]) | diff=array([-0.00011569,  0.00361186])\n",
+      "x=array([0.77114768, 0.4009047 ]) | x_star=array([0.65541108, 1.03705745, 1.62045728, 2.02866899]) | diff=array([ 0.00045728, -0.00133101])\n",
+      "x=array([0.75333791, 0.40186175]) | x_star=array([0.65600083, 1.03702358, 1.6173862 , 2.02604753]) | diff=array([-0.0026138 , -0.00395247])\n",
+      "x=array([0.77453159, 0.4008051 ]) | x_star=array([0.65531115, 1.03705973, 1.62058429, 2.03046873]) | diff=array([0.00058429, 0.00046873])\n",
+      "x=array([0.78189289, 0.40029986]) | x_star=array([0.65502136, 1.0371116 , 1.62186435, 2.03067528]) | diff=array([0.00186435, 0.00067528])\n",
+      "x=array([0.76831301, 0.40113242]) | x_star=array([0.65551801, 1.03704681, 1.61954979, 2.02946495]) | diff=array([-0.00045021, -0.00053505])\n",
+      "x=array([0.77169692, 0.40103283]) | x_star=array([0.6554142 , 1.03705154, 1.61997973, 2.03061551]) | diff=array([-2.02694742e-05,  6.15506548e-04])\n",
+      "x=array([0.77197153, 0.40109689]) | x_star=array([0.6554196 , 1.03704614, 1.61944901, 2.0322154 ]) | diff=array([-0.00055099,  0.0022154 ])\n",
+      "x=array([0.76547833, 0.40136014]) | x_star=array([0.65562126, 1.03703858, 1.61888046, 2.02974507]) | diff=array([-0.00111954, -0.00025493])\n",
+      "x=array([0.77226828, 0.40094386]) | x_star=array([0.65538764, 1.03705507, 1.62025032, 2.03009186]) | diff=array([2.50317983e-04, 9.18620127e-05])\n",
+      "x=array([0.77565218, 0.40084427]) | x_star=array([0.65528773, 1.03705735, 1.62037733, 2.0318914 ]) | diff=array([0.00037733, 0.0018914 ])\n",
+      "x=array([0.7701478 , 0.40106038]) | x_star=array([0.65545754, 1.03705128, 1.61998358, 2.02958565]) | diff=array([-1.64184776e-05, -4.14346763e-04])\n",
+      "x=array([0.77071916, 0.40097142]) | x_star=array([0.65543098, 1.0370548 , 1.62025429, 2.02906167]) | diff=array([ 0.00025429, -0.00093833])\n",
+      "x=array([0.77145248, 0.40101747]) | x_star=array([0.65541839, 1.03705236, 1.62004836, 2.03022705]) | diff=array([4.83594299e-05, 2.27052709e-04])\n",
+      "x=array([0.77357295, 0.40090095]) | x_star=array([0.65534851, 1.03705614, 1.62031491, 2.03073383]) | diff=array([0.00031491, 0.00073383])\n",
+      "x=array([0.77100409, 0.40102053]) | x_star=array([0.65543028, 1.03705249, 1.62006649, 2.02987245]) | diff=array([ 6.64906822e-05, -1.27553176e-04])\n",
+      "x=array([0.77018829, 0.40109414]) | x_star=array([0.65546486, 1.03704734, 1.61957301, 2.03063329]) | diff=array([-0.00042699,  0.00063329])\n",
+      "x=array([0.77174828, 0.40098143]) | x_star=array([0.65540599, 1.03705375, 1.62015389, 2.03007075]) | diff=array([1.53885408e-04, 7.07478285e-05])\n",
+      "x=array([0.77129989, 0.40098448]) | x_star=array([0.65541787, 1.03705388, 1.62017203, 2.02971611]) | diff=array([ 0.00017203, -0.00028389])\n",
+      "x=array([0.77141433, 0.40100923]) | x_star=array([0.65541826, 1.03705274, 1.62007928, 2.03009931]) | diff=array([7.92760611e-05, 9.93148581e-05])\n",
+      "x=array([0.77067014, 0.40104832]) | x_star=array([0.65544255, 1.03705149, 1.61999186, 2.02990111]) | diff=array([-8.14279086e-06, -9.88914979e-05])\n",
+      "x=array([0.77013107, 0.40108177]) | x_star=array([0.65546466, 1.03704792, 1.6196228 , 2.03043478]) | diff=array([-0.0003772 ,  0.00043478])\n",
+      "x=array([0.77108038, 0.40103702]) | x_star=array([0.65543054, 1.03705173, 1.62000465, 2.03012794]) | diff=array([4.65400976e-06, 1.27940794e-04])\n",
+      "x=array([0.77106131, 0.4010329 ]) | x_star=array([0.65543047, 1.03705192, 1.62002011, 2.03006407]) | diff=array([2.01129125e-05, 6.40666884e-05])\n",
+      "x=array([0.77031712, 0.40107199]) | x_star=array([0.65545859, 1.03704823, 1.61964738, 2.03047885]) | diff=array([-0.00035262,  0.00047885])\n",
+      "x=array([0.77114003, 0.40102492]) | x_star=array([0.65542739, 1.03705222, 1.62004263, 2.03004094]) | diff=array([4.26342683e-05, 4.09380292e-05])\n",
+      "x=array([0.7715312 , 0.40100949]) | x_star=array([0.65541531, 1.03705266, 1.62007088, 2.03020394]) | diff=array([7.08776371e-05, 2.03935577e-04])\n",
+      "x=array([0.7708854 , 0.40103861]) | x_star=array([0.65543574, 1.03705178, 1.62001162, 2.0299768 ]) | diff=array([ 1.16170167e-05, -2.31999004e-05])\n",
+      "x=array([0.77096412, 0.40103063]) | x_star=array([0.65543265, 1.03705208, 1.62003414, 2.02995367]) | diff=array([ 3.41397438e-05, -4.63332143e-05])\n",
+      "x=array([0.7707095 , 0.40104433]) | x_star=array([0.65544101, 1.03705164, 1.62000312, 2.02988954]) | diff=array([ 3.11956131e-06, -1.10462137e-04])\n",
+      "x=array([0.7710324 , 0.40102977]) | x_star=array([0.65543079, 1.03705207, 1.62003276, 2.03000308]) | diff=array([3.27567670e-05, 3.08419557e-06])\n",
+      "x=array([0.77095368, 0.40103775]) | x_star=array([0.65543388, 1.03705178, 1.62001023, 2.03002622]) | diff=array([1.02345193e-05, 2.62162917e-05])\n",
+      "x=array([0.77080669, 0.40104659]) | x_star=array([0.65543883, 1.03705148, 1.61998909, 2.02999994]) | diff=array([-1.09065291e-05, -6.21627114e-08])\n",
+      "x=array([0.77069383, 0.40105501]) | x_star=array([0.65544284, 1.03705118, 1.61996726, 2.02999837]) | diff=array([-3.27401646e-05, -1.62679345e-06])\n",
+      "x=array([0.77073841, 0.40104746]) | x_star=array([0.65544069, 1.03705148, 1.61999048, 2.02995052]) | diff=array([-9.52460827e-06, -4.94769340e-05])\n",
+      "x=array([0.77089986, 0.40104018]) | x_star=array([0.65543558, 1.0370517 , 1.6200053 , 2.03000729]) | diff=array([5.29503172e-06, 7.29203283e-06])\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       " final_simplex: (array([[0.77089986, 0.40104018],\n",
+       "       [0.77080669, 0.40104659],\n",
+       "       [0.7708854 , 0.40103861]]), array([9.01172036e-06, 1.09067063e-05, 2.59459141e-05]))\n",
+       "           fun: 9.011720358810416e-06\n",
+       "       message: 'Optimization terminated successfully.'\n",
+       "          nfev: 84\n",
+       "           nit: 44\n",
+       "        status: 0\n",
+       "       success: True\n",
+       "             x: array([0.77089986, 0.40104018])"
+      ]
+     },
+     "execution_count": 19,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "def obj_func(x):\n",
+    "    z, form = calibration(reliability2,Xk=3.0,beta_t=4.3,output=False,x=x)\n",
+    "    x_star = form.getDesignPoint(False)\n",
+    "    diff = x_star[2:] - np.array([1.62, 2.03]) # np.array([1.51, 2.25])\n",
+    "    \n",
+    "    print(f\"{x=} | {x_star=} | {diff=}\")\n",
+    "    \n",
+    "    return np.linalg.norm(diff)\n",
+    "\n",
+    "x_opt = minimize(obj_func,x0=[0.5,0.4],method='Nelder-Mead',bounds=[(0.1,1.2),(0.1,0.6)])\n",
+    "x_opt"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "id": "3dcb12e9-4a93-40d8-a51b-c85184727673",
+   "metadata": {
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "μ = 0.9945140544050539, σ = 0.19886141286282355\n"
+     ]
+    },
+    {
+     "data": {
+      "image/png": "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X//6l2VZlrVgwQJr2rRpvuMPHz5sde3a1Zo/f7514MABa+nSpVZERIS1adOmUC2hRQJd/+rVq63IyEhr6dKl1okTJ3xbRUVFqJbQIoGu/4fa+7t4Al1/VVWV1bNnT+vOO++09u3bZxUWFlpXX321dd9994VqCS0S6PpXrlxpRUZGWsuWLbMOHTpkffzxx9aIESOsUaNGhWoJLTJnzhzL4XBYW7du9fvv+fvvv/cd88O//5988okVGRlpPffcc9aBAwesnJwcq1OnTtbevXtbPA+Bch4vv/yy1atXLysqKsoaNWqUtWPHDt91N954ozVjxgy/47dv326lpKRYNpvN6tevn/WHP/zBqq+vb+OpW08g66+rq7Mef/xx68orr7Q6d+5sJSUlWQ888ID173//u+0Hb6G///3vlqRztrPrnTFjhnXjjTeec5trr73WioqKsvr162etXLmyzeduLYGu/8Ybb7zg8e1Nc/73/1/tPVCas/4DBw5YqampVpcuXayePXtaWVlZfg9o7Ulz1v/SSy9ZycnJVpcuXayEhARr6tSp1jfffNP2w7eCptYuye9vWlOPf2+++abVv39/KyoqyrrmmmusDRs2tMo8Yf8/FAAAgDF4DQoAADAOgQIAAIxDoAAAAOMQKAAAwDgECgAAMA6BAgAAjEOgAAAA4xAoAADAOAQKAAAwDoECAACMQ6AAAADjECgAAMA4/we9W0CcR1dJ8QAAAABJRU5ErkJggg==\n",
+      "text/plain": [
+       "<Figure size 640x480 with 1 Axes>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "d = pr.Gumbel(\"Q1\",0.89, 0.2)\n",
+    "x_max = sample_maxima(d,2)\n",
+    "l,s = gumbel_r.fit(x_max)\n",
+    "μ,σ2 = gumbel_r.stats(loc=l,scale=s)\n",
+    "print(f\"μ = {μ}, σ = {np.sqrt(σ2)}\")\n",
+    "plt.hist(x_max);"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "id": "964b367f-8541-42eb-acbd-63494e248254",
+   "metadata": {
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "μ = 0.9732278811236599, σ = 0.40276033866477273\n"
+     ]
+    },
+    {
+     "data": {
+      "image/png": "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\n",
+      "text/plain": [
+       "<Figure size 640x480 with 1 Axes>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "d = pr.Gumbel(\"Q2\",0.77, 0.40)\n",
+    "x_max = sample_maxima(d,2)\n",
+    "l,s = gumbel_r.fit(x_max)\n",
+    "μ,σ2 = gumbel_r.stats(loc=l,scale=s)\n",
+    "print(f\"μ = {μ}, σ = {np.sqrt(σ2)}\")\n",
+    "plt.hist(x_max);"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "6db0e584-3c73-4fbe-8e58-26a6a81f5302",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "pystra",
+   "language": "python",
+   "name": "pystra"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.10.5"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

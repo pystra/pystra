@@ -367,15 +367,15 @@
 <span class="sd">    formula, which is more accurate for lower values of \\beta.</span>
 
 <span class="sd">    :Attributes:</span>
-<span class="sd">      - analysis_option (AnalysisOption): Option for the structural analysis</span>
-<span class="sd">      - limit_state (LimitState): Information about the limit state</span>
 <span class="sd">      - stochastic_model (StochasticModel): Information about the model</span>
+<span class="sd">      - limit_state (LimitState): Information about the limit state</span>
+<span class="sd">      - analysis_option (AnalysisOption): Option for the structural analysis</span>
 <span class="sd">      - form (Form): Form object, if a FORM analysis has already been completed</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">analysis_options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stochastic_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">stochastic_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">analysis_options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Class constructor</span>
@@ -388,7 +388,11 @@
 
         <span class="c1"># Has FORM already been run? If it exists it has, otherwise run it now</span>
         <span class="k">if</span> <span class="n">form</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">limitstate</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span>
+                <span class="n">stochastic_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+                <span class="n">limit_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">limitstate</span><span class="p">,</span>
+                <span class="n">analysis_options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
+            <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">form</span> <span class="o">=</span> <span class="n">form</span>

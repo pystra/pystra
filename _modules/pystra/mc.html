@@ -512,7 +512,7 @@
 <div class="viewcode-block" id="MonteCarlo.computeBeta"><a class="viewcode-back" href="../../gen/pystra.mc.MonteCarlo.html#pystra.mc.MonteCarlo.computeBeta">[docs]</a>    <span class="k">def</span> <span class="nf">computeBeta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Compute beta value&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sum_q</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="o">-</span><span class="n">StdNormal</span><span class="o">.</span><span class="n">inv_cdf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Pf</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="o">-</span><span class="n">StdNormal</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Pf</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="mi">0</span></div>
 
@@ -772,7 +772,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">analysis_options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stochastic_model</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">FormAnalysis</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">analysis_options</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="n">stochastic_model</span><span class="p">)</span>
+        <span class="n">FormAnalysis</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span>
+            <span class="n">stochastic_model</span><span class="o">=</span><span class="n">stochastic_model</span><span class="p">,</span>
+            <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
+            <span class="n">analysis_options</span><span class="o">=</span><span class="n">analysis_options</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">FormAnalysis</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
         <span class="n">u</span> <span class="o">=</span> <span class="n">FormAnalysis</span><span class="o">.</span><span class="n">getDesignPoint</span><span class="p">()</span>
         <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">([</span><span class="n">u</span><span class="p">])</span>
