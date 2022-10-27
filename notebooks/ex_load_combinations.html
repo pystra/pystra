@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sensitivity Analysis &#8212; PySTRA 1.1.0 documentation</title>
+    <title>Load Combinations &#8212; PySTRA 1.1.0 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -39,11 +39,11 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/ex_sensitivity';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/ex_load_combinations';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Direct Differentiation Method" href="ex_ddm.html" />
-    <link rel="prev" title="SciPy Distribution Example" href="ex_scipy_distributions.html" />
+    <link rel="next" title="API Reference" href="../api.html" />
+    <link rel="prev" title="Pystra Timing" href="ex_timing.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
   </head>
@@ -330,10 +330,10 @@
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introductory Turorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ex_intro.html">Example from the Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ex_scipy_distributions.html">SciPy Distribution Example</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Sensitivity Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_sensitivity.html">Sensitivity Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ex_ddm.html">Direct Differentiation Method</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ex_timing.html">Pystra Timing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ex_load_combinations.html">Load Combinations</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Load Combinations</a></li>
 </ul>
 
   </div>
@@ -618,106 +618,122 @@ div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
-<div class="section" id="Sensitivity-Analysis">
-<h1>Sensitivity Analysis<a class="headerlink" href="#Sensitivity-Analysis" title="Permalink to this heading">#</a></h1>
-<p>This is Example 2 of Bourinet (2017), which gives analytical solutions as:</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}\begin{align}
-\frac{\partial\beta}{\partial\mu_R} &amp;= 0.5184 \\
-\frac{\partial\beta}{\partial\sigma_R} &amp;= −0.2548 \\
-\frac{\partial\beta}{\partial\mu_S} &amp;= −1.3629 \\
-\frac{\partial\beta}{\partial\sigma_S} &amp;= 0.0445 \\
-\end{align}\end{split}\]</div>
-<p>See: Bourinet (2017), FORM Sensitivities to Distribution Parameters with the Nataf Transformation, P. Gardoni (ed.), Risk and Reliability Analysis: Theory and Applications, Springer Series in Reliability Engineering, DOI 10.1007/978-3-319-52425-2_12</p>
-<p>Import pystra as usual:</p>
+<div class="section" id="Load-Combinations">
+<h1>Load Combinations<a class="headerlink" href="#Load-Combinations" title="Permalink to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">Pystra</span></code> includes a range of tools to enable the calculation of load combinations due to variable loads:</p>
+<ul class="simple">
+<li><p><strong>Zero-Inflated</strong> Distributions allow for a probability of non-occurence of a load</p></li>
+<li><p><strong>Maximum</strong> Distributions allow the distribution of maxima of a supplied parent or point-in-time distribution</p></li>
+<li><p><strong>MaxParent</strong> Distribution allows the determination of the point-in-time distribution from a supplied maximum.</p></li>
+</ul>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pystra as pr
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pystra as ra
+import numpy as np
+from matplotlib import pyplot as plt
 </pre></div>
 </div>
 </div>
-<p>Define the limit state function</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def lsf(R, S):
-    return R - S
-</pre></div>
-</div>
-</div>
-<p>And create the relevant <code class="docutils literal notranslate"><span class="pre">Pystra</span></code> objects:</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>limit_state = pr.LimitState(lsf)
-
-model = pr.StochasticModel()
-model.addVariable(pr.Lognormal(&quot;R&quot;, 5, 5))
-model.addVariable(pr.Lognormal(&quot;S&quot;, 1, 1))
-model.setCorrelation(pr.CorrelationMatrix([[1.0, 0.5], [0.5, 1.0]]))
-</pre></div>
-</div>
-</div>
-<p>Here we suppress the printed output from the analyses, as the sensitivity analysis runs FORM many times.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>options = pr.AnalysisOptions()
-options.setPrintOutput(False)
-</pre></div>
-</div>
-</div>
-<p>Do a FORM analysis so we have a record of the base result.</p>
+<div class="section" id="Zero-Inflated-Distribution">
+<h2>Zero-Inflated Distribution<a class="headerlink" href="#Zero-Inflated-Distribution" title="Permalink to this heading">#</a></h2>
 <div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[62]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>zin = ra.ZeroInflated(&#39;Q&#39;,ra.Gumbel(&quot;G&quot;, 0.5, 0.2),p=0.9)
+zin.zero_tol = 1e-2
+x = np.linspace(-0.5,1.5,1000)
+pdf = zin.pdf(x)
+cdf = zin.cdf(x)
+u = np.linspace(0,1,10001)
+ppf = zin.ppf(u)
+fig,axs = plt.subplot_mosaic([[&#39;a&#39;,&#39;c&#39;],[&#39;b&#39;,&#39;c&#39;]],sharex=True)
+ax = axs[&#39;a&#39;]
+ax.plot(x,pdf)
+ax.set_ylabel(&#39;$f(x)$&#39;)
+ax.grid()
+ax = axs[&#39;b&#39;]
+ax.plot(x,cdf,label=&#39;Direct from CDF&#39;)
+ax.plot(ppf,u,&#39;r:&#39;,label=&#39;From Inverse CDF&#39;)
+ax.set_ylabel(&#39;$F(x)$&#39;)
+ax.set_xlabel(&#39;$x$&#39;)
+ax.legend(loc=&#39;center right&#39;)
+ax.grid()
+ax = axs[&#39;c&#39;]
+ax.plot(x,-np.log(-np.log(cdf)))
+ax.set_ylabel(&#39;$-log[-log[F(x)]]$&#39;)
+ax.set_xlabel(&#39;$x$&#39;)
+ax.grid()
+plt.tight_layout();
+#fig.set_layout(&#39;tight&#39;);
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_ex_load_combinations_3_0.png" src="../_images/notebooks_ex_load_combinations_3_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>form = pr.Form(stochastic_model=model, limit_state=limit_state, analysis_options=options)
-form.run()
-form.showDetailedOutput()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def lsf(R,G,Q):
+    return R - (G + Q)
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-
-======================================================
-FORM
-======================================================
-Pf                       1.6927788976e-02
-BetaHL                   2.1217876054
-Model Evaluations        66
-------------------------------------------------------
-Variable            U_star             X_star        alpha
-R                -0.966683           1.580985    -0.455543
-S                 1.888784           1.580984    +0.890214
-======================================================
-
-</pre></div></div>
-</div>
-<p>Finally, we run the sensitivity analysis to find the sensitivity of the FORM result to the parameters of the stochastic model:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[63]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sens = pr.SensitivityAnalysis(stochastic_model=model, limit_state=limit_state, analysis_options=options)
-results = sens.run_form()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def reliability(p=0.0):
+    ls = ra.LimitState(lsf)
+    sm = ra.StochasticModel()
+    sm.addVariable(ra.Lognormal(&quot;R&quot;, 6.0,0.15))
+    sm.addVariable(ra.Normal(&quot;G&quot;, 4.5, 0.2))
+
+    g = ra.Gumbel(&quot;Q&quot;, 0.5, 0.2)
+    if p == 1.0:
+        sm.addVariable(ra.Constant(&quot;Q&quot;,0.0))
+    elif p == 0.0:
+        sm.addVariable(g)
+    else:
+        zig = ra.ZeroInflated(&quot;Q&quot;,g,p=p)
+        sm.addVariable(zig)
+
+    form = ra.Form(sm,ls)
+    form.run()
+
+    return form
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[67]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>betas = []
+ps = np.linspace(0,1.0,101)
+for p in ps:
+    form = reliability(p=p)
+    betas.append(form.beta)
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[71]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(results)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig,ax = plt.subplots()
+ax.plot(ps,betas,&#39;r.:&#39;)
+ax.set_xlabel(&#39;Probability of zero variable load, $p$&#39;)
+ax.set_ylabel(&#39;Reliability index, $β$&#39;)
+ax.grid();
 </pre></div>
 </div>
 </div>
@@ -725,9 +741,17 @@ results = sens.run_form()
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<div class="highlight"><pre>
-{&#39;R&#39;: {&#39;mean&#39;: 0.5155641831255604, &#39;std&#39;: -0.2545723002165454}, &#39;S&#39;: {&#39;mean&#39;: -1.3623019484605414, &#39;std&#39;: 0.04167433447075417}}
-</pre></div></div>
+<img alt="../_images/notebooks_ex_load_combinations_7_0.png" src="../_images/notebooks_ex_load_combinations_7_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 
@@ -739,17 +763,17 @@ results = sens.run_form()
             <footer class="bd-footer-article">
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="ex_scipy_distributions.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="ex_timing.html" title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">SciPy Distribution Example</p>
+          <p class="prev-next-title">Pystra Timing</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="ex_ddm.html" title="next page">
+  <a class='right-next' id="next-link" href="../api.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">Direct Differentiation Method</p>
+      <p class="prev-next-title">API Reference</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>
@@ -764,6 +788,23 @@ results = sens.run_form()
               
 <div class="toc-item">
   
+<div class="tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+</div>
+<nav id="bd-toc-nav" class="page-toc">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#Zero-Inflated-Distribution">
+   Zero-Inflated Distribution
+  </a>
+ </li>
+</ul>
+
+</nav>
+</div>
+
+<div class="toc-item">
+  
 <div id="searchbox"></div>
 </div>
 
@@ -771,7 +812,7 @@ results = sens.run_form()
   
 
 <div class="tocsection editthispage">
-    <a href="https://github.com/pystra/pystra/edit/main/docs/source/notebooks/ex_sensitivity.ipynb">
+    <a href="https://github.com/pystra/pystra/edit/main/docs/source/notebooks/ex_load_combinations.ipynb">
         <i class="fa-solid fa-pencil"></i> Edit this page
     </a>
 </div>
