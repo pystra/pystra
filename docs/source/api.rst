@@ -13,12 +13,11 @@ The API will appear here
 
     pystra.form
     pystra.sorm
-    pystra.cholesky
     pystra.correlation
     pystra.integration
     pystra.mc
     pystra.model
     pystra.quadrature
     pystra.sensitivity
-    pystra.stepsize
     pystra.transformation
+    pystra.distributions
