@@ -17,3 +17,4 @@ from .weibull import *
 from .maximum import *
 from .scipydist import *
 from .parent import *
+from .zeroinflated import *
