@@ -1,0 +1,587 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "6e11b992-aa12-455e-9293-c58ea93190ff",
+   "metadata": {},
+   "source": [
+    "# Load Calibration\n",
+    "*Pystra* includes the class `Calibration` which can be used to obtain calibrated load safety factors, $\\gamma$, resistance safety factor, $\\phi$, and load combination factors, $\\psi$. This example demonstrates running safety and combination factor calibration problems using *Pystra*."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "4ad051e1-2a2a-4f90-b5e5-0827693e79bb",
+   "metadata": {},
+   "source": [
+    "This demonstration problem is adopted from Example 4 pp 190-1 from Sorensen, J.D. (2004), *Notes in Structural Reliability Theory And Risk Analysis*, with the following error-fixes:\n",
+    "\n",
+    "1. The loads described as $Q_1$ and $Q_2$, are not the point-in-time loads, but the annual maxima distributions, from which the point-in-time loads are to be inferred.\n",
+    "2. There is an error in the textbook, and the wind load $Q_2$ is not taken as occurring $r_2 = 360$ times per year as stated, but instead $r_2=2$ per year. \n",
+    "\n",
+    "With these adaptations, the results of the calibration here match the results specified in Sorensen (2004).\n",
+    "\n",
+    "## Import Libraries"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "0c7b323d-8cf5-480f-91cc-f35a5c4e4035",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pystra as ra\n",
+    "import numpy as np"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "f08f35b7-1161-4c23-8968-1f0fe8a4512a",
+   "metadata": {},
+   "source": [
+    "## Define the limit state function for calibration\n",
+    "The LSF to be supplied in `LoadCombination` can be any valid *Pystra* LSF with one additional argument: a scalar design parameter for a random variable (generally, the resistance). Note that:\n",
+    "1. The design parameter must be specified as a `Pystra` constant with any arbitrary default value, such as `1.0`.\n",
+    "2. Only a single design parameter for the resistance random variable can be calibrated at a time.\n",
+    "\n",
+    "Keeping with the `LoadCombination` example, the design parameter for resistance, denoted $z$, is added to the LSF:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "4f3638db-52cd-41d7-87b4-ee9e32b55b9b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def lsf(z, R, G, Q1, Q2, cg):\n",
+    "    return z*R - (cg*G + 0.6*Q1 + 0.3*Q2)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "109206fc-f860-4bdb-88d9-45febddd4f17",
+   "metadata": {},
+   "source": [
+    "## Define the Load and Resistance distributions\n",
+    "\n",
+    "Next follow the creation of load combination objects, as explained for the `LoadCombination` object."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "d4e875bf-d685-42b2-ad0f-edf27978d93e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Annual max distributions\n",
+    "Q1max = ra.Gumbel(\"Q1\", 1, 0.2)  # Imposed Load\n",
+    "Q2max = ra.Gumbel(\"Q2\", 1, 0.4)  # Wind Load\n",
+    "# Parameters of inferred point-in-time parents\n",
+    "Q1pit = ra.Gumbel(\"Q1\", 0.89, 0.2)  # Imposed Load\n",
+    "Q2pit = ra.Gumbel(\"Q2\", 0.77, 0.4)  # Wind Load\n",
+    "Q_dict = {'Q1': {'max': Q1max, 'pit': Q1pit}, \n",
+    "          'Q2': {'max': Q2max, 'pit': Q2pit}}\n",
+    "# Constant values\n",
+    "cg = ra.Constant(\"cg\", 0.4)\n",
+    "z = ra.Constant(\"z\", 1)  # Design parameter for resistance with arbitrary default value\n",
+    "\n",
+    "## Define other random variables\n",
+    "Rdist = ra.Lognormal(\"R\", 1.0, 0.15)  # Resistance\n",
+    "Gdist = ra.Normal(\"G\", 1, 0.1)  # Permanent Load (other load variable)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "39a4d05d-8cfe-4787-bb0a-5d78d08acdd1",
+   "metadata": {},
+   "source": [
+    "## Instantiate `LoadCombination` object\n",
+    "Class `Calibration` requires specification of a `LoadCombination` object to run reliability analyses for different load cases."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "b414e150-2d67-4530-8e2c-424529901260",
+   "metadata": {},
+   "source": [
+    "### Setup load combination cases\n",
+    "For this problem, we're interested in investigating the reliabilities for two cases:\n",
+    "1. `Q1_max`: `Q1` is maximum and  `Q2` is the point-in-time distribution\n",
+    "2. `Q2_max`: `Q1` is the point-in-time distribution and  `Q2` is maximum"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "0482ebcb-28b3-4c77-b51e-3a0da5ad5d3b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "loadcombinations = {'Q1_max':['Q1'], 'Q2_max':['Q2']}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "6e48d8ca-c19d-4d9b-8b2e-7a11c3242eb7",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "lc = ra.LoadCombination(lsf, Q_dict, [Gdist], [Rdist], [z, cg],\n",
+    "                          dict_comb_cases=loadcombinations)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "6369bc65-6464-42d6-a163-f30771d82c64",
+   "metadata": {},
+   "source": [
+    "## Specify Nominal (or characteristic) values\n",
+    "In calibration problems, the safety and combination factors are calibrated with respect to a given nominal value of load and resistance distributions. Generally, these nominal values correspond to the characteristic value of the load or resistance, e.g. 95-percentile or 5-percentile value.\n",
+    "\n",
+    "Class `Calibration` requires specifying the nominal values as Python dictionary.\n",
+    "\n",
+    "For this problem, the combination loads use a 98-percentile value for nominal, and a 5-percentile for resistance; the permanent load nominal value is considered at its mean. These are found using the `ppf` function in each *Pystra* distribution object:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "3065f89f-f6e1-439e-b1de-391f0aa9a637",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "Qk = np.array([Q1max.ppf(0.98), Q2max.ppf(0.98)])\n",
+    "Gk = np.array([Gdist.ppf(0.5)])\n",
+    "Rk = np.array([Rdist.ppf(0.05)])\n",
+    "rvs_all = ['R', 'G', 'Q1', 'Q2', 'Q3']\n",
+    "dict_nom = dict(zip(rvs_all, np.concatenate([Rk, Gk, Qk])))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "0fd658d4-a764-4838-944b-91012eb9011f",
+   "metadata": {},
+   "source": [
+    "## Specify target reliability index, $\\beta_T$\n",
+    "In calibration problems, the safety and combination factors are calibrated to obtain a lower bound safety indicated by a target reliablity index, $\\beta_T$.\n",
+    "\n",
+    "Class `Calibration` requires specifying the target reliability index as a floating point integer."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "c1ddc1df-8a0a-4f75-9925-02e9166a876c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "betaT = 4.3"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "d2d3b1f1-c63f-4026-9e92-68ebd0c767d3",
+   "metadata": {},
+   "source": [
+    "This corresponds to a probability of failure of:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "id": "29d84a41-26b8-4b39-8fcd-b28f442f6859",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "8.539905471005582e-06"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "ra.StdNormal.cdf(-betaT)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "450f2494-4dd2-4437-ba01-a635f1eeeabe",
+   "metadata": {},
+   "source": [
+    "## Calibrate safety and combination factors\n",
+    "\n",
+    "Class `Calibration` structures the calibration problem into three parts:\n",
+    "1. **Calibration**: this part involves projecting the design point of the LSF to correspond to the specified $\\beta_T$.\n",
+    "2. **Estimation**: this part involves estimating and calibrating the safety and combination factors, $\\phi$, $\\gamma$, and $\\psi$ using the projected design point. These factors correspond to $\\beta_T$ when utilized in structural design code equation, $z\\phi R_n \\geq \\sum_i \\psi_i \\gamma_i S_{ni}$, where $S_{ni}$ is the nominal value of the load effect $S_i$. \n",
+    "3. **Design check**: this part involves utilizing the estimates of $\\phi$, $\\gamma$, and $\\psi$ for the given load effects to obtain the maximum required design resistance, i.e. $z \\cdot R_n$. Then the reliabilities (or safety) corresponding to the maximum required design resistance are checked for all load cases to ensure that they are greater than $\\beta_T$. This design check is explained in more detail later in this tutorial."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "da6b22db-55f6-4ceb-bec3-3eb9e08fbf20",
+   "metadata": {},
+   "source": [
+    "### Calibration algorithms\n",
+    "Class `Calibration` implements two algorithms for calibration: `optimize` (default) and `alpha`.\n",
+    "\n",
+    "#### Algorithm `optimize` (default)\n",
+    "The `optimize` algorithm calibrates the resistance design parameter, $z$, to obtain the design point on the LSF corresponding to $\\beta_T$ by utilizing `SciPy`'s inbuilt optimization algorithms.\n",
+    "\n",
+    "#### Algorithm `alpha`\n",
+    "The `alpha` algorithm calibrates the resistance design parameter, $z$, by projecting the design point using the FORM $\\alpha$ estimates to obtain the design point on the LSF corresponding to $\\beta_T$."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "f961d70b-9a39-421c-b0be-0e49e481811b",
+   "metadata": {},
+   "source": [
+    "### Estimation algorithms\n",
+    "Class `Calibration` implements two algorithms for estimation of safety and combination factors: `coeff` and `matrix` (default)."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "d55c468a-f51f-44cb-8559-445c3e4c0cc4",
+   "metadata": {},
+   "source": [
+    "#### Algorithm `matrix` (default)\n",
+    "\n",
+    "The `matrix` algorithm utilizes the calibrated design points, $X^*_{\\beta_T}$, to estimate $\\phi$, $\\gamma$, and $\\psi$ by formulating a set of simultaneous equations using the structural design code equation, $z\\phi R_k \\geq \\sum_i \\psi_i \\gamma_i S_{ki}$, where $S_{ki}$.\n",
+    "\n",
+    "For more details, see Caprani, C. and Khan, M. S., *Determination of load combination factors for the assessment of existing bridges*, ICASP14 (July 2023).\n",
+    "\n",
+    "The estimates of $\\phi$ and $\\gamma$ are obtained by dividing $X^*_{\\beta_T}$ with the corresponding nominal values as outlined earlier. To estimate $\\psi$, the structural design code equation is rearranged to obtain a system of simultaneous equation at the limiting condition,\n",
+    "\n",
+    "$$ \\begin{bmatrix}\n",
+    "     0 & \\gamma_2 ~Q_{k2}   \\\\\n",
+    "     \\gamma_1 ~Q_{k1} & 0 \\\\\n",
+    "\\end{bmatrix} \\cdot \\begin{bmatrix}\n",
+    "     \\psi_1  \\\\\n",
+    "     \\psi_2 \\\\\n",
+    "\\end{bmatrix} = \\begin{bmatrix}\n",
+    "    z_1\\phi_1 R_k - \\gamma_{G_1}~G_k  - \\gamma_1~ Q_{k1} \\\\\n",
+    "    z_2\\phi_2 R_k - \\gamma_{G_1}~G_k  - \\gamma_2~ Q_{k2} \\\\\n",
+    "\\end{bmatrix}\n",
+    "$$\n",
+    "\n",
+    "Using `numpy` libraries to solve the system of simultaenous equations, estimates of $\\psi$ are obtained.\n",
+    "\n",
+    "This `matrix` estimation algorithm provides unique values of $\\gamma$ and $\\psi$, while the $\\phi$ values can differ per load case. `Calibration.run()` takes an optional argument `set_max` (default value is `False`). If `set_max=True`, then the `coeff` algorithm sets the resulting dataframe of $\\phi$ to their maximum value per load case."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "7a6f158f-268c-422b-bf28-377c8794582b",
+   "metadata": {},
+   "source": [
+    "#### Algorithm `coeff`\n",
+    "\n",
+    "The `coeff` algorithm utilizes the calibrated design points, $X^*_{\\beta_T}$, to estimate $\\phi$, $\\gamma$, and $\\psi$ by comparing the coefficients. In this comparison, the design points values are mapped to the corresponding factors and nominal values, and the values of the corresponding factors are estimated, as demonstrated below. For more details refer to pp 136-42 of Sorensen, J.D. (2004), *Notes in Structural Reliability Theory And Risk Analysis*.\n",
+    "\n",
+    "For the example problem, the design points recovered from the projection step for the two load cases are:\n",
+    "$$X^*_{\\beta_T} = \\begin{bmatrix}\n",
+    "    z_1 & \\phi_1 R_k  & \\gamma_{G_1}~G_k  & \\gamma_1~ Q_{k1} & \\psi_{1,2}~~ \\gamma_2 ~Q_{k2}   \\\\\n",
+    "    z_2 & \\phi_2 R_k  & \\gamma_{G_1}~G_k  & \\psi_{2,1}~~ \\gamma_1 ~Q_{k1} & \\gamma_2~ Q_{k2} \\\\\n",
+    "\\end{bmatrix}$$\n",
+    "\n",
+    "Dividing by the corresponding nominal values and considering only the random variables, we get,\n",
+    "$$\\begin{bmatrix}\n",
+    "    \\phi_1  & \\gamma_G  & \\gamma_1 & \\psi_{1,2}~~ \\gamma_2   \\\\\n",
+    "    \\phi_2  & \\gamma_G  & \\psi_{2,1}~~ \\gamma_1 & \\gamma_2 \\\\\n",
+    "\\end{bmatrix}$$\n",
+    "\n",
+    "By comparing the coefficients in the above matrix, estimates of $\\phi$, $\\gamma$, and $\\psi$ are obtained. This estimation algorithm provides unique values of $\\gamma$, while the $\\phi$ and $\\psi$ values can differ per load case. `Calibration.run()` takes an optional argument `set_max` (default value is `False`). If `set_max=True`, then the `coeff` algorithm sets the resulting dataframe of $\\psi$ or $\\phi$ to their maximum value per load case."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "1f654217-94c6-4064-9460-ada78379ea20",
+   "metadata": {
+    "tags": []
+   },
+   "source": [
+    "## Design Check\n",
+    "\n",
+    "`Calibration` implements methods to check whether the a design conducted on the basis of the estimated safety factors, actually achieves a minimum safety corresponding to $\\beta_T$ for all load cases. This check is implemented as follows. The calibrated estimates of $\\phi$, $\\gamma$, and $\\psi$ can be checked to ensure that a design based on them actually achieves a lower bound safety corresponding to $\\beta_T$ as follows:\n",
+    "1. Using $\\phi$, $\\gamma$, $\\psi$, and the specified nominal values, estimate the design multiplier for resistance, $z$ for each load case, $j$ using the LSF.\n",
+    "2. Using the design multiplier, i.e. maximum $z$, and corresponding load and resistance distributions, do forward reliability analysis to obtain the reliability index for each load case, $\\beta_j$.\n",
+    "3. Check $\\beta_j \\geq \\beta_T$.\n",
+    "\n",
+    "*Pystra* implements two methods for the design check: `calibration.get_design_param_factor()` and `calibration.calc_beta_design_param()` for above step 1 and step 2, respectively."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "491a930f-66d7-4d41-8c88-601de552e7e8",
+   "metadata": {},
+   "source": [
+    "## Reliability Calibration (using `coeff` and `optimize`)\n",
+    "\n",
+    "### Perform Calibration\n",
+    "This configuration mirrors that of Sorensen's (2004) solution noted above."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "id": "f19a5955-0d41-4b38-ac20-e33bf26eb7a4",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "\n",
+      "X* = \n",
+      "            R     G    Q1    Q2     z\n",
+      "Q1_max  0.66  1.04  1.62  2.02  3.04\n",
+      "Q2_max  0.66  1.04  1.51  2.25  3.05\n",
+      "\n",
+      "phi =  \n",
+      "            R\n",
+      "Q1_max  0.85\n",
+      "Q2_max  0.85\n",
+      "\n",
+      "gamma = \n",
+      "            G    Q1   Q2\n",
+      "Q1_max  1.04  1.07  1.1\n",
+      "Q2_max  1.04  1.07  1.1\n",
+      "\n",
+      "psi =  \n",
+      "           G    Q1   Q2\n",
+      "Q1_max  1.0  1.00  0.9\n",
+      "Q2_max  1.0  0.93  1.0\n"
+     ]
+    }
+   ],
+   "source": [
+    "calib = ra.Calibration(lc, target_beta=betaT, dict_nom_vals=dict_nom, calib_var='z',\n",
+    "                        est_method=\"coeff\", calib_method=\"optimize\",\n",
+    "                        print_output=False) \n",
+    "calib.run()\n",
+    "print(\"\\n\")\n",
+    "print(\"X* = \\n\", calib.dfXstarcal.round(2))\n",
+    "print(\"\\nphi = \", \"\\n\", calib.df_phi.round(2))\n",
+    "print(\"\\ngamma =\", \"\\n\", calib.df_gamma.round(2))\n",
+    "print(\"\\npsi = \", \"\\n\", calib.df_psi.round(2))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "c046b50e-6728-4638-ac8b-24a4858db774",
+   "metadata": {},
+   "source": [
+    "The above results are in agreement with those presented in Example 4 in Sorensen, J.D. (2004), *Notes in Structural Reliability Theory And Risk Analysis*.\n",
+    "\n",
+    "### Design Check\n",
+    "\n",
+    "Here we confirm that the reliability target is met, as explained above."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "id": "92ea8689-dcb7-4e81-a4b0-639f2a8bddac",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Design reliabilities = [4.31 4.3 ]\n",
+      "Design Check = [ True  True]\n"
+     ]
+    }
+   ],
+   "source": [
+    "design_z = calib.get_design_param_factor()\n",
+    "design_beta = calib.calc_beta_design_param(np.max(design_z))\n",
+    "print(f\"Design reliabilities = {design_beta.round(2)}\")\n",
+    "print(f\"Design Check = {design_beta.round(2)>=betaT}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "6bee8de3-0287-44bf-82d4-7d859f477f66",
+   "metadata": {},
+   "source": [
+    "Similarly, the calibration can be done using other algorithms\n",
+    "\n",
+    "## Reliability Calibration (using `matrix` and `optimize`)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "id": "194432c1-a0da-4882-862a-880f3f6f4d2c",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "\n",
+      "X* = \n",
+      "            R     G    Q1    Q2     z\n",
+      "Q1_max  0.66  1.04  1.62  2.02  3.04\n",
+      "Q2_max  0.66  1.04  1.51  2.25  3.05\n",
+      "\n",
+      "phi =  \n",
+      "            R\n",
+      "Q1_max  0.85\n",
+      "Q2_max  0.85\n",
+      "\n",
+      "gamma = \n",
+      "            G    Q1   Q2\n",
+      "Q1_max  1.04  1.07  1.1\n",
+      "Q2_max  1.04  1.07  1.1\n",
+      "\n",
+      "psi =  \n",
+      "           G    Q1   Q2\n",
+      "Q1_max  1.0  1.00  0.9\n",
+      "Q2_max  1.0  0.93  1.0\n"
+     ]
+    }
+   ],
+   "source": [
+    "calib = ra.Calibration(lc, target_beta=betaT, dict_nom_vals=dict_nom, calib_var='z',\n",
+    "                        est_method=\"matrix\", calib_method=\"optimize\") \n",
+    "calib.run()\n",
+    "print(\"\\n\")\n",
+    "print(\"X* = \\n\", calib.dfXstarcal.round(2))\n",
+    "print(\"\\nphi = \", \"\\n\", calib.df_phi.round(2))\n",
+    "print(\"\\ngamma =\", \"\\n\", calib.df_gamma.round(2))\n",
+    "print(\"\\npsi = \", \"\\n\", calib.df_psi.round(2))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "id": "09ec7d53-9d04-4e53-9740-e3152252387c",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Design reliabilities = [4.31 4.3 ]\n",
+      "Design Check = [ True  True]\n"
+     ]
+    }
+   ],
+   "source": [
+    "design_z = calib.get_design_param_factor()\n",
+    "design_beta = calib.calc_beta_design_param(np.max(design_z))\n",
+    "print(f\"Design reliabilities = {design_beta.round(2)}\")\n",
+    "print(f\"Design Check = {design_beta.round(2)>=betaT}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "73983a65-2d42-4dcf-88d2-ccb314b99c55",
+   "metadata": {},
+   "source": [
+    "## Reliability Calibration (using `matrix` and `alpha`)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "id": "2743e154-7370-4760-b880-af8da9c9a676",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "\n",
+      "X* = \n",
+      "            R     G    Q1    Q2     z\n",
+      "Q1_max  0.66  1.04  1.62  2.02  3.04\n",
+      "Q2_max  0.66  1.04  1.51  2.25  3.05\n",
+      "\n",
+      "phi =  \n",
+      "            R\n",
+      "Q1_max  0.85\n",
+      "Q2_max  0.85\n",
+      "\n",
+      "gamma = \n",
+      "            G    Q1   Q2\n",
+      "Q1_max  1.04  1.07  1.1\n",
+      "Q2_max  1.04  1.07  1.1\n",
+      "\n",
+      "psi =  \n",
+      "           G    Q1   Q2\n",
+      "Q1_max  1.0  1.00  0.9\n",
+      "Q2_max  1.0  0.93  1.0\n"
+     ]
+    }
+   ],
+   "source": [
+    "calib = ra.Calibration(lc, target_beta=betaT, dict_nom_vals=dict_nom, calib_var='z',\n",
+    "                        est_method=\"matrix\", calib_method=\"alpha\") \n",
+    "calib.run()\n",
+    "print(\"\\n\")\n",
+    "print(\"X* = \\n\", calib.dfXstarcal.round(2))\n",
+    "print(\"\\nphi = \", \"\\n\", calib.df_phi.round(2))\n",
+    "print(\"\\ngamma =\", \"\\n\", calib.df_gamma.round(2))\n",
+    "print(\"\\npsi = \", \"\\n\", calib.df_psi.round(2))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "id": "c5525b84-9504-464c-b44e-c04f9baddccc",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Design reliabilities = [4.31 4.3 ]\n",
+      "Design Check = [ True  True]\n"
+     ]
+    }
+   ],
+   "source": [
+    "design_z = calib.get_design_param_factor()\n",
+    "design_beta = calib.calc_beta_design_param(np.max(design_z))\n",
+    "print(f\"Design reliabilities = {design_beta.round(2)}\")\n",
+    "print(f\"Design Check = {design_beta.round(2)>=betaT}\")"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python [conda env:pystra-dev]",
+   "language": "python",
+   "name": "conda-env-pystra-dev-py"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.10.6"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

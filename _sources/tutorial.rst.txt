@@ -13,4 +13,6 @@ Tutorials
     notebooks/ex_sensitivity
     notebooks/ex_ddm
     notebooks/ex_timing
+    notebooks/ex_load_comb_dist
     notebooks/ex_load_combinations
+    notebooks/ex_load_calibration
