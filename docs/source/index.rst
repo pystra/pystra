@@ -79,6 +79,7 @@ Contents:
    :caption: Contents:
 
    install
+   developer
    tutorial
    api
    theory
