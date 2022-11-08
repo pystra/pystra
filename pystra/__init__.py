@@ -3,7 +3,7 @@ Structural Reliability Analysis with Python.
 
 """
 
-__version__ = "1.1.1"
+__version__ = "1.2.0"
 
 
 try:
@@ -31,3 +31,7 @@ from .form import *
 from .mc import *
 from .sorm import *
 from .sensitivity import *
+
+# Calibration
+from .loadcomb import *
+from .calibration import *
