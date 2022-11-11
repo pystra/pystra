@@ -79,11 +79,11 @@ Contents:
    :caption: Contents:
 
    install
-   developer
    tutorial
    api
    theory
    references
+   developer
 
 Indices and tables
 ==================
