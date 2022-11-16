@@ -42,8 +42,8 @@ class LoadCombination:
         self,
         lsf,
         dict_dist_comb,
-        list_dist_other,
         list_dist_resist,
+        list_dist_other=None,
         list_const=None,
         dict_comb_cases=None,
     ):
@@ -79,7 +79,8 @@ class LoadCombination:
         self.distributions_pit = {
             xx: dict_dist_comb[xx]["pit"] for xx in dict_dist_comb
         }
-        self.distributions_other = {xx.name: xx for xx in list_dist_other}
+        self.distributions_other = {xx.name: xx for xx in list_dist_other} \
+            if list_dist_other is not None else None
         self.distributions_resistance = {xx.name: xx for xx in list_dist_resist}
         self.dict_comb_cases = dict_comb_cases
         self.comb_cases_max = [dict_comb_cases[xx] for xx in dict_comb_cases]
@@ -89,7 +90,8 @@ class LoadCombination:
         self.label_comb_cases = list(dict_comb_cases.keys())
         self.label_comb_vrs = list(dict_dist_comb.keys())
         self.label_resist = list(self.distributions_resistance.keys())
-        self.label_other = list(self.distributions_other.keys())
+        self.label_other = list(self.distributions_other.keys()) \
+            if list_dist_other is not None else []
         self.label_all = self.label_resist + self.label_other + self.label_comb_vrs
         if list_const is not None:
             self.constant = {xx.name: xx for xx in list_const}
@@ -208,8 +210,9 @@ class LoadCombination:
             dict_loadc = {}
             for key, value in self.distributions_resistance.items():
                 dict_loadc.update({key: value})
-            for key, value in self.distributions_other.items():
-                dict_loadc.update({key: value})
+            if self.distributions_other is not None:
+                for key, value in self.distributions_other.items():
+                    dict_loadc.update({key: value})
             for key, value in self.distributions_max.items():
                 if key in loadc:
                     dict_loadc.update({key: value})
