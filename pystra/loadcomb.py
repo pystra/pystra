@@ -54,17 +54,20 @@ class LoadCombination:
         ----------
         lsf : Function
             Limit State Function.
-        dict_dist_max : Dictionary
-            Dictionary of maximum distributions.
-        dict_dist_pit : Dictionary
-            Dictionary of point-in-time distributions.
-        dict_dist_static : Dictionary
-            Dictionary of static distributions.
-        dict_dist_resist : Dictionary
-            Dictionary of resistance distributions.
-        comb_cases_max : List, optional
-            Nested list containing the identifiers of Max distributions per
-            load case. The default is None.
+        dict_dist_comb : Dictionary
+            Nested dictionary of load effects and their corresponding max and
+            pit distributions.
+        list_dist_resist : List
+            List of resistance distribution.
+        list_dist_other : List, optional
+            List of other remaining random variables.
+        list_const : List, optional
+            List of LSF constants as Pystra Constants.
+        dict_comb_cases : Dictionary, optional
+            Dictionary containing the identifiers of load cases as keys and
+            list of identifiers of max load effects as values, i.e.
+            {<load-case-name>:[<max-load-effects>],}. By default, each combination
+            load effect is taken as maximum in a load case.
 
         Returns
         -------
