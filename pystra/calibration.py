@@ -345,7 +345,6 @@ class Calibration:
             )
             ## Calculate the design parameter for the Calibrated LSF
             dfXst_cal = pd.DataFrame(data=[Xstar_cal], columns=columns)
-            dfXst_cal = self.calc_lsf_eval_df(dfXst_cal)
             z_cal = np.array([self.calc_design_param_Xst(dfXst_cal)])
             ## Check Calibrated reliability index
             val = ra.Constant(cvar, z_cal)
@@ -382,9 +381,13 @@ class Calibration:
             design parameter for resistance corresponding to the design pt.
 
         """
-        sum_loadeff = dfXst[self.label_other + self.label_comb_vrs].sum(axis=1)
-        z = sum_loadeff / dfXst[self.label_R].sum(axis=1)
-        z = float(z)
+        dfS = dfXst[self.label_other + self.label_comb_vrs]
+        dfS_dict = dfS.to_dict('records')[0]
+        sum_loadeff = self.lc_obj.eval_lsf_kwargs(**dfS_dict)
+        R_dict = dfXst[self.label_R].to_dict('records')[0]
+        sum_resist = self.lc_obj.eval_lsf_kwargs(**R_dict)
+        z = sum_loadeff / sum_resist
+        z = float(abs(z))
         return z
 
     def _get_df_Xstar(self, list_form_obj, cols=None, idx=None):
@@ -549,7 +552,6 @@ class Calibration:
 
         """
         rel_func = self.lc_obj.run_reliability_case
-        # rel_func = self.decorate_rel(self.lc_obj.run_reliability_case)
         list_z_cal = []
         list_form_cal = []
         for lc in self.lc_obj.label_comb_cases:
@@ -896,11 +898,10 @@ class Calibration:
 
         """
         df_pgRS = self.calc_df_pgRS()
-        df_pgRS_lsf = self.calc_lsf_eval_df(df_pgRS)
-        list_cols = [df_pgRS_lsf.loc[[xx], :] for xx in self.label_comb_cases]
+        list_cols = [df_pgRS.loc[[xx], :] for xx in self.label_comb_cases]
         array_z = np.array([self.calc_design_param_Xst(xx) for xx in list_cols])
         return array_z
+    
 
-
-class linear_calibration_optimize(Calibration):
-    pass
+    
+    
