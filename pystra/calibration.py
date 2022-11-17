@@ -106,6 +106,7 @@ class Calibration:
             self.label_other,
             self.label_comb_vrs,
             self.label_comb_cases,
+            self.label_all
         ) = self._set_labels()
         self.label_S = self.label_other + self.label_comb_vrs
         self.cvar = calib_var
@@ -169,13 +170,17 @@ class Calibration:
             List of load combination case variables.
         label_comb_cases : List
             List of load combination cases.
+        label_all : List
+            List of all random variables.
 
         """
         label_comb_cases = self.lc_obj.get_label("comb_cases")
         label_R = self.lc_obj.get_label("resist")
         label_comb_vrs = self.lc_obj.get_label("comb_vrs")
         label_other = self.lc_obj.get_label("other")
-        return label_R, label_other, label_comb_vrs, label_comb_cases
+        label_all = self.lc_obj.get_label("all")
+        return label_R, label_other, label_comb_vrs, label_comb_cases,\
+            label_all
 
     def calc_lsf_eval_df(self, df, ret_abs=True):
         """
@@ -644,7 +649,8 @@ class Calibration:
     def calc_Xst_nom(self, dfXstar):
         """
         Calculate the design point DataFrame divided by the nominal values
-        per load case.
+        per load case and adjust for :math:`\\psi` factors for combination
+        load variables.
 
         Parameters
         ----------
@@ -661,6 +667,8 @@ class Calibration:
         """
         df_Xst_nom = dfXstar / self.df_nom
 
+        # Adjust for :math:`\\psi` factors; replace with non :math:`\\psi`
+        # entries
         for comb, vrs in self.lc_obj.dict_comb_cases.items():
             other_combs = set(self.label_comb_cases) - set([comb])
             gamma = df_Xst_nom.loc[comb, vrs]
@@ -719,38 +727,10 @@ class Calibration:
         dfgamma_comb = dfXstnom[self.label_comb_vrs]
         return dfgamma_static, dfgamma_comb
 
-    def calc_Xst_nom_lsf(self, dfXst, dfXstnom):
-        """
-        Calculate the element-wise LSF evaluation of dfXstnom.
-
-        dfXst supplies the calibrated design parameter for resistance values.
-
-        Parameters
-        ----------
-        dfXst : DataFrame
-            DataFrame containing design points per load case.
-        dfXstnom : DataFrame
-            Design point DataFrame factored by the nominal values
-            per load case.
-
-        Returns
-        -------
-        df_Xst_nom_lsf : DataFrame
-            Dataframe containing element-wise LSF evaluation of passed dfXstnom.
-
-        """
-        df_Xst_nom_lsf = (dfXstnom * self.df_nom).copy()
-        df_Xst_nom_lsf[self.label_R] = (
-            df_Xst_nom_lsf[self.label_R] * dfXst["z"].values[:, None]
-        )
-        df_Xst_nom_lsf = df_Xst_nom_lsf[dfXst.columns].dropna(axis=1)
-        df_Xst_nom_lsf = self.calc_lsf_eval_df(df_Xst_nom_lsf)
-        return df_Xst_nom_lsf
-
     def calc_pg_matrix(self, dfXst, print_output=False):
         """
-        Calculate :math:`$\\phi$`, :math:`$\\gamma$`, and :math:`$\\psi$` for the given set of design
-        points and nominals using the Matrix approach.
+        Calculate :math:`$\\phi$`, :math:`$\\gamma$`, and :math:`$\\psi$` for 
+        the given set of design points and nominals using the Matrix approach.
 
         Parameters
         ----------
@@ -780,15 +760,12 @@ class Calibration:
 
         df_gamma = pd.concat((df_gamma_static, df_gamma_comb), axis=1)
         ## Estimate :math:`$\\psi$`
-        df_Xst_nom_lsf = self.calc_Xst_nom_lsf(dfXst, df_Xst_nom)
-        epgS_mat = df_Xst_nom_lsf[self.label_comb_vrs].values
-        np.fill_diagonal(epgS_mat, 0.0)
-        phiRz_egS = [
-            df_Xst_nom_lsf.loc[xx, self.label_R].sum()
-            - df_Xst_nom_lsf.loc[xx, self.label_other].sum()
-            - df_Xst_nom_lsf.loc[xx, self.lc_obj.dict_comb_cases[xx]].sum()
-            for xx in df_Xst_nom_lsf.index
-        ]
+        # Get RHS :math:`$\\phi~R~z-\\gamma_g~G-\\gamma_i~S_i$`
+        phiRz_egS = self.calc_phiRz_egS_vect(dfXst)
+        # Get LHS :math:`$\\gamma_j~S_j$`
+        df_gamma_nom = pd.concat([df_phi, df_gamma], axis=1) * self.df_nom
+        epgS_mat = self.calc_epgS_mat(df_gamma_nom)
+        # Estimate
         psi = np.linalg.solve(epgS_mat, phiRz_egS)
         psi_mat = self._get_psi_row_mat(len(self.label_other), psi)
         df_psi = pd.DataFrame(
@@ -802,6 +779,76 @@ class Calibration:
             print(f"\n zpR-gS Vector, \n {phiRz_egS}")
             print(f"\n psi, \n {df_psi}")
         return df_phi, df_gamma, df_psi
+
+    def calc_phiRz_egS_vect(self, dfXstar):
+        """
+        Get RHS for matrix estimation method,
+        :math:`$\\phi~R~z-\\gamma_g~G-\\gamma_i~S_i$`
+
+        Parameters
+        ----------
+        dfXstar : Dataframe
+            Dataframe containing all design points at target reliability.
+
+        Returns
+        -------
+        phiRz_egS_vect : Array
+            RHS for matrix estimation method as 1D Array.
+
+        """
+        ## Initialize the vector
+        phiRz_egS_vect = np.zeros(len(dfXstar.index))
+        idx = 0
+        for comb in dfXstar.index:
+            # Get RVs with cvar except the other combination variable(s)
+            s_label = self.lc_obj.dict_comb_cases[comb]
+            s_other = set(self.label_comb_vrs) - set(s_label)
+            label_all_rvs = self.label_R + self.label_comb_vrs +\
+                self.label_other + [self.cvar]
+            list_others = list(set(label_all_rvs) - s_other)
+            # Pass RVs except the other combination variable(s) to the LSF
+            dfXstar_dict = dfXstar.loc[[comb],list_others].to_dict('records')[0]
+            phiRz_egS_vect[idx] = self.lc_obj.eval_lsf_kwargs(**dfXstar_dict)
+            idx += 1
+        return phiRz_egS_vect
+    
+    def calc_epgS_mat(self, dfgammanom):
+        """
+        Get LHS for matrix estimation method,
+        :math:`$\\gamma_j~S_j$
+
+        Parameters
+        ----------
+        dfgammanom : Dataframe
+            Dataframe containing product of nominal values and safety factors,
+            along with calibrated z values.
+
+        Returns
+        -------
+        epgS_mat : Array
+            LHS for matrix estimation method as 2D Array.
+
+        """
+        ## Initialize the vector
+        epgS_mat = np.zeros((len(dfgammanom.index), len(self.label_comb_vrs)))
+        idx = 0
+        for comb in dfgammanom.index:
+            # Get RVs except the other combination variable(s)
+            s_label = self.lc_obj.dict_comb_cases[comb]
+            list_others = list(set(self.label_S) - set(s_label))
+            # Pass RVs except the other combination variable(s) to the LSF
+            dfXstar_dict_comb = dfgammanom.loc[[comb],list_others].to_dict('records')[0]
+            if len(self.label_other) > 0:
+                dfXstar_dict_other = dfgammanom.loc[
+                    [comb], self.label_other].to_dict('records')[0]
+            else:
+                dfXstar_dict_other = {}
+            epgS_mat[idx] = self.lc_obj.eval_lsf_kwargs(**dfXstar_dict_comb) -\
+                self.lc_obj.eval_lsf_kwargs(**dfXstar_dict_other)
+            idx += 1
+        epgS_mat = epgS_mat * -1
+        np.fill_diagonal(epgS_mat, 0)
+        return epgS_mat
 
     def _get_psi_row_mat(self, num_other_vrs, psi_comb_vrs):
         """
@@ -904,25 +951,7 @@ class Calibration:
     
     def print_detailed_output(self):
         pass
+
     
-class CalibrationLinear(Calibration):
-    """
-    Class for calibrating :math:`$\\phi$`, :math:`$\\gamma$`, and :math:`$\\psi$` factors
-    for a given load combination instance and target reliability for Linear
-    LSFs.
-    Note: Linear LSF are those in which each term contains at max 1 random
-    variable.
-    """
-    pass
 
-class CalibrationNonLinear(Calibration):
-    """
-    Class for calibrating :math:`$\\phi$`, :math:`$\\gamma$`, and :math:`$\\psi$` factors
-    for a given load combination instance and target reliability for Non-linear
-    LSFs.
-    Note: Non-linear LSF are those in which each term contains 2 or more random
-    variable.
-    """
-
-    pass
-
+    
