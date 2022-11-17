@@ -9,69 +9,44 @@ from .distributions import Constant
 
 # Base Class for all combination problems
 class Calibration:
-    """Class for calibrating :math:`\\phi`, :math:`\\gamma`, and
-    :math:`\\psi` factors
-    for a given load combination instance and target reliability.
-
-    Methods
-    -------
-    calc_gamma :
-
-    calc_pg_coeff :
-
-    calc_pg_matrix :
-
-    calc_phi :
-
-    calc_Xst_nom :
-
-    calc_Xst_nom_lsf :
-
-    calc_design_param_Xst :
-
-    get_design_param_factor :
-
-    get_psi_max :
-
-    run :
-
+    """Class for calibrating :math:`\\phi`, :math:`\\gamma`, and :math:`\\psi` factors for a given load combination instance and target reliability.
 
     Attributes
     ----------
-    betaT :
+    betaT : float
 
-    calib_method :
+    calib_method : str
 
-    cvar :
+    cvar : str
         The label of the calibration variable.
-    df_nom :
-
-    df_Xstar :
-
-    df_phi :
-
-    df_gamma :
-
-    df_psi :
-
-    dict_nom :
-
-    est_method :
-
-    label_comb_vrs :
+    df_nom : DataFrame
+        A dataframe of nominal values
+    df_Xstar : DataFrame
+        A dataframe of design point values
+    df_phi : DataFrame
+        A dataframe of partial factors for resistances
+    df_gamma : DataFrame
+        A dataframe of partial factors for loads
+    df_psi : DataFrame
+        A dataframe of load combiantion factors
+    dict_nom : dict
+        Dictionary of nominal values
+    est_method : str
+        The estimation method
+    label_comb_vrs : str
         Labels of combination variables
-    label_comb_cases :
+    label_comb_cases : str
         Labels of combination load variables
-    label_R :
+    label_R : str
         Labels of resistance variables
-    label_other :
+    label_other : str
         Labels of other load variables
-    label_all :
+    label_all : str
         Labels of all variables including design parameter
-    loadCombObj :
-
-    print_output :
-
+    loadCombObj : LoadCombination
+        LoadCombination object
+    print_output : bool
+        Whether or not to print output to the console
     """
 
     def __init__(
