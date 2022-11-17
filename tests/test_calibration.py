@@ -69,13 +69,15 @@ def setup2():
     # Annual max distributions
     Q1_max = ra.Normal("Q1", 30, 3)  # [units]
     Q2_max = ra.Normal("Q2", 20, 2)  # [units]
-    
+
     z = ra.Constant("z", 1)
     # Parameters of arbitrary point-in-time parents
     Q1_pit = ra.Normal("Q1", 15, 3)  # [units]
     Q2_pit = ra.Normal("Q2", 10, 2)  # [units]
-    Q_dict = {'Q1': {'max': Q1_max, 'pit': Q1_pit},
-      'Q2': {'max': Q2_max, 'pit': Q2_pit}}
+    Q_dict = {
+        "Q1": {"max": Q1_max, "pit": Q1_pit},
+        "Q2": {"max": Q2_max, "pit": Q2_pit},
+    }
     # Constant values
     z = ra.Constant("z", 1)
     # Design parameter for resistance with arbitrary default value
@@ -85,20 +87,27 @@ def setup2():
     wS = ra.Lognormal("wS", 1.0, 0.10)
     R = ra.Normal("R", 60, 6)  # [units]
 
-    loadcombinations = {'Q1_max':['Q1'], 'Q2_max':['Q2']}
+    loadcombinations = {"Q1_max": ["Q1"], "Q2_max": ["Q2"]}
 
-    lc = ra.LoadCombination(lsf_nonlinear, dict_dist_comb=Q_dict, list_dist_other=[wS],
-                         list_dist_resist=[R, wR], list_const = [z], 
-                         dict_comb_cases=loadcombinations)
+    lc = ra.LoadCombination(
+        lsf_nonlinear,
+        dict_dist_comb=Q_dict,
+        list_dist_other=[wS],
+        list_dist_resist=[R, wR],
+        list_const=[z],
+        dict_comb_cases=loadcombinations,
+    )
 
-    rvs_all = ['wR', 'wS', 'R', 'Q1', 'Q2']
-    dict_nom = dict(zip(rvs_all, np.array([1.0, 1.0, R.ppf(0.05), 
-                                             Q1_max.ppf(0.95),
-                                             Q2_max.ppf(0.95)])))
+    rvs_all = ["wR", "wS", "R", "Q1", "Q2"]
+    dict_nom = dict(
+        zip(
+            rvs_all,
+            np.array([1.0, 1.0, R.ppf(0.05), Q1_max.ppf(0.95), Q2_max.ppf(0.95)]),
+        )
+    )
 
     betaT = 3.7
     return lc, dict_nom, betaT
-
 
 
 def test_calibration_coeff_opt():
@@ -256,34 +265,40 @@ def test_calibration_coeff_opt_nonlinear():
     Perform SORM analysis
     """
     lc, dict_nom, betaT = setup2()
-    calib1 = ra.Calibration(lc, target_beta=betaT, dict_nom_vals=
-                                dict_nom, calib_var='z', 
-                                est_method="coeff", calib_method="optimize")
+    calib1 = ra.Calibration(
+        lc,
+        target_beta=betaT,
+        dict_nom_vals=dict_nom,
+        calib_var="z",
+        est_method="coeff",
+        calib_method="optimize",
+    )
     calib1.run()
     dfXst = pd.DataFrame(
         data=[
-            [44.4005,  0.9519,  1.2050,  33.8055,  11.6913,  1.2971],
-            [44.7632,  0.9526,  1.2014,  19.1578,  21.8479,  1.1553],
+            [44.4005, 0.9519, 1.2050, 33.8055, 11.6913, 1.2971],
+            [44.7632, 0.9526, 1.2014, 19.1578, 21.8479, 1.1553],
         ],
         columns=["R", "wR", "wS", "Q1", "Q2", "z"],
         index=["Q1_max", "Q2_max"],
     )
     dfphi = pd.DataFrame(
-        data=[[0.8857,  0.9519], [0.8929,  0.9526]], columns=["R", "wR"], 
-        index=["Q1_max", "Q2_max"]
+        data=[[0.8857, 0.9519], [0.8929, 0.9526]],
+        columns=["R", "wR"],
+        index=["Q1_max", "Q2_max"],
     )
     dfgamma = pd.DataFrame(
-        data=[[1.2050,  0.9677,  0.9381], [1.2014,  0.9677,  0.9381]],
+        data=[[1.2050, 0.9677, 0.9381], [1.2014, 0.9677, 0.9381]],
         columns=["wS", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
     )
     dfpsi = pd.DataFrame(
-        data=[[1.0,  1.0,  0.5351], [1.0,  0.5667,  1.0]],
+        data=[[1.0, 1.0, 0.5351], [1.0, 0.5667, 1.0]],
         columns=["wS", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
     )
     vect_design_z1 = np.array([1.2971, 1.1553])
-    vect_design_beta1 = np.array([3.7001   , 4.2834])
+    vect_design_beta1 = np.array([3.7001, 4.2834])
     # validate results
     assert pytest.approx(calib1.dfXstarcal, abs=1e-4) == dfXst
     assert pytest.approx(calib1.df_phi, abs=1e-4) == dfphi
@@ -313,28 +328,29 @@ def test_calibration_mat_opt_nonlinear():
     calib2.run()
     dfXst = pd.DataFrame(
         data=[
-            [44.4005,  0.9519,  1.2050,  33.8055,  11.6913,  1.2971],
-            [44.7632,  0.9526,  1.2014,  19.1578,  21.8479,  1.1553],
+            [44.4005, 0.9519, 1.2050, 33.8055, 11.6913, 1.2971],
+            [44.7632, 0.9526, 1.2014, 19.1578, 21.8479, 1.1553],
         ],
         columns=["R", "wR", "wS", "Q1", "Q2", "z"],
         index=["Q1_max", "Q2_max"],
     )
     dfphi = pd.DataFrame(
-        data=[[0.8857,  0.9519], [0.8929,  0.9526]], columns=["R", "wR"], 
-        index=["Q1_max", "Q2_max"]
+        data=[[0.8857, 0.9519], [0.8929, 0.9526]],
+        columns=["R", "wR"],
+        index=["Q1_max", "Q2_max"],
     )
     dfgamma = pd.DataFrame(
-        data=[[1.2050,  0.9677,  0.9381], [1.2014,  0.9677,  0.9381]],
+        data=[[1.2050, 0.9677, 0.9381], [1.2014, 0.9677, 0.9381]],
         columns=["wS", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
     )
     dfpsi = pd.DataFrame(
-        data=[[1.0,  1.0,  0.5351], [1.0,  0.5667,  1.0]],
+        data=[[1.0, 1.0, 0.5351], [1.0, 0.5667, 1.0]],
         columns=["wS", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
     )
     vect_design_z2 = np.array([1.2971, 1.1553])
-    vect_design_beta2 = np.array([3.7001   , 4.2834])
+    vect_design_beta2 = np.array([3.7001, 4.2834])
     # validate results
     assert pytest.approx(calib2.dfXstarcal, abs=1e-4) == dfXst
     assert pytest.approx(calib2.df_phi, abs=1e-4) == dfphi
@@ -364,28 +380,29 @@ def test_calibration_mat_alpha_nonlinear():
     calib3.run()
     dfXst = pd.DataFrame(
         data=[
-            [44.4005,  0.9519,  1.2050,  33.8055,  11.6913,  1.2971],
-            [44.7632,  0.9526,  1.2014,  19.1578,  21.8479,  1.1553],
+            [44.4005, 0.9519, 1.2050, 33.8055, 11.6913, 1.2971],
+            [44.7632, 0.9526, 1.2014, 19.1578, 21.8479, 1.1553],
         ],
         columns=["R", "wR", "wS", "Q1", "Q2", "z"],
         index=["Q1_max", "Q2_max"],
     )
     dfphi = pd.DataFrame(
-        data=[[0.8857,  0.9519], [0.8929,  0.9526]], columns=["R", "wR"], 
-        index=["Q1_max", "Q2_max"]
+        data=[[0.8857, 0.9519], [0.8929, 0.9526]],
+        columns=["R", "wR"],
+        index=["Q1_max", "Q2_max"],
     )
     dfgamma = pd.DataFrame(
-        data=[[1.2050,  0.9677,  0.9381], [1.2014,  0.9677,  0.9381]],
+        data=[[1.2050, 0.9677, 0.9381], [1.2014, 0.9677, 0.9381]],
         columns=["wS", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
     )
     dfpsi = pd.DataFrame(
-        data=[[1.0,  1.0,  0.5351], [1.0,  0.5667,  1.0]],
+        data=[[1.0, 1.0, 0.5351], [1.0, 0.5667, 1.0]],
         columns=["wS", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
     )
     vect_design_z3 = np.array([1.2971, 1.1553])
-    vect_design_beta3 = np.array([3.7001   , 4.28340])
+    vect_design_beta3 = np.array([3.7001, 4.28340])
     # validate results
     assert pytest.approx(calib3.dfXstarcal, abs=1e-4) == dfXst
     assert pytest.approx(calib3.df_phi, abs=1e-4) == dfphi

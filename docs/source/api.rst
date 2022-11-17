@@ -22,4 +22,4 @@ The API will appear here
     pystra.transformation
     pystra.distributions
     pystra.loadcomb
-    <!-- pystra.calibration -->
+    pystra.calibration
