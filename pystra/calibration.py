@@ -293,7 +293,7 @@ class Calibration:
     ):
         """
         Calibrate design parameter for the supplied rel_func to target
-        reliability index using iterative $\alpha$ projection method.
+        reliability index using iterative :math:`\\alpha` projection method.
 
         Parameters
         ----------
@@ -812,7 +812,7 @@ class Calibration:
         return phiRz_egS_vect
 
     def calc_epgS_mat(self, dfgammanom):
-        """Get LHS for matrix estimation method, :math:`\\gamma_j~S_j$.
+        """Get LHS for matrix estimation method, :math:`\\gamma_j~S_j`.
 
         Parameters
         ----------
