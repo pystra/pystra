@@ -16,3 +16,4 @@ Tutorials
     notebooks/ex_load_comb_dist
     notebooks/ex_load_combinations
     notebooks/ex_load_calibration
+    notebooks/ex_load_calibration_nonlinear
