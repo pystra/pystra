@@ -950,7 +950,14 @@ class Calibration:
         return array_z
     
     def print_detailed_output(self):
-        pass
+        n = 54
+        print("\n")
+        print("=" * n)
+        print("X* = \n", self.dfXstarcal.round(2))
+        print("\nphi = ", "\n", self.df_phi.round(2))
+        print("\ngamma =", "\n", self.df_gamma.round(2))
+        print("\npsi = ", "\n", self.df_psi.round(2))
+        print("=" * n)
 
     
 
