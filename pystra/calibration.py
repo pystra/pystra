@@ -905,4 +905,24 @@ class Calibration:
     def print_detailed_output(self):
         pass
     
-    
+class CalibrationLinear(Calibration):
+    """
+    Class for calibrating :math:`$\\phi$`, :math:`$\\gamma$`, and :math:`$\\psi$` factors
+    for a given load combination instance and target reliability for Linear
+    LSFs.
+    Note: Linear LSF are those in which each term contains at max 1 random
+    variable.
+    """
+    pass
+
+class CalibrationNonLinear(Calibration):
+    """
+    Class for calibrating :math:`$\\phi$`, :math:`$\\gamma$`, and :math:`$\\psi$` factors
+    for a given load combination instance and target reliability for Non-linear
+    LSFs.
+    Note: Non-linear LSF are those in which each term contains 2 or more random
+    variable.
+    """
+
+    pass
+
