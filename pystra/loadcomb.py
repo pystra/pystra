@@ -1,37 +1,37 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-
-import pystra as ra
+from .model import LimitState
+from .model import StochasticModel
+from .form import Form
 
 
 class LoadCombination:
     """Class for running load combination cases.
 
-    Methods:
-    --------
-    eval_lsf_kwargs --
-    get_dict_dist_comb -- Get the dictionary of distributions for all load
-                            combinations
-    get_label --
-    get_num_comb -- Get the total number of load combinations
-    run_reliability_case --- Run reliability analysis for a given load case
-
-
-    Attributes:
-    --------
-    lsf --- Limit State Function
-    distributions_max -- Dictionary of maximum distributions
-    distributions_pit -- Dictionary of point-in-time distributions
-    distributions_other -- Dictionary of static distributions
-    distributions_resistance -- Dictionary of resistance distributions
-    dict_dist_comb -- Dictionary of distributions for all load combinations
-    dict_label --
-    label_comb_vrs -- Labels of combination variables
-    label_comb_cases -- Labels of combination variables
-    label_resist -- Labels of resistance variables
-    label_other -- Labels of static variables
-    label_all -- Labels of all variables including design multiplier
+    Attributes
+    ----------
+    lsf : function
+        Limit State Function
+    distributions_max : dict
+        Dictionary of maximum distributions
+    distributions_pit : dict
+        Dictionary of point-in-time distributions
+    distributions_other : dict
+        Dictionary of static distributions
+    distributions_resistance : dict
+        Dictionary of resistance distributions
+    dict_dist_comb : dict
+        Dictionary of distributions for all load combinations
+    label_comb_vrs : str
+        Labels of combination variables
+    label_comb_cases : str
+        Labels of combination variables
+    label_resist : str
+        Labels of resistance variables
+    label_other : str
+        Labels of static variables
+    label_all : str
+        Labels of all variables including design multiplier
 
     """
 
@@ -79,8 +79,11 @@ class LoadCombination:
         self.distributions_pit = {
             xx: dict_dist_comb[xx]["pit"] for xx in dict_dist_comb
         }
-        self.distributions_other = {xx.name: xx for xx in list_dist_other} \
-            if list_dist_other is not None else None
+        self.distributions_other = (
+            {xx.name: xx for xx in list_dist_other}
+            if list_dist_other is not None
+            else None
+        )
         self.distributions_resistance = {xx.name: xx for xx in list_dist_resist}
         self.dict_comb_cases = dict_comb_cases
         self.comb_cases_max = [dict_comb_cases[xx] for xx in dict_comb_cases]
@@ -90,8 +93,9 @@ class LoadCombination:
         self.label_comb_cases = list(dict_comb_cases.keys())
         self.label_comb_vrs = list(dict_dist_comb.keys())
         self.label_resist = list(self.distributions_resistance.keys())
-        self.label_other = list(self.distributions_other.keys()) \
-            if list_dist_other is not None else []
+        self.label_other = (
+            list(self.distributions_other.keys()) if list_dist_other is not None else []
+        )
         self.label_all = self.label_resist + self.label_other + self.label_comb_vrs
         if list_const is not None:
             self.constant = {xx.name: xx for xx in list_const}
@@ -243,8 +247,8 @@ class LoadCombination:
 
         """
         lcn = self.label_comb_cases[0] if lcn is None else lcn
-        ls = ra.LimitState(self.lsf)
-        sm = ra.StochasticModel()
+        ls = LimitState(self.lsf)
+        sm = StochasticModel()
         if self.constant is not None:
             for key, value in self.constant.items():
                 if key in kwargs:
@@ -257,7 +261,7 @@ class LoadCombination:
                 sm.addVariable(kwargs[key])
             else:
                 sm.addVariable(value)
-        form = ra.Form(sm, ls)
+        form = Form(sm, ls)
         form.run()
 
         return form

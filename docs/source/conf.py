@@ -20,10 +20,10 @@ sys.path.insert(0, os.path.abspath("../../"))
 
 project = "PySTRA"
 copyright = "2022, The PySTRA Developers"
-author = "Jürgen Hackl"
+author = "Jürgen Hackl & Colin Caprani"
 
 # The full version, including alpha/beta/rc tags
-release = "1.1.0"
+release = "1.2.1"
 
 
 # -- General configuration ---------------------------------------------------
