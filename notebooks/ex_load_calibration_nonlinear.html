@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sensitivity Analysis &#8212; PySTRA 1.2.1 documentation</title>
+    <title>Load Calibration for Non Linear Limit State Functions (LSFs) &#8212; PySTRA 1.2.1 documentation</title>
   
   
   
@@ -40,11 +40,11 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/ex_sensitivity';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/ex_load_calibration_nonlinear';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Direct Differentiation Method" href="ex_ddm.html" />
-    <link rel="prev" title="SciPy Distribution Example" href="ex_scipy_distributions.html" />
+    <link rel="next" title="API Reference" href="../api.html" />
+    <link rel="prev" title="Load Calibration" href="ex_load_calibration.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
   </head>
@@ -369,13 +369,13 @@
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introductory Turorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ex_intro.html">Example from the Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ex_scipy_distributions.html">SciPy Distribution Example</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Sensitivity Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_sensitivity.html">Sensitivity Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ex_ddm.html">Direct Differentiation Method</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ex_timing.html">Pystra Timing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ex_load_comb_dist.html">Load Combination Distributions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ex_load_combinations.html">Load Combinations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ex_load_calibration.html">Load Calibration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ex_load_calibration_nonlinear.html">Load Calibration for Non Linear Limit State Functions (LSFs)</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Load Calibration for Non Linear Limit State Functions (LSFs)</a></li>
 </ul>
 
   </div>
@@ -664,106 +664,111 @@ div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
-<div class="section" id="Sensitivity-Analysis">
-<h1>Sensitivity Analysis<a class="headerlink" href="#Sensitivity-Analysis" title="Permalink to this heading">#</a></h1>
-<p>This is Example 2 of Bourinet (2017), which gives analytical solutions as:</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}\begin{align}
-\frac{\partial\beta}{\partial\mu_R} &amp;= 0.5184 \\
-\frac{\partial\beta}{\partial\sigma_R} &amp;= −0.2548 \\
-\frac{\partial\beta}{\partial\mu_S} &amp;= −1.3629 \\
-\frac{\partial\beta}{\partial\sigma_S} &amp;= 0.0445 \\
-\end{align}\end{split}\]</div>
-<p>See: Bourinet (2017), FORM Sensitivities to Distribution Parameters with the Nataf Transformation, P. Gardoni (ed.), Risk and Reliability Analysis: Theory and Applications, Springer Series in Reliability Engineering, DOI 10.1007/978-3-319-52425-2_12</p>
-<p>Import pystra as usual:</p>
+<div class="section" id="Load-Calibration-for-Non-Linear-Limit-State-Functions-(LSFs)">
+<h1>Load Calibration for Non Linear Limit State Functions (LSFs)<a class="headerlink" href="#Load-Calibration-for-Non-Linear-Limit-State-Functions-(LSFs)" title="Permalink to this heading">#</a></h1>
+<p>This tutorial demonstrates how <code class="docutils literal notranslate"><span class="pre">Pystra</span></code> can calibrate safety and combination factors for Non-Linear limit state functions.</p>
+<div class="section" id="Import-Libraries">
+<h2>Import Libraries<a class="headerlink" href="#Import-Libraries" title="Permalink to this heading">#</a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pystra as pr
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pystra as ra
+import numpy as np
 </pre></div>
 </div>
 </div>
-<p>Define the limit state function</p>
+</div>
+<div class="section" id="Define-the-limit-state-function-for-calibration">
+<h2>Define the limit state function for calibration<a class="headerlink" href="#Define-the-limit-state-function-for-calibration" title="Permalink to this heading">#</a></h2>
+<p>The LSF to be supplied in <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> can be any valid <em>Pystra</em> LSF with one additional argument: a scalar design parameter for a random variable (generally, the resistance). Note that: 1. The design parameter must be specified as a <code class="docutils literal notranslate"><span class="pre">Pystra</span></code> constant with any arbitrary default value, such as <code class="docutils literal notranslate"><span class="pre">1.0</span></code>. 2. Only a single design parameter for the resistance random variable can be calibrated at a time.</p>
+<p>Keeping with the <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> example, the design parameter for resistance, denoted <span class="math notranslate nohighlight">\(z\)</span>, is added to the LSF. The LSF contains additional random variables <code class="docutils literal notranslate"><span class="pre">wR</span></code> and <code class="docutils literal notranslate"><span class="pre">wS</span></code> to account for the uncertainties within the resistance and the load effects, respectively. The non-linearity of the LSF is evident as the degree of random variables in each term of the LSF is two.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def lsf(R, S):
-    return R - S
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def lsf(z, wR, wS, R, Q1, Q2):
+    gX = z * wR * R - wS * (Q1 + Q2)
+    return gX
 </pre></div>
 </div>
 </div>
-<p>And create the relevant <code class="docutils literal notranslate"><span class="pre">Pystra</span></code> objects:</p>
+</div>
+<div class="section" id="Define-the-Load-and-Resistance-distributions">
+<h2>Define the Load and Resistance distributions<a class="headerlink" href="#Define-the-Load-and-Resistance-distributions" title="Permalink to this heading">#</a></h2>
+<p>Next follow the creation of load combination object, as explained for the <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> class.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>limit_state = pr.LimitState(lsf)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>wR = ra.Lognormal(&quot;wR&quot;, 1.0, 0.05)
+wS = ra.Lognormal(&quot;wS&quot;, 1.0, 0.10)
+R = ra.Normal(&quot;R&quot;, 60, 6)  # [units]
+Q1_max = ra.Normal(&quot;Q1&quot;, 30, 3)  # [units]
+Q2_max = ra.Normal(&quot;Q2&quot;, 20, 2)  # [units]
+Q1_pit = ra.Normal(&quot;Q1&quot;, 15, 3)  # [units]
+Q2_pit = ra.Normal(&quot;Q2&quot;, 10, 2)  # [units]
 
-model = pr.StochasticModel()
-model.addVariable(pr.Lognormal(&quot;R&quot;, 5, 5))
-model.addVariable(pr.Lognormal(&quot;S&quot;, 1, 1))
-model.setCorrelation(pr.CorrelationMatrix([[1.0, 0.5], [0.5, 1.0]]))
+z = ra.Constant(&quot;z&quot;, 1)
 </pre></div>
 </div>
 </div>
-<p>Here we suppress the printed output from the analyses, as the sensitivity analysis runs FORM many times.</p>
+</div>
+<div class="section" id="Set-up-Load-Combinations">
+<h2>Set up Load Combinations<a class="headerlink" href="#Set-up-Load-Combinations" title="Permalink to this heading">#</a></h2>
+<div class="section" id="Specify-nominal-values-&amp;-combinations">
+<h3>Specify nominal values &amp; combinations<a class="headerlink" href="#Specify-nominal-values-&-combinations" title="Permalink to this heading">#</a></h3>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>options = pr.AnalysisOptions()
-options.setPrintOutput(False)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rvs_all = [&#39;wR&#39;, &#39;wS&#39;, &#39;R&#39;, &#39;Q1&#39;, &#39;Q2&#39;]
+dict_nom = dict(zip(rvs_all, np.array([1.0, 1.0, R.ppf(0.05),
+                                             Q1_max.ppf(0.95),
+                                             Q2_max.ppf(0.95)])))
+
+Q_dict = {&#39;Q1&#39;: {&#39;max&#39;: Q1_max, &#39;pit&#39;: Q1_pit},
+      &#39;Q2&#39;: {&#39;max&#39;: Q2_max, &#39;pit&#39;: Q2_pit}}
 </pre></div>
 </div>
 </div>
-<p>Do a FORM analysis so we have a record of the base result.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>form = pr.Form(stochastic_model=model, limit_state=limit_state, analysis_options=options)
-form.run()
-form.showDetailedOutput()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>loadcombinations = {&#39;Q1_max&#39;:[&#39;Q1&#39;], &#39;Q2_max&#39;:[&#39;Q2&#39;]}
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
 </div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-
-======================================================
-FORM
-======================================================
-Pf                       1.6927788976e-02
-BetaHL                   2.1217876054
-Model Evaluations        66
-------------------------------------------------------
-Variable            U_star             X_star        alpha
-R                -0.966683           1.580985    -0.455543
-S                 1.888784           1.580984    +0.890214
-======================================================
-
-</pre></div></div>
-</div>
-<p>Finally, we run the sensitivity analysis to find the sensitivity of the FORM result to the parameters of the stochastic model:</p>
+<div class="section" id="Instantiate-LoadCombination-object">
+<h3>Instantiate <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> object<a class="headerlink" href="#Instantiate-LoadCombination-object" title="Permalink to this heading">#</a></h3>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sens = pr.SensitivityAnalysis(stochastic_model=model, limit_state=limit_state, analysis_options=options)
-results = sens.run_form()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>lc = ra.LoadCombination(lsf, dict_dist_comb=Q_dict, list_dist_other=[wS],
+                         list_dist_resist=[R, wR], list_const = [z],
+                         dict_comb_cases=loadcombinations)
 </pre></div>
 </div>
 </div>
+<p>Note that since <code class="docutils literal notranslate"><span class="pre">wR</span></code> is associated with the resistance, it is specified in <code class="docutils literal notranslate"><span class="pre">list_dist_resist</span></code>; while <code class="docutils literal notranslate"><span class="pre">wS</span></code> is specified in <code class="docutils literal notranslate"><span class="pre">list_dist_other</span></code> as it is associated with the load effects but it’s not a load combination variable.</p>
+</div>
+</div>
+<div class="section" id="Load-calibration">
+<h2>Load calibration<a class="headerlink" href="#Load-calibration" title="Permalink to this heading">#</a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(results)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>betaT = 3.7
+calib1 = ra.Calibration(lc, target_beta=betaT, dict_nom_vals=
+                                dict_nom, calib_var=&#39;z&#39;,
+                                est_method=&quot;matrix&quot;, calib_method=&quot;optimize&quot;)
+calib1.run()
+
+calib1.print_detailed_output()
 </pre></div>
 </div>
 </div>
@@ -772,8 +777,54 @@ results = sens.run_form()
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{&#39;R&#39;: {&#39;mean&#39;: 0.5155641831255604, &#39;std&#39;: -0.2545723002165454}, &#39;S&#39;: {&#39;mean&#39;: -1.3623019484605414, &#39;std&#39;: 0.04167433447075417}}
+
+
+======================================================
+X* =
+             R    wR   wS     Q1     Q2     z
+Q1_max  44.40  0.95  1.2  33.81  11.69  1.30
+Q2_max  44.76  0.95  1.2  19.16  21.85  1.16
+
+phi =
+            R    wR
+Q1_max  0.89  0.95
+Q2_max  0.89  0.95
+
+gamma =
+          wS    Q1    Q2
+Q1_max  1.2  0.97  0.94
+Q2_max  1.2  0.97  0.94
+
+psi =
+          wS    Q1    Q2
+Q1_max  1.0  1.00  0.54
+Q2_max  1.0  0.57  1.00
+======================================================
 </pre></div></div>
+</div>
+<div class="section" id="Design-Check">
+<h3>Design Check<a class="headerlink" href="#Design-Check" title="Permalink to this heading">#</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>design_z1 = calib1.get_design_param_factor()
+design_beta1 = calib1.calc_beta_design_param(np.max(design_z1))
+print(f&quot;Design reliabilities = {design_beta1.round(2)}&quot;)
+print(f&quot;Design Check = {design_beta1.round(2)&gt;=betaT}&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Design reliabilities = [3.7  4.28]
+Design Check = [ True  True]
+</pre></div></div>
+</div>
+</div>
 </div>
 </div>
 
@@ -785,17 +836,17 @@ results = sens.run_form()
             <footer class="bd-footer-article">
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="ex_scipy_distributions.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="ex_load_calibration.html" title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">SciPy Distribution Example</p>
+          <p class="prev-next-title">Load Calibration</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="ex_ddm.html" title="next page">
+  <a class='right-next' id="next-link" href="../api.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">Direct Differentiation Method</p>
+      <p class="prev-next-title">API Reference</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>
@@ -810,6 +861,68 @@ results = sens.run_form()
               
 <div class="toc-item">
   
+<div class="tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+</div>
+<nav id="bd-toc-nav" class="page-toc">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#Import-Libraries">
+   Import Libraries
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#Define-the-limit-state-function-for-calibration">
+   Define the limit state function for calibration
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#Define-the-Load-and-Resistance-distributions">
+   Define the Load and Resistance distributions
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#Set-up-Load-Combinations">
+   Set up Load Combinations
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#Specify-nominal-values-&amp;-combinations">
+     Specify nominal values &amp; combinations
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#Instantiate-LoadCombination-object">
+     Instantiate
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       LoadCombination
+      </span>
+     </code>
+     object
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#Load-calibration">
+   Load calibration
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#Design-Check">
+     Design Check
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+</nav>
+</div>
+
+<div class="toc-item">
+  
 <div id="searchbox"></div>
 </div>
 
@@ -817,7 +930,7 @@ results = sens.run_form()
   
 
 <div class="tocsection editthispage">
-    <a href="https://github.com/pystra/pystra/edit/main/docs/source/notebooks/ex_sensitivity.ipynb">
+    <a href="https://github.com/pystra/pystra/edit/main/docs/source/notebooks/ex_load_calibration_nonlinear.ipynb">
         <i class="fa-solid fa-pencil"></i> Edit this page
     </a>
 </div>

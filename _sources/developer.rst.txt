@@ -59,23 +59,29 @@ Develop and create pull-request (PR)
 
 3. Develop package
 
-4. [If applicable] Create unit tests for ``pytest`` and store test file in
-``./tests/<test-file.py>``
+4. [If applicable] Create unit tests for ``pytest``.
+    
+    * Store test file in ``./tests/<test-file.py>``.
 
-5. [If applicable] Add new dependencies in ``./setup.cfg``
+5. [If applicable] Create new example notebook.
+    
+    * Store notebook in ``./docs/notebooks/<tutorial.ipynb>``.
+    * Index notebook in ``./docs/tutorial.rst``
 
-6. Build documentation
+6. [If applicable] Add new dependencies in ``./setup.cfg``
+
+7. Build documentation
 
 	* Change directory to ``./docs/``
 	* ``make clean``
 	* ``make html``
 	* ``xdg-open build/html/index.html``
 
-7. Update version number in the following files
+8. Update version number in the following files
 
 	* ``./docs/source/index.rst``
 	* ``./pystra/__init__.py``
 
-8. Stage changes; commit; and push to remote fork
+9. Stage changes; commit; and push to remote fork
 
-9. Go to GitHub and create PR for the branch
+10. Go to GitHub and create PR for the branch
