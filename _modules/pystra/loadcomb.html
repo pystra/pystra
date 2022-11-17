@@ -1,0 +1,772 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pystra.loadcomb &#8212; PySTRA 1.2.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+<link href="../../_static/styles/bootstrap.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=796348d33e8b1d947c94">
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=796348d33e8b1d947c94">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pystra/loadcomb';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="docsearch:language" content="en">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  
+  <input type="checkbox" class="sidebar-toggle" name="__primary" id="__primary">
+  <label class="overlay overlay-primary" for="__primary"></label>
+
+  
+  <input type="checkbox" class="sidebar-toggle" name="__secondary" id="__secondary">
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+      
+<form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+    </div>
+  </div>
+
+  
+  <nav class="bd-header navbar navbar-expand-lg bd-navbar" id="navbar-main"><div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+      <span class="fa-solid fa-bars"></span>
+  </label>
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="../../index.html">
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <img src="../../_static/icon_pystra_small.png" class="logo__image only-light" alt="Logo image">
+    <img src="../../_static/icon_pystra_small.png" class="logo__image only-dark" alt="Logo image">
+  
+  
+</a>
+    
+  </div>
+
+  
+  <div class="col-lg-9 navbar-header-items">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../install.html">
+                        Installation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../tutorial.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../api.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../theory.html">
+                        Theoretical Background
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../references.html">
+                        References
+                      </a>
+                    </li>
+                
+            <div class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    More
+                </button>
+                <div class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../developer.html">
+                        Instructions for Developers
+                      </a>
+                    </li>
+                
+                </div>
+            </div>
+            
+    </ul>
+</nav>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+        <div class="navbar-end-item navbar-persistent--container">
+          
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+        </div>
+      
+      
+      <div class="navbar-end-item">
+        <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+</button>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+
+
+  
+  
+    <div class="navbar-persistent--mobile">
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+    </div>
+  
+
+  
+  <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+  </label>
+  
+
+</div>
+  </nav>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../install.html">
+                        Installation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../tutorial.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../api.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../theory.html">
+                        Theoretical Background
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../references.html">
+                        References
+                      </a>
+                    </li>
+                
+            <div class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    More
+                </button>
+                <div class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../developer.html">
+                        Instructions for Developers
+                      </a>
+                    </li>
+                
+                </div>
+            </div>
+            
+    </ul>
+</nav>
+      </div>
+      
+      </div>
+    
+
+    
+    
+    <div class="sidebar-header-items__end">
+      
+      <div class="navbar-end-item">
+        <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+</button>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+    
+  </div>
+
+  
+
+  
+  <div class="sidebar-end-items sidebar-primary__section">
+    <div class="sidebar-end-items__item">
+    </div>
+  </div>
+
+  
+  <div id="rtd-footer-container"></div>
+
+      </div>
+      <main id="main-content" class="bd-main">
+        
+        
+        <div class="bd-content">
+          <div class="bd-article-container">
+            
+            <div class="bd-header-article">
+                
+            </div>
+            
+            
+            <article class="bd-article" role="main">
+              
+  <h1>Source code for pystra.loadcomb</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">from</span> <span class="nn">.model</span> <span class="kn">import</span> <span class="n">LimitState</span>
+<span class="kn">from</span> <span class="nn">.model</span> <span class="kn">import</span> <span class="n">StochasticModel</span>
+<span class="kn">from</span> <span class="nn">.form</span> <span class="kn">import</span> <span class="n">Form</span>
+
+
+<div class="viewcode-block" id="LoadCombination"><a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination">[docs]</a><span class="k">class</span> <span class="nc">LoadCombination</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Class for running load combination cases.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    lsf : function</span>
+<span class="sd">        Limit State Function</span>
+<span class="sd">    distributions_max : dict</span>
+<span class="sd">        Dictionary of maximum distributions</span>
+<span class="sd">    distributions_pit : dict</span>
+<span class="sd">        Dictionary of point-in-time distributions</span>
+<span class="sd">    distributions_other : dict</span>
+<span class="sd">        Dictionary of static distributions</span>
+<span class="sd">    distributions_resistance : dict</span>
+<span class="sd">        Dictionary of resistance distributions</span>
+<span class="sd">    dict_dist_comb : dict</span>
+<span class="sd">        Dictionary of distributions for all load combinations</span>
+<span class="sd">    label_comb_vrs : str</span>
+<span class="sd">        Labels of combination variables</span>
+<span class="sd">    label_comb_cases : str</span>
+<span class="sd">        Labels of combination variables</span>
+<span class="sd">    label_resist : str</span>
+<span class="sd">        Labels of resistance variables</span>
+<span class="sd">    label_other : str</span>
+<span class="sd">        Labels of static variables</span>
+<span class="sd">    label_all : str</span>
+<span class="sd">        Labels of all variables including design multiplier</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">lsf</span><span class="p">,</span>
+        <span class="n">dict_dist_comb</span><span class="p">,</span>
+        <span class="n">list_dist_resist</span><span class="p">,</span>
+        <span class="n">list_dist_other</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">list_const</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">dict_comb_cases</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize class instance.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        lsf : Function</span>
+<span class="sd">            Limit State Function.</span>
+<span class="sd">        dict_dist_comb : Dictionary</span>
+<span class="sd">            Nested dictionary of load effects and their corresponding max and</span>
+<span class="sd">            pit distributions.</span>
+<span class="sd">        list_dist_resist : List</span>
+<span class="sd">            List of resistance distribution.</span>
+<span class="sd">        list_dist_other : List, optional</span>
+<span class="sd">            List of other remaining random variables.</span>
+<span class="sd">        list_const : List, optional</span>
+<span class="sd">            List of LSF constants as Pystra Constants.</span>
+<span class="sd">        dict_comb_cases : Dictionary, optional</span>
+<span class="sd">            Dictionary containing the identifiers of load cases as keys and</span>
+<span class="sd">            list of identifiers of max load effects as values, i.e.</span>
+<span class="sd">            {&lt;load-case-name&gt;:[&lt;max-load-effects&gt;],}. By default, each combination</span>
+<span class="sd">            load effect is taken as maximum in a load case.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lsf</span> <span class="o">=</span> <span class="n">lsf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distributions_comb</span> <span class="o">=</span> <span class="n">dict_dist_comb</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distributions_max</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">xx</span><span class="p">:</span> <span class="n">dict_dist_comb</span><span class="p">[</span><span class="n">xx</span><span class="p">][</span><span class="s2">&quot;max&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">xx</span> <span class="ow">in</span> <span class="n">dict_dist_comb</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distributions_pit</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">xx</span><span class="p">:</span> <span class="n">dict_dist_comb</span><span class="p">[</span><span class="n">xx</span><span class="p">][</span><span class="s2">&quot;pit&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">xx</span> <span class="ow">in</span> <span class="n">dict_dist_comb</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distributions_other</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">{</span><span class="n">xx</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">xx</span> <span class="k">for</span> <span class="n">xx</span> <span class="ow">in</span> <span class="n">list_dist_other</span><span class="p">}</span>
+            <span class="k">if</span> <span class="n">list_dist_other</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distributions_resistance</span> <span class="o">=</span> <span class="p">{</span><span class="n">xx</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">xx</span> <span class="k">for</span> <span class="n">xx</span> <span class="ow">in</span> <span class="n">list_dist_resist</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dict_comb_cases</span> <span class="o">=</span> <span class="n">dict_comb_cases</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comb_cases_max</span> <span class="o">=</span> <span class="p">[</span><span class="n">dict_comb_cases</span><span class="p">[</span><span class="n">xx</span><span class="p">]</span> <span class="k">for</span> <span class="n">xx</span> <span class="ow">in</span> <span class="n">dict_comb_cases</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_input</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_comb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_num_comb</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dict_dist_comb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_dict_dist_comb</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_comb_cases</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dict_comb_cases</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_comb_vrs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dict_dist_comb</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_resist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">distributions_resistance</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_other</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">distributions_other</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">list_dist_other</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_all</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_resist</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_other</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_comb_vrs</span>
+        <span class="k">if</span> <span class="n">list_const</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">constant</span> <span class="o">=</span> <span class="p">{</span><span class="n">xx</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">xx</span> <span class="k">for</span> <span class="n">xx</span> <span class="ow">in</span> <span class="n">list_const</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">label_const</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">constant</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">label_all</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_all</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_const</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">constant</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">label_const</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dict_label</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;resist&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_resist</span><span class="p">,</span>
+            <span class="s2">&quot;other&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_other</span><span class="p">,</span>
+            <span class="s2">&quot;comb_vrs&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_comb_vrs</span><span class="p">,</span>
+            <span class="s2">&quot;comb_cases&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_comb_cases</span><span class="p">,</span>
+            <span class="s2">&quot;const&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_const</span><span class="p">,</span>
+            <span class="s2">&quot;all&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_all</span><span class="p">,</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_check_input</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check consistency of supplied input.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        Exception</span>
+<span class="sd">            Raised when Length of Max variables does not match length of</span>
+<span class="sd">            point-in-time variables.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">distributions_max</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">distributions_pit</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Length of Max variables </span><span class="si">{}</span><span class="s2"> does not match</span><span class="se">\</span>
+<span class="s2">                      length of point-in-time variables </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">distributions_max</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">distributions_pit</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="LoadCombination.get_label"><a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination.get_label">[docs]</a>    <span class="k">def</span> <span class="nf">get_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get Labels corresponding to label_type.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        label_type : String</span>
+<span class="sd">            Label type. Possible values: &quot;resist&quot;, &quot;other&quot;, &quot;comb_vrs&quot;,</span>
+<span class="sd">            &quot;comb_cases&quot;, &quot;const&quot;, and &quot;all&quot;.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        label : List</span>
+<span class="sd">            List of labels corresponding to label_type.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_label</span><span class="p">[</span><span class="n">label_type</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">label</span></div>
+
+    <span class="k">def</span> <span class="nf">_set_num_comb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the number of load combination cases.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        num_comb : Float</span>
+<span class="sd">            Number of load combination cases..</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comb_cases_max</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">[[</span><span class="n">xx</span><span class="p">]</span> <span class="k">for</span> <span class="n">xx</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">distributions_max</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">comb_cases_max</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">comb_cases_max</span>
+        <span class="p">)</span>
+        <span class="n">num_comb</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comb_cases_max</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">num_comb</span>
+
+<div class="viewcode-block" id="LoadCombination.get_num_comb"><a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination.get_num_comb">[docs]</a>    <span class="k">def</span> <span class="nf">get_num_comb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the number of load combination cases.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Float</span>
+<span class="sd">            Number of load combination cases.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_comb</span></div>
+
+<div class="viewcode-block" id="LoadCombination.get_dict_dist_comb"><a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination.get_dict_dist_comb">[docs]</a>    <span class="k">def</span> <span class="nf">get_dict_dist_comb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the dictionary of distributions for all load combination cases.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Dictionary</span>
+<span class="sd">            Dictionary of distributions for all load combination cases.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_dist_comb</span></div>
+
+    <span class="k">def</span> <span class="nf">_create_dict_dist_comb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a dictionary containing distributions for respective load</span>
+<span class="sd">        combination cases.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict_dist : Dictionary</span>
+<span class="sd">            Dictionary of distributions for all load combination cases.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dict_dist</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">loadc_name</span><span class="p">,</span> <span class="n">loadc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_comb_cases</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">dict_loadc</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">distributions_resistance</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">dict_loadc</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">distributions_other</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">distributions_other</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">dict_loadc</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">distributions_max</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">loadc</span><span class="p">:</span>
+                    <span class="n">dict_loadc</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">dict_loadc</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">distributions_pit</span><span class="p">[</span><span class="n">key</span><span class="p">]})</span>
+            <span class="n">dict_dist</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">loadc_name</span><span class="p">:</span> <span class="n">dict_loadc</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">dict_dist</span>
+
+<div class="viewcode-block" id="LoadCombination.run_reliability_case"><a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination.run_reliability_case">[docs]</a>    <span class="k">def</span> <span class="nf">run_reliability_case</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lcn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create and run reliability analysis using input LSF</span>
+<span class="sd">        for a given load case, lcn.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        lcn : float, optional</span>
+<span class="sd">            Load case number. The default is 1.</span>
+<span class="sd">        **kwargs : Keyword arguments</span>
+<span class="sd">            Specify any distribution overrides for the stochastic model random</span>
+<span class="sd">            variables or constants as keyword arguments.</span>
+<span class="sd">            Therefore, if kwargs contains any LSF argument, then kwarg specified</span>
+<span class="sd">            distribution is used for that argument in the reliability analyses.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        form : Pystra FORM object</span>
+<span class="sd">            FORM reliability analysis object.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lcn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_comb_cases</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">lcn</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">lcn</span>
+        <span class="n">ls</span> <span class="o">=</span> <span class="n">LimitState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lsf</span><span class="p">)</span>
+        <span class="n">sm</span> <span class="o">=</span> <span class="n">StochasticModel</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">constant</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">constant</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                    <span class="n">sm</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">sm</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">dict_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_dist_comb</span><span class="p">[</span><span class="n">lcn</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">dict_dist</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">sm</span><span class="p">,</span> <span class="n">ls</span><span class="p">)</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">form</span></div>
+
+<div class="viewcode-block" id="LoadCombination.eval_lsf_kwargs"><a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination.eval_lsf_kwargs">[docs]</a>    <span class="k">def</span> <span class="nf">eval_lsf_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">set_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">set_const</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evaluate the LSF based on the supplied Keyword arguments, setting</span>
+<span class="sd">        all others to set_value.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        set_value : Float, optional</span>
+<span class="sd">            Set value of random variable LSF arguments other than those</span>
+<span class="sd">            supplied as keyword arguments. The default is 0.0.</span>
+<span class="sd">        set_const : Float, optional</span>
+<span class="sd">            Set value of constant LSF arguments other than those supplied as</span>
+<span class="sd">            keyword arguments. The default is None.</span>
+<span class="sd">        **kwargs : Keyword arguments</span>
+<span class="sd">            LSF Keyword arguments.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        gX : Float</span>
+<span class="sd">            Evaluation of the LSF.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">constant</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">set_miss</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label_all</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">constant</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">set_miss</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label_all</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">set_miss</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">xx</span><span class="p">:</span> <span class="n">set_value</span> <span class="k">for</span> <span class="n">xx</span> <span class="ow">in</span> <span class="n">set_miss</span><span class="p">})</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">constant</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="n">set_const</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">constant</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">getValue</span><span class="p">()})</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="n">set_const</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">set_const</span><span class="p">})</span>
+        <span class="n">gX</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lsf</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">gX</span></div></div>
+</pre></div>
+
+            </article>
+            
+            
+            
+            <footer class="bd-footer-article">
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            </footer>
+            
+          </div>
+          
+          
+          
+            <div class="bd-sidebar-secondary bd-toc">
+              
+<div class="toc-item">
+  
+<div id="searchbox"></div>
+</div>
+
+<div class="toc-item">
+  
+</div>
+
+<div class="toc-item">
+  
+</div>
+
+            </div>
+          
+          
+        </div>
+        <footer class="bd-footer-content">
+          <div class="bd-footer-content__inner">
+            
+          </div>
+        </footer>
+        
+      </main>
+    </div>
+  </div>
+
+  
+    
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=796348d33e8b1d947c94"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=796348d33e8b1d947c94"></script>
+
+  <footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    
+<p class="copyright">
+
+    &copy; Copyright 2022, The PySTRA Developers.<br>
+
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    <p class="theme-version">
+    Built with the
+    <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">
+        PyData Sphinx Theme
+    </a>
+    0.12.0.
+</p>
+  </div>
+  
+  <div class="footer-item">
+    
+<p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br>
+</p>
+
+  </div>
+  
+</div>
+  </footer>
+  </body>
+</html>

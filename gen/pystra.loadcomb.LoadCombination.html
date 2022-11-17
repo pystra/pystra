@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pystra.mc.DistributionAnalysis &#8212; PySTRA 1.2.1 documentation</title>
+    <title>pystra.loadcomb.LoadCombination &#8212; PySTRA 1.2.1 documentation</title>
   
   
   
@@ -38,11 +38,11 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/sphinx_highlight.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'gen/pystra.mc.DistributionAnalysis';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'gen/pystra.loadcomb.LoadCombination';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pystra.mc.ImportanceSampling" href="pystra.mc.ImportanceSampling.html" />
-    <link rel="prev" title="pystra.mc.CrudeMonteCarlo" href="pystra.mc.CrudeMonteCarlo.html" />
+    <link rel="next" title="Theoretical Background" href="../theory.html" />
+    <link rel="prev" title="pystra.loadcomb" href="pystra.loadcomb.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
   </head>
@@ -384,9 +384,9 @@
 <li class="toctree-l2"><a class="reference internal" href="pystra.integration.zi_and_xi.html">pystra.integration.zi_and_xi</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="pystra.mc.html">pystra.mc</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.mc.html">pystra.mc</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="pystra.mc.CrudeMonteCarlo.html">pystra.mc.CrudeMonteCarlo</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">pystra.mc.DistributionAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.mc.DistributionAnalysis.html">pystra.mc.DistributionAnalysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pystra.mc.ImportanceSampling.html">pystra.mc.ImportanceSampling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pystra.mc.MonteCarlo.html">pystra.mc.MonteCarlo</a></li>
 </ul>
@@ -474,8 +474,8 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.loadcomb.html">pystra.loadcomb</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-25"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="pystra.loadcomb.LoadCombination.html">pystra.loadcomb.LoadCombination</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="pystra.loadcomb.html">pystra.loadcomb</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-25"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">pystra.loadcomb.LoadCombination</a></li>
 </ul>
 </li>
 </ul>
@@ -509,23 +509,152 @@
             
             <article class="bd-article" role="main">
               
-  <div class="section" id="pystra-mc-distributionanalysis">
-<h1>pystra.mc.DistributionAnalysis<a class="headerlink" href="#pystra-mc-distributionanalysis" title="Permalink to this heading">#</a></h1>
+  <div class="section" id="pystra-loadcomb-loadcombination">
+<h1>pystra.loadcomb.LoadCombination<a class="headerlink" href="#pystra-loadcomb-loadcombination" title="Permalink to this heading">#</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DistributionAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">analysis_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stochastic_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/mc.html#DistributionAnalysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.mc.DistributionAnalysis" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="pystra.mc.MonteCarlo.html#pystra.mc.MonteCarlo" title="pystra.mc.MonteCarlo"><code class="xref py py-class docutils literal notranslate"><span class="pre">MonteCarlo</span></code></a></p>
-<p>Distribution Analysis</p>
-<p>To analyze the random variables, used in the limit state function, a
-numerical distribution analysis based on Monte Carlo simulation can be
-performed.</p>
+<dt class="sig sig-object py" id="pystra.loadcomb.LoadCombination">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LoadCombination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lsf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict_dist_comb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_dist_resist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_dist_other</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict_comb_cases</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/loadcomb.html#LoadCombination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.loadcomb.LoadCombination" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for running load combination cases.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.loadcomb.LoadCombination.lsf">
+<span class="sig-name descname"><span class="pre">lsf</span></span><a class="headerlink" href="#pystra.loadcomb.LoadCombination.lsf" title="Permalink to this definition">#</a></dt>
+<dd><p>Limit State Function</p>
 <dl class="field-list simple">
-<dt class="field-odd">Attributes</dt>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.loadcomb.LoadCombination.distributions_max">
+<span class="sig-name descname"><span class="pre">distributions_max</span></span><a class="headerlink" href="#pystra.loadcomb.LoadCombination.distributions_max" title="Permalink to this definition">#</a></dt>
+<dd><p>Dictionary of maximum distributions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.loadcomb.LoadCombination.distributions_pit">
+<span class="sig-name descname"><span class="pre">distributions_pit</span></span><a class="headerlink" href="#pystra.loadcomb.LoadCombination.distributions_pit" title="Permalink to this definition">#</a></dt>
+<dd><p>Dictionary of point-in-time distributions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.loadcomb.LoadCombination.distributions_other">
+<span class="sig-name descname"><span class="pre">distributions_other</span></span><a class="headerlink" href="#pystra.loadcomb.LoadCombination.distributions_other" title="Permalink to this definition">#</a></dt>
+<dd><p>Dictionary of static distributions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.loadcomb.LoadCombination.distributions_resistance">
+<span class="sig-name descname"><span class="pre">distributions_resistance</span></span><a class="headerlink" href="#pystra.loadcomb.LoadCombination.distributions_resistance" title="Permalink to this definition">#</a></dt>
+<dd><p>Dictionary of resistance distributions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.loadcomb.LoadCombination.dict_dist_comb">
+<span class="sig-name descname"><span class="pre">dict_dist_comb</span></span><a class="headerlink" href="#pystra.loadcomb.LoadCombination.dict_dist_comb" title="Permalink to this definition">#</a></dt>
+<dd><p>Dictionary of distributions for all load combinations</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.loadcomb.LoadCombination.label_comb_vrs">
+<span class="sig-name descname"><span class="pre">label_comb_vrs</span></span><a class="headerlink" href="#pystra.loadcomb.LoadCombination.label_comb_vrs" title="Permalink to this definition">#</a></dt>
+<dd><p>Labels of combination variables</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.loadcomb.LoadCombination.label_comb_cases">
+<span class="sig-name descname"><span class="pre">label_comb_cases</span></span><a class="headerlink" href="#pystra.loadcomb.LoadCombination.label_comb_cases" title="Permalink to this definition">#</a></dt>
+<dd><p>Labels of combination variables</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.loadcomb.LoadCombination.label_resist">
+<span class="sig-name descname"><span class="pre">label_resist</span></span><a class="headerlink" href="#pystra.loadcomb.LoadCombination.label_resist" title="Permalink to this definition">#</a></dt>
+<dd><p>Labels of resistance variables</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.loadcomb.LoadCombination.label_other">
+<span class="sig-name descname"><span class="pre">label_other</span></span><a class="headerlink" href="#pystra.loadcomb.LoadCombination.label_other" title="Permalink to this definition">#</a></dt>
+<dd><p>Labels of static variables</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.loadcomb.LoadCombination.label_all">
+<span class="sig-name descname"><span class="pre">label_all</span></span><a class="headerlink" href="#pystra.loadcomb.LoadCombination.label_all" title="Permalink to this definition">#</a></dt>
+<dd><p>Labels of all variables including design multiplier</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Initialize class instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p>analysis_option (AnalysisOption): Option for the structural analysis</p></li>
-<li><p>limit_state (LimitState): Information about the limit state</p></li>
-<li><p>stochastic_model (StochasticModel): Information about the model</p></li>
+<li><p><strong>lsf</strong> (<em>Function</em>) – Limit State Function.</p></li>
+<li><p><strong>dict_dist_comb</strong> (<em>Dictionary</em>) – Nested dictionary of load effects and their corresponding max and
+pit distributions.</p></li>
+<li><p><strong>list_dist_resist</strong> (<em>List</em>) – List of resistance distribution.</p></li>
+<li><p><strong>list_dist_other</strong> (<em>List</em><em>, </em><em>optional</em>) – List of other remaining random variables.</p></li>
+<li><p><strong>list_const</strong> (<em>List</em><em>, </em><em>optional</em>) – List of LSF constants as Pystra Constants.</p></li>
+<li><p><strong>dict_comb_cases</strong> (<em>Dictionary</em><em>, </em><em>optional</em>) – Dictionary containing the identifiers of load cases as keys and
+list of identifiers of max load effects as values, i.e.
+{&lt;load-case-name&gt;:[&lt;max-load-effects&gt;],}. By default, each combination
+load effect is taken as maximum in a load case.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
 </dd>
 </dl>
 <p class="rubric">Methods</p>
@@ -535,228 +664,115 @@ performed.</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeBeta" title="pystra.mc.DistributionAnalysis.computeBeta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeBeta</span></code></a></p></td>
-<td><p>Compute beta value</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.loadcomb.LoadCombination.eval_lsf_kwargs" title="pystra.loadcomb.LoadCombination.eval_lsf_kwargs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_lsf_kwargs</span></code></a></p></td>
+<td><p>Evaluate the LSF based on the supplied Keyword arguments, setting all others to set_value.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeBins" title="pystra.mc.DistributionAnalysis.computeBins"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeBins</span></code></a></p></td>
-<td><p>Return an optimal amount of bins for a histogram</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.loadcomb.LoadCombination.get_dict_dist_comb" title="pystra.loadcomb.LoadCombination.get_dict_dist_comb"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dict_dist_comb</span></code></a></p></td>
+<td><p>Get the dictionary of distributions for all load combination cases.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeCoefficientOfVariation" title="pystra.mc.DistributionAnalysis.computeCoefficientOfVariation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeCoefficientOfVariation</span></code></a></p></td>
-<td><p>Compute Coefficient of Variation</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.loadcomb.LoadCombination.get_label" title="pystra.loadcomb.LoadCombination.get_label"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_label</span></code></a></p></td>
+<td><p>Get Labels corresponding to label_type.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeDataUpdate" title="pystra.mc.DistributionAnalysis.computeDataUpdate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeDataUpdate</span></code></a></p></td>
-<td><p>Update data</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.loadcomb.LoadCombination.get_num_comb" title="pystra.loadcomb.LoadCombination.get_num_comb"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_num_comb</span></code></a></p></td>
+<td><p>Get the number of load combination cases.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeDistributionData" title="pystra.mc.DistributionAnalysis.computeDistributionData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeDistributionData</span></code></a></p></td>
-<td><p>Compute data for the distributions</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeFailureProbability" title="pystra.mc.DistributionAnalysis.computeFailureProbability"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeFailureProbability</span></code></a></p></td>
-<td><p>Compute probability of failure</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeLimitState" title="pystra.mc.DistributionAnalysis.computeLimitState"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeLimitState</span></code></a></p></td>
-<td><p>Evaluate limit-state function</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computePercentDone" title="pystra.mc.DistributionAnalysis.computePercentDone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computePercentDone</span></code></a></p></td>
-<td><p>Compute percent done</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeRandomNumbers" title="pystra.mc.DistributionAnalysis.computeRandomNumbers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeRandomNumbers</span></code></a></p></td>
-<td><p>Compute random numbers</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeResults" title="pystra.mc.DistributionAnalysis.computeResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeResults</span></code></a></p></td>
-<td><p>Collect result of sampling</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeSumUpdate" title="pystra.mc.DistributionAnalysis.computeSumUpdate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeSumUpdate</span></code></a></p></td>
-<td><p>Update summation</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeTransformation" title="pystra.mc.DistributionAnalysis.computeTransformation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeTransformation</span></code></a></p></td>
-<td><p>Compute transformation from u to x space</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.getBeta" title="pystra.mc.DistributionAnalysis.getBeta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getBeta</span></code></a></p></td>
-<td><p>Returns the beta value</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.getBins" title="pystra.mc.DistributionAnalysis.getBins"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getBins</span></code></a></p></td>
-<td><p>Returns the amount on bins</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.getDistributionData" title="pystra.mc.DistributionAnalysis.getDistributionData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getDistributionData</span></code></a></p></td>
-<td><p>Returns data for the failure</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.getFailure" title="pystra.mc.DistributionAnalysis.getFailure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getFailure</span></code></a></p></td>
-<td><p>Returns the probability of failure</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.init_run" title="pystra.mc.DistributionAnalysis.init_run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_run</span></code></a></p></td>
-<td><p>Derived classes call this at top of their run()</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.initializeVariables" title="pystra.mc.DistributionAnalysis.initializeVariables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">initializeVariables</span></code></a></p></td>
-<td><p>Initialization of the simulation variables</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.setPoint" title="pystra.mc.DistributionAnalysis.setPoint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setPoint</span></code></a></p></td>
-<td><p>Set design point</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.showResults" title="pystra.mc.DistributionAnalysis.showResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">showResults</span></code></a></p></td>
-<td><p>Show results and plots</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.loadcomb.LoadCombination.run_reliability_case" title="pystra.loadcomb.LoadCombination.run_reliability_case"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_reliability_case</span></code></a></p></td>
+<td><p>Create and run reliability analysis using input LSF for a given load case, lcn.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.initializeVariables">
-<span class="sig-name descname"><span class="pre">initializeVariables</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/mc.html#DistributionAnalysis.initializeVariables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.mc.DistributionAnalysis.initializeVariables" title="Permalink to this definition">#</a></dt>
-<dd><p>Initialization of the simulation variables</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeDataUpdate">
-<span class="sig-name descname"><span class="pre">computeDataUpdate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/mc.html#DistributionAnalysis.computeDataUpdate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeDataUpdate" title="Permalink to this definition">#</a></dt>
-<dd><p>Update data</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeBeta">
-<span class="sig-name descname"><span class="pre">computeBeta</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeBeta" title="Permalink to this definition">#</a></dt>
-<dd><p>Compute beta value</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeBins">
-<span class="sig-name descname"><span class="pre">computeBins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeBins" title="Permalink to this definition">#</a></dt>
-<dd><p>Return an optimal amount of bins for a histogram</p>
+<dt class="sig sig-object py" id="pystra.loadcomb.LoadCombination.get_label">
+<span class="sig-name descname"><span class="pre">get_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/loadcomb.html#LoadCombination.get_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.loadcomb.LoadCombination.get_label" title="Permalink to this definition">#</a></dt>
+<dd><p>Get Labels corresponding to label_type.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>bins (int): Returns amount on bins</p></li>
-</ul>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>label_type</strong> (<em>String</em>) – Label type. Possible values: “resist”, “other”, “comb_vrs”,
+“comb_cases”, “const”, and “all”.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>label</strong> – List of labels corresponding to label_type.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeCoefficientOfVariation">
-<span class="sig-name descname"><span class="pre">computeCoefficientOfVariation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeCoefficientOfVariation" title="Permalink to this definition">#</a></dt>
-<dd><p>Compute Coefficient of Variation</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeDistributionData">
-<span class="sig-name descname"><span class="pre">computeDistributionData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/mc.html#DistributionAnalysis.computeDistributionData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeDistributionData" title="Permalink to this definition">#</a></dt>
-<dd><p>Compute data for the distributions</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeFailureProbability">
-<span class="sig-name descname"><span class="pre">computeFailureProbability</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeFailureProbability" title="Permalink to this definition">#</a></dt>
-<dd><p>Compute probability of failure</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeLimitState">
-<span class="sig-name descname"><span class="pre">computeLimitState</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeLimitState" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate limit-state function</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computePercentDone">
-<span class="sig-name descname"><span class="pre">computePercentDone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computePercentDone" title="Permalink to this definition">#</a></dt>
-<dd><p>Compute percent done</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeRandomNumbers">
-<span class="sig-name descname"><span class="pre">computeRandomNumbers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeRandomNumbers" title="Permalink to this definition">#</a></dt>
-<dd><p>Compute random numbers</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeResults">
-<span class="sig-name descname"><span class="pre">computeResults</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeResults" title="Permalink to this definition">#</a></dt>
-<dd><p>Collect result of sampling</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeSumUpdate">
-<span class="sig-name descname"><span class="pre">computeSumUpdate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeSumUpdate" title="Permalink to this definition">#</a></dt>
-<dd><p>Update summation</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeTransformation">
-<span class="sig-name descname"><span class="pre">computeTransformation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeTransformation" title="Permalink to this definition">#</a></dt>
-<dd><p>Compute transformation from u to x space</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>TODO: this method takes a lot of time, find some better solution.</p>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.getBeta">
-<span class="sig-name descname"><span class="pre">getBeta</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.getBeta" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns the beta value</p>
+<dt class="sig sig-object py" id="pystra.loadcomb.LoadCombination.get_num_comb">
+<span class="sig-name descname"><span class="pre">get_num_comb</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/loadcomb.html#LoadCombination.get_num_comb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.loadcomb.LoadCombination.get_num_comb" title="Permalink to this definition">#</a></dt>
+<dd><p>Get the number of load combination cases.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>beta (float): Returns the beta value</p></li>
-</ul>
+<dd class="field-odd"><p>Number of load combination cases.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Float</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.getBins">
-<span class="sig-name descname"><span class="pre">getBins</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.getBins" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns the amount on bins</p>
+<dt class="sig sig-object py" id="pystra.loadcomb.LoadCombination.get_dict_dist_comb">
+<span class="sig-name descname"><span class="pre">get_dict_dist_comb</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/loadcomb.html#LoadCombination.get_dict_dist_comb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.loadcomb.LoadCombination.get_dict_dist_comb" title="Permalink to this definition">#</a></dt>
+<dd><p>Get the dictionary of distributions for all load combination cases.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>bins (int): Returns the amount on bins (histogram)</p></li>
-</ul>
+<dd class="field-odd"><p>Dictionary of distributions for all load combination cases.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Dictionary</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.getDistributionData">
-<span class="sig-name descname"><span class="pre">getDistributionData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.getDistributionData" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns data for the failure</p>
+<dt class="sig sig-object py" id="pystra.loadcomb.LoadCombination.run_reliability_case">
+<span class="sig-name descname"><span class="pre">run_reliability_case</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lcn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/loadcomb.html#LoadCombination.run_reliability_case"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.loadcomb.LoadCombination.run_reliability_case" title="Permalink to this definition">#</a></dt>
+<dd><p>Create and run reliability analysis using input LSF
+for a given load case, lcn.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p>all_G (float): Returns data from the distribution</p></li>
+<li><p><strong>lcn</strong> (<em>float</em><em>, </em><em>optional</em>) – Load case number. The default is 1.</p></li>
+<li><p><strong>**kwargs</strong> (<em>Keyword arguments</em>) – Specify any distribution overrides for the stochastic model random
+variables or constants as keyword arguments.
+Therefore, if kwargs contains any LSF argument, then kwarg specified
+distribution is used for that argument in the reliability analyses.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>form</strong> – FORM reliability analysis object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Pystra FORM object</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.getFailure">
-<span class="sig-name descname"><span class="pre">getFailure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.getFailure" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns the probability of failure</p>
+<dt class="sig sig-object py" id="pystra.loadcomb.LoadCombination.eval_lsf_kwargs">
+<span class="sig-name descname"><span class="pre">eval_lsf_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">set_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/loadcomb.html#LoadCombination.eval_lsf_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.loadcomb.LoadCombination.eval_lsf_kwargs" title="Permalink to this definition">#</a></dt>
+<dd><p>Evaluate the LSF based on the supplied Keyword arguments, setting
+all others to set_value.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p>Pf (float): Returns the probability of failure</p></li>
+<li><p><strong>set_value</strong> (<em>Float</em><em>, </em><em>optional</em>) – Set value of random variable LSF arguments other than those
+supplied as keyword arguments. The default is 0.0.</p></li>
+<li><p><strong>set_const</strong> (<em>Float</em><em>, </em><em>optional</em>) – Set value of constant LSF arguments other than those supplied as
+keyword arguments. The default is None.</p></li>
+<li><p><strong>**kwargs</strong> (<em>Keyword arguments</em>) – LSF Keyword arguments.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>gX</strong> – Evaluation of the LSF.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Float</p>
+</dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.init_run">
-<span class="sig-name descname"><span class="pre">init_run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.init_run" title="Permalink to this definition">#</a></dt>
-<dd><p>Derived classes call this at top of their run()</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.setPoint">
-<span class="sig-name descname"><span class="pre">setPoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.setPoint" title="Permalink to this definition">#</a></dt>
-<dd><p>Set design point</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.showResults">
-<span class="sig-name descname"><span class="pre">showResults</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/mc.html#DistributionAnalysis.showResults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.mc.DistributionAnalysis.showResults" title="Permalink to this definition">#</a></dt>
-<dd><p>Show results and plots</p>
 </dd></dl>
 
 </dd></dl>
@@ -771,17 +787,17 @@ performed.</p>
             <footer class="bd-footer-article">
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="pystra.mc.CrudeMonteCarlo.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="pystra.loadcomb.html" title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">pystra.mc.CrudeMonteCarlo</p>
+          <p class="prev-next-title">pystra.loadcomb</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="pystra.mc.ImportanceSampling.html" title="next page">
+  <a class='right-next' id="next-link" href="../theory.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">pystra.mc.ImportanceSampling</p>
+      <p class="prev-next-title">Theoretical Background</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>
@@ -802,190 +818,154 @@ performed.</p>
 <nav id="bd-toc-nav" class="page-toc">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis">
+  <a class="reference internal nav-link" href="#pystra.loadcomb.LoadCombination">
    <code class="docutils literal notranslate">
     <span class="pre">
-     DistributionAnalysis
+     LoadCombination
     </span>
    </code>
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.initializeVariables">
+    <a class="reference internal nav-link" href="#pystra.loadcomb.LoadCombination.lsf">
      <code class="docutils literal notranslate">
       <span class="pre">
-       DistributionAnalysis.initializeVariables()
+       LoadCombination.lsf
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeDataUpdate">
+    <a class="reference internal nav-link" href="#pystra.loadcomb.LoadCombination.distributions_max">
      <code class="docutils literal notranslate">
       <span class="pre">
-       DistributionAnalysis.computeDataUpdate()
+       LoadCombination.distributions_max
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeBeta">
+    <a class="reference internal nav-link" href="#pystra.loadcomb.LoadCombination.distributions_pit">
      <code class="docutils literal notranslate">
       <span class="pre">
-       DistributionAnalysis.computeBeta()
+       LoadCombination.distributions_pit
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeBins">
+    <a class="reference internal nav-link" href="#pystra.loadcomb.LoadCombination.distributions_other">
      <code class="docutils literal notranslate">
       <span class="pre">
-       DistributionAnalysis.computeBins()
+       LoadCombination.distributions_other
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeCoefficientOfVariation">
+    <a class="reference internal nav-link" href="#pystra.loadcomb.LoadCombination.distributions_resistance">
      <code class="docutils literal notranslate">
       <span class="pre">
-       DistributionAnalysis.computeCoefficientOfVariation()
+       LoadCombination.distributions_resistance
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeDistributionData">
+    <a class="reference internal nav-link" href="#pystra.loadcomb.LoadCombination.dict_dist_comb">
      <code class="docutils literal notranslate">
       <span class="pre">
-       DistributionAnalysis.computeDistributionData()
+       LoadCombination.dict_dist_comb
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeFailureProbability">
+    <a class="reference internal nav-link" href="#pystra.loadcomb.LoadCombination.label_comb_vrs">
      <code class="docutils literal notranslate">
       <span class="pre">
-       DistributionAnalysis.computeFailureProbability()
+       LoadCombination.label_comb_vrs
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeLimitState">
+    <a class="reference internal nav-link" href="#pystra.loadcomb.LoadCombination.label_comb_cases">
      <code class="docutils literal notranslate">
       <span class="pre">
-       DistributionAnalysis.computeLimitState()
+       LoadCombination.label_comb_cases
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computePercentDone">
+    <a class="reference internal nav-link" href="#pystra.loadcomb.LoadCombination.label_resist">
      <code class="docutils literal notranslate">
       <span class="pre">
-       DistributionAnalysis.computePercentDone()
+       LoadCombination.label_resist
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeRandomNumbers">
+    <a class="reference internal nav-link" href="#pystra.loadcomb.LoadCombination.label_other">
      <code class="docutils literal notranslate">
       <span class="pre">
-       DistributionAnalysis.computeRandomNumbers()
+       LoadCombination.label_other
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeResults">
+    <a class="reference internal nav-link" href="#pystra.loadcomb.LoadCombination.label_all">
      <code class="docutils literal notranslate">
       <span class="pre">
-       DistributionAnalysis.computeResults()
+       LoadCombination.label_all
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeSumUpdate">
+    <a class="reference internal nav-link" href="#pystra.loadcomb.LoadCombination.get_label">
      <code class="docutils literal notranslate">
       <span class="pre">
-       DistributionAnalysis.computeSumUpdate()
+       LoadCombination.get_label()
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeTransformation">
+    <a class="reference internal nav-link" href="#pystra.loadcomb.LoadCombination.get_num_comb">
      <code class="docutils literal notranslate">
       <span class="pre">
-       DistributionAnalysis.computeTransformation()
+       LoadCombination.get_num_comb()
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.getBeta">
+    <a class="reference internal nav-link" href="#pystra.loadcomb.LoadCombination.get_dict_dist_comb">
      <code class="docutils literal notranslate">
       <span class="pre">
-       DistributionAnalysis.getBeta()
+       LoadCombination.get_dict_dist_comb()
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.getBins">
+    <a class="reference internal nav-link" href="#pystra.loadcomb.LoadCombination.run_reliability_case">
      <code class="docutils literal notranslate">
       <span class="pre">
-       DistributionAnalysis.getBins()
+       LoadCombination.run_reliability_case()
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.getDistributionData">
+    <a class="reference internal nav-link" href="#pystra.loadcomb.LoadCombination.eval_lsf_kwargs">
      <code class="docutils literal notranslate">
       <span class="pre">
-       DistributionAnalysis.getDistributionData()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.getFailure">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       DistributionAnalysis.getFailure()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.init_run">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       DistributionAnalysis.init_run()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.setPoint">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       DistributionAnalysis.setPoint()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.showResults">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       DistributionAnalysis.showResults()
+       LoadCombination.eval_lsf_kwargs()
       </span>
      </code>
     </a>
@@ -1006,7 +986,7 @@ performed.</p>
   
 
 <div class="tocsection editthispage">
-    <a href="https://github.com/pystra/pystra/edit/main/docs/source/gen/pystra.mc.DistributionAnalysis.rst">
+    <a href="https://github.com/pystra/pystra/edit/main/docs/source/gen/pystra.loadcomb.LoadCombination.rst">
         <i class="fa-solid fa-pencil"></i> Edit this page
     </a>
 </div>

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pystra.mc.DistributionAnalysis &#8212; PySTRA 1.2.1 documentation</title>
+    <title>pystra.loadcomb &#8212; PySTRA 1.2.1 documentation</title>
   
   
   
@@ -38,11 +38,11 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/sphinx_highlight.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'gen/pystra.mc.DistributionAnalysis';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'gen/pystra.loadcomb';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pystra.mc.ImportanceSampling" href="pystra.mc.ImportanceSampling.html" />
-    <link rel="prev" title="pystra.mc.CrudeMonteCarlo" href="pystra.mc.CrudeMonteCarlo.html" />
+    <link rel="next" title="pystra.loadcomb.LoadCombination" href="pystra.loadcomb.LoadCombination.html" />
+    <link rel="prev" title="pystra.distributions.zeroinflated.ZeroInflated" href="pystra.distributions.zeroinflated.ZeroInflated.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
   </head>
@@ -384,9 +384,9 @@
 <li class="toctree-l2"><a class="reference internal" href="pystra.integration.zi_and_xi.html">pystra.integration.zi_and_xi</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="pystra.mc.html">pystra.mc</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.mc.html">pystra.mc</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="pystra.mc.CrudeMonteCarlo.html">pystra.mc.CrudeMonteCarlo</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">pystra.mc.DistributionAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.mc.DistributionAnalysis.html">pystra.mc.DistributionAnalysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pystra.mc.ImportanceSampling.html">pystra.mc.ImportanceSampling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pystra.mc.MonteCarlo.html">pystra.mc.MonteCarlo</a></li>
 </ul>
@@ -474,7 +474,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.loadcomb.html">pystra.loadcomb</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-25"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">pystra.loadcomb</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-25"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="pystra.loadcomb.LoadCombination.html">pystra.loadcomb.LoadCombination</a></li>
 </ul>
 </li>
@@ -509,258 +509,20 @@
             
             <article class="bd-article" role="main">
               
-  <div class="section" id="pystra-mc-distributionanalysis">
-<h1>pystra.mc.DistributionAnalysis<a class="headerlink" href="#pystra-mc-distributionanalysis" title="Permalink to this heading">#</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DistributionAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">analysis_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stochastic_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/mc.html#DistributionAnalysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.mc.DistributionAnalysis" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="pystra.mc.MonteCarlo.html#pystra.mc.MonteCarlo" title="pystra.mc.MonteCarlo"><code class="xref py py-class docutils literal notranslate"><span class="pre">MonteCarlo</span></code></a></p>
-<p>Distribution Analysis</p>
-<p>To analyze the random variables, used in the limit state function, a
-numerical distribution analysis based on Monte Carlo simulation can be
-performed.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>analysis_option (AnalysisOption): Option for the structural analysis</p></li>
-<li><p>limit_state (LimitState): Information about the limit state</p></li>
-<li><p>stochastic_model (StochasticModel): Information about the model</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Methods</p>
+  <div class="section" id="module-pystra.loadcomb">
+<span id="pystra-loadcomb"></span><h1>pystra.loadcomb<a class="headerlink" href="#module-pystra.loadcomb" title="Permalink to this heading">#</a></h1>
+<p class="rubric">Classes</p>
 <table class="autosummary longtable table autosummary">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeBeta" title="pystra.mc.DistributionAnalysis.computeBeta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeBeta</span></code></a></p></td>
-<td><p>Compute beta value</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeBins" title="pystra.mc.DistributionAnalysis.computeBins"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeBins</span></code></a></p></td>
-<td><p>Return an optimal amount of bins for a histogram</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeCoefficientOfVariation" title="pystra.mc.DistributionAnalysis.computeCoefficientOfVariation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeCoefficientOfVariation</span></code></a></p></td>
-<td><p>Compute Coefficient of Variation</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeDataUpdate" title="pystra.mc.DistributionAnalysis.computeDataUpdate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeDataUpdate</span></code></a></p></td>
-<td><p>Update data</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeDistributionData" title="pystra.mc.DistributionAnalysis.computeDistributionData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeDistributionData</span></code></a></p></td>
-<td><p>Compute data for the distributions</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeFailureProbability" title="pystra.mc.DistributionAnalysis.computeFailureProbability"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeFailureProbability</span></code></a></p></td>
-<td><p>Compute probability of failure</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeLimitState" title="pystra.mc.DistributionAnalysis.computeLimitState"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeLimitState</span></code></a></p></td>
-<td><p>Evaluate limit-state function</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computePercentDone" title="pystra.mc.DistributionAnalysis.computePercentDone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computePercentDone</span></code></a></p></td>
-<td><p>Compute percent done</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeRandomNumbers" title="pystra.mc.DistributionAnalysis.computeRandomNumbers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeRandomNumbers</span></code></a></p></td>
-<td><p>Compute random numbers</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeResults" title="pystra.mc.DistributionAnalysis.computeResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeResults</span></code></a></p></td>
-<td><p>Collect result of sampling</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeSumUpdate" title="pystra.mc.DistributionAnalysis.computeSumUpdate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeSumUpdate</span></code></a></p></td>
-<td><p>Update summation</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeTransformation" title="pystra.mc.DistributionAnalysis.computeTransformation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeTransformation</span></code></a></p></td>
-<td><p>Compute transformation from u to x space</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.getBeta" title="pystra.mc.DistributionAnalysis.getBeta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getBeta</span></code></a></p></td>
-<td><p>Returns the beta value</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.getBins" title="pystra.mc.DistributionAnalysis.getBins"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getBins</span></code></a></p></td>
-<td><p>Returns the amount on bins</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.getDistributionData" title="pystra.mc.DistributionAnalysis.getDistributionData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getDistributionData</span></code></a></p></td>
-<td><p>Returns data for the failure</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.getFailure" title="pystra.mc.DistributionAnalysis.getFailure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getFailure</span></code></a></p></td>
-<td><p>Returns the probability of failure</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.init_run" title="pystra.mc.DistributionAnalysis.init_run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_run</span></code></a></p></td>
-<td><p>Derived classes call this at top of their run()</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.initializeVariables" title="pystra.mc.DistributionAnalysis.initializeVariables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">initializeVariables</span></code></a></p></td>
-<td><p>Initialization of the simulation variables</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.setPoint" title="pystra.mc.DistributionAnalysis.setPoint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setPoint</span></code></a></p></td>
-<td><p>Set design point</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.showResults" title="pystra.mc.DistributionAnalysis.showResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">showResults</span></code></a></p></td>
-<td><p>Show results and plots</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination" title="pystra.loadcomb.LoadCombination"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LoadCombination</span></code></a></p></td>
+<td><p>Class for running load combination cases.</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.initializeVariables">
-<span class="sig-name descname"><span class="pre">initializeVariables</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/mc.html#DistributionAnalysis.initializeVariables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.mc.DistributionAnalysis.initializeVariables" title="Permalink to this definition">#</a></dt>
-<dd><p>Initialization of the simulation variables</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeDataUpdate">
-<span class="sig-name descname"><span class="pre">computeDataUpdate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/mc.html#DistributionAnalysis.computeDataUpdate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeDataUpdate" title="Permalink to this definition">#</a></dt>
-<dd><p>Update data</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeBeta">
-<span class="sig-name descname"><span class="pre">computeBeta</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeBeta" title="Permalink to this definition">#</a></dt>
-<dd><p>Compute beta value</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeBins">
-<span class="sig-name descname"><span class="pre">computeBins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeBins" title="Permalink to this definition">#</a></dt>
-<dd><p>Return an optimal amount of bins for a histogram</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>bins (int): Returns amount on bins</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeCoefficientOfVariation">
-<span class="sig-name descname"><span class="pre">computeCoefficientOfVariation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeCoefficientOfVariation" title="Permalink to this definition">#</a></dt>
-<dd><p>Compute Coefficient of Variation</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeDistributionData">
-<span class="sig-name descname"><span class="pre">computeDistributionData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/mc.html#DistributionAnalysis.computeDistributionData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeDistributionData" title="Permalink to this definition">#</a></dt>
-<dd><p>Compute data for the distributions</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeFailureProbability">
-<span class="sig-name descname"><span class="pre">computeFailureProbability</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeFailureProbability" title="Permalink to this definition">#</a></dt>
-<dd><p>Compute probability of failure</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeLimitState">
-<span class="sig-name descname"><span class="pre">computeLimitState</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeLimitState" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate limit-state function</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computePercentDone">
-<span class="sig-name descname"><span class="pre">computePercentDone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computePercentDone" title="Permalink to this definition">#</a></dt>
-<dd><p>Compute percent done</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeRandomNumbers">
-<span class="sig-name descname"><span class="pre">computeRandomNumbers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeRandomNumbers" title="Permalink to this definition">#</a></dt>
-<dd><p>Compute random numbers</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeResults">
-<span class="sig-name descname"><span class="pre">computeResults</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeResults" title="Permalink to this definition">#</a></dt>
-<dd><p>Collect result of sampling</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeSumUpdate">
-<span class="sig-name descname"><span class="pre">computeSumUpdate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeSumUpdate" title="Permalink to this definition">#</a></dt>
-<dd><p>Update summation</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeTransformation">
-<span class="sig-name descname"><span class="pre">computeTransformation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeTransformation" title="Permalink to this definition">#</a></dt>
-<dd><p>Compute transformation from u to x space</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>TODO: this method takes a lot of time, find some better solution.</p>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.getBeta">
-<span class="sig-name descname"><span class="pre">getBeta</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.getBeta" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns the beta value</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>beta (float): Returns the beta value</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.getBins">
-<span class="sig-name descname"><span class="pre">getBins</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.getBins" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns the amount on bins</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>bins (int): Returns the amount on bins (histogram)</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.getDistributionData">
-<span class="sig-name descname"><span class="pre">getDistributionData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.getDistributionData" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns data for the failure</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>all_G (float): Returns data from the distribution</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.getFailure">
-<span class="sig-name descname"><span class="pre">getFailure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.getFailure" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns the probability of failure</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>Pf (float): Returns the probability of failure</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.init_run">
-<span class="sig-name descname"><span class="pre">init_run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.init_run" title="Permalink to this definition">#</a></dt>
-<dd><p>Derived classes call this at top of their run()</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.setPoint">
-<span class="sig-name descname"><span class="pre">setPoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.setPoint" title="Permalink to this definition">#</a></dt>
-<dd><p>Set design point</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.showResults">
-<span class="sig-name descname"><span class="pre">showResults</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/mc.html#DistributionAnalysis.showResults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.mc.DistributionAnalysis.showResults" title="Permalink to this definition">#</a></dt>
-<dd><p>Show results and plots</p>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 
 
@@ -771,17 +533,17 @@ performed.</p>
             <footer class="bd-footer-article">
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="pystra.mc.CrudeMonteCarlo.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="pystra.distributions.zeroinflated.ZeroInflated.html" title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">pystra.mc.CrudeMonteCarlo</p>
+          <p class="prev-next-title">pystra.distributions.zeroinflated.ZeroInflated</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="pystra.mc.ImportanceSampling.html" title="next page">
+  <a class='right-next' id="next-link" href="pystra.loadcomb.LoadCombination.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">pystra.mc.ImportanceSampling</p>
+      <p class="prev-next-title">pystra.loadcomb.LoadCombination</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>
@@ -796,209 +558,6 @@ performed.</p>
               
 <div class="toc-item">
   
-<div class="tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-</div>
-<nav id="bd-toc-nav" class="page-toc">
-    <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     DistributionAnalysis
-    </span>
-   </code>
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.initializeVariables">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       DistributionAnalysis.initializeVariables()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeDataUpdate">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       DistributionAnalysis.computeDataUpdate()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeBeta">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       DistributionAnalysis.computeBeta()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeBins">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       DistributionAnalysis.computeBins()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeCoefficientOfVariation">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       DistributionAnalysis.computeCoefficientOfVariation()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeDistributionData">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       DistributionAnalysis.computeDistributionData()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeFailureProbability">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       DistributionAnalysis.computeFailureProbability()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeLimitState">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       DistributionAnalysis.computeLimitState()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computePercentDone">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       DistributionAnalysis.computePercentDone()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeRandomNumbers">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       DistributionAnalysis.computeRandomNumbers()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeResults">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       DistributionAnalysis.computeResults()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeSumUpdate">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       DistributionAnalysis.computeSumUpdate()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeTransformation">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       DistributionAnalysis.computeTransformation()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.getBeta">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       DistributionAnalysis.getBeta()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.getBins">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       DistributionAnalysis.getBins()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.getDistributionData">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       DistributionAnalysis.getDistributionData()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.getFailure">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       DistributionAnalysis.getFailure()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.init_run">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       DistributionAnalysis.init_run()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.setPoint">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       DistributionAnalysis.setPoint()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.showResults">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       DistributionAnalysis.showResults()
-      </span>
-     </code>
-    </a>
-   </li>
-  </ul>
- </li>
-</ul>
-
-</nav>
-</div>
-
-<div class="toc-item">
-  
 <div id="searchbox"></div>
 </div>
 
@@ -1006,7 +565,7 @@ performed.</p>
   
 
 <div class="tocsection editthispage">
-    <a href="https://github.com/pystra/pystra/edit/main/docs/source/gen/pystra.mc.DistributionAnalysis.rst">
+    <a href="https://github.com/pystra/pystra/edit/main/docs/source/gen/pystra.loadcomb.rst">
         <i class="fa-solid fa-pencil"></i> Edit this page
     </a>
 </div>
