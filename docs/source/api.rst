@@ -21,5 +21,5 @@ The API will appear here
     pystra.sensitivity
     pystra.transformation
     pystra.distributions
-    pystra.loadcomb
-    pystra.calibration
+    <!-- pystra.loadcomb -->
+    <!-- pystra.calibration -->
