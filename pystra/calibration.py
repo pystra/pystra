@@ -9,14 +9,18 @@ from .distributions import Constant
 
 # Base Class for all combination problems
 class Calibration:
-    """Class for calibrating :math:`\\phi`, :math:`\\gamma`, and :math:`\\psi` factors for a given load combination instance and target reliability.
+    """Class for calibrating partial and comination factors.
+
+
+    The factors are: :math:`\\phi`, :math:`\\gamma`, and :math:`\\psi`
+    factors for a given load combination instance and target reliability.
 
     Attributes
     ----------
     betaT : float
-
+        Target reliability index
     calib_method : str
-
+        The calibration algorithm to use
     cvar : str
         The label of the calibration variable.
     df_nom : DataFrame
