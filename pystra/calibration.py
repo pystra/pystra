@@ -902,6 +902,7 @@ class Calibration:
         array_z = np.array([self.calc_design_param_Xst(xx) for xx in list_cols])
         return array_z
     
-
+    def print_detailed_output(self):
+        pass
     
     
