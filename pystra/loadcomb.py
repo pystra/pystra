@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Nov  1 12:50:20 2022
 
-@author: shihab
-"""
+
 import pystra as ra
 
 
