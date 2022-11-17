@@ -11,8 +11,8 @@ from scipy.optimize import fsolve
 
 # Base Class for all combination problems
 class Calibration:
-    """Class for calibrating :math:`$\\phi$`, :math:`$\\gamma$`, and 
-    :math:`$\\psi$` factors
+    """Class for calibrating :math:`\\phi`, :math:`\\gamma`, and 
+    :math:`\\psi` factors
     for a given load combination instance and target reliability.
 
     Methods:
@@ -443,8 +443,8 @@ class Calibration:
 
     def run(self, est_method=None, set_max=False):
         """
-        Run calibration analysis to estimate :math:`$\\phi$`, :math:`$\\gamma$`,
-        and :math:`$\\psi$` factors, and set class dataframe attributes 
+        Run calibration analysis to estimate :math:`\\phi`, :math:`\\gamma`,
+        and :math:`\\psi` factors, and set class dataframe attributes 
         corresponding to each factor.
 
         Parameters
@@ -486,8 +486,8 @@ class Calibration:
 
     def _estimate_factors_coeff(self, set_max=False):
         """
-        Estimate the factors :math:`$\\phi$`, :math:`$\\gamma$`, and 
-        :math:`$\\psi$` factors using the coefficient approach.
+        Estimate the factors :math:`\\phi`, :math:`\\gamma`, and 
+        :math:`\\psi` factors using the coefficient approach.
 
         Parameters
         ----------
@@ -498,11 +498,11 @@ class Calibration:
         Returns
         -------
         df_phi : Dataframe
-            Dataframe of :math:`$\\phi$` per load case.
+            Dataframe of :math:`\\phi` per load case.
         df_gamma : Dataframe
-            Dataframe of :math:`$\\gamma$`.
+            Dataframe of :math:`\\gamma`.
         df_psi : Dataframe
-            Dataframe of :math:`$\\psi$` per load case.
+            Dataframe of :math:`\\psi` per load case.
 
         """
         df_phi, df_gamma, df_psi = self.calc_pg_coeff(
@@ -514,17 +514,17 @@ class Calibration:
 
     def get_psi_max(self, dfpsi):
         """
-        Get :math:`$\\psi$` dataframe corresponding to maximum estimates of dfpsi.
+        Get :math:`\\psi` dataframe corresponding to maximum estimates of dfpsi.
 
         Parameters
         ----------
         dfpsi : DataFrame
-            Dataframe of :math:`$\\psi$` per load case.
+            Dataframe of :math:`\\psi` per load case.
 
         Returns
         -------
         df_psi_max : DataFrame
-            Dataframe of :math:`$\\psi$` corresponding to maximum of each load effect.
+            Dataframe of :math:`\\psi` corresponding to maximum of each load effect.
 
         """
         df_psi_max = dfpsi.copy()
@@ -581,17 +581,17 @@ class Calibration:
 
     def _estimate_factors_matrix(self, set_max=False):
         """
-        Estimate the factors :math:`$\\phi$`, :math:`$\\gamma$`, and :math:`$\\psi$` factors using the
+        Estimate the factors :math:`\\phi`, :math:`\\gamma`, and :math:`\\psi` factors using the
         Matrix approach.
 
         Returns
         -------
         df_phi : Dataframe
-            Dataframe of :math:`$\\phi$` per load case.
+            Dataframe of :math:`\\phi` per load case.
         df_gamma : Dataframe
-            Dataframe of :math:`$\\gamma$`.
+            Dataframe of :math:`\\gamma`.
         df_psi : Dataframe
-            Dataframe of :math:`$\\psi$`.
+            Dataframe of :math:`\\psi`.
 
         """
         df_phi, df_gamma, df_psi = self.calc_pg_matrix(
@@ -602,7 +602,7 @@ class Calibration:
 
     def calc_pg_coeff(self, dfXst, print_output=False):
         """
-        Calculate :math:`$\\phi$`, :math:`$\\gamma$`, and :math:`$\\psi$` for the given set of design
+        Calculate :math:`\\phi`, :math:`\\gamma`, and :math:`\\psi` for the given set of design
         points and nominals using comparison of design pt coefficients approach.
 
         Parameters
@@ -616,22 +616,22 @@ class Calibration:
         Returns
         -------
         df_phi : Dataframe
-            Dataframe containing :math:`$\\phi$` estimates for resistance variables
+            Dataframe containing :math:`\\phi` estimates for resistance variables
             per load case.
         df_gamma : Dataframe
-            Dataframe containing :math:`$\\gamma$` estimates for all static and
+            Dataframe containing :math:`\\gamma` estimates for all static and
             combination load variables per load case.
         df_psi : Dataframe
-            Dataframe containing :math:`$\\psi$` estimates for all static and
+            Dataframe containing :math:`\\psi` estimates for all static and
             combination load variables per load case.
 
         """
-        ## Estimate :math:`$\\phi$` and :math:`$\\gamma$`
+        ## Estimate :math:`\\phi` and :math:`\\gamma`
         df_Xst_nom = self.calc_Xst_nom(dfXstar=dfXst)
         df_phi = self.calc_phi(df_Xst_nom)
         df_gamma_static, df_gamma_comb = self.calc_gamma(df_Xst_nom)
         df_gamma = pd.concat((df_gamma_static, df_gamma_comb), axis=1)
-        ## Estimate :math:`$\\psi$`
+        ## Estimate :math:`\\psi`
         df_psi = dfXst / df_gamma / self.df_nom
         df_psi = df_psi[self.label_S]
         if print_output:
@@ -673,7 +673,7 @@ class Calibration:
 
     def calc_phi(self, dfXstnom):
         """
-        Calculate resistance factors :math:`$\\phi$` from a dataframe of design points
+        Calculate resistance factors :math:`\\phi` from a dataframe of design points
         factored by the nominal values.
 
         Parameters
@@ -682,13 +682,13 @@ class Calibration:
             Design point DataFrame factored by the nominal values
             per load case.
         set_max : Boolean, optional
-            Set :math:`$\\phi$` estimates to their corresponding max values. The default
+            Set :math:`\\phi` estimates to their corresponding max values. The default
             is False.
 
         Returns
         -------
         df_phi : DataFrame
-            Resistance factors :math:`$\\phi$` for resistance variables per load case.
+            Resistance factors :math:`\\phi` for resistance variables per load case.
 
         """
         df_phi = dfXstnom[self.label_R]
@@ -701,7 +701,7 @@ class Calibration:
 
     def calc_gamma(self, dfXstnom):
         """
-        Calculate Load factors :math:`$\\gamma$` from a dataframe of design points
+        Calculate Load factors :math:`\\gamma` from a dataframe of design points
         factored by the nominal values.
 
         Parameters
@@ -724,7 +724,7 @@ class Calibration:
 
     def calc_pg_matrix(self, dfXst, print_output=False):
         """
-        Calculate :math:`$\\phi$`, :math:`$\\gamma$`, and :math:`$\\psi$` for 
+        Calculate :math:`\\phi`, :math:`\\gamma`, and :math:`\\psi` for 
         the given set of design points and nominals using the Matrix approach.
 
         Parameters
@@ -738,26 +738,26 @@ class Calibration:
         Returns
         -------
         df_phi : Dataframe
-            Dataframe containing :math:`$\\phi$` estimates for resistance variables
+            Dataframe containing :math:`\\phi` estimates for resistance variables
             per load case.
         df_gamma : Dataframe
-            Dataframe containing :math:`$\\gamma$` estimates for all static and
+            Dataframe containing :math:`\\gamma` estimates for all static and
             combination load variables per load case.
         df_psi : Dataframe
-            Dataframe containing :math:`$\\psi$` estimates for all static and
+            Dataframe containing :math:`\\psi` estimates for all static and
             combination load variables per load case.
 
         """
-        ## Estimate :math:`$\\phi$` and :math:`$\\gamma$`
+        ## Estimate :math:`\\phi` and :math:`\\gamma`
         df_Xst_nom = self.calc_Xst_nom(dfXstar=dfXst)
         df_phi = self.calc_phi(df_Xst_nom)
         df_gamma_static, df_gamma_comb = self.calc_gamma(df_Xst_nom)
 
         df_gamma = pd.concat((df_gamma_static, df_gamma_comb), axis=1)
-        ## Estimate :math:`$\\psi$`
-        # Get RHS :math:`$\\phi~R~z-\\gamma_g~G-\\gamma_i~S_i$`
+        ## Estimate :math:`\\psi`
+        # Get RHS :math:`\\phi~R~z-\\gamma_g~G-\\gamma_i~S_i`
         phiRz_egS = self.calc_phiRz_egS_vect(dfXst)
-        # Get LHS :math:`$\\gamma_j~S_j$`
+        # Get LHS :math:`\\gamma_j~S_j`
         df_gamma_nom = pd.concat([df_phi, df_gamma], axis=1) * self.df_nom
         epgS_mat = self.calc_epgS_mat(df_gamma_nom)
         # Estimate
@@ -778,7 +778,7 @@ class Calibration:
     def calc_phiRz_egS_vect(self, dfXstar):
         """
         Get RHS for matrix estimation method,
-        :math:`$\\phi~R~z-\\gamma_g~G-\\gamma_i~S_i$`
+        :math:`\\phi~R~z-\\gamma_g~G-\\gamma_i~S_i`
 
         Parameters
         ----------
@@ -810,7 +810,7 @@ class Calibration:
     def calc_epgS_mat(self, dfgammanom):
         """
         Get LHS for matrix estimation method,
-        :math:`$\\gamma_j~S_j$
+        :math:`\\gamma_j~S_j$
 
         Parameters
         ----------
@@ -847,10 +847,10 @@ class Calibration:
 
     def _get_psi_row_mat(self, num_other_vrs, psi_comb_vrs):
         """
-        Convert :math:`$\\psi$` estimates for load case variables into :math:`$\\psi$` matrix for all
+        Convert :math:`\\psi` estimates for load case variables into :math:`\\psi` matrix for all
         random variables (including non load case, i.e. other, variables). Each
-        row of the output matrix corresponds to one set of :math:`$\\psi$` for all rvs
-        for a load case. The value of :math:`$\\psi$` for non load case rvs is set to be 1.0.
+        row of the output matrix corresponds to one set of :math:`\\psi` for all rvs
+        for a load case. The value of :math:`\\psi` for non load case rvs is set to be 1.0.
 
         Parameters
         ----------
@@ -858,14 +858,14 @@ class Calibration:
             Number of other random variables (i.e. load effects not part of load
                                               combinations).
         psi_comb_vrs : Array or Ndarray
-            If :math:`$\\psi$` is specified for all load combinations, then Array.
-            If :math:`$\\psi$` is specified per load combination, then Ndrray Matrix.
+            If :math:`\\psi` is specified for all load combinations, then Array.
+            If :math:`\\psi` is specified per load combination, then Ndrray Matrix.
 
         Returns
         -------
         psi_row_mat_ : Ndarray
-            :math:`$\\psi$` Matrix for all rvs and combinations. Each row of Matrix
-            corresponds to one set of :math:`$\\psi$` for all rvs for a load case.
+            :math:`\\psi` Matrix for all rvs and combinations. Each row of Matrix
+            corresponds to one set of :math:`\\psi` for all rvs for a load case.
 
         """
         num_comb_vrs = len(psi_comb_vrs)
@@ -912,8 +912,8 @@ class Calibration:
     def calc_df_pgRS(self):
         """
         Calculate the DataFrame of all resistance and load variables nominal
-        values multiplied by their respective factors, :math:`$\\phi$`, :math:`$\\gamma$`,
-        and :math:`$\\psi$`, for all load cases.
+        values multiplied by their respective factors, :math:`\\phi`, :math:`\\gamma`,
+        and :math:`\\psi`, for all load cases.
 
         Returns
         -------
