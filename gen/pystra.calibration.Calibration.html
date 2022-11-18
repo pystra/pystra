@@ -1,0 +1,1484 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pystra.calibration.Calibration &#8212; PySTRA 1.2.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+<link href="../_static/styles/bootstrap.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=796348d33e8b1d947c94">
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=796348d33e8b1d947c94">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'gen/pystra.calibration.Calibration';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pystra.distributions" href="pystra.distributions.html" />
+    <link rel="prev" title="pystra.calibration" href="pystra.calibration.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="docsearch:language" content="en">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  
+  <input type="checkbox" class="sidebar-toggle" name="__primary" id="__primary">
+  <label class="overlay overlay-primary" for="__primary"></label>
+
+  
+  <input type="checkbox" class="sidebar-toggle" name="__secondary" id="__secondary">
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+      
+<form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+    </div>
+  </div>
+
+  
+  <nav class="bd-header navbar navbar-expand-lg bd-navbar" id="navbar-main"><div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+      <span class="fa-solid fa-bars"></span>
+  </label>
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="../index.html">
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-light" alt="Logo image">
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-dark" alt="Logo image">
+  
+  
+</a>
+    
+  </div>
+
+  
+  <div class="col-lg-9 navbar-header-items">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../install.html">
+                        Installation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../tutorial.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../api.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../theory.html">
+                        Theoretical Background
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../references.html">
+                        References
+                      </a>
+                    </li>
+                
+            <div class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    More
+                </button>
+                <div class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../developer.html">
+                        Instructions for Developers
+                      </a>
+                    </li>
+                
+                </div>
+            </div>
+            
+    </ul>
+</nav>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+        <div class="navbar-end-item navbar-persistent--container">
+          
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+        </div>
+      
+      
+      <div class="navbar-end-item">
+        <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+</button>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+
+
+  
+  
+    <div class="navbar-persistent--mobile">
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+    </div>
+  
+
+  
+  <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+  </label>
+  
+
+</div>
+  </nav>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../install.html">
+                        Installation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../tutorial.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../api.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../theory.html">
+                        Theoretical Background
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../references.html">
+                        References
+                      </a>
+                    </li>
+                
+            <div class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    More
+                </button>
+                <div class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../developer.html">
+                        Instructions for Developers
+                      </a>
+                    </li>
+                
+                </div>
+            </div>
+            
+    </ul>
+</nav>
+      </div>
+      
+      </div>
+    
+
+    
+    
+    <div class="sidebar-header-items__end">
+      
+      <div class="navbar-end-item">
+        <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+</button>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+    
+  </div>
+
+  
+  <div class="sidebar-start-items sidebar-primary__section">
+    <div class="sidebar-start-items__item"><nav class="bd-links" id="bd-docs-nav" aria-label="Section navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">
+    Section Navigation
+  </p>
+  <div class="bd-toc-item navbar-nav">
+    <ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.analysis.html">pystra.analysis</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.analysis.AnalysisObject.html">pystra.analysis.AnalysisObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.analysis.AnalysisOptions.html">pystra.analysis.AnalysisOptions</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.model.html">pystra.model</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.model.LimitState.html">pystra.model.LimitState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.model.StochasticModel.html">pystra.model.StochasticModel</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.form.html">pystra.form</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.form.Form.html">pystra.form.Form</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.sorm.html">pystra.sorm</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.sorm.Sorm.html">pystra.sorm.Sorm</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.mc.html">pystra.mc</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.mc.CrudeMonteCarlo.html">pystra.mc.CrudeMonteCarlo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.mc.DistributionAnalysis.html">pystra.mc.DistributionAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.mc.ImportanceSampling.html">pystra.mc.ImportanceSampling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.mc.MonteCarlo.html">pystra.mc.MonteCarlo</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.transformation.html">pystra.transformation</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.transformation.Transformation.html">pystra.transformation.Transformation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.correlation.html">pystra.correlation</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.correlation.absoluteIntegralValue.html">pystra.correlation.absoluteIntegralValue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.correlation.computeModifiedCorrelationMatrix.html">pystra.correlation.computeModifiedCorrelationMatrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.correlation.setModifiedCorrelationMatrix.html">pystra.correlation.setModifiedCorrelationMatrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.correlation.CorrelationMatrix.html">pystra.correlation.CorrelationMatrix</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.integration.html">pystra.integration</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.integration.rho_integral.html">pystra.integration.rho_integral</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.integration.zi_and_xi.html">pystra.integration.zi_and_xi</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.quadrature.html">pystra.quadrature</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-9"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.quadrature.quadratureRule.html">pystra.quadrature.quadratureRule</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.sensitivity.html">pystra.sensitivity</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-10"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.sensitivity.SensitivityAnalysis.html">pystra.sensitivity.SensitivityAnalysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.loadcomb.html">pystra.loadcomb</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-11"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.loadcomb.LoadCombination.html">pystra.loadcomb.LoadCombination</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="pystra.calibration.html">pystra.calibration</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-12"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">pystra.calibration.Calibration</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.distributions.html">pystra.distributions</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-13"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.distributions.beta.html">pystra.distributions.beta</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.chisquare.html">pystra.distributions.chisquare</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-14"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.chisquare.ChiSquare.html">pystra.distributions.chisquare.ChiSquare</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.distribution.html">pystra.distributions.distribution</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-15"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.distribution.Constant.html">pystra.distributions.distribution.Constant</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.distribution.Distribution.html">pystra.distributions.distribution.Distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.distribution.StdNormal.html">pystra.distributions.distribution.StdNormal</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.distributions.gamma.html">pystra.distributions.gamma</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.distributions.gumbel.html">pystra.distributions.gumbel</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.lognormal.html">pystra.distributions.lognormal</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-16"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.lognormal.Lognormal.html">pystra.distributions.lognormal.Lognormal</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.maximum.html">pystra.distributions.maximum</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-17"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.maximum.Maximum.html">pystra.distributions.maximum.Maximum</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.normal.html">pystra.distributions.normal</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-18"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.normal.Normal.html">pystra.distributions.normal.Normal</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.parent.html">pystra.distributions.parent</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-19"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.parent.MaxParent.html">pystra.distributions.parent.MaxParent</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.scipydist.html">pystra.distributions.scipydist</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-20"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.scipydist.ScipyDist.html">pystra.distributions.scipydist.ScipyDist</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.shiftedexponential.html">pystra.distributions.shiftedexponential</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-21"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.shiftedexponential.ShiftedExponential.html">pystra.distributions.shiftedexponential.ShiftedExponential</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.shiftedrayleigh.html">pystra.distributions.shiftedrayleigh</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-22"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.shiftedrayleigh.ShiftedRayleigh.html">pystra.distributions.shiftedrayleigh.ShiftedRayleigh</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.typeiiismallestvalue.html">pystra.distributions.typeiiismallestvalue</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-23"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.typeiiismallestvalue.TypeIIIsmallestValue.html">pystra.distributions.typeiiismallestvalue.TypeIIIsmallestValue</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.typeiilargestvalue.html">pystra.distributions.typeiilargestvalue</a><input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-24"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.typeiilargestvalue.TypeIIlargestValue.html">pystra.distributions.typeiilargestvalue.TypeIIlargestValue</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.typeilargestvalue.html">pystra.distributions.typeilargestvalue</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-25"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.typeilargestvalue.TypeIlargestValue.html">pystra.distributions.typeilargestvalue.TypeIlargestValue</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.typeismallestvalue.html">pystra.distributions.typeismallestvalue</a><input class="toctree-checkbox" id="toctree-checkbox-26" name="toctree-checkbox-26" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-26"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.typeismallestvalue.TypeIsmallestValue.html">pystra.distributions.typeismallestvalue.TypeIsmallestValue</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.distributions.uniform.html">pystra.distributions.uniform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.distributions.weibull.html">pystra.distributions.weibull</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.zeroinflated.html">pystra.distributions.zeroinflated</a><input class="toctree-checkbox" id="toctree-checkbox-27" name="toctree-checkbox-27" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-27"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.zeroinflated.ZeroInflated.html">pystra.distributions.zeroinflated.ZeroInflated</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</nav>
+    </div>
+  </div>
+  
+
+  
+  <div class="sidebar-end-items sidebar-primary__section">
+    <div class="sidebar-end-items__item">
+    </div>
+  </div>
+
+  
+  <div id="rtd-footer-container"></div>
+
+      </div>
+      <main id="main-content" class="bd-main">
+        
+        
+        <div class="bd-content">
+          <div class="bd-article-container">
+            
+            <div class="bd-header-article">
+                
+            </div>
+            
+            
+            <article class="bd-article" role="main">
+              
+  <div class="section" id="pystra-calibration-calibration">
+<h1>pystra.calibration.Calibration<a class="headerlink" href="#pystra-calibration-calibration" title="Permalink to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Calibration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loadcombobj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_beta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict_nom_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calib_var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calib_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'optimize'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">est_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'matrix'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/calibration.html#Calibration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.calibration.Calibration" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for calibrating partial and comination factors.</p>
+<p>The factors are: <span class="math notranslate nohighlight">\(\\phi\)</span>, <span class="math notranslate nohighlight">\(\\gamma\)</span>, and <span class="math notranslate nohighlight">\(\\psi\)</span>
+factors for a given load combination instance and target reliability.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.betaT">
+<span class="sig-name descname"><span class="pre">betaT</span></span><a class="headerlink" href="#pystra.calibration.Calibration.betaT" title="Permalink to this definition">#</a></dt>
+<dd><p>Target reliability index</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.calib_method">
+<span class="sig-name descname"><span class="pre">calib_method</span></span><a class="headerlink" href="#pystra.calibration.Calibration.calib_method" title="Permalink to this definition">#</a></dt>
+<dd><p>The calibration algorithm to use</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.cvar">
+<span class="sig-name descname"><span class="pre">cvar</span></span><a class="headerlink" href="#pystra.calibration.Calibration.cvar" title="Permalink to this definition">#</a></dt>
+<dd><p>The label of the calibration variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.df_nom">
+<span class="sig-name descname"><span class="pre">df_nom</span></span><a class="headerlink" href="#pystra.calibration.Calibration.df_nom" title="Permalink to this definition">#</a></dt>
+<dd><p>A dataframe of nominal values</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.df_Xstar">
+<span class="sig-name descname"><span class="pre">df_Xstar</span></span><a class="headerlink" href="#pystra.calibration.Calibration.df_Xstar" title="Permalink to this definition">#</a></dt>
+<dd><p>A dataframe of design point values</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.df_phi">
+<span class="sig-name descname"><span class="pre">df_phi</span></span><a class="headerlink" href="#pystra.calibration.Calibration.df_phi" title="Permalink to this definition">#</a></dt>
+<dd><p>A dataframe of partial factors for resistances</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.df_gamma">
+<span class="sig-name descname"><span class="pre">df_gamma</span></span><a class="headerlink" href="#pystra.calibration.Calibration.df_gamma" title="Permalink to this definition">#</a></dt>
+<dd><p>A dataframe of partial factors for loads</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.df_psi">
+<span class="sig-name descname"><span class="pre">df_psi</span></span><a class="headerlink" href="#pystra.calibration.Calibration.df_psi" title="Permalink to this definition">#</a></dt>
+<dd><p>A dataframe of load combiantion factors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.dict_nom">
+<span class="sig-name descname"><span class="pre">dict_nom</span></span><a class="headerlink" href="#pystra.calibration.Calibration.dict_nom" title="Permalink to this definition">#</a></dt>
+<dd><p>Dictionary of nominal values</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.est_method">
+<span class="sig-name descname"><span class="pre">est_method</span></span><a class="headerlink" href="#pystra.calibration.Calibration.est_method" title="Permalink to this definition">#</a></dt>
+<dd><p>The estimation method</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.label_comb_vrs">
+<span class="sig-name descname"><span class="pre">label_comb_vrs</span></span><a class="headerlink" href="#pystra.calibration.Calibration.label_comb_vrs" title="Permalink to this definition">#</a></dt>
+<dd><p>Labels of combination variables</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.label_comb_cases">
+<span class="sig-name descname"><span class="pre">label_comb_cases</span></span><a class="headerlink" href="#pystra.calibration.Calibration.label_comb_cases" title="Permalink to this definition">#</a></dt>
+<dd><p>Labels of combination load variables</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.label_R">
+<span class="sig-name descname"><span class="pre">label_R</span></span><a class="headerlink" href="#pystra.calibration.Calibration.label_R" title="Permalink to this definition">#</a></dt>
+<dd><p>Labels of resistance variables</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.label_other">
+<span class="sig-name descname"><span class="pre">label_other</span></span><a class="headerlink" href="#pystra.calibration.Calibration.label_other" title="Permalink to this definition">#</a></dt>
+<dd><p>Labels of other load variables</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.label_all">
+<span class="sig-name descname"><span class="pre">label_all</span></span><a class="headerlink" href="#pystra.calibration.Calibration.label_all" title="Permalink to this definition">#</a></dt>
+<dd><p>Labels of all variables including design parameter</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.loadCombObj">
+<span class="sig-name descname"><span class="pre">loadCombObj</span></span><a class="headerlink" href="#pystra.calibration.Calibration.loadCombObj" title="Permalink to this definition">#</a></dt>
+<dd><p>LoadCombination object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination" title="pystra.loadcomb.LoadCombination">LoadCombination</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.print_output">
+<span class="sig-name descname"><span class="pre">print_output</span></span><a class="headerlink" href="#pystra.calibration.Calibration.print_output" title="Permalink to this definition">#</a></dt>
+<dd><p>Whether or not to print output to the console</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Initialize class instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>loadcombobj</strong> (<em>Class object</em>) – Class LoadCombination object.</p></li>
+<li><p><strong>target_beta</strong> (<em>Float</em>) – Target reliability index for calibration.</p></li>
+<li><p><strong>dict_nom_vals</strong> (<em>Dictionary</em>) – Dictionary of nominal values.</p></li>
+<li><p><strong>calib_var</strong> (<em>String</em>) – Label of calibration variable in the LSF.</p></li>
+<li><p><strong>calib_method</strong> (<em>String</em><em>, </em><em>optional</em>) – Calibration method for the analysis: “optimize” or “alpha”.
+The default is “optimize”.</p></li>
+<li><p><strong>est_method</strong> (<em>String</em><em>, </em><em>optional</em>) – Estimation method for the factors: “matrix” or “coeff”.
+The default is “matrix”.</p></li>
+<li><p><strong>print_output</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – Boolean flag for printing analysis output. The default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.calibration.Calibration.calc_Xst_nom" title="pystra.calibration.Calibration.calc_Xst_nom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_Xst_nom</span></code></a></p></td>
+<td><p>Calculate the design point DataFrame divided by the nominal values per load case and adjust for <span class="math notranslate nohighlight">\(\psi\)</span> factors for combination load variables.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.calibration.Calibration.calc_beta_design_param" title="pystra.calibration.Calibration.calc_beta_design_param"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_beta_design_param</span></code></a></p></td>
+<td><p>Calculate reliabilities based on given design parameter for resistance for all load combination cases.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.calibration.Calibration.calc_design_param_Xst" title="pystra.calibration.Calibration.calc_design_param_Xst"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_design_param_Xst</span></code></a></p></td>
+<td><p>Calculate design parameter for resistance from design points.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.calibration.Calibration.calc_df_pgRS" title="pystra.calibration.Calibration.calc_df_pgRS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_df_pgRS</span></code></a></p></td>
+<td><p>Calculate the DataFrame of all resistance and load variables nominal values multiplied by their respective factors, <span class="math notranslate nohighlight">\(\phi\)</span>, <span class="math notranslate nohighlight">\(\gamma\)</span>, and <span class="math notranslate nohighlight">\(\psi\)</span>, for all load cases.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.calibration.Calibration.calc_epgS_mat" title="pystra.calibration.Calibration.calc_epgS_mat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_epgS_mat</span></code></a></p></td>
+<td><p>Get LHS for matrix estimation method, <span class="math notranslate nohighlight">\(\gamma_j~S_j\)</span>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.calibration.Calibration.calc_gamma" title="pystra.calibration.Calibration.calc_gamma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_gamma</span></code></a></p></td>
+<td><p>Calculate Load factors <span class="math notranslate nohighlight">\(\gamma\)</span> from a dataframe of design points factored by the nominal values.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.calibration.Calibration.calc_lsf_eval_df" title="pystra.calibration.Calibration.calc_lsf_eval_df"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_lsf_eval_df</span></code></a></p></td>
+<td><p>Calculate the LSF evaluation of a Dataframe elements.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.calibration.Calibration.calc_pg_coeff" title="pystra.calibration.Calibration.calc_pg_coeff"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_pg_coeff</span></code></a></p></td>
+<td><p>Calculate <span class="math notranslate nohighlight">\(\phi\)</span>, <span class="math notranslate nohighlight">\(\gamma\)</span>, and <span class="math notranslate nohighlight">\(\psi\)</span> for the given set of design points and nominals using comparison of design pt coefficients approach.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.calibration.Calibration.calc_pg_matrix" title="pystra.calibration.Calibration.calc_pg_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_pg_matrix</span></code></a></p></td>
+<td><p>Calculate <span class="math notranslate nohighlight">\(\phi\)</span>, <span class="math notranslate nohighlight">\(\gamma\)</span>, and <span class="math notranslate nohighlight">\(\psi\)</span> for the given set of design points and nominals using the Matrix approach.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.calibration.Calibration.calc_phi" title="pystra.calibration.Calibration.calc_phi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_phi</span></code></a></p></td>
+<td><p>Calculate resistance factors <span class="math notranslate nohighlight">\(\phi\)</span> from a dataframe of design points factored by the nominal values.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.calibration.Calibration.calc_phiRz_egS_vect" title="pystra.calibration.Calibration.calc_phiRz_egS_vect"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_phiRz_egS_vect</span></code></a></p></td>
+<td><p>Get RHS for matrix estimation method, <span class="math notranslate nohighlight">\(\phi~R~z-\gamma_g~G-\gamma_i~S_i\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.calibration.Calibration.get_design_param_factor" title="pystra.calibration.Calibration.get_design_param_factor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_design_param_factor</span></code></a></p></td>
+<td><p>Estimate the resistance design parameter for a given set of safety and combination factors, and nominals.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_phi_max</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.calibration.Calibration.get_psi_max" title="pystra.calibration.Calibration.get_psi_max"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_psi_max</span></code></a></p></td>
+<td><p>Get <span class="math notranslate nohighlight">\(\psi\)</span> dataframe corresponding to maximum estimates of dfpsi.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_detailed_output</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.calibration.Calibration.run" title="pystra.calibration.Calibration.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a></p></td>
+<td><p>Run calibration analysis to estimate <span class="math notranslate nohighlight">\(\phi\)</span>, <span class="math notranslate nohighlight">\(\gamma\)</span>, and <span class="math notranslate nohighlight">\(\psi\)</span> factors, and set class dataframe attributes corresponding to each factor.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.calc_lsf_eval_df">
+<span class="sig-name descname"><span class="pre">calc_lsf_eval_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_abs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/calibration.html#Calibration.calc_lsf_eval_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.calibration.Calibration.calc_lsf_eval_df" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate the LSF evaluation of a Dataframe elements.</p>
+<p>Pass each dataframe value to the LSF and get corresponding LSF
+evaluation.</p>
+<p>The columns of the dataframe must be a subset of LSF arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>Dataframe</em>) – Dataframe for element-wise LSF evaluation.
+len(df.index) can be greater-than or equal to 1</p></li>
+<li><p><strong>ret_abs</strong> (<em>Bool</em><em>, </em><em>optional</em>) – Return abs of LSF evaluation. The default is True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>df_lsf</strong> – Dataframe containing element-wise LSF evaluation of passed df.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.calc_design_param_Xst">
+<span class="sig-name descname"><span class="pre">calc_design_param_Xst</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dfXst</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/calibration.html#Calibration.calc_design_param_Xst"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.calibration.Calibration.calc_design_param_Xst" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate design parameter for resistance from design points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dfXst</strong> (<em>Dataframe</em>) – Dataframe containing design points.
+Note: len(dfXst.index) = 1</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>z</strong> – design parameter for resistance corresponding to the design pt.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">est_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/calibration.html#Calibration.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.calibration.Calibration.run" title="Permalink to this definition">#</a></dt>
+<dd><p>Run calibration analysis to estimate <span class="math notranslate nohighlight">\(\phi\)</span>, <span class="math notranslate nohighlight">\(\gamma\)</span>,
+and <span class="math notranslate nohighlight">\(\psi\)</span> factors, and set class dataframe attributes
+corresponding to each factor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>est_method</strong> (<em>String</em><em>, </em><em>optional</em>) – Calibration method override. The default is “matrix”.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.get_psi_max">
+<span class="sig-name descname"><span class="pre">get_psi_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dfpsi</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/calibration.html#Calibration.get_psi_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.calibration.Calibration.get_psi_max" title="Permalink to this definition">#</a></dt>
+<dd><p>Get <span class="math notranslate nohighlight">\(\psi\)</span> dataframe corresponding to maximum estimates of dfpsi.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dfpsi</strong> (<em>DataFrame</em>) – Dataframe of <span class="math notranslate nohighlight">\(\psi\)</span> per load case.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>df_psi_max</strong> – Dataframe of <span class="math notranslate nohighlight">\(\psi\)</span> corresponding to maximum of each load effect.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.calc_pg_coeff">
+<span class="sig-name descname"><span class="pre">calc_pg_coeff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dfXst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/calibration.html#Calibration.calc_pg_coeff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.calibration.Calibration.calc_pg_coeff" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate <span class="math notranslate nohighlight">\(\phi\)</span>, <span class="math notranslate nohighlight">\(\gamma\)</span>, and <span class="math notranslate nohighlight">\(\psi\)</span> for the given set of design
+points and nominals using comparison of design pt coefficients approach.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dfXst</strong> (<em>Dataframe</em>) – Dataframe containing all design points at target reliability.</p></li>
+<li><p><strong>print_output</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – print_output flag for displaying intermediate and final output of function.
+The default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>df_phi</strong> (<em>Dataframe</em>) – Dataframe containing <span class="math notranslate nohighlight">\(\phi\)</span> estimates for resistance variables
+per load case.</p></li>
+<li><p><strong>df_gamma</strong> (<em>Dataframe</em>) – Dataframe containing <span class="math notranslate nohighlight">\(\gamma\)</span> estimates for all static and
+combination load variables per load case.</p></li>
+<li><p><strong>df_psi</strong> (<em>Dataframe</em>) – Dataframe containing <span class="math notranslate nohighlight">\(\psi\)</span> estimates for all static and
+combination load variables per load case.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.calc_Xst_nom">
+<span class="sig-name descname"><span class="pre">calc_Xst_nom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dfXstar</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/calibration.html#Calibration.calc_Xst_nom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.calibration.Calibration.calc_Xst_nom" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate the design point DataFrame divided by the nominal values
+per load case and adjust for <span class="math notranslate nohighlight">\(\psi\)</span> factors for combination
+load variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dfXstar</strong> (<em>DataFrame</em>) – DataFrame containing all design points at target reliability for
+all load cases.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>df_Xst_nom</strong> – Design point DataFrame factored by the nominal values
+per load case.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.calc_phi">
+<span class="sig-name descname"><span class="pre">calc_phi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dfXstnom</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/calibration.html#Calibration.calc_phi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.calibration.Calibration.calc_phi" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate resistance factors <span class="math notranslate nohighlight">\(\phi\)</span> from a dataframe of design points
+factored by the nominal values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dfXstnom</strong> (<em>DataFrame</em>) – Design point DataFrame factored by the nominal values
+per load case.</p></li>
+<li><p><strong>set_max</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – Set <span class="math notranslate nohighlight">\(\phi\)</span> estimates to their corresponding max values. The default
+is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>df_phi</strong> – Resistance factors <span class="math notranslate nohighlight">\(\phi\)</span> for resistance variables per load case.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.calc_gamma">
+<span class="sig-name descname"><span class="pre">calc_gamma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dfXstnom</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/calibration.html#Calibration.calc_gamma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.calibration.Calibration.calc_gamma" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate Load factors <span class="math notranslate nohighlight">\(\gamma\)</span> from a dataframe of design points
+factored by the nominal values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dfXstnom</strong> (<em>DataFrame</em>) – Design point DataFrame factored by the nominal values
+per load case.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>dfgamma_static</strong> (<em>DataFrame</em>) – Load factors for static variables per load case.</p></li>
+<li><p><strong>dfgamma_comb</strong> (<em>DataFrame</em>) – Load factors for combination variables per load case.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.calc_pg_matrix">
+<span class="sig-name descname"><span class="pre">calc_pg_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dfXst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/calibration.html#Calibration.calc_pg_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.calibration.Calibration.calc_pg_matrix" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate <span class="math notranslate nohighlight">\(\phi\)</span>, <span class="math notranslate nohighlight">\(\gamma\)</span>, and <span class="math notranslate nohighlight">\(\psi\)</span> for
+the given set of design points and nominals using the Matrix approach.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dfXst</strong> (<em>Dataframe</em>) – Dataframe containing all design points at target reliability.</p></li>
+<li><p><strong>print_output</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – print_output flag for displaying intermediate and final output of function.
+The default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>df_phi</strong> (<em>Dataframe</em>) – Dataframe containing <span class="math notranslate nohighlight">\(\phi\)</span> estimates for resistance variables
+per load case.</p></li>
+<li><p><strong>df_gamma</strong> (<em>Dataframe</em>) – Dataframe containing <span class="math notranslate nohighlight">\(\gamma\)</span> estimates for all static and
+combination load variables per load case.</p></li>
+<li><p><strong>df_psi</strong> (<em>Dataframe</em>) – Dataframe containing <span class="math notranslate nohighlight">\(\psi\)</span> estimates for all static and
+combination load variables per load case.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.calc_phiRz_egS_vect">
+<span class="sig-name descname"><span class="pre">calc_phiRz_egS_vect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dfXstar</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/calibration.html#Calibration.calc_phiRz_egS_vect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.calibration.Calibration.calc_phiRz_egS_vect" title="Permalink to this definition">#</a></dt>
+<dd><p>Get RHS for matrix estimation method,
+<span class="math notranslate nohighlight">\(\phi~R~z-\gamma_g~G-\gamma_i~S_i\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dfXstar</strong> (<em>Dataframe</em>) – Dataframe containing all design points at target reliability.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>phiRz_egS_vect</strong> – RHS for matrix estimation method as 1D Array.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.calc_epgS_mat">
+<span class="sig-name descname"><span class="pre">calc_epgS_mat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dfgammanom</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/calibration.html#Calibration.calc_epgS_mat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.calibration.Calibration.calc_epgS_mat" title="Permalink to this definition">#</a></dt>
+<dd><p>Get LHS for matrix estimation method, <span class="math notranslate nohighlight">\(\gamma_j~S_j\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dfgammanom</strong> (<em>Dataframe</em>) – Dataframe containing product of nominal values and safety factors,
+along with calibrated z values.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>epgS_mat</strong> – LHS for matrix estimation method as 2D Array.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.calc_beta_design_param">
+<span class="sig-name descname"><span class="pre">calc_beta_design_param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">design_z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/calibration.html#Calibration.calc_beta_design_param"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.calibration.Calibration.calc_beta_design_param" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate reliabilities based on given design parameter for resistance
+for all load combination cases.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>design_z</strong> (<em>Float</em>) – design parameter for resistance</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>arr_beta</strong> – Array containing reliability indices corresponding to design_z for
+each load combination case.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.calc_df_pgRS">
+<span class="sig-name descname"><span class="pre">calc_df_pgRS</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/calibration.html#Calibration.calc_df_pgRS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.calibration.Calibration.calc_df_pgRS" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate the DataFrame of all resistance and load variables nominal
+values multiplied by their respective factors, <span class="math notranslate nohighlight">\(\phi\)</span>, <span class="math notranslate nohighlight">\(\gamma\)</span>,
+and <span class="math notranslate nohighlight">\(\psi\)</span>, for all load cases.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>df_pgRS</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.calibration.Calibration.get_design_param_factor">
+<span class="sig-name descname"><span class="pre">get_design_param_factor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/calibration.html#Calibration.get_design_param_factor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.calibration.Calibration.get_design_param_factor" title="Permalink to this definition">#</a></dt>
+<dd><p>Estimate the resistance design parameter for a given set of safety and
+combination factors, and nominals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>array_z</strong> – Array containing design parameters for all load combination cases.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+            </article>
+            
+            
+            
+            <footer class="bd-footer-article">
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+  <a class='left-prev' id="prev-link" href="pystra.calibration.html" title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+          <p class="prev-next-subtitle">previous</p>
+          <p class="prev-next-title">pystra.calibration</p>
+      </div>
+  </a>
+  <a class='right-next' id="next-link" href="pystra.distributions.html" title="next page">
+  <div class="prev-next-info">
+      <p class="prev-next-subtitle">next</p>
+      <p class="prev-next-title">pystra.distributions</p>
+  </div>
+  <i class="fa-solid fa-angle-right"></i>
+  </a>
+</div>
+            </footer>
+            
+          </div>
+          
+          
+          
+            <div class="bd-sidebar-secondary bd-toc">
+              
+<div class="toc-item">
+  
+<div class="tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+</div>
+<nav id="bd-toc-nav" class="page-toc">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#pystra.calibration.Calibration">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     Calibration
+    </span>
+   </code>
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.betaT">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.betaT
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.calib_method">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.calib_method
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.cvar">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.cvar
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.df_nom">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.df_nom
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.df_Xstar">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.df_Xstar
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.df_phi">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.df_phi
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.df_gamma">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.df_gamma
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.df_psi">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.df_psi
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.dict_nom">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.dict_nom
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.est_method">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.est_method
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.label_comb_vrs">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.label_comb_vrs
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.label_comb_cases">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.label_comb_cases
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.label_R">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.label_R
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.label_other">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.label_other
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.label_all">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.label_all
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.loadCombObj">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.loadCombObj
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.print_output">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.print_output
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.calc_lsf_eval_df">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.calc_lsf_eval_df()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.calc_design_param_Xst">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.calc_design_param_Xst()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.run">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.run()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.get_psi_max">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.get_psi_max()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.calc_pg_coeff">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.calc_pg_coeff()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.calc_Xst_nom">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.calc_Xst_nom()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.calc_phi">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.calc_phi()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.calc_gamma">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.calc_gamma()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.calc_pg_matrix">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.calc_pg_matrix()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.calc_phiRz_egS_vect">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.calc_phiRz_egS_vect()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.calc_epgS_mat">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.calc_epgS_mat()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.calc_beta_design_param">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.calc_beta_design_param()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.calc_df_pgRS">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.calc_df_pgRS()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.calibration.Calibration.get_design_param_factor">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Calibration.get_design_param_factor()
+      </span>
+     </code>
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+</nav>
+</div>
+
+<div class="toc-item">
+  
+<div id="searchbox"></div>
+</div>
+
+<div class="toc-item">
+  
+
+<div class="tocsection editthispage">
+    <a href="https://github.com/pystra/pystra/edit/main/docs/source/gen/pystra.calibration.Calibration.rst">
+        <i class="fa-solid fa-pencil"></i> Edit this page
+    </a>
+</div>
+
+</div>
+
+<div class="toc-item">
+  
+</div>
+
+            </div>
+          
+          
+        </div>
+        <footer class="bd-footer-content">
+          <div class="bd-footer-content__inner">
+            
+          </div>
+        </footer>
+        
+      </main>
+    </div>
+  </div>
+
+  
+    
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=796348d33e8b1d947c94"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=796348d33e8b1d947c94"></script>
+
+  <footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    
+<p class="copyright">
+
+    &copy; Copyright 2022, The PySTRA Developers.<br>
+
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    <p class="theme-version">
+    Built with the
+    <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">
+        PyData Sphinx Theme
+    </a>
+    0.12.0.
+</p>
+  </div>
+  
+  <div class="footer-item">
+    
+<p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br>
+</p>
+
+  </div>
+  
+</div>
+  </footer>
+  </body>
+</html>
