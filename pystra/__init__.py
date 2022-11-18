@@ -5,12 +5,6 @@ Structural Reliability Analysis with Python.
 
 __version__ = "1.2.1"
 
-
-try:
-    import numpy as np
-except ImportError:
-    raise ImportError("NumPy does not seem to be installed. Please see the user guide.")
-
 # Distributions
 from .distributions import *
 from .correlation import *

@@ -2,15 +2,12 @@
 
 import numpy as np
 import pandas as pd
-import math
 from scipy.optimize import fsolve
 from .distributions import Constant
 
 
-# Base Class for all combination problems
 class Calibration:
-    """Class for calibrating partial and comination factors.
-
+    r"""Class for calibrating partial and comination factors.
 
     The factors are: :math:`\\phi`, :math:`\\gamma`, and :math:`\\psi`
     factors for a given load combination instance and target reliability.
@@ -339,7 +336,7 @@ class Calibration:
             print(f"\n ==== Iteration {n_iter} ====")
             self._print_form_results(form0)
         ## Iterate till convergence
-        while not math.isclose(beta_cal, self.beta_t, abs_tol=abstol):
+        while not np.isclose(beta_cal, self.beta_t, atol=abstol):
             ## U-space projection
             U_cal = alpha_cal * self.beta_t
             ## X-space projection
