@@ -672,8 +672,8 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pystra as pr
-from scipy.stats import genextreme as gev
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pystra</span> <span class="k">as</span> <span class="nn">pr</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">genextreme</span> <span class="k">as</span> <span class="n">gev</span>
 </pre></div>
 </div>
 </div>
@@ -682,8 +682,8 @@ from scipy.stats import genextreme as gev
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def lsf(X1, X2, C):
-    return X1 - X2 - C
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">lsf</span><span class="p">(</span><span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">X1</span> <span class="o">-</span> <span class="n">X2</span> <span class="o">-</span> <span class="n">C</span>
 </pre></div>
 </div>
 </div>
@@ -692,8 +692,8 @@ from scipy.stats import genextreme as gev
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>X2 = pr.ScipyDist(&quot;X2&quot;, gev(c=0.1, loc=200, scale=50))
-X2.plot()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X2</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">ScipyDist</span><span class="p">(</span><span class="s2">&quot;X2&quot;</span><span class="p">,</span> <span class="n">gev</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">50</span><span class="p">))</span>
+<span class="n">X2</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -709,12 +709,12 @@ X2.plot()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>limit_state = pr.LimitState(lsf)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">limit_state</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span><span class="n">lsf</span><span class="p">)</span>
 
-model = pr.StochasticModel()
-model.addVariable(pr.Normal(&quot;X1&quot;, 500, 100))
-model.addVariable(X2)
-model.addVariable(pr.Constant(&quot;C&quot;, 50))
+<span class="n">model</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;X1&quot;</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">X2</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -723,8 +723,8 @@ model.addVariable(pr.Constant(&quot;C&quot;, 50))
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>options = pr.AnalysisOptions()
-options.setPrintOutput(False)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">options</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">AnalysisOptions</span><span class="p">()</span>
+<span class="n">options</span><span class="o">.</span><span class="n">setPrintOutput</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -733,9 +733,9 @@ options.setPrintOutput(False)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>form = pr.Form(stochastic_model=model, limit_state=limit_state, analysis_options=options)
-form.run()
-form.showDetailedOutput()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">form</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">Form</span><span class="p">(</span><span class="n">stochastic_model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span> <span class="n">analysis_options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
+<span class="n">form</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">form</span><span class="o">.</span><span class="n">showDetailedOutput</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -765,9 +765,9 @@ C                      ---          50.000000          ---
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sorm = pr.Sorm(stochastic_model=model, limit_state=limit_state, form=form)
-sorm.run()
-sorm.showDetailedOutput()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sorm</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">Sorm</span><span class="p">(</span><span class="n">stochastic_model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+<span class="n">sorm</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">sorm</span><span class="o">.</span><span class="n">showDetailedOutput</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>

@@ -682,10 +682,10 @@ Built-in speed-up: 2.80
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pystra as pr
-from scipy.stats import norm, lognorm, uniform
-import numpy as np
-import timeit
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pystra</span> <span class="k">as</span> <span class="nn">pr</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span><span class="p">,</span> <span class="n">lognorm</span><span class="p">,</span> <span class="n">uniform</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">timeit</span>
 </pre></div>
 </div>
 </div>
@@ -694,9 +694,9 @@ import timeit
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def lsf(r, X1, X2, X3):
-    g = r - X2 * (1000 * X3) ** (-1) - (X1 * (200 * X3) ** (-1)) ** 2
-    return g
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">lsf</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">,</span> <span class="n">X3</span><span class="p">):</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">r</span> <span class="o">-</span> <span class="n">X2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1000</span> <span class="o">*</span> <span class="n">X3</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">X1</span> <span class="o">*</span> <span class="p">(</span><span class="mi">200</span> <span class="o">*</span> <span class="n">X3</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="k">return</span> <span class="n">g</span>
 </pre></div>
 </div>
 </div>
@@ -705,9 +705,9 @@ import timeit
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>limit_state = pr.LimitState(lsf)
-options = pr.AnalysisOptions()
-options.setPrintOutput(False)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">limit_state</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span><span class="n">lsf</span><span class="p">)</span>
+<span class="n">options</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">AnalysisOptions</span><span class="p">()</span>
+<span class="n">options</span><span class="o">.</span><span class="n">setPrintOutput</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -716,26 +716,26 @@ options.setPrintOutput(False)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def run_builtin():
-    &quot;&quot;&quot;
-    The basic example using built-in distributions
-    &quot;&quot;&quot;
-    stochastic_model = pr.StochasticModel()
-    stochastic_model.addVariable(pr.Lognormal(&quot;X1&quot;, 500, 100))
-    stochastic_model.addVariable(pr.Normal(&quot;X2&quot;, 2000, 400))
-    stochastic_model.addVariable(pr.Uniform(&quot;X3&quot;, 5, 0.5))
-    stochastic_model.addVariable(pr.Constant(&quot;r&quot;, 1))
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">run_builtin</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The basic example using built-in distributions</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">stochastic_model</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
+    <span class="n">stochastic_model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Lognormal</span><span class="p">(</span><span class="s2">&quot;X1&quot;</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+    <span class="n">stochastic_model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;X2&quot;</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">400</span><span class="p">))</span>
+    <span class="n">stochastic_model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s2">&quot;X3&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+    <span class="n">stochastic_model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 
-    stochastic_model.setCorrelation(
-        pr.CorrelationMatrix([[1.0, 0.3, 0.2], [0.3, 1.0, 0.2], [0.2, 0.2, 1.0]])
-    )
+    <span class="n">stochastic_model</span><span class="o">.</span><span class="n">setCorrelation</span><span class="p">(</span>
+        <span class="n">pr</span><span class="o">.</span><span class="n">CorrelationMatrix</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]])</span>
+    <span class="p">)</span>
 
-    sorm = pr.Sorm(
-        stochastic_model=stochastic_model,
-        limit_state=limit_state,
-        analysis_options=options
-    )
-    sorm.run()
+    <span class="n">sorm</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">Sorm</span><span class="p">(</span>
+        <span class="n">stochastic_model</span><span class="o">=</span><span class="n">stochastic_model</span><span class="p">,</span>
+        <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
+        <span class="n">analysis_options</span><span class="o">=</span><span class="n">options</span>
+    <span class="p">)</span>
+    <span class="n">sorm</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -744,36 +744,36 @@ options.setPrintOutput(False)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def run_scipy():
-    &quot;&quot;&quot;
-    The basic example using Scipy distributions
-    &quot;&quot;&quot;
-    stochastic_model = pr.StochasticModel()
-    # Lognormal
-    zeta = (np.log(1 + (100 / 500) ** 2)) ** 0.5
-    lamb = np.log(500) - 0.5 * zeta ** 2
-    stochastic_model.addVariable(
-        pr.ScipyDist(&quot;X1&quot;, lognorm(s=zeta, scale=np.exp(lamb)))
-    )
-    # Normal
-    stochastic_model.addVariable(pr.ScipyDist(&quot;X2&quot;, norm(loc=2000, scale=400)))
-    ## Uniform
-    a_b = (0.5 ** 2 * 12) ** (1 / 2)
-    a = (2 * 5 - a_b) / 2
-    stochastic_model.addVariable(pr.ScipyDist(&quot;X3&quot;, uniform(loc=a, scale=a_b)))
-    # Constant
-    stochastic_model.addVariable(pr.Constant(&quot;r&quot;, 1))
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">run_scipy</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The basic example using Scipy distributions</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">stochastic_model</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
+    <span class="c1"># Lognormal</span>
+    <span class="n">zeta</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">100</span> <span class="o">/</span> <span class="mi">500</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span> <span class="o">**</span> <span class="mf">0.5</span>
+    <span class="n">lamb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">zeta</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="n">stochastic_model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span>
+        <span class="n">pr</span><span class="o">.</span><span class="n">ScipyDist</span><span class="p">(</span><span class="s2">&quot;X1&quot;</span><span class="p">,</span> <span class="n">lognorm</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">zeta</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">lamb</span><span class="p">)))</span>
+    <span class="p">)</span>
+    <span class="c1"># Normal</span>
+    <span class="n">stochastic_model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">ScipyDist</span><span class="p">(</span><span class="s2">&quot;X2&quot;</span><span class="p">,</span> <span class="n">norm</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">400</span><span class="p">)))</span>
+    <span class="c1">## Uniform</span>
+    <span class="n">a_b</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">12</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">-</span> <span class="n">a_b</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">stochastic_model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">ScipyDist</span><span class="p">(</span><span class="s2">&quot;X3&quot;</span><span class="p">,</span> <span class="n">uniform</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">a_b</span><span class="p">)))</span>
+    <span class="c1"># Constant</span>
+    <span class="n">stochastic_model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 
-    stochastic_model.setCorrelation(
-        pr.CorrelationMatrix([[1.0, 0.3, 0.2], [0.3, 1.0, 0.2], [0.2, 0.2, 1.0]])
-    )
+    <span class="n">stochastic_model</span><span class="o">.</span><span class="n">setCorrelation</span><span class="p">(</span>
+        <span class="n">pr</span><span class="o">.</span><span class="n">CorrelationMatrix</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]])</span>
+    <span class="p">)</span>
 
-    sorm = pr.Sorm(
-        stochastic_model=stochastic_model,
-        limit_state=limit_state,
-        analysis_options=options
-    )
-    sorm.run()
+    <span class="n">sorm</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">Sorm</span><span class="p">(</span>
+        <span class="n">stochastic_model</span><span class="o">=</span><span class="n">stochastic_model</span><span class="p">,</span>
+        <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
+        <span class="n">analysis_options</span><span class="o">=</span><span class="n">options</span>
+    <span class="p">)</span>
+    <span class="n">sorm</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -782,15 +782,15 @@ options.setPrintOutput(False)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>number = 100
-time_builtin = timeit.timeit(stmt=run_builtin, number=number)
-time_scipy = timeit.timeit(stmt=run_scipy, number=number)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">number</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">time_builtin</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span><span class="n">stmt</span><span class="o">=</span><span class="n">run_builtin</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="n">number</span><span class="p">)</span>
+<span class="n">time_scipy</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span><span class="n">stmt</span><span class="o">=</span><span class="n">run_scipy</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="n">number</span><span class="p">)</span>
 
-print(&quot;Total time taken (s)&quot;)
-print(f&quot;Built-in: {time_builtin}; Scipy: {time_scipy}&quot;)
-print(&quot;Average time per call (s):&quot;)
-print(f&quot;Built-in: {time_builtin/number}; Scipy: {time_scipy/number}&quot;)
-print(f&quot;Built-in speed-up: {time_scipy/time_builtin:.2f}&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total time taken (s)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Built-in: </span><span class="si">{</span><span class="n">time_builtin</span><span class="si">}</span><span class="s2">; Scipy: </span><span class="si">{</span><span class="n">time_scipy</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Average time per call (s):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Built-in: </span><span class="si">{</span><span class="n">time_builtin</span><span class="o">/</span><span class="n">number</span><span class="si">}</span><span class="s2">; Scipy: </span><span class="si">{</span><span class="n">time_scipy</span><span class="o">/</span><span class="n">number</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Built-in speed-up: </span><span class="si">{</span><span class="n">time_scipy</span><span class="o">/</span><span class="n">time_builtin</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

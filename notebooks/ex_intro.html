@@ -671,8 +671,8 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pystra as pr
-import numpy as np
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pystra</span> <span class="k">as</span> <span class="nn">pr</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 </pre></div>
 </div>
 </div>
@@ -682,11 +682,11 @@ import numpy as np
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def example_limitstatefunction(r, X1, X2, X3):
-    &quot;&quot;&quot;
-    example limit state function
-    &quot;&quot;&quot;
-    return r - X2 * (1000 * X3) ** (-1) - (X1 * (200 * X3) ** (-1)) ** 2
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">example_limitstatefunction</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">,</span> <span class="n">X3</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    example limit state function</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">r</span> <span class="o">-</span> <span class="n">X2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1000</span> <span class="o">*</span> <span class="n">X3</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">X1</span> <span class="o">*</span> <span class="p">(</span><span class="mi">200</span> <span class="o">*</span> <span class="n">X3</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span>
 </pre></div>
 </div>
 </div>
@@ -695,7 +695,7 @@ import numpy as np
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>limit_state = pr.LimitState(example_limitstatefunction)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">limit_state</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span><span class="n">example_limitstatefunction</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -704,8 +704,8 @@ import numpy as np
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>options = pr.AnalysisOptions()
-options.setPrintOutput(False)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">options</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">AnalysisOptions</span><span class="p">()</span>
+<span class="n">options</span><span class="o">.</span><span class="n">setPrintOutput</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -714,7 +714,7 @@ options.setPrintOutput(False)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>stochastic_model = pr.StochasticModel()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">stochastic_model</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -723,9 +723,9 @@ options.setPrintOutput(False)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>stochastic_model.addVariable(pr.Lognormal(&quot;X1&quot;, 500, 100))
-stochastic_model.addVariable(pr.Normal(&quot;X2&quot;, 2000, 400))
-stochastic_model.addVariable(pr.Uniform(&quot;X3&quot;, 5, 0.5))
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">stochastic_model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Lognormal</span><span class="p">(</span><span class="s2">&quot;X1&quot;</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+<span class="n">stochastic_model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;X2&quot;</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">400</span><span class="p">))</span>
+<span class="n">stochastic_model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s2">&quot;X3&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -734,7 +734,7 @@ stochastic_model.addVariable(pr.Uniform(&quot;X3&quot;, 5, 0.5))
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>stochastic_model.addVariable(pr.Constant(&quot;r&quot;, 1))
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">stochastic_model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -743,9 +743,9 @@ stochastic_model.addVariable(pr.Uniform(&quot;X3&quot;, 5, 0.5))
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>stochastic_model.setCorrelation(
-    pr.CorrelationMatrix([[1.0, 0.3, 0.2], [0.3, 1.0, 0.2], [0.2, 0.2, 1.0]])
-)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">stochastic_model</span><span class="o">.</span><span class="n">setCorrelation</span><span class="p">(</span>
+    <span class="n">pr</span><span class="o">.</span><span class="n">CorrelationMatrix</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]])</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -756,12 +756,12 @@ stochastic_model.addVariable(pr.Uniform(&quot;X3&quot;, 5, 0.5))
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>form = pr.Form(
-    analysis_options=options,
-    stochastic_model=stochastic_model,
-    limit_state=limit_state,
-)
-form.run()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">form</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">Form</span><span class="p">(</span>
+    <span class="n">analysis_options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
+    <span class="n">stochastic_model</span><span class="o">=</span><span class="n">stochastic_model</span><span class="p">,</span>
+    <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">form</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -770,7 +770,7 @@ form.run()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>form.showDetailedOutput()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">form</span><span class="o">.</span><span class="n">showDetailedOutput</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -804,13 +804,13 @@ r                      ---           1.000000          ---
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sorm = pr.Sorm(
-    analysis_options=options,
-    stochastic_model=stochastic_model,
-    limit_state=limit_state,
-    form=form,
-)
-sorm.run()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sorm</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">Sorm</span><span class="p">(</span>
+    <span class="n">analysis_options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
+    <span class="n">stochastic_model</span><span class="o">=</span><span class="n">stochastic_model</span><span class="p">,</span>
+    <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
+    <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">sorm</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -838,7 +838,7 @@ Curavture 2: 0.36356407339249475
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sorm.showDetailedOutput()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sorm</span><span class="o">.</span><span class="n">showDetailedOutput</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -878,12 +878,12 @@ r                      ---           1.000000          ---
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>da = pr.DistributionAnalysis(
-    analysis_options=options,
-    stochastic_model=stochastic_model,
-    limit_state=limit_state,
-)
-da.run()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">da</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">DistributionAnalysis</span><span class="p">(</span>
+    <span class="n">analysis_options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
+    <span class="n">stochastic_model</span><span class="o">=</span><span class="n">stochastic_model</span><span class="p">,</span>
+    <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">da</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -894,12 +894,12 @@ da.run()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cmc = pr.CrudeMonteCarlo(
-    analysis_options=options,
-    stochastic_model=stochastic_model,
-    limit_state=limit_state,
-)
-cmc.run()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cmc</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">CrudeMonteCarlo</span><span class="p">(</span>
+    <span class="n">analysis_options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
+    <span class="n">stochastic_model</span><span class="o">=</span><span class="n">stochastic_model</span><span class="p">,</span>
+    <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">cmc</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -910,12 +910,12 @@ cmc.run()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ismc = pr.ImportanceSampling(
-    analysis_options=options,
-    stochastic_model=stochastic_model,
-    limit_state=limit_state,
-)
-ismc.run()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ismc</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">ImportanceSampling</span><span class="p">(</span>
+    <span class="n">analysis_options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
+    <span class="n">stochastic_model</span><span class="o">=</span><span class="n">stochastic_model</span><span class="p">,</span>
+    <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">ismc</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -926,10 +926,10 @@ ismc.run()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>beta = form.getBeta()
-failure = form.getFailure()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">beta</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">getBeta</span><span class="p">()</span>
+<span class="n">failure</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">getFailure</span><span class="p">()</span>
 
-print(f&quot;Beta is {beta}, corresponding to a failure probability of {failure}&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Beta is </span><span class="si">{</span><span class="n">beta</span><span class="si">}</span><span class="s2">, corresponding to a failure probability of </span><span class="si">{</span><span class="n">failure</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
