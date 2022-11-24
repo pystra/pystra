@@ -48,7 +48,9 @@ def setup1():
     loadcombinations = {"Q1_max": ["Q1"], "Q2_max": ["Q2"]}
 
     lc = ra.LoadCombination(
-        lsf, Q_dict, [Rdist], [Gdist], [z, eg, e1, e2], dict_comb_cases=loadcombinations
+        lsf=lsf, dict_dist_comb=Q_dict, list_dist_resist=[Rdist],
+        list_dist_other=[Gdist], list_const=[z, eg, e1, e2],
+        dict_comb_cases=loadcombinations
     )
 
     Qk = np.array([Q1max.ppf(0.98), Q2max.ppf(0.98)])
@@ -90,7 +92,7 @@ def setup2():
     loadcombinations = {"Q1_max": ["Q1"], "Q2_max": ["Q2"]}
 
     lc = ra.LoadCombination(
-        lsf_nonlinear,
+        lsf=lsf_nonlinear,
         dict_dist_comb=Q_dict,
         list_dist_other=[wS],
         list_dist_resist=[R, wR],
