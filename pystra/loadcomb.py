@@ -13,6 +13,8 @@ class LoadCombination:
     ----------
     lsf : function
         Limit State Function
+    df_corr : DataFrame
+        DataFrame of user defined correlation (if specified).
     distributions_max : dict
         Dictionary of maximum distributions
     distributions_pit : dict
@@ -62,7 +64,8 @@ class LoadCombination:
         list_dist_other : List, optional
             List of other remaining random variables.
         corr : DataFrame, optional
-            Dataframe containing correlations between random variables.
+            User-defined Dataframe containing correlations between random
+            variables. Note: corr.index = corr.columns = [<list-of-rvs>]
         list_const : List, optional
             List of LSF constants as Pystra Constants.
         opt : Object, optional
@@ -237,6 +240,25 @@ class LoadCombination:
 
 
     def _get_corr_for_smodel(self, stochastic_model):
+        """
+        Get correlation data for stochastic model.
+        
+        This function utilizes the input correlation data and re-creates
+        the correlation matrix based on the sequence of random variables
+        as per the stochastic model.
+
+        Parameters
+        ----------
+        stochastic_model : Object
+            Pystra StochasticModel object for the reliability analysis.
+
+        Returns
+        -------
+        corr : Numpy Array
+            Correlation matrix with variables sequenced as per the stochastic
+            model.
+
+        """
         sequence_rvs = list(stochastic_model.getVariables().keys())
         dfcorr_tmp = self.df_corr.reindex(columns=sequence_rvs,
                                           index=sequence_rvs)
