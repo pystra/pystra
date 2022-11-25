@@ -532,16 +532,12 @@ class Calibration:
         df_psi_max = df_psi_max.clip(df_psi_max.max(), axis=1)
         return df_psi_max
 
-    def _calibrate_design_param(self, startz=3.0):
+    def _calibrate_design_param(self):
         """
         Calibrate design parameter for resistance to target Beta for all
-        load combination cases using the specified projection method.
-
-        Parameters
-        ----------
-        startz : float, optional
-            Starting value of design parameter for resistance.
-            The default is 3.0
+        load combination cases using the specified projection method. The
+        starting value of the calibration variable is taken as that specified
+        in the LoadCombination object definition.
 
         Returns
         -------
@@ -551,6 +547,7 @@ class Calibration:
             List of calibrated Pystra FORM objects per load comb case.
 
         """
+        startz = self.lc_obj.constant[self.cvar].getValue()
         rel_func = self.lc_obj.run_reliability_case
         list_z_cal = []
         list_form_cal = []
