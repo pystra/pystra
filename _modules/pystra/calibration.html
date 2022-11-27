@@ -914,16 +914,12 @@
         <span class="n">df_psi_max</span> <span class="o">=</span> <span class="n">df_psi_max</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">df_psi_max</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">df_psi_max</span></div>
 
-    <span class="k">def</span> <span class="nf">_calibrate_design_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">startz</span><span class="o">=</span><span class="mf">3.0</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_calibrate_design_param</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calibrate design parameter for resistance to target Beta for all</span>
-<span class="sd">        load combination cases using the specified projection method.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        startz : float, optional</span>
-<span class="sd">            Starting value of design parameter for resistance.</span>
-<span class="sd">            The default is 3.0</span>
+<span class="sd">        load combination cases using the specified projection method. The</span>
+<span class="sd">        starting value of the calibration variable is taken as that specified</span>
+<span class="sd">        in the LoadCombination object definition.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -933,6 +929,7 @@
 <span class="sd">            List of calibrated Pystra FORM objects per load comb case.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">startz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lc_obj</span><span class="o">.</span><span class="n">constant</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cvar</span><span class="p">]</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span>
         <span class="n">rel_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lc_obj</span><span class="o">.</span><span class="n">run_reliability_case</span>
         <span class="n">list_z_cal</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">list_form_cal</span> <span class="o">=</span> <span class="p">[]</span>

@@ -27,7 +27,8 @@
    "outputs": [],
    "source": [
     "import pystra as ra\n",
-    "import numpy as np"
+    "import numpy as np\n",
+    "import pandas as pd"
    ]
   },
   {
@@ -117,6 +118,52 @@
   },
   {
    "cell_type": "markdown",
+   "id": "6ccc43bd-2433-4a25-af26-d7876450bb3f",
+   "metadata": {},
+   "source": [
+    "## Specify user-defined correlation (optional)\n",
+    "The user can also specify a user-defined correlation matrix for the random variables of the reliability problem as a DataFrame."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "ec40a02f-d9db-4cde-8d32-c0ded9bcf5e4",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "label_rvs = [\"Q1\", \"Q2\", \"R\", \"G\"]\n",
+    "corr = np.eye(len(label_rvs))\n",
+    "df_corr = pd.DataFrame(data=corr, columns=label_rvs, index=label_rvs)\n",
+    "corr_Q1Q2 = 0.8\n",
+    "df_corr.loc[\"Q1\", \"Q2\"] = corr_Q1Q2\n",
+    "df_corr.loc[\"Q2\", \"Q1\"] = corr_Q1Q2"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "6d479d27-a2db-45fa-be11-e0f9e4a39b9d",
+   "metadata": {},
+   "source": [
+    "## Specify user-defined analysis options (optional)\n",
+    "The user can also specify a user-defined correlation Pystra `AnalysisOptions` object for the reliability analysis too. In this tutorial we will set error thresholds and change the default transform method to use singular value decomposition."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "7ef924b2-0b79-4074-9a83-1f1da0f9c812",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "options = ra.AnalysisOptions()\n",
+    "options.setE1(1e-3)\n",
+    "options.setE2(1e-3)\n",
+    "options.setTransform(\"svd\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
    "id": "39a4d05d-8cfe-4787-bb0a-5d78d08acdd1",
    "metadata": {},
    "source": [
@@ -126,13 +173,13 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 5,
+   "execution_count": 7,
    "id": "6e48d8ca-c19d-4d9b-8b2e-7a11c3242eb7",
    "metadata": {},
    "outputs": [],
    "source": [
-    "lc = ra.LoadCombination(lsf, Q_dict, [Rdist], [Gdist], [cg],\n",
-    "                          dict_comb_cases=loadcombinations)"
+    "lc = ra.LoadCombination(lsf=lsf, dict_dist_comb=Q_dict, list_dist_resist=[Rdist], list_dist_other=[Gdist],\n",
+    "                        corr=df_corr, list_const=[cg], opt=options, dict_comb_cases=loadcombinations)"
    ]
   },
   {
@@ -147,7 +194,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 6,
+   "execution_count": 8,
    "id": "de1a1263-99bf-404b-a95b-ed11a10858f2",
    "metadata": {},
    "outputs": [],
@@ -165,7 +212,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 7,
+   "execution_count": 9,
    "id": "05489e20-e752-4aa2-be71-8ca9445730a2",
    "metadata": {},
    "outputs": [
@@ -177,15 +224,15 @@
       "======================================================\n",
       "FORM\n",
       "======================================================\n",
-      "Pf              \t 9.4463873149e-03\n",
-      "BetaHL          \t 2.3476399410\n",
-      "Model Evaluations \t 71\n",
+      "Pf              \t 2.5348733315e-02\n",
+      "BetaHL          \t 1.9540317148\n",
+      "Model Evaluations \t 38\n",
       "------------------------------------------------------\n",
       "Variable   \t    U_star \t       X_star \t     alpha\n",
-      "R          \t -0.936945 \t     1.859244 \t -0.399055\n",
-      "G          \t  0.269152 \t     1.026915 \t +0.114631\n",
-      "Q1         \t  2.049068 \t     1.516671 \t +0.872903\n",
-      "Q2         \t  0.602019 \t     1.175707 \t +0.256235\n",
+      "R          \t -1.818038 \t     1.898248 \t -0.930293\n",
+      "G          \t -0.659741 \t     1.018495 \t -0.337834\n",
+      "Q1         \t  0.184954 \t     1.423639 \t +0.095051\n",
+      "Q2         \t -0.208597 \t     1.759687 \t -0.106715\n",
       "cg         \t       --- \t     0.400000 \t       ---\n",
       "======================================================\n",
       "\n"
@@ -208,7 +255,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 8,
+   "execution_count": 10,
    "id": "5544eaf5-830b-49a3-81eb-02da51b69f44",
    "metadata": {},
    "outputs": [
@@ -220,15 +267,15 @@
       "======================================================\n",
       "FORM\n",
       "======================================================\n",
-      "Pf              \t 6.6221505074e-03\n",
-      "BetaHL          \t 2.4771317287\n",
-      "Model Evaluations \t 71\n",
+      "Pf              \t 1.9624337657e-02\n",
+      "BetaHL          \t 2.0615701821\n",
+      "Model Evaluations \t 49\n",
       "------------------------------------------------------\n",
       "Variable   \t    U_star \t       X_star \t     alpha\n",
-      "R          \t -0.952995 \t     1.857011 \t -0.384668\n",
-      "G          \t  0.274093 \t     1.027409 \t +0.110632\n",
-      "Q1         \t  2.184681 \t     1.569514 \t +0.882028\n",
-      "Q2         \t  0.616461 \t     0.952181 \t +0.248631\n",
+      "R          \t -1.926554 \t     1.896315 \t -0.934503\n",
+      "G          \t -0.673345 \t     1.018964 \t -0.326631\n",
+      "Q1         \t  0.189636 \t     1.461699 \t +0.091993\n",
+      "Q2         \t -0.221604 \t     1.596853 \t -0.107490\n",
       "cg         \t       --- \t     0.400000 \t       ---\n",
       "======================================================\n",
       "\n"
@@ -251,7 +298,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 9,
+   "execution_count": 11,
    "id": "232b0f83-716b-4162-88d1-fe712c163c5e",
    "metadata": {},
    "outputs": [
@@ -263,15 +310,15 @@
       "======================================================\n",
       "FORM\n",
       "======================================================\n",
-      "Pf              \t 4.7782367234e-03\n",
-      "BetaHL          \t 2.5914777016\n",
-      "Model Evaluations \t 71\n",
+      "Pf              \t 1.5511691106e-02\n",
+      "BetaHL          \t 2.1567726618\n",
+      "Model Evaluations \t 49\n",
       "------------------------------------------------------\n",
       "Variable   \t    U_star \t       X_star \t     alpha\n",
-      "R          \t -0.965374 \t     1.855290 \t -0.372467\n",
-      "G          \t  0.277912 \t     1.027791 \t +0.107222\n",
-      "Q1         \t  2.304884 \t     1.508399 \t +0.889502\n",
-      "Q2         \t  0.627764 \t     1.187272 \t +0.241988\n",
+      "R          \t -2.022994 \t     1.894827 \t -0.937968\n",
+      "G          \t -0.683828 \t     1.019274 \t -0.317075\n",
+      "Q1         \t  0.192740 \t     1.386755 \t +0.089372\n",
+      "Q2         \t -0.233228 \t     1.888565 \t -0.108134\n",
       "cg         \t       --- \t     0.400000 \t       ---\n",
       "======================================================\n",
       "\n"
@@ -294,7 +341,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 10,
+   "execution_count": 12,
    "id": "279402ea-7a7f-4fe4-a196-066e297af632",
    "metadata": {},
    "outputs": [
@@ -302,9 +349,9 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "Q1Q2_max: β = 2.35\n",
-      "Q1_max: β = 2.48\n",
-      "Q2_max: β = 2.59\n"
+      "Q1Q2_max: β = 1.95\n",
+      "Q1_max: β = 2.06\n",
+      "Q2_max: β = 2.16\n"
      ]
     }
    ],

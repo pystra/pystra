@@ -522,7 +522,7 @@
 <h1>pystra.loadcomb.LoadCombination<a class="headerlink" href="#pystra-loadcomb-loadcombination" title="Permalink to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pystra.loadcomb.LoadCombination">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LoadCombination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lsf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict_dist_comb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_dist_resist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_dist_other</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict_comb_cases</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/loadcomb.html#LoadCombination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.loadcomb.LoadCombination" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LoadCombination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lsf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict_dist_comb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_dist_resist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_dist_other</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">corr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict_comb_cases</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/loadcomb.html#LoadCombination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.loadcomb.LoadCombination" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class for running load combination cases.</p>
 <dl class="py attribute">
@@ -532,6 +532,17 @@
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.loadcomb.LoadCombination.df_corr">
+<span class="sig-name descname"><span class="pre">df_corr</span></span><a class="headerlink" href="#pystra.loadcomb.LoadCombination.df_corr" title="Permalink to this definition">#</a></dt>
+<dd><p>DataFrame of user defined correlation (if specified).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
@@ -655,7 +666,11 @@
 pit distributions.</p></li>
 <li><p><strong>list_dist_resist</strong> (<em>List</em>) – List of resistance distribution.</p></li>
 <li><p><strong>list_dist_other</strong> (<em>List</em><em>, </em><em>optional</em>) – List of other remaining random variables.</p></li>
+<li><p><strong>corr</strong> (<em>DataFrame</em><em>, </em><em>optional</em>) – User-defined Dataframe containing correlations between random
+variables. Note: corr.index = corr.columns = [&lt;list-of-rvs&gt;]</p></li>
 <li><p><strong>list_const</strong> (<em>List</em><em>, </em><em>optional</em>) – List of LSF constants as Pystra Constants.</p></li>
+<li><p><strong>opt</strong> (<em>Object</em><em>, </em><em>optional</em>) – Pystra AnalysisOptions object to specify options for the
+reliability analysis.</p></li>
 <li><p><strong>dict_comb_cases</strong> (<em>Dictionary</em><em>, </em><em>optional</em>) – Dictionary containing the identifiers of load cases as keys and
 list of identifiers of max load effects as values, i.e.
 {&lt;load-case-name&gt;:[&lt;max-load-effects&gt;],}. By default, each combination
@@ -840,6 +855,15 @@ keyword arguments. The default is None.</p></li>
      <code class="docutils literal notranslate">
       <span class="pre">
        LoadCombination.lsf
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pystra.loadcomb.LoadCombination.df_corr">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       LoadCombination.df_corr
       </span>
      </code>
     </a>
