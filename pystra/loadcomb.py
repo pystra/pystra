@@ -69,7 +69,7 @@ class LoadCombination:
         list_const : List, optional
             List of LSF constants as Pystra Constants.
         opt : Object, optional
-            Pystra AnalysisOptions object to specify options for the 
+            Pystra AnalysisOptions object to specify options for the
             reliability analysis.
         dict_comb_cases : Dictionary, optional
             Dictionary containing the identifiers of load cases as keys and
@@ -238,11 +238,10 @@ class LoadCombination:
             dict_dist.update({loadc_name: dict_loadc})
         return dict_dist
 
-
-    def _get_corr_for_smodel(self, stochastic_model):
+    def _get_corr_for_stochastic_model(self, stochastic_model):
         """
         Get correlation data for stochastic model.
-        
+
         This function utilizes the input correlation data and re-creates
         the correlation matrix based on the sequence of random variables
         as per the stochastic model.
@@ -260,11 +259,10 @@ class LoadCombination:
 
         """
         sequence_rvs = list(stochastic_model.getVariables().keys())
-        dfcorr_tmp = self.df_corr.reindex(columns=sequence_rvs,
-                                          index=sequence_rvs)
+        dfcorr_tmp = self.df_corr.reindex(columns=sequence_rvs, index=sequence_rvs)
         corr = dfcorr_tmp.values
         return corr
-    
+
     def run_reliability_case(self, lcn=None, **kwargs):
         """
         Create and run reliability analysis using input LSF
@@ -302,10 +300,9 @@ class LoadCombination:
             else:
                 sm.addVariable(value)
         if self.df_corr is not None:
-            corr = self._get_corr_for_smodel(sm)
+            corr = self._get_corr_for_stochastic_model(sm)
             sm.setCorrelation(CorrelationMatrix(corr))
-        form = Form(sm, ls) if self.options is None else Form(sm, ls,
-                                                              self.options)
+        form = Form(sm, ls) if self.options is None else Form(sm, ls, self.options)
         form.run()
 
         return form
