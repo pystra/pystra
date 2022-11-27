@@ -451,7 +451,7 @@
 <span class="sd">        list_const : List, optional</span>
 <span class="sd">            List of LSF constants as Pystra Constants.</span>
 <span class="sd">        opt : Object, optional</span>
-<span class="sd">            Pystra AnalysisOptions object to specify options for the </span>
+<span class="sd">            Pystra AnalysisOptions object to specify options for the</span>
 <span class="sd">            reliability analysis.</span>
 <span class="sd">        dict_comb_cases : Dictionary, optional</span>
 <span class="sd">            Dictionary containing the identifiers of load cases as keys and</span>
@@ -620,11 +620,10 @@
             <span class="n">dict_dist</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">loadc_name</span><span class="p">:</span> <span class="n">dict_loadc</span><span class="p">})</span>
         <span class="k">return</span> <span class="n">dict_dist</span>
 
-
-    <span class="k">def</span> <span class="nf">_get_corr_for_smodel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stochastic_model</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get_corr_for_stochastic_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stochastic_model</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get correlation data for stochastic model.</span>
-<span class="sd">        </span>
+
 <span class="sd">        This function utilizes the input correlation data and re-creates</span>
 <span class="sd">        the correlation matrix based on the sequence of random variables</span>
 <span class="sd">        as per the stochastic model.</span>
@@ -642,11 +641,10 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sequence_rvs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">stochastic_model</span><span class="o">.</span><span class="n">getVariables</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-        <span class="n">dfcorr_tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_corr</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">sequence_rvs</span><span class="p">,</span>
-                                          <span class="n">index</span><span class="o">=</span><span class="n">sequence_rvs</span><span class="p">)</span>
+        <span class="n">dfcorr_tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_corr</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">sequence_rvs</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">sequence_rvs</span><span class="p">)</span>
         <span class="n">corr</span> <span class="o">=</span> <span class="n">dfcorr_tmp</span><span class="o">.</span><span class="n">values</span>
         <span class="k">return</span> <span class="n">corr</span>
-    
+
 <div class="viewcode-block" id="LoadCombination.run_reliability_case"><a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination.run_reliability_case">[docs]</a>    <span class="k">def</span> <span class="nf">run_reliability_case</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lcn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create and run reliability analysis using input LSF</span>
@@ -684,10 +682,9 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">sm</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_corr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">corr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_corr_for_smodel</span><span class="p">(</span><span class="n">sm</span><span class="p">)</span>
+            <span class="n">corr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_corr_for_stochastic_model</span><span class="p">(</span><span class="n">sm</span><span class="p">)</span>
             <span class="n">sm</span><span class="o">.</span><span class="n">setCorrelation</span><span class="p">(</span><span class="n">CorrelationMatrix</span><span class="p">(</span><span class="n">corr</span><span class="p">))</span>
-        <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">sm</span><span class="p">,</span> <span class="n">ls</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">Form</span><span class="p">(</span><span class="n">sm</span><span class="p">,</span> <span class="n">ls</span><span class="p">,</span>
-                                                              <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">sm</span><span class="p">,</span> <span class="n">ls</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">Form</span><span class="p">(</span><span class="n">sm</span><span class="p">,</span> <span class="n">ls</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
         <span class="n">form</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">form</span></div>
