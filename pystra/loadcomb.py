@@ -3,6 +3,7 @@
 from .model import LimitState
 from .model import StochasticModel
 from .form import Form
+from .correlation import CorrelationMatrix
 
 
 class LoadCombination:
@@ -12,6 +13,8 @@ class LoadCombination:
     ----------
     lsf : function
         Limit State Function
+    df_corr : DataFrame
+        DataFrame of user defined correlation (if specified).
     distributions_max : dict
         Dictionary of maximum distributions
     distributions_pit : dict
@@ -41,7 +44,9 @@ class LoadCombination:
         dict_dist_comb,
         list_dist_resist,
         list_dist_other=None,
+        corr=None,
         list_const=None,
+        opt=None,
         dict_comb_cases=None,
     ):
         """
@@ -58,8 +63,14 @@ class LoadCombination:
             List of resistance distribution.
         list_dist_other : List, optional
             List of other remaining random variables.
+        corr : DataFrame, optional
+            User-defined Dataframe containing correlations between random
+            variables. Note: corr.index = corr.columns = [<list-of-rvs>]
         list_const : List, optional
             List of LSF constants as Pystra Constants.
+        opt : Object, optional
+            Pystra AnalysisOptions object to specify options for the 
+            reliability analysis.
         dict_comb_cases : Dictionary, optional
             Dictionary containing the identifiers of load cases as keys and
             list of identifiers of max load effects as values, i.e.
@@ -90,6 +101,8 @@ class LoadCombination:
         self._check_input()
         self.num_comb = self._set_num_comb()
         self.dict_dist_comb = self._create_dict_dist_comb()
+        self.df_corr = corr
+        self.options = opt
         self.label_comb_cases = list(dict_comb_cases.keys())
         self.label_comb_vrs = list(dict_dist_comb.keys())
         self.label_resist = list(self.distributions_resistance.keys())
@@ -225,6 +238,33 @@ class LoadCombination:
             dict_dist.update({loadc_name: dict_loadc})
         return dict_dist
 
+
+    def _get_corr_for_smodel(self, stochastic_model):
+        """
+        Get correlation data for stochastic model.
+        
+        This function utilizes the input correlation data and re-creates
+        the correlation matrix based on the sequence of random variables
+        as per the stochastic model.
+
+        Parameters
+        ----------
+        stochastic_model : Object
+            Pystra StochasticModel object for the reliability analysis.
+
+        Returns
+        -------
+        corr : Numpy Array
+            Correlation matrix with variables sequenced as per the stochastic
+            model.
+
+        """
+        sequence_rvs = list(stochastic_model.getVariables().keys())
+        dfcorr_tmp = self.df_corr.reindex(columns=sequence_rvs,
+                                          index=sequence_rvs)
+        corr = dfcorr_tmp.values
+        return corr
+    
     def run_reliability_case(self, lcn=None, **kwargs):
         """
         Create and run reliability analysis using input LSF
@@ -261,7 +301,11 @@ class LoadCombination:
                 sm.addVariable(kwargs[key])
             else:
                 sm.addVariable(value)
-        form = Form(sm, ls)
+        if self.df_corr is not None:
+            corr = self._get_corr_for_smodel(sm)
+            sm.setCorrelation(CorrelationMatrix(corr))
+        form = Form(sm, ls) if self.options is None else Form(sm, ls,
+                                                              self.options)
         form.run()
 
         return form
