@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Example from the Tutorial &#8212; PySTRA 1.2.1 documentation</title>
+    <title>Introductory Tutorial &#8212; PySTRA 1.2.1 documentation</title>
   
   
   
@@ -44,7 +44,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="SciPy Distribution Example" href="ex_scipy_distributions.html" />
-    <link rel="prev" title="Introductory Turorial" href="intro.html" />
+    <link rel="prev" title="Tutorials" href="../tutorial.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
   </head>
@@ -366,8 +366,7 @@
   </p>
   <div class="bd-toc-item navbar-nav">
     <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="intro.html">Introductory Turorial</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Example from the Tutorial</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Introductory Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ex_scipy_distributions.html">SciPy Distribution Example</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ex_sensitivity.html">Sensitivity Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ex_ddm.html">Direct Differentiation Method</a></li>
@@ -664,113 +663,191 @@ div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
-<div class="section" id="Example-from-the-Tutorial">
-<h1>Example from the Tutorial<a class="headerlink" href="#Example-from-the-Tutorial" title="Permalink to this heading">#</a></h1>
-<p>This notebook executes the example from the Introductory Tutorial</p>
+<div class="section" id="Introductory-Tutorial">
+<h1>Introductory Tutorial<a class="headerlink" href="#Introductory-Tutorial" title="Permalink to this heading">#</a></h1>
+<p>This is a short introduction on how to use <code class="docutils literal notranslate"><span class="pre">pystra</span></code>. The tutorial above is also available on GitHub under <code class="docutils literal notranslate"><span class="pre">example.py</span></code>.</p>
+<div class="section" id="An-example-reliability-model">
+<h2>An example reliability model<a class="headerlink" href="#An-example-reliability-model" title="Permalink to this heading">#</a></h2>
+<p>Consider the following random variables:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+X_1 &amp;\sim \text{Logormal}(500,100)\\
+X_2 &amp;\sim \text{Normal}(2000,400) \label{random_variables}\tag{1}\\
+X_3 &amp;\sim \text{Uniform}(5,0.5)
+\end{align}\end{split}\]</div>
+<p>Additionally those variables are related to each other. Therefore the correlation matrix <span class="math notranslate nohighlight">\({\bf C}\)</span> is given:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+{\bf C} =
+\begin{pmatrix}
+1.0 &amp; 0.3 &amp; 0.2\\
+0.3 &amp; 1.0 &amp; 0.2 \label{correlation_matrix}\tag{2}\\
+0.2 &amp; 0.2 &amp; 1.0
+\end{pmatrix}
+\end{align}\end{split}\]</div>
+<p>Now, we like to compute the reliability index <span class="math notranslate nohighlight">\(\beta\)</span> and the failure probability <span class="math notranslate nohighlight">\(P_f\)</span>, by given limit state function <span class="math notranslate nohighlight">\(g(\gamma, X_1,X_2,X_3)\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[g(\gamma, X_1,X_2,X_3) = \gamma - \frac{X_2}{1000 \cdot X_3} -
+\left( \frac{X_1}{200 \cdot X_3} \right)^2
+\label{limit_state_function}\tag{3}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\gamma\)</span> is a real constant. For this example, let <span class="math notranslate nohighlight">\(\gamma = 1\)</span></p>
+</div>
+<div class="section" id="Establish-the-model">
+<h2>Establish the model<a class="headerlink" href="#Establish-the-model" title="Permalink to this heading">#</a></h2>
+<p>Before we start with the modeling, we have to import the <code class="docutils literal notranslate"><span class="pre">pystra</span></code> package and other relevant packages.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pystra as ra
+import numpy as np
+</pre></div>
+</div>
+</div>
+<p>Two ways to define the limit state function are available: + Direct in the <code class="docutils literal notranslate"><span class="pre">main</span></code> code, + as a separate <code class="docutils literal notranslate"><span class="pre">function</span></code>.</p>
+<p>In the first case the input will look like:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Define limit state function
+# - case 1: define directly
+limit_state = ra.LimitState(lambda g,X1,X2,X3: g - X2*(1000*X3)**(-1) - (X1*(200*X3)**(-1))**2)
+</pre></div>
+</div>
+</div>
+<p>and in the second case like this:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Define limit state function
+# - case 2: use predefined function
+def example_limitstatefunction(g, X1, X2, X3):
+    &quot;&quot;&quot;
+    example limit state function
+    &quot;&quot;&quot;
+    return g - X2 * (1000 * X3) ** (-1) - (X1 * (200 * X3) ** (-1)) ** 2
+
+limit_state = ra.LimitState(example_limitstatefunction)
+</pre></div>
+</div>
+</div>
+<p>Notice, here the function <code class="docutils literal notranslate"><span class="pre">example_limitstatefunction</span></code> has be defined in advance as a separate function. This case can be useful if the limit state function is quiet complex or need more then one line to define it.</p>
+<p>In the next step the stochastic model has to be initialized</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>stochastic_model = ra.StochasticModel()
+</pre></div>
+</div>
+</div>
+<p>and the random variables have to be assigned. To define the random variables from (<a class="reference external" href="#mjx-eqn-eq1">1</a>) we can use following syntax:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Define random variables
+stochastic_model.addVariable(ra.Lognormal(&quot;X1&quot;, 500, 100))
+stochastic_model.addVariable(ra.Normal(&quot;X2&quot;, 2000, 400))
+stochastic_model.addVariable(ra.Uniform(&quot;X3&quot;, 5, 0.5))
+</pre></div>
+</div>
+</div>
+<p>The first parameter is the name of the random variable. The name has to be a string and match the arguments in the limit state function, so the input looks like <code class="docutils literal notranslate"><span class="pre">&quot;X3&quot;</span></code>.</p>
+<p>By default, the next to values are the first and second moment of the distribution, here mean and standard deviation. If mean and standard deviation unknown but the distribution parameter known, then the <code class="docutils literal notranslate"><span class="pre">input_type</span></code> has to be changed.</p>
+<p>For example random variable <span class="math notranslate nohighlight">\(X_3\)</span> is uniform distributed. Above we assume that <span class="math notranslate nohighlight">\(X_3\)</span> is defined by mean and standard deviation. But we can describe the distribution with the parameter <span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(b\)</span>. In this case the code will look like:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>X3 = ra.Uniform(&#39;X3&#39;,4.133974596215562, 5.866025403784438, 1)
+</pre></div>
+</div>
+</div>
+<p>to get the same results as before. To see which parameters are needed and in which order the must insert, refer to the Distributions API.</p>
+<p>If the nominal value, bias, and coefficient of variation are instead known, then the random variable can be instantiated following this example:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>X2 = ra.Normal(&#39;X2&#39;,*500*1.00*np.array([1, 0.2]))
+</pre></div>
+</div>
+</div>
+<p>where nominal value is 500, bias is 1.00, and coefficient of variation is 0.2. Notice the initial * character is used to dereference the output array.</p>
+<p>We will also define our constant using <code class="docutils literal notranslate"><span class="pre">Constant</span></code>:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Define constants
+stochastic_model.addVariable( ra.Constant(&#39;g&#39;,1) )
+</pre></div>
+</div>
+</div>
+<p>To add the correlation matrix to our model:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Define Correlation Matrix
+stochastic_model.setCorrelation( ra.CorrelationMatrix([[1.0, 0.3, 0.2],
+                                                       [0.3, 1.0, 0.2],
+                                                       [0.2, 0.2, 1.0]]) )
+</pre></div>
+</div>
+</div>
+<p>If the variables uncorrelated, you don’t have to add a correlation matrix to the model.</p>
+<p>At this stage our model is complete defined and we can start the analysis.</p>
+</div>
+<div class="section" id="Reliability-Analysis">
+<h2>Reliability Analysis<a class="headerlink" href="#Reliability-Analysis" title="Permalink to this heading">#</a></h2>
+<p>To change some options, a object must be initialized which stores the customized options.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>options = ra.AnalysisOptions()
+options.setPrintOutput(False)
+</pre></div>
+</div>
+</div>
+<p>To store the results from the analysis an object must be initialized ### FORM Analysis Now the code can be compiled and the FORM analysis will be preformed. In this example we will get following results:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># initialize analysis obejct
+Analysis = ra.Form(
+    analysis_options=options,
+    stochastic_model=stochastic_model,
+    limit_state=limit_state,
+)
+
+Analysis.run() # run analysis
+</pre></div>
+</div>
+</div>
+<p>If we don’t like to see the results in the terminal the option <code class="docutils literal notranslate"><span class="pre">setPrintOutput(False)</span></code> has set to be <code class="docutils literal notranslate"><span class="pre">False</span></code>. There are also some other options which can be modified.</p>
+<p>To use the results for further calculations, plots etc. the results can get by some getter methods</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pystra</span> <span class="k">as</span> <span class="nn">pr</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Some single results:
+beta = Analysis.getBeta()
+failure = Analysis.getFailure()
 </pre></div>
 </div>
 </div>
-<div class="section" id="Establish-the-model">
-<h2>Establish the model<a class="headerlink" href="#Establish-the-model" title="Permalink to this heading">#</a></h2>
-<div class="nbinput nblast docutils container">
+<p>There is also the possibility to output more detailed results using <code class="docutils literal notranslate"><span class="pre">showDetailedOutput()</span></code>:</p>
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">example_limitstatefunction</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">,</span> <span class="n">X3</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    example limit state function</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">r</span> <span class="o">-</span> <span class="n">X2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1000</span> <span class="o">*</span> <span class="n">X3</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">X1</span> <span class="o">*</span> <span class="p">(</span><span class="mi">200</span> <span class="o">*</span> <span class="n">X3</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span>
-</pre></div>
-</div>
-</div>
-<p>Define limit state function</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">limit_state</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span><span class="n">example_limitstatefunction</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<p>Set some options - here we suppress the console output</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">options</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">AnalysisOptions</span><span class="p">()</span>
-<span class="n">options</span><span class="o">.</span><span class="n">setPrintOutput</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<p>Create the stochamstic model object</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">stochastic_model</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<p>Define and add random variables to the stochastic model object</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">stochastic_model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Lognormal</span><span class="p">(</span><span class="s2">&quot;X1&quot;</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
-<span class="n">stochastic_model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;X2&quot;</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">400</span><span class="p">))</span>
-<span class="n">stochastic_model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s2">&quot;X3&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<p>Define constants that can be part of the stochastic model for ease of argument passing</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">stochastic_model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<p>If the random variables are correlated, then define a correlation matrix, otherwise no correlatin matrix is needed</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">stochastic_model</span><span class="o">.</span><span class="n">setCorrelation</span><span class="p">(</span>
-    <span class="n">pr</span><span class="o">.</span><span class="n">CorrelationMatrix</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]])</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="FORM-Analysis">
-<h2>FORM Analysis<a class="headerlink" href="#FORM-Analysis" title="Permalink to this heading">#</a></h2>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">form</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">Form</span><span class="p">(</span>
-    <span class="n">analysis_options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
-    <span class="n">stochastic_model</span><span class="o">=</span><span class="n">stochastic_model</span><span class="p">,</span>
-    <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">form</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<p>Show detailed output</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">form</span><span class="o">.</span><span class="n">showDetailedOutput</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>Analysis.showDetailedOutput()
 </pre></div>
 </div>
 </div>
@@ -791,54 +868,38 @@ Variable            U_star             X_star        alpha
 X1                1.278045         631.504135    +0.728414
 X2                0.407819        2310.352495    +0.232354
 X3               -1.129920           4.517374    -0.644534
-r                      ---           1.000000          ---
+g                      ---           1.000000          ---
 ======================================================
 
 </pre></div></div>
-</div>
 </div>
 <div class="section" id="SORM-Analysis">
-<h2>SORM Analysis<a class="headerlink" href="#SORM-Analysis" title="Permalink to this heading">#</a></h2>
-<p>For efficiency, we can pass the FORM results object if it exists, otherwise it will be called automatically.</p>
+<h3>SORM Analysis<a class="headerlink" href="#SORM-Analysis" title="Permalink to this heading">#</a></h3>
+</div>
+</div>
+<div class="section" id="id1">
+<h2>SORM Analysis<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
+<p>A Second-Order Reliability Method (SORM) can also be performed, passing in the results of a FORM analysis object if it exists. For efficiency, we can pass the FORM results object if it exists, otherwise it will be called automatically.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sorm = ra.Sorm(
+    analysis_options=options,
+    stochastic_model=stochastic_model,
+    limit_state=limit_state,
+    form=Analysis,
+)
+sorm.run()
+</pre></div>
+</div>
+</div>
+<p>Similar to FORM, we can also get more detailed output for diagnostics:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sorm</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">Sorm</span><span class="p">(</span>
-    <span class="n">analysis_options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
-    <span class="n">stochastic_model</span><span class="o">=</span><span class="n">stochastic_model</span><span class="p">,</span>
-    <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
-    <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">sorm</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-
-======================================================
-
-RESULTS FROM RUNNING SECOND ORDER RELIABILITY METHOD
-
-Generalized reliability index:  1.848997968430195
-Probability of failure:         0.03222905303518171
-
-Curavture 1: -0.0414313089629377
-Curavture 2: 0.36356407339249475
-======================================================
-
-</pre></div></div>
-</div>
-<p>Detailed output</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sorm</span><span class="o">.</span><span class="n">showDetailedOutput</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sorm.showDetailedOutput()
 </pre></div>
 </div>
 </div>
@@ -852,84 +913,84 @@ Curavture 2: 0.36356407339249475
 FORM/SORM
 ======================================================
 Pf FORM                          3.9717297753e-02
-Pf SORM Breitung                 3.2229053035e-02
-Pf SORM Breitung HR      3.1158626160e-02
+Pf SORM Breitung                 3.2229053013e-02
+Pf SORM Breitung HR      3.1158626135e-02
 Beta_HL                          1.7539761407
-Beta_G Breitung                  1.8489979684
-Beta_G Breitung HR               1.8640317035
+Beta_G Breitung                  1.8489979687
+Beta_G Breitung HR               1.8640317038
 Model Evaluations                180
 ------------------------------------------------------
-Curvature 1: -0.0414313089629377
-Curvature 2: 0.36356407339249475
+Curvature 1: -0.04143130874014485
+Curvature 2: 0.36356407428350895
 ------------------------------------------------------
 Variable            U_star             X_star        alpha
 X1                1.278045         631.504135    +0.728414
 X2                0.407819        2310.352495    +0.232354
 X3               -1.129920           4.517374    -0.644534
-r                      ---           1.000000          ---
+g                      ---           1.000000          ---
 ======================================================
 
 </pre></div></div>
 </div>
-</div>
+<p>in which HR refers to the Hohenbichler-Rackwitz modification to Breitung’s formula.</p>
 <div class="section" id="Distribution-Analysis">
-<h2>Distribution Analysis<a class="headerlink" href="#Distribution-Analysis" title="Permalink to this heading">#</a></h2>
+<h3>Distribution Analysis<a class="headerlink" href="#Distribution-Analysis" title="Permalink to this heading">#</a></h3>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">da</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">DistributionAnalysis</span><span class="p">(</span>
-    <span class="n">analysis_options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
-    <span class="n">stochastic_model</span><span class="o">=</span><span class="n">stochastic_model</span><span class="p">,</span>
-    <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">da</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>da = ra.DistributionAnalysis(
+    analysis_options=options,
+    stochastic_model=stochastic_model,
+    limit_state=limit_state,
+)
+da.run()
 </pre></div>
 </div>
 </div>
 </div>
 <div class="section" id="Crude-Monte-Carlo-Simulation">
-<h2>Crude Monte Carlo Simulation<a class="headerlink" href="#Crude-Monte-Carlo-Simulation" title="Permalink to this heading">#</a></h2>
+<h3>Crude Monte Carlo Simulation<a class="headerlink" href="#Crude-Monte-Carlo-Simulation" title="Permalink to this heading">#</a></h3>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cmc</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">CrudeMonteCarlo</span><span class="p">(</span>
-    <span class="n">analysis_options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
-    <span class="n">stochastic_model</span><span class="o">=</span><span class="n">stochastic_model</span><span class="p">,</span>
-    <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">cmc</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cmc = ra.CrudeMonteCarlo(
+    analysis_options=options,
+    stochastic_model=stochastic_model,
+    limit_state=limit_state,
+)
+cmc.run()
 </pre></div>
 </div>
 </div>
 </div>
 <div class="section" id="Importance-Sampling">
-<h2>Importance Sampling<a class="headerlink" href="#Importance-Sampling" title="Permalink to this heading">#</a></h2>
+<h3>Importance Sampling<a class="headerlink" href="#Importance-Sampling" title="Permalink to this heading">#</a></h3>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ismc</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">ImportanceSampling</span><span class="p">(</span>
-    <span class="n">analysis_options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
-    <span class="n">stochastic_model</span><span class="o">=</span><span class="n">stochastic_model</span><span class="p">,</span>
-    <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">ismc</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ismc = ra.ImportanceSampling(
+    analysis_options=options,
+    stochastic_model=stochastic_model,
+    limit_state=limit_state,
+)
+ismc.run()
 </pre></div>
 </div>
 </div>
 </div>
 <div class="section" id="Results">
-<h2>Results<a class="headerlink" href="#Results" title="Permalink to this heading">#</a></h2>
+<h3>Results<a class="headerlink" href="#Results" title="Permalink to this heading">#</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">beta</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">getBeta</span><span class="p">()</span>
-<span class="n">failure</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">getFailure</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>beta = Analysis.getBeta()
+failure = Analysis.getFailure()
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Beta is </span><span class="si">{</span><span class="n">beta</span><span class="si">}</span><span class="s2">, corresponding to a failure probability of </span><span class="si">{</span><span class="n">failure</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+print(f&quot;Beta is {beta}, corresponding to a failure probability of {failure}&quot;)
 </pre></div>
 </div>
 </div>
@@ -938,8 +999,9 @@ r                      ---           1.000000          ---
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Beta is 1.7539761407409615, corresponding to a failure probability of [0.0397173]
+Beta is 1.7539761407409655, corresponding to a failure probability of [0.0397173]
 </pre></div></div>
+</div>
 </div>
 </div>
 </div>
@@ -952,11 +1014,11 @@ Beta is 1.7539761407409615, corresponding to a failure probability of [0.0397173
             <footer class="bd-footer-article">
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="intro.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="../tutorial.html" title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">Introductory Turorial</p>
+          <p class="prev-next-title">Tutorials</p>
       </div>
   </a>
   <a class='right-next' id="next-link" href="ex_scipy_distributions.html" title="next page">
@@ -983,39 +1045,53 @@ Beta is 1.7539761407409615, corresponding to a failure probability of [0.0397173
 <nav id="bd-toc-nav" class="page-toc">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#An-example-reliability-model">
+   An example reliability model
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#Establish-the-model">
    Establish the model
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#FORM-Analysis">
-   FORM Analysis
+  <a class="reference internal nav-link" href="#Reliability-Analysis">
+   Reliability Analysis
   </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#SORM-Analysis">
+     SORM Analysis
+    </a>
+   </li>
+  </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#SORM-Analysis">
+  <a class="reference internal nav-link" href="#id1">
    SORM Analysis
   </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#Distribution-Analysis">
-   Distribution Analysis
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#Crude-Monte-Carlo-Simulation">
-   Crude Monte Carlo Simulation
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#Importance-Sampling">
-   Importance Sampling
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#Results">
-   Results
-  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#Distribution-Analysis">
+     Distribution Analysis
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#Crude-Monte-Carlo-Simulation">
+     Crude Monte Carlo Simulation
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#Importance-Sampling">
+     Importance Sampling
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#Results">
+     Results
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 

@@ -65,8 +65,8 @@ Develop and create pull-request (PR)
 
 5. [If applicable] Create new example notebook.
     
-    * Store notebook in ``./docs/notebooks/<tutorial.ipynb>``.
-    * Index notebook in ``./docs/tutorial.rst``
+    * Store notebook in ``./docs/source/notebooks/<tutorial.ipynb>``.
+    * Index notebook in ``./docs/source/tutorial.rst``
 
 6. [If applicable] Add new dependencies in ``./setup.cfg``
 

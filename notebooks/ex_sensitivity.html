@@ -366,8 +366,7 @@
   </p>
   <div class="bd-toc-item navbar-nav">
     <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="intro.html">Introductory Turorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ex_intro.html">Example from the Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_intro.html">Introductory Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ex_scipy_distributions.html">SciPy Distribution Example</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Sensitivity Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ex_ddm.html">Direct Differentiation Method</a></li>
@@ -680,7 +679,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pystra</span> <span class="k">as</span> <span class="nn">pr</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pystra as pr
 </pre></div>
 </div>
 </div>
@@ -689,8 +688,8 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">lsf</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">S</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">R</span> <span class="o">-</span> <span class="n">S</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def lsf(R, S):
+    return R - S
 </pre></div>
 </div>
 </div>
@@ -699,12 +698,12 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">limit_state</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span><span class="n">lsf</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>limit_state = pr.LimitState(lsf)
 
-<span class="n">model</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
-<span class="n">model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Lognormal</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
-<span class="n">model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Lognormal</span><span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-<span class="n">model</span><span class="o">.</span><span class="n">setCorrelation</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">CorrelationMatrix</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]]))</span>
+model = pr.StochasticModel()
+model.addVariable(pr.Lognormal(&quot;R&quot;, 5, 5))
+model.addVariable(pr.Lognormal(&quot;S&quot;, 1, 1))
+model.setCorrelation(pr.CorrelationMatrix([[1.0, 0.5], [0.5, 1.0]]))
 </pre></div>
 </div>
 </div>
@@ -713,8 +712,8 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">options</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">AnalysisOptions</span><span class="p">()</span>
-<span class="n">options</span><span class="o">.</span><span class="n">setPrintOutput</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>options = pr.AnalysisOptions()
+options.setPrintOutput(False)
 </pre></div>
 </div>
 </div>
@@ -723,9 +722,9 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">form</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">Form</span><span class="p">(</span><span class="n">stochastic_model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span> <span class="n">analysis_options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
-<span class="n">form</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">form</span><span class="o">.</span><span class="n">showDetailedOutput</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>form = pr.Form(stochastic_model=model, limit_state=limit_state, analysis_options=options)
+form.run()
+form.showDetailedOutput()
 </pre></div>
 </div>
 </div>
@@ -754,8 +753,8 @@ S                 1.888784           1.580984    +0.890214
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sens</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">SensitivityAnalysis</span><span class="p">(</span><span class="n">stochastic_model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span> <span class="n">analysis_options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
-<span class="n">results</span> <span class="o">=</span> <span class="n">sens</span><span class="o">.</span><span class="n">run_form</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sens = pr.SensitivityAnalysis(stochastic_model=model, limit_state=limit_state, analysis_options=options)
+results = sens.run_form()
 </pre></div>
 </div>
 </div>
@@ -763,7 +762,7 @@ S                 1.888784           1.580984    +0.890214
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(results)
 </pre></div>
 </div>
 </div>
