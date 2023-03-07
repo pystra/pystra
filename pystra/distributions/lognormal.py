@@ -23,7 +23,6 @@ class Lognormal(Distribution):
     """
 
     def __init__(self, name, mean, stdv, input_type=None, startpoint=None):
-
         if input_type is None:
             # infer parameters from the moments
             self._update_params(mean, stdv)

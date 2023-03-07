@@ -20,7 +20,6 @@ class TypeIIIsmallestValue(Distribution):
     """
 
     def __init__(self, name, mean, stdv, epsilon=0, input_type=None, startpoint=None):
-
         # This distribution is the same as the Weibull - keep for backwards compat
         dist = Weibull(name, mean, stdv, epsilon, input_type, startpoint)
         self.dist_obj = dist.dist_obj

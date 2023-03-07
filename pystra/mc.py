@@ -36,7 +36,6 @@ class MonteCarlo(AnalysisObject):
     """
 
     def __init__(self, analysis_options=None, limit_state=None, stochastic_model=None):
-
         super().__init__(
             analysis_options=analysis_options,
             limit_state=limit_state,
@@ -251,7 +250,6 @@ class CrudeMonteCarlo(MonteCarlo):
     def __init__(
         self, analysis_options=None, limit_state=None, stochastic_model=None, point=None
     ):
-
         super().__init__(
             analysis_options=analysis_options,
             limit_state=limit_state,
@@ -260,7 +258,6 @@ class CrudeMonteCarlo(MonteCarlo):
         self.point = point
 
     def run(self):
-
         self.results_valid = True
 
         self.init_run()
@@ -444,7 +441,6 @@ class ImportanceSampling(CrudeMonteCarlo):
         super().__init__(analysis_options, limit_state, stochastic_model, u)
 
     def run(self):
-
         self.results_valid = True
 
         self.init_run()
@@ -490,11 +486,9 @@ class DistributionAnalysis(MonteCarlo):
     """
 
     def __init__(self, analysis_options=None, limit_state=None, stochastic_model=None):
-
         super().__init__(analysis_options, limit_state, stochastic_model)
 
     def run(self):
-
         self.results_valid = True
 
         self.init_run()

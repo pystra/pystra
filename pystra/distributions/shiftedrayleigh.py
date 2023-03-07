@@ -19,7 +19,6 @@ class ShiftedRayleigh(Distribution):
     """
 
     def __init__(self, name, mean, stdv, input_type=None, startpoint=None):
-
         if input_type is None:
             a = stdv / ((2 - np.pi * 0.5) ** 0.5)
             x_zero = mean - stdv * (np.pi / (4 - np.pi)) ** 0.5

@@ -18,7 +18,6 @@ class TypeIlargestValue(Distribution):
     """
 
     def __init__(self, name, mean, stdv, input_type=None, startpoint=None):
-
         # This distribution is the same as the Gumbel - keep for backwards compat
         dist = Gumbel(name, mean, stdv, input_type, startpoint)
         self.dist_obj = dist.dist_obj

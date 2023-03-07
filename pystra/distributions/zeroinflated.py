@@ -24,7 +24,6 @@ class ZeroInflated(Distribution):
     """
 
     def __init__(self, name, dist, p, input_type=None, startpoint=None):
-
         if not isinstance(dist, Distribution):
             raise Exception(
                 f"ZeroInflated distribution requires input of type {type(Distribution)}"

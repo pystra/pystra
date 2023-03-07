@@ -21,7 +21,6 @@ class Beta(Distribution):
     """
 
     def __init__(self, name, mean, stdv, a=0, b=1, input_type=None, startpoint=None):
-
         if input_type is None:
             a = a
             b = b

@@ -20,7 +20,6 @@ class TypeIIlargestValue(Distribution):
     """
 
     def __init__(self, name, mean, stdv, input_type=None, startpoint=None):
-
         if input_type is None:
             parameter_guess = [2.000001]
             par = opt.fsolve(

@@ -37,7 +37,6 @@ class Form(AnalysisObject):
     """
 
     def __init__(self, stochastic_model=None, limit_state=None, analysis_options=None):
-
         super().__init__(
             stochastic_model=stochastic_model,
             limit_state=limit_state,

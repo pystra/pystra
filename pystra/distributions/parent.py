@@ -26,7 +26,6 @@ class MaxParent(Distribution):
     """
 
     def __init__(self, name, max_dist, N, input_type=None, startpoint=None):
-
         if not isinstance(max_dist, Distribution):
             raise Exception(
                 f"MaxParent distribution of maximum requires input of type {type(Distribution)}"
