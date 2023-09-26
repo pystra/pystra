@@ -807,6 +807,10 @@ class Calibration:
 
     def calc_epgS_mat(self, dfgammanom):
         """Get LHS for matrix estimation method, :math:`\\gamma_j~S_j`.
+        The LHS is evaluated by evaluating the LSF with appropriate random
+        variables to account for any constant multipliers. The implementation
+        works for both, linear and non-linear LSFs. For more algorithmic
+        details, ref to Appendix A, Caprani and Khan, Structural Safety, 2023.
 
         Parameters
         ----------
@@ -825,11 +829,11 @@ class Calibration:
         epgS_mat = np.zeros((len(dfgammanom.index), len(self.label_comb_vrs)))
         idx = 0
         for comb in dfgammanom.index:
-            # Get RVs except the other combination variable(s)
+            # Get load comb RV with other RVs
             s_label = self.lc_obj.dict_comb_cases[comb]
-            list_others = list(set(self.label_S) - set(s_label))
-            # Pass RVs except the other combination variable(s) to the LSF
-            dfXstar_dict_comb = dfgammanom.loc[[comb], list_others].to_dict("records")[
+            rvs_for_lhs = list(set(self.label_other) | set(s_label))
+            # Pass load comb RV with other RVs to the LSF
+            dfXstar_dict_comb = dfgammanom.loc[[comb], rvs_for_lhs].to_dict("records")[
                 0
             ]
             if len(self.label_other) > 0:
@@ -838,7 +842,7 @@ class Calibration:
                 )[0]
             else:
                 dfXstar_dict_other = {}
-            epgS_mat[idx] = self.lc_obj.eval_lsf_kwargs(
+            epgS_mat[:, idx] = self.lc_obj.eval_lsf_kwargs(
                 **dfXstar_dict_comb
             ) - self.lc_obj.eval_lsf_kwargs(**dfXstar_dict_other)
             idx += 1
