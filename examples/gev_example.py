@@ -30,6 +30,7 @@ model.addVariable(X2)
 model.addVariable(ra.Constant("C", 50))
 
 form = ra.Form(stochastic_model=model, limit_state=limit_state)
+form.run()
 form.showDetailedOutput()
 
 sorm = ra.Sorm(stochastic_model=model, limit_state=limit_state, form=form)
