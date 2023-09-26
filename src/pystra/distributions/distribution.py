@@ -163,20 +163,25 @@ class Distribution:
         samples = self.ppf(u)
         return samples
 
-    def plot(self, ax=None):
+    def plot(self, ax=None, **kwargs):
         """
         Plots the PDF of the distribution
         """
         # auto-range
         samples = self.sample()
         x = np.linspace(np.min(samples), np.max(samples), 100)
-        axs = ax
+
+        show = False
         if ax is None:
-            _, axs = plt.subplots()
-        axs.plot(x, self.pdf(x))
-        axs.set_title(self.name)
-        if ax is None:
+            show = True
+            _, ax = plt.subplots()
+
+        ax.plot(x, self.pdf(x), label=self.name, **kwargs)
+        ax.legend()
+
+        if show:
             plt.show()
+
         return ax
 
     # The following must be overidden in derived classes that are not based on a
