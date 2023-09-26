@@ -20,7 +20,6 @@ class CorrelationMatrix(object):
     """
 
     def __init__(self, matrix=None):
-
         self.matrix = matrix
         self.mu = None
         self.sigma = None
@@ -66,7 +65,6 @@ def computeModifiedCorrelationMatrix(stochastic_model):
         for j in range(i):
             rho = R[i][j]
             if rho != 0 or flag_sens:
-
                 margi = marg[i]
                 margj = marg[j]
 

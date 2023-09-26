@@ -19,7 +19,6 @@ class ScipyDist(Distribution):
     """
 
     def __init__(self, name, dist_obj, startpoint=None):
-
         if not isinstance(dist_obj, rv_frozen):
             raise Exception(
                 f"ScipyDist {name} requires a frozen Scipy distribution object"

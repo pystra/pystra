@@ -71,7 +71,6 @@ def example_limitstatefunction(X1, X2, X3):
 ############################################################################
 # Define a main() function.
 def main():
-
     # Define limit state function  # - case 2: use predefined function
     limit_state = LimitState(example_limitstatefunction)
 

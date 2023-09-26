@@ -19,7 +19,6 @@ class Gumbel(Distribution):
     """
 
     def __init__(self, name, mean, stdv, input_type=None, startpoint=None):
-
         if input_type is None:
             mu = mean - 0.5772156649 * stdv * np.sqrt(6) / np.pi
             beta = np.pi / (stdv * np.sqrt(6))

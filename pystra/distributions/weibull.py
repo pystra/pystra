@@ -20,7 +20,6 @@ class Weibull(Distribution):
     """
 
     def __init__(self, name, mean, stdv, epsilon=0, input_type=None, startpoint=None):
-
         if input_type is None:
             mean = mean
             stdv = stdv

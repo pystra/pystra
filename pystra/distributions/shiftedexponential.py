@@ -18,7 +18,6 @@ class ShiftedExponential(Distribution):
     """
 
     def __init__(self, name, mean, stdv, input_type=None, startpoint=None):
-
         if input_type is None:
             x_zero = mean - stdv
             lamb = 1 / stdv

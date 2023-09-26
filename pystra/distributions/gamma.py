@@ -18,7 +18,6 @@ class Gamma(Distribution):
     """
 
     def __init__(self, name, mean, stdv, input_type=None, startpoint=None):
-
         if input_type is None:
             beta = mean / (stdv**2)
             alpha = mean**2 / (stdv**2)

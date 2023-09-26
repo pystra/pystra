@@ -66,7 +66,6 @@ class AnalysisOptions:
     """
 
     def __init__(self):
-
         self.transf_type = 3
         """Type of joint distribution
 
