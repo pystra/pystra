@@ -61,7 +61,6 @@ def setup1():
     Rk = np.array([Rdist.ppf(0.05)])
     rvs_all = ["R", "G", "Q1", "Q2", "Q3"]
     dict_nom = dict(zip(rvs_all, np.concatenate([Rk, Gk, Qk])))
-
     betaT = 4.3
     return lc, dict_nom, betaT
 
@@ -350,12 +349,12 @@ def test_calibration_mat_opt_nonlinear():
         index=["Q1_max", "Q2_max"],
     )
     dfpsi = pd.DataFrame(
-        data=[[1.0, 1.0, 0.5351], [1.0, 0.5667, 1.0]],
+        data=[[1.0, 1.0, 0.5367], [1.0, 0.5651, 1.0]],
         columns=["wS", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
     )
-    vect_design_z2 = np.array([1.2971, 1.1553])
-    vect_design_beta2 = np.array([3.7001, 4.2834])
+    vect_design_z2 = np.array([1.2980, 1.1537])
+    vect_design_beta2 = np.array([3.7037, 4.2869])
     # validate results
     assert pytest.approx(calib2.dfXstarcal, abs=1e-4) == dfXst
     assert pytest.approx(calib2.df_phi, abs=1e-4) == dfphi
@@ -402,12 +401,12 @@ def test_calibration_mat_alpha_nonlinear():
         index=["Q1_max", "Q2_max"],
     )
     dfpsi = pd.DataFrame(
-        data=[[1.0, 1.0, 0.5351], [1.0, 0.5667, 1.0]],
+        data=[[1.0, 1.0, 0.5367], [1.0, 0.5651, 1.0]],
         columns=["wS", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
     )
-    vect_design_z3 = np.array([1.2971, 1.1553])
-    vect_design_beta3 = np.array([3.7001, 4.28340])
+    vect_design_z3 = np.array([1.2980, 1.1537])
+    vect_design_beta3 = np.array([3.7037, 4.2869])
     # validate results
     assert pytest.approx(calib3.dfXstarcal, abs=1e-4) == dfXst
     assert pytest.approx(calib3.df_phi, abs=1e-4) == dfphi
