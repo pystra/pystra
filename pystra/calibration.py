@@ -945,12 +945,26 @@ class Calibration:
         array_z = np.array([self.calc_design_param_Xst(xx) for xx in list_cols])
         return array_z
 
-    def print_detailed_output(self):
+    def print_detailed_output(self, precision=2):
+        """
+        Print detailed outputs for Pystra Calibration, including calculations
+        from intermediate steps.
+
+        Parameters
+        ----------
+        precision : float, optional
+            Decimal precision for roundingo off output. The default is 2.
+
+        Returns
+        -------
+        None.
+
+        """
         n = 54
         print("\n")
         print("=" * n)
-        print("X* = \n", self.dfXstarcal.round(2))
-        print("\nphi = ", "\n", self.df_phi.round(2))
-        print("\ngamma =", "\n", self.df_gamma.round(2))
-        print("\npsi = ", "\n", self.df_psi.round(2))
+        print("X* = \n", self.dfXstarcal.round(precision))
+        print("\nphi = ", "\n", self.df_phi.round(precision))
+        print("\ngamma =", "\n", self.df_gamma.round(precision))
+        print("\npsi = ", "\n", self.df_psi.round(precision))
         print("=" * n)
