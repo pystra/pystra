@@ -18,7 +18,6 @@ class ChiSquare(Distribution):
     """
 
     def __init__(self, name, mean, stdv=None, input_type=None, startpoint=None):
-
         if input_type is None:
             lamb = 0.5
             mean_test = lamb * stdv**2

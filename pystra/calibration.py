@@ -531,7 +531,7 @@ class Calibration:
         np.fill_diagonal(df_psi_max.values, 0.0)
         df_psi_max = df_psi_max.clip(df_psi_max.max(), axis=1)
         np.fill_diagonal(df_psi_max.values, 1.0)
-        if len(self.label_other)>0:
+        if len(self.label_other) > 0:
             df_psi_max.loc[:, self.label_other] = dfpsi[self.label_other]
         return df_psi_max
 
@@ -934,9 +934,7 @@ class Calibration:
         df_phi = self.get_phi_min(self.df_phi) if min_phi else self.df_phi
         df_psi = self.get_psi_max(self.df_psi) if max_psi else self.df_psi
         df_gamma = self.df_gamma.max()
-        df_pgRS.loc[:, self.label_S] = (
-            df_pgRS[self.label_S] * df_gamma * df_psi
-        )
+        df_pgRS.loc[:, self.label_S] = df_pgRS[self.label_S] * df_gamma * df_psi
         df_pgRS.loc[:, self.label_R] = df_pgRS[self.label_R] * df_phi
         return df_pgRS
 

@@ -62,7 +62,6 @@ def setup(diff_mode):
 
 
 def test_ddm_form():
-
     options, stochastic_model, limit_state = setup("ffd")
     form_ffd = ra.Form(
         analysis_options=options,
