@@ -509,7 +509,7 @@ class Calibration:
             self.dfXstarcal, print_output=self.print_output
         )
         df_psi = self.get_psi_max(df_psi) if set_max else df_psi
-        df_phi = self.get_phi_max(df_phi) if set_max else df_phi
+        df_phi = self.get_phi_min(df_phi) if set_max else df_phi
         return df_phi, df_gamma, df_psi
 
     def get_psi_max(self, dfpsi):
@@ -527,9 +527,12 @@ class Calibration:
             Dataframe of :math:`\\psi` corresponding to maximum of each load effect.
 
         """
-        df_psi_max = dfpsi.copy()
+        df_psi_max = dfpsi[self.label_comb_vrs].copy()
         np.fill_diagonal(df_psi_max.values, 0.0)
         df_psi_max = df_psi_max.clip(df_psi_max.max(), axis=1)
+        np.fill_diagonal(df_psi_max.values, 1.0)
+        if len(self.label_other)>0:
+            df_psi_max.loc[:, self.label_other] = dfpsi[self.label_other]
         return df_psi_max
 
     def _calibrate_design_param(self):
@@ -594,7 +597,8 @@ class Calibration:
         df_phi, df_gamma, df_psi = self.calc_pg_matrix(
             self.dfXstarcal, print_output=self.print_output
         )
-        df_phi = self.get_phi_max(df_phi) if set_max else df_phi
+        df_phi = self.get_phi_min(df_phi) if set_max else df_phi
+        df_psi = self.get_psi_max(df_psi) if set_max else df_psi
         return df_phi, df_gamma, df_psi
 
     def calc_pg_coeff(self, dfXst, print_output=False):
@@ -691,9 +695,9 @@ class Calibration:
         df_phi = dfXstnom[self.label_R]
         return df_phi
 
-    def get_phi_max(self, dfphi_):
+    def get_phi_min(self, dfphi_):
         dfphi = dfphi_.copy()
-        dfphi = dfphi.clip(dfphi.max(), axis=1)
+        dfphi = dfphi.clip(upper=dfphi.min(), axis=1)
         return dfphi
 
     def calc_gamma(self, dfXstnom):
@@ -914,7 +918,7 @@ class Calibration:
             print(f"\n Design reliabilities = {arr_beta}")
         return arr_beta
 
-    def calc_df_pgRS(self):
+    def calc_df_pgRS(self, min_phi, max_psi):
         """
         Calculate the DataFrame of all resistance and load variables nominal
         values multiplied by their respective factors, :math:`\\phi`, :math:`\\gamma`,
@@ -927,13 +931,16 @@ class Calibration:
 
         """
         df_pgRS = self.df_nom.copy()
+        df_phi = self.get_phi_min(self.df_phi) if min_phi else self.df_phi
+        df_psi = self.get_psi_max(self.df_psi) if max_psi else self.df_psi
+        df_gamma = self.df_gamma.max()
         df_pgRS.loc[:, self.label_S] = (
-            df_pgRS[self.label_S] * self.df_gamma * self.df_psi
+            df_pgRS[self.label_S] * df_gamma * df_psi
         )
-        df_pgRS.loc[:, self.label_R] = df_pgRS[self.label_R] * self.df_phi
+        df_pgRS.loc[:, self.label_R] = df_pgRS[self.label_R] * df_phi
         return df_pgRS
 
-    def get_design_param_factor(self):
+    def get_design_param_factor(self, min_phi=True, max_psi=True):
         """
         Estimate the resistance design parameter for a given set of safety and
         combination factors, and nominals.
@@ -944,7 +951,7 @@ class Calibration:
             Array containing design parameters for all load combination cases.
 
         """
-        df_pgRS = self.calc_df_pgRS()
+        df_pgRS = self.calc_df_pgRS(min_phi, max_psi)
         list_cols = [df_pgRS.loc[[xx], :] for xx in self.label_comb_cases]
         array_z = np.array([self.calc_design_param_Xst(xx) for xx in list_cols])
         return array_z

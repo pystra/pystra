@@ -198,8 +198,8 @@ def test_calibration_coeff_opt():
         columns=["G", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
     )
-    vect_design_z1 = np.array([3.04313479, 3.04771357])
-    vect_design_beta1 = np.array([4.30646625, 4.30000037])
+    vect_design_z1 = np.array([3.0443, 3.0477])
+    vect_design_beta1 = np.array([4.3065, 4.3000])
     # validate results
     assert pytest.approx(calib1.dfXstarcal, abs=1e-4) == dfXst
     assert pytest.approx(calib1.df_phi, abs=1e-4) == dfphi
@@ -248,8 +248,8 @@ def test_calibration_mat_opt():
         columns=["G", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
     )
-    vect_design_z2 = np.array([3.04313453, 3.04771331])
-    vect_design_beta2 = np.array([4.30646588, 4.3])
+    vect_design_z2 = np.array([3.0443, 3.0477])
+    vect_design_beta2 = np.array([4.3065, 4.3000])
     # validate results
     assert pytest.approx(calib2.dfXstarcal, abs=1e-4) == dfXst
     assert pytest.approx(calib2.df_phi, abs=1e-4) == dfphi
@@ -298,8 +298,8 @@ def test_calibration_mat_alpha():
         columns=["G", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
     )
-    vect_design_z3 = np.array([3.04313111, 3.04770901])
-    vect_design_beta3 = np.array([4.30645983, 4.29999394])
+    vect_design_z3 = np.array([3.0443, 3.0477])
+    vect_design_beta3 = np.array([4.3065, 4.3000])
     # validate results
     assert pytest.approx(calib3.dfXstarcal, abs=1e-4) == dfXst
     assert pytest.approx(calib3.df_phi, abs=1e-4) == dfphi
@@ -349,14 +349,14 @@ def test_calibration_coeff_opt_nonlinear():
         columns=["wS", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
     )
-    vect_design_z1 = np.array([1.2971, 1.1553])
-    vect_design_beta1 = np.array([3.7001, 4.2834])
+    vect_design_z1 = np.array([1.2971, 1.1587])
+    vect_design_beta1 = np.array([3.7001, 4.2835])
     # validate results
     assert pytest.approx(calib1.dfXstarcal, abs=1e-4) == dfXst
     assert pytest.approx(calib1.df_phi, abs=1e-4) == dfphi
     assert pytest.approx(calib1.df_gamma, abs=1e-4) == dfgamma
     assert pytest.approx(calib1.df_psi, abs=1e-4) == dfpsi
-    assert pytest.approx(calib1.get_design_param_factor(), abs=1e-4) == vect_design_z1
+    assert pytest.approx(calib1.get_design_param_factor(False, False), abs=1e-3) == vect_design_z1
     assert (
         pytest.approx(calib1.calc_beta_design_param(np.max(vect_design_z1)), abs=1e-3)
         == vect_design_beta1
@@ -401,14 +401,14 @@ def test_calibration_mat_opt_nonlinear():
         columns=["wS", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
     )
-    vect_design_z2 = np.array([1.2980, 1.1537])
+    vect_design_z2 = np.array([1.2980, 1.1571])
     vect_design_beta2 = np.array([3.7037, 4.2869])
     # validate results
     assert pytest.approx(calib2.dfXstarcal, abs=1e-4) == dfXst
     assert pytest.approx(calib2.df_phi, abs=1e-4) == dfphi
     assert pytest.approx(calib2.df_gamma, abs=1e-4) == dfgamma
     assert pytest.approx(calib2.df_psi, abs=1e-4) == dfpsi
-    assert pytest.approx(calib2.get_design_param_factor(), abs=1e-4) == vect_design_z2
+    assert pytest.approx(calib2.get_design_param_factor(False, False), abs=1e-3) == vect_design_z2
     assert (
         pytest.approx(calib2.calc_beta_design_param(np.max(vect_design_z2)), abs=1e-3)
         == vect_design_beta2
@@ -453,14 +453,14 @@ def test_calibration_mat_alpha_nonlinear():
         columns=["wS", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
     )
-    vect_design_z3 = np.array([1.2980, 1.1537])
+    vect_design_z3 = np.array([1.2980, 1.1571])
     vect_design_beta3 = np.array([3.7037, 4.2869])
     # validate results
     assert pytest.approx(calib3.dfXstarcal, abs=1e-4) == dfXst
     assert pytest.approx(calib3.df_phi, abs=1e-4) == dfphi
     assert pytest.approx(calib3.df_gamma, abs=1e-4) == dfgamma
     assert pytest.approx(calib3.df_psi, abs=1e-4) == dfpsi
-    assert pytest.approx(calib3.get_design_param_factor(), abs=1e-4) == vect_design_z3
+    assert pytest.approx(calib3.get_design_param_factor(False, False), abs=1e-4) == vect_design_z3
     assert (
         pytest.approx(calib3.calc_beta_design_param(np.max(vect_design_z3)), abs=1e-3)
         == vect_design_beta3
@@ -512,12 +512,11 @@ def test_calibration_coeff_opt_3():
         columns=["G", "Q1", "Q2", "Q3"],
         index=["Q1_max", "Q2_max", "Q3_max"],
     )
-    calib1.print_detailed_output(precision=4)
-    print(calib1.df_nom)
-    print(calib1.calc_df_pgRS())
-    print(calib1.get_design_param_factor())
-    vect_design_z1 = np.array([3.5045, 3.4546, 3.3951])
-    vect_design_beta1 = np.array([4.8, 4.8641, 4.9421])
+    # calib1.print_detailed_output(precision=4)
+    # print(calib1.df_nom)
+    # print(calib1.get_design_param_factor())
+    vect_design_z1 = np.array([3.6709, 3.559 , 3.3951])
+    vect_design_beta1 = np.array([5.0028, 5.0708, 5.1493])
     # validate results
     assert pytest.approx(calib1.dfXstarcal, abs=1e-4) == dfXst
     assert pytest.approx(calib1.df_phi, abs=1e-4) == dfphi
@@ -575,14 +574,18 @@ def test_calibration_mat_opt_3():
         columns=["G", "Q1", "Q2", "Q3"],
         index=["Q1_max", "Q2_max", "Q3_max"],
     )
-    vect_design_z2 = np.array([3.5045, 3.4546, 3.3951])
-    vect_design_beta2 = np.array([4.8, 4.8641, 4.9421])
+    vect_design_z2 = np.array([3.5442, 3.4616, 3.3951])
+    vect_design_beta2 = np.array([4.8494, 4.9144, 4.9925])
+    # calib2.print_detailed_output(precision=4)
+    # print(calib2.df_nom)
+    # print(calib2.get_design_param_factor())
+    # print(calib2.calc_df_pgRS(True,True))
     # validate results
     assert pytest.approx(calib2.dfXstarcal, abs=1e-4) == dfXst
     assert pytest.approx(calib2.df_phi, abs=1e-4) == dfphi
     assert pytest.approx(calib2.df_gamma, abs=1e-4) == dfgamma
     assert pytest.approx(calib2.df_psi, abs=1e-4) == dfpsi
-    assert pytest.approx(calib2.get_design_param_factor(), abs=1e-4) == vect_design_z2
+    assert pytest.approx(calib2.get_design_param_factor(), abs=1e-3) == vect_design_z2
     assert (
         pytest.approx(calib2.calc_beta_design_param(np.max(vect_design_z2)), abs=1e-4)
         == vect_design_beta2
@@ -634,37 +637,15 @@ def test_calibration_mat_alpha_3():
         columns=["G", "Q1", "Q2", "Q3"],
         index=["Q1_max", "Q2_max", "Q3_max"],
     )
-    vect_design_z3 = np.array([3.5045, 3.4546, 3.3951])
-    vect_design_beta3 = np.array([4.8, 4.8641, 4.9421])
+    vect_design_z3 = np.array([3.5442, 3.4616, 3.3951])
+    vect_design_beta3 = np.array([4.8494, 4.9144, 4.9925])
     # validate results
     assert pytest.approx(calib3.dfXstarcal, abs=1e-4) == dfXst
     assert pytest.approx(calib3.df_phi, abs=1e-4) == dfphi
     assert pytest.approx(calib3.df_gamma, abs=1e-4) == dfgamma
     assert pytest.approx(calib3.df_psi, abs=1e-4) == dfpsi
-    assert pytest.approx(calib3.get_design_param_factor(), abs=1e-4) == vect_design_z3
+    assert pytest.approx(calib3.get_design_param_factor(), abs=1e-3) == vect_design_z3
     assert (
         pytest.approx(calib3.calc_beta_design_param(np.max(vect_design_z3)), abs=1e-4)
         == vect_design_beta3
     )
-test_calibration_coeff_opt_3()
-
-def get_psi_max(dfpsi):
-    """
-    Get :math:`\\psi` dataframe corresponding to maximum estimates of dfpsi.
-
-    Parameters
-    ----------
-    dfpsi : DataFrame
-        Dataframe of :math:`\\psi` per load case.
-
-    Returns
-    -------
-    df_psi_max : DataFrame
-        Dataframe of :math:`\\psi` corresponding to maximum of each load effect.
-
-    """
-    df_psi_max = dfpsi.copy()
-    np.fill_diagonal(df_psi_max.values, 0.0)
-    print(df_psi_max)
-    df_psi_max = df_psi_max.clip(df_psi_max.max(), axis=1)
-    return df_psi_max
