@@ -21,5 +21,6 @@ can also be found on the `Python documentation`_ page.
     notebooks/ex_load_combinations
     notebooks/ex_load_calibration
     notebooks/ex_load_calibration_nonlinear
+    notebooks/ex_generic_calibration
 
 .. _`Python documentation`: http://www.python.org/doc/
