@@ -1436,7 +1436,7 @@ class GenericCalibration:
         Parameters
         ----------
         Aq : nd.array
-            The grid of love load ratio points.
+            The grid of live load ratio points.
         Ag : nd.array
             The grid of dead load ratio points.
         model : GenericModel
