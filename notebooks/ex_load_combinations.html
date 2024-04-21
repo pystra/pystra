@@ -2,13 +2,13 @@
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="" >
 
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Load Combinations &#8212; PySTRA 1.2.3 documentation</title>
+    <title>Load Combinations &#8212; PySTRA 1.3.0 documentation</title>
   
   
   
@@ -18,12 +18,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -32,11 +32,11 @@
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
-  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=df514af3"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3d533f9b"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -45,8 +45,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/ex_load_combinations';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Load Calibration" href="ex_load_calibration.html" />
-    <link rel="prev" title="Load Combination Distributions" href="ex_load_comb_dist.html" />
+    <link rel="next" title="Safety Factor Calibration" href="ex_factor_calibration.html" />
+    <link rel="prev" title="Pystra Timing" href="ex_timing.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -110,9 +110,11 @@
   <div class="col-lg-3 navbar-header-items__start">
     
       <div class="navbar-item">
+
   
 
 <a class="navbar-brand logo" href="../index.html">
+  
   
   
   
@@ -122,8 +124,8 @@
       
     
     
-    <img src="../_static/icon_pystra_small.png" class="logo__image only-light" alt="Logo image"/>
-    <script>document.write(`<img src="../_static/icon_pystra_small.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 1.3.0 documentation - Home"/>
+    <script>document.write(`<img src="../_static/icon_pystra_small.png" class="logo__image only-dark" alt="PySTRA 1.3.0 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -134,7 +136,8 @@
     
     <div class="me-auto navbar-header-items__center">
       
-        <div class="navbar-item"><nav class="navbar-nav">
+        <div class="navbar-item">
+<nav class="navbar-nav">
   <p class="sidebar-header-items__title"
      role="heading"
      aria-level="1"
@@ -178,10 +181,10 @@
                     </li>
                 
             <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-header-nav-more-links">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links">
                     More
                 </button>
-                <ul id="pst-header-nav-more-links" class="dropdown-menu">
+                <ul id="pst-nav-more-links" class="dropdown-menu">
                     
                     <li class="nav-item">
                       <a class="nav-link dropdown-item nav-internal" href="../developer.html">
@@ -202,6 +205,7 @@
       
         <div class="navbar-item navbar-persistent--container">
           
+
  <script>
  document.write(`
    <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
@@ -215,6 +219,7 @@
       
       
         <div class="navbar-item">
+
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
@@ -259,6 +264,7 @@ document.write(`
   
   
     <div class="navbar-persistent--mobile">
+
  <script>
  document.write(`
    <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
@@ -292,7 +298,8 @@ document.write(`
     
       <div class="sidebar-header-items__center">
         
-          <div class="navbar-item"><nav class="navbar-nav">
+          <div class="navbar-item">
+<nav class="navbar-nav">
   <p class="sidebar-header-items__title"
      role="heading"
      aria-level="1"
@@ -336,10 +343,10 @@ document.write(`
                     </li>
                 
             <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-header-nav-more-links">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links-2">
                     More
                 </button>
-                <ul id="pst-header-nav-more-links" class="dropdown-menu">
+                <ul id="pst-nav-more-links-2" class="dropdown-menu">
                     
                     <li class="nav-item">
                       <a class="nav-link dropdown-item nav-internal" href="../developer.html">
@@ -360,6 +367,7 @@ document.write(`
       <div class="sidebar-header-items__end">
         
           <div class="navbar-item">
+
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
@@ -403,7 +411,8 @@ document.write(`
   </div>
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
-        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
@@ -412,10 +421,9 @@ document.write(`
 <li class="toctree-l1"><a class="reference internal" href="ex_sensitivity.html">Sensitivity Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ex_ddm.html">Direct Differentiation Method</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ex_timing.html">Pystra Timing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ex_load_comb_dist.html">Load Combination Distributions</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Load Combinations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ex_load_calibration.html">Load Calibration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ex_load_calibration_nonlinear.html">Load Calibration for Non Linear Limit State Functions (LSFs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_factor_calibration.html">Safety Factor Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_generic_calibration.html">Generic Code Calibration</a></li>
 </ul>
 </div>
 </nav></div>
@@ -476,9 +484,11 @@ document.write(`
   <section id="Load-Combinations">
 <h1>Load Combinations<a class="headerlink" href="#Load-Combinations" title="Permalink to this heading">#</a></h1>
 <p><em>Pystra</em> includes the class <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> which can be used to analyse a structural reliability problem for different load cases. This example demonstrates the use of load combination cases with <em>Pystra</em>.</p>
+<section id="Example">
+<h2>Example<a class="headerlink" href="#Example" title="Permalink to this heading">#</a></h2>
 <p>This demonstration problem is adopted from Example 4 pp 190-1 from Sorensen, J.D. (2004), <em>Notes in Structural Reliability Theory And Risk Analysis</em>. The parameter values are slightly modified for demonstration.</p>
 <section id="Import-Libraries">
-<h2>Import Libraries<a class="headerlink" href="#Import-Libraries" title="Permalink to this heading">#</a></h2>
+<h3>Import Libraries<a class="headerlink" href="#Import-Libraries" title="Permalink to this heading">#</a></h3>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -486,12 +496,13 @@ document.write(`
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pystra</span> <span class="k">as</span> <span class="nn">ra</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 </pre></div>
 </div>
 </div>
 </section>
 <section id="Define-the-limit-state-function">
-<h2>Define the limit state function<a class="headerlink" href="#Define-the-limit-state-function" title="Permalink to this heading">#</a></h2>
+<h3>Define the limit state function<a class="headerlink" href="#Define-the-limit-state-function" title="Permalink to this heading">#</a></h3>
 <p>The LSF to be supplied in <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> can be any valid <em>Pystra</em> LSF. Here we show how random variables and even constants (e.g. <code class="docutils literal notranslate"><span class="pre">cg</span></code>) can be passed through as <em>Pystra</em> objects, or can be hard-coded into the LSF.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
@@ -504,36 +515,57 @@ document.write(`
 </div>
 </section>
 <section id="Define-the-Load-and-Resistance-distributions">
-<h2>Define the Load and Resistance distributions<a class="headerlink" href="#Define-the-Load-and-Resistance-distributions" title="Permalink to this heading">#</a></h2>
+<h3>Define the Load and Resistance distributions<a class="headerlink" href="#Define-the-Load-and-Resistance-distributions" title="Permalink to this heading">#</a></h3>
 <p>We define the distributions of the loads for the load combinations. Some loads will be time-invariant (e.g. permanent loads), while some will be combination random variables (e.g. winds, imposed loads). These combination loads require the definition of a point-in-time (<code class="docutils literal notranslate"><span class="pre">'pit'</span></code>) distribution and a maximum (<code class="docutils literal notranslate"><span class="pre">'max'</span></code>) distribtribution (typically annual maximum). Note that <em>Pystra</em> has built in distribution objects to convert between the two: <code class="docutils literal notranslate"><span class="pre">MaxParent</span></code> and <code class="docutils literal notranslate"><span class="pre">Maximum</span></code>.</p>
 <p>For the combination loads, we define a dictionary which contains a key for each variable in the LSF, and a dictionary with the <code class="docutils literal notranslate"><span class="pre">pit</span></code> and <code class="docutils literal notranslate"><span class="pre">max</span></code> key values being the corresponding <em>Pystra</em> distribution objects.</p>
+<p>Define the annual max distributions</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Annual max distributions</span>
-<span class="n">Q1max</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Gumbel</span><span class="p">(</span><span class="s2">&quot;Q1&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>  <span class="c1"># Imposed Load</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Q1max</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Gumbel</span><span class="p">(</span><span class="s2">&quot;Q1&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>  <span class="c1"># Imposed Load</span>
 <span class="n">Q2max</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Gumbel</span><span class="p">(</span><span class="s2">&quot;Q2&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>  <span class="c1"># Wind Load</span>
-<span class="c1"># Parameters of inferred point-in-time parents</span>
-<span class="n">Q1pit</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Gumbel</span><span class="p">(</span><span class="s2">&quot;Q1&quot;</span><span class="p">,</span> <span class="mf">0.89</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>  <span class="c1"># Imposed Load</span>
+</pre></div>
+</div>
+</div>
+<p>Next specifcy the parameters of inferred point-in-time parent distributions</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Q1pit</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Gumbel</span><span class="p">(</span><span class="s2">&quot;Q1&quot;</span><span class="p">,</span> <span class="mf">0.89</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>  <span class="c1"># Imposed Load</span>
 <span class="n">Q2pit</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Gumbel</span><span class="p">(</span><span class="s2">&quot;Q2&quot;</span><span class="p">,</span> <span class="mf">0.77</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>  <span class="c1"># Wind Load</span>
 <span class="n">Q_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Q1&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="n">Q1max</span><span class="p">,</span> <span class="s1">&#39;pit&#39;</span><span class="p">:</span> <span class="n">Q1pit</span><span class="p">},</span>
           <span class="s1">&#39;Q2&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="n">Q2max</span><span class="p">,</span> <span class="s1">&#39;pit&#39;</span><span class="p">:</span> <span class="n">Q2pit</span><span class="p">}}</span>
-<span class="c1"># Define any constants to be passed through</span>
-<span class="n">cg</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;cg&quot;</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>
-<span class="c1">## Define other random variables</span>
-<span class="n">Rdist</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Lognormal</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">)</span>  <span class="c1"># Resistance</span>
+</pre></div>
+</div>
+</div>
+<p>And define any constants to be passed through</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cg</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;cg&quot;</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Finally, define any other random variables in the problem</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Rdist</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Lognormal</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">)</span>  <span class="c1"># Resistance</span>
 <span class="n">Gdist</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;G&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>  <span class="c1"># Permanent Load (Other load variable)</span>
 </pre></div>
 </div>
 </div>
 </section>
 <section id="Specify-load-combination-cases">
-<h2>Specify load combination cases<a class="headerlink" href="#Specify-load-combination-cases" title="Permalink to this heading">#</a></h2>
+<h3>Specify load combination cases<a class="headerlink" href="#Specify-load-combination-cases" title="Permalink to this heading">#</a></h3>
 <p>For this problem, in addition to the permanent loads, we’re interested in investigating the reliabilities for several load combinations: 1. <code class="docutils literal notranslate"><span class="pre">Q1Q2_max</span></code>: Where both <code class="docutils literal notranslate"><span class="pre">Q1</span></code> and <code class="docutils literal notranslate"><span class="pre">Q2</span></code> maximum distributions are considered simultaneously, as an obvious conservative estimation. 2. <code class="docutils literal notranslate"><span class="pre">Q1_max</span></code>: <code class="docutils literal notranslate"><span class="pre">Q1</span></code> is maximum and <code class="docutils literal notranslate"><span class="pre">Q2</span></code> is the point-in-time distribution. 3. <code class="docutils literal notranslate"><span class="pre">Q2_max</span></code>: <code class="docutils literal notranslate"><span class="pre">Q1</span></code> is the point-in-time distribution and <code class="docutils literal notranslate"><span class="pre">Q2</span></code> is maximum.</p>
 <p>We define a dictionary with the relevant loadcase names and corresponding variable names form the LSF.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">loadcombinations</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Q1Q2_max&#39;</span><span class="p">:[</span><span class="s1">&#39;Q1&#39;</span><span class="p">,</span> <span class="s1">&#39;Q2&#39;</span><span class="p">],</span> <span class="s1">&#39;Q1_max&#39;</span><span class="p">:[</span><span class="s1">&#39;Q1&#39;</span><span class="p">],</span> <span class="s1">&#39;Q2_max&#39;</span><span class="p">:[</span><span class="s1">&#39;Q2&#39;</span><span class="p">]}</span>
@@ -543,10 +575,10 @@ document.write(`
 <p><strong>Note</strong>: The specification of this dictionary is optional. By default, <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> assumes one combination load to act at its maximum in a load case, while the others are considered to be the point-in-time distribution.</p>
 </section>
 <section id="Specify-user-defined-correlation-(optional)">
-<h2>Specify user-defined correlation (optional)<a class="headerlink" href="#Specify-user-defined-correlation-(optional)" title="Permalink to this heading">#</a></h2>
+<h3>Specify user-defined correlation (optional)<a class="headerlink" href="#Specify-user-defined-correlation-(optional)" title="Permalink to this heading">#</a></h3>
 <p>The user can also specify a user-defined correlation matrix for the random variables of the reliability problem as a DataFrame.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">label_rvs</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Q1&quot;</span><span class="p">,</span> <span class="s2">&quot;Q2&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="s2">&quot;G&quot;</span><span class="p">]</span>
@@ -573,10 +605,10 @@ G   0.0  0.0  0.0  1.0
 </div>
 </section>
 <section id="Specify-user-defined-analysis-options-(optional)">
-<h2>Specify user-defined analysis options (optional)<a class="headerlink" href="#Specify-user-defined-analysis-options-(optional)" title="Permalink to this heading">#</a></h2>
+<h3>Specify user-defined analysis options (optional)<a class="headerlink" href="#Specify-user-defined-analysis-options-(optional)" title="Permalink to this heading">#</a></h3>
 <p>The user can also specify a user-defined correlation Pystra <code class="docutils literal notranslate"><span class="pre">AnalysisOptions</span></code> object for the reliability analysis too. In this tutorial we will set error thresholds and change the default transform method to use singular value decomposition.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">options</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">AnalysisOptions</span><span class="p">()</span>
@@ -588,10 +620,10 @@ G   0.0  0.0  0.0  1.0
 </div>
 </section>
 <section id="Instantiate-LoadCombination-object">
-<h2>Instantiate <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> object<a class="headerlink" href="#Instantiate-LoadCombination-object" title="Permalink to this heading">#</a></h2>
+<h3>Instantiate <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> object<a class="headerlink" href="#Instantiate-LoadCombination-object" title="Permalink to this heading">#</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> class requires specification of combination distributions as a dictionary, while the other distributions (permanent loads and resistances) are specified as a list.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lc</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">LoadCombination</span><span class="p">(</span><span class="n">lsf</span><span class="o">=</span><span class="n">lsf</span><span class="p">,</span> <span class="n">dict_dist_comb</span><span class="o">=</span><span class="n">Q_dict</span><span class="p">,</span> <span class="n">list_dist_resist</span><span class="o">=</span><span class="p">[</span><span class="n">Rdist</span><span class="p">],</span> <span class="n">list_dist_other</span><span class="o">=</span><span class="p">[</span><span class="n">Gdist</span><span class="p">],</span>
@@ -601,10 +633,10 @@ G   0.0  0.0  0.0  1.0
 </div>
 </section>
 <section id="Analyse-Load-Cases">
-<h2>Analyse Load Cases<a class="headerlink" href="#Analyse-Load-Cases" title="Permalink to this heading">#</a></h2>
+<h3>Analyse Load Cases<a class="headerlink" href="#Analyse-Load-Cases" title="Permalink to this heading">#</a></h3>
 <p>Use a list to keep track of each <code class="docutils literal notranslate"><span class="pre">Form</span></code> object outputted:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">form</span> <span class="o">=</span> <span class="mi">3</span><span class="o">*</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span>
@@ -612,9 +644,9 @@ G   0.0  0.0  0.0  1.0
 </div>
 </div>
 <section id="Load-Case-1">
-<h3>Load Case 1<a class="headerlink" href="#Load-Case-1" title="Permalink to this heading">#</a></h3>
+<h4>Load Case 1<a class="headerlink" href="#Load-Case-1" title="Permalink to this heading">#</a></h4>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lc_idx</span> <span class="o">=</span> <span class="mi">0</span>
@@ -648,9 +680,9 @@ cg                     ---           0.400000          ---
 </div>
 </section>
 <section id="Load-Case-2">
-<h3>Load Case 2<a class="headerlink" href="#Load-Case-2" title="Permalink to this heading">#</a></h3>
+<h4>Load Case 2<a class="headerlink" href="#Load-Case-2" title="Permalink to this heading">#</a></h4>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lc_idx</span> <span class="o">=</span> <span class="mi">1</span>
@@ -684,9 +716,9 @@ cg                     ---           0.400000          ---
 </div>
 </section>
 <section id="Load-Case-3">
-<h3>Load Case 3<a class="headerlink" href="#Load-Case-3" title="Permalink to this heading">#</a></h3>
+<h4>Load Case 3<a class="headerlink" href="#Load-Case-3" title="Permalink to this heading">#</a></h4>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lc_idx</span> <span class="o">=</span> <span class="mi">2</span>
@@ -718,10 +750,11 @@ cg                     ---           0.400000          ---
 
 </pre></div></div>
 </div>
+</section>
 <section id="Display-reliability-per-load-combination">
 <h4>Display reliability per load combination<a class="headerlink" href="#Display-reliability-per-load-combination" title="Permalink to this heading">#</a></h4>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">lc</span><span class="p">,</span><span class="n">β</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">loadcombinations</span><span class="o">.</span><span class="n">keys</span><span class="p">()],</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">beta</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">form</span><span class="p">]):</span>
@@ -742,6 +775,127 @@ Q2_max: β = 2.16
 </section>
 </section>
 </section>
+<section id="Distributions-for-Load-Combinations">
+<h2>Distributions for Load Combinations<a class="headerlink" href="#Distributions-for-Load-Combinations" title="Permalink to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Pystra</span></code> includes a range of tools to enable the calculation of load combinations due to variable loads:</p>
+<ul class="simple">
+<li><p><strong>Zero-Inflated</strong> Distributions allow for a probability of non-occurence of a load</p></li>
+<li><p><strong>Maximum</strong> Distributions allow the distribution of maxima of a supplied parent or point-in-time distribution</p></li>
+<li><p><strong>MaxParent</strong> Distribution allows the determination of the point-in-time distribution from a supplied maximum.</p></li>
+</ul>
+<section id="Zero-Inflated-Distribution">
+<h3>Zero-Inflated Distribution<a class="headerlink" href="#Zero-Inflated-Distribution" title="Permalink to this heading">#</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">zin</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">ZeroInflated</span><span class="p">(</span><span class="s1">&#39;Q&#39;</span><span class="p">,</span><span class="n">ra</span><span class="o">.</span><span class="n">Gumbel</span><span class="p">(</span><span class="s2">&quot;G&quot;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">),</span><span class="n">p</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="n">zin</span><span class="o">.</span><span class="n">zero_tol</span> <span class="o">=</span> <span class="mf">1e-2</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">1.5</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">pdf</span> <span class="o">=</span> <span class="n">zin</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">cdf</span> <span class="o">=</span> <span class="n">zin</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">10001</span><span class="p">)</span>
+<span class="n">ppf</span> <span class="o">=</span> <span class="n">zin</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span><span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot_mosaic</span><span class="p">([[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="s1">&#39;c&#39;</span><span class="p">],[</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="s1">&#39;c&#39;</span><span class="p">]],</span><span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">pdf</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;$f(x)$&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">cdf</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Direct from CDF&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ppf</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="s1">&#39;r:&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;From Inverse CDF&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;$F(x)$&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;$x$&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;center right&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">]</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">cdf</span><span class="p">)))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;$-log[-log[F(x)]]$&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;$x$&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span>
+<span class="c1">#fig.set_layout(&#39;tight&#39;);</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_ex_load_combinations_35_0.png" src="../_images/notebooks_ex_load_combinations_35_0.png" />
+</div>
+</div>
+</section>
+<section id="id1">
+<h3>Example<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">lsf</span><span class="p">(</span><span class="n">R</span><span class="p">,</span><span class="n">G</span><span class="p">,</span><span class="n">Q</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">R</span> <span class="o">-</span> <span class="p">(</span><span class="n">G</span> <span class="o">+</span> <span class="n">Q</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">reliability</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+    <span class="n">ls</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span><span class="n">lsf</span><span class="p">)</span>
+    <span class="n">sm</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
+    <span class="n">sm</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">Lognormal</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">,</span><span class="mf">0.15</span><span class="p">))</span>
+    <span class="n">sm</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;G&quot;</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">))</span>
+
+    <span class="n">g</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Gumbel</span><span class="p">(</span><span class="s2">&quot;Q&quot;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">p</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">:</span>
+        <span class="n">sm</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;Q&quot;</span><span class="p">,</span><span class="mf">0.0</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">p</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="n">sm</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">zig</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">ZeroInflated</span><span class="p">(</span><span class="s2">&quot;Q&quot;</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">sm</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">zig</span><span class="p">)</span>
+
+    <span class="n">form</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Form</span><span class="p">(</span><span class="n">sm</span><span class="p">,</span><span class="n">ls</span><span class="p">)</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">form</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">betas</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">101</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">ps</span><span class="p">:</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">reliability</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">betas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">beta</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span><span class="n">betas</span><span class="p">,</span><span class="s1">&#39;r.:&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Probability of zero variable load, $p$&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Reliability index, $β$&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_ex_load_combinations_40_0.png" src="../_images/notebooks_ex_load_combinations_40_0.png" />
+</div>
+</div>
+</section>
+</section>
 </section>
 
 
@@ -752,23 +906,23 @@ Q2_max: β = 2.16
               
               
                 <footer class="prev-next-footer">
-                  <!-- Previous / next buttons -->
+                  
 <div class="prev-next-area">
     <a class="left-prev"
-       href="ex_load_comb_dist.html"
+       href="ex_timing.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Load Combination Distributions</p>
+        <p class="prev-next-title">Pystra Timing</p>
       </div>
     </a>
     <a class="right-next"
-       href="ex_load_calibration.html"
+       href="ex_factor_calibration.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Load Calibration</p>
+        <p class="prev-next-title">Safety Factor Calibration</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -782,31 +936,39 @@ Q2_max: β = 2.16
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
   <div class="sidebar-secondary-item">
+
   <div class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> On this page
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Import-Libraries">Import Libraries</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-the-limit-state-function">Define the limit state function</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-the-Load-and-Resistance-distributions">Define the Load and Resistance distributions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Specify-load-combination-cases">Specify load combination cases</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Specify-user-defined-correlation-(optional)">Specify user-defined correlation (optional)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Specify-user-defined-analysis-options-(optional)">Specify user-defined analysis options (optional)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Instantiate-LoadCombination-object">Instantiate <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> object</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Analyse-Load-Cases">Analyse Load Cases</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Load-Case-1">Load Case 1</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Load-Case-2">Load Case 2</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Load-Case-3">Load Case 3</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Example">Example</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Import-Libraries">Import Libraries</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-the-limit-state-function">Define the limit state function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-the-Load-and-Resistance-distributions">Define the Load and Resistance distributions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Specify-load-combination-cases">Specify load combination cases</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Specify-user-defined-correlation-(optional)">Specify user-defined correlation (optional)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Specify-user-defined-analysis-options-(optional)">Specify user-defined analysis options (optional)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Instantiate-LoadCombination-object">Instantiate <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> object</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Analyse-Load-Cases">Analyse Load Cases</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#Load-Case-1">Load Case 1</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#Load-Case-2">Load Case 2</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#Load-Case-3">Load Case 3</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#Display-reliability-per-load-combination">Display reliability per load combination</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Distributions-for-Load-Combinations">Distributions for Load Combinations</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Zero-Inflated-Distribution">Zero-Inflated Distribution</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Example</a></li>
 </ul>
 </li>
 </ul>
   </nav></div>
 
   <div class="sidebar-secondary-item">
+
   
   <div class="tocsection editthispage">
     <a href="https://github.com/pystra/pystra/edit/main/docs/source/notebooks/ex_load_combinations.ipynb">
@@ -834,8 +996,8 @@ Q2_max: β = 2.16
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -843,6 +1005,7 @@ Q2_max: β = 2.16
     <div class="footer-items__start">
       
         <div class="footer-item">
+
   <p class="copyright">
     
       © Copyright 2023, The PySTRA Developers.
@@ -852,6 +1015,7 @@ Q2_max: β = 2.16
 </div>
       
         <div class="footer-item">
+
   <p class="sphinx-version">
     Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
     <br/>
@@ -864,8 +1028,9 @@ Q2_max: β = 2.16
   
     <div class="footer-items__end">
       
-        <div class="footer-item"><p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.14.1.
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.14.4.
 </p></div>
       
     </div>

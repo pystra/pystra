@@ -1,0 +1,1250 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Safety Factor Calibration &#8212; PySTRA 1.3.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3d533f9b"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/ex_factor_calibration';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Generic Code Calibration" href="ex_generic_calibration.html" />
+    <link rel="prev" title="Load Combinations" href="ex_load_combinations.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 1.3.0 documentation - Home"/>
+    <script>document.write(`<img src="../_static/icon_pystra_small.png" class="logo__image only-dark" alt="PySTRA 1.3.0 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../install.html">
+                        Installation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../tutorial.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../api.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../theory.html">
+                        Theoretical Background
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../references.html">
+                        References
+                      </a>
+                    </li>
+                
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="../developer.html">
+                        Instructions for Developers
+                      </a>
+                    </li>
+                
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-github-square fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item">
+<nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../install.html">
+                        Installation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../tutorial.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../api.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../theory.html">
+                        Theoretical Background
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../references.html">
+                        References
+                      </a>
+                    </li>
+                
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links-2">
+                    More
+                </button>
+                <ul id="pst-nav-more-links-2" class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="../developer.html">
+                        Instructions for Developers
+                      </a>
+                    </li>
+                
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-github-square fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="ex_intro.html">Introductory Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_scipy_distributions.html">SciPy Distribution Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_sensitivity.html">Sensitivity Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_ddm.html">Direct Differentiation Method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_timing.html">Pystra Timing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_load_combinations.html">Load Combinations</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Safety Factor Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_generic_calibration.html">Generic Code Calibration</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../tutorial.html" class="nav-link">Tutorials</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Safety...</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="Safety-Factor-Calibration">
+<h1>Safety Factor Calibration<a class="headerlink" href="#Safety-Factor-Calibration" title="Permalink to this heading">#</a></h1>
+<p><em>Pystra</em> includes the class <code class="docutils literal notranslate"><span class="pre">Calibration</span></code> which can be used to obtain calibrated load safety factors, <span class="math notranslate nohighlight">\(\gamma\)</span>, resistance safety factor, <span class="math notranslate nohighlight">\(\phi\)</span>, and load combination factors, <span class="math notranslate nohighlight">\(\psi\)</span>. This example demonstrates running safety and combination factor calibration problems using <em>Pystra</em>.</p>
+<section id="Example">
+<h2>Example<a class="headerlink" href="#Example" title="Permalink to this heading">#</a></h2>
+<p>This demonstration problem is adopted from Example 4 pp 190-1 from Sorensen, J.D. (2004), <em>Notes in Structural Reliability Theory And Risk Analysis</em>, with the following error-fixes:</p>
+<ol class="arabic simple">
+<li><p>The loads described as <span class="math notranslate nohighlight">\(Q_1\)</span> and <span class="math notranslate nohighlight">\(Q_2\)</span>, are not the point-in-time loads, but the annual maxima distributions, from which the point-in-time loads are to be inferred.</p></li>
+<li><p>There is an error in the textbook, and the wind load <span class="math notranslate nohighlight">\(Q_2\)</span> is not taken as occurring <span class="math notranslate nohighlight">\(r_2 = 360\)</span> times per year as stated, but instead <span class="math notranslate nohighlight">\(r_2=2\)</span> per year.</p></li>
+</ol>
+<p>With these adaptations, the results of the calibration here match the results specified in Sorensen (2004).</p>
+<section id="Import-Libraries">
+<h3>Import Libraries<a class="headerlink" href="#Import-Libraries" title="Permalink to this heading">#</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pystra</span> <span class="k">as</span> <span class="nn">ra</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Define-the-limit-state-function-for-calibration">
+<h3>Define the limit state function for calibration<a class="headerlink" href="#Define-the-limit-state-function-for-calibration" title="Permalink to this heading">#</a></h3>
+<p>The LSF to be supplied in <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> can be any valid <em>Pystra</em> LSF with one additional argument: a scalar design parameter for a random variable (generally, the resistance). Note that: 1. The design parameter must be specified as a <code class="docutils literal notranslate"><span class="pre">Pystra</span></code> constant with any arbitrary default value, such as <code class="docutils literal notranslate"><span class="pre">1.0</span></code>. 2. Only a single design parameter for the resistance random variable can be calibrated at a time.</p>
+<p>Keeping with the <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> example, the design parameter for resistance, denoted <span class="math notranslate nohighlight">\(z\)</span>, is added to the LSF:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">lsf</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">Q1</span><span class="p">,</span> <span class="n">Q2</span><span class="p">,</span> <span class="n">cg</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">z</span><span class="o">*</span><span class="n">R</span> <span class="o">-</span> <span class="p">(</span><span class="n">cg</span><span class="o">*</span><span class="n">G</span> <span class="o">+</span> <span class="mf">0.6</span><span class="o">*</span><span class="n">Q1</span> <span class="o">+</span> <span class="mf">0.3</span><span class="o">*</span><span class="n">Q2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Define-the-Load-and-Resistance-distributions">
+<h3>Define the Load and Resistance distributions<a class="headerlink" href="#Define-the-Load-and-Resistance-distributions" title="Permalink to this heading">#</a></h3>
+<p>Next follow the creation of load combination objects, as explained for the <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> object.</p>
+<p>Define the annual max distributions</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Q1max</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Gumbel</span><span class="p">(</span><span class="s2">&quot;Q1&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>  <span class="c1"># Imposed Load</span>
+<span class="n">Q2max</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Gumbel</span><span class="p">(</span><span class="s2">&quot;Q2&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>  <span class="c1"># Wind Load</span>
+</pre></div>
+</div>
+</div>
+<p>Next specifcy the parameters of inferred point-in-time parent distributions</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Q1pit</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Gumbel</span><span class="p">(</span><span class="s2">&quot;Q1&quot;</span><span class="p">,</span> <span class="mf">0.89</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>  <span class="c1"># Imposed Load</span>
+<span class="n">Q2pit</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Gumbel</span><span class="p">(</span><span class="s2">&quot;Q2&quot;</span><span class="p">,</span> <span class="mf">0.77</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>  <span class="c1"># Wind Load</span>
+<span class="n">Q_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Q1&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="n">Q1max</span><span class="p">,</span> <span class="s1">&#39;pit&#39;</span><span class="p">:</span> <span class="n">Q1pit</span><span class="p">},</span>
+          <span class="s1">&#39;Q2&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="n">Q2max</span><span class="p">,</span> <span class="s1">&#39;pit&#39;</span><span class="p">:</span> <span class="n">Q2pit</span><span class="p">}}</span>
+</pre></div>
+</div>
+</div>
+<p>And define any constants to be passed through</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cg</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;cg&quot;</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Design parameter for resistance with arbitrary default value</span>
+</pre></div>
+</div>
+</div>
+<p>Finally, define any other random variables in the problem</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Rdist</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Lognormal</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">)</span>  <span class="c1"># Resistance</span>
+<span class="n">Gdist</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;G&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>  <span class="c1"># Permanent Load (other load variable)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Instantiate-LoadCombination-object">
+<h3>Instantiate <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> object<a class="headerlink" href="#Instantiate-LoadCombination-object" title="Permalink to this heading">#</a></h3>
+<p>Class <code class="docutils literal notranslate"><span class="pre">Calibration</span></code> requires specification of a <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> object to run reliability analyses for different load cases.</p>
+<section id="Setup-load-combination-cases">
+<h4>Setup load combination cases<a class="headerlink" href="#Setup-load-combination-cases" title="Permalink to this heading">#</a></h4>
+<p>For this problem, we’re interested in investigating the reliabilities for two cases: 1. <code class="docutils literal notranslate"><span class="pre">Q1_max</span></code>: <code class="docutils literal notranslate"><span class="pre">Q1</span></code> is maximum and <code class="docutils literal notranslate"><span class="pre">Q2</span></code> is the point-in-time distribution 2. <code class="docutils literal notranslate"><span class="pre">Q2_max</span></code>: <code class="docutils literal notranslate"><span class="pre">Q1</span></code> is the point-in-time distribution and <code class="docutils literal notranslate"><span class="pre">Q2</span></code> is maximum</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">loadcombinations</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Q1_max&#39;</span><span class="p">:[</span><span class="s1">&#39;Q1&#39;</span><span class="p">],</span> <span class="s1">&#39;Q2_max&#39;</span><span class="p">:[</span><span class="s1">&#39;Q2&#39;</span><span class="p">]}</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lc</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">LoadCombination</span><span class="p">(</span><span class="n">lsf</span><span class="o">=</span><span class="n">lsf</span><span class="p">,</span>
+                        <span class="n">dict_dist_comb</span><span class="o">=</span><span class="n">Q_dict</span><span class="p">,</span>
+                        <span class="n">list_dist_resist</span><span class="o">=</span><span class="p">[</span><span class="n">Rdist</span><span class="p">],</span>
+                        <span class="n">list_dist_other</span><span class="o">=</span><span class="p">[</span><span class="n">Gdist</span><span class="p">],</span>
+                        <span class="n">list_const</span><span class="o">=</span><span class="p">[</span><span class="n">z</span><span class="p">,</span> <span class="n">cg</span><span class="p">],</span>
+                        <span class="n">dict_comb_cases</span><span class="o">=</span><span class="n">loadcombinations</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">Pystra</span></code> categorizes the variables for the calibration problem as follows: 1. Combination load variables: time variant load effects with a point-in-time distribution and maximum distribution 2. Resistance variables 3. Other load variables (optional): time invariant load effects 4. Constants: including the calibration parameter</p>
+</section>
+</section>
+<section id="Specify-Nominal-(or-characteristic)-values">
+<h3>Specify Nominal (or characteristic) values<a class="headerlink" href="#Specify-Nominal-(or-characteristic)-values" title="Permalink to this heading">#</a></h3>
+<p>In calibration problems, the safety and combination factors are calibrated with respect to a given nominal value of load and resistance distributions. Generally, these nominal values correspond to the characteristic value of the load or resistance, e.g. 95-percentile or 5-percentile value.</p>
+<p>Class <code class="docutils literal notranslate"><span class="pre">Calibration</span></code> requires specifying the nominal values as Python dictionary.</p>
+<p>For this problem, the combination loads use a 98-percentile value for nominal, and a 5-percentile for resistance; the permanent load nominal value is considered at its mean. These are found using the <code class="docutils literal notranslate"><span class="pre">ppf</span></code> function in each <em>Pystra</em> distribution object:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Qk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">Q1max</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mf">0.98</span><span class="p">),</span> <span class="n">Q2max</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mf">0.98</span><span class="p">)])</span>
+<span class="n">Gk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">Gdist</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)])</span>
+<span class="n">Rk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">Rdist</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)])</span>
+<span class="n">rvs_all</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;Q1&#39;</span><span class="p">,</span> <span class="s1">&#39;Q2&#39;</span><span class="p">,</span> <span class="s1">&#39;Q3&#39;</span><span class="p">]</span>
+<span class="n">dict_nom</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">rvs_all</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">Rk</span><span class="p">,</span> <span class="n">Gk</span><span class="p">,</span> <span class="n">Qk</span><span class="p">])))</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Specify-target-reliability-index,-\beta_T">
+<h3>Specify target reliability index, <span class="math notranslate nohighlight">\(\beta_T\)</span><a class="headerlink" href="#Specify-target-reliability-index,-\beta_T" title="Permalink to this heading">#</a></h3>
+<p>In calibration problems, the safety and combination factors are calibrated to obtain a lower bound safety indicated by a target reliablity index, <span class="math notranslate nohighlight">\(\beta_T\)</span>.</p>
+<p>Class <code class="docutils literal notranslate"><span class="pre">Calibration</span></code> requires specifying the target reliability index as a floating point integer.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">betaT</span> <span class="o">=</span> <span class="mf">4.3</span>
+</pre></div>
+</div>
+</div>
+<p>This corresponds to a probability of failure of:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ra</span><span class="o">.</span><span class="n">StdNormal</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="o">-</span><span class="n">betaT</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+8.539905471005582e-06
+</pre></div></div>
+</div>
+</section>
+<section id="Calibrate-safety-and-combination-factors">
+<h3>Calibrate safety and combination factors<a class="headerlink" href="#Calibrate-safety-and-combination-factors" title="Permalink to this heading">#</a></h3>
+<p>Class <code class="docutils literal notranslate"><span class="pre">Calibration</span></code> structures the calibration problem into three parts: 1. <strong>Calibration</strong>: this part involves projecting the design point of the LSF to correspond to the specified <span class="math notranslate nohighlight">\(\beta_T\)</span>. 2. <strong>Estimation</strong>: this part involves estimating and calibrating the safety and combination factors, <span class="math notranslate nohighlight">\(\phi\)</span>, <span class="math notranslate nohighlight">\(\gamma\)</span>, and <span class="math notranslate nohighlight">\(\psi\)</span> using the projected design point. These factors correspond to <span class="math notranslate nohighlight">\(\beta_T\)</span> when utilized in structural design code equation,
+<span class="math notranslate nohighlight">\(z\phi R_n \geq \sum_i \psi_i \gamma_i S_{ni}\)</span>, where <span class="math notranslate nohighlight">\(S_{ni}\)</span> is the nominal value of the load effect <span class="math notranslate nohighlight">\(S_i\)</span>. 3. <strong>Design check</strong>: this part involves utilizing the estimates of <span class="math notranslate nohighlight">\(\phi\)</span>, <span class="math notranslate nohighlight">\(\gamma\)</span>, and <span class="math notranslate nohighlight">\(\psi\)</span> for the given load effects to obtain the maximum required design resistance, i.e. <span class="math notranslate nohighlight">\(z \cdot R_n\)</span>. Then the reliabilities (or safety) corresponding to the maximum required design resistance are checked for all load cases to ensure that they are greater
+than <span class="math notranslate nohighlight">\(\beta_T\)</span>. This design check is explained in more detail later in this tutorial.</p>
+<section id="Calibration-algorithms">
+<h4>Calibration algorithms<a class="headerlink" href="#Calibration-algorithms" title="Permalink to this heading">#</a></h4>
+<p>Class <code class="docutils literal notranslate"><span class="pre">Calibration</span></code> implements two algorithms for calibration: <code class="docutils literal notranslate"><span class="pre">optimize</span></code> (default) and <code class="docutils literal notranslate"><span class="pre">alpha</span></code>.</p>
+<section id="Algorithm-optimize-(default)">
+<h5>Algorithm <code class="docutils literal notranslate"><span class="pre">optimize</span></code> (default)<a class="headerlink" href="#Algorithm-optimize-(default)" title="Permalink to this heading">#</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">optimize</span></code> algorithm calibrates the resistance design parameter, <span class="math notranslate nohighlight">\(z\)</span>, to obtain the design point on the LSF corresponding to <span class="math notranslate nohighlight">\(\beta_T\)</span> by utilizing <code class="docutils literal notranslate"><span class="pre">SciPy</span></code>’s inbuilt optimization algorithms.</p>
+</section>
+<section id="Algorithm-alpha">
+<h5>Algorithm <code class="docutils literal notranslate"><span class="pre">alpha</span></code><a class="headerlink" href="#Algorithm-alpha" title="Permalink to this heading">#</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">alpha</span></code> algorithm calibrates the resistance design parameter, <span class="math notranslate nohighlight">\(z\)</span>, by projecting the design point using the FORM <span class="math notranslate nohighlight">\(\alpha\)</span> estimates to obtain the design point on the LSF corresponding to <span class="math notranslate nohighlight">\(\beta_T\)</span>.</p>
+</section>
+</section>
+<section id="Estimation-algorithms">
+<h4>Estimation algorithms<a class="headerlink" href="#Estimation-algorithms" title="Permalink to this heading">#</a></h4>
+<p>Class <code class="docutils literal notranslate"><span class="pre">Calibration</span></code> implements two algorithms for estimation of safety and combination factors: <code class="docutils literal notranslate"><span class="pre">coeff</span></code> and <code class="docutils literal notranslate"><span class="pre">matrix</span></code> (default).</p>
+<section id="Algorithm-matrix-(default)">
+<h5>Algorithm <code class="docutils literal notranslate"><span class="pre">matrix</span></code> (default)<a class="headerlink" href="#Algorithm-matrix-(default)" title="Permalink to this heading">#</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">matrix</span></code> algorithm utilizes the calibrated design points, <span class="math notranslate nohighlight">\(X^*_{\beta_T}\)</span>, to estimate <span class="math notranslate nohighlight">\(\phi\)</span>, <span class="math notranslate nohighlight">\(\gamma\)</span>, and <span class="math notranslate nohighlight">\(\psi\)</span> by formulating a set of simultaneous equations using the structural design code equation, <span class="math notranslate nohighlight">\(z\phi R_k \geq \sum_i \psi_i \gamma_i S_{ki}\)</span>, where <span class="math notranslate nohighlight">\(S_{ki}\)</span>.</p>
+<p>For more details, see Caprani, C. and Khan, M. S., <em>Determination of load combination factors for the assessment of existing bridges</em>, ICASP14 (July 2023).</p>
+<p>The estimates of <span class="math notranslate nohighlight">\(\phi\)</span> and <span class="math notranslate nohighlight">\(\gamma\)</span> are obtained by dividing <span class="math notranslate nohighlight">\(X^*_{\beta_T}\)</span> with the corresponding nominal values as outlined earlier. To estimate <span class="math notranslate nohighlight">\(\psi\)</span>, the structural design code equation is rearranged to obtain a system of simultaneous equation at the limiting condition,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split} \begin{bmatrix}
+     0 &amp; \gamma_2 ~Q_{k2}   \\
+     \gamma_1 ~Q_{k1} &amp; 0 \\
+\end{bmatrix} \cdot \begin{bmatrix}
+     \psi_1  \\
+     \psi_2 \\
+\end{bmatrix} = \begin{bmatrix}
+    z_1\phi_1 R_k - \gamma_{G_1}~G_k  - \gamma_1~ Q_{k1} \\
+    z_2\phi_2 R_k - \gamma_{G_1}~G_k  - \gamma_2~ Q_{k2} \\
+\end{bmatrix}\end{split}\]</div>
+<p>Using <code class="docutils literal notranslate"><span class="pre">numpy</span></code> libraries to solve the system of simultaenous equations, estimates of <span class="math notranslate nohighlight">\(\psi\)</span> are obtained.</p>
+<p>This <code class="docutils literal notranslate"><span class="pre">matrix</span></code> estimation algorithm provides unique values of <span class="math notranslate nohighlight">\(\gamma\)</span> and <span class="math notranslate nohighlight">\(\psi\)</span>, while the <span class="math notranslate nohighlight">\(\phi\)</span> values can differ per load case. <code class="docutils literal notranslate"><span class="pre">Calibration.run()</span></code> takes an optional argument <code class="docutils literal notranslate"><span class="pre">set_max</span></code> (default value is <code class="docutils literal notranslate"><span class="pre">False</span></code>). If <code class="docutils literal notranslate"><span class="pre">set_max=True</span></code>, then the <code class="docutils literal notranslate"><span class="pre">coeff</span></code> algorithm sets the resulting dataframe of <span class="math notranslate nohighlight">\(\phi\)</span> to their maximum value per load case.</p>
+</section>
+<section id="Algorithm-coeff">
+<h5>Algorithm <code class="docutils literal notranslate"><span class="pre">coeff</span></code><a class="headerlink" href="#Algorithm-coeff" title="Permalink to this heading">#</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">coeff</span></code> algorithm utilizes the calibrated design points, <span class="math notranslate nohighlight">\(X^*_{\beta_T}\)</span>, to estimate <span class="math notranslate nohighlight">\(\phi\)</span>, <span class="math notranslate nohighlight">\(\gamma\)</span>, and <span class="math notranslate nohighlight">\(\psi\)</span> by comparing the coefficients. In this comparison, the design points values are mapped to the corresponding factors and nominal values, and the values of the corresponding factors are estimated, as demonstrated below. For more details refer to pp 136-42 of Sorensen, J.D. (2004), <em>Notes in Structural Reliability Theory And Risk Analysis</em>.</p>
+<p>For the example problem, the design points recovered from the projection step for the two load cases are:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}X^*_{\beta_T} = \begin{bmatrix}
+    z_1 &amp; \phi_1 R_k  &amp; \gamma_{G_1}~G_k  &amp; \gamma_1~ Q_{k1} &amp; \psi_{1,2}~~ \gamma_2 ~Q_{k2}   \\
+    z_2 &amp; \phi_2 R_k  &amp; \gamma_{G_1}~G_k  &amp; \psi_{2,1}~~ \gamma_1 ~Q_{k1} &amp; \gamma_2~ Q_{k2} \\
+\end{bmatrix}\end{split}\]</div>
+<p>Dividing by the corresponding nominal values and considering only the random variables, we get,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{bmatrix}
+    \phi_1  &amp; \gamma_G  &amp; \gamma_1 &amp; \psi_{1,2}~~ \gamma_2   \\
+    \phi_2  &amp; \gamma_G  &amp; \psi_{2,1}~~ \gamma_1 &amp; \gamma_2 \\
+\end{bmatrix}\end{split}\]</div>
+<p>By comparing the coefficients in the above matrix, estimates of <span class="math notranslate nohighlight">\(\phi\)</span>, <span class="math notranslate nohighlight">\(\gamma\)</span>, and <span class="math notranslate nohighlight">\(\psi\)</span> are obtained. This estimation algorithm provides unique values of <span class="math notranslate nohighlight">\(\gamma\)</span>, while the <span class="math notranslate nohighlight">\(\phi\)</span> and <span class="math notranslate nohighlight">\(\psi\)</span> values can differ per load case. <code class="docutils literal notranslate"><span class="pre">Calibration.run()</span></code> takes an optional argument <code class="docutils literal notranslate"><span class="pre">set_max</span></code> (default value is <code class="docutils literal notranslate"><span class="pre">False</span></code>). If <code class="docutils literal notranslate"><span class="pre">set_max=True</span></code>, then the <code class="docutils literal notranslate"><span class="pre">coeff</span></code> algorithm sets the resulting dataframe of <span class="math notranslate nohighlight">\(\psi\)</span> or <span class="math notranslate nohighlight">\(\phi\)</span> to their maximum value per load
+case.</p>
+</section>
+</section>
+</section>
+<section id="Design-Check">
+<h3>Design Check<a class="headerlink" href="#Design-Check" title="Permalink to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Calibration</span></code> implements methods to check whether the a design conducted on the basis of the estimated safety factors, actually achieves a minimum safety corresponding to <span class="math notranslate nohighlight">\(\beta_T\)</span> for all load cases. This check is implemented as follows. The calibrated estimates of <span class="math notranslate nohighlight">\(\phi\)</span>, <span class="math notranslate nohighlight">\(\gamma\)</span>, and <span class="math notranslate nohighlight">\(\psi\)</span> can be checked to ensure that a design based on them actually achieves a lower bound safety corresponding to <span class="math notranslate nohighlight">\(\beta_T\)</span> as follows: 1. Using <span class="math notranslate nohighlight">\(\phi\)</span>, <span class="math notranslate nohighlight">\(\gamma\)</span>,
+<span class="math notranslate nohighlight">\(\psi\)</span>, and the specified nominal values, estimate the design multiplier for resistance, <span class="math notranslate nohighlight">\(z\)</span> for each load case, <span class="math notranslate nohighlight">\(j\)</span> using the LSF. 2. Using the design multiplier, i.e. maximum <span class="math notranslate nohighlight">\(z\)</span>, and corresponding load and resistance distributions, do forward reliability analysis to obtain the reliability index for each load case, <span class="math notranslate nohighlight">\(\beta_j\)</span>. 3. Check <span class="math notranslate nohighlight">\(\beta_j \geq \beta_T\)</span>.</p>
+<p><em>Pystra</em> implements two methods for the design check: <code class="docutils literal notranslate"><span class="pre">calibration.get_design_param_factor()</span></code> and <code class="docutils literal notranslate"><span class="pre">calibration.calc_beta_design_param()</span></code> for above step 1 and step 2, respectively.</p>
+</section>
+<section id="Reliability-Calibration-(using-coeff-and-optimize)">
+<h3>Reliability Calibration (using <code class="docutils literal notranslate"><span class="pre">coeff</span></code> and <code class="docutils literal notranslate"><span class="pre">optimize</span></code>)<a class="headerlink" href="#Reliability-Calibration-(using-coeff-and-optimize)" title="Permalink to this heading">#</a></h3>
+<section id="Perform-Calibration">
+<h4>Perform Calibration<a class="headerlink" href="#Perform-Calibration" title="Permalink to this heading">#</a></h4>
+<p>This configuration mirrors that of Sorensen’s (2004) solution noted above.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">calib</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Calibration</span><span class="p">(</span><span class="n">lc</span><span class="p">,</span> <span class="n">target_beta</span><span class="o">=</span><span class="n">betaT</span><span class="p">,</span> <span class="n">dict_nom_vals</span><span class="o">=</span><span class="n">dict_nom</span><span class="p">,</span> <span class="n">calib_var</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">,</span>
+                        <span class="n">est_method</span><span class="o">=</span><span class="s2">&quot;coeff&quot;</span><span class="p">,</span> <span class="n">calib_method</span><span class="o">=</span><span class="s2">&quot;optimize&quot;</span><span class="p">,</span>
+                        <span class="n">print_output</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">calib</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">calib</span><span class="o">.</span><span class="n">print_detailed_output</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+
+======================================================
+X* =
+            R     G    Q1    Q2     z
+Q1_max  0.66  1.04  1.62  2.02  3.04
+Q2_max  0.66  1.04  1.51  2.25  3.05
+
+phi =
+            R
+Q1_max  0.85
+Q2_max  0.85
+
+gamma =
+            G    Q1   Q2
+Q1_max  1.04  1.07  1.1
+Q2_max  1.04  1.07  1.1
+
+psi =
+           G    Q1   Q2
+Q1_max  1.0  1.00  0.9
+Q2_max  1.0  0.93  1.0
+======================================================
+</pre></div></div>
+</div>
+<p>The above results are in agreement with those presented in Example 4 in Sorensen, J.D. (2004), <em>Notes in Structural Reliability Theory And Risk Analysis</em>.</p>
+</section>
+<section id="id1">
+<h4>Design Check<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h4>
+<p>Here we confirm that the reliability target is met, as explained above.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">design_z</span> <span class="o">=</span> <span class="n">calib</span><span class="o">.</span><span class="n">get_design_param_factor</span><span class="p">()</span>
+<span class="n">design_beta</span> <span class="o">=</span> <span class="n">calib</span><span class="o">.</span><span class="n">calc_beta_design_param</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">design_z</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Design reliabilities = </span><span class="si">{</span><span class="n">design_beta</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Design Check = </span><span class="si">{</span><span class="n">design_beta</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">&gt;=</span><span class="n">betaT</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Design reliabilities = [4.31 4.3 ]
+Design Check = [ True  True]
+</pre></div></div>
+</div>
+<p>Similarly, the calibration can be done using other algorithms</p>
+</section>
+</section>
+<section id="Reliability-Calibration-(using-matrix-and-optimize)">
+<h3>Reliability Calibration (using <code class="docutils literal notranslate"><span class="pre">matrix</span></code> and <code class="docutils literal notranslate"><span class="pre">optimize</span></code>)<a class="headerlink" href="#Reliability-Calibration-(using-matrix-and-optimize)" title="Permalink to this heading">#</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">calib</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Calibration</span><span class="p">(</span><span class="n">lc</span><span class="p">,</span> <span class="n">target_beta</span><span class="o">=</span><span class="n">betaT</span><span class="p">,</span> <span class="n">dict_nom_vals</span><span class="o">=</span><span class="n">dict_nom</span><span class="p">,</span> <span class="n">calib_var</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">,</span>
+                        <span class="n">est_method</span><span class="o">=</span><span class="s2">&quot;matrix&quot;</span><span class="p">,</span> <span class="n">calib_method</span><span class="o">=</span><span class="s2">&quot;optimize&quot;</span><span class="p">)</span>
+<span class="n">calib</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">calib</span><span class="o">.</span><span class="n">print_detailed_output</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+
+======================================================
+X* =
+            R     G    Q1    Q2     z
+Q1_max  0.66  1.04  1.62  2.02  3.04
+Q2_max  0.66  1.04  1.51  2.25  3.05
+
+phi =
+            R
+Q1_max  0.85
+Q2_max  0.85
+
+gamma =
+            G    Q1   Q2
+Q1_max  1.04  1.07  1.1
+Q2_max  1.04  1.07  1.1
+
+psi =
+           G    Q1   Q2
+Q1_max  1.0  1.00  0.9
+Q2_max  1.0  0.93  1.0
+======================================================
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">design_z</span> <span class="o">=</span> <span class="n">calib</span><span class="o">.</span><span class="n">get_design_param_factor</span><span class="p">()</span>
+<span class="n">design_beta</span> <span class="o">=</span> <span class="n">calib</span><span class="o">.</span><span class="n">calc_beta_design_param</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">design_z</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Design reliabilities = </span><span class="si">{</span><span class="n">design_beta</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Design Check = </span><span class="si">{</span><span class="n">design_beta</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">&gt;=</span><span class="n">betaT</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Design reliabilities = [4.31 4.3 ]
+Design Check = [ True  True]
+</pre></div></div>
+</div>
+</section>
+<section id="Reliability-Calibration-(using-matrix-and-alpha)">
+<h3>Reliability Calibration (using <code class="docutils literal notranslate"><span class="pre">matrix</span></code> and <code class="docutils literal notranslate"><span class="pre">alpha</span></code>)<a class="headerlink" href="#Reliability-Calibration-(using-matrix-and-alpha)" title="Permalink to this heading">#</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">calib</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Calibration</span><span class="p">(</span><span class="n">lc</span><span class="p">,</span> <span class="n">target_beta</span><span class="o">=</span><span class="n">betaT</span><span class="p">,</span> <span class="n">dict_nom_vals</span><span class="o">=</span><span class="n">dict_nom</span><span class="p">,</span> <span class="n">calib_var</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">,</span>
+                        <span class="n">est_method</span><span class="o">=</span><span class="s2">&quot;matrix&quot;</span><span class="p">,</span> <span class="n">calib_method</span><span class="o">=</span><span class="s2">&quot;alpha&quot;</span><span class="p">)</span>
+<span class="n">calib</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">calib</span><span class="o">.</span><span class="n">print_detailed_output</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+
+======================================================
+X* =
+            R     G    Q1    Q2     z
+Q1_max  0.66  1.04  1.62  2.02  3.04
+Q2_max  0.66  1.04  1.51  2.25  3.05
+
+phi =
+            R
+Q1_max  0.85
+Q2_max  0.85
+
+gamma =
+            G    Q1   Q2
+Q1_max  1.04  1.07  1.1
+Q2_max  1.04  1.07  1.1
+
+psi =
+           G    Q1   Q2
+Q1_max  1.0  1.00  0.9
+Q2_max  1.0  0.93  1.0
+======================================================
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">design_z</span> <span class="o">=</span> <span class="n">calib</span><span class="o">.</span><span class="n">get_design_param_factor</span><span class="p">()</span>
+<span class="n">design_beta</span> <span class="o">=</span> <span class="n">calib</span><span class="o">.</span><span class="n">calc_beta_design_param</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">design_z</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Design reliabilities = </span><span class="si">{</span><span class="n">design_beta</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Design Check = </span><span class="si">{</span><span class="n">design_beta</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">&gt;=</span><span class="n">betaT</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Design reliabilities = [4.31 4.3 ]
+Design Check = [ True  True]
+</pre></div></div>
+</div>
+</section>
+</section>
+<section id="Safety-Factor-Calibration-for-Non-Linear-Limit-State-Functions-(LSFs)">
+<h2>Safety Factor Calibration for Non Linear Limit State Functions (LSFs)<a class="headerlink" href="#Safety-Factor-Calibration-for-Non-Linear-Limit-State-Functions-(LSFs)" title="Permalink to this heading">#</a></h2>
+<p>This tutorial demonstrates how <code class="docutils literal notranslate"><span class="pre">Pystra</span></code> can calibrate safety and combination factors for Non-Linear limit state functions.</p>
+<section id="id2">
+<h3>Import Libraries<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pystra</span> <span class="k">as</span> <span class="nn">ra</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="id3">
+<h3>Define the limit state function for calibration<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
+<p>The LSF to be supplied in <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> can be any valid <em>Pystra</em> LSF with one additional argument: a scalar design parameter for a random variable (generally, the resistance). Note that: 1. The design parameter must be specified as a <code class="docutils literal notranslate"><span class="pre">Pystra</span></code> constant with any arbitrary default value, such as <code class="docutils literal notranslate"><span class="pre">1.0</span></code>. 2. Only a single design parameter for the resistance random variable can be calibrated at a time.</p>
+<p>Keeping with the <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> example, the design parameter for resistance, denoted <span class="math notranslate nohighlight">\(z\)</span>, is added to the LSF. The LSF contains additional random variables <code class="docutils literal notranslate"><span class="pre">wR</span></code> and <code class="docutils literal notranslate"><span class="pre">wS</span></code> to account for the uncertainties within the resistance and the load effects, respectively. The non-linearity of the LSF is evident as the degree of random variables in each term of the LSF is two.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">lsf</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">wR</span><span class="p">,</span> <span class="n">wS</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Q1</span><span class="p">,</span> <span class="n">Q2</span><span class="p">):</span>
+    <span class="n">gX</span> <span class="o">=</span> <span class="n">z</span> <span class="o">*</span> <span class="n">wR</span> <span class="o">*</span> <span class="n">R</span> <span class="o">-</span> <span class="n">wS</span> <span class="o">*</span> <span class="p">(</span><span class="n">Q1</span> <span class="o">+</span> <span class="n">Q2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">gX</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="id4">
+<h3>Define the Load and Resistance distributions<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
+<p>Next follow the creation of load combination object, as explained for the <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> class.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">wR</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Lognormal</span><span class="p">(</span><span class="s2">&quot;wR&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">)</span>
+<span class="n">wS</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Lognormal</span><span class="p">(</span><span class="s2">&quot;wS&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">)</span>
+<span class="n">R</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>  <span class="c1"># [units]</span>
+<span class="n">Q1_max</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;Q1&quot;</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># [units]</span>
+<span class="n">Q2_max</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;Q2&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># [units]</span>
+<span class="n">Q1_pit</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;Q1&quot;</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># [units]</span>
+<span class="n">Q2_pit</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;Q2&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># [units]</span>
+
+<span class="n">z</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Set-up-Load-Combinations">
+<h3>Set up Load Combinations<a class="headerlink" href="#Set-up-Load-Combinations" title="Permalink to this heading">#</a></h3>
+<section id="Specify-nominal-values-&amp;-combinations">
+<h4>Specify nominal values &amp; combinations<a class="headerlink" href="#Specify-nominal-values-&-combinations" title="Permalink to this heading">#</a></h4>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rvs_all</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;wR&#39;</span><span class="p">,</span> <span class="s1">&#39;wS&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;Q1&#39;</span><span class="p">,</span> <span class="s1">&#39;Q2&#39;</span><span class="p">]</span>
+<span class="n">dict_nom</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">rvs_all</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">R</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mf">0.05</span><span class="p">),</span>
+                                             <span class="n">Q1_max</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mf">0.95</span><span class="p">),</span>
+                                             <span class="n">Q2_max</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mf">0.95</span><span class="p">)])))</span>
+
+<span class="n">Q_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Q1&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="n">Q1_max</span><span class="p">,</span> <span class="s1">&#39;pit&#39;</span><span class="p">:</span> <span class="n">Q1_pit</span><span class="p">},</span>
+      <span class="s1">&#39;Q2&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="n">Q2_max</span><span class="p">,</span> <span class="s1">&#39;pit&#39;</span><span class="p">:</span> <span class="n">Q2_pit</span><span class="p">}}</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">loadcombinations</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Q1_max&#39;</span><span class="p">:[</span><span class="s1">&#39;Q1&#39;</span><span class="p">],</span> <span class="s1">&#39;Q2_max&#39;</span><span class="p">:[</span><span class="s1">&#39;Q2&#39;</span><span class="p">]}</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="id5">
+<h4>Instantiate <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> object<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h4>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lc</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">LoadCombination</span><span class="p">(</span><span class="n">lsf</span><span class="p">,</span>
+                        <span class="n">dict_dist_comb</span><span class="o">=</span><span class="n">Q_dict</span><span class="p">,</span>
+                        <span class="n">list_dist_other</span><span class="o">=</span><span class="p">[</span><span class="n">wS</span><span class="p">],</span>
+                        <span class="n">list_dist_resist</span><span class="o">=</span><span class="p">[</span><span class="n">R</span><span class="p">,</span> <span class="n">wR</span><span class="p">],</span>
+                        <span class="n">list_const</span> <span class="o">=</span> <span class="p">[</span><span class="n">z</span><span class="p">],</span>
+                        <span class="n">dict_comb_cases</span><span class="o">=</span><span class="n">loadcombinations</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Note that since <code class="docutils literal notranslate"><span class="pre">wR</span></code> is associated with the resistance, it is specified in <code class="docutils literal notranslate"><span class="pre">list_dist_resist</span></code>; while <code class="docutils literal notranslate"><span class="pre">wS</span></code> is specified in <code class="docutils literal notranslate"><span class="pre">list_dist_other</span></code> as it is associated with the load effects but it’s not a load combination variable.</p>
+</section>
+</section>
+<section id="Safety-Factor-calibration">
+<h3>Safety Factor calibration<a class="headerlink" href="#Safety-Factor-calibration" title="Permalink to this heading">#</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">betaT</span> <span class="o">=</span> <span class="mf">3.7</span>
+<span class="n">calib1</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Calibration</span><span class="p">(</span><span class="n">lc</span><span class="p">,</span> <span class="n">target_beta</span><span class="o">=</span><span class="n">betaT</span><span class="p">,</span> <span class="n">dict_nom_vals</span><span class="o">=</span>
+                                <span class="n">dict_nom</span><span class="p">,</span> <span class="n">calib_var</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">,</span>
+                                <span class="n">est_method</span><span class="o">=</span><span class="s2">&quot;matrix&quot;</span><span class="p">,</span> <span class="n">calib_method</span><span class="o">=</span><span class="s2">&quot;optimize&quot;</span><span class="p">)</span>
+<span class="n">calib1</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+<span class="n">calib1</span><span class="o">.</span><span class="n">print_detailed_output</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+
+======================================================
+X* =
+             R    wR   wS     Q1     Q2     z
+Q1_max  44.40  0.95  1.2  33.81  11.69  1.30
+Q2_max  44.76  0.95  1.2  19.16  21.85  1.16
+
+phi =
+            R    wR
+Q1_max  0.89  0.95
+Q2_max  0.89  0.95
+
+gamma =
+          wS    Q1    Q2
+Q1_max  1.2  0.97  0.94
+Q2_max  1.2  0.97  0.94
+
+psi =
+          wS    Q1    Q2
+Q1_max  1.0  1.00  0.54
+Q2_max  1.0  0.57  1.00
+======================================================
+</pre></div></div>
+</div>
+<section id="id7">
+<h4>Design Check<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h4>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">design_z1</span> <span class="o">=</span> <span class="n">calib1</span><span class="o">.</span><span class="n">get_design_param_factor</span><span class="p">()</span>
+<span class="n">design_beta1</span> <span class="o">=</span> <span class="n">calib1</span><span class="o">.</span><span class="n">calc_beta_design_param</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">design_z1</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Design reliabilities = </span><span class="si">{</span><span class="n">design_beta1</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Design Check = </span><span class="si">{</span><span class="n">design_beta1</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">&gt;=</span><span class="n">betaT</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Design reliabilities = [3.7  4.29]
+Design Check = [ True  True]
+</pre></div></div>
+</div>
+</section>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="ex_load_combinations.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Load Combinations</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="ex_generic_calibration.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Generic Code Calibration</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Example">Example</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Import-Libraries">Import Libraries</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-the-limit-state-function-for-calibration">Define the limit state function for calibration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-the-Load-and-Resistance-distributions">Define the Load and Resistance distributions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Instantiate-LoadCombination-object">Instantiate <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> object</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#Setup-load-combination-cases">Setup load combination cases</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Specify-Nominal-(or-characteristic)-values">Specify Nominal (or characteristic) values</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Specify-target-reliability-index,-\beta_T">Specify target reliability index, <span class="math notranslate nohighlight">\(\beta_T\)</span></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Calibrate-safety-and-combination-factors">Calibrate safety and combination factors</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#Calibration-algorithms">Calibration algorithms</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#Algorithm-optimize-(default)">Algorithm <code class="docutils literal notranslate"><span class="pre">optimize</span></code> (default)</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#Algorithm-alpha">Algorithm <code class="docutils literal notranslate"><span class="pre">alpha</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#Estimation-algorithms">Estimation algorithms</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#Algorithm-matrix-(default)">Algorithm <code class="docutils literal notranslate"><span class="pre">matrix</span></code> (default)</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#Algorithm-coeff">Algorithm <code class="docutils literal notranslate"><span class="pre">coeff</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Design-Check">Design Check</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Reliability-Calibration-(using-coeff-and-optimize)">Reliability Calibration (using <code class="docutils literal notranslate"><span class="pre">coeff</span></code> and <code class="docutils literal notranslate"><span class="pre">optimize</span></code>)</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#Perform-Calibration">Perform Calibration</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Design Check</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Reliability-Calibration-(using-matrix-and-optimize)">Reliability Calibration (using <code class="docutils literal notranslate"><span class="pre">matrix</span></code> and <code class="docutils literal notranslate"><span class="pre">optimize</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Reliability-Calibration-(using-matrix-and-alpha)">Reliability Calibration (using <code class="docutils literal notranslate"><span class="pre">matrix</span></code> and <code class="docutils literal notranslate"><span class="pre">alpha</span></code>)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Safety-Factor-Calibration-for-Non-Linear-Limit-State-Functions-(LSFs)">Safety Factor Calibration for Non Linear Limit State Functions (LSFs)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Import Libraries</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Define the limit state function for calibration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Define the Load and Resistance distributions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Set-up-Load-Combinations">Set up Load Combinations</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#Specify-nominal-values-&amp;-combinations">Specify nominal values &amp; combinations</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Instantiate <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> object</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Safety-Factor-calibration">Safety Factor calibration</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">Design Check</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/pystra/pystra/edit/main/docs/source/notebooks/ex_factor_calibration.ipynb">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023, The PySTRA Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.14.4.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,976 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Quick Demonstration for Global calibration of safety and combination factors &#8212; PySTRA 1.3.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3d533f9b"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/example_global_calibration';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 1.3.0 documentation - Home"/>
+    <script>document.write(`<img src="../_static/icon_pystra_small.png" class="logo__image only-dark" alt="PySTRA 1.3.0 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../install.html">
+                        Installation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../tutorial.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../api.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../theory.html">
+                        Theoretical Background
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../references.html">
+                        References
+                      </a>
+                    </li>
+                
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="../developer.html">
+                        Instructions for Developers
+                      </a>
+                    </li>
+                
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-github-square fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item">
+<nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../install.html">
+                        Installation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../tutorial.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../api.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../theory.html">
+                        Theoretical Background
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../references.html">
+                        References
+                      </a>
+                    </li>
+                
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links-2">
+                    More
+                </button>
+                <ul id="pst-nav-more-links-2" class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="../developer.html">
+                        Instructions for Developers
+                      </a>
+                    </li>
+                
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-github-square fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">Quick...</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="Quick-Demonstration-for-Global-calibration-of-safety-and-combination-factors">
+<h1>Quick Demonstration for Global calibration of safety and combination factors<a class="headerlink" href="#Quick-Demonstration-for-Global-calibration-of-safety-and-combination-factors" title="Permalink to this heading">#</a></h1>
+<p>Calibrate a set of safety and combination factors for two different structures identified by two different LSFs.</p>
+<p>The first LSF is given by:</p>
+<div class="math notranslate nohighlight">
+\[z_1*R \geq (0.4*G + 0.6*Q1 + 0.3*Q2)\]</div>
+<p>The second LSF is given by:</p>
+<div class="math notranslate nohighlight">
+\[z_2*R \geq (0.4*G + 0.3*Q1 + 0.6*Q2)\]</div>
+<p>Note: 1. I think it is reasonable to assume that any global calibration exercise would contain the same load effects albeit with different nominal values. 2. This is just a quick demonstration. 3. The objective is also to utilize as much as existing Pystra code as possible.</p>
+<section id="Import-Libraries-and-define-utility-functions">
+<h2>Import Libraries and define utility functions<a class="headerlink" href="#Import-Libraries-and-define-utility-functions" title="Permalink to this heading">#</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="kn">import</span> <span class="nn">pystra</span> <span class="k">as</span> <span class="nn">ra</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">lsf</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">Q1</span><span class="p">,</span> <span class="n">Q2</span><span class="p">,</span> <span class="n">cg</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">z</span><span class="o">*</span><span class="n">R</span> <span class="o">-</span> <span class="p">(</span><span class="n">cg</span><span class="o">*</span><span class="n">G</span> <span class="o">+</span> <span class="n">c1</span><span class="o">*</span><span class="n">Q1</span> <span class="o">+</span> <span class="n">c2</span><span class="o">*</span><span class="n">Q2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_df_gamma</span><span class="p">(</span><span class="n">gg</span><span class="p">,</span> <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a Dataframe of Gamma factors from a set of input values such that</span>
+<span class="sd">    it can be utilized by the respective calibration object.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">list_g</span> <span class="o">=</span> <span class="p">[</span><span class="n">gg</span><span class="p">,</span> <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">]</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;Q1&#39;</span><span class="p">,</span> <span class="s1">&#39;Q2&#39;</span><span class="p">]</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Q1_max&#39;</span><span class="p">,</span> <span class="s1">&#39;Q2_max&#39;</span><span class="p">]</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">list_g</span><span class="p">,</span> <span class="n">list_g</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="n">cols</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">idx</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span>
+
+<span class="k">def</span> <span class="nf">create_df_phi</span><span class="p">(</span><span class="n">phi</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a Dataframe of Phi factors from a set of input values such that</span>
+<span class="sd">    it can be utilized by the respective calibration object.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">list_phi</span> <span class="o">=</span> <span class="p">[</span><span class="n">phi</span><span class="p">]</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">]</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Q1_max&#39;</span><span class="p">,</span> <span class="s1">&#39;Q2_max&#39;</span><span class="p">]</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">list_phi</span><span class="p">,</span> <span class="n">list_phi</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="n">cols</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">idx</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span>
+
+<span class="k">def</span> <span class="nf">create_df_psi</span><span class="p">(</span><span class="n">psi1</span><span class="p">,</span> <span class="n">psi2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a Dataframe of Psi factors from a set of input values such that</span>
+<span class="sd">    it can be utilized by the respective calibration object.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">list_psi1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">psi2</span><span class="p">]</span>
+    <span class="n">list_psi2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">psi1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;Q1&#39;</span><span class="p">,</span> <span class="s1">&#39;Q2&#39;</span><span class="p">]</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Q1_max&#39;</span><span class="p">,</span> <span class="s1">&#39;Q2_max&#39;</span><span class="p">]</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">list_psi1</span><span class="p">,</span> <span class="n">list_psi2</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="n">cols</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">idx</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">run_calib_design</span><span class="p">(</span><span class="n">dfphi</span><span class="p">,</span> <span class="n">dfgamma</span><span class="p">,</span> <span class="n">dfpsi</span><span class="p">,</span> <span class="n">calib</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Take a set of factors for a calibration object and run a design check.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">calib</span><span class="o">.</span><span class="n">df_phi</span> <span class="o">=</span> <span class="n">dfphi</span>
+    <span class="n">calib</span><span class="o">.</span><span class="n">df_gamma</span> <span class="o">=</span> <span class="n">dfgamma</span>
+    <span class="n">calib</span><span class="o">.</span><span class="n">df_psi</span> <span class="o">=</span> <span class="n">dfpsi</span>
+    <span class="n">design_z</span> <span class="o">=</span> <span class="n">calib</span><span class="o">.</span><span class="n">get_design_param_factor</span><span class="p">()</span>
+    <span class="n">design_beta</span> <span class="o">=</span> <span class="n">calib</span><span class="o">.</span><span class="n">calc_beta_design_param</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">design_z</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">design_beta</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">obj_func_global</span><span class="p">(</span><span class="n">list_factors</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Objective function for minimization: weighted mean sequared error.</span>
+<span class="sd">    Taken from Gayton (2004) pg. 5.</span>
+
+<span class="sd">    Takes a set of input parameters, creates corresponding dataframes,</span>
+<span class="sd">    finds corresponding design reliabilities for each calibration object,</span>
+<span class="sd">    and returns the residual.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">list_factors</span><span class="p">)</span>
+    <span class="n">gg</span><span class="p">,</span> <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">psi1</span><span class="p">,</span> <span class="n">psi2</span><span class="p">,</span> <span class="n">phi</span> <span class="o">=</span> <span class="n">list_factors</span>
+    <span class="n">df_phi</span> <span class="o">=</span> <span class="n">create_df_phi</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
+    <span class="n">df_gamma</span> <span class="o">=</span> <span class="n">create_df_gamma</span><span class="p">(</span><span class="n">gg</span><span class="p">,</span> <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">)</span>
+    <span class="n">df_psi</span> <span class="o">=</span> <span class="n">create_df_psi</span><span class="p">(</span><span class="n">psi1</span><span class="p">,</span> <span class="n">psi2</span><span class="p">)</span>
+    <span class="n">design_beta1</span> <span class="o">=</span> <span class="n">run_calib_design</span><span class="p">(</span><span class="n">df_phi</span><span class="p">,</span> <span class="n">df_gamma</span><span class="p">,</span> <span class="n">df_psi</span><span class="p">,</span> <span class="n">calib1</span><span class="p">)</span>
+    <span class="n">design_beta2</span> <span class="o">=</span> <span class="n">run_calib_design</span><span class="p">(</span><span class="n">df_phi</span><span class="p">,</span> <span class="n">df_gamma</span><span class="p">,</span> <span class="n">df_psi</span><span class="p">,</span> <span class="n">calib2</span><span class="p">)</span>
+    <span class="n">list_betaj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">design_beta1</span><span class="p">,</span> <span class="n">design_beta2</span><span class="p">])</span>
+    <span class="n">list_wj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="n">xx</span> <span class="o">*</span> <span class="p">(</span><span class="n">yy</span><span class="o">-</span><span class="n">betaT</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">xx</span><span class="p">,</span><span class="n">yy</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">list_wj</span><span class="p">,</span> <span class="n">list_betaj</span><span class="p">)])</span>
+    <span class="k">return</span> <span class="n">res</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Set-up-problem-input">
+<h2>Set up problem input<a class="headerlink" href="#Set-up-problem-input" title="Permalink to this heading">#</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Set parameters for LoadCombination: Distributions and combinations</span>
+<span class="c1"># Annual max distributions</span>
+<span class="n">Q1max</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Gumbel</span><span class="p">(</span><span class="s2">&quot;Q1&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>  <span class="c1"># Imposed Load</span>
+<span class="n">Q2max</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Gumbel</span><span class="p">(</span><span class="s2">&quot;Q2&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>  <span class="c1"># Wind Load</span>
+<span class="c1"># Parameters of inferred point-in-time parents</span>
+<span class="n">Q1pit</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Gumbel</span><span class="p">(</span><span class="s2">&quot;Q1&quot;</span><span class="p">,</span> <span class="mf">0.89</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>  <span class="c1"># Imposed Load</span>
+<span class="n">Q2pit</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Gumbel</span><span class="p">(</span><span class="s2">&quot;Q2&quot;</span><span class="p">,</span> <span class="mf">0.77</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>  <span class="c1"># Wind Load</span>
+<span class="n">Q_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Q1&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="n">Q1max</span><span class="p">,</span> <span class="s1">&#39;pit&#39;</span><span class="p">:</span> <span class="n">Q1pit</span><span class="p">},</span>
+          <span class="s1">&#39;Q2&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="n">Q2max</span><span class="p">,</span> <span class="s1">&#39;pit&#39;</span><span class="p">:</span> <span class="n">Q2pit</span><span class="p">}}</span>
+<span class="c1"># Constant values</span>
+<span class="n">cg1</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;cg&quot;</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>
+<span class="n">c11</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;c1&quot;</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)</span>
+<span class="n">c21</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;c2&quot;</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+<span class="n">cg2</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;cg&quot;</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>
+<span class="n">c12</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;c1&quot;</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+<span class="n">c22</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;c2&quot;</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Design parameter for resistance with arbitrary default value</span>
+
+<span class="c1">## Define other random variables</span>
+<span class="n">Rdist</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Lognormal</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">)</span>  <span class="c1"># Resistance</span>
+<span class="n">Gdist</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">&quot;G&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>  <span class="c1"># Permanent Load (other load variable)</span>
+<span class="n">loadcombinations</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Q1_max&#39;</span><span class="p">:[</span><span class="s1">&#39;Q1&#39;</span><span class="p">],</span> <span class="s1">&#39;Q2_max&#39;</span><span class="p">:[</span><span class="s1">&#39;Q2&#39;</span><span class="p">]}</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Set parameters for calibration: nominal values and target Beta</span>
+<span class="n">Qk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">Q1max</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mf">0.98</span><span class="p">),</span> <span class="n">Q2max</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mf">0.98</span><span class="p">)])</span>
+<span class="n">Gk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">Gdist</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)])</span>
+<span class="n">Rk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">Rdist</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)])</span>
+<span class="n">rvs_all</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;Q1&#39;</span><span class="p">,</span> <span class="s1">&#39;Q2&#39;</span><span class="p">,</span> <span class="s1">&#39;Q3&#39;</span><span class="p">]</span>
+<span class="n">dict_nom</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">rvs_all</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">Rk</span><span class="p">,</span> <span class="n">Gk</span><span class="p">,</span> <span class="n">Qk</span><span class="p">])))</span>
+<span class="n">betaT</span> <span class="o">=</span> <span class="mf">4.3</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Instantiate-Combination-and-Calibration-Objects">
+<h2>Instantiate Combination and Calibration Objects<a class="headerlink" href="#Instantiate-Combination-and-Calibration-Objects" title="Permalink to this heading">#</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Instantiate LoadCombination object</span>
+<span class="n">lc1</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">LoadCombination</span><span class="p">(</span><span class="n">lsf</span><span class="p">,</span> <span class="n">Q_dict</span><span class="p">,</span> <span class="p">[</span><span class="n">Gdist</span><span class="p">],</span> <span class="p">[</span><span class="n">Rdist</span><span class="p">],</span> <span class="p">[</span><span class="n">z</span><span class="p">,</span> <span class="n">cg1</span><span class="p">,</span> <span class="n">c11</span><span class="p">,</span> <span class="n">c21</span><span class="p">],</span>
+                      <span class="n">dict_comb_cases</span><span class="o">=</span><span class="n">loadcombinations</span><span class="p">)</span>
+<span class="n">lc2</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">LoadCombination</span><span class="p">(</span><span class="n">lsf</span><span class="p">,</span> <span class="n">Q_dict</span><span class="p">,</span> <span class="p">[</span><span class="n">Gdist</span><span class="p">],</span> <span class="p">[</span><span class="n">Rdist</span><span class="p">],</span> <span class="p">[</span><span class="n">z</span><span class="p">,</span> <span class="n">cg2</span><span class="p">,</span> <span class="n">c12</span><span class="p">,</span> <span class="n">c22</span><span class="p">],</span>
+                      <span class="n">dict_comb_cases</span><span class="o">=</span><span class="n">loadcombinations</span><span class="p">)</span>
+
+
+<span class="c1">## Instantiate Calibration object</span>
+<span class="n">calib1</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Calibration</span><span class="p">(</span><span class="n">lc1</span><span class="p">,</span> <span class="n">target_beta</span><span class="o">=</span><span class="n">betaT</span><span class="p">,</span> <span class="n">dict_nom_vals</span><span class="o">=</span><span class="n">dict_nom</span><span class="p">,</span>
+                        <span class="n">calib_var</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="n">est_method</span><span class="o">=</span><span class="s2">&quot;matrix&quot;</span><span class="p">,</span>
+                        <span class="n">calib_method</span><span class="o">=</span><span class="s2">&quot;optimize&quot;</span><span class="p">,</span> <span class="n">print_output</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">calib2</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Calibration</span><span class="p">(</span><span class="n">lc2</span><span class="p">,</span> <span class="n">target_beta</span><span class="o">=</span><span class="n">betaT</span><span class="p">,</span> <span class="n">dict_nom_vals</span><span class="o">=</span><span class="n">dict_nom</span><span class="p">,</span>
+                        <span class="n">calib_var</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="n">est_method</span><span class="o">=</span><span class="s2">&quot;matrix&quot;</span><span class="p">,</span>
+                        <span class="n">calib_method</span><span class="o">=</span><span class="s2">&quot;optimize&quot;</span><span class="p">,</span> <span class="n">print_output</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Global-Optimization">
+<h2>Global Optimization<a class="headerlink" href="#Global-Optimization" title="Permalink to this heading">#</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Run Global optimization</span>
+<span class="c1"># Starting values taken from results of calib1.run()</span>
+<span class="n">start</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0371</span><span class="p">,</span> <span class="mf">1.069218</span><span class="p">,</span> <span class="mf">1.102563</span><span class="p">,</span> <span class="mf">0.931848</span><span class="p">,</span> <span class="mf">0.898165</span><span class="p">,</span> <span class="mf">0.846876</span><span class="p">]</span>
+<span class="c1"># Specify Bounds for the respective parameters</span>
+<span class="n">g_low</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">g_up</span> <span class="o">=</span> <span class="mf">1.6</span>
+<span class="n">psi_low</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">psi_up</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">phi_low</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">phi_up</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">bnds</span> <span class="o">=</span> <span class="p">((</span><span class="n">g_low</span><span class="p">,</span> <span class="n">g_up</span><span class="p">),</span> <span class="p">(</span><span class="n">g_low</span><span class="p">,</span> <span class="n">g_up</span><span class="p">),</span> <span class="p">(</span><span class="n">g_low</span><span class="p">,</span> <span class="n">g_up</span><span class="p">),</span> <span class="p">(</span><span class="n">psi_low</span><span class="p">,</span> <span class="n">psi_up</span><span class="p">),</span>
+        <span class="p">(</span><span class="n">psi_low</span><span class="p">,</span> <span class="n">psi_up</span><span class="p">),</span> <span class="p">(</span><span class="n">phi_low</span><span class="p">,</span> <span class="n">phi_up</span><span class="p">))</span>
+<span class="c1"># Optimize</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">obj_func_global</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bnds</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[1.0371   1.069218 1.102563 0.931848 0.898165 0.846876]
+[1.03710001 1.069218   1.102563   0.931848   0.898165   0.846876  ]
+[1.0371     1.06921801 1.102563   0.931848   0.898165   0.846876  ]
+[1.0371     1.069218   1.10256301 0.931848   0.898165   0.846876  ]
+[1.0371     1.069218   1.102563   0.93184801 0.898165   0.846876  ]
+[1.0371     1.069218   1.102563   0.931848   0.89816501 0.846876  ]
+[1.0371     1.069218   1.102563   0.931848   0.898165   0.84687601]
+[1.6      1.6      1.6      1.       0.898165 0.5     ]
+[1.59999999 1.6        1.6        1.         0.898165   0.5       ]
+[1.6        1.59999999 1.6        1.         0.898165   0.5       ]
+[1.6        1.6        1.59999999 1.         0.898165   0.5       ]
+[1.6        1.6        1.6        0.99999999 0.898165   0.5       ]
+[1.6        1.6        1.6        1.         0.89816501 0.5       ]
+[1.6        1.6        1.6        1.         0.898165   0.50000001]
+[1.07781626 1.10761107 1.13854412 0.93677764 0.898165   0.82178541]
+[1.07781627 1.10761107 1.13854412 0.93677764 0.898165   0.82178541]
+[1.07781626 1.10761108 1.13854412 0.93677764 0.898165   0.82178541]
+[1.07781626 1.10761107 1.13854413 0.93677764 0.898165   0.82178541]
+[1.07781626 1.10761107 1.13854412 0.93677765 0.898165   0.82178541]
+[1.07781626 1.10761107 1.13854412 0.93677764 0.89816501 0.82178541]
+[1.07781626 1.10761107 1.13854412 0.93677764 0.898165   0.82178542]
+[1.07218891 1.09824508 1.13884648 0.93104153 0.898165   0.82448746]
+[1.07218892 1.09824508 1.13884648 0.93104153 0.898165   0.82448746]
+[1.07218891 1.09824509 1.13884648 0.93104153 0.898165   0.82448746]
+[1.07218891 1.09824508 1.13884649 0.93104153 0.898165   0.82448746]
+[1.07218891 1.09824508 1.13884648 0.93104154 0.898165   0.82448746]
+[1.07218891 1.09824508 1.13884648 0.93104153 0.89816501 0.82448746]
+[1.07218891 1.09824508 1.13884648 0.93104153 0.898165   0.82448747]
+[1.06484581 1.07658902 1.15141066 0.91182431 0.898165   0.82569767]
+[1.06484582 1.07658902 1.15141066 0.91182431 0.898165   0.82569767]
+[1.06484581 1.07658903 1.15141066 0.91182431 0.898165   0.82569767]
+[1.06484581 1.07658902 1.15141067 0.91182431 0.898165   0.82569767]
+[1.06484581 1.07658902 1.15141066 0.91182432 0.898165   0.82569767]
+[1.06484581 1.07658902 1.15141066 0.91182431 0.89816501 0.82569767]
+[1.06484581 1.07658902 1.15141066 0.91182431 0.898165   0.82569768]
+[1.058954   1.05011702 1.17239826 0.89888231 0.8890809  0.82550891]
+[1.05895401 1.05011702 1.17239826 0.89888231 0.8890809  0.82550891]
+[1.058954   1.05011703 1.17239826 0.89888231 0.8890809  0.82550891]
+[1.058954   1.05011702 1.17239827 0.89888231 0.8890809  0.82550891]
+[1.058954   1.05011702 1.17239826 0.89888232 0.8890809  0.82550891]
+[1.058954   1.05011702 1.17239826 0.89888231 0.88908091 0.82550891]
+[1.058954   1.05011702 1.17239826 0.89888231 0.8890809  0.82550892]
+[1.02470936 1.         1.38104129 0.77469261 0.80975816 0.80860797]
+[1.02470937 1.         1.38104129 0.77469261 0.80975816 0.80860797]
+[1.02470936 1.00000001 1.38104129 0.77469261 0.80975816 0.80860797]
+[1.02470936 1.         1.3810413  0.77469261 0.80975816 0.80860797]
+[1.02470936 1.         1.38104129 0.77469262 0.80975816 0.80860797]
+[1.02470936 1.         1.38104129 0.77469261 0.80975817 0.80860797]
+[1.02470936 1.         1.38104129 0.77469261 0.80975816 0.80860798]
+[1.02477757 1.         1.37201691 0.78295924 0.80637342 0.8168719 ]
+[1.02477758 1.         1.37201691 0.78295924 0.80637342 0.8168719 ]
+[1.02477757 1.00000001 1.37201691 0.78295924 0.80637342 0.8168719 ]
+[1.02477757 1.         1.37201692 0.78295924 0.80637342 0.8168719 ]
+[1.02477757 1.         1.37201691 0.78295925 0.80637342 0.8168719 ]
+[1.02477757 1.         1.37201691 0.78295924 0.80637343 0.8168719 ]
+[1.02477757 1.         1.37201691 0.78295924 0.80637342 0.81687191]
+[1.01635118 1.         1.40639935 0.76929369 0.77778072 0.83031139]
+[1.01635119 1.         1.40639935 0.76929369 0.77778072 0.83031139]
+[1.01635118 1.00000001 1.40639935 0.76929369 0.77778072 0.83031139]
+[1.01635118 1.         1.40639936 0.76929369 0.77778072 0.83031139]
+[1.01635118 1.         1.40639935 0.7692937  0.77778072 0.83031139]
+[1.01635118 1.         1.40639935 0.76929369 0.77778073 0.83031139]
+[1.01635118 1.         1.40639935 0.76929369 0.77778072 0.8303114 ]
+[1.00396629 1.         1.46883159 0.73837879 0.73984048 0.83967472]
+[1.0039663  1.         1.46883159 0.73837879 0.73984048 0.83967472]
+[1.00396629 1.00000001 1.46883159 0.73837879 0.73984048 0.83967472]
+[1.00396629 1.         1.4688316  0.73837879 0.73984048 0.83967472]
+[1.00396629 1.         1.46883159 0.7383788  0.73984048 0.83967472]
+[1.00396629 1.         1.46883159 0.73837879 0.73984049 0.83967472]
+[1.00396629 1.         1.46883159 0.73837879 0.73984048 0.83967473]
+[1.         1.         1.49695615 0.71804813 0.73342972 0.83184396]
+[1.00000001 1.         1.49695615 0.71804813 0.73342972 0.83184396]
+[1.         1.00000001 1.49695615 0.71804813 0.73342972 0.83184396]
+[1.         1.         1.49695616 0.71804813 0.73342972 0.83184396]
+[1.         1.         1.49695615 0.71804814 0.73342972 0.83184396]
+[1.         1.         1.49695615 0.71804813 0.73342973 0.83184396]
+[1.         1.         1.49695615 0.71804813 0.73342972 0.83184397]
+[1.00209308 1.         1.48211435 0.72877696 0.73681279 0.83597638]
+[1.00209309 1.         1.48211435 0.72877696 0.73681279 0.83597638]
+[1.00209308 1.00000001 1.48211435 0.72877696 0.73681279 0.83597638]
+[1.00209308 1.         1.48211436 0.72877696 0.73681279 0.83597638]
+[1.00209308 1.         1.48211435 0.72877697 0.73681279 0.83597638]
+[1.00209308 1.         1.48211435 0.72877696 0.7368128  0.83597638]
+[1.00209308 1.         1.48211435 0.72877696 0.73681279 0.83597639]
+[1.         1.         1.50625084 0.71638987 0.72293516 0.83869726]
+[1.00000001 1.         1.50625084 0.71638987 0.72293516 0.83869726]
+[1.         1.00000001 1.50625084 0.71638987 0.72293516 0.83869726]
+[1.         1.         1.50625085 0.71638987 0.72293516 0.83869726]
+[1.         1.         1.50625084 0.71638988 0.72293516 0.83869726]
+[1.         1.         1.50625084 0.71638987 0.72293517 0.83869726]
+[1.         1.         1.50625084 0.71638987 0.72293516 0.83869727]
+[1.         1.         1.50460849 0.7173585  0.72366353 0.83872497]
+[1.00000001 1.         1.50460849 0.7173585  0.72366353 0.83872497]
+[1.         1.00000001 1.50460849 0.7173585  0.72366353 0.83872497]
+[1.         1.         1.5046085  0.7173585  0.72366353 0.83872497]
+[1.         1.         1.50460849 0.71735851 0.72366353 0.83872497]
+[1.         1.         1.50460849 0.7173585  0.72366354 0.83872497]
+[1.         1.         1.50460849 0.7173585  0.72366353 0.83872498]
+[1.         1.         1.50457124 0.71738177 0.72367792 0.83872794]
+[1.00000001 1.         1.50457124 0.71738177 0.72367792 0.83872794]
+[1.         1.00000001 1.50457124 0.71738177 0.72367792 0.83872794]
+[1.         1.         1.50457125 0.71738177 0.72367792 0.83872794]
+[1.         1.         1.50457124 0.71738178 0.72367792 0.83872794]
+[1.         1.         1.50457124 0.71738177 0.72367793 0.83872794]
+[1.         1.         1.50457124 0.71738177 0.72367792 0.83872795]
+</pre></div></div>
+</div>
+<section id="Store-results">
+<h3>Store results<a class="headerlink" href="#Store-results" title="Permalink to this heading">#</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">factors_opt</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span>
+
+<span class="n">opt_res</span> <span class="o">=</span> <span class="n">obj_func_global</span><span class="p">(</span><span class="n">factors_opt</span><span class="p">)</span>
+<span class="n">df_phi_opt</span> <span class="o">=</span> <span class="n">create_df_phi</span><span class="p">(</span><span class="n">factors_opt</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+<span class="n">df_gamma_opt</span> <span class="o">=</span> <span class="n">create_df_gamma</span><span class="p">(</span><span class="n">factors_opt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">factors_opt</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">factors_opt</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">df_psi_opt</span> <span class="o">=</span> <span class="n">create_df_psi</span><span class="p">(</span><span class="n">factors_opt</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">factors_opt</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+<span class="n">design_beta_1_opt</span> <span class="o">=</span> <span class="n">run_calib_design</span><span class="p">(</span><span class="n">df_phi_opt</span><span class="p">,</span> <span class="n">df_gamma_opt</span><span class="p">,</span> <span class="n">df_psi_opt</span><span class="p">,</span> <span class="n">calib1</span><span class="p">)</span>
+<span class="n">design_beta_2_opt</span> <span class="o">=</span> <span class="n">run_calib_design</span><span class="p">(</span><span class="n">df_phi_opt</span><span class="p">,</span> <span class="n">df_gamma_opt</span><span class="p">,</span> <span class="n">df_psi_opt</span><span class="p">,</span> <span class="n">calib1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[1.         1.         1.50457124 0.71738177 0.72367792 0.83872794]
+</pre></div></div>
+</div>
+</section>
+<section id="Display-results">
+<h3>Display results<a class="headerlink" href="#Display-results" title="Permalink to this heading">#</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Display results</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> Phi optimal = </span><span class="se">\n</span><span class="si">{</span><span class="n">df_phi_opt</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> Gamma optimal = </span><span class="se">\n</span><span class="si">{</span><span class="n">df_gamma_opt</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> Psi optimal = </span><span class="se">\n</span><span class="si">{</span><span class="n">df_psi_opt</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Optimal design reliabilities for problem 1: </span><span class="si">{</span><span class="n">design_beta_1_opt</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Optimal design reliabilities for problem 2: </span><span class="si">{</span><span class="n">design_beta_2_opt</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+ Phi optimal =
+               R
+Q1_max  0.838728
+Q2_max  0.838728
+
+ Gamma optimal =
+          G   Q1        Q2
+Q1_max  1.0  1.0  1.504571
+Q2_max  1.0  1.0  1.504571
+
+ Psi optimal =
+        G        Q1        Q2
+Q1_max  1  1.000000  0.723678
+Q2_max  1  0.717382  1.000000
+
+Optimal design reliabilities for problem 1: [4.30323642 4.29676697]
+
+Optimal design reliabilities for problem 2: [4.30323642 4.29676697]
+</pre></div></div>
+</div>
+<p>Note that the optimal design reliabilities can be slightly less than the target reliability because there is no constraint on setting <span class="math notranslate nohighlight">\(\beta_j\geq \beta_T\)</span></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Import-Libraries-and-define-utility-functions">Import Libraries and define utility functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Set-up-problem-input">Set up problem input</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Instantiate-Combination-and-Calibration-Objects">Instantiate Combination and Calibration Objects</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Global-Optimization">Global Optimization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Store-results">Store results</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Display-results">Display results</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/pystra/pystra/edit/main/docs/source/notebooks/example_global_calibration.ipynb">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023, The PySTRA Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.14.4.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
