@@ -1315,9 +1315,9 @@ class GenericCalibration:
         z : float
             Design parameter.
         aq : float
-            Ratio of dead to total dead and permanent load.
-        ag : float
             Ratio of live to total loads.
+        ag : float
+            Ratio of dead to total dead and permanent load.
         wR : float
             Model error for resistance.
         R : float
@@ -1346,9 +1346,9 @@ class GenericCalibration:
         Parameters
         ----------
         aq : float
-            Ratio of dead to total dead and permanent load.
-        ag : float
             Ratio of live to total loads.
+        ag : float
+            Ratio of dead to total dead and permanent load.
         phi : float
             Capacity reduction factor.
         gamma_g : float
@@ -1386,9 +1386,9 @@ class GenericCalibration:
         z : float
             Design parameter.
         aq : float
-            Ratio of dead to total dead and permanent load.
-        ag : float
             Ratio of live to total loads.
+        ag : float
+            Ratio of dead to total dead and permanent load.
         wR : float
             Model error for resistance.
         R : float
