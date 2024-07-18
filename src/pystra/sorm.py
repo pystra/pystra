@@ -343,7 +343,7 @@ class Sorm(AnalysisObject):
         it is based on the correct direction of the beta vector [Madsen1986]
         """
 
-        A = np.asfarray(A)
+        A = np.asarray(A, dtype="float")
         nvr = A.shape[0]
         Q = np.zeros(A.shape)
         for j in range(nvr):
