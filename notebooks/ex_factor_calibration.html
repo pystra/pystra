@@ -28,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
@@ -498,21 +498,25 @@ document.write(`
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pystra</span> <span class="k">as</span> <span class="nn">ra</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ra</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </pre></div>
 </div>
 </div>
 </section>
 <section id="Define-the-limit-state-function-for-calibration">
 <h3>Define the limit state function for calibration<a class="headerlink" href="#Define-the-limit-state-function-for-calibration" title="Permalink to this heading">#</a></h3>
-<p>The LSF to be supplied in <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> can be any valid <em>Pystra</em> LSF with one additional argument: a scalar design parameter for a random variable (generally, the resistance). Note that: 1. The design parameter must be specified as a <code class="docutils literal notranslate"><span class="pre">Pystra</span></code> constant with any arbitrary default value, such as <code class="docutils literal notranslate"><span class="pre">1.0</span></code>. 2. Only a single design parameter for the resistance random variable can be calibrated at a time.</p>
+<p>The LSF to be supplied in <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> can be any valid <em>Pystra</em> LSF with one additional argument: a scalar design parameter for a random variable (generally, the resistance). Note that:</p>
+<ol class="arabic simple">
+<li><p>The design parameter must be specified as a <code class="docutils literal notranslate"><span class="pre">Pystra</span></code> constant with any arbitrary default value, such as <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p></li>
+<li><p>Only a single design parameter for the resistance random variable can be calibrated at a time.</p></li>
+</ol>
 <p>Keeping with the <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> example, the design parameter for resistance, denoted <span class="math notranslate nohighlight">\(z\)</span>, is added to the LSF:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">lsf</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">Q1</span><span class="p">,</span> <span class="n">Q2</span><span class="p">,</span> <span class="n">cg</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">lsf</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">Q1</span><span class="p">,</span> <span class="n">Q2</span><span class="p">,</span> <span class="n">cg</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">z</span><span class="o">*</span><span class="n">R</span> <span class="o">-</span> <span class="p">(</span><span class="n">cg</span><span class="o">*</span><span class="n">G</span> <span class="o">+</span> <span class="mf">0.6</span><span class="o">*</span><span class="n">Q1</span> <span class="o">+</span> <span class="mf">0.3</span><span class="o">*</span><span class="n">Q2</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -569,7 +573,11 @@ document.write(`
 <p>Class <code class="docutils literal notranslate"><span class="pre">Calibration</span></code> requires specification of a <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> object to run reliability analyses for different load cases.</p>
 <section id="Setup-load-combination-cases">
 <h4>Setup load combination cases<a class="headerlink" href="#Setup-load-combination-cases" title="Permalink to this heading">#</a></h4>
-<p>For this problem, we’re interested in investigating the reliabilities for two cases: 1. <code class="docutils literal notranslate"><span class="pre">Q1_max</span></code>: <code class="docutils literal notranslate"><span class="pre">Q1</span></code> is maximum and <code class="docutils literal notranslate"><span class="pre">Q2</span></code> is the point-in-time distribution 2. <code class="docutils literal notranslate"><span class="pre">Q2_max</span></code>: <code class="docutils literal notranslate"><span class="pre">Q1</span></code> is the point-in-time distribution and <code class="docutils literal notranslate"><span class="pre">Q2</span></code> is maximum</p>
+<p>For this problem, we’re interested in investigating the reliabilities for two cases:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Q1_max</span></code>: <code class="docutils literal notranslate"><span class="pre">Q1</span></code> is maximum and <code class="docutils literal notranslate"><span class="pre">Q2</span></code> is the point-in-time distribution</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Q2_max</span></code>: <code class="docutils literal notranslate"><span class="pre">Q1</span></code> is the point-in-time distribution and <code class="docutils literal notranslate"><span class="pre">Q2</span></code> is maximum</p></li>
+</ol>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
@@ -591,7 +599,13 @@ document.write(`
 </pre></div>
 </div>
 </div>
-<p>Note that <code class="docutils literal notranslate"><span class="pre">Pystra</span></code> categorizes the variables for the calibration problem as follows: 1. Combination load variables: time variant load effects with a point-in-time distribution and maximum distribution 2. Resistance variables 3. Other load variables (optional): time invariant load effects 4. Constants: including the calibration parameter</p>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">Pystra</span></code> categorizes the variables for the calibration problem as follows:</p>
+<ol class="arabic simple">
+<li><p>Combination load variables: time variant load effects with a point-in-time distribution and maximum distribution</p></li>
+<li><p>Resistance variables</p></li>
+<li><p>Other load variables (optional): time invariant load effects</p></li>
+<li><p>Constants: including the calibration parameter</p></li>
+</ol>
 </section>
 </section>
 <section id="Specify-Nominal-(or-characteristic)-values">
@@ -645,9 +659,12 @@ document.write(`
 </section>
 <section id="Calibrate-safety-and-combination-factors">
 <h3>Calibrate safety and combination factors<a class="headerlink" href="#Calibrate-safety-and-combination-factors" title="Permalink to this heading">#</a></h3>
-<p>Class <code class="docutils literal notranslate"><span class="pre">Calibration</span></code> structures the calibration problem into three parts: 1. <strong>Calibration</strong>: this part involves projecting the design point of the LSF to correspond to the specified <span class="math notranslate nohighlight">\(\beta_T\)</span>. 2. <strong>Estimation</strong>: this part involves estimating and calibrating the safety and combination factors, <span class="math notranslate nohighlight">\(\phi\)</span>, <span class="math notranslate nohighlight">\(\gamma\)</span>, and <span class="math notranslate nohighlight">\(\psi\)</span> using the projected design point. These factors correspond to <span class="math notranslate nohighlight">\(\beta_T\)</span> when utilized in structural design code equation,
-<span class="math notranslate nohighlight">\(z\phi R_n \geq \sum_i \psi_i \gamma_i S_{ni}\)</span>, where <span class="math notranslate nohighlight">\(S_{ni}\)</span> is the nominal value of the load effect <span class="math notranslate nohighlight">\(S_i\)</span>. 3. <strong>Design check</strong>: this part involves utilizing the estimates of <span class="math notranslate nohighlight">\(\phi\)</span>, <span class="math notranslate nohighlight">\(\gamma\)</span>, and <span class="math notranslate nohighlight">\(\psi\)</span> for the given load effects to obtain the maximum required design resistance, i.e. <span class="math notranslate nohighlight">\(z \cdot R_n\)</span>. Then the reliabilities (or safety) corresponding to the maximum required design resistance are checked for all load cases to ensure that they are greater
-than <span class="math notranslate nohighlight">\(\beta_T\)</span>. This design check is explained in more detail later in this tutorial.</p>
+<p>Class <code class="docutils literal notranslate"><span class="pre">Calibration</span></code> structures the calibration problem into three parts:</p>
+<ol class="arabic simple">
+<li><p><strong>Calibration</strong>: this part involves projecting the design point of the LSF to correspond to the specified <span class="math notranslate nohighlight">\(\beta_T\)</span>.</p></li>
+<li><p><strong>Estimation</strong>: this part involves estimating and calibrating the safety and combination factors, <span class="math notranslate nohighlight">\(\phi\)</span>, <span class="math notranslate nohighlight">\(\gamma\)</span>, and <span class="math notranslate nohighlight">\(\psi\)</span> using the projected design point. These factors correspond to <span class="math notranslate nohighlight">\(\beta_T\)</span> when utilized in structural design code equation, <span class="math notranslate nohighlight">\(z\phi R_n \geq \sum_i \psi_i \gamma_i S_{ni}\)</span>, where <span class="math notranslate nohighlight">\(S_{ni}\)</span> is the nominal value of the load effect <span class="math notranslate nohighlight">\(S_i\)</span>.</p></li>
+<li><p><strong>Design check</strong>: this part involves utilizing the estimates of <span class="math notranslate nohighlight">\(\phi\)</span>, <span class="math notranslate nohighlight">\(\gamma\)</span>, and <span class="math notranslate nohighlight">\(\psi\)</span> for the given load effects to obtain the maximum required design resistance, i.e. <span class="math notranslate nohighlight">\(z \cdot R_n\)</span>. Then the reliabilities (or safety) corresponding to the maximum required design resistance are checked for all load cases to ensure that they are greater than <span class="math notranslate nohighlight">\(\beta_T\)</span>. This design check is explained in more detail later in this tutorial.</p></li>
+</ol>
 <section id="Calibration-algorithms">
 <h4>Calibration algorithms<a class="headerlink" href="#Calibration-algorithms" title="Permalink to this heading">#</a></h4>
 <p>Class <code class="docutils literal notranslate"><span class="pre">Calibration</span></code> implements two algorithms for calibration: <code class="docutils literal notranslate"><span class="pre">optimize</span></code> (default) and <code class="docutils literal notranslate"><span class="pre">alpha</span></code>.</p>
@@ -704,8 +721,12 @@ case.</p>
 </section>
 <section id="Design-Check">
 <h3>Design Check<a class="headerlink" href="#Design-Check" title="Permalink to this heading">#</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">Calibration</span></code> implements methods to check whether the a design conducted on the basis of the estimated safety factors, actually achieves a minimum safety corresponding to <span class="math notranslate nohighlight">\(\beta_T\)</span> for all load cases. This check is implemented as follows. The calibrated estimates of <span class="math notranslate nohighlight">\(\phi\)</span>, <span class="math notranslate nohighlight">\(\gamma\)</span>, and <span class="math notranslate nohighlight">\(\psi\)</span> can be checked to ensure that a design based on them actually achieves a lower bound safety corresponding to <span class="math notranslate nohighlight">\(\beta_T\)</span> as follows: 1. Using <span class="math notranslate nohighlight">\(\phi\)</span>, <span class="math notranslate nohighlight">\(\gamma\)</span>,
-<span class="math notranslate nohighlight">\(\psi\)</span>, and the specified nominal values, estimate the design multiplier for resistance, <span class="math notranslate nohighlight">\(z\)</span> for each load case, <span class="math notranslate nohighlight">\(j\)</span> using the LSF. 2. Using the design multiplier, i.e. maximum <span class="math notranslate nohighlight">\(z\)</span>, and corresponding load and resistance distributions, do forward reliability analysis to obtain the reliability index for each load case, <span class="math notranslate nohighlight">\(\beta_j\)</span>. 3. Check <span class="math notranslate nohighlight">\(\beta_j \geq \beta_T\)</span>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Calibration</span></code> implements methods to check whether the a design conducted on the basis of the estimated safety factors, actually achieves a minimum safety corresponding to <span class="math notranslate nohighlight">\(\beta_T\)</span> for all load cases. This check is implemented as follows. The calibrated estimates of <span class="math notranslate nohighlight">\(\phi\)</span>, <span class="math notranslate nohighlight">\(\gamma\)</span>, and <span class="math notranslate nohighlight">\(\psi\)</span> can be checked to ensure that a design based on them actually achieves a lower bound safety corresponding to <span class="math notranslate nohighlight">\(\beta_T\)</span> as follows:</p>
+<ol class="arabic simple">
+<li><p>Using <span class="math notranslate nohighlight">\(\phi\)</span>, <span class="math notranslate nohighlight">\(\gamma\)</span>, <span class="math notranslate nohighlight">\(\psi\)</span>, and the specified nominal values, estimate the design multiplier for resistance, <span class="math notranslate nohighlight">\(z\)</span> for each load case, <span class="math notranslate nohighlight">\(j\)</span> using the LSF.</p></li>
+<li><p>Using the design multiplier, i.e. maximum <span class="math notranslate nohighlight">\(z\)</span>, and corresponding load and resistance distributions, do forward reliability analysis to obtain the reliability index for each load case, <span class="math notranslate nohighlight">\(\beta_j\)</span>.</p></li>
+<li><p>Check <span class="math notranslate nohighlight">\(\beta_j \geq \beta_T\)</span>.</p></li>
+</ol>
 <p><em>Pystra</em> implements two methods for the design check: <code class="docutils literal notranslate"><span class="pre">calibration.get_design_param_factor()</span></code> and <code class="docutils literal notranslate"><span class="pre">calibration.calc_beta_design_param()</span></code> for above step 1 and step 2, respectively.</p>
 </section>
 <section id="Reliability-Calibration-(using-coeff-and-optimize)">
@@ -921,21 +942,25 @@ Design Check = [ True  True]
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pystra</span> <span class="k">as</span> <span class="nn">ra</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ra</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </pre></div>
 </div>
 </div>
 </section>
 <section id="id3">
 <h3>Define the limit state function for calibration<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
-<p>The LSF to be supplied in <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> can be any valid <em>Pystra</em> LSF with one additional argument: a scalar design parameter for a random variable (generally, the resistance). Note that: 1. The design parameter must be specified as a <code class="docutils literal notranslate"><span class="pre">Pystra</span></code> constant with any arbitrary default value, such as <code class="docutils literal notranslate"><span class="pre">1.0</span></code>. 2. Only a single design parameter for the resistance random variable can be calibrated at a time.</p>
+<p>The LSF to be supplied in <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> can be any valid <em>Pystra</em> LSF with one additional argument: a scalar design parameter for a random variable (generally, the resistance). Note that:</p>
+<ol class="arabic simple">
+<li><p>The design parameter must be specified as a <code class="docutils literal notranslate"><span class="pre">Pystra</span></code> constant with any arbitrary default value, such as <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p></li>
+<li><p>Only a single design parameter for the resistance random variable can be calibrated at a time.</p></li>
+</ol>
 <p>Keeping with the <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> example, the design parameter for resistance, denoted <span class="math notranslate nohighlight">\(z\)</span>, is added to the LSF. The LSF contains additional random variables <code class="docutils literal notranslate"><span class="pre">wR</span></code> and <code class="docutils literal notranslate"><span class="pre">wS</span></code> to account for the uncertainties within the resistance and the load effects, respectively. The non-linearity of the LSF is evident as the degree of random variables in each term of the LSF is two.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">lsf</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">wR</span><span class="p">,</span> <span class="n">wS</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Q1</span><span class="p">,</span> <span class="n">Q2</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">lsf</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">wR</span><span class="p">,</span> <span class="n">wS</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Q1</span><span class="p">,</span> <span class="n">Q2</span><span class="p">):</span>
     <span class="n">gX</span> <span class="o">=</span> <span class="n">z</span> <span class="o">*</span> <span class="n">wR</span> <span class="o">*</span> <span class="n">R</span> <span class="o">-</span> <span class="n">wS</span> <span class="o">*</span> <span class="p">(</span><span class="n">Q1</span> <span class="o">+</span> <span class="n">Q2</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">gX</span>
 </pre></div>

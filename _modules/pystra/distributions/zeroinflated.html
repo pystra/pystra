@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
@@ -455,11 +455,11 @@ document.write(`
   <h1>Source code for pystra.distributions.zeroinflated</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">.distribution</span> <span class="kn">import</span> <span class="n">Distribution</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.distribution</span><span class="w"> </span><span class="kn">import</span> <span class="n">Distribution</span>
 
 
-<div class="viewcode-block" id="ZeroInflated"><a class="viewcode-back" href="../../../gen/pystra.distributions.zeroinflated.ZeroInflated.html#pystra.distributions.zeroinflated.ZeroInflated">[docs]</a><span class="k">class</span> <span class="nc">ZeroInflated</span><span class="p">(</span><span class="n">Distribution</span><span class="p">):</span>
+<div class="viewcode-block" id="ZeroInflated"><a class="viewcode-back" href="../../../gen/pystra.distributions.zeroinflated.ZeroInflated.html#pystra.distributions.zeroinflated.ZeroInflated">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">ZeroInflated</span><span class="p">(</span><span class="n">Distribution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A Zero-Inflated rendering of the provided distribution.</span>
 
@@ -478,7 +478,7 @@ document.write(`
 <span class="sd">      - startpoint (float):     Start point for seach\n</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">startpoint</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">startpoint</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">Distribution</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;ZeroInflated distribution requires input of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">Distribution</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -503,7 +503,7 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">dist_type</span> <span class="o">=</span> <span class="s2">&quot;ZeroInflated&quot;</span>
 
-<div class="viewcode-block" id="ZeroInflated.pdf"><a class="viewcode-back" href="../../../gen/pystra.distributions.zeroinflated.ZeroInflated.html#pystra.distributions.zeroinflated.ZeroInflated.pdf">[docs]</a>    <span class="k">def</span> <span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="ZeroInflated.pdf"><a class="viewcode-back" href="../../../gen/pystra.distributions.zeroinflated.ZeroInflated.html#pystra.distributions.zeroinflated.ZeroInflated.pdf">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Probability density function</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -513,7 +513,7 @@ document.write(`
         <span class="n">zipdf</span><span class="p">[</span><span class="n">indx</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span>
         <span class="k">return</span> <span class="n">zipdf</span></div>
 
-<div class="viewcode-block" id="ZeroInflated.cdf"><a class="viewcode-back" href="../../../gen/pystra.distributions.zeroinflated.ZeroInflated.html#pystra.distributions.zeroinflated.ZeroInflated.cdf">[docs]</a>    <span class="k">def</span> <span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="ZeroInflated.cdf"><a class="viewcode-back" href="../../../gen/pystra.distributions.zeroinflated.ZeroInflated.html#pystra.distributions.zeroinflated.ZeroInflated.cdf">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Cumulative distribution function</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -523,7 +523,7 @@ document.write(`
         <span class="n">zicdf</span><span class="p">[</span><span class="n">indx</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span>
         <span class="k">return</span> <span class="n">zicdf</span></div>
 
-<div class="viewcode-block" id="ZeroInflated.ppf"><a class="viewcode-back" href="../../../gen/pystra.distributions.zeroinflated.ZeroInflated.html#pystra.distributions.zeroinflated.ZeroInflated.ppf">[docs]</a>    <span class="k">def</span> <span class="nf">ppf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+<div class="viewcode-block" id="ZeroInflated.ppf"><a class="viewcode-back" href="../../../gen/pystra.distributions.zeroinflated.ZeroInflated.html#pystra.distributions.zeroinflated.ZeroInflated.ppf">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">ppf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        inverse cumulative distribution function</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -545,7 +545,7 @@ document.write(`
         <span class="n">x</span><span class="p">[</span><span class="n">indx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">ppf</span><span class="p">((</span><span class="n">p</span><span class="p">[</span><span class="n">indx</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x</span></div>
 
-<div class="viewcode-block" id="ZeroInflated.u_to_x"><a class="viewcode-back" href="../../../gen/pystra.distributions.zeroinflated.ZeroInflated.html#pystra.distributions.zeroinflated.ZeroInflated.u_to_x">[docs]</a>    <span class="k">def</span> <span class="nf">u_to_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+<div class="viewcode-block" id="ZeroInflated.u_to_x"><a class="viewcode-back" href="../../../gen/pystra.distributions.zeroinflated.ZeroInflated.html#pystra.distributions.zeroinflated.ZeroInflated.u_to_x">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">u_to_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Transformation from u to x</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -553,14 +553,14 @@ document.write(`
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x</span></div>
 
-<div class="viewcode-block" id="ZeroInflated.x_to_u"><a class="viewcode-back" href="../../../gen/pystra.distributions.zeroinflated.ZeroInflated.html#pystra.distributions.zeroinflated.ZeroInflated.x_to_u">[docs]</a>    <span class="k">def</span> <span class="nf">x_to_u</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="ZeroInflated.x_to_u"><a class="viewcode-back" href="../../../gen/pystra.distributions.zeroinflated.ZeroInflated.html#pystra.distributions.zeroinflated.ZeroInflated.x_to_u">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">x_to_u</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Transformation from x to u</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">std_normal</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">u</span></div>
 
-<div class="viewcode-block" id="ZeroInflated.jacobian"><a class="viewcode-back" href="../../../gen/pystra.distributions.zeroinflated.ZeroInflated.html#pystra.distributions.zeroinflated.ZeroInflated.jacobian">[docs]</a>    <span class="k">def</span> <span class="nf">jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="ZeroInflated.jacobian"><a class="viewcode-back" href="../../../gen/pystra.distributions.zeroinflated.ZeroInflated.html#pystra.distributions.zeroinflated.ZeroInflated.jacobian">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the Jacobian (e.g. Lemaire, eq. 4.9)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -569,7 +569,7 @@ document.write(`
         <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">pdf1</span> <span class="o">/</span> <span class="n">pdf2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">J</span></div>
 
-    <span class="k">def</span> <span class="nf">_get_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Since the closed form expression of mean and stdv for the distribution of the</span>
 <span class="sd">        parent from a maximum distribution is complex, and since we really only need</span>
@@ -587,28 +587,28 @@ document.write(`
 
         <span class="k">return</span> <span class="n">mean</span><span class="p">,</span> <span class="n">stdv</span>
 
-<div class="viewcode-block" id="ZeroInflated.set_location"><a class="viewcode-back" href="../../../gen/pystra.distributions.zeroinflated.ZeroInflated.html#pystra.distributions.zeroinflated.ZeroInflated.set_location">[docs]</a>    <span class="k">def</span> <span class="nf">set_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="ZeroInflated.set_location"><a class="viewcode-back" href="../../../gen/pystra.distributions.zeroinflated.ZeroInflated.html#pystra.distributions.zeroinflated.ZeroInflated.set_location">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">set_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Updating the zero-inflated distribution location parameter.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">set_location</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_stats</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="ZeroInflated.set_scale"><a class="viewcode-back" href="../../../gen/pystra.distributions.zeroinflated.ZeroInflated.html#pystra.distributions.zeroinflated.ZeroInflated.set_scale">[docs]</a>    <span class="k">def</span> <span class="nf">set_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="ZeroInflated.set_scale"><a class="viewcode-back" href="../../../gen/pystra.distributions.zeroinflated.ZeroInflated.html#pystra.distributions.zeroinflated.ZeroInflated.set_scale">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">set_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Updating the zero-inflated distribution scale parameter.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">set_scale</span><span class="p">(</span><span class="n">scale</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_stats</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="ZeroInflated.set_zero_probability"><a class="viewcode-back" href="../../../gen/pystra.distributions.zeroinflated.ZeroInflated.html#pystra.distributions.zeroinflated.ZeroInflated.set_zero_probability">[docs]</a>    <span class="k">def</span> <span class="nf">set_zero_probability</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+<div class="viewcode-block" id="ZeroInflated.set_zero_probability"><a class="viewcode-back" href="../../../gen/pystra.distributions.zeroinflated.ZeroInflated.html#pystra.distributions.zeroinflated.ZeroInflated.set_zero_probability">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">set_zero_probability</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update the zero-inflated probability.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">p</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_stats</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">_update_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Updates the mean and stdv estimates - used for sensitivity analysis</span>
 <span class="sd">        where the parent distribution params may change after instantiation</span>

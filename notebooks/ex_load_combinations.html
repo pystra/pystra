@@ -28,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
@@ -493,10 +493,10 @@ document.write(`
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pystra</span> <span class="k">as</span> <span class="nn">ra</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ra</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 </pre></div>
 </div>
 </div>
@@ -508,7 +508,7 @@ document.write(`
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">lsf</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">Q1</span><span class="p">,</span> <span class="n">Q2</span><span class="p">,</span> <span class="n">cg</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">lsf</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">Q1</span><span class="p">,</span> <span class="n">Q2</span><span class="p">,</span> <span class="n">cg</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">R</span> <span class="o">-</span> <span class="p">(</span><span class="n">cg</span><span class="o">*</span><span class="n">G</span> <span class="o">+</span> <span class="mf">0.8</span><span class="o">*</span><span class="n">Q1</span> <span class="o">+</span> <span class="mf">0.2</span><span class="o">*</span><span class="n">Q2</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -562,7 +562,12 @@ document.write(`
 </section>
 <section id="Specify-load-combination-cases">
 <h3>Specify load combination cases<a class="headerlink" href="#Specify-load-combination-cases" title="Permalink to this heading">#</a></h3>
-<p>For this problem, in addition to the permanent loads, we’re interested in investigating the reliabilities for several load combinations: 1. <code class="docutils literal notranslate"><span class="pre">Q1Q2_max</span></code>: Where both <code class="docutils literal notranslate"><span class="pre">Q1</span></code> and <code class="docutils literal notranslate"><span class="pre">Q2</span></code> maximum distributions are considered simultaneously, as an obvious conservative estimation. 2. <code class="docutils literal notranslate"><span class="pre">Q1_max</span></code>: <code class="docutils literal notranslate"><span class="pre">Q1</span></code> is maximum and <code class="docutils literal notranslate"><span class="pre">Q2</span></code> is the point-in-time distribution. 3. <code class="docutils literal notranslate"><span class="pre">Q2_max</span></code>: <code class="docutils literal notranslate"><span class="pre">Q1</span></code> is the point-in-time distribution and <code class="docutils literal notranslate"><span class="pre">Q2</span></code> is maximum.</p>
+<p>For this problem, in addition to the permanent loads, we’re interested in investigating the reliabilities for several load combinations:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Q1Q2_max</span></code>: Where both <code class="docutils literal notranslate"><span class="pre">Q1</span></code> and <code class="docutils literal notranslate"><span class="pre">Q2</span></code> maximum distributions are considered simultaneously, as an obvious conservative estimation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Q1_max</span></code>: <code class="docutils literal notranslate"><span class="pre">Q1</span></code> is maximum and <code class="docutils literal notranslate"><span class="pre">Q2</span></code> is the point-in-time distribution.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Q2_max</span></code>: <code class="docutils literal notranslate"><span class="pre">Q1</span></code> is the point-in-time distribution and <code class="docutils literal notranslate"><span class="pre">Q2</span></code> is maximum.</p></li>
+</ol>
 <p>We define a dictionary with the relevant loadcase names and corresponding variable names form the LSF.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
@@ -832,7 +837,7 @@ Q2_max: β = 2.16
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">lsf</span><span class="p">(</span><span class="n">R</span><span class="p">,</span><span class="n">G</span><span class="p">,</span><span class="n">Q</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">lsf</span><span class="p">(</span><span class="n">R</span><span class="p">,</span><span class="n">G</span><span class="p">,</span><span class="n">Q</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">R</span> <span class="o">-</span> <span class="p">(</span><span class="n">G</span> <span class="o">+</span> <span class="n">Q</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -841,7 +846,7 @@ Q2_max: β = 2.16
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">reliability</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">reliability</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
     <span class="n">ls</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span><span class="n">lsf</span><span class="p">)</span>
     <span class="n">sm</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
     <span class="n">sm</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">Lognormal</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">,</span><span class="mf">0.15</span><span class="p">))</span>

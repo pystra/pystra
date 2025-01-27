@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
@@ -455,13 +455,13 @@ document.write(`
   <h1>Source code for pystra.loadcomb</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 
-<span class="kn">from</span> <span class="nn">.model</span> <span class="kn">import</span> <span class="n">LimitState</span>
-<span class="kn">from</span> <span class="nn">.model</span> <span class="kn">import</span> <span class="n">StochasticModel</span>
-<span class="kn">from</span> <span class="nn">.form</span> <span class="kn">import</span> <span class="n">Form</span>
-<span class="kn">from</span> <span class="nn">.correlation</span> <span class="kn">import</span> <span class="n">CorrelationMatrix</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LimitState</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">StochasticModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.form</span><span class="w"> </span><span class="kn">import</span> <span class="n">Form</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.correlation</span><span class="w"> </span><span class="kn">import</span> <span class="n">CorrelationMatrix</span>
 
 
-<div class="viewcode-block" id="LoadCombination"><a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination">[docs]</a><span class="k">class</span> <span class="nc">LoadCombination</span><span class="p">:</span>
+<div class="viewcode-block" id="LoadCombination"><a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">LoadCombination</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for running load combination cases.</span>
 
 <span class="sd">    Attributes</span>
@@ -493,7 +493,7 @@ document.write(`
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">lsf</span><span class="p">,</span>
         <span class="n">dict_dist_comb</span><span class="p">,</span>
@@ -582,7 +582,7 @@ document.write(`
             <span class="s2">&quot;all&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_all</span><span class="p">,</span>
         <span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">_check_input</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_input</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Check consistency of supplied input.</span>
 
@@ -605,7 +605,7 @@ document.write(`
                 <span class="p">)</span>
             <span class="p">)</span>
 
-<div class="viewcode-block" id="LoadCombination.get_label"><a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination.get_label">[docs]</a>    <span class="k">def</span> <span class="nf">get_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label_type</span><span class="p">):</span>
+<div class="viewcode-block" id="LoadCombination.get_label"><a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination.get_label">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label_type</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get Labels corresponding to label_type.</span>
 
@@ -624,7 +624,7 @@ document.write(`
         <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_label</span><span class="p">[</span><span class="n">label_type</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">label</span></div>
 
-    <span class="k">def</span> <span class="nf">_set_num_comb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_num_comb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the number of load combination cases.</span>
 
@@ -642,7 +642,7 @@ document.write(`
         <span class="n">num_comb</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comb_cases_max</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">num_comb</span>
 
-<div class="viewcode-block" id="LoadCombination.get_num_comb"><a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination.get_num_comb">[docs]</a>    <span class="k">def</span> <span class="nf">get_num_comb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="LoadCombination.get_num_comb"><a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination.get_num_comb">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_num_comb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the number of load combination cases.</span>
 
@@ -654,7 +654,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_comb</span></div>
 
-<div class="viewcode-block" id="LoadCombination.get_dict_dist_comb"><a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination.get_dict_dist_comb">[docs]</a>    <span class="k">def</span> <span class="nf">get_dict_dist_comb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="LoadCombination.get_dict_dist_comb"><a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination.get_dict_dist_comb">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_dict_dist_comb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the dictionary of distributions for all load combination cases.</span>
 
@@ -666,7 +666,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_dist_comb</span></div>
 
-    <span class="k">def</span> <span class="nf">_create_dict_dist_comb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_dict_dist_comb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a dictionary containing distributions for respective load</span>
 <span class="sd">        combination cases.</span>
@@ -693,7 +693,7 @@ document.write(`
             <span class="n">dict_dist</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">loadc_name</span><span class="p">:</span> <span class="n">dict_loadc</span><span class="p">})</span>
         <span class="k">return</span> <span class="n">dict_dist</span>
 
-    <span class="k">def</span> <span class="nf">_get_corr_for_stochastic_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stochastic_model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_corr_for_stochastic_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stochastic_model</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get correlation data for stochastic model.</span>
 
@@ -718,7 +718,7 @@ document.write(`
         <span class="n">corr</span> <span class="o">=</span> <span class="n">dfcorr_tmp</span><span class="o">.</span><span class="n">values</span>
         <span class="k">return</span> <span class="n">corr</span>
 
-<div class="viewcode-block" id="LoadCombination.run_reliability_case"><a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination.run_reliability_case">[docs]</a>    <span class="k">def</span> <span class="nf">run_reliability_case</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lcn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="LoadCombination.run_reliability_case"><a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination.run_reliability_case">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">run_reliability_case</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lcn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create and run reliability analysis using input LSF</span>
 <span class="sd">        for a given load case, lcn.</span>
@@ -762,7 +762,7 @@ document.write(`
 
         <span class="k">return</span> <span class="n">form</span></div>
 
-<div class="viewcode-block" id="LoadCombination.eval_lsf_kwargs"><a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination.eval_lsf_kwargs">[docs]</a>    <span class="k">def</span> <span class="nf">eval_lsf_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">set_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">set_const</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="LoadCombination.eval_lsf_kwargs"><a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination.eval_lsf_kwargs">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">eval_lsf_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">set_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">set_const</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Evaluate the LSF based on the supplied Keyword arguments, setting</span>
 <span class="sd">        all others to set_value.</span>

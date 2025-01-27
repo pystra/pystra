@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
@@ -455,15 +455,15 @@ document.write(`
   <h1>Source code for pystra.model</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">.distributions</span> <span class="kn">import</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">Constant</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.distributions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">Constant</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderedDict</span>
 
 
-<div class="viewcode-block" id="StochasticModel"><a class="viewcode-back" href="../../gen/pystra.model.StochasticModel.html#pystra.model.StochasticModel">[docs]</a><span class="k">class</span> <span class="nc">StochasticModel</span><span class="p">:</span>
+<div class="viewcode-block" id="StochasticModel"><a class="viewcode-back" href="../../gen/pystra.model.StochasticModel.html#pystra.model.StochasticModel">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">StochasticModel</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Stochastic model&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Use ordered dictionary to make sure that the order corresponds to the</span>
 <span class="sd">        correlation matrix</span>
@@ -476,7 +476,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">call_function</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">consts</span> <span class="o">=</span> <span class="p">{}</span>
 
-<div class="viewcode-block" id="StochasticModel.addVariable"><a class="viewcode-back" href="../../gen/pystra.model.StochasticModel.html#pystra.model.StochasticModel.addVariable">[docs]</a>    <span class="k">def</span> <span class="nf">addVariable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+<div class="viewcode-block" id="StochasticModel.addVariable"><a class="viewcode-back" href="../../gen/pystra.model.StochasticModel.html#pystra.model.StochasticModel.addVariable">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">addVariable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        add stochastic variable</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -500,47 +500,47 @@ document.write(`
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Constant</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">consts</span><span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">getName</span><span class="p">()]</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">getConstants</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getConstants</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">consts</span>
 
-    <span class="k">def</span> <span class="nf">getVariables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getVariables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span>
 
-    <span class="k">def</span> <span class="nf">getVariable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getVariable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">getNames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getNames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span>
 
-    <span class="k">def</span> <span class="nf">getLenMarginalDistributions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getLenMarginalDistributions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marg</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">getMarginalDistributions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getMarginalDistributions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">marg</span>
 
-    <span class="k">def</span> <span class="nf">setMarginalDistributions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marg</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setMarginalDistributions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marg</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">marg</span> <span class="o">=</span> <span class="n">marg</span>
 
-    <span class="k">def</span> <span class="nf">setCorrelation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setCorrelation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">correlation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">getMatrix</span><span class="p">())</span>
 
-    <span class="k">def</span> <span class="nf">getCorrelation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getCorrelation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">correlation</span>
 
-    <span class="k">def</span> <span class="nf">setModifiedCorrelation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">correlation</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setModifiedCorrelation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">correlation</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Ro</span> <span class="o">=</span> <span class="n">correlation</span>
 
-    <span class="k">def</span> <span class="nf">getModifiedCorrelation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getModifiedCorrelation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ro</span>
 
-    <span class="k">def</span> <span class="nf">addCallFunction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">add</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">addCallFunction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">add</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">call_function</span> <span class="o">+=</span> <span class="n">add</span>
 
-    <span class="k">def</span> <span class="nf">getCallFunction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getCallFunction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">call_function</span></div>
 
 
-<div class="viewcode-block" id="LimitState"><a class="viewcode-back" href="../../gen/pystra.model.LimitState.html#pystra.model.LimitState">[docs]</a><span class="k">class</span> <span class="nc">LimitState</span><span class="p">:</span>
+<div class="viewcode-block" id="LimitState"><a class="viewcode-back" href="../../gen/pystra.model.LimitState.html#pystra.model.LimitState">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">LimitState</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The Limit State function definition class.</span>
 
@@ -564,7 +564,7 @@ document.write(`
 <span class="sd">    specified.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">expression</span> <span class="o">=</span> <span class="n">expression</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Expression of the limit-state function&quot;&quot;&quot;</span>
 
@@ -574,13 +574,13 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">nx</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nrv</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="k">def</span> <span class="nf">getExpression</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getExpression</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">expression</span>
 
-    <span class="k">def</span> <span class="nf">setExpression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setExpression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">expression</span> <span class="o">=</span> <span class="n">expression</span>
 
-<div class="viewcode-block" id="LimitState.evaluate_lsf"><a class="viewcode-back" href="../../gen/pystra.model.LimitState.html#pystra.model.LimitState.evaluate_lsf">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate_lsf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">stochastic_model</span><span class="p">,</span> <span class="n">analysis_options</span><span class="p">,</span> <span class="n">diff_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="LimitState.evaluate_lsf"><a class="viewcode-back" href="../../gen/pystra.model.LimitState.html#pystra.model.LimitState.evaluate_lsf">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate_lsf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">stochastic_model</span><span class="p">,</span> <span class="n">analysis_options</span><span class="p">,</span> <span class="n">diff_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate the limit state&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">stochastic_model</span>
@@ -605,7 +605,7 @@ document.write(`
                 <span class="n">G</span><span class="p">,</span> <span class="n">grad_G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_ffd</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">G</span><span class="p">,</span> <span class="n">grad_G</span></div>
 
-    <span class="k">def</span> <span class="nf">evaluate_nogradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate_nogradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="n">nrv</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
         <span class="n">grad_G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nrv</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
@@ -627,7 +627,7 @@ document.write(`
 
         <span class="k">return</span> <span class="n">G</span><span class="p">,</span> <span class="n">grad_G</span>
 
-    <span class="k">def</span> <span class="nf">evaluate_ffd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate_ffd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="n">nrv</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
         <span class="n">grad_G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nrv</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
@@ -672,7 +672,7 @@ document.write(`
 
         <span class="k">return</span> <span class="n">G</span><span class="p">,</span> <span class="n">grad_G</span>
 
-    <span class="k">def</span> <span class="nf">evaluate_ddm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate_ddm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="n">nrv</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
         <span class="n">grad_G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nrv</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
@@ -682,7 +682,7 @@ document.write(`
 
         <span class="k">return</span> <span class="n">G</span><span class="p">,</span> <span class="n">grad_G</span>
 
-<div class="viewcode-block" id="LimitState.compute_lsf"><a class="viewcode-back" href="../../gen/pystra.model.LimitState.html#pystra.model.LimitState.compute_lsf">[docs]</a>    <span class="k">def</span> <span class="nf">compute_lsf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">ddm</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="LimitState.compute_lsf"><a class="viewcode-back" href="../../gen/pystra.model.LimitState.html#pystra.model.LimitState.compute_lsf">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">compute_lsf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">ddm</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the limit state function&quot;&quot;&quot;</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">nc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">variables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">getVariables</span><span class="p">()</span>

@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
@@ -456,14 +456,14 @@ document.write(`
 <span></span><span class="ch">#!/usr/bin/python -tt</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">.form</span> <span class="kn">import</span> <span class="n">Form</span>
-<span class="kn">from</span> <span class="nn">.analysis</span> <span class="kn">import</span> <span class="n">AnalysisObject</span>
-<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span> <span class="k">as</span> <span class="n">normal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.form</span><span class="w"> </span><span class="kn">import</span> <span class="n">Form</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisObject</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span> <span class="k">as</span> <span class="n">normal</span>
 
 
-<div class="viewcode-block" id="Sorm"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm">[docs]</a><span class="k">class</span> <span class="nc">Sorm</span><span class="p">(</span><span class="n">AnalysisObject</span><span class="p">):</span>
+<div class="viewcode-block" id="Sorm"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">Sorm</span><span class="p">(</span><span class="n">AnalysisObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Second Order Reliability Method (SORM)</span>
 
@@ -489,7 +489,7 @@ document.write(`
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">stochastic_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">analysis_options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -520,7 +520,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">betag_breitung_m</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="c1"># Could add Tvedt too</span>
 
-<div class="viewcode-block" id="Sorm.run"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fit_type</span><span class="o">=</span><span class="s2">&quot;cf&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="Sorm.run"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm.run">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fit_type</span><span class="o">=</span><span class="s2">&quot;cf&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run SORM analysis using either:</span>
 <span class="sd">            Curve-fitting: fit_type == &#39;cf&#39;</span>
@@ -534,7 +534,7 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">run_curvefit</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Sorm.run_curvefit"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm.run_curvefit">[docs]</a>    <span class="k">def</span> <span class="nf">run_curvefit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Sorm.run_curvefit"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm.run_curvefit">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">run_curvefit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run SORM analysis using curve fitting</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -550,7 +550,7 @@ document.write(`
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getPrintOutput</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">showResults</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Sorm.pf_breitung"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm.pf_breitung">[docs]</a>    <span class="k">def</span> <span class="nf">pf_breitung</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">kappa</span><span class="p">):</span>
+<div class="viewcode-block" id="Sorm.pf_breitung"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm.pf_breitung">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">pf_breitung</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">kappa</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculates the probability of failure and generalized reliability</span>
 <span class="sd">        index using [Breitung1984]_ formula. This formula is good for higher</span>
@@ -567,7 +567,7 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">pf2_breitung</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">betag_breitung</span> <span class="o">=</span> <span class="mi">0</span></div>
 
-<div class="viewcode-block" id="Sorm.pf_breitung_m"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm.pf_breitung_m">[docs]</a>    <span class="k">def</span> <span class="nf">pf_breitung_m</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">kappa</span><span class="p">):</span>
+<div class="viewcode-block" id="Sorm.pf_breitung_m"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm.pf_breitung_m">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">pf_breitung_m</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">kappa</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculates the probability of failure and generalized reliability</span>
 <span class="sd">        index using Brietung&#39;s formula ([Breitung1984]_) as modified by Hohenbichler and</span>
@@ -584,7 +584,7 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">pf2_breitung_m</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">betag_breitung_m</span> <span class="o">=</span> <span class="mi">0</span></div>
 
-    <span class="k">def</span> <span class="nf">showResults</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">showResults</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">results_valid</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Analysis not yet run&quot;</span><span class="p">)</span>
         <span class="n">n_hyphen</span> <span class="o">=</span> <span class="mi">54</span>
@@ -601,7 +601,7 @@ document.write(`
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="n">n_hyphen</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Sorm.showDetailedOutput"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm.showDetailedOutput">[docs]</a>    <span class="k">def</span> <span class="nf">showDetailedOutput</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Sorm.showDetailedOutput"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm.showDetailedOutput">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">showDetailedOutput</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get detailed output to console&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">results_valid</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Analysis not yet run&quot;</span><span class="p">)</span>
@@ -655,7 +655,7 @@ document.write(`
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="n">n_hyphen</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Sorm.computeHessian"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm.computeHessian">[docs]</a>    <span class="k">def</span> <span class="nf">computeHessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diff_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Sorm.computeHessian"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm.computeHessian">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">computeHessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diff_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the matrix of second derivatives using forward finite</span>
 <span class="sd">        difference, using the evaluation of the gradient already done</span>
@@ -740,7 +740,7 @@ document.write(`
 
         <span class="k">return</span> <span class="n">hess_G</span></div>
 
-<div class="viewcode-block" id="Sorm.evaluateLSF"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm.evaluateLSF">[docs]</a>    <span class="k">def</span> <span class="nf">evaluateLSF</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">calc_gradient</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">u_space</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Sorm.evaluateLSF"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm.evaluateLSF">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">evaluateLSF</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">calc_gradient</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">u_space</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        For use in computing the Hessian without altering the FORM object.</span>
 <span class="sd">        Considers the coord transform so the limit state function is evaluated</span>
@@ -767,7 +767,7 @@ document.write(`
 
         <span class="k">return</span> <span class="n">G</span><span class="p">,</span> <span class="n">grad</span></div>
 
-<div class="viewcode-block" id="Sorm.orthonormal_matrix"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm.orthonormal_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">orthonormal_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Sorm.orthonormal_matrix"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm.orthonormal_matrix">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">orthonormal_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the rotation matrix of the standard normal coordinate</span>
 <span class="sd">        space where the design point is located at Beta along the last</span>
@@ -788,7 +788,7 @@ document.write(`
         <span class="n">R1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rot90</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">R1</span></div>
 
-<div class="viewcode-block" id="Sorm.gram_schmidt"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm.gram_schmidt">[docs]</a>    <span class="k">def</span> <span class="nf">gram_schmidt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
+<div class="viewcode-block" id="Sorm.gram_schmidt"><a class="viewcode-back" href="../../gen/pystra.sorm.Sorm.html#pystra.sorm.Sorm.gram_schmidt">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">gram_schmidt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates an orthonormal matrix using the modified Gram-Schmidt process.</span>
 <span class="sd">        Note that QR decomposition doesn&#39;t work for this application; while</span>

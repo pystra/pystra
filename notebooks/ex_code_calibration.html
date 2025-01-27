@@ -28,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
@@ -464,12 +464,12 @@ document.write(`
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pystra</span> <span class="k">as</span> <span class="nn">pr</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">fsolve</span><span class="p">,</span> <span class="n">minimize</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">gumbel_r</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">fsolve</span><span class="p">,</span> <span class="n">minimize</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">gumbel_r</span>
 </pre></div>
 </div>
 </div>
@@ -477,7 +477,7 @@ document.write(`
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">calibration</span><span class="p">(</span><span class="n">reliability_func</span><span class="p">,</span><span class="n">Xk</span><span class="p">,</span><span class="n">beta_t</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">xtol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">calibration</span><span class="p">(</span><span class="n">reliability_func</span><span class="p">,</span><span class="n">Xk</span><span class="p">,</span><span class="n">beta_t</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">xtol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generic reliability calibration function.</span>
 
@@ -491,7 +491,7 @@ document.write(`
 <span class="sd">    - X_opt: the values of the nominal variables at beta_t</span>
 <span class="sd">    - form: the form object at the target reliability index</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">obj_func</span><span class="p">(</span><span class="n">Xk</span><span class="p">,</span><span class="n">beta_t</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">obj_func</span><span class="p">(</span><span class="n">Xk</span><span class="p">,</span><span class="n">beta_t</span><span class="p">):</span>
         <span class="n">form</span> <span class="o">=</span> <span class="n">reliability_func</span><span class="p">(</span><span class="n">Xk</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">output</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Xk</span><span class="si">=}</span><span class="s2"> | β = </span><span class="si">{</span><span class="n">form</span><span class="o">.</span><span class="n">getBeta</span><span class="p">()</span><span class="si">}</span><span class="s2"> | α = </span><span class="si">{</span><span class="n">form</span><span class="o">.</span><span class="n">getAlpha</span><span class="p">()</span><span class="si">}</span><span class="s2"> | x* = </span><span class="si">{</span><span class="n">form</span><span class="o">.</span><span class="n">getDesignPoint</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -507,7 +507,7 @@ document.write(`
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">print_form_results</span><span class="p">(</span><span class="n">form</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">print_form_results</span><span class="p">(</span><span class="n">form</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;β = </span><span class="si">{</span><span class="n">form</span><span class="o">.</span><span class="n">getBeta</span><span class="p">()</span><span class="si">}</span><span class="s2"> | α = </span><span class="si">{</span><span class="n">form</span><span class="o">.</span><span class="n">getAlpha</span><span class="p">()</span><span class="si">}</span><span class="s2"> | x* = </span><span class="si">{</span><span class="n">form</span><span class="o">.</span><span class="n">getDesignPoint</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -516,7 +516,7 @@ document.write(`
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sample_maxima</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">n_sample</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">sample_maxima</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">n_sample</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sample the distribution of the maximum of n samples from a pystra `dist` object.</span>
 
@@ -535,7 +535,7 @@ document.write(`
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sample_minima</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">n_sample</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">sample_minima</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">n_sample</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sample the distribution of the minimum of n samples from a pystra `dist` object.</span>
 
@@ -559,7 +559,7 @@ document.write(`
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">lsf</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">R</span><span class="p">,</span><span class="n">G</span><span class="p">,</span><span class="n">Q</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">lsf</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">R</span><span class="p">,</span><span class="n">G</span><span class="p">,</span><span class="n">Q</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">z</span><span class="o">*</span><span class="n">R</span> <span class="o">-</span> <span class="p">(</span><span class="n">G</span> <span class="o">+</span> <span class="n">Q</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -568,7 +568,7 @@ document.write(`
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">reliability</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span><span class="n">V</span><span class="o">=</span><span class="mf">0.2</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">reliability</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span><span class="n">V</span><span class="o">=</span><span class="mf">0.2</span><span class="p">):</span>
     <span class="n">ls</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span><span class="n">lsf</span><span class="p">)</span>
     <span class="n">sm</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
     <span class="n">sm</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span>
@@ -766,7 +766,7 @@ document.write(`
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">lsf</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">R</span><span class="p">,</span><span class="n">G</span><span class="p">,</span><span class="n">Q1</span><span class="p">,</span><span class="n">Q2</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">lsf</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">R</span><span class="p">,</span><span class="n">G</span><span class="p">,</span><span class="n">Q1</span><span class="p">,</span><span class="n">Q2</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">z</span><span class="o">*</span><span class="n">R</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.4</span><span class="o">*</span><span class="n">G</span> <span class="o">+</span> <span class="mf">0.6</span><span class="o">*</span><span class="n">Q1</span> <span class="o">+</span> <span class="mf">0.3</span><span class="o">*</span><span class="n">Q2</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -791,7 +791,7 @@ document.write(`
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">reliability</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">lc</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">reliability</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">lc</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="n">ls</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span><span class="n">lsf</span><span class="p">)</span>
     <span class="n">sm</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
     <span class="n">sm</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span>
@@ -932,7 +932,7 @@ array([[1.        , 0.90366604],
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">reliability2</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">reliability2</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
     <span class="n">ls</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span><span class="n">lsf</span><span class="p">)</span>
     <span class="n">sm</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
     <span class="n">sm</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span>
@@ -966,7 +966,7 @@ array([[1.        , 0.90366604],
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">obj_func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">obj_func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="n">z</span><span class="p">,</span> <span class="n">form</span> <span class="o">=</span> <span class="n">calibration</span><span class="p">(</span><span class="n">reliability2</span><span class="p">,</span><span class="n">Xk</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span><span class="n">beta_t</span><span class="o">=</span><span class="mf">4.3</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
     <span class="n">x_star</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">getDesignPoint</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">diff</span> <span class="o">=</span> <span class="n">x_star</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.62</span><span class="p">,</span> <span class="mf">2.03</span><span class="p">])</span> <span class="c1"># np.array([1.51, 2.25])</span>

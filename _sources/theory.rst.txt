@@ -379,7 +379,7 @@ FORM corresponds to a linearization of the failure surface :math:`g({\bf Z}) =
 reliability index :math:`\beta` can be computed.
 
 
-Second-Order Reliability Method (FORM)
+Second-Order Reliability Method (SORM)
 ======================================
 
 Better results can be obtained by higher order approximations of the failure

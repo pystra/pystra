@@ -28,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
@@ -490,9 +490,9 @@ and can be significant, most especially for large complex finite element analyse
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pystra</span> <span class="k">as</span> <span class="nn">ra</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">timeit</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ra</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">timeit</span>
 </pre></div>
 </div>
 </div>
@@ -501,7 +501,7 @@ and can be significant, most especially for large complex finite element analyse
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">lsf</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">,</span> <span class="n">X3</span><span class="p">,</span> <span class="n">X4</span><span class="p">,</span> <span class="n">X5</span><span class="p">,</span> <span class="n">X6</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">lsf</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">,</span> <span class="n">X3</span><span class="p">,</span> <span class="n">X4</span><span class="p">,</span> <span class="n">X5</span><span class="p">,</span> <span class="n">X6</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calrel example from FERUM</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -531,7 +531,7 @@ and can be significant, most especially for large complex finite element analyse
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">diff_mode</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="n">diff_mode</span><span class="p">):</span>
     <span class="n">limit_state</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span><span class="n">lsf</span><span class="p">)</span>
 
     <span class="c1"># Set some options (optional)</span>
@@ -583,7 +583,7 @@ and can be significant, most especially for large complex finite element analyse
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ffd_count</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="k">def</span> <span class="nf">run_ffd</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">run_ffd</span><span class="p">():</span>
     <span class="k">global</span> <span class="n">ffd_count</span>
     <span class="n">form</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span><span class="s2">&quot;ffd&quot;</span><span class="p">)</span>
     <span class="n">ffd_count</span> <span class="o">+=</span> <span class="n">form</span><span class="o">.</span><span class="n">getNoFunctionCalls</span><span class="p">()</span>
@@ -596,7 +596,7 @@ and can be significant, most especially for large complex finite element analyse
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ddm_count</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="k">def</span> <span class="nf">run_ddm</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">run_ddm</span><span class="p">():</span>
     <span class="k">global</span> <span class="n">ddm_count</span>
     <span class="n">form</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span><span class="s2">&quot;ddm&quot;</span><span class="p">)</span>
     <span class="n">ddm_count</span> <span class="o">+=</span> <span class="n">form</span><span class="o">.</span><span class="n">getNoFunctionCalls</span><span class="p">()</span>
