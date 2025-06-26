@@ -2,8 +2,9 @@ from scipy.special import erf
 import numpy as np
 from scipy.stats import lognorm
 from .distribution import Distribution
+from .lognormal import Lognormal
 
-class ShiftedLognormal(Distribution):
+class ShiftedLognormal(Lognormal):
     """Shifted Lognormal distribution
 
     If X is a lognormal random variable, then Y = X + lower is a shifted lognormal random variable.
@@ -26,11 +27,13 @@ class ShiftedLognormal(Distribution):
 
         self.mean = mean
         self.stdv = stdv
+        self.lower = None
         self._update_params(mean, stdv, lower)
 
         self.dist_obj = lognorm(scale=np.exp(self.lamb), s=self.zeta, loc=self.lower)
 
-        super().__init__(
+        Distribution.__init__(
+            self,
             name=name,
             dist_obj=self.dist_obj,
             startpoint=startpoint,
@@ -38,11 +41,9 @@ class ShiftedLognormal(Distribution):
 
         self.dist_type = "ShiftedLognormal"
 
-    def _update_params(self, mean, stdv, lower):
-        shifted_mean = mean - lower
-        cov = stdv / shifted_mean
-        self.zeta = (np.log(1 + cov**2)) ** 0.5
-        self.lamb = np.log(shifted_mean) - 0.5 * self.zeta**2
+    def _update_params(self, mean, stdv, lower = None):
+        lower = self.lower if lower is None else lower
+        super()._update_params(mean-lower, stdv)
         self.lower = lower
 
     def pdf(self, x):
@@ -50,55 +51,27 @@ class ShiftedLognormal(Distribution):
         Probability density function
         Note: asssumes x>lower for performance, scipy manages this appropriately
         """
-        t = x - self.lower
-        z = (np.log(t) - self.lamb) / self.zeta
-        p = np.exp(-0.5 * z**2) / (np.sqrt(2 * np.pi) * self.zeta * t)
-        return p  # self.lognormal.pdf(t)
+        return super().pdf(x-self.lower)
     
     def cdf(self, x):
         """
         Cumulative distribution function
         """
-        t = x - self.lower
-        z = (np.log(t) - self.lamb) / self.zeta
-        p = 0.5 + erf(z / np.sqrt(2)) / 2
-        return p  # self.lognormal.cdf(t)
+        return super().cdf(x-self.lower)
     
     def u_to_x(self, u):
         """
         Transformation from u to x
         """
-        t = np.exp(u * self.zeta + self.lamb)
-        return t + self.lower
+        return super().u_to_x(u) + self.lower
     
     def x_to_u(self, x):
         """
         Transformation from x to u
         Note: asssumes x>lower for performance
         """
-        t = x - self.lower
-        u = (np.log(t) - self.lamb) / self.zeta
-        return u
+        return super().x_to_u(x-self.lower)
     
-    def set_location(self, loc=0):
-        """
-        Updating the distribution location parameter.
-        For Lognormal, even though we have a SciPy object, it's not being used in the
-        functions above for performance, so we need to update pe.arams directly.
-        """
-
-        self._update_params(loc, self.stdv, self.lower)
-        self.mean = loc
-
-    def set_scale(self, scale=1):
-        """
-        Updating the distribution scale parameter.
-        For Lognormal, even though we have a SciPy object, it's not being used in the
-        functions above for performance, so we need to update params directly.
-        """
-        self._update_params(self.mean, scale, self.lower)
-        self.stdv = scale
-
     def set_lower(self, lower=0):
         """
         Updating the distribution lower parameter.
