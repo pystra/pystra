@@ -18,5 +18,5 @@ from .maximum import *
 from .scipydist import *
 from .parent import *
 from .zeroinflated import *
-from .genextreme import *
+from .gev import *
 from .shiftedlognormal import *
