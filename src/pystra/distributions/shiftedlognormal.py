@@ -4,6 +4,7 @@ from scipy.stats import lognorm
 from .distribution import Distribution
 from .lognormal import Lognormal
 
+
 class ShiftedLognormal(Lognormal):
     """Shifted Lognormal distribution
 
@@ -21,6 +22,7 @@ class ShiftedLognormal(Lognormal):
     performance hit, so for this common dist use bespoke implementation
     for the PDF, CDF.
     """
+
     def __init__(self, name, mean, stdv, lower, input_type=None, startpoint=None):
         if input_type is not None:
             raise NotImplementedError("`input_type` not implemented")
@@ -41,9 +43,9 @@ class ShiftedLognormal(Lognormal):
 
         self.dist_type = "ShiftedLognormal"
 
-    def _update_params(self, mean, stdv, lower = None):
+    def _update_params(self, mean, stdv, lower=None):
         lower = self.lower if lower is None else lower
-        super()._update_params(mean-lower, stdv)
+        super()._update_params(mean - lower, stdv)
         self.lower = lower
 
     def pdf(self, x):
@@ -51,27 +53,27 @@ class ShiftedLognormal(Lognormal):
         Probability density function
         Note: asssumes x>lower for performance, scipy manages this appropriately
         """
-        return super().pdf(x-self.lower)
-    
+        return super().pdf(x - self.lower)
+
     def cdf(self, x):
         """
         Cumulative distribution function
         """
-        return super().cdf(x-self.lower)
-    
+        return super().cdf(x - self.lower)
+
     def u_to_x(self, u):
         """
         Transformation from u to x
         """
         return super().u_to_x(u) + self.lower
-    
+
     def x_to_u(self, x):
         """
         Transformation from x to u
         Note: asssumes x>lower for performance
         """
-        return super().x_to_u(x-self.lower)
-    
+        return super().x_to_u(x - self.lower)
+
     def set_lower(self, lower=0):
         """
         Updating the distribution lower parameter.
