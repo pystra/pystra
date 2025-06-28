@@ -3,6 +3,7 @@ from scipy.stats import genextreme
 from scipy.special import gamma
 from pystra.distributions import Distribution
 
+
 class GEVmax(Distribution):
     """Generalized Extreme Value (GEV) distribution for maxima.
 
@@ -28,26 +29,26 @@ class GEVmax(Distribution):
     def __init__(self, name, mean, stdv, shape, input_type=None, startpoint=None):
         if shape >= 0.5:
             raise ValueError("`shape` must be less than 0.5 for finite variance")
-        
-        g1 = gamma(1-shape)
-        g2 = gamma(1-2*shape)
-        
+
+        g1 = gamma(1 - shape)
+        g2 = gamma(1 - 2 * shape)
+
         if input_type is None:
             if np.isclose(shape, 0):
                 scale = stdv * np.sqrt(6) / np.pi
                 loc = mean - scale * np.euler_gamma
             else:
                 scale = stdv * np.abs(shape) / np.sqrt(g2 - g1**2)
-                loc = mean - scale/shape * (g1-1)
+                loc = mean - scale / shape * (g1 - 1)
         else:
             loc = mean
             scale = stdv
             if np.isclose(shape, 0):
                 self.mean = loc + scale * np.euler_gamma
-                self.stdv = scale * np.pi/np.sqrt(6)
+                self.stdv = scale * np.pi / np.sqrt(6)
             else:
                 self.mean = loc + (g1 - 1) * scale / shape
-                self.stdv = np.sqrt((g2 - g1 ** 2) * (scale / shape) ** 2)     
+                self.stdv = np.sqrt((g2 - g1**2) * (scale / shape) ** 2)
 
         # use scipy to do the heavy lifting
         self.dist_obj = genextreme(c=-shape, loc=loc, scale=scale)
@@ -59,6 +60,7 @@ class GEVmax(Distribution):
         )
 
         self.dist_type = "GEVmax"
+
 
 class GEVmin(Distribution):
     """Generalized Extreme Value (GEV) distribution for minima.
@@ -85,19 +87,19 @@ class GEVmin(Distribution):
     def __init__(self, name, mean, stdv, shape, input_type=None, startpoint=None):
         if shape >= 0.5:
             raise ValueError("`shape` must be less than 0.5 for finite variance")
-        
+
         g1 = gamma(1 - shape)
-        g2 = gamma(1 - 2*shape)
-        
+        g2 = gamma(1 - 2 * shape)
+
         if input_type is None:
             # mean and stdv passed in
             self.mean = mean
-            self.stdv = stdv        
+            self.stdv = stdv
             if np.isclose(shape, 0):
                 scale = self.stdv * np.sqrt(6) / np.pi
                 loc = self.mean - scale * np.euler_gamma
             else:
-                scale = self.stdv * np.abs(shape) / np.sqrt(g2 - g1 ** 2)
+                scale = self.stdv * np.abs(shape) / np.sqrt(g2 - g1**2)
                 loc = self.mean - (scale / shape) * (g1 - 1)
         else:
             # loc and scale are actual GEV parameters
@@ -105,10 +107,10 @@ class GEVmin(Distribution):
             scale = stdv
             if np.isclose(shape, 0):
                 self.mean = loc + scale * np.euler_gamma
-                self.stdv = scale * np.pi/np.sqrt(6)
+                self.stdv = scale * np.pi / np.sqrt(6)
             else:
                 self.mean = loc + (g1 - 1) * scale / shape
-                self.stdv = np.sqrt((g2 - g1 ** 2) * (scale / shape) ** 2)     
+                self.stdv = np.sqrt((g2 - g1**2) * (scale / shape) ** 2)
 
         # use scipy to do the heavy lifting; note reverse shape sign convention
         self.dist_obj = genextreme(c=-shape, loc=-loc, scale=scale)
