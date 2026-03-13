@@ -10,13 +10,17 @@ Unreleased
 
 Added
 ~~~~~
+- **SORM point-fitting** (``fit_type='pf'``): alternative to
+  curve-fitting that locates fitting points on the failure surface via
+  Newton iteration, yielding asymmetric curvatures.  Based on
+  Henry Nguyen's contribution (PR #65).
 - ``@property`` accessors on ``StochasticModel`` for ``constants``,
   ``names``, ``n_marg``, ``marginal_distributions``, ``correlation``,
   ``modified_correlation``, and ``call_function`` (backward-compatible
   with existing getter methods).
 - SVD-based isoprobabilistic transformation as an alternative to
   Cholesky (``Transformation(transform_type="svd")``).
-- Comprehensive test suite: 248 tests covering distributions,
+- Comprehensive test suite: 252 tests covering distributions,
   model, transformation, sensitivity, and numerics (up from 19).
 - CHANGELOG, improved docstrings across all modules.
 
