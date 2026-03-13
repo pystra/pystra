@@ -96,6 +96,103 @@ def test_sorm():
     assert pytest.approx(Analysis.betag_breitung_m, abs=2e-4) == 3.8582
 
 
+def test_sorm_pointfit():
+    """
+    SORM point-fitting analysis on the standard test problem.
+    """
+    options, stochastic_model, limit_state = setup()
+
+    Analysis = ra.Sorm(
+        analysis_options=options,
+        stochastic_model=stochastic_model,
+        limit_state=limit_state,
+    )
+    Analysis.run(fit_type="pf")
+
+    # betaHL should match FORM
+    assert pytest.approx(Analysis.betaHL, abs=1e-4) == 3.7347
+
+    # Point-fitting gives similar but not identical results to curve-fitting
+    assert pytest.approx(Analysis.betag_breitung, abs=5e-2) == 3.79
+    assert pytest.approx(Analysis.betag_breitung_m, abs=5e-2) == 3.79
+
+    # Asymmetric curvatures should be populated
+    assert Analysis.kappa_pf is not None
+    assert Analysis.kappa_pf.shape == (2, 2)  # 2 sides x (nrv-1) axes
+    assert Analysis.fit_type == "pf"
+
+    # Average curvatures stored in kappa for compatibility
+    assert len(Analysis.kappa) == 2
+
+
+def test_sorm_pointfit_linear():
+    """
+    Point-fitting SORM on a linear LSF should give betag == betaHL,
+    since a linear surface has zero curvature everywhere.
+    """
+    options = ra.AnalysisOptions()
+    options.setPrintOutput(False)
+
+    model = ra.model.StochasticModel()
+    model.addVariable(ra.Normal("R", 10, 2))
+    model.addVariable(ra.Normal("S", 5, 1))
+
+    limit_state = ra.model.LimitState(lambda R, S: R - S)
+
+    Analysis = ra.Sorm(
+        analysis_options=options,
+        stochastic_model=model,
+        limit_state=limit_state,
+    )
+    Analysis.run(fit_type="pf")
+
+    expected_beta = 5.0 / np.sqrt(5.0)
+    assert pytest.approx(Analysis.betag_breitung, abs=1e-3) == expected_beta
+    # Curvatures should be effectively zero
+    assert np.allclose(Analysis.kappa_pf, 0, atol=1e-6)
+
+
+def test_sorm_pointfit_with_form():
+    """
+    Pass a pre-computed Form result to SORM point-fitting.
+    """
+    options, stochastic_model, limit_state = setup()
+
+    form = ra.Form(
+        analysis_options=options,
+        stochastic_model=stochastic_model,
+        limit_state=limit_state,
+    )
+    form.run()
+
+    Analysis = ra.Sorm(
+        analysis_options=options,
+        stochastic_model=stochastic_model,
+        limit_state=limit_state,
+        form=form,
+    )
+    Analysis.run(fit_type="pf")
+
+    assert pytest.approx(Analysis.betaHL, abs=1e-4) == 3.7347
+    assert Analysis.betag_breitung > 0
+    assert Analysis.kappa_pf is not None
+
+
+def test_sorm_invalid_fit_type():
+    """
+    Invalid fit_type should raise ValueError.
+    """
+    options, stochastic_model, limit_state = setup()
+
+    Analysis = ra.Sorm(
+        analysis_options=options,
+        stochastic_model=stochastic_model,
+        limit_state=limit_state,
+    )
+    with pytest.raises(ValueError, match="Unknown fit_type"):
+        Analysis.run(fit_type="invalid")
+
+
 def test_cmc():
     """
     Perform Crude Monte Carlo Simulation

@@ -9,29 +9,59 @@ from scipy.stats import norm as normal
 
 
 class Sorm(AnalysisObject):
-    r"""
-    Second Order Reliability Method (SORM)
+    r"""Second Order Reliability Method (SORM).
 
-    Unlike FORM, this method approximates the failure surface in standard
-    normal space using a quadratic surface. The basic approximation is given
-    by [Breitung1984]_:
+    Approximates the failure surface in standard normal space using a
+    quadratic surface, improving on the linear FORM approximation. Two
+    approaches are available:
 
-        .. math::
+    **Curve-fitting** (``fit_type='cf'``, default): computes the Hessian of
+    the limit state function at the design point, extracts principal
+    curvatures as eigenvalues, and applies the Breitung formula.
 
-              p_f \\approx p_{f2} = \Phi(-\\beta) \\Pi_{i=1}^{n-1}\\[ 1 + \\kappa_i \\beta \\]^{-0.5}
+    **Point-fitting** (``fit_type='pf'``): locates fitting points directly
+    on the failure surface on both sides of each principal axis using Newton
+    iteration, then computes curvatures from their positions. This yields
+    asymmetric curvatures (different on the positive and negative sides of
+    each axis).
 
-    The corresponding generalized reliability index
-    :math:`\\beta_G \\= -\\Phi^{-1}\\( 1-p_{f2}\\)` is reported. The Breitung
-    approximation is asymptotic and accurate for higher values of \\beta.
-    Also reported is the Hohenbichler and Rackwitz modification to Brietung's
-    formula, which is more accurate for lower values of \\beta.
+    Both methods report the Breitung [Breitung1984]_ and the
+    Hohenbichler-Rackwitz [Hohenbichler1988]_ failure probabilities and
+    generalised reliability indices.
 
-    :Attributes:
-      - stochastic_model (StochasticModel): Information about the model
-      - limit_state (LimitState): Information about the limit state
-      - analysis_option (AnalysisOption): Option for the structural analysis
-      - form (Form): Form object, if a FORM analysis has already been completed
+    Parameters
+    ----------
+    stochastic_model : StochasticModel, optional
+        The stochastic model with random variables and correlations.
+    limit_state : LimitState, optional
+        The limit state function.
+    analysis_options : AnalysisOptions, optional
+        Options controlling the analysis.
+    form : Form, optional
+        A pre-computed FORM result. If ``None``, FORM is run automatically.
 
+    Attributes
+    ----------
+    betaHL : float or ndarray
+        Hasofer-Lind reliability index (from FORM).
+    kappa : ndarray
+        Principal curvatures. For curve-fitting, a 1-D array of length
+        ``nrv - 1``. For point-fitting, the sorted average of the positive
+        and negative curvatures.
+    kappa_pf : ndarray or None
+        Asymmetric curvatures from point-fitting, shape ``(2, nrv - 1)``
+        with rows ``[kappa_minus, kappa_plus]``. ``None`` for curve-fitting.
+    fit_type : str or None
+        The fitting method used: ``'cf'``, ``'pf'``, or ``None`` if not
+        yet run.
+    pf2_breitung : float or ndarray
+        Failure probability from the Breitung approximation.
+    betag_breitung : float or ndarray
+        Generalised reliability index from the Breitung approximation.
+    pf2_breitung_m : float or ndarray
+        Failure probability from the modified Breitung (Hohenbichler-Rackwitz).
+    betag_breitung_m : float or ndarray
+        Generalised reliability index from the modified Breitung.
     """
 
     def __init__(
@@ -59,25 +89,43 @@ class Sorm(AnalysisObject):
 
         self.betaHL = 0
         self.kappa = 0
+        self.kappa_pf = None
+        self.fit_type = None
         self.pf2_breitung = 0
         self.betag_breitung = 0
         self.pf2_breitung_m = 0
         self.betag_breitung_m = 0
-        # Could add Tvedt too
 
     def run(self, fit_type="cf"):
-        """
-        Run SORM analysis using either:
-            Curve-fitting: fit_type == 'cf'
-            Point-fitting: fit_type == 'pf'
+        """Run SORM analysis.
+
+        Parameters
+        ----------
+        fit_type : {'cf', 'pf'}, optional
+            Fitting method to use (default ``'cf'``):
+
+            - ``'cf'`` — Curve-fitting via Hessian eigenvalues.
+            - ``'pf'`` — Point-fitting via Newton iteration on the failure
+              surface.
+
+        Raises
+        ------
+        ValueError
+            If *fit_type* is not ``'cf'`` or ``'pf'``.
         """
         self.results_valid = True
         self.init_run()
+        self.fit_type = fit_type
 
-        if fit_type != "cf":
-            raise ValueError("Point-Fitting not yet supported")
-        else:
+        if fit_type == "cf":
             self.run_curvefit()
+        elif fit_type == "pf":
+            self.run_pointfit()
+        else:
+            raise ValueError(
+                f"Unknown fit_type '{fit_type}'. Use 'cf' (curve-fitting) "
+                f"or 'pf' (point-fitting)."
+            )
 
     def run_curvefit(self):
         """
@@ -94,6 +142,209 @@ class Sorm(AnalysisObject):
         self.pf_breitung_m(self.betaHL, self.kappa)
         if self.options.getPrintOutput():
             self.showResults()
+
+    def run_pointfit(self):
+        """Run SORM analysis using point-fitting.
+
+        Finds fitting points on the limit state surface on both the positive
+        and negative sides of each principal axis in the rotated standard
+        normal space.  Curvatures are computed from the positions of these
+        points, producing asymmetric curvatures that are stored in
+        :attr:`kappa_pf`.
+
+        The generalized Breitung formula for asymmetric curvatures is:
+
+        .. math::
+
+            p_{f2} = \\Phi(-\\beta) \\prod_{i=1}^{n-1} \\frac{1}{2}
+            \\left[ (1 + \\beta \\kappa_i^+)^{-1/2}
+                  + (1 + \\beta \\kappa_i^-)^{-1/2} \\right]
+
+        Notes
+        -----
+        Based on the point-fitting implementation contributed by
+        Henry Nguyen (Monash University, PR #65).
+
+        See Also
+        --------
+        run_curvefit : Alternative SORM approach using Hessian eigenvalues.
+        """
+        beta = self.form.beta[0]
+        nrv = self.form.alpha.shape[1]
+        R1 = self.orthonormal_matrix()
+        marg = self.model.getMarginalDistributions()
+
+        # Step coefficient controlling trial point distance from design point
+        abs_beta = abs(beta)
+        if abs_beta < 1:
+            k = 1.0 / abs_beta
+        elif abs_beta <= 3:
+            k = 1.0
+        else:
+            k = 3.0 / abs_beta
+
+        kappa_minus = np.zeros(nrv - 1)
+        kappa_plus = np.zeros(nrv - 1)
+
+        for i in range(nrv - 1):
+            kappa_minus[i] = self._find_fitting_point(i, -1, beta, k, R1, marg)
+            kappa_plus[i] = self._find_fitting_point(i, +1, beta, k, R1, marg)
+
+        # Store results
+        self.betaHL = self.form.beta
+        self.kappa_pf = np.vstack([kappa_minus, kappa_plus])
+        self.kappa = np.sort(0.5 * (kappa_minus + kappa_plus))
+
+        # Compute failure probabilities
+        self._pf_breitung_pf(beta, kappa_minus, kappa_plus)
+        self._pf_breitung_m_pf(beta, kappa_minus, kappa_plus)
+
+        if self.options.getPrintOutput():
+            self.showResults()
+
+    def _find_fitting_point(self, axis, sign, beta, k, R1, marg,
+                            max_iter=50, tol=1e-6):
+        """Find a fitting point on the failure surface and return its curvature.
+
+        Uses Newton iteration along the last axis of the rotated standard
+        normal space to locate a point where :math:`G = 0`, keeping the
+        coordinate on the fitting *axis* fixed.
+
+        Parameters
+        ----------
+        axis : int
+            Index of the rotated axis (``0`` to ``nrv - 2``).
+        sign : {-1, +1}
+            Side of the axis: ``-1`` for negative, ``+1`` for positive.
+        beta : float
+            Reliability index from FORM.
+        k : float
+            Step coefficient controlling trial point distance.
+        R1 : ndarray
+            Orthonormal rotation matrix, shape ``(nrv, nrv)``.
+        marg : list
+            Marginal distributions from the stochastic model.
+        max_iter : int, optional
+            Maximum Newton iterations (default 50).
+        tol : float, optional
+            Convergence tolerance on ``|G|`` (default ``1e-6``).
+
+        Returns
+        -------
+        float
+            Curvature :math:`a_i = 2 (u'_n - \\beta) / (u'_i)^2` for the
+            given axis and side.
+
+        Raises
+        ------
+        RuntimeError
+            If Newton iteration does not converge within *max_iter* steps.
+        """
+        nrv = R1.shape[0]
+
+        # Trial point in rotated space: u'[axis] = sign*k*beta, u'[-1] = beta
+        u_prime = np.zeros(nrv)
+        u_prime[axis] = sign * k * beta
+        u_prime[-1] = beta
+
+        G_val = None
+        for iteration in range(max_iter):
+            # Transform to standard normal space
+            u = R1.T @ u_prime
+            # Transform to physical space
+            x = self.transform.u_to_x(u, marg)
+            x_col = x[:, np.newaxis] if x.ndim == 1 else x
+
+            # Evaluate LSF and gradient in u-space
+            G, grad = self.evaluateLSF(x_col, calc_gradient=True)
+            G_val = np.squeeze(G)
+            grad_u = np.squeeze(grad)
+
+            if abs(G_val) < tol:
+                break
+
+            # Gradient in rotated space
+            grad_rot = R1 @ grad_u
+
+            # Newton update along the last axis (n-th direction)
+            if abs(grad_rot[-1]) < 1e-12:
+                raise RuntimeError(
+                    f"Point-fitting: near-zero gradient component along the "
+                    f"n-th axis at axis={axis}, sign={sign}. The limit state "
+                    f"surface may be tangent to the search direction."
+                )
+            u_prime[-1] -= G_val / grad_rot[-1]
+        else:
+            raise RuntimeError(
+                f"Point-fitting did not converge for axis={axis}, sign={sign} "
+                f"after {max_iter} iterations (|G| = {abs(G_val):.2e})."
+            )
+
+        # Compute curvature from the converged fitting point
+        u_prime_i = u_prime[axis]
+        u_prime_n = u_prime[-1]
+
+        if abs(u_prime_i) < 1e-12:
+            return 0.0
+
+        return 2.0 * (u_prime_n - beta) / (u_prime_i ** 2)
+
+    def _pf_breitung_pf(self, beta, kappa_minus, kappa_plus):
+        """Breitung formula for point-fitting with asymmetric curvatures.
+
+        Parameters
+        ----------
+        beta : float
+            Reliability index.
+        kappa_minus : ndarray
+            Curvatures on the negative side of each axis.
+        kappa_plus : ndarray
+            Curvatures on the positive side of each axis.
+        """
+        terms_plus = 1 + beta * kappa_plus
+        terms_minus = 1 + beta * kappa_minus
+        is_invalid = np.any(terms_plus <= 0) or np.any(terms_minus <= 0)
+
+        if not is_invalid:
+            self.pf2_breitung = np.atleast_1d(
+                normal.cdf(-beta) * np.prod(
+                    0.5 * (terms_plus ** (-0.5) + terms_minus ** (-0.5))
+                )
+            )
+            self.betag_breitung = np.atleast_1d(-normal.ppf(self.pf2_breitung[0]))
+        else:
+            print("*** SORM Point-Fitting Breitung error, excessive curvatures")
+            self.pf2_breitung = np.atleast_1d(0.0)
+            self.betag_breitung = np.atleast_1d(0.0)
+
+    def _pf_breitung_m_pf(self, beta, kappa_minus, kappa_plus):
+        """Hohenbichler-Rackwitz modified Breitung for asymmetric curvatures.
+
+        Parameters
+        ----------
+        beta : float
+            Reliability index.
+        kappa_minus : ndarray
+            Curvatures on the negative side of each axis.
+        kappa_plus : ndarray
+            Curvatures on the positive side of each axis.
+        """
+        psi = normal.pdf(beta) / normal.cdf(-beta)
+        terms_plus = 1 + psi * kappa_plus
+        terms_minus = 1 + psi * kappa_minus
+        is_invalid = np.any(terms_plus <= 0) or np.any(terms_minus <= 0)
+
+        if not is_invalid:
+            self.pf2_breitung_m = np.atleast_1d(
+                normal.cdf(-beta) * np.prod(
+                    0.5 * (terms_plus ** (-0.5) + terms_minus ** (-0.5))
+                )
+            )
+            self.betag_breitung_m = np.atleast_1d(-normal.ppf(self.pf2_breitung_m[0]))
+        else:
+            print("*** SORM Point-Fitting Breitung Modified error")
+            self.pf2_breitung_m = np.atleast_1d(0.0)
+            self.betag_breitung_m = np.atleast_1d(0.0)
 
     def pf_breitung(self, beta, kappa):
         """
@@ -130,24 +381,33 @@ class Sorm(AnalysisObject):
             self.betag_breitung_m = 0
 
     def showResults(self):
+        """Print a compact summary of the SORM results."""
         if not self.results_valid:
             raise ValueError("Analysis not yet run")
         n_hyphen = 54
+        fit_label = " (Point-Fitting)" if self.fit_type == "pf" else ""
         print("")
         print("=" * n_hyphen)
         print("")
-        print("RESULTS FROM RUNNING SECOND ORDER RELIABILITY METHOD")
+        print(f"RESULTS FROM RUNNING SECOND ORDER RELIABILITY METHOD{fit_label}")
         print("")
         print("Generalized reliability index: ", self.betag_breitung[0])
         print("Probability of failure:        ", self.pf2_breitung[0])
         print("")
-        for i, k in enumerate(self.kappa):
-            print(f"Curvature {i+1}: {k}")
+        if self.fit_type == "pf" and self.kappa_pf is not None:
+            for i in range(self.kappa_pf.shape[1]):
+                print(
+                    f"Curvature {i+1}:  kappa- = {self.kappa_pf[0, i]:+.6f}"
+                    f"  kappa+ = {self.kappa_pf[1, i]:+.6f}"
+                )
+        else:
+            for i, k in enumerate(self.kappa):
+                print(f"Curvature {i+1}: {k}")
         print("=" * n_hyphen)
         print("")
 
     def showDetailedOutput(self):
-        """Get detailed output to console"""
+        """Print detailed FORM/SORM comparison to the console."""
         if not self.results_valid:
             raise ValueError("Analysis not yet run")
         names = self.model.getVariables().keys()
@@ -158,10 +418,11 @@ class Sorm(AnalysisObject):
         betaHL = self.form.beta[0]
         pfFORM = self.form.Pf
 
+        fit_label = " (Point-Fitting)" if self.fit_type == "pf" else ""
         n_hyphen = 54
         print("")
         print("=" * n_hyphen)
-        print("FORM/SORM")
+        print(f"FORM/SORM{fit_label}")
         print("=" * n_hyphen)
         print("{:15s} \t\t {:1.10e}".format("Pf FORM", pfFORM[0]))
         print("{:15s} \t\t {:1.10e}".format("Pf SORM Breitung", self.pf2_breitung[0]))
@@ -180,8 +441,15 @@ class Sorm(AnalysisObject):
         )
 
         print("-" * n_hyphen)
-        for i, k in enumerate(self.kappa):
-            print(f"Curvature {i+1}: {k}")
+        if self.fit_type == "pf" and self.kappa_pf is not None:
+            for i in range(self.kappa_pf.shape[1]):
+                print(
+                    f"Curvature {i+1}:  kappa- = {self.kappa_pf[0, i]:+.6f}"
+                    f"  kappa+ = {self.kappa_pf[1, i]:+.6f}"
+                )
+        else:
+            for i, k in enumerate(self.kappa):
+                print(f"Curvature {i+1}: {k}")
 
         print("-" * n_hyphen)
         print(
