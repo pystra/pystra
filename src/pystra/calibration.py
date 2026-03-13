@@ -531,11 +531,14 @@ class Calibration:
 
         """
         df_psi_max = dfpsi[self.label_comb_vrs].copy()
-        # Use .to_numpy() instead of .values; the latter may return a
-        # read-only array in newer pandas/NumPy versions.
-        np.fill_diagonal(df_psi_max.to_numpy(), 0.0)
+        # Set diagonal elements via iloc; np.fill_diagonal on .values or
+        # .to_numpy() fails on newer pandas/NumPy where the underlying
+        # array may be read-only.
+        for i in range(min(df_psi_max.shape)):
+            df_psi_max.iloc[i, i] = 0.0
         df_psi_max = df_psi_max.clip(df_psi_max.max(), axis=1)
-        np.fill_diagonal(df_psi_max.to_numpy(), 1.0)
+        for i in range(min(df_psi_max.shape)):
+            df_psi_max.iloc[i, i] = 1.0
         if len(self.label_other) > 0:
             df_psi_max.loc[:, self.label_other] = dfpsi[self.label_other]
         return df_psi_max
