@@ -1,5 +1,13 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
+"""Numerical integration for the Nataf modified correlation matrix.
+
+The Nataf model requires solving for a modified correlation coefficient
+``rho_0`` in standard-normal space that reproduces a given correlation
+coefficient ``rho`` in physical space.  The functions in this module
+evaluate the double integral that relates ``rho_0`` to the physical
+correlation using 2-D Gauss-Legendre quadrature.
+"""
 
 from .quadrature import quadratureRule
 
@@ -7,7 +15,35 @@ import numpy as np
 
 
 def rho_integral(rho0, margi, margj, Z1, Z2, X1, X2, WIP, detJ):
-    """Integral for rho0"""
+    r"""Evaluate the Nataf correlation integral for a trial ``rho_0``.
+
+    Computes the physical-space correlation that results from a
+    standard-normal-space correlation of ``rho0``, by numerically
+    integrating the bivariate standard normal density weighted by the
+    normalised marginal values.
+
+    Parameters
+    ----------
+    rho0 : float
+        Trial correlation in standard-normal space.
+    margi, margj : Distribution
+        Marginal distributions of the two random variables.
+    Z1, Z2 : ndarray
+        Meshgrid arrays of standard-normal integration coordinates.
+    X1, X2 : ndarray
+        Corresponding physical-space values via the marginal
+        transformations.
+    WIP : ndarray
+        Outer product of quadrature weights.
+    detJ : float
+        Jacobian determinant of the coordinate mapping from
+        ``[-zmax, zmax]`` to ``[-1, 1]``.
+
+    Returns
+    -------
+    float
+        The resulting physical-space correlation coefficient.
+    """
     PHI2 = (
         1
         * (2 * np.pi * np.sqrt(1 - rho0**2)) ** (-1)
@@ -30,8 +66,34 @@ def rho_integral(rho0, margi, margj, Z1, Z2, X1, X2, WIP, detJ):
 
 
 def zi_and_xi(margi, margj, zmax, nIP):
-    """Values for the Gauss integration"""
-    # Computes z1, z2 and x1, x2 values for Gauss integration - Vectorized version
+    """Set up the 2-D quadrature grid for the Nataf correlation integral.
+
+    Computes the meshgrid arrays of standard-normal coordinates (Z1, Z2),
+    their physical-space counterparts (X1, X2), the outer-product weight
+    matrix, and the Jacobian determinant for the coordinate mapping.
+
+    Parameters
+    ----------
+    margi, margj : Distribution
+        Marginal distributions of the two random variables.
+    zmax : float
+        Truncation limit for the integration domain
+        (``[-zmax, zmax]`` on each axis).
+    nIP : int
+        Number of Gauss-Legendre integration points per axis.
+
+    Returns
+    -------
+    Z1, Z2 : ndarray
+        Meshgrid arrays of standard-normal coordinates, each of
+        shape ``(nIP, nIP)``.
+    X1, X2 : ndarray
+        Physical-space values corresponding to Z1 and Z2.
+    WIP : ndarray
+        Outer product of quadrature weights, shape ``(nIP, nIP)``.
+    detJ : float
+        Jacobian determinant of the affine coordinate mapping.
+    """
 
     # Integration limits ( should be -infinity, +infinity on both axes, in theory )
     zmin = -zmax

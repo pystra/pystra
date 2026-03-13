@@ -1,14 +1,43 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
+"""Gauss-Legendre quadrature rule for numerical integration.
+
+This module provides the quadrature points and weights used by the
+Nataf correlation integral (see :mod:`pystra.integration`).
+"""
 
 import numpy as np
 
 
 def quadratureRule(n, wfun=None, alpha=None, beta=None):
-    """Quadrature rule"""
-    #  bp = base points (abscissas)
-    #  wf = weight factors
-    #  n  = number of base points (abscissas) (integrates a (2n-1)th order
+    """Compute Gauss-Legendre quadrature points and weights.
+
+    Returns *n* base points (abscissas) and corresponding weight factors
+    for Gauss-Legendre quadrature on the interval [-1, 1].  An *n*-point
+    rule integrates polynomials of degree up to 2*n* - 1 exactly.
+
+    The algorithm follows Davis and Rabinowitz, *Methods of Numerical
+    Integration*, Academic Press, 1975, p. 365.
+
+    Parameters
+    ----------
+    n : int
+        Number of quadrature points.
+    wfun : int, optional
+        Weight function selector (only ``1`` — Gauss-Legendre — is
+        implemented).
+    alpha : float, optional
+        Not used for Gauss-Legendre; must be > -1 if supplied.
+    beta : float, optional
+        Not used for Gauss-Legendre; must be > -1 if supplied.
+
+    Returns
+    -------
+    bp : ndarray
+        Base points (abscissas) in [-1, 1], length *n*.
+    wf : ndarray
+        Corresponding weight factors, length *n*.
+    """
 
     if beta == None:
         beta = 0

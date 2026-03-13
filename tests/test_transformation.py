@@ -23,6 +23,13 @@ class TestTransformationInit:
         with pytest.raises(ValueError, match="Undefined transformation type"):
             Transformation("invalid")
 
+    def test_non_positive_definite_raises(self):
+        """A non-positive-definite matrix should raise LinAlgError."""
+        t = Transformation("cholesky")
+        bad_Ro = np.array([[1.0, 2.0], [2.0, 1.0]])  # not PD
+        with pytest.raises(np.linalg.LinAlgError, match="positive-definite"):
+            t.compute(bad_Ro)
+
 
 class TestCholeskyTransform:
     def test_uncorrelated_roundtrip(self):

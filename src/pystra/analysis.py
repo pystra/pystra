@@ -1,3 +1,10 @@
+"""Base classes for reliability analysis.
+
+:class:`AnalysisObject` is the common base for FORM, SORM, and Monte
+Carlo analysis classes.  :class:`AnalysisOptions` holds all
+user-configurable parameters for these analyses.
+"""
+
 import numpy as np
 from .model import StochasticModel, LimitState
 from .transformation import Transformation
@@ -5,8 +12,31 @@ from .correlation import setModifiedCorrelationMatrix
 
 
 class AnalysisObject:
-    """
-    A base class for objects that perform a probability of failure estimation
+    """Base class for reliability analysis objects (FORM, SORM, MC).
+
+    Handles the common set-up shared by all analysis types: storing the
+    stochastic model, limit state, and analysis options, and providing
+    the ``init_run`` method that computes the Nataf correlation and
+    isoprobabilistic transformation before the analysis-specific
+    iteration begins.
+
+    Parameters
+    ----------
+    stochastic_model : StochasticModel, optional
+        The probabilistic model.
+    limit_state : LimitState, optional
+        The limit state function.
+    analysis_options : AnalysisOptions, optional
+        Algorithm settings.
+
+    Attributes
+    ----------
+    model : StochasticModel
+    limitstate : LimitState
+    options : AnalysisOptions
+    transform : Transformation
+    results_valid : bool
+        ``True`` after a successful ``run()``.
     """
 
     def __init__(self, stochastic_model=None, limit_state=None, analysis_options=None):
@@ -34,8 +64,11 @@ class AnalysisObject:
         self.results_valid = False
 
     def init_run(self):
-        """
-        Derived classes call this at top of their run()
+        """Initialise the Nataf transformation before the analysis loop.
+
+        Computes the modified (Nataf) correlation matrix and its
+        factorisation.  Must be called at the start of every
+        ``run()`` method in subclasses.
         """
 
         if self.options.getPrintOutput():
@@ -60,9 +93,38 @@ class AnalysisObject:
 
 
 class AnalysisOptions:
-    """Options
+    """Configuration for structural reliability analyses.
 
-    Options for the structural reliability analysis.
+    All FORM, SORM, and Monte Carlo settings are collected here.
+    Attributes can be set directly or via the legacy getter/setter
+    methods.
+
+    Attributes
+    ----------
+    print_output : bool
+        Print progress to the console (default ``False``).
+    diff_mode : {"ffd", "ddm"}
+        Gradient computation method — forward finite difference or
+        direct differentiation (default ``"ffd"``).
+    ffdpara : int
+        FFD perturbation divisor; perturbation = ``stdv / ffdpara``
+        (default 1000).
+    i_max : int
+        Maximum FORM iterations (default 100).
+    e1 : float
+        Convergence tolerance on the limit state value (default 0.001).
+    e2 : float
+        Convergence tolerance on the gradient direction (default 0.001).
+    step_size : float
+        FORM step size (0 = Armijo rule, default 0).
+    samples : int
+        Number of Monte Carlo samples (default 100 000).
+    target_cov : float
+        Target coefficient of variation for MC failure probability
+        (default 0.05).
+    transform_type : str or None
+        Isoprobabilistic transform type (``"cholesky"`` or ``"svd"``);
+        ``None`` uses the default (Cholesky).
     """
 
     def __init__(self):

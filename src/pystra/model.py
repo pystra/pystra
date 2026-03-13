@@ -6,7 +6,13 @@ from collections import OrderedDict
 
 
 class StochasticModel:
-    """Stochastic model"""
+    """Stochastic model
+
+    Attributes can be accessed via properties or the legacy getter methods::
+
+        model.constants          # preferred
+        model.getConstants()     # legacy, equivalent
+    """
 
     def __init__(self):
         """
@@ -14,39 +20,102 @@ class StochasticModel:
         correlation matrix
         """
         self.variables = OrderedDict()
-        self.names = []
-        self.marg = []
-        self.correlation = None
-        self.Ro = None
-        self.call_function = 0
-        self.consts = {}
+        self._names = []
+        self._marg = []
+        self._correlation = None
+        self._Ro = None
+        self._call_function = 0
+        self._consts = {}
 
     def addVariable(self, obj):
-        """
-        add stochastic variable
+        """Add a random variable or constant to the model.
+
+        Parameters
+        ----------
+        obj : Distribution or Constant
+            The variable to add.  Distributions are treated as random
+            variables; Constants are stored separately and passed as
+            fixed values to the limit state function.
+
+        Raises
+        ------
+        Exception
+            If *obj* is not a Distribution or Constant, or if a
+            variable with the same name already exists.
         """
 
         if not (isinstance(obj, Distribution) or isinstance(obj, Constant)):
             raise Exception("Input is not a Distribution or Constant object")
 
-        if obj.getName() in self.names:
+        if obj.getName() in self._names:
             raise Exception(f'variable name "{obj.getName()}" already exists')
 
         # append the variable name
-        self.names.append(obj.getName())
+        self._names.append(obj.getName())
 
         if isinstance(obj, Distribution):
             # append marginal distribution
-            self.marg.append(obj)
+            self._marg.append(obj)
             # append the Distribution object to the variables (ordered) dictionary
             self.variables[obj.getName()] = obj
             # update the default correlation matrix, in accordance with the number of variables
-            self.correlation = np.eye(len(self.marg))
+            self._correlation = np.eye(len(self._marg))
         elif isinstance(obj, Constant):
-            self.consts[obj.getName()] = obj.getValue()
+            self._consts[obj.getName()] = obj.getValue()
+
+    # ---- Properties (preferred access) ----
+
+    @property
+    def constants(self):
+        """Dictionary of constant name → value pairs."""
+        return self._consts
+
+    @property
+    def names(self):
+        """List of all variable and constant names, in insertion order."""
+        return self._names
+
+    @property
+    def n_marg(self):
+        """Number of marginal (stochastic) distributions."""
+        return len(self._marg)
+
+    @property
+    def marginal_distributions(self):
+        """List of marginal Distribution objects."""
+        return self._marg
+
+    @property
+    def correlation(self):
+        """Correlation matrix (n × n numpy array)."""
+        return self._correlation
+
+    @correlation.setter
+    def correlation(self, value):
+        self._correlation = value
+
+    @property
+    def modified_correlation(self):
+        """Modified (Nataf) correlation matrix Ro."""
+        return self._Ro
+
+    @modified_correlation.setter
+    def modified_correlation(self, value):
+        self._Ro = value
+
+    @property
+    def call_function(self):
+        """Cumulative number of limit-state function evaluations."""
+        return self._call_function
+
+    @call_function.setter
+    def call_function(self, value):
+        self._call_function = value
+
+    # ---- Legacy getter/setter methods (kept for backward compatibility) ----
 
     def getConstants(self):
-        return self.consts
+        return self._consts
 
     def getVariables(self):
         return self.variables
@@ -55,34 +124,34 @@ class StochasticModel:
         return self.variables[name]
 
     def getNames(self):
-        return self.names
+        return self._names
 
     def getLenMarginalDistributions(self):
-        return len(self.marg)
+        return len(self._marg)
 
     def getMarginalDistributions(self):
-        return self.marg
+        return self._marg
 
     def setMarginalDistributions(self, marg):
-        self.marg = marg
+        self._marg = marg
 
     def setCorrelation(self, obj):
-        self.correlation = np.array(obj.getMatrix())
+        self._correlation = np.array(obj.getMatrix())
 
     def getCorrelation(self):
-        return self.correlation
+        return self._correlation
 
     def setModifiedCorrelation(self, correlation):
-        self.Ro = correlation
+        self._Ro = correlation
 
     def getModifiedCorrelation(self):
-        return self.Ro
+        return self._Ro
 
     def addCallFunction(self, add):
-        self.call_function += add
+        self._call_function += add
 
     def getCallFunction(self):
-        return self.call_function
+        return self._call_function
 
 
 class LimitState:
@@ -119,6 +188,8 @@ class LimitState:
         self.nx = 0
         self.nrv = 0
 
+    # Legacy getter/setter methods (expression is already a public attribute)
+
     def getExpression(self):
         return self.expression
 
@@ -126,7 +197,34 @@ class LimitState:
         self.expression = expression
 
     def evaluate_lsf(self, x, stochastic_model, analysis_options, diff_mode=None):
-        """Evaluate the limit state"""
+        """Evaluate the limit state function and (optionally) its gradient.
+
+        Dispatches to the appropriate evaluation strategy based on the
+        differentiation mode: no gradient (``"no"``), forward finite
+        difference (``"ffd"``), or direct differentiation (``"ddm"``).
+
+        Parameters
+        ----------
+        x : ndarray
+            Evaluation points, shape ``(nrv, nx)`` where *nrv* is the
+            number of random variables and *nx* the number of points.
+        stochastic_model : StochasticModel
+            The probabilistic model.
+        analysis_options : AnalysisOptions
+            Algorithm settings (differentiation mode, block size, etc.).
+        diff_mode : str or None, optional
+            Override the differentiation mode.  If a string is passed
+            (any value), gradient computation is suppressed
+            (``"no"``).
+
+        Returns
+        -------
+        G : ndarray
+            Limit state function values, shape ``(1, nx)``.
+        grad_G : ndarray
+            Gradient matrix, shape ``(nrv, nx)``.  Zero when no
+            gradient is computed.
+        """
 
         self.model = stochastic_model
         self.options = analysis_options
@@ -151,6 +249,7 @@ class LimitState:
         return G, grad_G
 
     def evaluate_nogradient(self, x):
+        """Evaluate the LSF without computing gradients (used for MCS)."""
         nrv, nx = x.shape
         G = np.zeros((1, nx))
         grad_G = np.zeros((nrv, nx))
@@ -173,6 +272,7 @@ class LimitState:
         return G, grad_G
 
     def evaluate_ffd(self, x):
+        """Evaluate the LSF and approximate the gradient by forward finite difference."""
         nrv, nx = x.shape
         G = np.zeros((1, nx))
         grad_G = np.zeros((nrv, nx))
@@ -218,6 +318,7 @@ class LimitState:
         return G, grad_G
 
     def evaluate_ddm(self, x):
+        """Evaluate the LSF using direct differentiation (user-supplied gradient)."""
         nrv, nx = x.shape
         G = np.zeros((1, nx))
         grad_G = np.zeros((nrv, nx))
@@ -228,7 +329,27 @@ class LimitState:
         return G, grad_G
 
     def compute_lsf(self, x, ddm=False):
-        """Compute the limit state function"""
+        """Call the user-defined limit state function.
+
+        Builds a keyword-argument dictionary mapping variable names
+        to their column vectors in ``x``, then calls
+        ``self.expression(**kwargs)``.
+
+        Parameters
+        ----------
+        x : ndarray
+            Evaluation points, shape ``(nrv, nc)``.
+        ddm : bool, optional
+            If ``True``, expects the expression to return both the
+            function value and a gradient vector.
+
+        Returns
+        -------
+        G : ndarray
+            Function value(s).
+        gradient : ndarray or int
+            Gradient vector (if *ddm*) or ``0``.
+        """
         _, nc = np.shape(x)
         variables = self.model.getVariables()
         constants = self.model.getConstants()

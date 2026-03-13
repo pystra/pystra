@@ -219,16 +219,16 @@ class TestChiSquare:
 
 
 class TestTypeIIlargestValue:
-    @pytest.mark.xfail(
-        reason="Bug: invweibull parametrization uses c=-k-2 (negative), "
-        "producing NaN moments. Source fix needed in typeiilargestvalue.py."
-    )
     def test_construction(self):
         d = TypeIIlargestValue("T2L", 100, 10)
         assert np.isfinite(d.mean)
         assert d.stdv > 0
 
-    @pytest.mark.xfail(reason="Blocked by construction bug (see test_construction)")
+    def test_mean_stdv_roundtrip(self):
+        d = TypeIIlargestValue("T2L", 100, 20)
+        assert pytest.approx(d.mean, abs=0.5) == 100
+        assert pytest.approx(d.stdv, abs=0.5) == 20
+
     def test_ppf_cdf_roundtrip(self):
         d = TypeIIlargestValue("T2L", 100, 10)
         for p in [0.1, 0.5, 0.9]:
@@ -403,9 +403,9 @@ class TestZeroInflated:
         d = ZeroInflated("ZN", base, p=0.5)
         d.set_zero_probability(0.3)
         assert d.p == 0.3
-        # NOTE: Known bug — set_zero_probability updates self.p but not self.q,
-        # so _get_stats still uses old q=0.5. True mean should be 0.7*5=3.5.
-        assert pytest.approx(d.mean, abs=1e-6) == 2.5
+        assert d.q == 0.7
+        # mean = q * base.mean = 0.7 * 5 = 3.5
+        assert pytest.approx(d.mean, abs=1e-6) == 3.5
 
 
 # ---------------------------------------------------------------------------

@@ -93,6 +93,45 @@ class TestStochasticModel:
         model.addCallFunction(3)
         assert model.getCallFunction() == 8
 
+    # ---- Property access tests ----
+
+    def test_properties_match_getters(self):
+        """Properties return the same objects as the legacy getter methods."""
+        model = ra.model.StochasticModel()
+        model.addVariable(Normal("X1", 10, 2))
+        model.addVariable(Constant("c", 3.0))
+        model.addVariable(Normal("X2", 5, 1))
+
+        assert model.constants is model.getConstants()
+        assert model.names is model.getNames()
+        assert model.marginal_distributions is model.getMarginalDistributions()
+        assert model.n_marg == model.getLenMarginalDistributions()
+        assert model.correlation is model.getCorrelation()
+        assert model.call_function == model.getCallFunction()
+
+    def test_correlation_property_setter(self):
+        model = ra.model.StochasticModel()
+        model.addVariable(Normal("X1", 10, 2))
+        model.addVariable(Normal("X2", 5, 1))
+        new_corr = np.array([[1.0, 0.3], [0.3, 1.0]])
+        model.correlation = new_corr
+        np.testing.assert_array_equal(model.correlation, new_corr)
+        np.testing.assert_array_equal(model.getCorrelation(), new_corr)
+
+    def test_modified_correlation_property(self):
+        model = ra.model.StochasticModel()
+        model.addVariable(Normal("X1", 10, 2))
+        model.addVariable(Normal("X2", 5, 1))
+        Ro = np.eye(2) * 0.9
+        model.modified_correlation = Ro
+        assert model.modified_correlation is model.getModifiedCorrelation()
+
+    def test_call_function_property_setter(self):
+        model = ra.model.StochasticModel()
+        model.call_function = 42
+        assert model.call_function == 42
+        assert model.getCallFunction() == 42
+
 
 # ---------------------------------------------------------------------------
 # LimitState
