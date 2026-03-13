@@ -1,0 +1,1007 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>pystra.mc.DistributionAnalysis &#8212; PySTRA 1.4.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9172181d"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'gen/pystra.mc.DistributionAnalysis';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pystra.mc.ImportanceSampling" href="pystra.mc.ImportanceSampling.html" />
+    <link rel="prev" title="pystra.mc.CrudeMonteCarlo" href="pystra.mc.CrudeMonteCarlo.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.4.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 1.4.0 documentation - Home"/>
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 1.4.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../theory.html">
+    Theoretical Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../developer.html">
+    Instructions for Developers
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../theory.html">
+    Theoretical Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer.html">
+    Instructions for Developers
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.model.html">pystra.model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.model.LimitState.html">pystra.model.LimitState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.model.StochasticModel.html">pystra.model.StochasticModel</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.analysis.html">pystra.analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.analysis.AnalysisObject.html">pystra.analysis.AnalysisObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.analysis.AnalysisOptions.html">pystra.analysis.AnalysisOptions</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.form.html">pystra.form</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.form.Form.html">pystra.form.Form</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.sorm.html">pystra.sorm</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.sorm.Sorm.html">pystra.sorm.Sorm</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="pystra.mc.html">pystra.mc</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pystra.mc.CrudeMonteCarlo.html">pystra.mc.CrudeMonteCarlo</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">pystra.mc.DistributionAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.mc.ImportanceSampling.html">pystra.mc.ImportanceSampling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.mc.MonteCarlo.html">pystra.mc.MonteCarlo</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.sensitivity.html">pystra.sensitivity</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.sensitivity.SensitivityAnalysis.html">pystra.sensitivity.SensitivityAnalysis</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.transformation.html">pystra.transformation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.transformation.Transformation.html">pystra.transformation.Transformation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.correlation.html">pystra.correlation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.correlation.absoluteIntegralValue.html">pystra.correlation.absoluteIntegralValue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.correlation.computeModifiedCorrelationMatrix.html">pystra.correlation.computeModifiedCorrelationMatrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.correlation.setModifiedCorrelationMatrix.html">pystra.correlation.setModifiedCorrelationMatrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.correlation.CorrelationMatrix.html">pystra.correlation.CorrelationMatrix</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.integration.html">pystra.integration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.integration.rho_integral.html">pystra.integration.rho_integral</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.integration.zi_and_xi.html">pystra.integration.zi_and_xi</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.quadrature.html">pystra.quadrature</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.quadrature.quadratureRule.html">pystra.quadrature.quadratureRule</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.loadcomb.html">pystra.loadcomb</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.loadcomb.LoadCombination.html">pystra.loadcomb.LoadCombination</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.calibration.html">pystra.calibration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.calibration.Calibration.html">pystra.calibration.Calibration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.calibration.GenericCalibration.html">pystra.calibration.GenericCalibration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.calibration.GenericModel.html">pystra.calibration.GenericModel</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.distributions.html">pystra.distributions</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.distributions.beta.html">pystra.distributions.beta</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.chisquare.html">pystra.distributions.chisquare</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.chisquare.ChiSquare.html">pystra.distributions.chisquare.ChiSquare</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.distribution.html">pystra.distributions.distribution</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.distribution.Constant.html">pystra.distributions.distribution.Constant</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.distribution.Distribution.html">pystra.distributions.distribution.Distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.distribution.StdNormal.html">pystra.distributions.distribution.StdNormal</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.distributions.gamma.html">pystra.distributions.gamma</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.gev.html">pystra.distributions.gev</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.gev.GEVmax.html">pystra.distributions.gev.GEVmax</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.gev.GEVmin.html">pystra.distributions.gev.GEVmin</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.distributions.gumbel.html">pystra.distributions.gumbel</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.lognormal.html">pystra.distributions.lognormal</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.lognormal.Lognormal.html">pystra.distributions.lognormal.Lognormal</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.maximum.html">pystra.distributions.maximum</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.maximum.Maximum.html">pystra.distributions.maximum.Maximum</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.normal.html">pystra.distributions.normal</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.normal.Normal.html">pystra.distributions.normal.Normal</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.parent.html">pystra.distributions.parent</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.parent.MaxParent.html">pystra.distributions.parent.MaxParent</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.scipydist.html">pystra.distributions.scipydist</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.scipydist.ScipyDist.html">pystra.distributions.scipydist.ScipyDist</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.shiftedexponential.html">pystra.distributions.shiftedexponential</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.shiftedexponential.ShiftedExponential.html">pystra.distributions.shiftedexponential.ShiftedExponential</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.shiftedlognormal.html">pystra.distributions.shiftedlognormal</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.shiftedlognormal.ShiftedLognormal.html">pystra.distributions.shiftedlognormal.ShiftedLognormal</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.shiftedrayleigh.html">pystra.distributions.shiftedrayleigh</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.shiftedrayleigh.ShiftedRayleigh.html">pystra.distributions.shiftedrayleigh.ShiftedRayleigh</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.typeiiismallestvalue.html">pystra.distributions.typeiiismallestvalue</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.typeiiismallestvalue.TypeIIIsmallestValue.html">pystra.distributions.typeiiismallestvalue.TypeIIIsmallestValue</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.typeiilargestvalue.html">pystra.distributions.typeiilargestvalue</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.typeiilargestvalue.TypeIIlargestValue.html">pystra.distributions.typeiilargestvalue.TypeIIlargestValue</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.typeilargestvalue.html">pystra.distributions.typeilargestvalue</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.typeilargestvalue.TypeIlargestValue.html">pystra.distributions.typeilargestvalue.TypeIlargestValue</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.typeismallestvalue.html">pystra.distributions.typeismallestvalue</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.typeismallestvalue.TypeIsmallestValue.html">pystra.distributions.typeismallestvalue.TypeIsmallestValue</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.distributions.uniform.html">pystra.distributions.uniform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.distributions.weibull.html">pystra.distributions.weibull</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.zeroinflated.html">pystra.distributions.zeroinflated</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.zeroinflated.ZeroInflated.html">pystra.distributions.zeroinflated.ZeroInflated</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../api.html" class="nav-link">API Reference</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="pystra.mc.html" class="nav-link">pystra.mc</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">pystra.mc.DistributionAnalysis</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="pystra-mc-distributionanalysis">
+<h1>pystra.mc.DistributionAnalysis<a class="headerlink" href="#pystra-mc-distributionanalysis" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">DistributionAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">analysis_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stochastic_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/mc.html#DistributionAnalysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.mc.DistributionAnalysis" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pystra.mc.MonteCarlo.html#pystra.mc.MonteCarlo" title="pystra.mc.MonteCarlo"><code class="xref py py-class docutils literal notranslate"><span class="pre">MonteCarlo</span></code></a></p>
+<p>Distribution Analysis</p>
+<p>To analyze the random variables, used in the limit state function, a
+numerical distribution analysis based on Monte Carlo simulation can be
+performed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>analysis_option (AnalysisOption): Option for the structural analysis</p></li>
+<li><p>limit_state (LimitState): Information about the limit state</p></li>
+<li><p>stochastic_model (StochasticModel): Information about the model</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeBeta" title="pystra.mc.DistributionAnalysis.computeBeta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeBeta</span></code></a></p></td>
+<td><p>Compute beta value</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeBins" title="pystra.mc.DistributionAnalysis.computeBins"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeBins</span></code></a></p></td>
+<td><p>Return an optimal amount of bins for a histogram</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeCoefficientOfVariation" title="pystra.mc.DistributionAnalysis.computeCoefficientOfVariation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeCoefficientOfVariation</span></code></a></p></td>
+<td><p>Compute Coefficient of Variation</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeDataUpdate" title="pystra.mc.DistributionAnalysis.computeDataUpdate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeDataUpdate</span></code></a></p></td>
+<td><p>Update data</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeDistributionData" title="pystra.mc.DistributionAnalysis.computeDistributionData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeDistributionData</span></code></a></p></td>
+<td><p>Compute data for the distributions</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeFailureProbability" title="pystra.mc.DistributionAnalysis.computeFailureProbability"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeFailureProbability</span></code></a></p></td>
+<td><p>Compute probability of failure</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeLimitState" title="pystra.mc.DistributionAnalysis.computeLimitState"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeLimitState</span></code></a></p></td>
+<td><p>Evaluate limit-state function</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computePercentDone" title="pystra.mc.DistributionAnalysis.computePercentDone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computePercentDone</span></code></a></p></td>
+<td><p>Compute percent done</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeRandomNumbers" title="pystra.mc.DistributionAnalysis.computeRandomNumbers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeRandomNumbers</span></code></a></p></td>
+<td><p>Compute random numbers</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeResults" title="pystra.mc.DistributionAnalysis.computeResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeResults</span></code></a></p></td>
+<td><p>Collect result of sampling</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeSumUpdate" title="pystra.mc.DistributionAnalysis.computeSumUpdate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeSumUpdate</span></code></a></p></td>
+<td><p>Update summation</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.computeTransformation" title="pystra.mc.DistributionAnalysis.computeTransformation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeTransformation</span></code></a></p></td>
+<td><p>Compute transformation from u to x space</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.getBeta" title="pystra.mc.DistributionAnalysis.getBeta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getBeta</span></code></a></p></td>
+<td><p>Returns the beta value</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.getBins" title="pystra.mc.DistributionAnalysis.getBins"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getBins</span></code></a></p></td>
+<td><p>Returns the amount on bins</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.getDistributionData" title="pystra.mc.DistributionAnalysis.getDistributionData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getDistributionData</span></code></a></p></td>
+<td><p>Returns data for the failure</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.getFailure" title="pystra.mc.DistributionAnalysis.getFailure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getFailure</span></code></a></p></td>
+<td><p>Returns the probability of failure</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.init_run" title="pystra.mc.DistributionAnalysis.init_run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_run</span></code></a></p></td>
+<td><p>Initialise the Nataf transformation before the analysis loop.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.initializeVariables" title="pystra.mc.DistributionAnalysis.initializeVariables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">initializeVariables</span></code></a></p></td>
+<td><p>Initialization of the simulation variables</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.setPoint" title="pystra.mc.DistributionAnalysis.setPoint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setPoint</span></code></a></p></td>
+<td><p>Set design point</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.mc.DistributionAnalysis.showResults" title="pystra.mc.DistributionAnalysis.showResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">showResults</span></code></a></p></td>
+<td><p>Show results and plots</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.initializeVariables">
+<span class="sig-name descname"><span class="pre">initializeVariables</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/mc.html#DistributionAnalysis.initializeVariables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.mc.DistributionAnalysis.initializeVariables" title="Link to this definition">#</a></dt>
+<dd><p>Initialization of the simulation variables</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeDataUpdate">
+<span class="sig-name descname"><span class="pre">computeDataUpdate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/mc.html#DistributionAnalysis.computeDataUpdate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeDataUpdate" title="Link to this definition">#</a></dt>
+<dd><p>Update data</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeBeta">
+<span class="sig-name descname"><span class="pre">computeBeta</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeBeta" title="Link to this definition">#</a></dt>
+<dd><p>Compute beta value</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeBins">
+<span class="sig-name descname"><span class="pre">computeBins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeBins" title="Link to this definition">#</a></dt>
+<dd><p>Return an optimal amount of bins for a histogram</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>bins (int): Returns amount on bins</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeCoefficientOfVariation">
+<span class="sig-name descname"><span class="pre">computeCoefficientOfVariation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeCoefficientOfVariation" title="Link to this definition">#</a></dt>
+<dd><p>Compute Coefficient of Variation</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeDistributionData">
+<span class="sig-name descname"><span class="pre">computeDistributionData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/mc.html#DistributionAnalysis.computeDistributionData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeDistributionData" title="Link to this definition">#</a></dt>
+<dd><p>Compute data for the distributions</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeFailureProbability">
+<span class="sig-name descname"><span class="pre">computeFailureProbability</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeFailureProbability" title="Link to this definition">#</a></dt>
+<dd><p>Compute probability of failure</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeLimitState">
+<span class="sig-name descname"><span class="pre">computeLimitState</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeLimitState" title="Link to this definition">#</a></dt>
+<dd><p>Evaluate limit-state function</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computePercentDone">
+<span class="sig-name descname"><span class="pre">computePercentDone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computePercentDone" title="Link to this definition">#</a></dt>
+<dd><p>Compute percent done</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeRandomNumbers">
+<span class="sig-name descname"><span class="pre">computeRandomNumbers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeRandomNumbers" title="Link to this definition">#</a></dt>
+<dd><p>Compute random numbers</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeResults">
+<span class="sig-name descname"><span class="pre">computeResults</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeResults" title="Link to this definition">#</a></dt>
+<dd><p>Collect result of sampling</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeSumUpdate">
+<span class="sig-name descname"><span class="pre">computeSumUpdate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeSumUpdate" title="Link to this definition">#</a></dt>
+<dd><p>Update summation</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.computeTransformation">
+<span class="sig-name descname"><span class="pre">computeTransformation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.computeTransformation" title="Link to this definition">#</a></dt>
+<dd><p>Compute transformation from u to x space</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>TODO: this method takes a lot of time, find some better solution.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.getBeta">
+<span class="sig-name descname"><span class="pre">getBeta</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.getBeta" title="Link to this definition">#</a></dt>
+<dd><p>Returns the beta value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>beta (float): Returns the beta value</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.getBins">
+<span class="sig-name descname"><span class="pre">getBins</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.getBins" title="Link to this definition">#</a></dt>
+<dd><p>Returns the amount on bins</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>bins (int): Returns the amount on bins (histogram)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.getDistributionData">
+<span class="sig-name descname"><span class="pre">getDistributionData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.getDistributionData" title="Link to this definition">#</a></dt>
+<dd><p>Returns data for the failure</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>all_G (float): Returns data from the distribution</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.getFailure">
+<span class="sig-name descname"><span class="pre">getFailure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.getFailure" title="Link to this definition">#</a></dt>
+<dd><p>Returns the probability of failure</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>Pf (float): Returns the probability of failure</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.init_run">
+<span class="sig-name descname"><span class="pre">init_run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.init_run" title="Link to this definition">#</a></dt>
+<dd><p>Initialise the Nataf transformation before the analysis loop.</p>
+<p>Computes the modified (Nataf) correlation matrix and its
+factorisation.  Must be called at the start of every
+<code class="docutils literal notranslate"><span class="pre">run()</span></code> method in subclasses.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.setPoint">
+<span class="sig-name descname"><span class="pre">setPoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pystra.mc.DistributionAnalysis.setPoint" title="Link to this definition">#</a></dt>
+<dd><p>Set design point</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.mc.DistributionAnalysis.showResults">
+<span class="sig-name descname"><span class="pre">showResults</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/mc.html#DistributionAnalysis.showResults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.mc.DistributionAnalysis.showResults" title="Link to this definition">#</a></dt>
+<dd><p>Show results and plots</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="pystra.mc.CrudeMonteCarlo.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">pystra.mc.CrudeMonteCarlo</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="pystra.mc.ImportanceSampling.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">pystra.mc.ImportanceSampling</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis"><code class="docutils literal notranslate"><span class="pre">DistributionAnalysis</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.initializeVariables"><code class="docutils literal notranslate"><span class="pre">DistributionAnalysis.initializeVariables()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeDataUpdate"><code class="docutils literal notranslate"><span class="pre">DistributionAnalysis.computeDataUpdate()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeBeta"><code class="docutils literal notranslate"><span class="pre">DistributionAnalysis.computeBeta()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeBins"><code class="docutils literal notranslate"><span class="pre">DistributionAnalysis.computeBins()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeCoefficientOfVariation"><code class="docutils literal notranslate"><span class="pre">DistributionAnalysis.computeCoefficientOfVariation()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeDistributionData"><code class="docutils literal notranslate"><span class="pre">DistributionAnalysis.computeDistributionData()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeFailureProbability"><code class="docutils literal notranslate"><span class="pre">DistributionAnalysis.computeFailureProbability()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeLimitState"><code class="docutils literal notranslate"><span class="pre">DistributionAnalysis.computeLimitState()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computePercentDone"><code class="docutils literal notranslate"><span class="pre">DistributionAnalysis.computePercentDone()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeRandomNumbers"><code class="docutils literal notranslate"><span class="pre">DistributionAnalysis.computeRandomNumbers()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeResults"><code class="docutils literal notranslate"><span class="pre">DistributionAnalysis.computeResults()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeSumUpdate"><code class="docutils literal notranslate"><span class="pre">DistributionAnalysis.computeSumUpdate()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.computeTransformation"><code class="docutils literal notranslate"><span class="pre">DistributionAnalysis.computeTransformation()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.getBeta"><code class="docutils literal notranslate"><span class="pre">DistributionAnalysis.getBeta()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.getBins"><code class="docutils literal notranslate"><span class="pre">DistributionAnalysis.getBins()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.getDistributionData"><code class="docutils literal notranslate"><span class="pre">DistributionAnalysis.getDistributionData()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.getFailure"><code class="docutils literal notranslate"><span class="pre">DistributionAnalysis.getFailure()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.init_run"><code class="docutils literal notranslate"><span class="pre">DistributionAnalysis.init_run()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.setPoint"><code class="docutils literal notranslate"><span class="pre">DistributionAnalysis.setPoint()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.mc.DistributionAnalysis.showResults"><code class="docutils literal notranslate"><span class="pre">DistributionAnalysis.showResults()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/pystra/pystra/edit/main/docs/source/gen/pystra.mc.DistributionAnalysis.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2021-2026, The PySTRA Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
