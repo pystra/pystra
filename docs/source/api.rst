@@ -1,26 +1,64 @@
 API Reference
 =============
 
-Package Modules
----------------
+This section documents the full public API of Pystra.  Every class,
+function, and attribute listed below is generated automatically from
+the source-code docstrings using Sphinx ``autosummary``.
 
-The API will appear here
+Core Framework
+--------------
 
 .. autosummary::
     :toctree: gen
     :template: custom-module-template.rst
     :recursive:
 
-    pystra.analysis
     pystra.model
+    pystra.analysis
+
+Reliability Methods
+-------------------
+
+.. autosummary::
+    :toctree: gen
+    :template: custom-module-template.rst
+    :recursive:
+
     pystra.form
     pystra.sorm
     pystra.mc
+    pystra.sensitivity
+
+Probability Transformation
+--------------------------
+
+.. autosummary::
+    :toctree: gen
+    :template: custom-module-template.rst
+    :recursive:
+
     pystra.transformation
     pystra.correlation
     pystra.integration
     pystra.quadrature
-    pystra.sensitivity
+
+Load Combinations & Calibration
+-------------------------------
+
+.. autosummary::
+    :toctree: gen
+    :template: custom-module-template.rst
+    :recursive:
+
     pystra.loadcomb
     pystra.calibration
+
+Distributions
+-------------
+
+.. autosummary::
+    :toctree: gen
+    :template: custom-module-template.rst
+    :recursive:
+
     pystra.distributions
