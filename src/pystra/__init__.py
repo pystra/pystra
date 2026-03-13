@@ -1,6 +1,34 @@
 """
-Structural Reliability Analysis with Python.
+Pystra — Python Structural Reliability Analysis.
 
+Pystra provides tools for computing the probability of failure of
+engineering systems using established structural reliability methods:
+
+- **FORM** (First Order Reliability Method)
+- **SORM** (Second Order Reliability Method)
+- **Monte Carlo** simulation (Crude, Importance Sampling)
+- **Sensitivity analysis** of the reliability index
+- **Load combination** and **partial factor calibration**
+
+All SciPy continuous distributions can be used as random variables,
+alongside Pystra's own specialised distributions (e.g. Gumbel,
+ZeroInflated, Maximum).
+
+Quick start::
+
+    import pystra as ra
+
+    limit_state = ra.LimitState(lambda R, S: R - S)
+    model = ra.StochasticModel()
+    model.addVariable(ra.Normal("R", 10, 1))
+    model.addVariable(ra.Normal("S", 5, 1))
+
+    form = ra.Form(
+        stochastic_model=model,
+        limit_state=limit_state,
+    )
+    form.run()
+    print(f"beta = {form.getBeta():.4f}")
 """
 
 __version__ = "1.3.1"
