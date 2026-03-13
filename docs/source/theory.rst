@@ -383,8 +383,52 @@ Second-Order Reliability Method (SORM)
 ======================================
 
 Better results can be obtained by higher order approximations of the failure
-surface. The Second Order Reliability Method (SORM) uses; for example, a
-quadratic approximation of the failure surface. [Baker2010]_
+surface. The Second Order Reliability Method (SORM) uses a quadratic
+approximation of the failure surface at the design point found by FORM
+[Baker2010]_.
+
+Pystra provides two approaches for computing the principal curvatures of the
+failure surface.
+
+Curve-Fitting
+-------------
+
+The default method (``fit_type='cf'``) computes the Hessian matrix of the
+limit state function at the design point using finite differences. The failure
+surface is rotated so that the design point lies along the last axis of the
+standard normal space. The principal curvatures :math:`\kappa_i` are then
+obtained as eigenvalues of the rotated Hessian. The Breitung approximation
+[Breitung1984]_ gives:
+
+.. math::
+
+    p_{f2} = \Phi(-\beta) \prod_{i=1}^{n-1} (1 + \kappa_i \beta)^{-1/2}
+
+Point-Fitting
+-------------
+
+An alternative method (``fit_type='pf'``) finds fitting points directly on
+the limit state surface using Newton iteration. Points are located on both
+the positive and negative sides of each principal axis in the rotated space,
+yielding asymmetric curvatures :math:`\kappa_i^+` and :math:`\kappa_i^-`.
+The generalised Breitung formula for asymmetric curvatures is:
+
+.. math::
+
+    p_{f2} = \Phi(-\beta) \prod_{i=1}^{n-1} \frac{1}{2}
+    \left[ (1 + \beta\, \kappa_i^+)^{-1/2}
+         + (1 + \beta\, \kappa_i^-)^{-1/2} \right]
+
+When the curvatures are symmetric (:math:`\kappa_i^+ = \kappa_i^-`), this
+reduces to the standard Breitung formula above.
+
+Hohenbichler--Rackwitz Modification
+------------------------------------
+
+Both methods also report the Hohenbichler and Rackwitz [Hohenbichler1988]_
+modification, which replaces :math:`\beta` in the curvature terms with
+:math:`\psi = \phi(\beta) / \Phi(-\beta)`, giving improved accuracy for
+lower values of :math:`\beta`.
 
 
 Simulation Methods
