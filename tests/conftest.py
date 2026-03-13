@@ -30,8 +30,10 @@ def uncorrelated_model():
 @pytest.fixture
 def simple_limit_state():
     """Basic limit state function: g = X1 - X2."""
+
     def lsf(R, S):
         return R - S
+
     return ra.model.LimitState(lsf)
 
 
