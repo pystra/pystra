@@ -5,8 +5,8 @@ All notable changes to Pystra are documented here.
 
 The format follows `Keep a Changelog <https://keepachangelog.com/>`_.
 
-Unreleased
-----------
+v1.4.0 (2026-03-13)
+--------------------
 
 Added
 ~~~~~
