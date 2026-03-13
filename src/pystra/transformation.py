@@ -5,7 +5,28 @@ import numpy as np
 
 class Transformation:
     """
-    Isoprobabilistic transformations
+    Nataf isoprobabilistic transformation between physical space (x) and
+    standard normal space (u).
+
+    The transformation relies on a square-root factorisation of the modified
+    correlation matrix Ro, such that Ro = inv_T @ inv_T^T.  Two factorisations
+    are available:
+
+    - **Cholesky** (default): Ro = L @ L^T where L is lower-triangular.
+    - **SVD**: Ro = (U sqrt(D)) @ (U sqrt(D))^T via the eigendecomposition of
+      the symmetric positive-definite matrix Ro.
+
+    Both factorisations satisfy the same identity and therefore produce
+    identical reliability results (design point, reliability index beta,
+    failure probability).  The intermediate correlated standard-normal vector
+    z = inv_T @ u will in general differ between the two methods, but the
+    final physical-space coordinates x are invariant because x_i = F_i^{-1}(
+    Phi(z_i)) depends only on the marginal mapping.
+
+    The SVD factorisation is generally more robust because it avoids computing
+    the explicit inverse of a triangular factor; instead it works with the
+    orthogonal eigenstructure of Ro.  It is recommended when Ro is
+    near-singular or poorly conditioned.
     """
 
     def __init__(self, transform_type=None):
@@ -36,7 +57,7 @@ class Transformation:
         return u
 
     def u_to_x(self, u, marg):
-        """Transformation from x to u space"""
+        """Transformation from u (standard normal) to x (physical) space."""
         nrv = len(marg)
         z = np.dot(self.inv_T, u)
 
@@ -69,24 +90,46 @@ class Transformation:
             raise ValueError("Transform type not set")
 
     def _computeCholesky(self, Ro):
-        """Compute Cholesky Decomposition"""
+        """
+        Compute Cholesky factorisation of the modified correlation matrix.
+
+        Decomposes Ro = L @ L^T where L is lower-triangular, then sets::
+
+            inv_T = L
+            T     = L^{-1}
+
+        This is the classical Nataf factorisation.  It requires Ro to be
+        symmetric positive-definite (all eigenvalues strictly positive).
+        """
         # Ro = self.model.getModifiedCorrelation()
         try:
             L = np.linalg.cholesky(Ro)
         except np.linalg.LinAlgError as e:
-            print(f"Error: Cholesky decomposition: {e.message}")
+            print(f"Error: Cholesky decomposition: {e}")
 
         self.T = np.linalg.inv(L)
         self.inv_T = L
 
     def _computeSVD(self, Ro):
         """
-        Singular Value Decomposition
+        Compute SVD-based factorisation of the modified correlation matrix.
+
+        For the symmetric positive-definite matrix Ro the SVD coincides with
+        the eigendecomposition: Ro = U @ diag(D) @ U^T.  The square-root
+        factor is then R = U @ diag(sqrt(D)), giving::
+
+            inv_T = R = U @ sqrt(D)
+            T     = R^{-1}
+
+        This satisfies the same identity as Cholesky (Ro = inv_T @ inv_T^T)
+        but is more robust for ill-conditioned correlation matrices because
+        the factorisation exploits the orthogonal eigenstructure rather than
+        relying on triangular back-substitution.
         """
         try:
             U, D, V = np.linalg.svd(Ro)
         except np.linalg.LinAlgError as e:
-            print(f"Error: singular value decomposition: {e.message}")
+            print(f"Error: singular value decomposition: {e}")
 
         sqrtD = np.sqrt(D) * np.eye(len(D))
         R = U @ sqrtD
