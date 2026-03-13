@@ -99,9 +99,7 @@ class Calibration:
         # Ensure nominal values are writable — ppf() and np.concatenate()
         # can produce read-only arrays in newer NumPy/SciPy, which would
         # propagate to DataFrames and cause fill_diagonal failures downstream.
-        self.dict_nom = {
-            k: np.float64(v) for k, v in dict_nom_vals.items()
-        }
+        self.dict_nom = {k: np.float64(v) for k, v in dict_nom_vals.items()}
         self.df_nom = pd.DataFrame(
             data=self.dict_nom, index=loadcombobj.label_comb_cases
         )
