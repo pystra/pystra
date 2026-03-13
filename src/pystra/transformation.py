@@ -47,8 +47,16 @@ class Transformation:
         self.inv_T = None
 
     def x_to_u(self, x, marg):
-        """Transformation from x to u space"""
+        """
+        Transformation from x (physical) to u (standard normal) space.
+
+        Callers (e.g. FORM, SORM) may pass x as a 1-D array or as a column
+        vector of shape (nrv, 1).  Flattening to 1-D with ``ravel()`` ensures
+        that ``x[i]`` yields a scalar, which is what the marginal ``x_to_u``
+        methods expect.
+        """
         nrv = len(marg)
+        x = np.asarray(x).ravel()
         u = np.zeros(nrv)
         for i in range(nrv):
             u[i] = marg[i].x_to_u(x[i])
@@ -57,8 +65,14 @@ class Transformation:
         return u
 
     def u_to_x(self, u, marg):
-        """Transformation from u (standard normal) to x (physical) space."""
+        """
+        Transformation from u (standard normal) to x (physical) space.
+
+        As with ``x_to_u``, the input is flattened to 1-D so that element
+        indexing always produces a scalar for the marginal ``u_to_x`` calls.
+        """
         nrv = len(marg)
+        u = np.asarray(u).ravel()
         z = np.dot(self.inv_T, u)
 
         x = np.zeros(nrv)
@@ -67,13 +81,26 @@ class Transformation:
         return x
 
     def jacobian(self, u, x, marg):
-        """Jacobian for the transformation"""
+        """
+        Jacobian of the u-to-x transformation, J_{u,x}.
+
+        Inputs are flattened to 1-D (see ``x_to_u``).  Each marginal
+        ``jacobian(z_i, x_i)`` returns a diagonal ``np.ndarray`` via
+        ``np.diag()``, even when called with scalar arguments — in that case
+        the result is a (1, 1) matrix.  We wrap the scalar inputs with
+        ``np.atleast_1d`` so that ``np.diag`` receives a 1-D array (it
+        raises ``ValueError`` on 0-d input), and then extract the single
+        element with ``.item()`` for assignment into the composite Jacobian.
+        """
         nrv = len(marg)
-        u = np.dot(self.inv_T, u)
+        u = np.asarray(u).ravel()
+        x = np.asarray(x).ravel()
+        z = np.dot(self.inv_T, u)
         J_u_x = np.zeros((nrv, nrv))
 
         for i in range(nrv):
-            J_u_x[i][i] = marg[i].jacobian(u[i], x[i])
+            Ji = marg[i].jacobian(np.atleast_1d(z[i]), np.atleast_1d(x[i]))
+            J_u_x[i][i] = Ji.item()
 
         J_u_x = np.dot(self.T, J_u_x)
         return J_u_x
