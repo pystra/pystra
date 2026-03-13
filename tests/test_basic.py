@@ -1,4 +1,5 @@
 import pytest
+import numpy as np
 import pystra as ra
 
 
@@ -110,6 +111,8 @@ def test_cmc():
 
     # validate results
     assert Analysis.x.shape[-1] == 1000
+    # beta should be non-negative
+    assert Analysis.beta >= 0
 
 
 def test_is():
@@ -127,6 +130,8 @@ def test_is():
 
     # validate results
     assert Analysis.x.shape[-1] == 1000
+    # beta should be positive for importance sampling
+    assert Analysis.beta > 0
 
 
 def test_distribution_analysis():
@@ -148,3 +153,54 @@ def test_distribution_analysis():
     # validate results
     assert pytest.approx(Analysis.all_G.mean(), abs=2e-2) == 1.03296
     assert pytest.approx(Analysis.all_G.std(), abs=1.5e-2) == 0.15989
+
+
+def test_form_uncorrelated_normals():
+    """
+    FORM for simple R - S problem with known analytical beta.
+    beta = (mu_R - mu_S) / sqrt(sigma_R^2 + sigma_S^2)
+    """
+    options = ra.AnalysisOptions()
+    options.setPrintOutput(False)
+
+    model = ra.model.StochasticModel()
+    model.addVariable(ra.Normal("R", 10, 2))
+    model.addVariable(ra.Normal("S", 5, 1))
+
+    limit_state = ra.model.LimitState(lambda R, S: R - S)
+
+    Analysis = ra.Form(
+        analysis_options=options,
+        stochastic_model=model,
+        limit_state=limit_state,
+    )
+    Analysis.run()
+
+    # Analytical: beta = (10 - 5) / sqrt(4 + 1) = 5 / sqrt(5) ≈ 2.2361
+    expected_beta = 5.0 / np.sqrt(5.0)
+    assert pytest.approx(Analysis.beta, abs=1e-3) == expected_beta
+
+
+def test_form_with_gumbel():
+    """
+    FORM with Gumbel distribution.
+    """
+    options = ra.AnalysisOptions()
+    options.setPrintOutput(False)
+
+    model = ra.model.StochasticModel()
+    model.addVariable(ra.Normal("R", 20, 3))
+    model.addVariable(ra.Gumbel("S", 10, 2))
+
+    limit_state = ra.model.LimitState(lambda R, S: R - S)
+
+    Analysis = ra.Form(
+        analysis_options=options,
+        stochastic_model=model,
+        limit_state=limit_state,
+    )
+    Analysis.run()
+
+    # beta should be positive and reasonable
+    assert Analysis.beta > 0
+    assert Analysis.beta < 10

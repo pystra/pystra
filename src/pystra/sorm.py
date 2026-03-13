@@ -321,7 +321,7 @@ class Sorm(AnalysisObject):
         alpha = self.form.alpha.squeeze()
         nrv = len(alpha)
         # Assemble A per theory
-        A = np.eye(nrv)
+        A = np.eye(nrv).copy()
         A[-1, :] = alpha
         # Now rotate 270 degrees anticlockwise as MGS expects the reference
         # vector in the first column

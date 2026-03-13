@@ -59,7 +59,9 @@ def computeModifiedCorrelationMatrix(stochastic_model):
     R = stochastic_model.getCorrelation()
     nvr = len(marg)
     n, m = np.shape(R)
-    Ro = np.eye(n, m)
+    # copy() ensures the array is writable; np.eye may return a read-only
+    # array in NumPy 2.0+.
+    Ro = np.eye(n, m).copy()
     flag_sens = True
     for i in range(nvr):
         for j in range(i):
