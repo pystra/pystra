@@ -33,9 +33,10 @@ class TypeIIlargestValue(Distribution):
             u_n = mean
             k = stdv
 
-        # use scipy to do the heavy lifting
-        # Original PyRe parametrization retained, but non-standard
-        self.dist_obj = frechet(c=-k - 2, loc=0, scale=u_n)
+        # Fréchet CDF: F(x) = exp(-(x/u_n)^{-k}), x > 0.
+        # SciPy invweibull CDF: F(x) = exp(-((x-loc)/scale)^{-c}).
+        # Direct mapping: c = k, loc = 0, scale = u_n.
+        self.dist_obj = frechet(c=k, loc=0, scale=u_n)
 
         super().__init__(
             name=name,

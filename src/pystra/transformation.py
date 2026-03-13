@@ -132,7 +132,10 @@ class Transformation:
         try:
             L = np.linalg.cholesky(Ro)
         except np.linalg.LinAlgError as e:
-            print(f"Error: Cholesky decomposition: {e}")
+            raise np.linalg.LinAlgError(
+                f"Cholesky decomposition failed — Ro may not be "
+                f"positive-definite: {e}"
+            ) from e
 
         self.T = np.linalg.inv(L)
         self.inv_T = L
@@ -156,7 +159,9 @@ class Transformation:
         try:
             U, D, V = np.linalg.svd(Ro)
         except np.linalg.LinAlgError as e:
-            print(f"Error: singular value decomposition: {e}")
+            raise np.linalg.LinAlgError(
+                f"SVD failed: {e}"
+            ) from e
 
         sqrtD = np.sqrt(D) * np.eye(len(D))
         R = U @ sqrtD

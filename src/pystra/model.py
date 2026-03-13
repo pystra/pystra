@@ -6,7 +6,13 @@ from collections import OrderedDict
 
 
 class StochasticModel:
-    """Stochastic model"""
+    """Stochastic model
+
+    Attributes can be accessed via properties or the legacy getter methods::
+
+        model.constants          # preferred
+        model.getConstants()     # legacy, equivalent
+    """
 
     def __init__(self):
         """
@@ -14,12 +20,12 @@ class StochasticModel:
         correlation matrix
         """
         self.variables = OrderedDict()
-        self.names = []
-        self.marg = []
-        self.correlation = None
-        self.Ro = None
-        self.call_function = 0
-        self.consts = {}
+        self._names = []
+        self._marg = []
+        self._correlation = None
+        self._Ro = None
+        self._call_function = 0
+        self._consts = {}
 
     def addVariable(self, obj):
         """
@@ -29,24 +35,75 @@ class StochasticModel:
         if not (isinstance(obj, Distribution) or isinstance(obj, Constant)):
             raise Exception("Input is not a Distribution or Constant object")
 
-        if obj.getName() in self.names:
+        if obj.getName() in self._names:
             raise Exception(f'variable name "{obj.getName()}" already exists')
 
         # append the variable name
-        self.names.append(obj.getName())
+        self._names.append(obj.getName())
 
         if isinstance(obj, Distribution):
             # append marginal distribution
-            self.marg.append(obj)
+            self._marg.append(obj)
             # append the Distribution object to the variables (ordered) dictionary
             self.variables[obj.getName()] = obj
             # update the default correlation matrix, in accordance with the number of variables
-            self.correlation = np.eye(len(self.marg))
+            self._correlation = np.eye(len(self._marg))
         elif isinstance(obj, Constant):
-            self.consts[obj.getName()] = obj.getValue()
+            self._consts[obj.getName()] = obj.getValue()
+
+    # ---- Properties (preferred access) ----
+
+    @property
+    def constants(self):
+        """Dictionary of constant name → value pairs."""
+        return self._consts
+
+    @property
+    def names(self):
+        """List of all variable and constant names, in insertion order."""
+        return self._names
+
+    @property
+    def n_marg(self):
+        """Number of marginal (stochastic) distributions."""
+        return len(self._marg)
+
+    @property
+    def marginal_distributions(self):
+        """List of marginal Distribution objects."""
+        return self._marg
+
+    @property
+    def correlation(self):
+        """Correlation matrix (n × n numpy array)."""
+        return self._correlation
+
+    @correlation.setter
+    def correlation(self, value):
+        self._correlation = value
+
+    @property
+    def modified_correlation(self):
+        """Modified (Nataf) correlation matrix Ro."""
+        return self._Ro
+
+    @modified_correlation.setter
+    def modified_correlation(self, value):
+        self._Ro = value
+
+    @property
+    def call_function(self):
+        """Cumulative number of limit-state function evaluations."""
+        return self._call_function
+
+    @call_function.setter
+    def call_function(self, value):
+        self._call_function = value
+
+    # ---- Legacy getter/setter methods (kept for backward compatibility) ----
 
     def getConstants(self):
-        return self.consts
+        return self._consts
 
     def getVariables(self):
         return self.variables
@@ -55,34 +112,34 @@ class StochasticModel:
         return self.variables[name]
 
     def getNames(self):
-        return self.names
+        return self._names
 
     def getLenMarginalDistributions(self):
-        return len(self.marg)
+        return len(self._marg)
 
     def getMarginalDistributions(self):
-        return self.marg
+        return self._marg
 
     def setMarginalDistributions(self, marg):
-        self.marg = marg
+        self._marg = marg
 
     def setCorrelation(self, obj):
-        self.correlation = np.array(obj.getMatrix())
+        self._correlation = np.array(obj.getMatrix())
 
     def getCorrelation(self):
-        return self.correlation
+        return self._correlation
 
     def setModifiedCorrelation(self, correlation):
-        self.Ro = correlation
+        self._Ro = correlation
 
     def getModifiedCorrelation(self):
-        return self.Ro
+        return self._Ro
 
     def addCallFunction(self, add):
-        self.call_function += add
+        self._call_function += add
 
     def getCallFunction(self):
-        return self.call_function
+        return self._call_function
 
 
 class LimitState:
@@ -118,6 +175,8 @@ class LimitState:
         self.x = None
         self.nx = 0
         self.nrv = 0
+
+    # Legacy getter/setter methods (expression is already a public attribute)
 
     def getExpression(self):
         return self.expression

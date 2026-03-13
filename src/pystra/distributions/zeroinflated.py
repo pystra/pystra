@@ -151,6 +151,7 @@ class ZeroInflated(Distribution):
         Update the zero-inflated probability.
         """
         self.p = p
+        self.q = 1 - self.p
         self._update_stats()
 
     def _update_stats(self):
