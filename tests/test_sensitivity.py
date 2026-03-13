@@ -68,7 +68,9 @@ class TestSensitivityAnalysis:
 
         for name in ["R", "S"]:
             for param in ["mean", "std"]:
-                assert pytest.approx(result1[name][param], rel=0.1) == result2[name][param]
+                assert (
+                    pytest.approx(result1[name][param], rel=0.1) == result2[name][param]
+                )
 
     def test_with_lognormal(self):
         """Test sensitivity works with non-Normal distributions."""

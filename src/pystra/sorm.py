@@ -202,8 +202,7 @@ class Sorm(AnalysisObject):
         if self.options.getPrintOutput():
             self.showResults()
 
-    def _find_fitting_point(self, axis, sign, beta, k, R1, marg,
-                            max_iter=50, tol=1e-6):
+    def _find_fitting_point(self, axis, sign, beta, k, R1, marg, max_iter=50, tol=1e-6):
         """Find a fitting point on the failure surface and return its curvature.
 
         Uses Newton iteration along the last axis of the rotated standard
@@ -287,7 +286,7 @@ class Sorm(AnalysisObject):
         if abs(u_prime_i) < 1e-12:
             return 0.0
 
-        return 2.0 * (u_prime_n - beta) / (u_prime_i ** 2)
+        return 2.0 * (u_prime_n - beta) / (u_prime_i**2)
 
     def _pf_breitung_pf(self, beta, kappa_minus, kappa_plus):
         """Breitung formula for point-fitting with asymmetric curvatures.
@@ -307,9 +306,8 @@ class Sorm(AnalysisObject):
 
         if not is_invalid:
             self.pf2_breitung = np.atleast_1d(
-                normal.cdf(-beta) * np.prod(
-                    0.5 * (terms_plus ** (-0.5) + terms_minus ** (-0.5))
-                )
+                normal.cdf(-beta)
+                * np.prod(0.5 * (terms_plus ** (-0.5) + terms_minus ** (-0.5)))
             )
             self.betag_breitung = np.atleast_1d(-normal.ppf(self.pf2_breitung[0]))
         else:
@@ -336,9 +334,8 @@ class Sorm(AnalysisObject):
 
         if not is_invalid:
             self.pf2_breitung_m = np.atleast_1d(
-                normal.cdf(-beta) * np.prod(
-                    0.5 * (terms_plus ** (-0.5) + terms_minus ** (-0.5))
-                )
+                normal.cdf(-beta)
+                * np.prod(0.5 * (terms_plus ** (-0.5) + terms_minus ** (-0.5)))
             )
             self.betag_breitung_m = np.atleast_1d(-normal.ppf(self.pf2_breitung_m[0]))
         else:

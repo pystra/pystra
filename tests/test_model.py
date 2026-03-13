@@ -11,6 +11,7 @@ from pystra.correlation import CorrelationMatrix, computeModifiedCorrelationMatr
 # StochasticModel
 # ---------------------------------------------------------------------------
 
+
 class TestStochasticModel:
     def test_add_distribution_variable(self):
         model = ra.model.StochasticModel()
@@ -137,6 +138,7 @@ class TestStochasticModel:
 # LimitState
 # ---------------------------------------------------------------------------
 
+
 class TestLimitState:
     def test_construction_with_lambda(self):
         ls = ra.model.LimitState(lambda X1, X2: X1 - X2)
@@ -145,6 +147,7 @@ class TestLimitState:
     def test_construction_with_function(self):
         def lsf(R, S):
             return R - S
+
         ls = ra.model.LimitState(lsf)
         assert ls.getExpression() is lsf
 
@@ -215,6 +218,7 @@ class TestLimitState:
 # ---------------------------------------------------------------------------
 # CorrelationMatrix
 # ---------------------------------------------------------------------------
+
 
 class TestCorrelationMatrix:
     def test_construction(self):
