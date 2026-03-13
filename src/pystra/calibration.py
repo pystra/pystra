@@ -531,9 +531,11 @@ class Calibration:
 
         """
         df_psi_max = dfpsi[self.label_comb_vrs].copy()
-        np.fill_diagonal(df_psi_max.values, 0.0)
+        # Use .to_numpy() instead of .values; the latter may return a
+        # read-only array in newer pandas/NumPy versions.
+        np.fill_diagonal(df_psi_max.to_numpy(), 0.0)
         df_psi_max = df_psi_max.clip(df_psi_max.max(), axis=1)
-        np.fill_diagonal(df_psi_max.values, 1.0)
+        np.fill_diagonal(df_psi_max.to_numpy(), 1.0)
         if len(self.label_other) > 0:
             df_psi_max.loc[:, self.label_other] = dfpsi[self.label_other]
         return df_psi_max
