@@ -54,12 +54,12 @@
 Welcome to Pystra's documentation!
 ==================================
 
-:Date: April 2024
+:Date: March 2026
 :Authors: The Pystra Developers (Colin Caprani & Jürgen Hackl )
 :Web site: http://github.com/pystra/pystra
 :Copyright: This document has been placed in the public domain.
-:License: Pystra is released under the GNU General Public Licence.
-:Version: 1.3.0
+:License: Pystra is released under the Apache 2.0 licence.
+:Version: |version|
 
 Pystra (Python Structural Reliability Analysis) is a python package for structural reliability analysis.
 Its flexibility and extensibility make it applicable to a large suite of problems.
@@ -84,6 +84,7 @@ Contents:
    api
    theory
    references
+   changelog
    developer
 
 Indices and tables

@@ -28,8 +28,20 @@ class StochasticModel:
         self._consts = {}
 
     def addVariable(self, obj):
-        """
-        add stochastic variable
+        """Add a random variable or constant to the model.
+
+        Parameters
+        ----------
+        obj : Distribution or Constant
+            The variable to add.  Distributions are treated as random
+            variables; Constants are stored separately and passed as
+            fixed values to the limit state function.
+
+        Raises
+        ------
+        Exception
+            If *obj* is not a Distribution or Constant, or if a
+            variable with the same name already exists.
         """
 
         if not (isinstance(obj, Distribution) or isinstance(obj, Constant)):
@@ -185,7 +197,34 @@ class LimitState:
         self.expression = expression
 
     def evaluate_lsf(self, x, stochastic_model, analysis_options, diff_mode=None):
-        """Evaluate the limit state"""
+        """Evaluate the limit state function and (optionally) its gradient.
+
+        Dispatches to the appropriate evaluation strategy based on the
+        differentiation mode: no gradient (``"no"``), forward finite
+        difference (``"ffd"``), or direct differentiation (``"ddm"``).
+
+        Parameters
+        ----------
+        x : ndarray
+            Evaluation points, shape ``(nrv, nx)`` where *nrv* is the
+            number of random variables and *nx* the number of points.
+        stochastic_model : StochasticModel
+            The probabilistic model.
+        analysis_options : AnalysisOptions
+            Algorithm settings (differentiation mode, block size, etc.).
+        diff_mode : str or None, optional
+            Override the differentiation mode.  If a string is passed
+            (any value), gradient computation is suppressed
+            (``"no"``).
+
+        Returns
+        -------
+        G : ndarray
+            Limit state function values, shape ``(1, nx)``.
+        grad_G : ndarray
+            Gradient matrix, shape ``(nrv, nx)``.  Zero when no
+            gradient is computed.
+        """
 
         self.model = stochastic_model
         self.options = analysis_options
@@ -210,6 +249,7 @@ class LimitState:
         return G, grad_G
 
     def evaluate_nogradient(self, x):
+        """Evaluate the LSF without computing gradients (used for MCS)."""
         nrv, nx = x.shape
         G = np.zeros((1, nx))
         grad_G = np.zeros((nrv, nx))
@@ -232,6 +272,7 @@ class LimitState:
         return G, grad_G
 
     def evaluate_ffd(self, x):
+        """Evaluate the LSF and approximate the gradient by forward finite difference."""
         nrv, nx = x.shape
         G = np.zeros((1, nx))
         grad_G = np.zeros((nrv, nx))
@@ -277,6 +318,7 @@ class LimitState:
         return G, grad_G
 
     def evaluate_ddm(self, x):
+        """Evaluate the LSF using direct differentiation (user-supplied gradient)."""
         nrv, nx = x.shape
         G = np.zeros((1, nx))
         grad_G = np.zeros((nrv, nx))
@@ -287,7 +329,27 @@ class LimitState:
         return G, grad_G
 
     def compute_lsf(self, x, ddm=False):
-        """Compute the limit state function"""
+        """Call the user-defined limit state function.
+
+        Builds a keyword-argument dictionary mapping variable names
+        to their column vectors in ``x``, then calls
+        ``self.expression(**kwargs)``.
+
+        Parameters
+        ----------
+        x : ndarray
+            Evaluation points, shape ``(nrv, nc)``.
+        ddm : bool, optional
+            If ``True``, expects the expression to return both the
+            function value and a gradient vector.
+
+        Returns
+        -------
+        G : ndarray
+            Function value(s).
+        gradient : ndarray or int
+            Gradient vector (if *ddm*) or ``0``.
+        """
         _, nc = np.shape(x)
         variables = self.model.getVariables()
         constants = self.model.getConstants()

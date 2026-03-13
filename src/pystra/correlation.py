@@ -1,5 +1,14 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
+"""Correlation matrix handling and Nataf correlation modification.
+
+The Nataf model transforms correlated non-normal random variables into
+correlated standard-normal variables.  When the marginal distributions
+are non-normal, the correlation matrix in standard-normal space (the
+*modified* correlation matrix ``Ro``) differs from the physical-space
+correlation matrix ``R``.  This module provides the numerical
+procedure that finds ``Ro`` from ``R`` and the marginal distributions.
+"""
 
 import numpy as np
 import scipy.optimize as opt
@@ -7,16 +16,21 @@ import scipy.optimize as opt
 from .integration import zi_and_xi, rho_integral
 
 
-class CorrelationMatrix(object):
-    r"""Correlation matrix
+class CorrelationMatrix:
+    r"""Physical-space correlation matrix wrapper.
 
-    The correlation matrix of :math:`n` random variables :math:`X_1, \dots, X_n`
-    is the :math:`n \\times n` matrix whose :math:`i,j` entry is
-    :math:`\\text{corr}(X_i, X_j)`.
+    A thin wrapper around a NumPy array that stores the correlation
+    matrix of :math:`n` random variables :math:`X_1, \dots, X_n`.
+    The :math:`(i, j)` entry is :math:`\text{corr}(X_i, X_j)`.
 
-    :Attributes:
-      - matrix (mat): correlation matrix
+    Supports element access via ``[]`` so it can be used interchangeably
+    with a plain NumPy array in most contexts.
 
+    Parameters
+    ----------
+    matrix : array_like, optional
+        Symmetric correlation matrix.  Must have ones on the diagonal
+        and all eigenvalues positive (positive definite).
     """
 
     def __init__(self, matrix=None):
@@ -38,22 +52,39 @@ class CorrelationMatrix(object):
         self.matrix[key] = item
 
     def getMatrix(self):
-        """Return correlation matrix
+        """Return the correlation matrix as a NumPy array.
 
-        :Returns:
-          - matrix (mat): Return a matrix from type correlation matrix.
+        Returns
+        -------
+        ndarray
+            The correlation matrix.
         """
         return self.matrix
 
 
 def computeModifiedCorrelationMatrix(stochastic_model):
-    r"""Modified correlation matrix
+    r"""Compute the modified (Nataf) correlation matrix.
 
-    :Args:
-      - stochastic_model (StochasticModel): Information about the model
+    For each pair of non-normal marginals, the physical-space
+    correlation :math:`\rho_{ij}` is mapped to the standard-normal-space
+    correlation :math:`\rho_{0,ij}` by numerically solving the
+    bi-folded integral equation.  For jointly normal pairs the
+    mapping is the identity.
 
-    :Returns:
-      - Ro (mat): Return a modified correlation matrix.
+    The number of quadrature points is increased adaptively for
+    correlations close to :math:`\pm 1` to maintain accuracy.
+
+    Parameters
+    ----------
+    stochastic_model : StochasticModel
+        The stochastic model containing marginal distributions and the
+        physical-space correlation matrix.
+
+    Returns
+    -------
+    ndarray
+        The symmetric modified correlation matrix ``Ro`` of shape
+        ``(n, n)`` in standard-normal space.
     """
     marg = stochastic_model.getMarginalDistributions()
     R = stochastic_model.getCorrelation()
@@ -108,9 +139,25 @@ def computeModifiedCorrelationMatrix(stochastic_model):
 
 
 def absoluteIntegralValue(rho0, *args):
-    r"""Absolute rho-integral value
+    r"""Objective function for the Nataf correlation optimisation.
 
-    Compute the absolute value of the bi-folded rho-integral by 2D numerical integration
+    Returns ``|rho_target - rho_integral(rho0)|``, which is minimised
+    by ``scipy.optimize.fmin`` to find the modified correlation
+    coefficient ``rho0`` in standard-normal space.
+
+    Parameters
+    ----------
+    rho0 : float
+        Trial correlation in standard-normal space.
+    *args : tuple
+        ``(rho_target, margi, margj, Z1, Z2, X1, X2, WIP, detJ)`` —
+        the target physical-space correlation and the pre-computed
+        quadrature grid (see :func:`zi_and_xi`).
+
+    Returns
+    -------
+    float
+        Absolute error between target and computed correlation.
     """
     rho_target, margi, margj, Z1, Z2, X1, X2, WIP, detJ = args
 
@@ -121,7 +168,17 @@ def absoluteIntegralValue(rho0, *args):
 
 
 def setModifiedCorrelationMatrix(stochastic_model):
-    """Compute & set modified correlation matrix"""
+    """Compute the modified correlation matrix and store it on the model.
+
+    Convenience wrapper that calls
+    :func:`computeModifiedCorrelationMatrix` and assigns the result to
+    the stochastic model via ``setModifiedCorrelation``.
+
+    Parameters
+    ----------
+    stochastic_model : StochasticModel
+        The model whose modified correlation matrix will be set.
+    """
 
     Ro = computeModifiedCorrelationMatrix(stochastic_model)
     stochastic_model.setModifiedCorrelation(Ro)

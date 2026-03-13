@@ -16,8 +16,8 @@ Create working repository with developer install
 
 
 3. Create new `Pystra` developer environment ::
-	
-	conda create -n pystra-dev python=3.10
+
+	conda create -n pystra-dev python=3.12
 
 
 4. Activate developer environment ::
@@ -68,7 +68,7 @@ Develop and create pull-request (PR)
     * Store notebook in ``./docs/source/notebooks/<tutorial.ipynb>``.
     * Index notebook in ``./docs/source/tutorial.rst``
 
-6. [If applicable] Add new dependencies in ``./setup.cfg``
+6. [If applicable] Add new dependencies in ``./pyproject.toml``
 
 7. Build documentation
 
@@ -77,10 +77,8 @@ Develop and create pull-request (PR)
 	* ``make html``
 	* ``xdg-open build/html/index.html``
 
-8. Update version number in the following files
-
-	* ``./docs/source/index.rst``
-	* ``./pystra/__init__.py``
+8. Update version number in ``./src/pystra/__init__.py`` (the docs
+   version is derived automatically via ``conf.py``).
 
 9. Stage changes; commit; and push to remote fork
 

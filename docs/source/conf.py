@@ -20,7 +20,7 @@ from pystra import __version__ as ver
 # -- Project information -----------------------------------------------------
 
 project = "PySTRA"
-copyright = "2023, The PySTRA Developers"
+copyright = "2021-2026, The PySTRA Developers"
 author = "Colin Caprani, Shihab Khan, Jürgen Hackl"
 
 # The full version, including alpha/beta/rc tags
