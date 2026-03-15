@@ -212,6 +212,36 @@ def test_cmc():
     assert Analysis.beta >= 0
 
 
+def test_mc_cov_zero_branch():
+    """Regression test for issue #64: cov_of_q_bar typo.
+
+    When the computed CoV is exactly zero the MC code should set
+    cov_q_bar = 1.0 without raising AttributeError.
+    """
+    options, stochastic_model, limit_state = setup()
+
+    Analysis = ra.CrudeMonteCarlo(
+        analysis_options=options,
+        stochastic_model=stochastic_model,
+        limit_state=limit_state,
+    )
+    # Initialise just enough internal state to call the method
+    samples = 10
+    Analysis.block_size = samples
+    Analysis.q_bar = np.empty(samples)
+    Analysis.cov_q_bar = np.empty(samples)
+
+    # Force the zero-CoV branch: sum_q > 0 but all q values identical
+    # so variance is exactly zero → cov_q_bar == 0
+    Analysis.k = 5
+    Analysis.sum_q = 5.0
+    Analysis.sum_q2 = 5.0  # same as sum_q → variance = 0
+
+    Analysis.computeCoefficientOfVariation()
+    # Should reach cov_q_bar = 1.0 without AttributeError
+    assert Analysis.cov_q_bar[4] == 1.0
+
+
 def test_is():
     """
     Perform Importance Sampling

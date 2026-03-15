@@ -439,6 +439,29 @@ class TestNormal:
         assert pytest.approx(J[0, 0], abs=1e-6) == 0.5
 
 
+class TestGumbel:
+    """Regression tests for Gumbel distribution (issue #67)."""
+
+    def test_input_type_roundtrip(self):
+        """Native Gumbel params (mu, beta) should reproduce the same distribution."""
+        g1 = Gumbel("X", 10, 2)
+        # Recover native params: mu (location) and beta (scale)
+        scale = g1.stdv * np.sqrt(6) / np.pi
+        mu = g1.mean - 0.5772156649 * scale
+        g2 = Gumbel("X", mu, scale, input_type="par")
+        assert pytest.approx(g2.mean, abs=1e-6) == g1.mean
+        assert pytest.approx(g2.stdv, abs=1e-6) == g1.stdv
+
+    def test_input_type_cdf_matches(self):
+        """CDF should be identical regardless of input path."""
+        g1 = Gumbel("X", 10, 2)
+        scale = g1.stdv * np.sqrt(6) / np.pi
+        mu = g1.mean - 0.5772156649 * scale
+        g2 = Gumbel("X", mu, scale, input_type="par")
+        for x in [5.0, 10.0, 15.0]:
+            assert pytest.approx(g2.cdf(x), abs=1e-10) == g1.cdf(x)
+
+
 class TestLognormal:
     def test_exact_mean_stdv(self):
         d = Lognormal("LN", 10, 2)
