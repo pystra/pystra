@@ -383,53 +383,153 @@ reliability index :math:`\beta` can be computed.
 Second-Order Reliability Method (SORM)
 ======================================
 
-Better results can be obtained by higher order approximations of the failure
-surface. The Second Order Reliability Method (SORM) uses a quadratic
-approximation of the failure surface at the design point found by FORM
-[Baker2010]_.
+FORM approximates the failure surface :math:`g({\bf Z}) = 0` by a tangent
+hyperplane at the design point.  When the failure surface has significant
+curvature at the design point, this linear approximation can over- or
+under-estimate :math:`p_f`.  The Second-Order Reliability Method (SORM)
+improves on FORM by fitting a quadratic surface (paraboloid) to
+:math:`g({\bf Z}) = 0` at the design point, thereby capturing
+second-order effects [Baker2010]_.
 
-Pystra provides two approaches for computing the principal curvatures of the
-failure surface.
+Quadratic approximation in rotated space
+-----------------------------------------
+
+Starting from the FORM design point :math:`{\bf z}^*` and the unit
+direction vector :math:`\boldsymbol{\alpha} = -{\bf z}^*/\beta`, the
+standard normal space is rotated so that :math:`{\bf z}^*` lies at
+distance :math:`\beta` along the last axis.  Let :math:`{\bf R}` denote
+the orthonormal rotation matrix constructed by Gram--Schmidt
+orthonormalisation with :math:`\boldsymbol{\alpha}` in the last row, and
+let :math:`{\bf u}' = {\bf R}\,{\bf z}` be coordinates in the rotated
+space.  In these coordinates the failure surface is approximated as:
+
+.. math::
+
+    g({\bf u}') \approx \beta - u'_n
+    + \tfrac{1}{2} \sum_{i=1}^{n-1} \kappa_i \,(u'_i)^2
+
+where :math:`\kappa_i` are the *principal curvatures* of the failure
+surface at the design point and :math:`u'_n` is the coordinate along the
+design-point direction.  Positive curvature means the failure surface
+curves away from the origin (conservative with respect to FORM); negative
+curvature means it curves towards the origin (unconservative).
+
+The key task is to determine the principal curvatures :math:`\kappa_i`.
+Pystra provides two approaches.
 
 Curve-Fitting
 -------------
 
-The default method (``fit_type='cf'``) computes the Hessian matrix of the
-limit state function at the design point using finite differences. The failure
-surface is rotated so that the design point lies along the last axis of the
-standard normal space. The principal curvatures :math:`\kappa_i` are then
-obtained as eigenvalues of the rotated Hessian. The Breitung approximation
-[Breitung1984]_ gives:
+The default method (``fit_type='cf'``) obtains the curvatures from the
+Hessian matrix of the limit state function.  The Hessian :math:`{\bf H}`
+of :math:`g` at the design point :math:`{\bf z}^*` is computed by finite
+differences of the gradient that is already available from FORM.  This
+matrix is then rotated and normalised:
 
 .. math::
 
-    p_{f2} = \Phi(-\beta) \prod_{i=1}^{n-1} (1 + \kappa_i \beta)^{-1/2}
+    {\bf A} = \frac{{\bf R}\,{\bf H}\,{\bf R}^T}
+    {\lVert \nabla g({\bf z}^*) \rVert}
+
+The principal curvatures :math:`\kappa_i` are the eigenvalues of the
+leading :math:`(n{-}1) \times (n{-}1)` sub-matrix of :math:`{\bf A}`
+(i.e.\ the block excluding the last row and column, which corresponds to
+the design-point direction).  These curvatures are symmetric: the
+paraboloid has the same curvature on both sides of each principal axis.
+
+The Breitung approximation [Breitung1984]_ then gives the second-order
+failure probability:
+
+.. math::
+    :label: eq:sorm_breitung
+
+    p_{f2} = \Phi(-\beta) \prod_{i=1}^{n-1}
+    \left(1 + \kappa_i \,\beta\right)^{-1/2}
+
+This result is asymptotically exact as :math:`\beta \to \infty`.
 
 Point-Fitting
 -------------
 
-An alternative method (``fit_type='pf'``) finds fitting points directly on
-the limit state surface using Newton iteration. Points are located on both
-the positive and negative sides of each principal axis in the rotated space,
-yielding asymmetric curvatures :math:`\kappa_i^+` and :math:`\kappa_i^-`.
-The generalised Breitung formula for asymmetric curvatures is:
+An alternative method (``fit_type='pf'``) determines the curvatures by
+locating fitting points directly on the failure surface, without computing
+the Hessian.  For each of the :math:`n{-}1` principal axes in the rotated
+space, a pair of trial points is placed at :math:`u'_i = \pm k\beta`
+(where :math:`k` is an adaptive step coefficient), with all other
+off-axis coordinates set to zero and :math:`u'_n = \beta`.  Newton
+iteration along the :math:`u'_n`-direction then drives each point onto
+the surface :math:`g = 0`.
+
+Once a fitting point has converged, its curvature is computed from the
+displacement along the design-point direction:
 
 .. math::
 
+    \kappa_i = \frac{2\,(u'_n - \beta)}{(u'_i)^2}
+
+Because points are fitted on both the positive and negative sides of each
+axis, the method yields asymmetric curvatures :math:`\kappa_i^+` and
+:math:`\kappa_i^-`.  The generalised Breitung formula for asymmetric
+curvatures is:
+
+.. math::
+    :label: eq:sorm_breitung_pf
+
     p_{f2} = \Phi(-\beta) \prod_{i=1}^{n-1} \frac{1}{2}
-    \left[ (1 + \beta\, \kappa_i^+)^{-1/2}
-         + (1 + \beta\, \kappa_i^-)^{-1/2} \right]
+    \left[ \left(1 + \beta\, \kappa_i^+\right)^{-1/2}
+         + \left(1 + \beta\, \kappa_i^-\right)^{-1/2} \right]
 
 When the curvatures are symmetric (:math:`\kappa_i^+ = \kappa_i^-`), this
-reduces to the standard Breitung formula above.
+reduces to the standard Breitung formula :eq:`eq:sorm_breitung`.
 
 Hohenbichler--Rackwitz Modification
 ------------------------------------
 
-Both methods also report the Hohenbichler and Rackwitz [Hohenbichler1988]_
-modification, which replaces :math:`\beta` in the curvature terms with
-:math:`\psi = \phi(\beta) / \Phi(-\beta)`, giving improved accuracy for
-lower values of :math:`\beta`.
+The Breitung formula is asymptotically exact for large :math:`\beta` but
+can be inaccurate for moderate values.  Hohenbichler and Rackwitz
+[Hohenbichler1988]_ proposed replacing :math:`\beta` in the curvature
+terms with:
+
+.. math::
+
+    \psi = \frac{\phi(\beta)}{\Phi(-\beta)}
+
+where :math:`\phi` is the standard normal PDF.  The quantity :math:`\psi`
+is the conditional mean of the standard normal distribution given that it
+exceeds :math:`\beta`, and provides a better local expansion for moderate
+reliability indices.  The modified formula is:
+
+.. math::
+    :label: eq:sorm_hr
+
+    p_{f2}^{\text{HR}} = \Phi(-\beta) \prod_{i=1}^{n-1}
+    \left(1 + \psi\, \kappa_i\right)^{-1/2}
+
+with the obvious extension to asymmetric curvatures from point-fitting.
+Both the standard and modified Breitung results are reported by Pystra.
+
+Validity and method comparison
+-------------------------------
+
+The Breitung and Hohenbichler--Rackwitz formulas require each curvature
+term in the product to be positive.  For the standard Breitung formula
+this means :math:`\kappa_i > -1/\beta`; for the modified formula,
+:math:`\kappa_i > -1/\psi`.  If any curvature violates this bound the
+approximating paraboloid opens towards the origin and the second-order
+approximation is invalid.
+
+The two fitting methods offer different trade-offs:
+
+- **Curve-fitting** requires fewer limit state evaluations (one gradient
+  perturbation per random variable) and produces symmetric curvatures.  It
+  is well suited to smooth failure surfaces where the curvature is
+  approximately the same on both sides of the design point.
+
+- **Point-fitting** requires more evaluations (Newton iteration for each
+  of :math:`2(n{-}1)` fitting points) but captures asymmetric curvature.
+  This is advantageous when the failure surface has markedly different
+  shapes on each side of the design point, as can occur with non-linear
+  limit state functions.
 
 
 Simulation Methods

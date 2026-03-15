@@ -32,6 +32,9 @@ Added
 - Developer guide: new section on adding distributions with
   sensitivity support.
 - Theory docs: generalised parameter support section.
+- Theory docs: expanded SORM section with quadratic approximation
+  derivation, curvature computation, Hohenbichler–Rackwitz motivation,
+  and curve-fitting vs point-fitting comparison.
 
 Fixed
 ~~~~~
@@ -40,13 +43,17 @@ Fixed
 - ``dF_dtheta`` handles array inputs from quadrature grids.
 - Sphinx documentation build: all warnings resolved.
 - Console output separator width corrected (``n_hyphen`` 54 → 58).
+- **Gumbel** ``input_type`` parameter: native Gumbel parameters
+  (μ, β) now correctly interpreted as location and scale (issue #67).
+- **Monte Carlo** ``cov_of_q_bar`` typo: fixed ``AttributeError``
+  when the coefficient of variation is exactly zero (issue #64).
 
 Changed
 ~~~~~~~
 - Sensitivity result dicts now keyed by each distribution's declared
   ``sensitivity_params`` (backward-compatible for standard
   distributions).
-- Test suite expanded to 282 tests.
+- Test suite expanded to 302 tests.
 
 
 v1.4.0 (2026-03-13)
