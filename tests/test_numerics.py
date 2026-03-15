@@ -11,6 +11,7 @@ from pystra.distributions import Normal
 # Quadrature Rule
 # ---------------------------------------------------------------------------
 
+
 class TestQuadratureRule:
     @pytest.mark.parametrize("n", [2, 4, 8, 16])
     def test_points_in_range(self, n):
@@ -73,6 +74,7 @@ class TestQuadratureRule:
 # ---------------------------------------------------------------------------
 # Integration (zi_and_xi, rho_integral)
 # ---------------------------------------------------------------------------
+
 
 class TestZiAndXi:
     def test_output_shapes(self):

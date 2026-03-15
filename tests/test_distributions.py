@@ -33,6 +33,7 @@ from pystra.distributions import (
 # StdNormal
 # ---------------------------------------------------------------------------
 
+
 class TestStdNormal:
     def test_pdf_at_zero(self):
         assert pytest.approx(StdNormal.pdf(0), abs=1e-10) == 1 / np.sqrt(2 * np.pi)
@@ -61,6 +62,7 @@ class TestStdNormal:
 # ---------------------------------------------------------------------------
 # Constant
 # ---------------------------------------------------------------------------
+
 
 class TestConstant:
     def test_creation(self):
@@ -160,6 +162,7 @@ class TestDistributionCommon:
 # Distributions requiring special constructors
 # ---------------------------------------------------------------------------
 
+
 class TestBeta:
     def test_construction(self):
         d = Beta("B", 0.5, 0.1, a=0, b=1)
@@ -251,6 +254,7 @@ class TestTypeIIIsmallestValue:
 # ---------------------------------------------------------------------------
 # Composite distributions
 # ---------------------------------------------------------------------------
+
 
 class TestMaximum:
     def test_construction(self):
@@ -411,6 +415,7 @@ class TestZeroInflated:
 # ---------------------------------------------------------------------------
 # Normal-specific tests
 # ---------------------------------------------------------------------------
+
 
 class TestNormal:
     def test_exact_mean_stdv(self):
