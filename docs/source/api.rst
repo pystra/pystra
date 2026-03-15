@@ -27,6 +27,8 @@ Reliability Methods
     pystra.form
     pystra.sorm
     pystra.mc
+    pystra.ls
+    pystra.ss
     pystra.sensitivity
 
 Probability Transformation

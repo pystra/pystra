@@ -52,6 +52,8 @@ from .analysis import *
 from .form import *
 from .mc import *
 from .sorm import *
+from .ls import *
+from .ss import *
 from .sensitivity import *
 
 # Calibration

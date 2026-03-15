@@ -254,20 +254,18 @@ class LimitState:
         G = np.zeros((1, nx))
         grad_G = np.zeros((nrv, nx))
         block_size = self.options.getBlockSize()
-        if nx > 1:
-            k = 0
-            while k < nx:
-                block_size = np.min([block_size, nx - k])
-                indx = list(range(k, k + block_size))
-                blockx = x[:, indx]
+        k = 0
+        while k < nx:
+            block_size = np.min([block_size, nx - k])
+            indx = list(range(k, k + block_size))
+            blockx = x[:, indx]
 
-                blockG, _ = self.compute_lsf(blockx)
+            blockG, _ = self.compute_lsf(blockx)
 
-                G[:, indx] = blockG
-                # grad_g[indx] = blockdummy
-                k += block_size
+            G[:, indx] = blockG
+            k += block_size
 
-            self.model.addCallFunction(nx)
+        self.model.addCallFunction(nx)
 
         return G, grad_G
 

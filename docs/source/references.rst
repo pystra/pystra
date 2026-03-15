@@ -42,3 +42,7 @@ References
 
 .. [Rosenblatt1952] Rosenblatt, Murray (1952). “Remarks on a Multivariate Transformation”. In: The Annals of Mathematical Statistics Vol 23.No 3, pp. 470–472.
 
+.. [AuBeck2001] Au, S. K., & Beck, J. L. (2001). Estimation of small failure probabilities in high dimensions by subset simulation. Probabilistic Engineering Mechanics, 16(4), 263–277.
+
+.. [Koutsourelakis2004] Koutsourelakis, P. S., Pradlwarter, H. J., & Schuëller, G. I. (2004). Reliability of structures in high dimensions, Part I: algorithms and applications. Probabilistic Engineering Mechanics, 19(4), 409–417.
+
