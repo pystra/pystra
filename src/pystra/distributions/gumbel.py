@@ -21,13 +21,13 @@ class Gumbel(Distribution):
     def __init__(self, name, mean, stdv, input_type=None, startpoint=None):
         if input_type is None:
             mu = mean - 0.5772156649 * stdv * np.sqrt(6) / np.pi
-            beta = np.pi / (stdv * np.sqrt(6))
+            scale = stdv * np.sqrt(6) / np.pi
         else:
             mu = mean
-            beta = stdv
+            scale = stdv
 
         # use scipy to do the heavy lifting
-        self.dist_obj = gumbel(loc=mu, scale=1 / beta)
+        self.dist_obj = gumbel(loc=mu, scale=scale)
 
         super().__init__(
             name=name,

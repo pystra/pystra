@@ -149,7 +149,7 @@ class MonteCarlo(AnalysisObject):
             )
             self.cov_q_bar[n] = np.sqrt(variance_q_bar) * self.q_bar[n] ** (-1)
             if self.cov_q_bar[n] == 0:
-                self.cov_of_q_bar[n] = 1.0
+                self.cov_q_bar[n] = 1.0
         else:
             self.q_bar[n] = 0
             self.cov_q_bar[n] = 1.0
