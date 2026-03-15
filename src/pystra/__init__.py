@@ -31,7 +31,7 @@ Quick start::
     print(f"beta = {form.getBeta():.4f}")
 """
 
-__version__ = "1.5.0"
+__version__ = "1.6.0"
 
 # Distributions
 from .distributions import *

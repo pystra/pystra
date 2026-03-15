@@ -61,10 +61,14 @@ Welcome to Pystra's documentation!
 :License: Pystra is released under the Apache 2.0 licence.
 :Version: |version|
 
-Pystra (Python Structural Reliability Analysis) is a python package for structural reliability analysis.
-Its flexibility and extensibility make it applicable to a large suite of problems.
-Along with core reliability analysis functionality, Pystra includes methods for summarizing output.
-Pystra is also closely integrated with the usual python scientific packages workflow, numpy and scipy; in particular, all statistical distributions in Scipy can be used in reliability modeling.
+Pystra (Python Structural Reliability Analysis) is a python package for
+structural reliability analysis, originally developed in [Hackl2013]_.
+Its flexibility and extensibility make it applicable to a large suite of
+problems. Along with core reliability analysis functionality, Pystra
+includes methods for summarizing output. Pystra is also closely integrated
+with the usual python scientific packages workflow, numpy and scipy; in
+particular, all statistical distributions in Scipy can be used in
+reliability modeling.
 
 .. note::
 

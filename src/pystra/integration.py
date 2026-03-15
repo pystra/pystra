@@ -122,3 +122,165 @@ def zi_and_xi(margi, margj, zmax, nIP):
     WIP = np.dot(np.transpose([wIP]), [wIP])
 
     return Z1, Z2, X1, X2, WIP, detJ
+
+
+def _phi2(Z1, Z2, rho0):
+    r"""Bivariate standard normal density.
+
+    Parameters
+    ----------
+    Z1, Z2 : ndarray
+        Standard-normal coordinate meshgrids.
+    rho0 : float
+        Correlation coefficient.
+
+    Returns
+    -------
+    ndarray
+        Density values, same shape as Z1 and Z2.
+    """
+    c = 1 - rho0**2
+    Q = Z1**2 - 2 * rho0 * Z1 * Z2 + Z2**2
+    return (2 * np.pi * np.sqrt(c)) ** (-1) * np.exp(-Q / (2 * c))
+
+
+def _dphi2_drho0(Z1, Z2, rho0, PHI2):
+    r"""Derivative of the bivariate standard normal density w.r.t. ``rho0``.
+
+    Parameters
+    ----------
+    Z1, Z2 : ndarray
+        Standard-normal coordinate meshgrids.
+    rho0 : float
+        Correlation coefficient.
+    PHI2 : ndarray
+        Pre-computed bivariate density (from :func:`_phi2`).
+
+    Returns
+    -------
+    ndarray
+        :math:`\partial\varphi_2 / \partial\rho_0`, same shape as Z1.
+    """
+    c = 1 - rho0**2
+    numer = rho0 * c + Z1 * Z2 * (1 + rho0**2) - rho0 * (Z1**2 + Z2**2)
+    return PHI2 * numer / c**2
+
+
+def drho_drho0(rho0, margi, margj, Z1, Z2, X1, X2, WIP, detJ):
+    r"""Derivative of the Nataf integral w.r.t. ``rho0`` (Bourinet Eq. 21).
+
+    .. math::
+        \frac{\partial\rho_{ij}}{\partial\rho_{0,ij}}
+        = \int\!\!\int h\,
+          \frac{\partial\varphi_2}{\partial\rho_{0,ij}}\,
+          \mathrm{d}z_i\,\mathrm{d}z_j
+
+    Parameters
+    ----------
+    rho0 : float
+        Modified correlation in standard-normal space.
+    margi, margj : Distribution
+        Marginal distributions.
+    Z1, Z2, X1, X2, WIP, detJ
+        Quadrature grid from :func:`zi_and_xi`.
+
+    Returns
+    -------
+    float
+        :math:`\partial\rho_{ij}/\partial\rho_{0,ij}`.
+    """
+    PHI2 = _phi2(Z1, Z2, rho0)
+    dPHI2 = _dphi2_drho0(Z1, Z2, rho0, PHI2)
+
+    H = ((X1 - margi.mean) / margi.stdv) * ((X2 - margj.mean) / margj.stdv)
+    return np.sum(H * dPHI2 * detJ * WIP)
+
+
+def drho0_dtheta(rho0, margi, margj, Z1, Z2, X1, X2, WIP, detJ, var_idx, param):
+    r"""Sensitivity of the modified correlation to a marginal parameter.
+
+    Solves Eq. (23) of Bourinet (2017) for
+    :math:`\partial\rho_{0,ij}/\partial\theta_k` by setting
+    :math:`\partial\rho_{ij}/\partial\theta_k = 0` (physical correlation
+    is fixed) and using Eq. (21) for the denominator:
+
+    .. math::
+        \frac{\partial\rho_{0,ij}}{\partial\theta_k}
+        = -\frac{\displaystyle\int\!\!\int
+            \frac{\partial h}{\partial\theta_k}\,\varphi_2\,
+            \mathrm{d}z_i\,\mathrm{d}z_j}
+           {\displaystyle\frac{\partial\rho_{ij}}
+            {\partial\rho_{0,ij}}}
+
+    The derivative :math:`\partial h/\partial\theta_k` uses the general
+    formula derived from :math:`h = (X - \mu)/\sigma`:
+
+    .. math::
+        \frac{\partial h}{\partial\theta_k}
+        = \frac{1}{\sigma}\!\left(
+            \frac{\partial X}{\partial\theta_k}
+          - \frac{\partial\mu}{\partial\theta_k}\right)
+        - \frac{h}{\sigma}\,
+          \frac{\partial\sigma}{\partial\theta_k}
+
+    For ``"mean"`` this reduces to :math:`(\partial X/\partial\mu - 1)/\sigma`
+    and for ``"std"`` to :math:`\partial X/\partial\sigma / \sigma - h/\sigma`.
+    For any other parameter (e.g. a shape parameter), the moment
+    derivatives :math:`\partial\mu/\partial\theta` and
+    :math:`\partial\sigma/\partial\theta` are obtained from
+    :meth:`Distribution._dmoments_dtheta`.
+
+    Parameters
+    ----------
+    rho0 : float
+        Modified correlation coefficient for this pair.
+    margi, margj : Distribution
+        Marginal distributions of variables *i* and *j*.
+    Z1, Z2, X1, X2, WIP, detJ
+        Quadrature grid from :func:`zi_and_xi`.
+    var_idx : {0, 1}
+        Which variable the parameter belongs to (0 → *margi*, 1 → *margj*).
+    param : str
+        Parameter name — any key from the distribution's
+        :attr:`~Distribution.sensitivity_params` (e.g. ``"mean"``,
+        ``"std"``, ``"shape"``).
+
+    Returns
+    -------
+    float
+        :math:`\partial\rho_{0,ij}/\partial\theta_k`.
+    """
+    PHI2 = _phi2(Z1, Z2, rho0)
+
+    H_i = (X1 - margi.mean) / margi.stdv
+    H_j = (X2 - margj.mean) / margj.stdv
+
+    if var_idx == 0:
+        dist, X, H_this, H_other = margi, X1, H_i, H_j
+    else:
+        dist, X, H_this, H_other = margj, X2, H_j, H_i
+
+    sigma = dist.stdv
+
+    # ∂X/∂θ_k = -(∂F(X)/∂θ_k) / f(X)
+    dF = dist.dF_dtheta(X)
+    fX = dist.pdf(X)
+    # Clip fX away from zero to avoid division by zero in the tails
+    fX = np.maximum(fX, 1e-300)
+    dX = -dF[param] / fX
+
+    # General ∂h/∂θ formula: (∂X/∂θ − ∂μ/∂θ)/σ − h·(∂σ/∂θ)/σ
+    dmu, dsig = dist._dmoments_dtheta(param)
+    dh_this = (dX - dmu) / sigma - H_this * dsig / sigma
+
+    dh = dh_this * H_other
+
+    # Numerator: ∫∫ (∂h/∂θ_k) × φ₂ dz_i dz_j
+    numer = np.sum(dh * PHI2 * detJ * WIP)
+
+    # Denominator: ∂ρ_ij/∂ρ₀,ij (Eq. 21)
+    dPHI2 = _dphi2_drho0(Z1, Z2, rho0, PHI2)
+    H = H_i * H_j
+    denom = np.sum(H * dPHI2 * detJ * WIP)
+
+    return -numer / denom

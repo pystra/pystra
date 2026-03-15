@@ -104,33 +104,6 @@ class AnalysisOptions:
     All FORM, SORM, and Monte Carlo settings are collected here.
     Attributes can be set directly or via the legacy getter/setter
     methods.
-
-    Attributes
-    ----------
-    print_output : bool
-        Print progress to the console (default ``False``).
-    diff_mode : {"ffd", "ddm"}
-        Gradient computation method — forward finite difference or
-        direct differentiation (default ``"ffd"``).
-    ffdpara : int
-        FFD perturbation divisor; perturbation = ``stdv / ffdpara``
-        (default 1000).
-    i_max : int
-        Maximum FORM iterations (default 100).
-    e1 : float
-        Convergence tolerance on the limit state value (default 0.001).
-    e2 : float
-        Convergence tolerance on the gradient direction (default 0.001).
-    step_size : float
-        FORM step size (0 = Armijo rule, default 0).
-    samples : int
-        Number of Monte Carlo samples (default 100 000).
-    target_cov : float
-        Target coefficient of variation for MC failure probability
-        (default 0.05).
-    transform_type : str or None
-        Isoprobabilistic transform type (``"cholesky"`` or ``"svd"``);
-        ``None`` uses the default (Cholesky).
     """
 
     def __init__(self):

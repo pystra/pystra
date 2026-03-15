@@ -84,6 +84,47 @@ class Lognormal(Distribution):
         u = (np.log(x) - self.lamb) / self.zeta
         return u
 
+    def dF_dtheta(self, x):
+        r"""Analytical derivatives of the Lognormal CDF w.r.t. μ and σ.
+
+        The CDF is ``F(x) = Φ((ln x - λ) / ζ)`` where
+        ``ζ = sqrt(ln(1 + (σ/μ)²))`` and ``λ = ln(μ) - ζ²/2``.
+
+        The chain rule gives:
+
+        .. math::
+            \frac{\partial F}{\partial \theta}
+            = \frac{\varphi(z)}{\zeta}
+              \left(-\frac{\partial\lambda}{\partial\theta}
+                    - z\,\frac{\partial\zeta}{\partial\theta}\right)
+
+        where ``z = (ln x - λ) / ζ``.
+        """
+        cov = self.stdv / self.mean
+        cov2 = cov**2
+        z = (np.log(x) - self.lamb) / self.zeta
+        phi_z = self.std_normal.pdf(z)
+
+        # Derivatives of ζ and λ w.r.t. μ and σ
+        # ζ² = ln(1 + cov²),  cov = σ/μ
+        # ∂ζ/∂μ = (1/ζ) × (1/(1+cov²)) × (-cov²/μ) = -cov² / (μ ζ (1+cov²))
+        # ∂ζ/∂σ = (1/ζ) × (1/(1+cov²)) × (cov/μ)   =  cov  / (μ ζ (1+cov²))
+        dzeta_dmu = -cov2 / (self.mean * self.zeta * (1 + cov2))
+        dzeta_dsig = cov / (self.mean * self.zeta * (1 + cov2))
+
+        # λ = ln(μ) - ζ²/2
+        # ∂λ/∂μ = 1/μ - ζ ∂ζ/∂μ
+        # ∂λ/∂σ = -ζ ∂ζ/∂σ
+        dlamb_dmu = 1.0 / self.mean - self.zeta * dzeta_dmu
+        dlamb_dsig = -self.zeta * dzeta_dsig
+
+        # ∂F/∂θ = (φ(z)/ζ) × (-∂λ/∂θ - z ∂ζ/∂θ)
+        coeff = phi_z / self.zeta
+        dF_dmu = coeff * (-dlamb_dmu - z * dzeta_dmu)
+        dF_dsig = coeff * (-dlamb_dsig - z * dzeta_dsig)
+
+        return {"mean": dF_dmu, "std": dF_dsig}
+
     def set_location(self, loc=0):
         """
         Updating the distribution location parameter.

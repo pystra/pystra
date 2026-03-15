@@ -20,6 +20,9 @@ class Weibull(Distribution):
     """
 
     def __init__(self, name, mean, stdv, epsilon=0, input_type=None, startpoint=None):
+        self.epsilon = epsilon
+        self._ctor_kwargs = {"epsilon": epsilon}
+
         if input_type is None:
             mean = mean
             stdv = stdv
