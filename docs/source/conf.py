@@ -71,7 +71,12 @@ source_suffix = [".rst", ".md"]
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = []
+exclude_patterns = [
+    # Legacy files superseded by current notebooks/content
+    "notebooks/intro.rst",
+    "notebooks/ex_code_calibration.ipynb",
+    "notebooks/example_global_calibration.ipynb",
+]
 
 
 # -- Options for HTML output -------------------------------------------------

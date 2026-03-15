@@ -14,6 +14,10 @@ from .correlation import setModifiedCorrelationMatrix
 class AnalysisObject:
     """Base class for reliability analysis objects (FORM, SORM, MC).
 
+    .. note::
+        Subclasses should use ``self.N_HYPH`` for the width of console
+        separator lines printed by ``showResults()``.
+
     Handles the common set-up shared by all analysis types: storing the
     stochastic model, limit state, and analysis options, and providing
     the ``init_run`` method that computes the Nataf correlation and
@@ -38,6 +42,8 @@ class AnalysisObject:
     results_valid : bool
         ``True`` after a successful ``run()``.
     """
+
+    N_HYPH = 58  # Width of console separator lines in showResults()
 
     def __init__(self, stochastic_model=None, limit_state=None, analysis_options=None):
         # The stochastic model

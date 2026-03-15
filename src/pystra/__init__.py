@@ -6,7 +6,7 @@ engineering systems using established structural reliability methods:
 
 - **FORM** (First Order Reliability Method)
 - **SORM** (Second Order Reliability Method)
-- **Monte Carlo** simulation (Crude, Importance Sampling)
+- **Monte Carlo** simulation (Crude, Line Sampling, Subset Simulation)
 - **Sensitivity analysis** of the reliability index
 - **Load combination** and **partial factor calibration**
 
@@ -31,7 +31,7 @@ Quick start::
     print(f"beta = {form.getBeta():.4f}")
 """
 
-__version__ = "1.4.0"
+__version__ = "1.5.0"
 
 # Distributions
 from .distributions import *
@@ -52,6 +52,8 @@ from .analysis import *
 from .form import *
 from .mc import *
 from .sorm import *
+from .ls import *
+from .ss import *
 from .sensitivity import *
 
 # Calibration

@@ -176,6 +176,15 @@ class LimitState:
 
     Where a function returns a gradient vector, it is only utilized when DDM is
     specified.
+
+    **Argument matching**: the function is called as ``expression(**kwargs)``
+    where each keyword argument is a variable name from the
+    :class:`StochasticModel`.  Arguments may therefore be declared explicitly
+    (``def lsf(X1, X2, X3): ...``) *or* collected with ``**kwargs`` for a
+    dimension-agnostic definition::
+
+        def lsf(**kwargs):
+            return sum(v**2 for v in kwargs.values())
     """
 
     def __init__(self, expression=None):
@@ -254,20 +263,18 @@ class LimitState:
         G = np.zeros((1, nx))
         grad_G = np.zeros((nrv, nx))
         block_size = self.options.getBlockSize()
-        if nx > 1:
-            k = 0
-            while k < nx:
-                block_size = np.min([block_size, nx - k])
-                indx = list(range(k, k + block_size))
-                blockx = x[:, indx]
+        k = 0
+        while k < nx:
+            block_size = np.min([block_size, nx - k])
+            indx = list(range(k, k + block_size))
+            blockx = x[:, indx]
 
-                blockG, _ = self.compute_lsf(blockx)
+            blockG, _ = self.compute_lsf(blockx)
 
-                G[:, indx] = blockG
-                # grad_g[indx] = blockdummy
-                k += block_size
+            G[:, indx] = blockG
+            k += block_size
 
-            self.model.addCallFunction(nx)
+        self.model.addCallFunction(nx)
 
         return G, grad_G
 

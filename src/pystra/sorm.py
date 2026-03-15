@@ -384,7 +384,7 @@ class Sorm(AnalysisObject):
         """Print a compact summary of the SORM results."""
         if not self.results_valid:
             raise ValueError("Analysis not yet run")
-        n_hyphen = 54
+        n_hyphen = self.N_HYPH
         fit_label = " (Point-Fitting)" if self.fit_type == "pf" else ""
         print("")
         print("=" * n_hyphen)
@@ -419,7 +419,7 @@ class Sorm(AnalysisObject):
         pfFORM = self.form.Pf
 
         fit_label = " (Point-Fitting)" if self.fit_type == "pf" else ""
-        n_hyphen = 54
+        n_hyphen = self.N_HYPH
         print("")
         print("=" * n_hyphen)
         print(f"FORM/SORM{fit_label}")

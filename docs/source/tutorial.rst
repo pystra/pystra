@@ -13,6 +13,7 @@ can also be found on the `Python documentation`_ page.
     :maxdepth: 1
 
     notebooks/ex_intro
+    notebooks/ex_simulation
     notebooks/ex_scipy_distributions
     notebooks/ex_sensitivity
     notebooks/ex_ddm
@@ -20,5 +21,6 @@ can also be found on the `Python documentation`_ page.
     notebooks/ex_load_combinations
     notebooks/ex_factor_calibration
     notebooks/ex_generic_calibration
+
 
 .. _`Python documentation`: http://www.python.org/doc/
