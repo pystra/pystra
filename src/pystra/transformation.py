@@ -159,9 +159,7 @@ class Transformation:
         try:
             U, D, V = np.linalg.svd(Ro)
         except np.linalg.LinAlgError as e:
-            raise np.linalg.LinAlgError(
-                f"SVD failed: {e}"
-            ) from e
+            raise np.linalg.LinAlgError(f"SVD failed: {e}") from e
 
         sqrtD = np.sqrt(D) * np.eye(len(D))
         R = U @ sqrtD

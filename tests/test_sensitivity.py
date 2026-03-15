@@ -74,7 +74,9 @@ class TestSensitivityAnalysis:
 
         for name in ["R", "S"]:
             for param in ["mean", "std"]:
-                assert pytest.approx(result1[name][param], rel=0.1) == result2[name][param]
+                assert (
+                    pytest.approx(result1[name][param], rel=0.1) == result2[name][param]
+                )
 
     def test_with_lognormal(self):
         """Test sensitivity works with non-Normal distributions."""
@@ -267,14 +269,17 @@ class TestSensitivityParams:
         assert "a" not in sp
         assert "b" not in sp
 
-    @pytest.mark.parametrize("cls,kwargs", [
-        (Normal, {"mean": 10, "stdv": 2}),
-        (Lognormal, {"mean": 10, "stdv": 2}),
-        (Uniform, {"mean": 5, "stdv": 0.5}),
-        (Gamma, {"mean": 10, "stdv": 2}),
-        (GEVmax, {"mean": 100, "stdv": 20, "shape": 0.1}),
-        (GEVmin, {"mean": 100, "stdv": 20, "shape": 0.1}),
-    ])
+    @pytest.mark.parametrize(
+        "cls,kwargs",
+        [
+            (Normal, {"mean": 10, "stdv": 2}),
+            (Lognormal, {"mean": 10, "stdv": 2}),
+            (Uniform, {"mean": 5, "stdv": 0.5}),
+            (Gamma, {"mean": 10, "stdv": 2}),
+            (GEVmax, {"mean": 100, "stdv": 20, "shape": 0.1}),
+            (GEVmin, {"mean": 100, "stdv": 20, "shape": 0.1}),
+        ],
+    )
     def test_make_copy_roundtrip(self, cls, kwargs):
         """_make_copy() with no overrides reproduces the original."""
         dist = cls("X", **kwargs)
@@ -394,9 +399,9 @@ class TestGEVSensitivity:
         sa = ra.SensitivityAnalysis(ls, model, analysis_options=opts)
         cf = sa.run(numerical=False)
 
-        assert cf["marginal"]["S"]["shape"] < 0, (
-            "Heavier GEV tail should decrease reliability"
-        )
+        assert (
+            cf["marginal"]["S"]["shape"] < 0
+        ), "Heavier GEV tail should decrease reliability"
 
     def test_gev_cf_vs_fd_shape(self):
         """CF and FD shape sensitivities should agree reasonably.
