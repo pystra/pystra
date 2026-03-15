@@ -2,7 +2,19 @@
 References
 **********
 
+.. [Bourinet2009] J.-M. Bourinet, C. Mattrand, and V Dubourg. A review of recent features and improvements added to FERUM software. In Proc. of the 10th International Conference on Structural Safety and Reliability (ICOSSAR’09), Osaka, Japan, 2009.
+
+.. [Bourinet2010] J.-M. Bourinet. FERUM 4.1 User’s Guide, 2010.
+
+.. [Bourinet2017] J.-M. Bourinet. "FORM Sensitivities to Distribution Parameters with the Nataf Transformation". In: P. Gardoni (ed.), Risk and Reliability Analysis: Theory and Applications, Springer Series in Reliability Engineering, pp. 277–302, 2017. DOI: 10.1007/978-3-319-52425-2_12.
+
 .. [Breitung1984] Breitung, K. 1984 Asymptotic approximations for multinormal integrals. J. Eng. Mech. ASCE 110, 357–367.
+
+.. [DerKiureghian2006] Der Kiureghian, A. and Liu, P.-L. (1986). "Structural Reliability Under Incomplete Probability Information". In: Journal of Engineering Mechanics Vol 112.No 1, pp. 85–104.
+
+.. [Hackl2013] Hackl, J. (2013). Generic Framework for Stochastic Modeling of Reinforced Concrete Deterioration Caused by Corrosion. Master's thesis, Norwegian University of Science and Technology, NTNU.
+
+.. [Melchers1999] Melchers, R. E. (1999). Structural Reliability Analysis and Prediction. Second edition. Chichester, UK: John Wiley and Sons. isbn: 9780471987710.
 
 .. [Hohenbichler1988] Hohenbichler, M. & Rackwitz, R. 1988 Improvement of second-order reliability estimates by importance sampling. J. Eng. Mech. ASCE 14, 2195–2199.
 

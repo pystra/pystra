@@ -21,6 +21,10 @@ class Beta(Distribution):
     """
 
     def __init__(self, name, mean, stdv, a=0, b=1, input_type=None, startpoint=None):
+        self.a = a
+        self.b = b
+        self._ctor_kwargs = {"a": a, "b": b}
+
         if input_type is None:
             a = a
             b = b

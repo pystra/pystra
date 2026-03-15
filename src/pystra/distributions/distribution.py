@@ -145,6 +145,17 @@ class Distribution:
         self.name = name
         self.dist_type = "BaseCls"
 
+        # Extra constructor keyword arguments needed to faithfully
+        # reconstruct this distribution beyond (name, mean, stdv).
+        # Subclasses with additional parameters (e.g. shape for GEV,
+        # bounds for Beta) should set this in their __init__ *before*
+        # calling super().__init__().  These are passed through by
+        # _make_copy() but are NOT sensitivity parameters — they are
+        # treated as fixed constants unless the subclass also adds them
+        # to sensitivity_params.
+        if not hasattr(self, "_ctor_kwargs"):
+            self._ctor_kwargs = {}
+
         # This is the key object that is to be defined in derived classes that
         # are using the base class functionality
         self.dist_obj = dist_obj
@@ -347,8 +358,170 @@ class Distribution:
 
         return ax
 
-    # The following must be overidden in derived classes that are not based on a
-    # SciPy distribution object, or using the SciPy object for calculations.
+    # ------------------------------------------------------------------
+    # Sensitivity-analysis support
+    # ------------------------------------------------------------------
+
+    @property
+    def sensitivity_params(self):
+        r"""Distribution parameters for which sensitivities are computed.
+
+        Returns a dict ``{param_name: current_value}`` listing every
+        parameter with respect to which :math:`\partial\beta/\partial\theta`
+        should be evaluated.
+
+        The default implementation returns ``{"mean": μ, "std": σ}``,
+        which is appropriate for most distributions.  Distributions with
+        additional parameters of interest (e.g. the GEV shape parameter)
+        should override this property to include them.
+
+        Parameters listed in :attr:`_ctor_kwargs` but **not** in
+        ``sensitivity_params`` are held fixed during sensitivity analysis
+        — they are only used by :meth:`_make_copy` to faithfully
+        reconstruct the distribution.
+
+        Returns
+        -------
+        dict
+            ``{param_name: current_value}``
+        """
+        return {"mean": self.mean, "std": self.stdv}
+
+    def _make_copy(self, **overrides):
+        r"""Construct a copy of this distribution with perturbed parameters.
+
+        Builds a fresh instance of the same type using the current
+        ``(mean, stdv)`` and any extra constructor keyword arguments
+        stored in :attr:`_ctor_kwargs`.  The *overrides* dict replaces
+        individual parameter values; its keys must match those of
+        :attr:`sensitivity_params` or :attr:`_ctor_kwargs`.
+
+        Parameters
+        ----------
+        **overrides
+            Parameter values to override.  For example,
+            ``dist._make_copy(mean=dist.mean + h)`` perturbs the mean.
+
+        Returns
+        -------
+        Distribution
+            A new distribution instance with the perturbed parameters.
+
+        Raises
+        ------
+        TypeError
+            If the subclass constructor does not accept the provided
+            arguments (e.g. a composite distribution that cannot be
+            reconstructed from ``(name, mean, stdv)``).
+        """
+        params = {"mean": self.mean, "std": self.stdv}
+        params.update(self._ctor_kwargs)
+        params.update(overrides)
+        mean = params.pop("mean")
+        stdv = params.pop("std")
+        return type(self)(self.name, mean, stdv, **params)
+
+    def _dmoments_dtheta(self, param):
+        r"""Derivatives of mean and standard deviation w.r.t. a parameter.
+
+        Returns ``(∂μ/∂θ, ∂σ/∂θ)`` for the parameter named *param*.
+        This is needed by :func:`~pystra.integration.drho0_dtheta` to
+        evaluate the general form of :math:`\partial h/\partial\theta`
+        (Eq. 24 of Bourinet 2017).
+
+        For ``"mean"`` and ``"std"`` the derivatives are exact:
+        ``(1, 0)`` and ``(0, 1)`` respectively.  For any other parameter
+        (e.g. a shape parameter) central finite differences via
+        :meth:`_make_copy` are used.
+
+        Parameters
+        ----------
+        param : str
+            Parameter name (a key of :attr:`sensitivity_params`).
+
+        Returns
+        -------
+        tuple of float
+            ``(∂μ/∂θ, ∂σ/∂θ)``
+        """
+        if param == "mean":
+            return (1.0, 0.0)
+        elif param == "std":
+            return (0.0, 1.0)
+        val = self.sensitivity_params[param]
+        h = max(abs(val) * 1e-6, 1e-10)
+        d_plus = self._make_copy(**{param: val + h})
+        d_minus = self._make_copy(**{param: val - h})
+        return (
+            (d_plus.mean - d_minus.mean) / (2 * h),
+            (d_plus.stdv - d_minus.stdv) / (2 * h),
+        )
+
+    def dF_dtheta(self, x):
+        r"""Derivatives of the CDF w.r.t. each sensitivity parameter.
+
+        Returns ``∂F_X(x)/∂θ`` for every parameter listed by
+        :attr:`sensitivity_params`.  The base-class implementation uses
+        central finite differences on the CDF via :meth:`_make_copy`.
+
+        Before computing derivatives, a reconstruction sanity check
+        verifies that :meth:`_make_copy` (with no overrides) reproduces
+        the current distribution.  This catches both constructor
+        failures (e.g. composite distributions) and silent mismatches
+        (e.g. distributions whose extra constructor arguments are not
+        stored in :attr:`_ctor_kwargs`).
+
+        Subclasses may override this with analytical expressions for
+        better accuracy and performance (see :class:`Normal` and
+        :class:`Lognormal`).
+
+        Parameters
+        ----------
+        x : float
+            Evaluation point in physical space.
+
+        Returns
+        -------
+        dict
+            ``{param_name: ∂F/∂θ}`` for each parameter in
+            :attr:`sensitivity_params`.
+
+        Raises
+        ------
+        ValueError
+            If the distribution cannot be faithfully reconstructed by
+            :meth:`_make_copy`.
+        """
+        # --- Validate that _make_copy reproduces this distribution ---
+        try:
+            test = self._make_copy()
+        except Exception as e:
+            raise ValueError(
+                f"{type(self).__name__} does not support sensitivity "
+                f"analysis.  Set _ctor_kwargs in the subclass __init__ "
+                f"or override _make_copy()."
+            ) from e
+        # Use a scalar test point for validation (x may be an array
+        # when called from drho0_dtheta with quadrature grids)
+        x_test = float(self.mean + 0.5 * self.stdv)
+        ref_cdf = float(self.cdf(x_test))
+        test_cdf = float(test.cdf(x_test))
+        if abs(test_cdf - ref_cdf) > 1e-6 * (1 + abs(ref_cdf)):
+            raise ValueError(
+                f"{type(self).__name__}._make_copy() does not faithfully "
+                f"reconstruct the distribution (CDF mismatch at "
+                f"x={x_test}: original={ref_cdf:.8g}, "
+                f"copy={test_cdf:.8g}).  "
+                f"Set _ctor_kwargs correctly in the subclass __init__."
+            )
+
+        result = {}
+        for param, val in self.sensitivity_params.items():
+            h = max(abs(val) * 1e-6, self.stdv * 1e-8)
+            d_plus = self._make_copy(**{param: val + h})
+            d_minus = self._make_copy(**{param: val - h})
+            result[param] = (d_plus.cdf(x) - d_minus.cdf(x)) / (2 * h)
+        return result
 
     def set_location(self, loc=0):
         """Update the location parameter of the underlying SciPy distribution.

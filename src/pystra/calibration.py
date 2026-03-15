@@ -1572,9 +1572,9 @@ class GenericCalibration:
             Target reliability index.
         ranges : Dict
             A dictionary of range information with the following keys:
-                xl, xu, ytext, text, alpha
-            defining the lower and upper aq values, the position of the text, the text,
-            and the alpha of the range colouring.
+            ``xl``, ``xu``, ``ytext``, ``text``, ``alpha``
+            — defining the lower and upper aq values, the position of
+            the text, the text, and the alpha of the range colouring.
         figsize : Tuple(float), optional
             The figure size in inches. The default is (12, 9).
 
@@ -1616,9 +1616,9 @@ class GenericCalibration:
             Target reliability index.
         ranges : Dict
             A dictionary of range information with the following keys:
-                xl, xu, ytext, text, alpha
-            defining the lower and upper aq values, the position of the text, the text,
-            and the alpha of the range colouring.
+            ``xl``, ``xu``, ``ytext``, ``text``, ``alpha``
+            — defining the lower and upper aq values, the position of
+            the text, the text, and the alpha of the range colouring.
 
         Raises
         ------

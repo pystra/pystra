@@ -5,6 +5,50 @@ All notable changes to Pystra are documented here.
 
 The format follows `Keep a Changelog <https://keepachangelog.com/>`_.
 
+v1.6.0 (2026-03-16)
+--------------------
+
+Added
+~~~~~
+- **Closed-form sensitivity analysis** (Bourinet 2017): computes
+  :math:`\partial\beta/\partial\theta` from a single FORM run via
+  analytical differentiation of the Nataf transformation chain.
+  Selected with ``SensitivityAnalysis.run(numerical=False)``.
+- **Correlation sensitivities** :math:`\partial\beta/\partial\rho_{ij}`
+  available from the closed-form method.
+- **Generalised sensitivity parameters**: distributions can declare
+  arbitrary parameters beyond mean and standard deviation via the
+  ``sensitivity_params`` property (e.g. GEV shape parameter).
+- ``SensitivityAnalysis.summary()`` method for DataFrame output.
+- ``Distribution._make_copy()``, ``_ctor_kwargs``, and
+  ``_dmoments_dtheta()`` extension points for distribution
+  reconstruction and parameter differentiation.
+- Cholesky differentiation module (``cholesky_sensitivity``).
+- Numerical integration helpers for Nataf correlation derivatives
+  (``integration`` module: ``drho0_dtheta``, ``drho_drho0``,
+  ``zi_and_xi``).
+- GEV (max and min) shape parameter sensitivity support.
+- Sensitivity analysis notebook with worked Bourinet (2017) examples.
+- Developer guide: new section on adding distributions with
+  sensitivity support.
+- Theory docs: generalised parameter support section.
+
+Fixed
+~~~~~
+- GEVmin ``_make_copy`` roundtrip: moments are now correctly
+  preserved across reconstruction.
+- ``dF_dtheta`` handles array inputs from quadrature grids.
+- Sphinx documentation build: all warnings resolved.
+- Console output separator width corrected (``n_hyphen`` 54 → 58).
+
+Changed
+~~~~~~~
+- Sensitivity result dicts now keyed by each distribution's declared
+  ``sensitivity_params`` (backward-compatible for standard
+  distributions).
+- Test suite expanded to 282 tests.
+
+
 v1.4.0 (2026-03-13)
 --------------------
 

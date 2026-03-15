@@ -87,6 +87,22 @@ class Normal(Distribution):
         J = np.diag(np.repeat(1 / self.stdv, u.size))
         return J
 
+    def dF_dtheta(self, x):
+        r"""Analytical derivatives of the Normal CDF w.r.t. μ and σ.
+
+        .. math::
+            \frac{\partial F}{\partial \mu} = -\frac{1}{\sigma}\,
+                \varphi\!\left(\frac{x - \mu}{\sigma}\right)
+
+            \frac{\partial F}{\partial \sigma} = -\frac{x - \mu}{\sigma^2}\,
+                \varphi\!\left(\frac{x - \mu}{\sigma}\right)
+        """
+        z = (x - self.mean) / self.stdv
+        phi_z = self.std_normal.pdf(z)
+        dF_dmu = -phi_z / self.stdv
+        dF_dsig = -phi_z * z / self.stdv
+        return {"mean": dF_dmu, "std": dF_dsig}
+
     def set_location(self, loc=0):
         """
         Updating the distribution location parameter. For Normal, there is no need to

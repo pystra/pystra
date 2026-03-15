@@ -27,6 +27,8 @@ class ShiftedLognormal(Lognormal):
         if input_type is not None:
             raise NotImplementedError("`input_type` not implemented")
 
+        self._ctor_kwargs = {"lower": lower}
+
         self.mean = mean
         self.stdv = stdv
         self.lower = None
