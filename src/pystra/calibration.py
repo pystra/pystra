@@ -6,6 +6,7 @@ from scipy.optimize import fsolve
 from .distributions import Constant
 from .model import LimitState, StochasticModel
 from .form import Form
+from .analysis import AnalysisObject
 import matplotlib.pyplot as plt
 
 
@@ -982,7 +983,7 @@ class Calibration:
         None.
 
         """
-        n = 54
+        n = AnalysisObject.N_HYPH
         print("\n")
         print("=" * n)
         print("X* = \n", self.dfXstarcal.round(precision))
