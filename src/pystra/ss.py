@@ -286,7 +286,7 @@ class SubsetSimulation(AnalysisObject):
         """Print a summary of Subset Simulation results to the console."""
         if not self.results_valid:
             raise ValueError("Analysis not yet run")
-        n_hyph = 54
+        n_hyph = self.N_HYPH
         print("")
         print("=" * n_hyph)
         print("")

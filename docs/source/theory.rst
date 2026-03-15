@@ -693,4 +693,5 @@ variance), the CoV of the estimator is approximated by [AuBeck2001]_
 
 Subset Simulation is particularly effective for small failure probabilities
 (roughly :math:`p_f < 10^{-3}`), where crude Monte Carlo would require an
-impractically large number of samples.
+impractically large number of samples.  A benchmark comparison of simulation
+methods on high-dimensional problems is given in [Schueller2007]_.

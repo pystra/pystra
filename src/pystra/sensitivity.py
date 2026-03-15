@@ -32,7 +32,7 @@ class SensitivityAnalysis:
     Notes
     -----
     Future extensions: SORM sensitivities, correlation coefficients,
-    analytical method of Bourinet (2017), full distribution parameter
+    the analytical method of [Bourinet2017]_, full distribution parameter
     coverage, and Sobol indices.
 
     References

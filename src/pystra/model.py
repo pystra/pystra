@@ -176,6 +176,15 @@ class LimitState:
 
     Where a function returns a gradient vector, it is only utilized when DDM is
     specified.
+
+    **Argument matching**: the function is called as ``expression(**kwargs)``
+    where each keyword argument is a variable name from the
+    :class:`StochasticModel`.  Arguments may therefore be declared explicitly
+    (``def lsf(X1, X2, X3): ...``) *or* collected with ``**kwargs`` for a
+    dimension-agnostic definition::
+
+        def lsf(**kwargs):
+            return sum(v**2 for v in kwargs.values())
     """
 
     def __init__(self, expression=None):

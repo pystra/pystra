@@ -273,7 +273,7 @@ class Form(AnalysisObject):
         """Show results"""
         if not self.results_valid:
             raise ValueError("Analysis not yet run")
-        n_hyphen = 54
+        n_hyphen = self.N_HYPH
         print("")
         print("=" * n_hyphen)
         print("")
@@ -300,7 +300,7 @@ class Form(AnalysisObject):
         x_star = self.getDesignPoint(uspace=False)
         alpha = self.getAlpha()
 
-        n_hyphen = 54
+        n_hyphen = self.N_HYPH
         print("")
         print("=" * n_hyphen)
         print("FORM")
