@@ -1,0 +1,1252 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Simulation Methods: CMC, Line Sampling, and Subset Simulation &#8212; PySTRA 1.6.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=9bc076a2" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=72d88caf"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/ex_simulation';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="SciPy Distribution Example" href="ex_scipy_distributions.html" />
+    <link rel="prev" title="Introductory Tutorial" href="ex_intro.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.6.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 1.6.0 documentation - Home"/>
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 1.6.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../theory.html">
+    Theoretical Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../developer.html">
+    Instructions for Developers
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../theory.html">
+    Theoretical Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer.html">
+    Instructions for Developers
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="ex_intro.html">Introductory Tutorial</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Simulation Methods: CMC, Line Sampling, and Subset Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_scipy_distributions.html">SciPy Distribution Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_sensitivity.html">Sensitivity Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_ddm.html">Direct Differentiation Method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_timing.html">Pystra Timing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_load_combinations.html">Load Combinations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_factor_calibration.html">Safety Factor Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_generic_calibration.html">Generic Code Calibration</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../tutorial.html" class="nav-link">Tutorials</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Simulation Methods: CMC, Line Sampling, and Subset Simulation</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="Simulation-Methods:-CMC,-Line-Sampling,-and-Subset-Simulation">
+<h1>Simulation Methods: CMC, Line Sampling, and Subset Simulation<a class="headerlink" href="#Simulation-Methods:-CMC,-Line-Sampling,-and-Subset-Simulation" title="Link to this heading">#</a></h1>
+<p>This notebook compares three simulation-based reliability methods on two high-dimensional benchmark problems chosen to highlight the strengths and limitations of each method:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Class</p></th>
+<th class="head"><p>Key idea</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Crude Monte Carlo</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">CrudeMonteCarlo</span></code></p></td>
+<td><p>Direct sampling baseline</p></td>
+</tr>
+<tr class="row-odd"><td><p>Line Sampling</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">LineSampling</span></code></p></td>
+<td><p>Variance reduction along FORM important direction</p></td>
+</tr>
+<tr class="row-even"><td><p>Subset Simulation</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SubsetSimulation</span></code></p></td>
+<td><p>Decompose rare event into nested intermediate events</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Example 1 — Hypersphere</strong>: demonstrates that FORM fails badly on a strongly nonlinear problem, and exposes a fundamental limitation of Line Sampling when the failure region is bilateral <a class="reference internal" href="../references.html"><span class="doc">[Schueller2007]</span></a>.</p>
+<p><strong>Example 2 — Parabolic limit state</strong>: the classic LS benchmark from <a class="reference internal" href="../references.html"><span class="doc">[Breitung1984]</span></a>, where the failure region is one-sided and LS performs as designed.</p>
+<section id="Example-1:-High-Dimensional-Hypersphere">
+<h2>Example 1: High-Dimensional Hypersphere<a class="headerlink" href="#Example-1:-High-Dimensional-Hypersphere" title="Link to this heading">#</a></h2>
+<section id="Problem-Description">
+<h3>Problem Description<a class="headerlink" href="#Problem-Description" title="Link to this heading">#</a></h3>
+<p>We use the <em>n</em>-dimensional hypersphere limit state, a standard benchmark for high-dimensional reliability methods <a class="reference internal" href="../references.html"><span class="doc">[Schueller2007]</span></a>:</p>
+<div class="math notranslate nohighlight">
+\[g(\mathbf{x}) = r^2 - \sum_{i=1}^{n} x_i^2,
+\quad x_i \sim \mathcal{N}(0, 1), \quad i = 1, \ldots, n\]</div>
+<p>Failure occurs when <span class="math notranslate nohighlight">\(g \leq 0\)</span>, i.e., when <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> lies outside the hypersphere of radius <span class="math notranslate nohighlight">\(r\)</span>. Because <span class="math notranslate nohighlight">\(\sum x_i^2 \sim \chi^2(n)\)</span>, the <strong>exact failure probability</strong> is</p>
+<div class="math notranslate nohighlight">
+\[p_f = P\!\left(\sum_{i=1}^n x_i^2 &gt; r^2\right) = 1 - F_{\chi^2(n)}(r^2)\]</div>
+<p>We choose <span class="math notranslate nohighlight">\(n = 10\)</span> and <span class="math notranslate nohighlight">\(r = 5\)</span>. The key challenge is that <strong>FORM fails badly</strong> for this problem: the strongly curved failure surface causes a large discrepancy between the first-order approximation and the truth.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ra</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">chi2</span><span class="p">,</span> <span class="n">norm</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Problem-Setup">
+<h3>Problem Setup<a class="headerlink" href="#Problem-Setup" title="Link to this heading">#</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">10</span>   <span class="c1"># number of standard-normal random variables</span>
+<span class="n">r</span> <span class="o">=</span> <span class="mf">5.0</span>  <span class="c1"># hypersphere radius</span>
+
+<span class="c1"># Exact solution via chi-squared survival function</span>
+<span class="n">Pf_exact</span>   <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">chi2</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="n">r</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">n</span><span class="p">))</span>
+<span class="n">beta_exact</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="o">-</span><span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">Pf_exact</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exact Pf   = </span><span class="si">{</span><span class="n">Pf_exact</span><span class="si">:</span><span class="s2">.4e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exact beta = </span><span class="si">{</span><span class="n">beta_exact</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Exact Pf   = 5.3455e-03
+Exact beta = 2.5526
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">lsf</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Hypersphere limit state: failure when ||x||^2 &gt; r^2.</span>
+
+<span class="sd">    Accepts any number of N(0,1) variables via **kwargs, so the</span>
+<span class="sd">    problem dimension n can be changed without touching this function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">r</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="n">v</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">make_model</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build the stochastic model (n independent N(0,1) variables).&quot;&quot;&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;X</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+    <span class="n">limit_state</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span><span class="n">lsf</span><span class="p">)</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">AnalysisOptions</span><span class="p">()</span>
+    <span class="n">options</span><span class="o">.</span><span class="n">setPrintOutput</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="n">options</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="FORM-—-First-Order-Reliability-Method">
+<h3>FORM — First-Order Reliability Method<a class="headerlink" href="#FORM-—-First-Order-Reliability-Method" title="Link to this heading">#</a></h3>
+<p>FORM linearises the limit state at the design point. For the hypersphere, every point at distance <span class="math notranslate nohighlight">\(r\)</span> from the origin is a design point, so <span class="math notranslate nohighlight">\(\beta_\text{FORM} = r = 5\)</span>. However, the strongly curved failure surface means the first-order approximation severely underestimates the failure probability.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="n">make_model</span><span class="p">()</span>
+<span class="n">form</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Form</span><span class="p">(</span>
+    <span class="n">analysis_options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
+    <span class="n">stochastic_model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+    <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">form</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+<span class="n">beta_form</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">getBeta</span><span class="p">())</span>
+<span class="n">Pf_form</span>   <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">getFailure</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;FORM:  beta = </span><span class="si">{</span><span class="n">beta_form</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">,  Pf = </span><span class="si">{</span><span class="n">Pf_form</span><span class="si">:</span><span class="s2">.4e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exact: beta = </span><span class="si">{</span><span class="n">beta_exact</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">,  Pf = </span><span class="si">{</span><span class="n">Pf_exact</span><span class="si">:</span><span class="s2">.4e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error ratio Pf_exact / Pf_FORM = </span><span class="si">{</span><span class="n">Pf_exact</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">Pf_form</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">x&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+FORM:  beta = 5.0003,  Pf = 2.8615e-07
+Exact: beta = 2.5526,  Pf = 5.3455e-03
+Error ratio Pf_exact / Pf_FORM = 18681x
+</pre></div></div>
+</div>
+<p>The error confirms that FORM is unreliable for this highly nonlinear problem. Despite the inaccurate <span class="math notranslate nohighlight">\(\beta\)</span>, the <strong>important direction</strong> <span class="math notranslate nohighlight">\(\boldsymbol{\alpha}\)</span> found by FORM points radially outward from the origin — which, by symmetry of the sphere, is still a valid direction for Line Sampling.</p>
+</section>
+<section id="Crude-Monte-Carlo-(CMC)">
+<h3>Crude Monte Carlo (CMC)<a class="headerlink" href="#Crude-Monte-Carlo-(CMC)" title="Link to this heading">#</a></h3>
+<p>CMC draws <span class="math notranslate nohighlight">\(N\)</span> independent samples from the joint distribution and counts failures. The estimator is unbiased but requires <span class="math notranslate nohighlight">\(N \gg 1/p_f\)</span> for acceptable variance. With <span class="math notranslate nohighlight">\(p_f \approx 5 \times 10^{-3}\)</span> we use <span class="math notranslate nohighlight">\(N = 20\,000\)</span> samples, giving roughly 100 failures and a coefficient of variation of ~10 %.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="n">make_model</span><span class="p">()</span>
+<span class="n">options</span><span class="o">.</span><span class="n">setSamples</span><span class="p">(</span><span class="mi">20_000</span><span class="p">)</span>
+
+<span class="n">cmc</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">CrudeMonteCarlo</span><span class="p">(</span>
+    <span class="n">analysis_options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
+    <span class="n">stochastic_model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+    <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">cmc</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+<span class="n">beta_cmc</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cmc</span><span class="o">.</span><span class="n">getBeta</span><span class="p">())</span>
+<span class="n">Pf_cmc</span>   <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cmc</span><span class="o">.</span><span class="n">getFailure</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CMC:  beta = </span><span class="si">{</span><span class="n">beta_cmc</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">,  Pf = </span><span class="si">{</span><span class="n">Pf_cmc</span><span class="si">:</span><span class="s2">.4e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+CMC:  beta = 2.5491,  Pf = 5.4000e-03
+</pre></div></div>
+</div>
+</section>
+<section id="Line-Sampling-(LS)">
+<h3>Line Sampling (LS)<a class="headerlink" href="#Line-Sampling-(LS)" title="Link to this heading">#</a></h3>
+<p>Line Sampling projects <span class="math notranslate nohighlight">\(N\)</span> standard-normal samples onto the <span class="math notranslate nohighlight">\((n-1)\)</span>-dimensional hyperplane perpendicular to the FORM important direction <span class="math notranslate nohighlight">\(\boldsymbol{\alpha}\)</span>, then solves a one-dimensional root-finding problem along each line to locate the limit-state surface. The failure probability estimate is</p>
+<div class="math notranslate nohighlight">
+\[\hat{p}_f = \frac{1}{N}\sum_{i=1}^{N} \Phi(-c_i)\]</div>
+<p>where <span class="math notranslate nohighlight">\(c_i\)</span> is the signed distance to the limit-state surface along <span class="math notranslate nohighlight">\(\boldsymbol{\alpha}\)</span> for line <span class="math notranslate nohighlight">\(i\)</span>. Only <span class="math notranslate nohighlight">\(N = 200\)</span> lines are needed for high accuracy.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="n">make_model</span><span class="p">()</span>
+<span class="n">options</span><span class="o">.</span><span class="n">setSamples</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+
+<span class="n">ls</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">LineSampling</span><span class="p">(</span>
+    <span class="n">analysis_options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
+    <span class="n">stochastic_model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+    <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
+    <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>   <span class="c1"># re-use the FORM result for the important direction</span>
+<span class="p">)</span>
+<span class="n">ls</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+<span class="n">beta_ls</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">getBeta</span><span class="p">())</span>
+<span class="n">Pf_ls</span>   <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">getFailure</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;LS:  beta = </span><span class="si">{</span><span class="n">beta_ls</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">,  Pf = </span><span class="si">{</span><span class="n">Pf_ls</span><span class="si">:</span><span class="s2">.4e</span><span class="si">}</span><span class="s2">,  CoV = </span><span class="si">{</span><span class="n">ls</span><span class="o">.</span><span class="n">cov</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+LS:  beta = 3.0925,  Pf = 9.9239e-04,  CoV = 0.299
+</pre></div></div>
+</div>
+</section>
+<section id="Subset-Simulation-(SS)">
+<h3>Subset Simulation (SS)<a class="headerlink" href="#Subset-Simulation-(SS)" title="Link to this heading">#</a></h3>
+<p>Subset Simulation decomposes the rare failure event <span class="math notranslate nohighlight">\(F = \{g(\mathbf{x}) \le 0\}\)</span> into a sequence of nested intermediate events <span class="math notranslate nohighlight">\(F_1 \supset F_2 \supset \cdots \supset F_m = F\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[p_f = P(F_1)\prod_{j=2}^{m} P(F_j \mid F_{j-1})\]</div>
+<p>Conditional samples at each level are generated via Modified Metropolis–Hastings (MMH), keeping the conditional probability per level close to the target <span class="math notranslate nohighlight">\(p_0 = 0.1\)</span>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="n">make_model</span><span class="p">()</span>
+<span class="n">options</span><span class="o">.</span><span class="n">setSamples</span><span class="p">(</span><span class="mi">2_000</span><span class="p">)</span>
+
+<span class="n">ss</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">SubsetSimulation</span><span class="p">(</span>
+    <span class="n">analysis_options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
+    <span class="n">stochastic_model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+    <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
+    <span class="n">p0</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">ss</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+<span class="n">beta_ss</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ss</span><span class="o">.</span><span class="n">getBeta</span><span class="p">())</span>
+<span class="n">Pf_ss</span>   <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ss</span><span class="o">.</span><span class="n">getFailure</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SS:  beta = </span><span class="si">{</span><span class="n">beta_ss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">,  Pf = </span><span class="si">{</span><span class="n">Pf_ss</span><span class="si">:</span><span class="s2">.4e</span><span class="si">}</span><span class="s2">,  CoV = </span><span class="si">{</span><span class="n">ss</span><span class="o">.</span><span class="n">cov</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;     levels = </span><span class="si">{</span><span class="n">ss</span><span class="o">.</span><span class="n">n_levels</span><span class="si">}</span><span class="s2">,  thresholds = </span><span class="si">{</span><span class="p">[</span><span class="nb">round</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">ss</span><span class="o">.</span><span class="n">thresholds</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+SS:  beta = 2.5669,  Pf = 5.1300e-03,  CoV = 0.097
+     levels = 3,  thresholds = [9.51, 2.21, 0.0]
+</pre></div></div>
+</div>
+</section>
+<section id="Summary">
+<h3>Summary<a class="headerlink" href="#Summary" title="Link to this heading">#</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;Exact&quot;</span><span class="p">,</span>          <span class="n">beta_exact</span><span class="p">,</span> <span class="n">Pf_exact</span><span class="p">,</span> <span class="s2">&quot;—&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;FORM&quot;</span><span class="p">,</span>           <span class="n">beta_form</span><span class="p">,</span>  <span class="n">Pf_form</span><span class="p">,</span>  <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">form</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">getCallFunction</span><span class="p">()</span><span class="si">}</span><span class="s2"> LSF calls&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;CMC&quot;</span><span class="p">,</span>            <span class="n">beta_cmc</span><span class="p">,</span>   <span class="n">Pf_cmc</span><span class="p">,</span>   <span class="s2">&quot;20 000 samples&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Line Sampling&quot;</span><span class="p">,</span>  <span class="n">beta_ls</span><span class="p">,</span>    <span class="n">Pf_ls</span><span class="p">,</span>    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ls</span><span class="o">.</span><span class="n">n_samples</span><span class="si">}</span><span class="s2"> lines&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Subset Sim.&quot;</span><span class="p">,</span>    <span class="n">beta_ss</span><span class="p">,</span>    <span class="n">Pf_ss</span><span class="p">,</span>    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ss</span><span class="o">.</span><span class="n">n_levels</span><span class="si">}</span><span class="s2"> × 2 000 samples&quot;</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Method&quot;</span><span class="p">,</span> <span class="s2">&quot;beta&quot;</span><span class="p">,</span> <span class="s2">&quot;Pf&quot;</span><span class="p">,</span> <span class="s2">&quot;Cost&quot;</span><span class="p">])</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;beta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;beta&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;Pf&quot;</span><span class="p">]</span>   <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Pf&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:.4e}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">)</span>
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Method</th>
+      <th>beta</th>
+      <th>Pf</th>
+      <th>Cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Exact</td>
+      <td>2.5526</td>
+      <td>5.3455e-03</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>FORM</td>
+      <td>5.0003</td>
+      <td>2.8615e-07</td>
+      <td>164 LSF calls</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>CMC</td>
+      <td>2.5491</td>
+      <td>5.4000e-03</td>
+      <td>20 000 samples</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Line Sampling</td>
+      <td>3.0925</td>
+      <td>9.9239e-04</td>
+      <td>200 lines</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Subset Sim.</td>
+      <td>2.5669</td>
+      <td>5.1300e-03</td>
+      <td>3 × 2 000 samples</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+<section id="Key-observations">
+<h3>Key observations<a class="headerlink" href="#Key-observations" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>FORM</strong> gives <span class="math notranslate nohighlight">\(\beta = r = 5\)</span>, but the true reliability index is <span class="math notranslate nohighlight">\(\approx 2.56\)</span>. The curved failure surface in 10 dimensions causes FORM to underestimate <span class="math notranslate nohighlight">\(p_f\)</span> by several orders of magnitude.</p></li>
+<li><p><strong>CMC</strong> recovers the correct failure probability but requires 20 000 samples for only modest precision (~10 % CoV).</p></li>
+<li><p><strong>Line Sampling</strong> underestimates <span class="math notranslate nohighlight">\(p_f\)</span> for this problem because the hypersphere failure region is <em>bilateral</em>: for any chosen direction <span class="math notranslate nohighlight">\(\boldsymbol{\alpha}\)</span>, failure occurs on <strong>both</strong> sides (<span class="math notranslate nohighlight">\(c &gt; c^*\)</span> and <span class="math notranslate nohighlight">\(c &lt; -c^*\)</span>). LS finds only the positive (safe→failure) crossing and contributes <span class="math notranslate nohighlight">\(\Phi(-c^*)\)</span>, silently missing the symmetric contribution from the other tail. LS is most effective when the failure region is one-sided relative to <span class="math notranslate nohighlight">\(\boldsymbol{\alpha}\)</span>, as
+in linear or mildly nonlinear limit states.</p></li>
+<li><p><strong>Subset Simulation</strong> adaptively finds the intermediate thresholds and reaches the failure region without knowing <span class="math notranslate nohighlight">\(p_f\)</span> in advance, using a small number of samples per level.</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="Example-2:-Parabolic-Limit-State">
+<h2>Example 2: Parabolic Limit State<a class="headerlink" href="#Example-2:-Parabolic-Limit-State" title="Link to this heading">#</a></h2>
+<section id="id1">
+<h3>Problem Description<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<p>The parabolic limit state is the canonical LS benchmark <a class="reference internal" href="../references.html"><span class="doc">[Breitung1984]</span></a>:</p>
+<div class="math notranslate nohighlight">
+\[g(\mathbf{u}) = \beta_0 - u_1 + \kappa \sum_{i=2}^{n} u_i^2,
+\quad u_i \sim \mathcal{N}(0,1)\]</div>
+<p>Failure is <strong>one-sided</strong>: it is driven by large <span class="math notranslate nohighlight">\(u_1\)</span>, with the secondary variables introducing a parabolic correction. For <span class="math notranslate nohighlight">\(\kappa &lt; 0\)</span> the failure surface curves toward the origin, making the true <span class="math notranslate nohighlight">\(p_f\)</span> larger than the first-order estimate.</p>
+<p>The FORM design point is <span class="math notranslate nohighlight">\(\mathbf{u}^* = (\beta_0, 0, \ldots, 0)\)</span> with important direction <span class="math notranslate nohighlight">\(\boldsymbol{\alpha} = \mathbf{e}_1\)</span>, giving <span class="math notranslate nohighlight">\(\beta_\text{FORM} = \beta_0\)</span> exactly. The Breitung SORM approximation corrects for the <span class="math notranslate nohighlight">\(n-1\)</span> equal principal curvatures <span class="math notranslate nohighlight">\(\kappa_i = 2\kappa\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[p_f^\text{SORM} = \Phi(-\beta_0)\,(1 + 2\kappa\beta_0)^{-(n-1)/2}\]</div>
+<p>This serves as the reference solution.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">beta0</span> <span class="o">=</span> <span class="mf">3.0</span>
+<span class="n">kappa</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.05</span>   <span class="c1"># negative → failure surface curves toward origin</span>
+<span class="c1"># n = 10 (reused from Example 1)</span>
+
+<span class="c1"># SORM (Breitung) reference  — principal curvatures kappa_i = 2*kappa</span>
+<span class="n">Pf_sorm</span>  <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="o">-</span><span class="n">beta0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">kappa</span><span class="o">*</span><span class="n">beta0</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">beta_sorm</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="o">-</span><span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">Pf_sorm</span><span class="p">))</span>
+<span class="n">Pf_form2</span>  <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="o">-</span><span class="n">beta0</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;FORM (exact): beta = </span><span class="si">{</span><span class="n">beta0</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">,  Pf = </span><span class="si">{</span><span class="n">Pf_form2</span><span class="si">:</span><span class="s2">.4e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SORM ref:     beta = </span><span class="si">{</span><span class="n">beta_sorm</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">,  Pf = </span><span class="si">{</span><span class="n">Pf_sorm</span><span class="si">:</span><span class="s2">.4e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Correction factor: </span><span class="si">{</span><span class="n">Pf_sorm</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">Pf_form2</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">x&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+FORM (exact): beta = 3.0000,  Pf = 1.3499e-03
+SORM ref:     beta = 2.4719,  Pf = 6.7199e-03
+Correction factor: 5.0x
+</pre></div></div>
+</div>
+</section>
+<section id="id2">
+<h3>Problem Setup<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">lsf_parabolic</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parabolic limit state. Scalable via **kwargs — works for any n.&quot;&quot;&quot;</span>
+    <span class="n">vals</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+    <span class="n">u1</span> <span class="o">=</span> <span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">beta0</span> <span class="o">-</span> <span class="n">u1</span> <span class="o">+</span> <span class="n">kappa</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span><span class="n">v</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vals</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">make_parabolic_model</span><span class="p">():</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;X</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+    <span class="n">limit_state</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span><span class="n">lsf_parabolic</span><span class="p">)</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">AnalysisOptions</span><span class="p">()</span>
+    <span class="n">options</span><span class="o">.</span><span class="n">setPrintOutput</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="n">options</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="FORM-Solution">
+<h3>FORM Solution<a class="headerlink" href="#FORM-Solution" title="Link to this heading">#</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># FORM — design point is (beta0, 0,...,0) by construction</span>
+<span class="n">model_p</span><span class="p">,</span> <span class="n">limit_state_p</span><span class="p">,</span> <span class="n">options_p</span> <span class="o">=</span> <span class="n">make_parabolic_model</span><span class="p">()</span>
+<span class="n">form_p</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Form</span><span class="p">(</span><span class="n">analysis_options</span><span class="o">=</span><span class="n">options_p</span><span class="p">,</span> <span class="n">stochastic_model</span><span class="o">=</span><span class="n">model_p</span><span class="p">,</span>
+                 <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state_p</span><span class="p">)</span>
+<span class="n">form_p</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">beta_form_p</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">form_p</span><span class="o">.</span><span class="n">getBeta</span><span class="p">())</span>
+<span class="n">Pf_form_p</span>   <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">form_p</span><span class="o">.</span><span class="n">getFailure</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;FORM:  beta = </span><span class="si">{</span><span class="n">beta_form_p</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">,  Pf = </span><span class="si">{</span><span class="n">Pf_form_p</span><span class="si">:</span><span class="s2">.4e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+FORM:  beta = 3.0000,  Pf = 1.3499e-03
+</pre></div></div>
+</div>
+</section>
+<section id="CMC-Solution">
+<h3>CMC Solution<a class="headerlink" href="#CMC-Solution" title="Link to this heading">#</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">model_p</span><span class="p">,</span> <span class="n">limit_state_p</span><span class="p">,</span> <span class="n">options_p</span> <span class="o">=</span> <span class="n">make_parabolic_model</span><span class="p">()</span>
+<span class="n">options_p</span><span class="o">.</span><span class="n">setSamples</span><span class="p">(</span><span class="mi">20_000</span><span class="p">)</span>
+<span class="n">cmc_p</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">CrudeMonteCarlo</span><span class="p">(</span><span class="n">analysis_options</span><span class="o">=</span><span class="n">options_p</span><span class="p">,</span> <span class="n">stochastic_model</span><span class="o">=</span><span class="n">model_p</span><span class="p">,</span>
+                            <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state_p</span><span class="p">)</span>
+<span class="n">cmc_p</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">beta_cmc_p</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cmc_p</span><span class="o">.</span><span class="n">getBeta</span><span class="p">())</span>
+<span class="n">Pf_cmc_p</span>   <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cmc_p</span><span class="o">.</span><span class="n">getFailure</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CMC:   beta = </span><span class="si">{</span><span class="n">beta_cmc_p</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">,  Pf = </span><span class="si">{</span><span class="n">Pf_cmc_p</span><span class="si">:</span><span class="s2">.4e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+CMC:   beta = 2.5006,  Pf = 6.2000e-03
+</pre></div></div>
+</div>
+</section>
+<section id="LineSampling">
+<h3>LineSampling<a class="headerlink" href="#LineSampling" title="Link to this heading">#</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">model_p</span><span class="p">,</span> <span class="n">limit_state_p</span><span class="p">,</span> <span class="n">options_p</span> <span class="o">=</span> <span class="n">make_parabolic_model</span><span class="p">()</span>
+<span class="n">options_p</span><span class="o">.</span><span class="n">setSamples</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+<span class="n">ls_p</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">LineSampling</span><span class="p">(</span><span class="n">analysis_options</span><span class="o">=</span><span class="n">options_p</span><span class="p">,</span> <span class="n">stochastic_model</span><span class="o">=</span><span class="n">model_p</span><span class="p">,</span>
+                       <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state_p</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form_p</span><span class="p">)</span>
+<span class="n">ls_p</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">beta_ls_p</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ls_p</span><span class="o">.</span><span class="n">getBeta</span><span class="p">())</span>
+<span class="n">Pf_ls_p</span>   <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ls_p</span><span class="o">.</span><span class="n">getFailure</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;LS:    beta = </span><span class="si">{</span><span class="n">beta_ls_p</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">,  Pf = </span><span class="si">{</span><span class="n">Pf_ls_p</span><span class="si">:</span><span class="s2">.4e</span><span class="si">}</span><span class="s2">,  CoV = </span><span class="si">{</span><span class="n">ls_p</span><span class="o">.</span><span class="n">cov</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+LS:    beta = 2.4757,  Pf = 6.6490e-03,  CoV = 0.068
+</pre></div></div>
+</div>
+</section>
+<section id="Subset-Simulation">
+<h3>Subset Simulation<a class="headerlink" href="#Subset-Simulation" title="Link to this heading">#</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">model_p</span><span class="p">,</span> <span class="n">limit_state_p</span><span class="p">,</span> <span class="n">options_p</span> <span class="o">=</span> <span class="n">make_parabolic_model</span><span class="p">()</span>
+<span class="n">options_p</span><span class="o">.</span><span class="n">setSamples</span><span class="p">(</span><span class="mi">2_000</span><span class="p">)</span>
+<span class="n">ss_p</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">SubsetSimulation</span><span class="p">(</span><span class="n">analysis_options</span><span class="o">=</span><span class="n">options_p</span><span class="p">,</span> <span class="n">stochastic_model</span><span class="o">=</span><span class="n">model_p</span><span class="p">,</span>
+                            <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state_p</span><span class="p">,</span> <span class="n">p0</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">ss_p</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">beta_ss_p</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ss_p</span><span class="o">.</span><span class="n">getBeta</span><span class="p">())</span>
+<span class="n">Pf_ss_p</span>   <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ss_p</span><span class="o">.</span><span class="n">getFailure</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SS:    beta = </span><span class="si">{</span><span class="n">beta_ss_p</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">,  Pf = </span><span class="si">{</span><span class="n">Pf_ss_p</span><span class="si">:</span><span class="s2">.4e</span><span class="si">}</span><span class="s2">,  CoV = </span><span class="si">{</span><span class="n">ss_p</span><span class="o">.</span><span class="n">cov</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;       levels = </span><span class="si">{</span><span class="n">ss_p</span><span class="o">.</span><span class="n">n_levels</span><span class="si">}</span><span class="s2">,  thresholds = </span><span class="si">{</span><span class="p">[</span><span class="nb">round</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">ss_p</span><span class="o">.</span><span class="n">thresholds</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+SS:    beta = 2.5669,  Pf = 5.1300e-03,  CoV = 0.097
+       levels = 3,  thresholds = [1.26, 0.22, 0.0]
+</pre></div></div>
+</div>
+</section>
+<section id="id3">
+<h3>Summary<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rows_p</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;SORM ref.&quot;</span><span class="p">,</span>       <span class="n">beta_sorm</span><span class="p">,</span>    <span class="n">Pf_sorm</span><span class="p">,</span>    <span class="s2">&quot;analytical&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;FORM&quot;</span><span class="p">,</span>            <span class="n">beta_form_p</span><span class="p">,</span>  <span class="n">Pf_form_p</span><span class="p">,</span>  <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">form_p</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">getCallFunction</span><span class="p">()</span><span class="si">}</span><span class="s2"> LSF calls&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;CMC&quot;</span><span class="p">,</span>             <span class="n">beta_cmc_p</span><span class="p">,</span>   <span class="n">Pf_cmc_p</span><span class="p">,</span>   <span class="s2">&quot;20 000 samples&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Line Sampling&quot;</span><span class="p">,</span>   <span class="n">beta_ls_p</span><span class="p">,</span>    <span class="n">Pf_ls_p</span><span class="p">,</span>    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ls_p</span><span class="o">.</span><span class="n">n_samples</span><span class="si">}</span><span class="s2"> lines&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Subset Sim.&quot;</span><span class="p">,</span>     <span class="n">beta_ss_p</span><span class="p">,</span>    <span class="n">Pf_ss_p</span><span class="p">,</span>    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ss_p</span><span class="o">.</span><span class="n">n_levels</span><span class="si">}</span><span class="s2"> × 2 000 samples&quot;</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">df_p</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows_p</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Method&quot;</span><span class="p">,</span> <span class="s2">&quot;beta&quot;</span><span class="p">,</span> <span class="s2">&quot;Pf&quot;</span><span class="p">,</span> <span class="s2">&quot;Cost&quot;</span><span class="p">])</span>
+<span class="n">df_p</span><span class="p">[</span><span class="s2">&quot;beta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_p</span><span class="p">[</span><span class="s2">&quot;beta&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">)</span>
+<span class="n">df_p</span><span class="p">[</span><span class="s2">&quot;Pf&quot;</span><span class="p">]</span>   <span class="o">=</span> <span class="n">df_p</span><span class="p">[</span><span class="s2">&quot;Pf&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:.4e}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">)</span>
+<span class="n">df_p</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Method</th>
+      <th>beta</th>
+      <th>Pf</th>
+      <th>Cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>SORM ref.</td>
+      <td>2.4719</td>
+      <td>6.7199e-03</td>
+      <td>analytical</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>FORM</td>
+      <td>3.0000</td>
+      <td>1.3499e-03</td>
+      <td>28 LSF calls</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>CMC</td>
+      <td>2.5006</td>
+      <td>6.2000e-03</td>
+      <td>20 000 samples</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Line Sampling</td>
+      <td>2.4757</td>
+      <td>6.6490e-03</td>
+      <td>200 lines</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Subset Sim.</td>
+      <td>2.5669</td>
+      <td>5.1300e-03</td>
+      <td>3 × 2 000 samples</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+<section id="id4">
+<h3>Key observations<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>FORM</strong> recovers the design point exactly (<span class="math notranslate nohighlight">\(\beta = \beta_0 = 3\)</span>) but ignores the parabolic curvature, underestimating <span class="math notranslate nohighlight">\(p_f\)</span> by ~5×.</p></li>
+<li><p><strong>CMC</strong> gives an unbiased estimate but requires many samples for adequate precision at this failure probability level.</p></li>
+<li><p><strong>Line Sampling</strong> corrects the FORM result accurately with only 200 function evaluations. Because failure is one-sided (driven by large <span class="math notranslate nohighlight">\(u_1\)</span> along <span class="math notranslate nohighlight">\(\boldsymbol{\alpha} = \mathbf{e}_1\)</span>), each line crosses the failure surface exactly once on the positive side, and the <span class="math notranslate nohighlight">\(\Phi(-c_i^*)\)</span> contribution is correct. This is LS working as designed.</p></li>
+<li><p><strong>Subset Simulation</strong> also gives an accurate result, adaptively discovering the intermediate thresholds without prior knowledge of <span class="math notranslate nohighlight">\(p_f\)</span>.</p></li>
+</ul>
+</section>
+</section>
+<section id="References">
+<h2>References<a class="headerlink" href="#References" title="Link to this heading">#</a></h2>
+<p>Breitung, K. (1984). Asymptotic approximations for multinormal integrals. <em>Journal of Engineering Mechanics</em>, 110(3), 357–366.</p>
+<p>Au, S. K., &amp; Beck, J. L. (2001). Estimation of small failure probabilities in high dimensions by subset simulation. <em>Probabilistic Engineering Mechanics</em>, 16(4), 263–277.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="ex_intro.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Introductory Tutorial</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="ex_scipy_distributions.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">SciPy Distribution Example</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Example-1:-High-Dimensional-Hypersphere">Example 1: High-Dimensional Hypersphere</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Problem-Description">Problem Description</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Problem-Setup">Problem Setup</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#FORM-—-First-Order-Reliability-Method">FORM — First-Order Reliability Method</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Crude-Monte-Carlo-(CMC)">Crude Monte Carlo (CMC)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Line-Sampling-(LS)">Line Sampling (LS)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Subset-Simulation-(SS)">Subset Simulation (SS)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Summary">Summary</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Key-observations">Key observations</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Example-2:-Parabolic-Limit-State">Example 2: Parabolic Limit State</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Problem Description</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Problem Setup</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#FORM-Solution">FORM Solution</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#CMC-Solution">CMC Solution</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#LineSampling">LineSampling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Subset-Simulation">Subset Simulation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Summary</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Key observations</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#References">References</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/pystra/pystra/edit/main/docs/source/notebooks/ex_simulation.ipynb">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2021-2026, The PySTRA Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
