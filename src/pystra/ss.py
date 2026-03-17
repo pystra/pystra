@@ -179,11 +179,7 @@ class SubsetSimulation(AnalysisObject):
 
         # CoV lower bound (γ_j = 0, i.e. ignoring Markov-chain correlations)
         # δ²(Pf) ≈ Σ_j (1 - p_j) / (N * p_j)
-        delta_sq = sum(
-            (1.0 - p) / (N * p)
-            for p in self.conditional_probs
-            if p > 0.0
-        )
+        delta_sq = sum((1.0 - p) / (N * p) for p in self.conditional_probs if p > 0.0)
         self.cov = float(np.sqrt(delta_sq)) if delta_sq > 0.0 else 0.0
 
         if self.options.getPrintOutput():

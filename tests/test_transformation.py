@@ -40,7 +40,11 @@ class TestCholeskyTransform:
         t = Transformation("cholesky")
         t.compute(Ro)
 
-        for u_test in [np.array([0.0, 0.0]), np.array([1.0, -1.0]), np.array([-2.0, 2.0])]:
+        for u_test in [
+            np.array([0.0, 0.0]),
+            np.array([1.0, -1.0]),
+            np.array([-2.0, 2.0]),
+        ]:
             x = t.u_to_x(u_test, marg)
             u_back = t.x_to_u(x, marg)
             np.testing.assert_allclose(u_back, u_test, atol=1e-6)

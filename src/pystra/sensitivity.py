@@ -126,11 +126,13 @@ class SensitivityAnalysis:
         rows = []
         for var_name, params in marginal.items():
             for param, value in params.items():
-                rows.append({
-                    "Variable": var_name,
-                    "Parameter": param,
-                    "∂β/∂θ": value,
-                })
+                rows.append(
+                    {
+                        "Variable": var_name,
+                        "Parameter": param,
+                        "∂β/∂θ": value,
+                    }
+                )
         return pd.DataFrame(rows)
 
     # ------------------------------------------------------------------
@@ -211,19 +213,19 @@ class SensitivityAnalysis:
         form.run()
 
         # Extract converged quantities
-        alpha = form.getAlpha()              # shape (nrv,)
-        u_star = form.getDesignPoint()       # shape (nrv,)
+        alpha = form.getAlpha()  # shape (nrv,)
+        u_star = form.getDesignPoint()  # shape (nrv,)
         x_star = form.getDesignPoint(uspace=False)  # shape (nrv,)
 
         marg = self.model.getMarginalDistributions()
         nrv = len(marg)
-        R = self.model.getCorrelation()      # physical correlation
+        R = self.model.getCorrelation()  # physical correlation
         Ro = self.model.getModifiedCorrelation()  # modified (Nataf) correlation
 
-        L0 = form.transform.inv_T            # Cholesky factor, shape (n,n)
-        L0_inv = form.transform.T            # its inverse
+        L0 = form.transform.inv_T  # Cholesky factor, shape (n,n)
+        L0_inv = form.transform.T  # its inverse
 
-        z_star = L0 @ u_star                 # correlated std normal at design point
+        z_star = L0 @ u_star  # correlated std normal at design point
 
         variables = self.model.getVariables()
         names = list(variables.keys())
@@ -283,9 +285,7 @@ class SensitivityAnalysis:
                 grid = quad_grids[(i, j)]
                 rho0_ij = Ro[i, j]
 
-                drho_val = drho_drho0(
-                    rho0_ij, marg[i], marg[j], *grid
-                )
+                drho_val = drho_drho0(rho0_ij, marg[i], marg[j], *grid)
                 # ∂ρ₀,ij/∂ρ_ij = (∂ρ_ij/∂ρ₀,ij)⁻¹  (Eq. 20)
                 drho0_drho = 1.0 / drho_val if abs(drho_val) > 1e-300 else 0.0
 
@@ -360,9 +360,7 @@ class SensitivityAnalysis:
                 else:
                     vi = 1
 
-                val = drho0_dtheta(
-                    rho0_ij, marg[i], marg[j], *grid, vi, param
-                )
+                val = drho0_dtheta(rho0_ij, marg[i], marg[j], *grid, vi, param)
                 dR0[i, j] = val
                 dR0[j, i] = val
 
