@@ -50,3 +50,11 @@ References
 
 .. [Schueller2007] Schuëller, G. I., & Pradlwarter, H. J. (2007). Benchmark study on reliability estimation in higher dimensions of structural systems — An overview. Structural Safety, 29(3), 167–182.
 
+.. [Echard2011] Echard, B., Gayton, N., & Lemaire, M. (2011). AK-MCS: An active learning reliability method combining Kriging and Monte Carlo Simulation. Structural Safety, 33(2), 145–154.
+
+.. [Bichon2008] Bichon, B. J., Eldred, M. S., Swiler, L. P., Mahadevan, S., & McFarland, J. M. (2008). Efficient global reliability analysis for nonlinear implicit performance functions. AIAA Journal, 46(10), 2459–2468.
+
+.. [Moustapha2022] Moustapha, M., Marelli, S., & Sudret, B. (2022). Active learning for structural reliability: Survey, general framework and benchmark. Structural Safety, 96, 102174.
+
+.. [Schueremans2005] Schueremans, L. & Van Gemert, D. (2005). Benefit of splines and neural networks in simulation based structural reliability analysis. Structural Safety, 27(3), 246–261.
+

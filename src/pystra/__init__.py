@@ -55,6 +55,7 @@ from .sorm import *
 from .ls import *
 from .ss import *
 from .sensitivity import *
+from .activelearning import *
 
 # Calibration
 from .loadcomb import *

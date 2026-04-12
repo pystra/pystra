@@ -798,6 +798,163 @@ impractically large number of samples.  A benchmark comparison of simulation
 methods on high-dimensional problems is given in [Schueller2007]_.
 
 
+Active Learning Reliability
+===========================
+
+When the limit state function :math:`g(\mathbf{X})` is expensive to
+evaluate — for instance because each call involves a finite-element
+analysis — the simulation methods described above may be impractical.
+Active Learning Reliability (ALR) addresses this by constructing a cheap
+surrogate model of :math:`g` and using it in place of the true function
+for the Monte Carlo classification, while adaptively selecting new
+training points to improve the surrogate precisely where it matters: near
+the failure surface :math:`g = 0` [Echard2011]_ [Moustapha2022]_.
+
+The general framework is known as **AK-MCS** (Active Kriging — Monte
+Carlo Simulation) when Kriging is the surrogate, though the algorithm
+is surrogate-agnostic.
+
+Algorithm
+---------
+
+1. **Initial experimental design** — Generate :math:`N_0 =
+   \max(10, 2n)` points in standard-normal space by Latin Hypercube
+   Sampling (LHS), transform to physical space, and evaluate the true
+   limit state function.
+
+2. **Candidate population** — Draw a large Monte Carlo sample
+   :math:`\mathcal{S}` of size :math:`N_{\text{cand}}` (typically
+   :math:`10^4`) from the joint input distribution.  This population is
+   *never* evaluated on the true LSF; it is only used with the surrogate.
+
+3. **Iterative enrichment loop:**
+
+   a. Fit the surrogate to the current experimental design
+      :math:`(\mathbf{X}_{\text{ED}}, \mathbf{g}_{\text{ED}})`.
+
+   b. Predict :math:`\hat{\mu}(\mathbf{x})` and
+      :math:`\hat{\sigma}(\mathbf{x})` for every candidate
+      :math:`\mathbf{x} \in \mathcal{S}`.
+
+   c. Estimate the failure probability from the surrogate:
+      :math:`\hat{p}_f = N_{\text{fail}} / N_{\text{cand}}` where
+      :math:`N_{\text{fail}} = \#\{\mathbf{x} \in \mathcal{S} :
+      \hat{\mu}(\mathbf{x}) \le 0\}`.
+
+   d. Evaluate the **learning function** on the candidates and select
+      the most informative point :math:`\mathbf{x}^*`.
+
+   e. Evaluate the **true** LSF at :math:`\mathbf{x}^*` and add it to
+      the experimental design.
+
+   f. Check **convergence**; if not met, return to step (a).
+
+4. **Final estimate** — Refit the surrogate on the final design and
+   classify the candidate population to obtain :math:`\hat{p}_f` and
+   :math:`\hat{\beta} = -\Phi^{-1}(\hat{p}_f)`.
+
+The total number of expensive LSF evaluations is typically 30–50, making
+ALR orders of magnitude cheaper than crude Monte Carlo for problems where
+each evaluation takes minutes or hours.
+
+Surrogate Models
+----------------
+
+**Kriging (Gaussian Process Regression)**
+
+Kriging models the limit state function as a realisation of a Gaussian
+process with prior mean :math:`\mu(\mathbf{x})` and covariance kernel
+:math:`k(\mathbf{x}, \mathbf{x}')`.  Given training data, the posterior
+at a new point :math:`\mathbf{x}` is Gaussian with predictive mean
+:math:`\hat{\mu}(\mathbf{x})` and variance
+:math:`\hat{\sigma}^2(\mathbf{x})`.  This natural uncertainty
+quantification makes Kriging ideally suited to active learning: the
+learning functions exploit :math:`\hat{\sigma}` to identify where the
+surrogate is least certain about the sign of :math:`g`.
+
+Pystra uses the Matérn 5/2 covariance kernel with automatic
+hyperparameter optimisation via maximum likelihood, and standardises the
+inputs to unit variance before fitting to handle variables with very
+different physical scales.
+
+**Polynomial Chaos Expansion (PCE)**
+
+PCE approximates the limit state function as a polynomial in the input
+variables:
+
+.. math::
+
+   g(\mathbf{X}) \approx \sum_{\boldsymbol{\alpha} \in \mathcal{A}}
+   c_{\boldsymbol{\alpha}}\, \Psi_{\boldsymbol{\alpha}}(\mathbf{X})
+
+where :math:`\Psi_{\boldsymbol{\alpha}}` are multivariate orthogonal
+polynomials and :math:`c_{\boldsymbol{\alpha}}` are coefficients
+determined by least-squares regression on the experimental design.  PCE
+does not provide a native variance estimate at each prediction point, so
+leave-one-out cross-validation error is used as a global uncertainty
+measure for the learning function.
+
+Learning Functions
+------------------
+
+The learning function scores each candidate point by how informative it
+would be if added to the experimental design.  The point with the best
+score is selected for the next true LSF evaluation.
+
+**U-function** [Echard2011]_
+
+.. math::
+   :label: eq:lf_u
+
+   U(\mathbf{x}) = \frac{|\hat{\mu}(\mathbf{x})|}
+                        {\hat{\sigma}(\mathbf{x})}
+
+Points with small :math:`U` are close to the failure surface relative
+to the prediction uncertainty — the surrogate is least confident about
+their classification.  The enrichment selects
+:math:`\mathbf{x}^* = \arg\min U(\mathbf{x})`.  Convergence is declared
+when :math:`\min U \ge 2`, meaning every candidate is at least 2
+standard deviations from the predicted limit state.
+
+**Expected Feasibility Function (EFF)** [Bichon2008]_
+
+.. math::
+   :label: eq:lf_eff
+
+   \text{EFF}(\mathbf{x})
+   = \hat{\mu} \left[2\Phi\!\left(\frac{-|\hat{\mu}|}{\hat{\sigma}}\right)
+     - \Phi\!\left(\frac{-\varepsilon - \hat{\mu}}{\hat{\sigma}}\right)
+     - \Phi\!\left(\frac{-\varepsilon + \hat{\mu}}{\hat{\sigma}}\right)\right]
+   + \hat{\sigma} \left[2\varphi\!\left(\frac{-|\hat{\mu}|}{\hat{\sigma}}\right)
+     - \varphi\!\left(\frac{-\varepsilon - \hat{\mu}}{\hat{\sigma}}\right)
+     - \varphi\!\left(\frac{-\varepsilon + \hat{\mu}}{\hat{\sigma}}\right)\right]
+
+where :math:`\varepsilon = 2\hat{\sigma}`, :math:`\Phi` and
+:math:`\varphi` are the standard normal CDF and PDF.  EFF is the
+expected improvement in the feasibility classification within an
+:math:`\varepsilon`-band around the failure surface.  Enrichment selects
+:math:`\mathbf{x}^* = \arg\max \text{EFF}(\mathbf{x})`; convergence is
+declared when :math:`\max \text{EFF} < 10^{-3}`.
+
+Convergence Criteria
+--------------------
+
+Pystra uses a combined convergence criterion.  Both conditions must be
+satisfied for :math:`N_{\text{conv}}` consecutive iterations (default 2):
+
+1. **Learning-function criterion** — the learning function indicates
+   that the surrogate is sufficiently accurate near the failure surface
+   (see thresholds above).
+
+2. **Beta stability** — the relative change in the reliability index
+   satisfies :math:`|\Delta\beta / \beta| < \varepsilon_\beta` (default
+   :math:`\varepsilon_\beta = 0.01`).
+
+This dual criterion guards against premature convergence: the learning
+function checks the surrogate quality near :math:`g = 0`, while beta
+stability ensures the failure probability estimate has settled.
+
+
 Sensitivity Analysis
 ====================
 
