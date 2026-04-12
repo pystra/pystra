@@ -1,0 +1,837 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pystra.ss &#8212; PySTRA 1.6.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=9bc076a2" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=7f76b32a3354e82990f2"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
+
+    <script src="../../_static/documentation_options.js?v=72d88caf"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pystra/ss';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.6.0" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 1.6.0 documentation - Home"/>
+    <img src="../../_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 1.6.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tutorial.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../theory.html">
+    Theoretical Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../references.html">
+    References
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../developer.html">
+    Instructions for Developers
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tutorial.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../theory.html">
+    Theoretical Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../references.html">
+    References
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../developer.html">
+    Instructions for Developers
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">pystra.ss</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for pystra.ss</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Subset Simulation reliability analysis.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span> <span class="k">as</span> <span class="n">scipy_norm</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisObject</span>
+
+
+<div class="viewcode-block" id="SubsetSimulation">
+<a class="viewcode-back" href="../../gen/pystra.ss.SubsetSimulation.html#pystra.ss.SubsetSimulation">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SubsetSimulation</span><span class="p">(</span><span class="n">AnalysisObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Subset Simulation (SS) reliability analysis.</span>
+
+<span class="sd">    Subset Simulation decomposes the rare failure event</span>
+<span class="sd">    :math:`F = \{g(\mathbf{u}) \le 0\}` into a sequence of more frequent</span>
+<span class="sd">    nested intermediate events :math:`F_1 \supset F_2 \supset \cdots</span>
+<span class="sd">    \supset F_m = F`:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       p_f = P(F_1)\prod_{j=2}^{m} P(F_j \mid F_{j-1})</span>
+
+<span class="sd">    The intermediate thresholds :math:`y_1 &gt; y_2 &gt; \cdots &gt; y_m = 0` are</span>
+<span class="sd">    chosen adaptively so that each conditional probability is approximately</span>
+<span class="sd">    equal to the target level :math:`p_0`.  Conditional samples are generated</span>
+<span class="sd">    via the Modified Metropolis–Hastings (MMH) algorithm operating</span>
+<span class="sd">    component-wise in standard-normal space.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    stochastic_model : StochasticModel</span>
+<span class="sd">    limit_state : LimitState</span>
+<span class="sd">    analysis_options : AnalysisOptions</span>
+<span class="sd">    p0 : float, optional</span>
+<span class="sd">        Target conditional failure probability per subset level (default 0.1).</span>
+<span class="sd">    proposal_sigma : float, optional</span>
+<span class="sd">        Half-width of the uniform proposal kernel used in MMH, measured in</span>
+<span class="sd">        standard-deviation units of the standard-normal space (default 1.0).</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Pf : float</span>
+<span class="sd">        Estimated probability of failure.</span>
+<span class="sd">    beta : float</span>
+<span class="sd">        Reliability index :math:`\beta = -\Phi^{-1}(p_f)`.</span>
+<span class="sd">    cov : float</span>
+<span class="sd">        Estimated coefficient of variation of :math:`\hat{p}_f` (ignoring</span>
+<span class="sd">        Markov-chain correlations; a lower bound on the true CoV).</span>
+<span class="sd">    thresholds : list of float</span>
+<span class="sd">        Intermediate thresholds :math:`y_1, \ldots, y_m` used at each level.</span>
+<span class="sd">    conditional_probs : list of float</span>
+<span class="sd">        Conditional failure probability estimate at each level.</span>
+<span class="sd">    n_levels : int</span>
+<span class="sd">        Total number of subset levels (including level 0).</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The number of samples per level is taken from</span>
+<span class="sd">    ``analysis_options.getSamples()``.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Au, S. K., &amp; Beck, J. L. (2001).  Estimation of small failure</span>
+<span class="sd">    probabilities in high dimensions by subset simulation.</span>
+<span class="sd">    *Probabilistic Engineering Mechanics*, 16(4), 263–277.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">analysis_options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">limit_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">stochastic_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">p0</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">proposal_sigma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">analysis_options</span><span class="o">=</span><span class="n">analysis_options</span><span class="p">,</span>
+            <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
+            <span class="n">stochastic_model</span><span class="o">=</span><span class="n">stochastic_model</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mf">0.0</span> <span class="o">&lt;</span> <span class="n">p0</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;p0 must be in (0, 1); got </span><span class="si">{</span><span class="n">p0</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p0</span> <span class="o">=</span> <span class="n">p0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proposal_sigma</span> <span class="o">=</span> <span class="n">proposal_sigma</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Pf</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cov</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thresholds</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conditional_probs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_levels</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="SubsetSimulation.run">
+<a class="viewcode-back" href="../../gen/pystra.ss.SubsetSimulation.html#pystra.ss.SubsetSimulation.run">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the Subset Simulation analysis.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results_valid</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_run</span><span class="p">()</span>
+
+        <span class="n">nrv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">getLenMarginalDistributions</span><span class="p">()</span>
+        <span class="n">marg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">getMarginalDistributions</span><span class="p">()</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getSamples</span><span class="p">()</span>
+        <span class="n">p0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">thresholds</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conditional_probs</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># ---------------------------------------------------------------</span>
+        <span class="c1"># Level 0: direct Monte Carlo from the prior N(0, I)</span>
+        <span class="c1"># ---------------------------------------------------------------</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">nrv</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_g_batch</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">marg</span><span class="p">)</span>
+
+        <span class="c1"># y_1 = p0-th quantile of G (the p0 fraction closest to failure G&lt;0)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">p0</span> <span class="o">*</span> <span class="mf">100.0</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">y</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="c1"># Threshold already at or below failure: level-0 MC suffices</span>
+            <span class="n">Pf</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">G</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">))</span> <span class="o">/</span> <span class="n">N</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">thresholds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conditional_probs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Pf</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_levels</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_finalise</span><span class="p">(</span><span class="n">Pf</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">thresholds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">p_lvl</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">G</span> <span class="o">&lt;=</span> <span class="n">y</span><span class="p">))</span> <span class="o">/</span> <span class="n">N</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conditional_probs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p_lvl</span><span class="p">)</span>
+        <span class="n">Pf</span> <span class="o">=</span> <span class="n">p_lvl</span>
+
+        <span class="c1"># Seeds: samples that satisfy the first intermediate event G &lt;= y_1</span>
+        <span class="n">seed_mask</span> <span class="o">=</span> <span class="n">G</span> <span class="o">&lt;=</span> <span class="n">y</span>
+        <span class="n">seeds_u</span> <span class="o">=</span> <span class="n">u</span><span class="p">[:,</span> <span class="n">seed_mask</span><span class="p">]</span>
+        <span class="n">seeds_G</span> <span class="o">=</span> <span class="n">G</span><span class="p">[</span><span class="n">seed_mask</span><span class="p">]</span>
+
+        <span class="c1"># ---------------------------------------------------------------</span>
+        <span class="c1"># Successive subset levels</span>
+        <span class="c1"># ---------------------------------------------------------------</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="c1"># Generate N conditional samples via MMH from current seeds</span>
+            <span class="n">u_new</span><span class="p">,</span> <span class="n">G_new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mmh_step</span><span class="p">(</span><span class="n">seeds_u</span><span class="p">,</span> <span class="n">seeds_G</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">nrv</span><span class="p">,</span> <span class="n">marg</span><span class="p">)</span>
+            <span class="n">y_new</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">G_new</span><span class="p">,</span> <span class="n">p0</span> <span class="o">*</span> <span class="mf">100.0</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">y_new</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="c1"># Last level: count actual failures (G &lt;= 0)</span>
+                <span class="n">p_last</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">G_new</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">))</span> <span class="o">/</span> <span class="n">N</span>
+                <span class="n">Pf</span> <span class="o">=</span> <span class="n">Pf</span> <span class="o">*</span> <span class="n">p_last</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">thresholds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">conditional_probs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p_last</span><span class="p">)</span>
+                <span class="k">break</span>
+
+            <span class="c1"># Intermediate level</span>
+            <span class="n">p_lvl</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">G_new</span> <span class="o">&lt;=</span> <span class="n">y_new</span><span class="p">))</span> <span class="o">/</span> <span class="n">N</span>
+            <span class="n">Pf</span> <span class="o">=</span> <span class="n">Pf</span> <span class="o">*</span> <span class="n">p_lvl</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">thresholds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_new</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conditional_probs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p_lvl</span><span class="p">)</span>
+
+            <span class="c1"># New seeds for the next level</span>
+            <span class="n">seed_mask</span> <span class="o">=</span> <span class="n">G_new</span> <span class="o">&lt;=</span> <span class="n">y_new</span>
+            <span class="n">seeds_u</span> <span class="o">=</span> <span class="n">u_new</span><span class="p">[:,</span> <span class="n">seed_mask</span><span class="p">]</span>
+            <span class="n">seeds_G</span> <span class="o">=</span> <span class="n">G_new</span><span class="p">[</span><span class="n">seed_mask</span><span class="p">]</span>
+
+            <span class="n">y</span> <span class="o">=</span> <span class="n">y_new</span>
+            <span class="n">level</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_levels</span> <span class="o">=</span> <span class="n">level</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_finalise</span><span class="p">(</span><span class="n">Pf</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span></div>
+
+
+    <span class="c1"># ------------------------------------------------------------------</span>
+    <span class="c1"># Private helpers</span>
+    <span class="c1"># ------------------------------------------------------------------</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_finalise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Pf</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Store results and compute the CoV estimate.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Pf</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">Pf</span><span class="p">)</span>
+        <span class="k">if</span> <span class="mf">0.0</span> <span class="o">&lt;</span> <span class="n">Pf</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="o">-</span><span class="n">scipy_norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">Pf</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">Pf</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+
+        <span class="c1"># CoV lower bound (γ_j = 0, i.e. ignoring Markov-chain correlations)</span>
+        <span class="c1"># δ²(Pf) ≈ Σ_j (1 - p_j) / (N * p_j)</span>
+        <span class="n">delta_sq</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">((</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">p</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">conditional_probs</span> <span class="k">if</span> <span class="n">p</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cov</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">delta_sq</span><span class="p">))</span> <span class="k">if</span> <span class="n">delta_sq</span> <span class="o">&gt;</span> <span class="mf">0.0</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getPrintOutput</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">showResults</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_eval_g_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">marg</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate the LSF for every column of *u* (shape nrv × N).&quot;&quot;&quot;</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+        <span class="n">block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">getBlockSize</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">block</span><span class="p">):</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">block</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+            <span class="n">u_blk</span> <span class="o">=</span> <span class="n">u</span><span class="p">[:,</span> <span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
+            <span class="n">x_blk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">u_blk</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">):</span>
+                <span class="n">x_blk</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">u_to_x</span><span class="p">(</span><span class="n">u_blk</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">marg</span><span class="p">)</span>
+            <span class="n">G_blk</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">limitstate</span><span class="o">.</span><span class="n">evaluate_lsf</span><span class="p">(</span>
+                <span class="n">x_blk</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="s2">&quot;no&quot;</span>
+            <span class="p">)</span>
+            <span class="n">G</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span> <span class="o">=</span> <span class="n">G_blk</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="k">return</span> <span class="n">G</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mmh_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seeds</span><span class="p">,</span> <span class="n">seeds_G</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">nrv</span><span class="p">,</span> <span class="n">marg</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate *N* samples from N(0, I) conditioned on g ≤ *threshold*.</span>
+
+<span class="sd">        Uses the Modified Metropolis–Hastings algorithm with a uniform</span>
+<span class="sd">        proposal kernel of half-width ``proposal_sigma`` applied</span>
+<span class="sd">        component-wise.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        seeds : ndarray, shape (nrv, N_seeds)</span>
+<span class="sd">            Seed samples (all satisfying g ≤ threshold).</span>
+<span class="sd">        seeds_G : ndarray, shape (N_seeds,)</span>
+<span class="sd">            LSF values at the seeds.</span>
+<span class="sd">        threshold : float</span>
+<span class="sd">            Current intermediate threshold.</span>
+<span class="sd">        N : int</span>
+<span class="sd">            Number of output samples desired.</span>
+<span class="sd">        nrv : int</span>
+<span class="sd">        marg : list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">N_seeds</span> <span class="o">=</span> <span class="n">seeds</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proposal_sigma</span>
+
+        <span class="n">u_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nrv</span><span class="p">,</span> <span class="n">N</span><span class="p">))</span>
+        <span class="n">G_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+
+        <span class="c1"># Distribute N samples across N_seeds chains as evenly as possible</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="n">N</span> <span class="o">//</span> <span class="n">N_seeds</span>
+        <span class="n">remainder</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="n">base</span> <span class="o">*</span> <span class="n">N_seeds</span>
+
+        <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_seeds</span><span class="p">):</span>
+            <span class="n">n_chain</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="n">remainder</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">u_curr</span> <span class="o">=</span> <span class="n">seeds</span><span class="p">[:,</span> <span class="n">s</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">g_curr</span> <span class="o">=</span> <span class="n">seeds_G</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_chain</span><span class="p">):</span>
+                <span class="c1"># Component-wise Metropolis step with uniform proposal</span>
+                <span class="n">u_prop</span> <span class="o">=</span> <span class="n">u_curr</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nrv</span><span class="p">):</span>
+                    <span class="n">xi</span> <span class="o">=</span> <span class="n">u_curr</span><span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="o">+</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+                    <span class="c1"># Accept with min(1, phi(xi)/phi(u_curr[d]))</span>
+                    <span class="c1"># = min(1, exp(-0.5*(xi^2 - u_curr[d]^2)))</span>
+                    <span class="n">log_alpha</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">xi</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">u_curr</span><span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">())</span> <span class="o">&lt;</span> <span class="n">log_alpha</span><span class="p">:</span>
+                        <span class="n">u_prop</span><span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="o">=</span> <span class="n">xi</span>
+
+                <span class="c1"># Accept the joint proposal if it stays in the conditional region</span>
+                <span class="n">x_prop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">u_to_x</span><span class="p">(</span><span class="n">u_prop</span><span class="p">,</span> <span class="n">marg</span><span class="p">)</span>
+                <span class="n">G_prop</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">limitstate</span><span class="o">.</span><span class="n">evaluate_lsf</span><span class="p">(</span>
+                    <span class="n">x_prop</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="s2">&quot;no&quot;</span>
+                <span class="p">)</span>
+                <span class="n">g_prop</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">G_prop</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+                <span class="k">if</span> <span class="n">g_prop</span> <span class="o">&lt;=</span> <span class="n">threshold</span><span class="p">:</span>
+                    <span class="n">u_curr</span> <span class="o">=</span> <span class="n">u_prop</span>
+                    <span class="n">g_curr</span> <span class="o">=</span> <span class="n">g_prop</span>
+
+                <span class="n">u_out</span><span class="p">[:,</span> <span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">u_curr</span>
+                <span class="n">G_out</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">g_curr</span>
+                <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">u_out</span><span class="p">,</span> <span class="n">G_out</span>
+
+    <span class="c1"># ------------------------------------------------------------------</span>
+    <span class="c1"># Public API</span>
+    <span class="c1"># ------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="SubsetSimulation.getBeta">
+<a class="viewcode-back" href="../../gen/pystra.ss.SubsetSimulation.html#pystra.ss.SubsetSimulation.getBeta">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getBeta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the reliability index :math:`\\beta`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span></div>
+
+
+<div class="viewcode-block" id="SubsetSimulation.getFailure">
+<a class="viewcode-back" href="../../gen/pystra.ss.SubsetSimulation.html#pystra.ss.SubsetSimulation.getFailure">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getFailure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the probability of failure.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pf</span></div>
+
+
+<div class="viewcode-block" id="SubsetSimulation.showResults">
+<a class="viewcode-back" href="../../gen/pystra.ss.SubsetSimulation.html#pystra.ss.SubsetSimulation.showResults">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">showResults</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Print a summary of Subset Simulation results to the console.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">results_valid</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Analysis not yet run&quot;</span><span class="p">)</span>
+        <span class="n">n_hyph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_HYPH</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="n">n_hyph</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; RESULTS FROM RUNNING SUBSET SIMULATION&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Reliability index beta:        </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Failure probability:           </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Pf</span><span class="si">:</span><span class="s2">.6e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Coefficient of variation:      </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cov</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Number of subset levels:       </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_levels</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; Intermediate results:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thresholds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conditional_probs</span><span class="p">)):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Level </span><span class="si">{</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: threshold = </span><span class="si">{</span><span class="n">y</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">,  p_j = </span><span class="si">{</span><span class="n">p</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="n">n_hyph</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2021-2026, The PySTRA Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

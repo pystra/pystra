@@ -1,0 +1,1300 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Sensitivity Analysis &#8212; PySTRA 1.6.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=9bc076a2" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=7f76b32a3354e82990f2"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
+
+    <script src="../_static/documentation_options.js?v=72d88caf"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/ex_sensitivity';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Direct Differentiation Method" href="ex_ddm.html" />
+    <link rel="prev" title="SciPy Distribution Example" href="ex_scipy_distributions.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.6.0" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 1.6.0 documentation - Home"/>
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 1.6.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../theory.html">
+    Theoretical Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../developer.html">
+    Instructions for Developers
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../theory.html">
+    Theoretical Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer.html">
+    Instructions for Developers
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="ex_intro.html">Introductory Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_simulation.html">Simulation Methods: CMC, Line Sampling, and Subset Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_scipy_distributions.html">SciPy Distribution Example</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Sensitivity Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_ddm.html">Direct Differentiation Method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_timing.html">Pystra Timing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_load_combinations.html">Load Combinations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_factor_calibration.html">Safety Factor Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_generic_calibration.html">Generic Code Calibration</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../tutorial.html" class="nav-link">Tutorials</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Sensitivity Analysis</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="Sensitivity-Analysis">
+<h1>Sensitivity Analysis<a class="headerlink" href="#Sensitivity-Analysis" title="Link to this heading">#</a></h1>
+<p>Pystra can compute the sensitivity of the FORM reliability index <span class="math notranslate nohighlight">\(\beta\)</span> with respect to the distribution parameters (mean and standard deviation) of each random variable, and with respect to the correlation coefficients.</p>
+<p>Two methods are available, selected via the <code class="docutils literal notranslate"><span class="pre">numerical</span></code> argument of <code class="docutils literal notranslate"><span class="pre">SensitivityAnalysis.run()</span></code>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Call</p></th>
+<th class="head"><p>Cost</p></th>
+<th class="head"><p>Correlation sens.</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Finite difference (FD)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">run(numerical=True)</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(2n+1\)</span> FORM runs</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Closed-form (CF)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">run(numerical=False)</span></code></p></td>
+<td><p>1 FORM run</p></td>
+<td><p>Yes</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The closed-form approach follows <a class="reference external" href="https://doi.org/10.1007/978-3-319-52425-2_12">Bourinet (2017)</a>, differentiating the Nataf transformation chain analytically. The key equation (Eq. 17) decomposes the sensitivity into two terms:</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial\beta}{\partial\theta_k}
+= \underbrace{\boldsymbol{\alpha}^T \mathbf{L}_0^{-1}
+  \frac{\partial\mathbf{z}}{\partial\theta_k}}_{\text{first term}}
++ \underbrace{\boldsymbol{\alpha}^T
+  \frac{\partial\mathbf{L}_0^{-1}}{\partial\theta_k}
+  \mathbf{z}}_{\text{second term}}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\boldsymbol{\alpha}\)</span> is the FORM direction cosine vector, <span class="math notranslate nohighlight">\(\mathbf{L}_0\)</span> is the Cholesky factor of the modified (Nataf) correlation matrix, and <span class="math notranslate nohighlight">\(\mathbf{z}\)</span> is the correlated standard-normal design point.</p>
+<p>The two terms have distinct physical meanings:</p>
+<ul class="simple">
+<li><p><strong>First term</strong> — captures how the <em>marginal</em> CDF transformation shifts at the design point when a distribution parameter changes. For example, increasing the mean of a variable moves where that variable’s CDF maps into standard-normal space, pulling the design point closer to or further from the origin. This term is present even for independent variables.</p></li>
+<li><p><strong>Second term</strong> — captures how the <em>Nataf correlation structure</em> changes. The modified correlation matrix <span class="math notranslate nohighlight">\(\mathbf{R}_0\)</span> depends (through double integration) on the marginal distributions, so perturbing a marginal parameter alters <span class="math notranslate nohighlight">\(\mathbf{L}_0\)</span> and hence the isoprobabilistic transformation. For <strong>uncorrelated normal</strong> variables <span class="math notranslate nohighlight">\(\mathbf{R}_0 = \mathbf{I}\)</span> regardless of the marginals, so this term vanishes identically. For correlated non-normal variables it can be the
+dominant contribution — and it is also the term that makes the finite-difference method numerically unstable, as demonstrated in the examples below.</p></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+</pre></div>
+</div>
+</div>
+<section id="Correlated-Lognormals-(Bourinet-2017,-§4.2,-Example-2)">
+<h2>Correlated Lognormals (Bourinet 2017, §4.2, Example 2)<a class="headerlink" href="#Correlated-Lognormals-(Bourinet-2017,-§4.2,-Example-2)" title="Link to this heading">#</a></h2>
+<p>Two lognormally distributed random variables <span class="math notranslate nohighlight">\(R = X_1\)</span> and <span class="math notranslate nohighlight">\(S = X_2\)</span> with a linear correlation <span class="math notranslate nohighlight">\(\rho = 0.5\)</span>. Both have a coefficient of variation of 1:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Variable</p></th>
+<th class="head"><p>Distribution</p></th>
+<th class="head"><p>Mean <span class="math notranslate nohighlight">\(\mu\)</span></p></th>
+<th class="head"><p>Std. dev. <span class="math notranslate nohighlight">\(\sigma\)</span></p></th>
+<th class="head"><p>CoV</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(R\)</span></p></td>
+<td><p>Lognormal</p></td>
+<td><p>5</p></td>
+<td><p>5</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(S\)</span></p></td>
+<td><p>Lognormal</p></td>
+<td><p>1</p></td>
+<td><p>1</p></td>
+<td><p>1</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The limit state function is <span class="math notranslate nohighlight">\(g(R, S) = R - S\)</span>.</p>
+<p>Because both variables are lognormal and the LSF is linear in standard-normal space, this problem has an exact analytical solution: <span class="math notranslate nohighlight">\(\beta = 2.1218\)</span> (Bourinet 2017, Eq. 30).</p>
+<section id="Problem-setup">
+<h3>Problem setup<a class="headerlink" href="#Problem-setup" title="Link to this heading">#</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">lsf</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">S</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">R</span> <span class="o">-</span> <span class="n">S</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">limit_state</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span><span class="n">lsf</span><span class="p">)</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Lognormal</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Lognormal</span><span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">setCorrelation</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">CorrelationMatrix</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]]))</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">options</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">AnalysisOptions</span><span class="p">()</span>
+<span class="n">options</span><span class="o">.</span><span class="n">setPrintOutput</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Baseline-FORM-result">
+<h3>Baseline FORM result<a class="headerlink" href="#Baseline-FORM-result" title="Link to this heading">#</a></h3>
+<p>Run FORM first to see the baseline reliability index and design point.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">form</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">Form</span><span class="p">(</span>
+    <span class="n">stochastic_model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+    <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
+    <span class="n">analysis_options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">form</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">form</span><span class="o">.</span><span class="n">showDetailedOutput</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+==========================================================
+FORM
+==========================================================
+Pf                       1.6927788976e-02
+BetaHL                   2.1217876054
+Model Evaluations        66
+----------------------------------------------------------
+Variable            U_star             X_star        alpha
+R                -0.966683           1.580985    -0.455543
+S                 1.888784           1.580984    +0.890214
+==========================================================
+
+</pre></div></div>
+</div>
+</section>
+<section id="Closed-form-sensitivities">
+<h3>Closed-form sensitivities<a class="headerlink" href="#Closed-form-sensitivities" title="Link to this heading">#</a></h3>
+<p>The closed-form method (<code class="docutils literal notranslate"><span class="pre">numerical=False</span></code>) post-processes the converged FORM design point. It requires only a single FORM run and also returns correlation sensitivities.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sa</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">SensitivityAnalysis</span><span class="p">(</span>
+    <span class="n">stochastic_model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+    <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
+    <span class="n">analysis_options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">cf</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">numerical</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Finite-difference-sensitivities">
+<h3>Finite-difference sensitivities<a class="headerlink" href="#Finite-difference-sensitivities" title="Link to this heading">#</a></h3>
+<p>The finite-difference method (<code class="docutils literal notranslate"><span class="pre">numerical=True</span></code>, default) perturbs each parameter by a small fraction of the standard deviation and re-runs FORM. It does not compute correlation sensitivities.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fd</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">numerical</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Comparison:-closed-form-vs.-finite-difference">
+<h3>Comparison: closed-form vs. finite difference<a class="headerlink" href="#Comparison:-closed-form-vs.-finite-difference" title="Link to this heading">#</a></h3>
+<p>The analytical reference values are from Table 4 of Bourinet (2017).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ref</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;R&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="mf">0.5184</span><span class="p">,</span> <span class="s2">&quot;std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.2548</span><span class="p">},</span>
+    <span class="s2">&quot;S&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.3629</span><span class="p">,</span> <span class="s2">&quot;std&quot;</span><span class="p">:</span> <span class="mf">0.0445</span><span class="p">},</span>
+<span class="p">}</span>
+
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="s2">&quot;std&quot;</span><span class="p">]:</span>
+        <span class="n">sym</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\u03bc</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">p</span> <span class="o">==</span> <span class="s2">&quot;mean&quot;</span> <span class="k">else</span> <span class="s2">&quot;</span><span class="se">\u03c3</span><span class="s2">&quot;</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s2">&quot;Parameter&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\u2202\u03b2</span><span class="s2">/</span><span class="se">\u2202</span><span class="si">{</span><span class="n">sym</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Reference&quot;</span><span class="p">:</span> <span class="n">ref</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="n">p</span><span class="p">],</span>
+            <span class="s2">&quot;CF&quot;</span><span class="p">:</span> <span class="n">cf</span><span class="p">[</span><span class="s2">&quot;marginal&quot;</span><span class="p">][</span><span class="n">var</span><span class="p">][</span><span class="n">p</span><span class="p">],</span>
+            <span class="s2">&quot;FD&quot;</span><span class="p">:</span> <span class="n">fd</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="n">p</span><span class="p">],</span>
+        <span class="p">})</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;Parameter&quot;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:+.4f}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<style type="text/css">
+</style>
+<table id="T_abf12">
+  <thead>
+    <tr>
+      <th class="blank level0" >&nbsp;</th>
+      <th id="T_abf12_level0_col0" class="col_heading level0 col0" >Reference</th>
+      <th id="T_abf12_level0_col1" class="col_heading level0 col1" >CF</th>
+      <th id="T_abf12_level0_col2" class="col_heading level0 col2" >FD</th>
+    </tr>
+    <tr>
+      <th class="index_name level0" >Parameter</th>
+      <th class="blank col0" >&nbsp;</th>
+      <th class="blank col1" >&nbsp;</th>
+      <th class="blank col2" >&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_abf12_level0_row0" class="row_heading level0 row0" >∂β/∂μ_R</th>
+      <td id="T_abf12_row0_col0" class="data row0 col0" >+0.5184</td>
+      <td id="T_abf12_row0_col1" class="data row0 col1" >+0.5184</td>
+      <td id="T_abf12_row0_col2" class="data row0 col2" >+0.5156</td>
+    </tr>
+    <tr>
+      <th id="T_abf12_level0_row1" class="row_heading level0 row1" >∂β/∂σ_R</th>
+      <td id="T_abf12_row1_col0" class="data row1 col0" >-0.2548</td>
+      <td id="T_abf12_row1_col1" class="data row1 col1" >-0.2548</td>
+      <td id="T_abf12_row1_col2" class="data row1 col2" >-0.2546</td>
+    </tr>
+    <tr>
+      <th id="T_abf12_level0_row2" class="row_heading level0 row2" >∂β/∂μ_S</th>
+      <td id="T_abf12_row2_col0" class="data row2 col0" >-1.3629</td>
+      <td id="T_abf12_row2_col1" class="data row2 col1" >-1.3630</td>
+      <td id="T_abf12_row2_col2" class="data row2 col2" >-1.3623</td>
+    </tr>
+    <tr>
+      <th id="T_abf12_level0_row3" class="row_heading level0 row3" >∂β/∂σ_S</th>
+      <td id="T_abf12_row3_col0" class="data row3 col0" >+0.0445</td>
+      <td id="T_abf12_row3_col1" class="data row3 col1" >+0.0447</td>
+      <td id="T_abf12_row3_col2" class="data row3 col2" >+0.0417</td>
+    </tr>
+  </tbody>
+</table></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">[{</span><span class="s2">&quot;Parameter&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\u2202\u03b2</span><span class="s2">/</span><span class="se">\u2202\u03c1</span><span class="s2">&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;Reference&quot;</span><span class="p">:</span> <span class="mf">2.4585</span><span class="p">,</span>
+      <span class="s2">&quot;CF&quot;</span><span class="p">:</span> <span class="n">cf</span><span class="p">[</span><span class="s2">&quot;correlation&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]}]</span>
+<span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;Parameter&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:+.4f}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<style type="text/css">
+</style>
+<table id="T_402f4">
+  <thead>
+    <tr>
+      <th class="blank level0" >&nbsp;</th>
+      <th id="T_402f4_level0_col0" class="col_heading level0 col0" >Reference</th>
+      <th id="T_402f4_level0_col1" class="col_heading level0 col1" >CF</th>
+    </tr>
+    <tr>
+      <th class="index_name level0" >Parameter</th>
+      <th class="blank col0" >&nbsp;</th>
+      <th class="blank col1" >&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_402f4_level0_row0" class="row_heading level0 row0" >∂β/∂ρ</th>
+      <td id="T_402f4_row0_col0" class="data row0 col0" >+2.4585</td>
+      <td id="T_402f4_row0_col1" class="data row0 col1" >+2.4586</td>
+    </tr>
+  </tbody>
+</table></div>
+</div>
+</section>
+<section id="Practical-note:-FD-instability-for-correlated-non-normal-variables">
+<h3>Practical note: FD instability for correlated non-normal variables<a class="headerlink" href="#Practical-note:-FD-instability-for-correlated-non-normal-variables" title="Link to this heading">#</a></h3>
+<p>The finite-difference method can be <strong>numerically unstable</strong> for correlated non-normal variables, especially when a sensitivity is small in magnitude. In this example, <span class="math notranslate nohighlight">\(\partial\beta/\partial\sigma_S \approx 0.045\)</span> is the smallest sensitivity, and the FD estimate is the least reliable.</p>
+<p>The root cause is that perturbing a marginal parameter changes the Nataf modified correlation matrix <span class="math notranslate nohighlight">\(\mathbf{R}_0\)</span>, so the entire isoprobabilistic transformation shifts. FORM then re-converges to a slightly different design point, introducing noise.</p>
+<p>To illustrate, we run the FD method with several step sizes:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">delta</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.0001</span><span class="p">]:</span>
+    <span class="n">fd_trial</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">numerical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="n">delta</span><span class="p">)</span>
+    <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;Method&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;FD (</span><span class="se">\u03b4</span><span class="s2">=</span><span class="si">{</span><span class="n">delta</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;</span><span class="se">\u2202\u03b2</span><span class="s2">/</span><span class="se">\u2202\u03c3</span><span class="s2">_S&quot;</span><span class="p">:</span> <span class="n">fd_trial</span><span class="p">[</span><span class="s2">&quot;S&quot;</span><span class="p">][</span><span class="s2">&quot;std&quot;</span><span class="p">]})</span>
+<span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;Method&quot;</span><span class="p">:</span> <span class="s2">&quot;CF&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;</span><span class="se">\u2202\u03b2</span><span class="s2">/</span><span class="se">\u2202\u03c3</span><span class="s2">_S&quot;</span><span class="p">:</span> <span class="n">cf</span><span class="p">[</span><span class="s2">&quot;marginal&quot;</span><span class="p">][</span><span class="s2">&quot;S&quot;</span><span class="p">][</span><span class="s2">&quot;std&quot;</span><span class="p">]})</span>
+<span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;Method&quot;</span><span class="p">:</span> <span class="s2">&quot;Reference&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;</span><span class="se">\u2202\u03b2</span><span class="s2">/</span><span class="se">\u2202\u03c3</span><span class="s2">_S&quot;</span><span class="p">:</span> <span class="mf">0.0445</span><span class="p">})</span>
+
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;Method&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:+.4f}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<style type="text/css">
+</style>
+<table id="T_37354">
+  <thead>
+    <tr>
+      <th class="blank level0" >&nbsp;</th>
+      <th id="T_37354_level0_col0" class="col_heading level0 col0" >∂β/∂σ_S</th>
+    </tr>
+    <tr>
+      <th class="index_name level0" >Method</th>
+      <th class="blank col0" >&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_37354_level0_row0" class="row_heading level0 row0" >FD (δ=0.1)</th>
+      <td id="T_37354_row0_col0" class="data row0 col0" >+0.0342</td>
+    </tr>
+    <tr>
+      <th id="T_37354_level0_row1" class="row_heading level0 row1" >FD (δ=0.01)</th>
+      <td id="T_37354_row1_col0" class="data row1 col0" >+0.0417</td>
+    </tr>
+    <tr>
+      <th id="T_37354_level0_row2" class="row_heading level0 row2" >FD (δ=0.001)</th>
+      <td id="T_37354_row2_col0" class="data row2 col0" >+0.1433</td>
+    </tr>
+    <tr>
+      <th id="T_37354_level0_row3" class="row_heading level0 row3" >FD (δ=0.0001)</th>
+      <td id="T_37354_row3_col0" class="data row3 col0" >-0.1061</td>
+    </tr>
+    <tr>
+      <th id="T_37354_level0_row4" class="row_heading level0 row4" >CF</th>
+      <td id="T_37354_row4_col0" class="data row4 col0" >+0.0447</td>
+    </tr>
+    <tr>
+      <th id="T_37354_level0_row5" class="row_heading level0 row5" >Reference</th>
+      <td id="T_37354_row5_col0" class="data row5 col0" >+0.0445</td>
+    </tr>
+  </tbody>
+</table></div>
+</div>
+<p>The FD results oscillate as the step size changes, while the closed-form result matches the analytical reference to four significant figures. This demonstrates the advantage of the closed-form approach for problems with correlated non-normal variables.</p>
+<p>For <strong>uncorrelated normal</strong> variables, both methods agree closely because <span class="math notranslate nohighlight">\(\mathbf{R}_0 = \mathbf{I}\)</span> regardless of marginal parameters (the second term of Eq. 17 vanishes identically).</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="CalRel-Example-(Bourinet-2017,-§4.1,-Example-1)">
+<h2>CalRel Example (Bourinet 2017, §4.1, Example 1)<a class="headerlink" href="#CalRel-Example-(Bourinet-2017,-§4.1,-Example-1)" title="Link to this heading">#</a></h2>
+<p>This example, taken from the CalRel software manual (Liu et al., 1989), has three correlated random variables and a nonlinear limit state function:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Variable</p></th>
+<th class="head"><p>Distribution</p></th>
+<th class="head"><p>Mean <span class="math notranslate nohighlight">\(\mu\)</span></p></th>
+<th class="head"><p>Std. dev. <span class="math notranslate nohighlight">\(\sigma\)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(X_1\)</span></p></td>
+<td><p>Lognormal</p></td>
+<td><p>500</p></td>
+<td><p>100</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(X_2\)</span></p></td>
+<td><p>Lognormal</p></td>
+<td><p>2000</p></td>
+<td><p>400</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(X_3\)</span></p></td>
+<td><p>Uniform</p></td>
+<td><p>5</p></td>
+<td><p>0.5</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The correlation matrix is:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{R} = \begin{pmatrix}
+1 &amp; 0.3 &amp; 0.2 \\
+0.3 &amp; 1 &amp; 0.2 \\
+0.2 &amp; 0.2 &amp; 1
+\end{pmatrix}\end{split}\]</div>
+<p>The limit state function is:</p>
+<div class="math notranslate nohighlight">
+\[g(x_1, x_2, x_3) = 1 - \frac{x_2}{1000 \, x_3} - \left(\frac{x_1}{200 \, x_3}\right)^2\]</div>
+<p>FORM gives <span class="math notranslate nohighlight">\(\beta = 1.7728\)</span> and <span class="math notranslate nohighlight">\(p_f^{\text{FORM}} = 3.81 \times 10^{-2}\)</span>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">lsf_calrel</span><span class="p">(</span><span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">,</span> <span class="n">X3</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">X2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1000</span> <span class="o">*</span> <span class="n">X3</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">X1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">200</span> <span class="o">*</span> <span class="n">X3</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span>
+
+
+<span class="n">ls1</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span><span class="n">lsf_calrel</span><span class="p">)</span>
+
+<span class="n">model1</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
+<span class="n">model1</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Lognormal</span><span class="p">(</span><span class="s2">&quot;X1&quot;</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+<span class="n">model1</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Lognormal</span><span class="p">(</span><span class="s2">&quot;X2&quot;</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">400</span><span class="p">))</span>
+<span class="n">model1</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s2">&quot;X3&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+
+<span class="n">R1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+<span class="p">])</span>
+<span class="n">model1</span><span class="o">.</span><span class="n">setCorrelation</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">CorrelationMatrix</span><span class="p">(</span><span class="n">R1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">opts1</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">AnalysisOptions</span><span class="p">()</span>
+<span class="n">opts1</span><span class="o">.</span><span class="n">setPrintOutput</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">form1</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">Form</span><span class="p">(</span>
+    <span class="n">stochastic_model</span><span class="o">=</span><span class="n">model1</span><span class="p">,</span>
+    <span class="n">limit_state</span><span class="o">=</span><span class="n">ls1</span><span class="p">,</span>
+    <span class="n">analysis_options</span><span class="o">=</span><span class="n">opts1</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">form1</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">form1</span><span class="o">.</span><span class="n">showDetailedOutput</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+==========================================================
+FORM
+==========================================================
+Pf                       3.8133894361e-02
+BetaHL                   1.7727641950
+Model Evaluations        154
+----------------------------------------------------------
+Variable            U_star             X_star        alpha
+X1                1.281626         631.952172    +0.723158
+X2                0.481529        2320.035440    +0.271741
+X3               -1.126170           4.525984    -0.634980
+==========================================================
+
+</pre></div></div>
+</div>
+<section id="id1">
+<h3>Closed-form sensitivities<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sa1</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">SensitivityAnalysis</span><span class="p">(</span>
+    <span class="n">stochastic_model</span><span class="o">=</span><span class="n">model1</span><span class="p">,</span>
+    <span class="n">limit_state</span><span class="o">=</span><span class="n">ls1</span><span class="p">,</span>
+    <span class="n">analysis_options</span><span class="o">=</span><span class="n">opts1</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">cf1</span> <span class="o">=</span> <span class="n">sa1</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">numerical</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Reference values from Bourinet (2017), Table 2</span>
+<span class="n">ref1</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;X1&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.0059</span><span class="p">,</span> <span class="s2">&quot;std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.0079</span><span class="p">},</span>
+    <span class="s2">&quot;X2&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.0009</span><span class="p">,</span> <span class="s2">&quot;std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.0006</span><span class="p">},</span>
+    <span class="s2">&quot;X3&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;mean&quot;</span><span class="p">:</span>  <span class="mf">1.2602</span><span class="p">,</span> <span class="s2">&quot;std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.1942</span><span class="p">},</span>
+<span class="p">}</span>
+
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;X1&quot;</span><span class="p">,</span> <span class="s2">&quot;X2&quot;</span><span class="p">,</span> <span class="s2">&quot;X3&quot;</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="s2">&quot;std&quot;</span><span class="p">]:</span>
+        <span class="n">sym</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\u03bc</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">p</span> <span class="o">==</span> <span class="s2">&quot;mean&quot;</span> <span class="k">else</span> <span class="s2">&quot;</span><span class="se">\u03c3</span><span class="s2">&quot;</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s2">&quot;Parameter&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\u2202\u03b2</span><span class="s2">/</span><span class="se">\u2202</span><span class="si">{</span><span class="n">sym</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Reference&quot;</span><span class="p">:</span> <span class="n">ref1</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="n">p</span><span class="p">],</span>
+            <span class="s2">&quot;CF&quot;</span><span class="p">:</span> <span class="n">cf1</span><span class="p">[</span><span class="s2">&quot;marginal&quot;</span><span class="p">][</span><span class="n">var</span><span class="p">][</span><span class="n">p</span><span class="p">],</span>
+        <span class="p">})</span>
+
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;Parameter&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:+.4f}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<style type="text/css">
+</style>
+<table id="T_f8046">
+  <thead>
+    <tr>
+      <th class="blank level0" >&nbsp;</th>
+      <th id="T_f8046_level0_col0" class="col_heading level0 col0" >Reference</th>
+      <th id="T_f8046_level0_col1" class="col_heading level0 col1" >CF</th>
+    </tr>
+    <tr>
+      <th class="index_name level0" >Parameter</th>
+      <th class="blank col0" >&nbsp;</th>
+      <th class="blank col1" >&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_f8046_level0_row0" class="row_heading level0 row0" >∂β/∂μ_X1</th>
+      <td id="T_f8046_row0_col0" class="data row0 col0" >-0.0059</td>
+      <td id="T_f8046_row0_col1" class="data row0 col1" >-0.0059</td>
+    </tr>
+    <tr>
+      <th id="T_f8046_level0_row1" class="row_heading level0 row1" >∂β/∂σ_X1</th>
+      <td id="T_f8046_row1_col0" class="data row1 col0" >-0.0079</td>
+      <td id="T_f8046_row1_col1" class="data row1 col1" >-0.0079</td>
+    </tr>
+    <tr>
+      <th id="T_f8046_level0_row2" class="row_heading level0 row2" >∂β/∂μ_X2</th>
+      <td id="T_f8046_row2_col0" class="data row2 col0" >-0.0009</td>
+      <td id="T_f8046_row2_col1" class="data row2 col1" >-0.0009</td>
+    </tr>
+    <tr>
+      <th id="T_f8046_level0_row3" class="row_heading level0 row3" >∂β/∂σ_X2</th>
+      <td id="T_f8046_row3_col0" class="data row3 col0" >-0.0006</td>
+      <td id="T_f8046_row3_col1" class="data row3 col1" >-0.0006</td>
+    </tr>
+    <tr>
+      <th id="T_f8046_level0_row4" class="row_heading level0 row4" >∂β/∂μ_X3</th>
+      <td id="T_f8046_row4_col0" class="data row4 col0" >+1.2602</td>
+      <td id="T_f8046_row4_col1" class="data row4 col1" >+1.2603</td>
+    </tr>
+    <tr>
+      <th id="T_f8046_level0_row5" class="row_heading level0 row5" >∂β/∂σ_X3</th>
+      <td id="T_f8046_row5_col0" class="data row5 col0" >-1.1942</td>
+      <td id="T_f8046_row5_col1" class="data row5 col1" >-1.1948</td>
+    </tr>
+  </tbody>
+</table></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Reference values from Bourinet (2017), Table 3</span>
+<span class="n">ref_corr</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span> <span class="o">-</span><span class="mf">0.5151</span><span class="p">,</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>  <span class="mf">0.8916</span><span class="p">,</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>  <span class="mf">0.4688</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">names1</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;X1&quot;</span><span class="p">,</span> <span class="s2">&quot;X2&quot;</span><span class="p">,</span> <span class="s2">&quot;X3&quot;</span><span class="p">]</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">),</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">ref_corr</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+        <span class="s2">&quot;Parameter&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\u2202\u03b2</span><span class="s2">/</span><span class="se">\u2202\u03c1</span><span class="s2">(</span><span class="si">{</span><span class="n">names1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">names1</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Reference&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">,</span>
+        <span class="s2">&quot;CF&quot;</span><span class="p">:</span> <span class="n">cf1</span><span class="p">[</span><span class="s2">&quot;correlation&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span>
+    <span class="p">})</span>
+
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;Parameter&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:+.4f}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<style type="text/css">
+</style>
+<table id="T_424a8">
+  <thead>
+    <tr>
+      <th class="blank level0" >&nbsp;</th>
+      <th id="T_424a8_level0_col0" class="col_heading level0 col0" >Reference</th>
+      <th id="T_424a8_level0_col1" class="col_heading level0 col1" >CF</th>
+    </tr>
+    <tr>
+      <th class="index_name level0" >Parameter</th>
+      <th class="blank col0" >&nbsp;</th>
+      <th class="blank col1" >&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_424a8_level0_row0" class="row_heading level0 row0" >∂β/∂ρ(X2,X1)</th>
+      <td id="T_424a8_row0_col0" class="data row0 col0" >-0.5151</td>
+      <td id="T_424a8_row0_col1" class="data row0 col1" >-0.5150</td>
+    </tr>
+    <tr>
+      <th id="T_424a8_level0_row1" class="row_heading level0 row1" >∂β/∂ρ(X3,X1)</th>
+      <td id="T_424a8_row1_col0" class="data row1 col0" >+0.8916</td>
+      <td id="T_424a8_row1_col1" class="data row1 col1" >+0.8914</td>
+    </tr>
+    <tr>
+      <th id="T_424a8_level0_row2" class="row_heading level0 row2" >∂β/∂ρ(X3,X2)</th>
+      <td id="T_424a8_row2_col0" class="data row2 col0" >+0.4688</td>
+      <td id="T_424a8_row2_col1" class="data row2 col1" >+0.4687</td>
+    </tr>
+  </tbody>
+</table></div>
+</div>
+<p>This example includes a <strong>Uniform</strong> distribution (<span class="math notranslate nohighlight">\(X_3\)</span>), for which <code class="docutils literal notranslate"><span class="pre">dF_dtheta</span></code> is evaluated numerically via the base-class finite-difference fallback. The closed-form method handles this seamlessly — no analytical CDF derivative is needed for the Uniform distribution.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="Summary">
+<h2>Summary<a class="headerlink" href="#Summary" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"></th>
+<th class="head"><p>Finite difference</p></th>
+<th class="head"><p>Closed-form</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>FORM runs</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(2n + 1\)</span></p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Marginal sens.</strong></p></td>
+<td><p>Yes</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Correlation sens.</strong></p></td>
+<td><p>No</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Accuracy</strong></p></td>
+<td><p>Depends on step size <span class="math notranslate nohighlight">\(\delta\)</span></p></td>
+<td><p>Exact (up to quadrature)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Stability</strong></p></td>
+<td><p>Can be noisy for correlated non-normal variables</p></td>
+<td><p>Stable</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Distribution support</strong></p></td>
+<td><p>Any</p></td>
+<td><p>Any (numerical <code class="docutils literal notranslate"><span class="pre">dF_dtheta</span></code> fallback)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Recommendation:</strong> Use the closed-form method (<code class="docutils literal notranslate"><span class="pre">numerical=False</span></code>) when accuracy and correlation sensitivities are needed. The FD method remains useful as an independent verification tool.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="ex_scipy_distributions.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">SciPy Distribution Example</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="ex_ddm.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Direct Differentiation Method</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Correlated-Lognormals-(Bourinet-2017,-§4.2,-Example-2)">Correlated Lognormals (Bourinet 2017, §4.2, Example 2)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Problem-setup">Problem setup</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Baseline-FORM-result">Baseline FORM result</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Closed-form-sensitivities">Closed-form sensitivities</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Finite-difference-sensitivities">Finite-difference sensitivities</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Comparison:-closed-form-vs.-finite-difference">Comparison: closed-form vs. finite difference</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Practical-note:-FD-instability-for-correlated-non-normal-variables">Practical note: FD instability for correlated non-normal variables</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#CalRel-Example-(Bourinet-2017,-§4.1,-Example-1)">CalRel Example (Bourinet 2017, §4.1, Example 1)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Closed-form sensitivities</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Summary">Summary</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/pystra/pystra/edit/main/docs/source/notebooks/ex_sensitivity.ipynb">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2021-2026, The PySTRA Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
