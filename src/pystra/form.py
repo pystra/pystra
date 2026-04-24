@@ -176,7 +176,7 @@ class Form(AnalysisObject):
 
     def computeGamma(self):
         """Compute gamma vector"""
-        self.gamma = np.diag(np.diag(np.sqrt(np.dot(self.J, np.transpose(self.J)))))
+        self.gamma = np.diag(np.sqrt(np.diag(np.dot(self.J, np.transpose(self.J)))))
         # Importance vector gamma
         # matmult = np.dot(np.dot(self.alpha, self.J), self.gamma)
         # importance_vector_gamma = matmult / np.linalg.norm(matmult)
