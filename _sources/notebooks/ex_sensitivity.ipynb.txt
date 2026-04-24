@@ -1,0 +1,939 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "intro-header",
+   "metadata": {},
+   "source": [
+    "# Sensitivity Analysis\n",
+    "\n",
+    "Pystra can compute the sensitivity of the FORM reliability index $\\beta$\n",
+    "with respect to the distribution parameters (mean and standard deviation)\n",
+    "of each random variable, and with respect to the correlation coefficients.\n",
+    "\n",
+    "Two methods are available, selected via the `numerical` argument of\n",
+    "`SensitivityAnalysis.run()`:\n",
+    "\n",
+    "| Method | Call | Cost | Correlation sens. |\n",
+    "|---|---|---|---|\n",
+    "| Finite difference (FD) | `run(numerical=True)` | $2n+1$ FORM runs | No |\n",
+    "| Closed-form (CF) | `run(numerical=False)` | 1 FORM run | Yes |\n",
+    "\n",
+    "The closed-form approach follows\n",
+    "[Bourinet (2017)](https://doi.org/10.1007/978-3-319-52425-2_12),\n",
+    "differentiating the Nataf transformation chain analytically.\n",
+    "The key equation (Eq. 17) decomposes the sensitivity into two terms:\n",
+    "\n",
+    "$$\n",
+    "\\frac{\\partial\\beta}{\\partial\\theta_k}\n",
+    "= \\underbrace{\\boldsymbol{\\alpha}^T \\mathbf{L}_0^{-1}\n",
+    "  \\frac{\\partial\\mathbf{z}}{\\partial\\theta_k}}_{\\text{first term}}\n",
+    "+ \\underbrace{\\boldsymbol{\\alpha}^T\n",
+    "  \\frac{\\partial\\mathbf{L}_0^{-1}}{\\partial\\theta_k}\n",
+    "  \\mathbf{z}}_{\\text{second term}}\n",
+    "$$\n",
+    "\n",
+    "where $\\boldsymbol{\\alpha}$ is the FORM direction cosine vector,\n",
+    "$\\mathbf{L}_0$ is the Cholesky factor of the modified (Nataf)\n",
+    "correlation matrix, and $\\mathbf{z}$ is the correlated\n",
+    "standard-normal design point.\n",
+    "\n",
+    "The two terms have distinct physical meanings:\n",
+    "\n",
+    "- **First term** — captures how the *marginal* CDF transformation\n",
+    "  shifts at the design point when a distribution parameter changes.\n",
+    "  For example, increasing the mean of a variable moves where that\n",
+    "  variable's CDF maps into standard-normal space, pulling the design\n",
+    "  point closer to or further from the origin.  This term is present\n",
+    "  even for independent variables.\n",
+    "\n",
+    "- **Second term** — captures how the *Nataf correlation structure*\n",
+    "  changes.  The modified correlation matrix $\\mathbf{R}_0$ depends\n",
+    "  (through double integration) on the marginal distributions, so\n",
+    "  perturbing a marginal parameter alters $\\mathbf{L}_0$ and hence\n",
+    "  the isoprobabilistic transformation.  For **uncorrelated normal**\n",
+    "  variables $\\mathbf{R}_0 = \\mathbf{I}$ regardless of the marginals,\n",
+    "  so this term vanishes identically.  For correlated non-normal\n",
+    "  variables it can be the dominant contribution — and it is also the\n",
+    "  term that makes the finite-difference method numerically unstable,\n",
+    "  as demonstrated in the examples below."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "import-cell",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-03-15T15:42:32.941277Z",
+     "iopub.status.busy": "2026-03-15T15:42:32.940919Z",
+     "iopub.status.idle": "2026-03-15T15:42:34.076264Z",
+     "shell.execute_reply": "2026-03-15T15:42:34.075790Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "import pystra as pr"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "ex2-header",
+   "metadata": {},
+   "source": [
+    "## Correlated Lognormals (Bourinet 2017, §4.2, Example 2)\n",
+    "\n",
+    "Two lognormally distributed random variables $R = X_1$ and $S = X_2$\n",
+    "with a linear correlation $\\rho = 0.5$. Both have a coefficient of\n",
+    "variation of 1:\n",
+    "\n",
+    "| Variable | Distribution | Mean $\\mu$ | Std. dev. $\\sigma$ | CoV |\n",
+    "|---|---|---|---|---|\n",
+    "| $R$ | Lognormal | 5 | 5 | 1 |\n",
+    "| $S$ | Lognormal | 1 | 1 | 1 |\n",
+    "\n",
+    "The limit state function is $g(R, S) = R - S$.\n",
+    "\n",
+    "Because both variables are lognormal and the LSF is linear in\n",
+    "standard-normal space, this problem has an exact analytical solution:\n",
+    "$\\beta = 2.1218$ (Bourinet 2017, Eq. 30)."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "ex2-setup-md",
+   "metadata": {},
+   "source": [
+    "### Problem setup"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "ex2-lsf",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-03-15T15:42:34.078904Z",
+     "iopub.status.busy": "2026-03-15T15:42:34.078664Z",
+     "iopub.status.idle": "2026-03-15T15:42:34.081750Z",
+     "shell.execute_reply": "2026-03-15T15:42:34.080991Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "def lsf(R, S):\n",
+    "    return R - S"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "ex2-model",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-03-15T15:42:34.084706Z",
+     "iopub.status.busy": "2026-03-15T15:42:34.084173Z",
+     "iopub.status.idle": "2026-03-15T15:42:34.172993Z",
+     "shell.execute_reply": "2026-03-15T15:42:34.172445Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "limit_state = pr.LimitState(lsf)\n",
+    "\n",
+    "model = pr.StochasticModel()\n",
+    "model.addVariable(pr.Lognormal(\"R\", 5, 5))\n",
+    "model.addVariable(pr.Lognormal(\"S\", 1, 1))\n",
+    "model.setCorrelation(pr.CorrelationMatrix([[1.0, 0.5], [0.5, 1.0]]))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "ex2-options",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-03-15T15:42:34.175100Z",
+     "iopub.status.busy": "2026-03-15T15:42:34.174936Z",
+     "iopub.status.idle": "2026-03-15T15:42:34.271033Z",
+     "shell.execute_reply": "2026-03-15T15:42:34.270529Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "options = pr.AnalysisOptions()\n",
+    "options.setPrintOutput(False)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "ex2-form-md",
+   "metadata": {},
+   "source": [
+    "### Baseline FORM result\n",
+    "\n",
+    "Run FORM first to see the baseline reliability index and design point."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "ex2-form",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-03-15T15:42:34.273206Z",
+     "iopub.status.busy": "2026-03-15T15:42:34.273026Z",
+     "iopub.status.idle": "2026-03-15T15:42:34.390897Z",
+     "shell.execute_reply": "2026-03-15T15:42:34.390383Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "==========================================================\n",
+      "FORM\n",
+      "==========================================================\n",
+      "Pf              \t 1.6927788976e-02\n",
+      "BetaHL          \t 2.1217876054\n",
+      "Model Evaluations \t 66\n",
+      "----------------------------------------------------------\n",
+      "Variable   \t    U_star \t       X_star \t     alpha\n",
+      "R          \t -0.966683 \t     1.580985 \t -0.455543\n",
+      "S          \t  1.888784 \t     1.580984 \t +0.890214\n",
+      "==========================================================\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "form = pr.Form(\n",
+    "    stochastic_model=model,\n",
+    "    limit_state=limit_state,\n",
+    "    analysis_options=options,\n",
+    ")\n",
+    "form.run()\n",
+    "form.showDetailedOutput()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "ex2-cf-md",
+   "metadata": {},
+   "source": [
+    "### Closed-form sensitivities\n",
+    "\n",
+    "The closed-form method (`numerical=False`) post-processes the\n",
+    "converged FORM design point. It requires only a single FORM run\n",
+    "and also returns correlation sensitivities."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "ex2-cf",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-03-15T15:42:34.392983Z",
+     "iopub.status.busy": "2026-03-15T15:42:34.392826Z",
+     "iopub.status.idle": "2026-03-15T15:42:34.537673Z",
+     "shell.execute_reply": "2026-03-15T15:42:34.537128Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "sa = pr.SensitivityAnalysis(\n",
+    "    stochastic_model=model,\n",
+    "    limit_state=limit_state,\n",
+    "    analysis_options=options,\n",
+    ")\n",
+    "cf = sa.run(numerical=False)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "ex2-fd-md",
+   "metadata": {},
+   "source": [
+    "### Finite-difference sensitivities\n",
+    "\n",
+    "The finite-difference method (`numerical=True`, default) perturbs\n",
+    "each parameter by a small fraction of the standard deviation and\n",
+    "re-runs FORM.  It does not compute correlation sensitivities."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "ex2-fd",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-03-15T15:42:34.539928Z",
+     "iopub.status.busy": "2026-03-15T15:42:34.539758Z",
+     "iopub.status.idle": "2026-03-15T15:42:34.687110Z",
+     "shell.execute_reply": "2026-03-15T15:42:34.686504Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "fd = sa.run(numerical=True)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "ex2-comparison-md",
+   "metadata": {},
+   "source": [
+    "### Comparison: closed-form vs. finite difference\n",
+    "\n",
+    "The analytical reference values are from Table 4 of Bourinet (2017)."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "id": "ex2-comparison",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-03-15T15:42:34.689427Z",
+     "iopub.status.busy": "2026-03-15T15:42:34.689220Z",
+     "iopub.status.idle": "2026-03-15T15:42:34.782719Z",
+     "shell.execute_reply": "2026-03-15T15:42:34.782064Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<style type=\"text/css\">\n",
+       "</style>\n",
+       "<table id=\"T_abf12\">\n",
+       "  <thead>\n",
+       "    <tr>\n",
+       "      <th class=\"blank level0\" >&nbsp;</th>\n",
+       "      <th id=\"T_abf12_level0_col0\" class=\"col_heading level0 col0\" >Reference</th>\n",
+       "      <th id=\"T_abf12_level0_col1\" class=\"col_heading level0 col1\" >CF</th>\n",
+       "      <th id=\"T_abf12_level0_col2\" class=\"col_heading level0 col2\" >FD</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th class=\"index_name level0\" >Parameter</th>\n",
+       "      <th class=\"blank col0\" >&nbsp;</th>\n",
+       "      <th class=\"blank col1\" >&nbsp;</th>\n",
+       "      <th class=\"blank col2\" >&nbsp;</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th id=\"T_abf12_level0_row0\" class=\"row_heading level0 row0\" >∂β/∂μ_R</th>\n",
+       "      <td id=\"T_abf12_row0_col0\" class=\"data row0 col0\" >+0.5184</td>\n",
+       "      <td id=\"T_abf12_row0_col1\" class=\"data row0 col1\" >+0.5184</td>\n",
+       "      <td id=\"T_abf12_row0_col2\" class=\"data row0 col2\" >+0.5156</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th id=\"T_abf12_level0_row1\" class=\"row_heading level0 row1\" >∂β/∂σ_R</th>\n",
+       "      <td id=\"T_abf12_row1_col0\" class=\"data row1 col0\" >-0.2548</td>\n",
+       "      <td id=\"T_abf12_row1_col1\" class=\"data row1 col1\" >-0.2548</td>\n",
+       "      <td id=\"T_abf12_row1_col2\" class=\"data row1 col2\" >-0.2546</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th id=\"T_abf12_level0_row2\" class=\"row_heading level0 row2\" >∂β/∂μ_S</th>\n",
+       "      <td id=\"T_abf12_row2_col0\" class=\"data row2 col0\" >-1.3629</td>\n",
+       "      <td id=\"T_abf12_row2_col1\" class=\"data row2 col1\" >-1.3630</td>\n",
+       "      <td id=\"T_abf12_row2_col2\" class=\"data row2 col2\" >-1.3623</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th id=\"T_abf12_level0_row3\" class=\"row_heading level0 row3\" >∂β/∂σ_S</th>\n",
+       "      <td id=\"T_abf12_row3_col0\" class=\"data row3 col0\" >+0.0445</td>\n",
+       "      <td id=\"T_abf12_row3_col1\" class=\"data row3 col1\" >+0.0447</td>\n",
+       "      <td id=\"T_abf12_row3_col2\" class=\"data row3 col2\" >+0.0417</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n"
+      ],
+      "text/plain": [
+       "<pandas.io.formats.style.Styler at 0x7f8d07f1b880>"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "ref = {\n",
+    "    \"R\": {\"mean\": 0.5184, \"std\": -0.2548},\n",
+    "    \"S\": {\"mean\": -1.3629, \"std\": 0.0445},\n",
+    "}\n",
+    "\n",
+    "rows = []\n",
+    "for var in [\"R\", \"S\"]:\n",
+    "    for p in [\"mean\", \"std\"]:\n",
+    "        sym = \"\\u03bc\" if p == \"mean\" else \"\\u03c3\"\n",
+    "        rows.append({\n",
+    "            \"Parameter\": f\"\\u2202\\u03b2/\\u2202{sym}_{var}\",\n",
+    "            \"Reference\": ref[var][p],\n",
+    "            \"CF\": cf[\"marginal\"][var][p],\n",
+    "            \"FD\": fd[var][p],\n",
+    "        })\n",
+    "\n",
+    "df = pd.DataFrame(rows).set_index(\"Parameter\")\n",
+    "df.style.format(\"{:+.4f}\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "id": "ex2-corr",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-03-15T15:42:34.784825Z",
+     "iopub.status.busy": "2026-03-15T15:42:34.784611Z",
+     "iopub.status.idle": "2026-03-15T15:42:34.823728Z",
+     "shell.execute_reply": "2026-03-15T15:42:34.823288Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<style type=\"text/css\">\n",
+       "</style>\n",
+       "<table id=\"T_402f4\">\n",
+       "  <thead>\n",
+       "    <tr>\n",
+       "      <th class=\"blank level0\" >&nbsp;</th>\n",
+       "      <th id=\"T_402f4_level0_col0\" class=\"col_heading level0 col0\" >Reference</th>\n",
+       "      <th id=\"T_402f4_level0_col1\" class=\"col_heading level0 col1\" >CF</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th class=\"index_name level0\" >Parameter</th>\n",
+       "      <th class=\"blank col0\" >&nbsp;</th>\n",
+       "      <th class=\"blank col1\" >&nbsp;</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th id=\"T_402f4_level0_row0\" class=\"row_heading level0 row0\" >∂β/∂ρ</th>\n",
+       "      <td id=\"T_402f4_row0_col0\" class=\"data row0 col0\" >+2.4585</td>\n",
+       "      <td id=\"T_402f4_row0_col1\" class=\"data row0 col1\" >+2.4586</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n"
+      ],
+      "text/plain": [
+       "<pandas.io.formats.style.Styler at 0x7f8d07f19060>"
+      ]
+     },
+     "execution_count": 9,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "pd.DataFrame(\n",
+    "    [{\"Parameter\": \"\\u2202\\u03b2/\\u2202\\u03c1\",\n",
+    "      \"Reference\": 2.4585,\n",
+    "      \"CF\": cf[\"correlation\"][1, 0]}]\n",
+    ").set_index(\"Parameter\").style.format(\"{:+.4f}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "fd-instability-md",
+   "metadata": {},
+   "source": [
+    "### Practical note: FD instability for correlated non-normal variables\n",
+    "\n",
+    "The finite-difference method can be **numerically unstable** for\n",
+    "correlated non-normal variables, especially when a sensitivity is\n",
+    "small in magnitude.  In this example, $\\partial\\beta/\\partial\\sigma_S\n",
+    "\\approx 0.045$ is the smallest sensitivity, and the FD estimate is\n",
+    "the least reliable.\n",
+    "\n",
+    "The root cause is that perturbing a marginal parameter changes the\n",
+    "Nataf modified correlation matrix $\\mathbf{R}_0$, so the entire\n",
+    "isoprobabilistic transformation shifts.  FORM then re-converges to\n",
+    "a slightly different design point, introducing noise.\n",
+    "\n",
+    "To illustrate, we run the FD method with several step sizes:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "id": "fd-instability",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-03-15T15:42:34.825822Z",
+     "iopub.status.busy": "2026-03-15T15:42:34.825668Z",
+     "iopub.status.idle": "2026-03-15T15:42:35.038952Z",
+     "shell.execute_reply": "2026-03-15T15:42:35.038505Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<style type=\"text/css\">\n",
+       "</style>\n",
+       "<table id=\"T_37354\">\n",
+       "  <thead>\n",
+       "    <tr>\n",
+       "      <th class=\"blank level0\" >&nbsp;</th>\n",
+       "      <th id=\"T_37354_level0_col0\" class=\"col_heading level0 col0\" >∂β/∂σ_S</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th class=\"index_name level0\" >Method</th>\n",
+       "      <th class=\"blank col0\" >&nbsp;</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th id=\"T_37354_level0_row0\" class=\"row_heading level0 row0\" >FD (δ=0.1)</th>\n",
+       "      <td id=\"T_37354_row0_col0\" class=\"data row0 col0\" >+0.0342</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th id=\"T_37354_level0_row1\" class=\"row_heading level0 row1\" >FD (δ=0.01)</th>\n",
+       "      <td id=\"T_37354_row1_col0\" class=\"data row1 col0\" >+0.0417</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th id=\"T_37354_level0_row2\" class=\"row_heading level0 row2\" >FD (δ=0.001)</th>\n",
+       "      <td id=\"T_37354_row2_col0\" class=\"data row2 col0\" >+0.1433</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th id=\"T_37354_level0_row3\" class=\"row_heading level0 row3\" >FD (δ=0.0001)</th>\n",
+       "      <td id=\"T_37354_row3_col0\" class=\"data row3 col0\" >-0.1061</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th id=\"T_37354_level0_row4\" class=\"row_heading level0 row4\" >CF</th>\n",
+       "      <td id=\"T_37354_row4_col0\" class=\"data row4 col0\" >+0.0447</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th id=\"T_37354_level0_row5\" class=\"row_heading level0 row5\" >Reference</th>\n",
+       "      <td id=\"T_37354_row5_col0\" class=\"data row5 col0\" >+0.0445</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n"
+      ],
+      "text/plain": [
+       "<pandas.io.formats.style.Styler at 0x7f8d07f1bcd0>"
+      ]
+     },
+     "execution_count": 10,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "rows = []\n",
+    "for delta in [0.1, 0.01, 0.001, 0.0001]:\n",
+    "    fd_trial = sa.run(numerical=True, delta=delta)\n",
+    "    rows.append({\"Method\": f\"FD (\\u03b4={delta})\",\n",
+    "                 \"\\u2202\\u03b2/\\u2202\\u03c3_S\": fd_trial[\"S\"][\"std\"]})\n",
+    "rows.append({\"Method\": \"CF\",\n",
+    "             \"\\u2202\\u03b2/\\u2202\\u03c3_S\": cf[\"marginal\"][\"S\"][\"std\"]})\n",
+    "rows.append({\"Method\": \"Reference\",\n",
+    "             \"\\u2202\\u03b2/\\u2202\\u03c3_S\": 0.0445})\n",
+    "\n",
+    "pd.DataFrame(rows).set_index(\"Method\").style.format(\"{:+.4f}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "fd-instability-conclusion",
+   "metadata": {},
+   "source": [
+    "The FD results oscillate as the step size changes, while the\n",
+    "closed-form result matches the analytical reference to four\n",
+    "significant figures.  This demonstrates the advantage of the\n",
+    "closed-form approach for problems with correlated non-normal\n",
+    "variables.\n",
+    "\n",
+    "For **uncorrelated normal** variables, both methods agree closely\n",
+    "because $\\mathbf{R}_0 = \\mathbf{I}$ regardless of marginal parameters\n",
+    "(the second term of Eq. 17 vanishes identically)."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "ex1-header",
+   "metadata": {},
+   "source": [
+    "---\n",
+    "\n",
+    "## CalRel Example (Bourinet 2017, §4.1, Example 1)\n",
+    "\n",
+    "This example, taken from the CalRel software manual (Liu et al., 1989),\n",
+    "has three correlated random variables and a nonlinear limit state\n",
+    "function:\n",
+    "\n",
+    "| Variable | Distribution | Mean $\\mu$ | Std. dev. $\\sigma$ |\n",
+    "|---|---|---|---|\n",
+    "| $X_1$ | Lognormal | 500 | 100 |\n",
+    "| $X_2$ | Lognormal | 2000 | 400 |\n",
+    "| $X_3$ | Uniform | 5 | 0.5 |\n",
+    "\n",
+    "The correlation matrix is:\n",
+    "\n",
+    "$$\n",
+    "\\mathbf{R} = \\begin{pmatrix}\n",
+    "1 & 0.3 & 0.2 \\\\\n",
+    "0.3 & 1 & 0.2 \\\\\n",
+    "0.2 & 0.2 & 1\n",
+    "\\end{pmatrix}\n",
+    "$$\n",
+    "\n",
+    "The limit state function is:\n",
+    "\n",
+    "$$\n",
+    "g(x_1, x_2, x_3) = 1 - \\frac{x_2}{1000 \\, x_3} - \\left(\\frac{x_1}{200 \\, x_3}\\right)^2\n",
+    "$$\n",
+    "\n",
+    "FORM gives $\\beta = 1.7728$ and $p_f^{\\text{FORM}} = 3.81 \\times 10^{-2}$."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "id": "ex1-setup",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-03-15T15:42:35.041134Z",
+     "iopub.status.busy": "2026-03-15T15:42:35.040934Z",
+     "iopub.status.idle": "2026-03-15T15:42:35.049155Z",
+     "shell.execute_reply": "2026-03-15T15:42:35.048583Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "def lsf_calrel(X1, X2, X3):\n",
+    "    return 1 - X2 / (1000 * X3) - (X1 / (200 * X3)) ** 2\n",
+    "\n",
+    "\n",
+    "ls1 = pr.LimitState(lsf_calrel)\n",
+    "\n",
+    "model1 = pr.StochasticModel()\n",
+    "model1.addVariable(pr.Lognormal(\"X1\", 500, 100))\n",
+    "model1.addVariable(pr.Lognormal(\"X2\", 2000, 400))\n",
+    "model1.addVariable(pr.Uniform(\"X3\", 5, 0.5))\n",
+    "\n",
+    "R1 = np.array([\n",
+    "    [1.0, 0.3, 0.2],\n",
+    "    [0.3, 1.0, 0.2],\n",
+    "    [0.2, 0.2, 1.0],\n",
+    "])\n",
+    "model1.setCorrelation(pr.CorrelationMatrix(R1))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "id": "ex1-form",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-03-15T15:42:35.051902Z",
+     "iopub.status.busy": "2026-03-15T15:42:35.051663Z",
+     "iopub.status.idle": "2026-03-15T15:42:35.152045Z",
+     "shell.execute_reply": "2026-03-15T15:42:35.150885Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "==========================================================\n",
+      "FORM\n",
+      "==========================================================\n",
+      "Pf              \t 3.8133894361e-02\n",
+      "BetaHL          \t 1.7727641950\n",
+      "Model Evaluations \t 154\n",
+      "----------------------------------------------------------\n",
+      "Variable   \t    U_star \t       X_star \t     alpha\n",
+      "X1         \t  1.281626 \t   631.952172 \t +0.723158\n",
+      "X2         \t  0.481529 \t  2320.035440 \t +0.271741\n",
+      "X3         \t -1.126170 \t     4.525984 \t -0.634980\n",
+      "==========================================================\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "opts1 = pr.AnalysisOptions()\n",
+    "opts1.setPrintOutput(False)\n",
+    "\n",
+    "form1 = pr.Form(\n",
+    "    stochastic_model=model1,\n",
+    "    limit_state=ls1,\n",
+    "    analysis_options=opts1,\n",
+    ")\n",
+    "form1.run()\n",
+    "form1.showDetailedOutput()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "ex1-sens-md",
+   "metadata": {},
+   "source": [
+    "### Closed-form sensitivities"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "id": "ex1-cf",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-03-15T15:42:35.156962Z",
+     "iopub.status.busy": "2026-03-15T15:42:35.155642Z",
+     "iopub.status.idle": "2026-03-15T15:42:35.305277Z",
+     "shell.execute_reply": "2026-03-15T15:42:35.304745Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "sa1 = pr.SensitivityAnalysis(\n",
+    "    stochastic_model=model1,\n",
+    "    limit_state=ls1,\n",
+    "    analysis_options=opts1,\n",
+    ")\n",
+    "cf1 = sa1.run(numerical=False)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "id": "ex1-cf-results",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-03-15T15:42:35.308488Z",
+     "iopub.status.busy": "2026-03-15T15:42:35.308224Z",
+     "iopub.status.idle": "2026-03-15T15:42:35.469090Z",
+     "shell.execute_reply": "2026-03-15T15:42:35.466846Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<style type=\"text/css\">\n",
+       "</style>\n",
+       "<table id=\"T_f8046\">\n",
+       "  <thead>\n",
+       "    <tr>\n",
+       "      <th class=\"blank level0\" >&nbsp;</th>\n",
+       "      <th id=\"T_f8046_level0_col0\" class=\"col_heading level0 col0\" >Reference</th>\n",
+       "      <th id=\"T_f8046_level0_col1\" class=\"col_heading level0 col1\" >CF</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th class=\"index_name level0\" >Parameter</th>\n",
+       "      <th class=\"blank col0\" >&nbsp;</th>\n",
+       "      <th class=\"blank col1\" >&nbsp;</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th id=\"T_f8046_level0_row0\" class=\"row_heading level0 row0\" >∂β/∂μ_X1</th>\n",
+       "      <td id=\"T_f8046_row0_col0\" class=\"data row0 col0\" >-0.0059</td>\n",
+       "      <td id=\"T_f8046_row0_col1\" class=\"data row0 col1\" >-0.0059</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th id=\"T_f8046_level0_row1\" class=\"row_heading level0 row1\" >∂β/∂σ_X1</th>\n",
+       "      <td id=\"T_f8046_row1_col0\" class=\"data row1 col0\" >-0.0079</td>\n",
+       "      <td id=\"T_f8046_row1_col1\" class=\"data row1 col1\" >-0.0079</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th id=\"T_f8046_level0_row2\" class=\"row_heading level0 row2\" >∂β/∂μ_X2</th>\n",
+       "      <td id=\"T_f8046_row2_col0\" class=\"data row2 col0\" >-0.0009</td>\n",
+       "      <td id=\"T_f8046_row2_col1\" class=\"data row2 col1\" >-0.0009</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th id=\"T_f8046_level0_row3\" class=\"row_heading level0 row3\" >∂β/∂σ_X2</th>\n",
+       "      <td id=\"T_f8046_row3_col0\" class=\"data row3 col0\" >-0.0006</td>\n",
+       "      <td id=\"T_f8046_row3_col1\" class=\"data row3 col1\" >-0.0006</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th id=\"T_f8046_level0_row4\" class=\"row_heading level0 row4\" >∂β/∂μ_X3</th>\n",
+       "      <td id=\"T_f8046_row4_col0\" class=\"data row4 col0\" >+1.2602</td>\n",
+       "      <td id=\"T_f8046_row4_col1\" class=\"data row4 col1\" >+1.2603</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th id=\"T_f8046_level0_row5\" class=\"row_heading level0 row5\" >∂β/∂σ_X3</th>\n",
+       "      <td id=\"T_f8046_row5_col0\" class=\"data row5 col0\" >-1.1942</td>\n",
+       "      <td id=\"T_f8046_row5_col1\" class=\"data row5 col1\" >-1.1948</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n"
+      ],
+      "text/plain": [
+       "<pandas.io.formats.style.Styler at 0x7f8d06f3f820>"
+      ]
+     },
+     "execution_count": 14,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Reference values from Bourinet (2017), Table 2\n",
+    "ref1 = {\n",
+    "    \"X1\": {\"mean\": -0.0059, \"std\": -0.0079},\n",
+    "    \"X2\": {\"mean\": -0.0009, \"std\": -0.0006},\n",
+    "    \"X3\": {\"mean\":  1.2602, \"std\": -1.1942},\n",
+    "}\n",
+    "\n",
+    "rows = []\n",
+    "for var in [\"X1\", \"X2\", \"X3\"]:\n",
+    "    for p in [\"mean\", \"std\"]:\n",
+    "        sym = \"\\u03bc\" if p == \"mean\" else \"\\u03c3\"\n",
+    "        rows.append({\n",
+    "            \"Parameter\": f\"\\u2202\\u03b2/\\u2202{sym}_{var}\",\n",
+    "            \"Reference\": ref1[var][p],\n",
+    "            \"CF\": cf1[\"marginal\"][var][p],\n",
+    "        })\n",
+    "\n",
+    "pd.DataFrame(rows).set_index(\"Parameter\").style.format(\"{:+.4f}\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "id": "ex1-cf-corr",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-03-15T15:42:35.471266Z",
+     "iopub.status.busy": "2026-03-15T15:42:35.471103Z",
+     "iopub.status.idle": "2026-03-15T15:42:35.566889Z",
+     "shell.execute_reply": "2026-03-15T15:42:35.566274Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<style type=\"text/css\">\n",
+       "</style>\n",
+       "<table id=\"T_424a8\">\n",
+       "  <thead>\n",
+       "    <tr>\n",
+       "      <th class=\"blank level0\" >&nbsp;</th>\n",
+       "      <th id=\"T_424a8_level0_col0\" class=\"col_heading level0 col0\" >Reference</th>\n",
+       "      <th id=\"T_424a8_level0_col1\" class=\"col_heading level0 col1\" >CF</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th class=\"index_name level0\" >Parameter</th>\n",
+       "      <th class=\"blank col0\" >&nbsp;</th>\n",
+       "      <th class=\"blank col1\" >&nbsp;</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th id=\"T_424a8_level0_row0\" class=\"row_heading level0 row0\" >∂β/∂ρ(X2,X1)</th>\n",
+       "      <td id=\"T_424a8_row0_col0\" class=\"data row0 col0\" >-0.5151</td>\n",
+       "      <td id=\"T_424a8_row0_col1\" class=\"data row0 col1\" >-0.5150</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th id=\"T_424a8_level0_row1\" class=\"row_heading level0 row1\" >∂β/∂ρ(X3,X1)</th>\n",
+       "      <td id=\"T_424a8_row1_col0\" class=\"data row1 col0\" >+0.8916</td>\n",
+       "      <td id=\"T_424a8_row1_col1\" class=\"data row1 col1\" >+0.8914</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th id=\"T_424a8_level0_row2\" class=\"row_heading level0 row2\" >∂β/∂ρ(X3,X2)</th>\n",
+       "      <td id=\"T_424a8_row2_col0\" class=\"data row2 col0\" >+0.4688</td>\n",
+       "      <td id=\"T_424a8_row2_col1\" class=\"data row2 col1\" >+0.4687</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n"
+      ],
+      "text/plain": [
+       "<pandas.io.formats.style.Styler at 0x7f8d07f1ba30>"
+      ]
+     },
+     "execution_count": 15,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Reference values from Bourinet (2017), Table 3\n",
+    "ref_corr = {\n",
+    "    (1, 0): -0.5151,\n",
+    "    (2, 0):  0.8916,\n",
+    "    (2, 1):  0.4688,\n",
+    "}\n",
+    "\n",
+    "names1 = [\"X1\", \"X2\", \"X3\"]\n",
+    "rows = []\n",
+    "for (i, j), r in ref_corr.items():\n",
+    "    rows.append({\n",
+    "        \"Parameter\": f\"\\u2202\\u03b2/\\u2202\\u03c1({names1[i]},{names1[j]})\",\n",
+    "        \"Reference\": r,\n",
+    "        \"CF\": cf1[\"correlation\"][i, j],\n",
+    "    })\n",
+    "\n",
+    "pd.DataFrame(rows).set_index(\"Parameter\").style.format(\"{:+.4f}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "ex1-notes-md",
+   "metadata": {},
+   "source": [
+    "This example includes a **Uniform** distribution ($X_3$), for which\n",
+    "`dF_dtheta` is evaluated numerically via the base-class finite-difference\n",
+    "fallback.  The closed-form method handles this seamlessly — no\n",
+    "analytical CDF derivative is needed for the Uniform distribution."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "summary-header",
+   "metadata": {},
+   "source": [
+    "---\n",
+    "\n",
+    "## Summary\n",
+    "\n",
+    "| | Finite difference | Closed-form |\n",
+    "|---|---|---|\n",
+    "| **FORM runs** | $2n + 1$ | 1 |\n",
+    "| **Marginal sens.** | Yes | Yes |\n",
+    "| **Correlation sens.** | No | Yes |\n",
+    "| **Accuracy** | Depends on step size $\\delta$ | Exact (up to quadrature) |\n",
+    "| **Stability** | Can be noisy for correlated non-normal variables | Stable |\n",
+    "| **Distribution support** | Any | Any (numerical `dF_dtheta` fallback) |\n",
+    "\n",
+    "**Recommendation:** Use the closed-form method (`numerical=False`)\n",
+    "when accuracy and correlation sensitivities are needed.  The FD\n",
+    "method remains useful as an independent verification tool."
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "pystra",
+   "language": "python",
+   "name": "pystra"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.10.6"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

@@ -1,0 +1,1072 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>pystra.sorm.Sorm &#8212; PySTRA 1.6.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=9bc076a2" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../_static/documentation_options.js?v=72d88caf"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'gen/pystra.sorm.Sorm';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pystra.mc" href="pystra.mc.html" />
+    <link rel="prev" title="pystra.sorm" href="pystra.sorm.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.6.0" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 1.6.0 documentation - Home"/>
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 1.6.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../theory.html">
+    Theoretical Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../developer.html">
+    Instructions for Developers
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../theory.html">
+    Theoretical Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer.html">
+    Instructions for Developers
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.model.html">pystra.model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.model.LimitState.html">pystra.model.LimitState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.model.StochasticModel.html">pystra.model.StochasticModel</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.analysis.html">pystra.analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.analysis.AnalysisObject.html">pystra.analysis.AnalysisObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.analysis.AnalysisOptions.html">pystra.analysis.AnalysisOptions</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.form.html">pystra.form</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.form.Form.html">pystra.form.Form</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="pystra.sorm.html">pystra.sorm</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">pystra.sorm.Sorm</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.mc.html">pystra.mc</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.mc.CrudeMonteCarlo.html">pystra.mc.CrudeMonteCarlo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.mc.DistributionAnalysis.html">pystra.mc.DistributionAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.mc.ImportanceSampling.html">pystra.mc.ImportanceSampling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.mc.MonteCarlo.html">pystra.mc.MonteCarlo</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.ls.html">pystra.ls</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.ls.LineSampling.html">pystra.ls.LineSampling</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.ss.html">pystra.ss</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.ss.SubsetSimulation.html">pystra.ss.SubsetSimulation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.sensitivity.html">pystra.sensitivity</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.sensitivity.SensitivityAnalysis.html">pystra.sensitivity.SensitivityAnalysis</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.transformation.html">pystra.transformation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.transformation.Transformation.html">pystra.transformation.Transformation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.correlation.html">pystra.correlation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.correlation.absoluteIntegralValue.html">pystra.correlation.absoluteIntegralValue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.correlation.computeModifiedCorrelationMatrix.html">pystra.correlation.computeModifiedCorrelationMatrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.correlation.setModifiedCorrelationMatrix.html">pystra.correlation.setModifiedCorrelationMatrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.correlation.CorrelationMatrix.html">pystra.correlation.CorrelationMatrix</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.integration.html">pystra.integration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.integration.drho0_dtheta.html">pystra.integration.drho0_dtheta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.integration.drho_drho0.html">pystra.integration.drho_drho0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.integration.rho_integral.html">pystra.integration.rho_integral</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.integration.zi_and_xi.html">pystra.integration.zi_and_xi</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.quadrature.html">pystra.quadrature</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.quadrature.quadratureRule.html">pystra.quadrature.quadratureRule</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.loadcomb.html">pystra.loadcomb</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.loadcomb.LoadCombination.html">pystra.loadcomb.LoadCombination</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.calibration.html">pystra.calibration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.calibration.Calibration.html">pystra.calibration.Calibration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.calibration.GenericCalibration.html">pystra.calibration.GenericCalibration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.calibration.GenericModel.html">pystra.calibration.GenericModel</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="pystra.distributions.html">pystra.distributions</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.distributions.beta.html">pystra.distributions.beta</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.chisquare.html">pystra.distributions.chisquare</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.chisquare.ChiSquare.html">pystra.distributions.chisquare.ChiSquare</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.distribution.html">pystra.distributions.distribution</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.distribution.Constant.html">pystra.distributions.distribution.Constant</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.distribution.Distribution.html">pystra.distributions.distribution.Distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.distribution.StdNormal.html">pystra.distributions.distribution.StdNormal</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.distributions.gamma.html">pystra.distributions.gamma</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.gev.html">pystra.distributions.gev</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.gev.GEVmax.html">pystra.distributions.gev.GEVmax</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.gev.GEVmin.html">pystra.distributions.gev.GEVmin</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.distributions.gumbel.html">pystra.distributions.gumbel</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.lognormal.html">pystra.distributions.lognormal</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.lognormal.Lognormal.html">pystra.distributions.lognormal.Lognormal</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.maximum.html">pystra.distributions.maximum</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.maximum.Maximum.html">pystra.distributions.maximum.Maximum</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.normal.html">pystra.distributions.normal</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.normal.Normal.html">pystra.distributions.normal.Normal</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.parent.html">pystra.distributions.parent</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.parent.MaxParent.html">pystra.distributions.parent.MaxParent</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.scipydist.html">pystra.distributions.scipydist</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.scipydist.ScipyDist.html">pystra.distributions.scipydist.ScipyDist</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.shiftedexponential.html">pystra.distributions.shiftedexponential</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.shiftedexponential.ShiftedExponential.html">pystra.distributions.shiftedexponential.ShiftedExponential</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.shiftedlognormal.html">pystra.distributions.shiftedlognormal</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.shiftedlognormal.ShiftedLognormal.html">pystra.distributions.shiftedlognormal.ShiftedLognormal</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.shiftedrayleigh.html">pystra.distributions.shiftedrayleigh</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.shiftedrayleigh.ShiftedRayleigh.html">pystra.distributions.shiftedrayleigh.ShiftedRayleigh</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.typeiiismallestvalue.html">pystra.distributions.typeiiismallestvalue</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.typeiiismallestvalue.TypeIIIsmallestValue.html">pystra.distributions.typeiiismallestvalue.TypeIIIsmallestValue</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.typeiilargestvalue.html">pystra.distributions.typeiilargestvalue</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.typeiilargestvalue.TypeIIlargestValue.html">pystra.distributions.typeiilargestvalue.TypeIIlargestValue</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.typeilargestvalue.html">pystra.distributions.typeilargestvalue</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.typeilargestvalue.TypeIlargestValue.html">pystra.distributions.typeilargestvalue.TypeIlargestValue</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.typeismallestvalue.html">pystra.distributions.typeismallestvalue</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.typeismallestvalue.TypeIsmallestValue.html">pystra.distributions.typeismallestvalue.TypeIsmallestValue</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.distributions.uniform.html">pystra.distributions.uniform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.distributions.weibull.html">pystra.distributions.weibull</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.zeroinflated.html">pystra.distributions.zeroinflated</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.distributions.zeroinflated.ZeroInflated.html">pystra.distributions.zeroinflated.ZeroInflated</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../api.html" class="nav-link">API Reference</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="pystra.sorm.html" class="nav-link">pystra.sorm</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">pystra.sorm.Sorm</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="pystra-sorm-sorm">
+<h1>pystra.sorm.Sorm<a class="headerlink" href="#pystra-sorm-sorm" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pystra.sorm.Sorm">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Sorm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stochastic_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analysis_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">form</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/sorm.html#Sorm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.sorm.Sorm" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pystra.analysis.AnalysisObject.html#pystra.analysis.AnalysisObject" title="pystra.analysis.AnalysisObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisObject</span></code></a></p>
+<p>Second Order Reliability Method (SORM).</p>
+<p>Approximates the failure surface in standard normal space using a
+quadratic surface, improving on the linear FORM approximation. Two
+approaches are available:</p>
+<p><strong>Curve-fitting</strong> (<code class="docutils literal notranslate"><span class="pre">fit_type='cf'</span></code>, default): computes the Hessian of
+the limit state function at the design point, extracts principal
+curvatures as eigenvalues, and applies the Breitung formula.</p>
+<p><strong>Point-fitting</strong> (<code class="docutils literal notranslate"><span class="pre">fit_type='pf'</span></code>): locates fitting points directly
+on the failure surface on both sides of each principal axis using Newton
+iteration, then computes curvatures from their positions. This yields
+asymmetric curvatures (different on the positive and negative sides of
+each axis).</p>
+<p>Both methods report the Breitung <a class="reference internal" href="../references.html#breitung1984" id="id1"><span>[Breitung1984]</span></a> and the
+Hohenbichler-Rackwitz <a class="reference internal" href="../references.html#hohenbichler1988" id="id2"><span>[Hohenbichler1988]</span></a> failure probabilities and
+generalised reliability indices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stochastic_model</strong> (<a class="reference internal" href="pystra.model.StochasticModel.html#pystra.model.StochasticModel" title="pystra.model.StochasticModel"><em>StochasticModel</em></a><em>, </em><em>optional</em>) – The stochastic model with random variables and correlations.</p></li>
+<li><p><strong>limit_state</strong> (<a class="reference internal" href="pystra.model.LimitState.html#pystra.model.LimitState" title="pystra.model.LimitState"><em>LimitState</em></a><em>, </em><em>optional</em>) – The limit state function.</p></li>
+<li><p><strong>analysis_options</strong> (<a class="reference internal" href="pystra.analysis.AnalysisOptions.html#pystra.analysis.AnalysisOptions" title="pystra.analysis.AnalysisOptions"><em>AnalysisOptions</em></a><em>, </em><em>optional</em>) – Options controlling the analysis.</p></li>
+<li><p><strong>form</strong> (<a class="reference internal" href="pystra.form.Form.html#pystra.form.Form" title="pystra.form.Form"><em>Form</em></a><em>, </em><em>optional</em>) – A pre-computed FORM result. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, FORM is run automatically.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.sorm.Sorm.betaHL">
+<span class="sig-name descname"><span class="pre">betaHL</span></span><a class="headerlink" href="#pystra.sorm.Sorm.betaHL" title="Link to this definition">#</a></dt>
+<dd><p>Hasofer-Lind reliability index (from FORM).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float or ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.sorm.Sorm.kappa">
+<span class="sig-name descname"><span class="pre">kappa</span></span><a class="headerlink" href="#pystra.sorm.Sorm.kappa" title="Link to this definition">#</a></dt>
+<dd><p>Principal curvatures. For curve-fitting, a 1-D array of length
+<code class="docutils literal notranslate"><span class="pre">nrv</span> <span class="pre">-</span> <span class="pre">1</span></code>. For point-fitting, the sorted average of the positive
+and negative curvatures.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.sorm.Sorm.kappa_pf">
+<span class="sig-name descname"><span class="pre">kappa_pf</span></span><a class="headerlink" href="#pystra.sorm.Sorm.kappa_pf" title="Link to this definition">#</a></dt>
+<dd><p>Asymmetric curvatures from point-fitting, shape <code class="docutils literal notranslate"><span class="pre">(2,</span> <span class="pre">nrv</span> <span class="pre">-</span> <span class="pre">1)</span></code>
+with rows <code class="docutils literal notranslate"><span class="pre">[kappa_minus,</span> <span class="pre">kappa_plus]</span></code>. <code class="docutils literal notranslate"><span class="pre">None</span></code> for curve-fitting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.sorm.Sorm.fit_type">
+<span class="sig-name descname"><span class="pre">fit_type</span></span><a class="headerlink" href="#pystra.sorm.Sorm.fit_type" title="Link to this definition">#</a></dt>
+<dd><p>The fitting method used: <code class="docutils literal notranslate"><span class="pre">'cf'</span></code>, <code class="docutils literal notranslate"><span class="pre">'pf'</span></code>, or <code class="docutils literal notranslate"><span class="pre">None</span></code> if not
+yet run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.sorm.Sorm.pf2_breitung">
+<span class="sig-name descname"><span class="pre">pf2_breitung</span></span><a class="headerlink" href="#pystra.sorm.Sorm.pf2_breitung" title="Link to this definition">#</a></dt>
+<dd><p>Failure probability from the Breitung approximation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float or ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.sorm.Sorm.betag_breitung">
+<span class="sig-name descname"><span class="pre">betag_breitung</span></span><a class="headerlink" href="#pystra.sorm.Sorm.betag_breitung" title="Link to this definition">#</a></dt>
+<dd><p>Generalised reliability index from the Breitung approximation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float or ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.sorm.Sorm.pf2_breitung_m">
+<span class="sig-name descname"><span class="pre">pf2_breitung_m</span></span><a class="headerlink" href="#pystra.sorm.Sorm.pf2_breitung_m" title="Link to this definition">#</a></dt>
+<dd><p>Failure probability from the modified Breitung (Hohenbichler-Rackwitz).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float or ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.sorm.Sorm.betag_breitung_m">
+<span class="sig-name descname"><span class="pre">betag_breitung_m</span></span><a class="headerlink" href="#pystra.sorm.Sorm.betag_breitung_m" title="Link to this definition">#</a></dt>
+<dd><p>Generalised reliability index from the modified Breitung.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float or ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Class constructor</p>
+<p class="rubric">Methods</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.sorm.Sorm.computeHessian" title="pystra.sorm.Sorm.computeHessian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeHessian</span></code></a></p></td>
+<td><p>Computes the matrix of second derivatives using forward finite difference, using the evaluation of the gradient already done for FORM, at the design point</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.sorm.Sorm.evaluateLSF" title="pystra.sorm.Sorm.evaluateLSF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluateLSF</span></code></a></p></td>
+<td><p>For use in computing the Hessian without altering the FORM object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.sorm.Sorm.gram_schmidt" title="pystra.sorm.Sorm.gram_schmidt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gram_schmidt</span></code></a></p></td>
+<td><p>Creates an orthonormal matrix using the modified Gram-Schmidt process.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.sorm.Sorm.init_run" title="pystra.sorm.Sorm.init_run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_run</span></code></a></p></td>
+<td><p>Initialise the Nataf transformation before the analysis loop.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.sorm.Sorm.orthonormal_matrix" title="pystra.sorm.Sorm.orthonormal_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orthonormal_matrix</span></code></a></p></td>
+<td><p>Computes the rotation matrix of the standard normal coordinate space where the design point is located at Beta along the last axis.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.sorm.Sorm.pf_breitung" title="pystra.sorm.Sorm.pf_breitung"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pf_breitung</span></code></a></p></td>
+<td><p>Calculates the probability of failure and generalized reliability index using <a class="reference internal" href="../references.html#breitung1984" id="id3"><span>[Breitung1984]</span></a> formula.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.sorm.Sorm.pf_breitung_m" title="pystra.sorm.Sorm.pf_breitung_m"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pf_breitung_m</span></code></a></p></td>
+<td><p>Calculates the probability of failure and generalized reliability index using Brietung's formula (<a class="reference internal" href="../references.html#breitung1984" id="id4"><span>[Breitung1984]</span></a>) as modified by Hohenbichler and Rackwitz <a class="reference internal" href="../references.html#hohenbichler1988" id="id5"><span>[Hohenbichler1988]</span></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.sorm.Sorm.run" title="pystra.sorm.Sorm.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a></p></td>
+<td><p>Run SORM analysis.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.sorm.Sorm.run_curvefit" title="pystra.sorm.Sorm.run_curvefit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_curvefit</span></code></a></p></td>
+<td><p>Run SORM analysis using curve fitting</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.sorm.Sorm.run_pointfit" title="pystra.sorm.Sorm.run_pointfit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_pointfit</span></code></a></p></td>
+<td><p>Run SORM analysis using point-fitting.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.sorm.Sorm.showDetailedOutput" title="pystra.sorm.Sorm.showDetailedOutput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">showDetailedOutput</span></code></a></p></td>
+<td><p>Print detailed FORM/SORM comparison to the console.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.sorm.Sorm.showResults" title="pystra.sorm.Sorm.showResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">showResults</span></code></a></p></td>
+<td><p>Print a compact summary of the SORM results.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.sorm.Sorm.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fit_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cf'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/sorm.html#Sorm.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.sorm.Sorm.run" title="Link to this definition">#</a></dt>
+<dd><p>Run SORM analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fit_type</strong> (<em>{'cf'</em><em>, </em><em>'pf'}</em><em>, </em><em>optional</em>) – <p>Fitting method to use (default <code class="docutils literal notranslate"><span class="pre">'cf'</span></code>):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'cf'</span></code> — Curve-fitting via Hessian eigenvalues.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'pf'</span></code> — Point-fitting via Newton iteration on the failure
+surface.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If <em>fit_type</em> is not <code class="docutils literal notranslate"><span class="pre">'cf'</span></code> or <code class="docutils literal notranslate"><span class="pre">'pf'</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.sorm.Sorm.run_curvefit">
+<span class="sig-name descname"><span class="pre">run_curvefit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/sorm.html#Sorm.run_curvefit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.sorm.Sorm.run_curvefit" title="Link to this definition">#</a></dt>
+<dd><p>Run SORM analysis using curve fitting</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.sorm.Sorm.run_pointfit">
+<span class="sig-name descname"><span class="pre">run_pointfit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/sorm.html#Sorm.run_pointfit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.sorm.Sorm.run_pointfit" title="Link to this definition">#</a></dt>
+<dd><p>Run SORM analysis using point-fitting.</p>
+<p>Finds fitting points on the limit state surface on both the positive
+and negative sides of each principal axis in the rotated standard
+normal space.  Curvatures are computed from the positions of these
+points, producing asymmetric curvatures that are stored in
+<a class="reference internal" href="#pystra.sorm.Sorm.kappa_pf" title="pystra.sorm.Sorm.kappa_pf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">kappa_pf</span></code></a>.</p>
+<p>The generalized Breitung formula for asymmetric curvatures is:</p>
+<div class="math notranslate nohighlight">
+\[p_{f2} = \Phi(-\beta) \prod_{i=1}^{n-1} \frac{1}{2}
+\left[ (1 + \beta \kappa_i^+)^{-1/2}
+      + (1 + \beta \kappa_i^-)^{-1/2} \right]\]</div>
+<p class="rubric">Notes</p>
+<p>Based on the point-fitting implementation contributed by
+Henry Nguyen (Monash University, PR #65).</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#pystra.sorm.Sorm.run_curvefit" title="pystra.sorm.Sorm.run_curvefit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_curvefit</span></code></a></dt><dd><p>Alternative SORM approach using Hessian eigenvalues.</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.sorm.Sorm.pf_breitung">
+<span class="sig-name descname"><span class="pre">pf_breitung</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kappa</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/sorm.html#Sorm.pf_breitung"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.sorm.Sorm.pf_breitung" title="Link to this definition">#</a></dt>
+<dd><p>Calculates the probability of failure and generalized reliability
+index using <a class="reference internal" href="../references.html#breitung1984" id="id6"><span>[Breitung1984]</span></a> formula. This formula is good for higher
+values of beta.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.sorm.Sorm.pf_breitung_m">
+<span class="sig-name descname"><span class="pre">pf_breitung_m</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kappa</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/sorm.html#Sorm.pf_breitung_m"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.sorm.Sorm.pf_breitung_m" title="Link to this definition">#</a></dt>
+<dd><p>Calculates the probability of failure and generalized reliability
+index using Brietung’s formula (<a class="reference internal" href="../references.html#breitung1984" id="id7"><span>[Breitung1984]</span></a>) as modified by Hohenbichler and
+Rackwitz <a class="reference internal" href="../references.html#hohenbichler1988" id="id8"><span>[Hohenbichler1988]</span></a>. This formula is better for lower values of beta.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.sorm.Sorm.showResults">
+<span class="sig-name descname"><span class="pre">showResults</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/sorm.html#Sorm.showResults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.sorm.Sorm.showResults" title="Link to this definition">#</a></dt>
+<dd><p>Print a compact summary of the SORM results.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.sorm.Sorm.showDetailedOutput">
+<span class="sig-name descname"><span class="pre">showDetailedOutput</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/sorm.html#Sorm.showDetailedOutput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.sorm.Sorm.showDetailedOutput" title="Link to this definition">#</a></dt>
+<dd><p>Print detailed FORM/SORM comparison to the console.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.sorm.Sorm.computeHessian">
+<span class="sig-name descname"><span class="pre">computeHessian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diff_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/sorm.html#Sorm.computeHessian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.sorm.Sorm.computeHessian" title="Link to this definition">#</a></dt>
+<dd><p>Computes the matrix of second derivatives using forward finite
+difference, using the evaluation of the gradient already done
+for FORM, at the design point</p>
+<p>Could use numdifftools as external library instead</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.sorm.Sorm.evaluateLSF">
+<span class="sig-name descname"><span class="pre">evaluateLSF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_gradient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_space</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/sorm.html#Sorm.evaluateLSF"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.sorm.Sorm.evaluateLSF" title="Link to this definition">#</a></dt>
+<dd><p>For use in computing the Hessian without altering the FORM object.
+Considers the coord transform so the limit state function is evaluated
+in physical coordinates, but gradient returned in u-space.</p>
+<p>This code already in FORM, and a more integrated approach would put
+this in a base class for common use.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.sorm.Sorm.orthonormal_matrix">
+<span class="sig-name descname"><span class="pre">orthonormal_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/sorm.html#Sorm.orthonormal_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.sorm.Sorm.orthonormal_matrix" title="Link to this definition">#</a></dt>
+<dd><p>Computes the rotation matrix of the standard normal coordinate
+space where the design point is located at Beta along the last
+axis.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.sorm.Sorm.gram_schmidt">
+<span class="sig-name descname"><span class="pre">gram_schmidt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/sorm.html#Sorm.gram_schmidt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.sorm.Sorm.gram_schmidt" title="Link to this definition">#</a></dt>
+<dd><p>Creates an orthonormal matrix using the modified Gram-Schmidt process.
+Note that QR decomposition doesn’t work for this application; while
+it does return an orthonormal matrix, the signs are different
+to the modified Gram Schmidt. The signs should be arbitrary, but the
+resulting rotation matrix does care cabout the signs of the Q, since
+it is based on the correct direction of the beta vector [Madsen1986]</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.sorm.Sorm.init_run">
+<span class="sig-name descname"><span class="pre">init_run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.sorm.Sorm.init_run" title="Link to this definition">#</a></dt>
+<dd><p>Initialise the Nataf transformation before the analysis loop.</p>
+<p>Computes the modified (Nataf) correlation matrix and its
+factorisation.  Must be called at the start of every
+<code class="docutils literal notranslate"><span class="pre">run()</span></code> method in subclasses.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="pystra.sorm.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">pystra.sorm</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="pystra.mc.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">pystra.mc</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.sorm.Sorm"><code class="docutils literal notranslate"><span class="pre">Sorm</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.sorm.Sorm.betaHL"><code class="docutils literal notranslate"><span class="pre">Sorm.betaHL</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.sorm.Sorm.kappa"><code class="docutils literal notranslate"><span class="pre">Sorm.kappa</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.sorm.Sorm.kappa_pf"><code class="docutils literal notranslate"><span class="pre">Sorm.kappa_pf</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.sorm.Sorm.fit_type"><code class="docutils literal notranslate"><span class="pre">Sorm.fit_type</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.sorm.Sorm.pf2_breitung"><code class="docutils literal notranslate"><span class="pre">Sorm.pf2_breitung</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.sorm.Sorm.betag_breitung"><code class="docutils literal notranslate"><span class="pre">Sorm.betag_breitung</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.sorm.Sorm.pf2_breitung_m"><code class="docutils literal notranslate"><span class="pre">Sorm.pf2_breitung_m</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.sorm.Sorm.betag_breitung_m"><code class="docutils literal notranslate"><span class="pre">Sorm.betag_breitung_m</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.sorm.Sorm.run"><code class="docutils literal notranslate"><span class="pre">Sorm.run()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.sorm.Sorm.run_curvefit"><code class="docutils literal notranslate"><span class="pre">Sorm.run_curvefit()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.sorm.Sorm.run_pointfit"><code class="docutils literal notranslate"><span class="pre">Sorm.run_pointfit()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.sorm.Sorm.pf_breitung"><code class="docutils literal notranslate"><span class="pre">Sorm.pf_breitung()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.sorm.Sorm.pf_breitung_m"><code class="docutils literal notranslate"><span class="pre">Sorm.pf_breitung_m()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.sorm.Sorm.showResults"><code class="docutils literal notranslate"><span class="pre">Sorm.showResults()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.sorm.Sorm.showDetailedOutput"><code class="docutils literal notranslate"><span class="pre">Sorm.showDetailedOutput()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.sorm.Sorm.computeHessian"><code class="docutils literal notranslate"><span class="pre">Sorm.computeHessian()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.sorm.Sorm.evaluateLSF"><code class="docutils literal notranslate"><span class="pre">Sorm.evaluateLSF()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.sorm.Sorm.orthonormal_matrix"><code class="docutils literal notranslate"><span class="pre">Sorm.orthonormal_matrix()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.sorm.Sorm.gram_schmidt"><code class="docutils literal notranslate"><span class="pre">Sorm.gram_schmidt()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.sorm.Sorm.init_run"><code class="docutils literal notranslate"><span class="pre">Sorm.init_run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/pystra/pystra/edit/main/docs/source/gen/pystra.sorm.Sorm.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2021-2026, The PySTRA Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
