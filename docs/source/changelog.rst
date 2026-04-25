@@ -5,6 +5,21 @@ All notable changes to Pystra are documented here.
 
 The format follows `Keep a Changelog <https://keepachangelog.com/>`_.
 
+Unreleased
+----------
+
+Added
+~~~~~
+- ``pystra.system`` module for composing named component limit states into
+  nested series, parallel, k-of-n, cut-set, and tie-set system limit states.
+- ``pystra.ditlevsen_bounds`` for second-order bounds from component event
+  probabilities and pairwise intersections.
+- System reliability documentation covering scope, usage, and the split
+  between physical-space system composition and isoprobabilistic
+  transformations.
+- System reliability tutorial notebook and theory content with classical
+  benchmark references.
+
 v1.6.0 (2026-03-16)
 --------------------
 

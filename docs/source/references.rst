@@ -16,6 +16,8 @@ References
 
 .. [Melchers1999] Melchers, R. E. (1999). Structural Reliability Analysis and Prediction. Second edition. Chichester, UK: John Wiley and Sons. isbn: 9780471987710.
 
+.. [Meinen2025] Meinen, N. E. (2025). "Application of the Rosenblatt transformation in First-Order System Reliability approximations". In: Structural Safety Vol 112, 102521. `doi:10.1016/j.strusafe.2024.102521 <https://doi.org/10.1016/j.strusafe.2024.102521>`_.
+
 .. [Hohenbichler1988] Hohenbichler, M. & Rackwitz, R. 1988 Improvement of second-order reliability estimates by importance sampling. J. Eng. Mech. ASCE 14, 2195–2199.
 
 .. [Langtangen2009] Hans Petter Langtangen. Python Scripting for Computational Science. Springer-Verlag, 2009.
@@ -27,6 +29,8 @@ References
 .. [Nowak2000] Nowak, Andrzej S. and Kevin R. Collins (2000). Reliability of Structures. first edition. McGraw-Hill civil engineering series. McGraw-Hill Higher Education. isbn: 9780070481633.
 
 .. [Ditlevsen2007] Ditlevsen, Ove and Henrik O. Madsen (2007). Structural Reliability Methods. Internet edition 2.3.7. published online. Chichester, UK: John Wiley and Sons.
+
+.. [Ditlevsen1979] Ditlevsen, O. (1979). "Narrow reliability bounds for structural systems". Journal of Structural Mechanics, 7(4), 435-451. `doi:10.1080/03601217908905328 <https://doi.org/10.1080/03601217908905328>`_.
 
 .. [Baker2010] Baker, Jack (2010). CEE 204: Structrual Reliability. Lecture notes. Stanford University.
 
@@ -56,5 +60,10 @@ References
 
 .. [Moustapha2022] Moustapha, M., Marelli, S., & Sudret, B. (2022). Active learning for structural reliability: Survey, general framework and benchmark. Structural Safety, 96, 102174.
 
-.. [Schueremans2005] Schueremans, L. & Van Gemert, D. (2005). Benefit of splines and neural networks in simulation based structural reliability analysis. Structural Safety, 27(3), 246–261.
+.. [Schueremans2005] Schueremans, L. & Van Gemert, D. (2005). "Benefit of splines and neural networks in simulation based structural reliability analysis". Structural Safety, 27(3), 246-261. `doi:10.1016/j.strusafe.2004.11.001 <https://doi.org/10.1016/j.strusafe.2004.11.001>`_.
 
+.. [Maincon2000] Mainçon, P. (2000). "A first order reliability method for series systems". Structural Safety, 22(1), 5-26. `doi:10.1016/S0167-4730(99)00036-3 <https://doi.org/10.1016/S0167-4730(99)00036-3>`_.
+
+.. [Song2003] Song, J. and Der Kiureghian, A. (2003). "Bounds on system reliability by linear programming". Journal of Engineering Mechanics, 129(6), 627-636. `doi:10.1061/(ASCE)0733-9399(2003)129:6(627) <https://doi.org/10.1061/(ASCE)0733-9399(2003)129:6(627)>`_.
+
+.. [Daniels1945] Daniels, H. E. (1945). "The statistical theory of the strength of bundles of threads. I". Proceedings of the Royal Society of London. Series A, Mathematical and Physical Sciences, 183(995), 405-435. `doi:10.1098/rspa.1945.0011 <https://doi.org/10.1098/rspa.1945.0011>`_.

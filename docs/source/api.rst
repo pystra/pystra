@@ -15,6 +15,7 @@ Core Framework
 
     pystra.model
     pystra.analysis
+    pystra.system
 
 Reliability Methods
 -------------------

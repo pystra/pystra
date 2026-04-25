@@ -14,6 +14,7 @@ can also be found on the `Python documentation`_ page.
 
     notebooks/ex_intro
     notebooks/ex_simulation
+    notebooks/ex_system_reliability
     notebooks/ex_scipy_distributions
     notebooks/ex_active_learning
     notebooks/ex_sensitivity
