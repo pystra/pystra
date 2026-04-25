@@ -63,12 +63,15 @@ class Maximum(Distribution):
         """
         inverse cumulative distribution function
         """
+        scalar_input = np.isscalar(p)
         p = np.atleast_1d(p)
         x = np.zeros_like(p)
         x0 = self.parent.mean
         for i, p_val in enumerate(p):
             par = opt.fmin(self.zero_distn, x0, args=(p_val,), disp=False)
             x[i] = par[0]
+        if scalar_input:
+            return x.item()
         return x
 
     def u_to_x(self, u):

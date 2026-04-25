@@ -52,26 +52,33 @@ class ZeroInflated(Distribution):
         """
         Probability density function
         """
+        scalar_input = np.isscalar(x)
         x = np.atleast_1d(x)
         zipdf = self.dist.pdf(x) * self.q
         indx = (x > -self.zero_tol) & (x < self.zero_tol)
         zipdf[indx] += self.p
+        if scalar_input:
+            return zipdf.item()
         return zipdf
 
     def cdf(self, x):
         """
         Cumulative distribution function
         """
+        scalar_input = np.isscalar(x)
         x = np.atleast_1d(x)
         zicdf = self.dist.cdf(x) * self.q
         indx = x > -self.zero_tol
         zicdf[indx] += self.p
+        if scalar_input:
+            return zicdf.item()
         return zicdf
 
     def ppf(self, p):
         """
         inverse cumulative distribution function
         """
+        scalar_input = np.isscalar(p)
         p = np.atleast_1d(p)
         x = np.zeros_like(p)
 
@@ -88,6 +95,8 @@ class ZeroInflated(Distribution):
         # values above zero
         indx = p >= qp0p
         x[indx] = self.dist.ppf((p[indx] - self.p) / self.q)
+        if scalar_input:
+            return x.item()
         return x
 
     def u_to_x(self, u):

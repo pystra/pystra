@@ -284,6 +284,11 @@ class TestMaximum:
         assert pytest.approx(d.cdf(x), abs=1e-6) == parent.cdf(x)
         assert pytest.approx(d.pdf(x), abs=1e-6) == parent.pdf(x)
 
+    def test_scalar_u_to_x_returns_scalar(self):
+        parent = Normal("N", 10, 2)
+        d = Maximum("Max", parent, N=3)
+        assert np.isscalar(d.u_to_x(0.0))
+
     def test_invalid_parent_raises(self):
         with pytest.raises(Exception):
             Maximum("Max", "not_a_dist", N=5)
@@ -307,6 +312,11 @@ class TestMaxParent:
         d = MaxParent("MP", max_dist, N=5)
         x = 1.0
         assert pytest.approx(d.cdf(x), abs=1e-6) == max_dist.cdf(x) ** (1 / 5)
+
+    def test_scalar_u_to_x_returns_scalar(self):
+        max_dist = Gumbel("G", 10, 2)
+        d = MaxParent("MP", max_dist, N=5)
+        assert np.isscalar(d.u_to_x(0.0))
 
     def test_invalid_input_raises(self):
         with pytest.raises(Exception):
@@ -374,6 +384,7 @@ class TestZeroInflated:
         base = Normal("N", 5, 1)
         d = ZeroInflated("ZN", base, p=0.5)
         assert pytest.approx(d.pdf(0), abs=1e-4) == 0.5
+        assert np.isscalar(d.pdf(0))
 
     def test_cdf_monotonic(self):
         base = Normal("N", 5, 1)
@@ -381,6 +392,14 @@ class TestZeroInflated:
         x_vals = np.linspace(-3, 15, 100)
         cdf_vals = d.cdf(x_vals)
         assert np.all(np.diff(cdf_vals) >= -1e-10)
+
+    def test_scalar_transformations_return_scalars(self):
+        base = Normal("N", 5, 1)
+        d = ZeroInflated("ZN", base, p=0.3)
+        assert np.isscalar(d.cdf(5.0))
+        assert np.isscalar(d.ppf(0.8))
+        assert np.isscalar(d.u_to_x(0.0))
+        assert np.isscalar(d.x_to_u(5.0))
 
     def test_ppf_cdf_roundtrip(self):
         base = Normal("N", 5, 1)

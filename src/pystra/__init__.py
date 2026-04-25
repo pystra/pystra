@@ -58,5 +58,6 @@ from .sensitivity import *
 from .activelearning import *
 
 # Calibration
+from .fbc import *
 from .loadcomb import *
 from .calibration import *
