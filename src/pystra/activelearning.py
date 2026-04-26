@@ -29,10 +29,11 @@ from abc import ABC, abstractmethod
 
 import numpy as np
 from scipy.stats import norm as scipy_norm
-from sklearn.gaussian_process import GaussianProcessRegressor
-from sklearn.gaussian_process.kernels import Matern, ConstantKernel
 
 from .analysis import AnalysisObject
+
+
+_AL_EXTRA_MSG = "Install the active learning extra with: pip install pystra[al]"
 
 
 # ======================================================================
@@ -91,6 +92,15 @@ class KrigingSurrogate(Surrogate):
     """
 
     def __init__(self, n_restarts=5, noise=1e-10):
+        try:
+            from sklearn.gaussian_process import GaussianProcessRegressor
+            from sklearn.gaussian_process.kernels import ConstantKernel, Matern
+        except ImportError as exc:
+            raise ImportError(
+                "The 'scikit-learn' package is required for Kriging active "
+                f"learning. {_AL_EXTRA_MSG}"
+            ) from exc
+
         kernel = ConstantKernel(1.0) * Matern(length_scale=1.0, nu=2.5)
         self._gpr = GaussianProcessRegressor(
             kernel=kernel,
@@ -134,7 +144,7 @@ class PCESurrogate(Surrogate):
 
     Notes
     -----
-    Requires the ``chaospy`` package (``pip install chaospy``).
+    Requires the active learning extra (``pip install pystra[al]``).
     """
 
     def __init__(self, degree=3):
@@ -142,8 +152,8 @@ class PCESurrogate(Surrogate):
             import chaospy
         except ImportError:
             raise ImportError(
-                "The 'chaospy' package is required for PCE surrogate. "
-                "Install it with: pip install chaospy"
+                "The 'chaospy' package is required for PCE active learning. "
+                f"{_AL_EXTRA_MSG}"
             )
         self.degree = degree
         self._poly = None

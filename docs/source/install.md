@@ -18,6 +18,11 @@ The easiest way to install `Pystra` is from PyPI: ::
 
     pip install pystra
 
+Active learning reliability methods require optional surrogate-modelling
+dependencies. Install them with: ::
+
+    pip install "pystra[al]"
+
 For users wishing to develop: ::
 
     git clone https://github.com/pystra/pystra.git
@@ -40,4 +45,3 @@ Bugs and feature requests
 -------------------------
 Report problems with the installation, bugs in the code, or feature
 requests at the `issue tracker <https://github.com/pystra/pystra/issues>`_.
-

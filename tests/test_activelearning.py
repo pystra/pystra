@@ -26,6 +26,7 @@ Moustapha, M. et al. (2022). Active learning for structural reliability:
 import numpy as np
 import pytest
 import pystra as ra
+from pystra.activelearning import ActiveLearning
 
 
 # ---------------------------------------------------------------------------
@@ -136,7 +137,7 @@ class TestBenchmarkRSSum:
         np.random.seed(42)
         model, limit_state, options = rs_sum_model()
 
-        al = ra.ActiveLearning(
+        al = ActiveLearning(
             analysis_options=options,
             stochastic_model=model,
             limit_state=limit_state,
@@ -173,7 +174,7 @@ class TestBenchmarkFourBranch:
         np.random.seed(42)
         model, limit_state, options = fourbranch_model()
 
-        al = ra.ActiveLearning(
+        al = ActiveLearning(
             analysis_options=options,
             stochastic_model=model,
             limit_state=limit_state,
@@ -196,7 +197,7 @@ class TestBenchmarkFourBranch:
         np.random.seed(42)
         model, limit_state, options = rs_sum_model()
 
-        al = ra.ActiveLearning(
+        al = ActiveLearning(
             analysis_options=options,
             stochastic_model=model,
             limit_state=limit_state,
@@ -230,7 +231,7 @@ class TestBenchmarkBeam:
         np.random.seed(42)
         model, limit_state, options = simply_supported_beam_model()
 
-        al = ra.ActiveLearning(
+        al = ActiveLearning(
             analysis_options=options,
             stochastic_model=model,
             limit_state=limit_state,
@@ -260,7 +261,7 @@ class TestActiveLearningPCE:
         np.random.seed(42)
         model, limit_state, options = rs_sum_model()
 
-        al = ra.ActiveLearning(
+        al = ActiveLearning(
             analysis_options=options,
             stochastic_model=model,
             limit_state=limit_state,
@@ -289,7 +290,7 @@ class TestActiveLearningAPI:
         np.random.seed(42)
         model, limit_state, options = rs_sum_model()
 
-        al = ra.ActiveLearning(
+        al = ActiveLearning(
             analysis_options=options,
             stochastic_model=model,
             limit_state=limit_state,
@@ -306,7 +307,7 @@ class TestActiveLearningAPI:
         np.random.seed(42)
         model, limit_state, options = rs_sum_model()
 
-        al = ra.ActiveLearning(
+        al = ActiveLearning(
             analysis_options=options,
             stochastic_model=model,
             limit_state=limit_state,
@@ -321,7 +322,7 @@ class TestActiveLearningAPI:
         """Unknown surrogate name should raise ValueError."""
         model, limit_state, options = rs_sum_model()
         with pytest.raises(ValueError, match="Unknown surrogate"):
-            ra.ActiveLearning(
+            ActiveLearning(
                 analysis_options=options,
                 stochastic_model=model,
                 limit_state=limit_state,
@@ -332,7 +333,7 @@ class TestActiveLearningAPI:
         """Unknown learning function should raise ValueError."""
         model, limit_state, options = rs_sum_model()
         with pytest.raises(ValueError, match="Unknown learning function"):
-            ra.ActiveLearning(
+            ActiveLearning(
                 analysis_options=options,
                 stochastic_model=model,
                 limit_state=limit_state,
@@ -344,7 +345,7 @@ class TestActiveLearningAPI:
         np.random.seed(42)
         model, limit_state, options = rs_sum_model()
 
-        al = ra.ActiveLearning(
+        al = ActiveLearning(
             analysis_options=options,
             stochastic_model=model,
             limit_state=limit_state,
@@ -362,7 +363,7 @@ class TestActiveLearningAPI:
         np.random.seed(42)
         model, limit_state, options = rs_sum_model()
 
-        al = ra.ActiveLearning(
+        al = ActiveLearning(
             analysis_options=options,
             stochastic_model=model,
             limit_state=limit_state,

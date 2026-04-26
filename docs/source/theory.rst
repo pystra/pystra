@@ -812,7 +812,9 @@ the failure surface :math:`g = 0` [Echard2011]_ [Moustapha2022]_.
 
 The general framework is known as **AK-MCS** (Active Kriging — Monte
 Carlo Simulation) when Kriging is the surrogate, though the algorithm
-is surrogate-agnostic.
+is surrogate-agnostic.  Common benchmark examples include nonlinear
+series-system problems such as the four-branch model used by
+[Schueremans2005]_.
 
 Algorithm
 ---------
@@ -1061,4 +1063,3 @@ For shape parameters, the partial derivatives
 central differences unless the distribution provides an analytical
 override.  See the :ref:`developer guide <adding_distributions>` for
 implementation details.
-
