@@ -313,7 +313,7 @@ class CrudeMonteCarlo(MonteCarlo):
             if self.x_all is None:
                 self.x_all = self.x
             else:
-                self.x_all = np.append(self.x_all, self.u)
+                self.x_all = np.append(self.x_all, self.x)
 
             # compute approximative beta
             self.approxMC_beta = np.sqrt(
