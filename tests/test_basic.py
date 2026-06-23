@@ -214,6 +214,64 @@ def test_cmc():
     assert Analysis.beta >= 0
 
 
+def test_cmc_x_all_stores_physical_space():
+    """Regression test for issue #90: x_all should store physical-space inputs.
+
+    When multiple blocks are processed, x_all should contain values from the
+    physical space (original distributions), not the Gaussian space.
+    """
+    options = ra.AnalysisOptions()
+    options.setPrintOutput(False)
+    options.setSamples(100)  # small for speed
+    options.setBlockSize(30)  # force multiple blocks (100/30 = 4 blocks)
+
+    # Use non-normal distributions with clear physical-space properties
+    model = ra.model.StochasticModel()
+    model.addVariable(ra.Lognormal("X1", 100, 20))  # positive values, mean ~100
+    model.addVariable(ra.Uniform("X2", 10, 5))     # mean=10, bounds ~[1.34, 18.66]
+
+    limit_state = ra.model.LimitState(lambda X1, X2: X1 - X2 - 100)
+
+    Analysis = ra.CrudeMonteCarlo(
+        analysis_options=options,
+        stochastic_model=model,
+        limit_state=limit_state,
+    )
+    Analysis.run()
+
+    # x_all is stored as flat array (nrv * samples)
+    nrv = 2
+    samples = 100
+    block_size = 30
+    assert Analysis.x_all.shape == (nrv * samples,)
+
+    # Extract X1 and X2 values from the flat array
+    # Structure: [X1_block1, X2_block1, X1_block2, X2_block2, ...]
+    x1_values = []
+    x2_values = []
+    for block in range(samples // block_size):
+        base = block * nrv * block_size
+        x1_values.extend(Analysis.x_all[base:base + block_size])
+        x2_values.extend(Analysis.x_all[base + block_size:base + 2*block_size])
+    x1_values = np.array(x1_values)
+    x2_values = np.array(x2_values)
+
+    # Physical-space checks:
+    # Lognormal: all values should be positive (Gaussian space can be negative)
+    assert np.all(x1_values > 0)
+
+    # Uniform: values should be within bounds [1.34, 18.66]
+    assert np.all(x2_values >= 1.0)
+    assert np.all(x2_values <= 19.0)
+
+    # Mean should be close to expected physical-space values
+    # Lognormal(100, 20) has mean ≈ 100 * exp(0.5 * (20/100)^2) ≈ 100.2
+    assert 90 < np.mean(x1_values) < 110
+
+    # Uniform(10, 5) has mean = 10
+    assert 8 < np.mean(x2_values) < 12
+
+
 def test_mc_cov_zero_branch():
     """Regression test for issue #64: cov_of_q_bar typo.
 

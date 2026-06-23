@@ -8,6 +8,11 @@ the source-code docstrings using Sphinx ``autosummary``.
 Core Framework
 --------------
 
+.. toctree::
+    :maxdepth: 1
+
+    system
+
 .. autosummary::
     :toctree: gen
     :template: custom-module-template.rst
@@ -15,6 +20,7 @@ Core Framework
 
     pystra.model
     pystra.analysis
+    pystra.system
 
 Reliability Methods
 -------------------

@@ -23,3 +23,4 @@ page.
     notebooks/ex_factor_calibration
     notebooks/ex_generic_calibration
     notebooks/ex_design_decision_optimization
+    notebooks/ex_system_reliability
