@@ -1550,7 +1550,7 @@ class LQI(DDOCriterion):
         return df
 
 
-@dataclass(kw_only=True)
+@dataclass
 class DDO:
     """Evaluate a decision context with an objective and acceptability criterion."""
 
@@ -1558,6 +1558,18 @@ class DDO:
     criterion: DDOCriterion
     objective: Optional[DDOObjective] = None
     results: Optional[pd.DataFrame] = field(default=None, init=False, repr=False)
+
+    def __init__(
+        self,
+        *,
+        study: DesignStudy,
+        criterion: DDOCriterion,
+        objective: Optional[DDOObjective] = None,
+    ):
+        self.study = study
+        self.criterion = criterion
+        self.objective = objective
+        self.results = None
 
     @classmethod
     def lqi(
