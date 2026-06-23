@@ -39,13 +39,13 @@ Breitung 1984
 
 .. [Faber2009] Faber, Michael H. (2009). Risk and Safety in Engineering. SS 2009. Lecture Notes. Swiss Federal Institut of Technology Zurich.
 
-.. [Fischer2012LQI] Fischer, K., Barnardo-Viljoen, C., and Faber, M. H. (2012). Deriving target reliabilities from the LQI. LQI Symposium, Kgs. Lyngby, Denmark, August 21-23, 2012.
+.. [Fischer2012LQI] Fischer, K., Barnardo-Viljoen, C., and Faber, M. H. (2012). Deriving target reliabilities from the LQI. LQI Symposium, Kgs. Lyngby, Denmark, August 21-23, 2012. Available via `ResearchGate <https://www.researchgate.net/publication/289533079_Deriving_target_reliabilities_from_the_LQI>`__.
 
-.. [Rackwitz2008LQI] Rackwitz, R. (2008). The Philosophy Behind the Life Quality Index and Empirical Verification. Basic Documents on Risk Assessment in Engineering, Document #4. Joint Committee on Structural Safety.
+.. [Rackwitz2008LQI] Rackwitz, R. (2008). The Philosophy Behind the Life Quality Index and Empirical Verification. Basic Documents on Risk Assessment in Engineering, Document #4. Joint Committee on Structural Safety. PDF: `JCSS <https://www.jcss-lc.org/publications/raie/06_risk_backgrounddoc_lqi_philosophy.pdf>`__.
 
-.. [Streicher2008LQI] Streicher, H. and Rackwitz, R. (2008). Optimization with a LQI Acceptance Criterion. Background Documents on Risk Assessment in Engineering, Document #5. Joint Committee on Structural Safety.
+.. [Streicher2008LQI] Streicher, H. and Rackwitz, R. (2008). Optimization with a LQI Acceptance Criterion. Background Documents on Risk Assessment in Engineering, Document #5. Joint Committee on Structural Safety. PDF: `JCSS <https://www.jcss-lc.org/publications/raie/07_risk_backgrounddoc_lqi_optimization.pdf>`__.
 
-.. [WorldBankWDI] World Bank. World Development Indicators: GDP per capita, PPP (current international $), indicator NY.GDP.PCAP.PP.CD. https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.CD.
+.. [WorldBankWDI] World Bank. World Development Indicators: GDP per capita, PPP (current international $), indicator NY.GDP.PCAP.PP.CD. `World Bank DataBank <https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.CD>`__.
 
 .. [Madsen2006] Madsen, Henrik O., S. Krenk, and Niels C. Lind (2006). Methods of Structrual Safety. Mineola, NY: Dover Publications. isbn: 9780486445977.
 

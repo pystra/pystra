@@ -388,20 +388,20 @@ class LQITarget:
 
 @dataclass(frozen=True)
 class RiskResult:
-    """Expected annual risk quantities for a component, system, or network.
+    """Expected annual risk quantities for a component or scenario model.
 
     Parameters
     ----------
     annual_failure_rate : float
         Annual probability or rate of the represented failure event.  For
-        network studies this may be the sum of joint failure-state rates.
+        scenario studies this may be the sum of joint failure-state rates.
     expected_fatalities : float
         Expected fatalities per year.
     expected_economic_loss : float
         Expected economic loss per year, excluding SWTP life-safety valuation.
     scenarios : pandas.DataFrame, optional
         Scenario table used to derive the expected values.  This is useful for
-        correlated bridge-network states and nonlinear consequence models.
+        joint failure states and nonlinear consequence models.
     metadata : mapping, optional
         User-supplied context such as model name, design point, or units.
     """
@@ -435,8 +435,8 @@ class RiskResult:
         """Aggregate a scenario table into annual risk quantities.
 
         The scenario weights may be annual probabilities or annual rates.  No
-        independence assumptions are made, so rows may represent correlated
-        joint bridge-failure states produced by an upstream reliability model.
+        independence assumptions are made, so rows may represent joint
+        failure states produced by an upstream reliability model.
         If ``failure_col`` is omitted, every row is treated as a failure/loss
         scenario for the purpose of ``annual_failure_rate``.
         """
@@ -529,7 +529,7 @@ class RiskResult:
 
 @dataclass
 class ScenarioRiskModel:
-    """Scenario-table risk model for systems and networks.
+    """Scenario-table risk model for aggregated risk studies.
 
     ``scenarios`` may be a dataframe-like object or a callable returning one.
     Callable scenarios are evaluated with the design value when supplied.
@@ -637,8 +637,8 @@ def jcss_lqi_risk_cost_from_result(
 ) -> float:
     """Return JCSS LQI risk cost from an aggregated risk result.
 
-    This form is intended for system and network studies where the upstream
-    model already provides expected annual fatalities.  Set
+    This form is intended for scenario studies where the upstream model already
+    provides expected annual fatalities.  Set
     ``include_economic_loss=True`` when the objective should include nonlinear
     economic consequences in addition to the SWTP life-safety term.
     """
@@ -959,7 +959,7 @@ class DesignStudy:
 
 @dataclass
 class RiskStudy:
-    """Evaluate a system or network risk model over design alternatives."""
+    """Evaluate a risk model over design alternatives."""
 
     variable: str
     values: Iterable[float]

@@ -748,25 +748,7 @@ is
 Pystra exposes these directly as
 :func:`~pystra.lqi.jcss_lqi_risk_cost` and
 :func:`~pystra.lqi.jcss_lqi_acceptability`.  These functions accept failure
-rates supplied by any model, so the same interface can later be used with
-system or network reliability results rather than only single components.
-
-For system and network studies, the preferred interface is
-:class:`~pystra.lqi.RiskResult`.  A risk result records the annual failure
-rate, expected fatalities per year, and expected economic loss per year.  It
-can be created directly or aggregated from a scenario table with
-:meth:`~pystra.lqi.RiskResult.from_scenarios`.  In that form each row may
-represent a correlated joint failure state, such as two bridges closed by the
-same flood event, with a nonlinear consequence already assigned by a traffic
-or repair model.  Pystra then evaluates
-
-.. math::
-   :label: eq:lqi_network_risk_cost
-
-   C(p) + E[L_E(p)] + \mathrm{SWTP}\,E[N_F(p)]
-
-without imposing any independence, additivity, or component-system topology
-assumption on the upstream risk model.
+rates supplied by any model.
 
 
 Simulation Methods
