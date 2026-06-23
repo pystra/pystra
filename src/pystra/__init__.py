@@ -62,6 +62,7 @@ from .ddo import (
     CostBenefitModel,
     DDO,
     DDOCriterion,
+    DDOObjective,
     DesignStudy,
     FatalityConsequence,
     LQI,

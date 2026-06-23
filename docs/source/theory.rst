@@ -862,8 +862,8 @@ practical update of the LQI income term :math:`g`; it is not a substitute for a
 full recalculation of mortality tables, discounting, and age averaging.
 
 Fischer, Barnardo, and Faber [Fischer2012LQI]_ provide a convenient way to
-turn an SWTP value and expected fatalities into minimum target reliabilities.
-For medium variability, define the safety cost ratio
+turn an SWTP value and expected fatalities given failure into minimum target
+reliabilities.  For medium variability, define the safety cost ratio
 
 .. math::
    :label: eq:lqi_k1
@@ -872,7 +872,7 @@ For medium variability, define the safety cost ratio
               {\mathrm{SWTP}\,N_F}
 
 where :math:`C_1(\gamma_S + \omega)` is the marginal safety cost term and
-:math:`N_F` is the expected number of fatalities conditional on failure.  The
+:math:`N_F` is the expected number of fatalities given failure.  The
 corresponding target classes are approximated as:
 
 .. list-table:: LQI target reliability classes for medium variability
@@ -897,12 +897,14 @@ corresponding target classes are approximated as:
 
 For normal studies, ``ra.LQI`` (:class:`~pystra.ddo.LQI`) builds this target
 directly from a country SWTP value or a user-supplied SWTP value, expected
-fatalities or an explicit consequence model, and marginal safety cost.  The
-lower-level :func:`~pystra.ddo.lqi_k1` and
+fatalities given failure or an explicit consequence model, and marginal safety
+cost.  The lower-level :func:`~pystra.ddo.lqi_k1` and
 :func:`~pystra.ddo.lqi_target_reliability` helpers remain available in
 :mod:`pystra.ddo` for reproducing the source tables.  ``ra.DDO``
 (:class:`~pystra.ddo.DDO`) then evaluates the selected objective and criterion
-without changing the underlying stochastic model.
+without changing the underlying stochastic model.  The feasibility-aware result
+is obtained with ``DDO.optimize()`` or ``DDO.best_feasible()``; the
+unconstrained economic optimum remains available separately.
 
 For direct JCSS-style optimization, the canonical life-safety risk-cost term
 is

@@ -295,10 +295,15 @@ class SWTP:
             raise ValueError("SWTP value_per_life must be positive")
 
     @classmethod
-    def from_country(cls, code: str, indexed: bool = False) -> "SWTP":
-        """Create an SWTP value from the built-in country table."""
+    def from_country(cls, code: str, indexed: Optional[bool] = None) -> "SWTP":
+        """Create an SWTP value from the built-in country table.
 
-        record = get_swtp_record(code, indexed=indexed)
+        ``indexed`` must be supplied explicitly.  Use ``indexed=False`` for
+        the Rackwitz 1999 anchor and ``indexed=True`` for the built-in indexed
+        current-PPP view.
+        """
+
+        record = get_swtp_record(code, indexed=_require_explicit_indexed(indexed))
         return cls(
             value_per_life=record.value_per_life,
             currency=record.currency,
@@ -371,7 +376,7 @@ class FatalityConsequence:
             raise ValueError("probability_death_given_failure must be in [0, 1]")
 
     @property
-    def expected_fatalities(self) -> float:
+    def expected_fatalities_given_failure(self) -> float:
         """Return expected fatalities conditional on failure."""
 
         return self.people_exposed * self.probability_death_given_failure
@@ -580,7 +585,7 @@ _VARIABILITY_FACTORS = {"medium": 1.0, "high": 5.0, "low": 0.5}
 def lqi_k1(
     safety_cost_rate: float,
     swtp: Union[float, SWTP],
-    expected_fatalities: float,
+    expected_fatalities_given_failure: float,
 ) -> float:
     """Return the LQI safety cost ratio ``K1``.
 
@@ -594,9 +599,9 @@ def lqi_k1(
         raise ValueError("safety_cost_rate must be positive")
     if value_per_life <= 0:
         raise ValueError("swtp must be positive")
-    if expected_fatalities <= 0:
-        raise ValueError("expected_fatalities must be positive")
-    return safety_cost_rate / (value_per_life * expected_fatalities)
+    if expected_fatalities_given_failure <= 0:
+        raise ValueError("expected_fatalities_given_failure must be positive")
+    return safety_cost_rate / (value_per_life * expected_fatalities_given_failure)
 
 
 def _swtp_value(swtp: Union[float, SWTP]) -> float:
@@ -612,7 +617,7 @@ def jcss_lqi_risk_cost(
     safety_cost: Union[float, np.ndarray],
     failure_rate: Union[float, np.ndarray],
     swtp: Union[float, SWTP],
-    expected_fatalities: float,
+    expected_fatalities_given_failure: float,
 ):
     """Return the JCSS LQI life-safety risk cost.
 
@@ -624,11 +629,11 @@ def jcss_lqi_risk_cost(
     value_per_life = _swtp_value(swtp)
     if value_per_life <= 0:
         raise ValueError("swtp must be positive")
-    if expected_fatalities < 0:
-        raise ValueError("expected_fatalities must be non-negative")
+    if expected_fatalities_given_failure < 0:
+        raise ValueError("expected_fatalities_given_failure must be non-negative")
     result = np.asarray(
         safety_cost
-    ) + value_per_life * expected_fatalities * np.asarray(failure_rate)
+    ) + value_per_life * expected_fatalities_given_failure * np.asarray(failure_rate)
     return _as_scalar_or_array(result)
 
 
@@ -658,7 +663,7 @@ def jcss_lqi_acceptability_margin(
     safety_cost_derivative: float,
     failure_rate_derivative: float,
     swtp: Union[float, SWTP],
-    expected_fatalities: float,
+    expected_fatalities_given_failure: float,
 ) -> float:
     """Return the JCSS marginal LQI acceptability margin.
 
@@ -670,11 +675,11 @@ def jcss_lqi_acceptability_margin(
     value_per_life = _swtp_value(swtp)
     if value_per_life <= 0:
         raise ValueError("swtp must be positive")
-    if expected_fatalities < 0:
-        raise ValueError("expected_fatalities must be non-negative")
+    if expected_fatalities_given_failure < 0:
+        raise ValueError("expected_fatalities_given_failure must be non-negative")
     return float(
         safety_cost_derivative
-        + value_per_life * expected_fatalities * failure_rate_derivative
+        + value_per_life * expected_fatalities_given_failure * failure_rate_derivative
     )
 
 
@@ -697,14 +702,16 @@ def jcss_lqi_acceptability(
     failure_rate: Callable[[float], float],
     design: float,
     swtp: Union[float, SWTP],
-    expected_fatalities: float,
+    expected_fatalities_given_failure: float,
     step: Optional[float] = None,
 ) -> float:
     """Return the finite-difference JCSS LQI acceptability margin."""
 
     dcost = finite_difference_derivative(safety_cost, design, step=step)
     drate = finite_difference_derivative(failure_rate, design, step=step)
-    return jcss_lqi_acceptability_margin(dcost, drate, swtp, expected_fatalities)
+    return jcss_lqi_acceptability_margin(
+        dcost, drate, swtp, expected_fatalities_given_failure
+    )
 
 
 def jcss_lqi_is_acceptable(
@@ -712,13 +719,18 @@ def jcss_lqi_is_acceptable(
     failure_rate: Callable[[float], float],
     design: float,
     swtp: Union[float, SWTP],
-    expected_fatalities: float,
+    expected_fatalities_given_failure: float,
     step: Optional[float] = None,
 ) -> bool:
     """Return ``True`` when the JCSS marginal LQI condition is satisfied."""
 
     margin = jcss_lqi_acceptability(
-        safety_cost, failure_rate, design, swtp, expected_fatalities, step=step
+        safety_cost,
+        failure_rate,
+        design,
+        swtp,
+        expected_fatalities_given_failure,
+        step=step,
     )
     return margin >= 0.0
 
@@ -844,8 +856,20 @@ def annualized_safety_cost(
     )
 
 
+class DDOObjective:
+    """Base interface for DDO objectives."""
+
+    name = "objective"
+    objective_column = "objective"
+
+    def evaluate(self, results: pd.DataFrame, design: str) -> pd.DataFrame:
+        """Return decision results with objective-specific columns."""
+
+        raise NotImplementedError
+
+
 @dataclass
-class CostBenefitModel:
+class CostBenefitModel(DDOObjective):
     """Cost-benefit objective for a reliability design study."""
 
     benefit_rate: float
@@ -904,6 +928,26 @@ class CostBenefitModel:
             self.interest_rate,
             replacement,
         )
+
+    def evaluate(self, results: pd.DataFrame, design: str) -> pd.DataFrame:
+        """Return results with cost-benefit objective columns."""
+
+        df = results.copy()
+        if design not in df:
+            raise KeyError(f"Design column {design!r} is missing")
+        if "pf" not in df:
+            raise KeyError("CostBenefitModel requires a 'pf' column")
+
+        design_values = df[design].to_numpy()
+        df[self.objective_column] = [
+            self.objective(design_value, pf)
+            for design_value, pf in zip(design_values, df["pf"])
+        ]
+        df["annualized_safety_cost"] = [
+            self.annualized_safety_cost(design_value, pf)
+            for design_value, pf in zip(design_values, df["pf"])
+        ]
+        return df
 
 
 def _default_decision_plot_quantities(data: pd.DataFrame) -> list[str]:
@@ -1239,21 +1283,31 @@ class DDOCriterion:
     """Base interface for DDO acceptability criteria."""
 
     name = "criterion"
+    feasibility_column: Optional[str] = None
 
     def evaluate(self, results: pd.DataFrame) -> pd.DataFrame:
         """Return decision results with criterion-specific columns."""
 
         raise NotImplementedError
 
+    def feasible(self, results: pd.DataFrame) -> pd.Series:
+        """Return a boolean feasibility mask for evaluated results."""
+
+        if self.feasibility_column is None:
+            raise ValueError(f"{self.__class__.__name__} does not define feasibility")
+        if self.feasibility_column not in results:
+            raise KeyError(f"Feasibility column {self.feasibility_column!r} is missing")
+        return results[self.feasibility_column].astype(bool)
+
 
 def _require_lqi_target_inputs(
-    expected_fatalities: Optional[float],
+    expected_fatalities_given_failure: Optional[float],
     marginal_safety_cost: Optional[float],
     consequence: Optional[FatalityConsequence] = None,
 ) -> None:
     missing = []
-    if expected_fatalities is None and consequence is None:
-        missing.append("expected_fatalities or consequence")
+    if expected_fatalities_given_failure is None and consequence is None:
+        missing.append("expected_fatalities_given_failure or consequence")
     if marginal_safety_cost is None:
         missing.append("marginal_safety_cost")
     if missing:
@@ -1262,23 +1316,25 @@ def _require_lqi_target_inputs(
 
 
 def _lqi_consequence(
-    expected_fatalities: Optional[float],
+    expected_fatalities_given_failure: Optional[float],
     consequence: Optional[FatalityConsequence] = None,
 ) -> FatalityConsequence:
-    if consequence is not None and expected_fatalities is not None:
-        raise ValueError("Specify either expected_fatalities or consequence, not both")
+    if consequence is not None and expected_fatalities_given_failure is not None:
+        raise ValueError(
+            "Specify either expected_fatalities_given_failure or consequence, not both"
+        )
     if consequence is not None:
         return consequence
-    if expected_fatalities is None:
-        raise ValueError("LQI construction requires expected_fatalities or consequence")
-    return FatalityConsequence(people_exposed=expected_fatalities)
+    if expected_fatalities_given_failure is None:
+        raise ValueError(
+            "LQI construction requires expected_fatalities_given_failure or consequence"
+        )
+    return FatalityConsequence(people_exposed=expected_fatalities_given_failure)
 
 
 def _require_explicit_indexed(indexed: Optional[bool]) -> bool:
     if indexed is None:
-        raise ValueError(
-            "LQI.from_country requires indexed=True or indexed=False explicitly"
-        )
+        raise ValueError("indexed=True or indexed=False must be supplied explicitly")
     return bool(indexed)
 
 
@@ -1296,6 +1352,7 @@ class LQI(DDOCriterion):
     target: Optional[LQITarget] = None
 
     name = "lqi"
+    feasibility_column = "lqi_acceptable"
 
     @staticmethod
     def _as_swtp(swtp: Union[float, SWTP]) -> SWTP:
@@ -1306,7 +1363,7 @@ class LQI(DDOCriterion):
         cls,
         swtp: Union[float, SWTP],
         *,
-        expected_fatalities: Optional[float] = None,
+        expected_fatalities_given_failure: Optional[float] = None,
         consequence: Optional[FatalityConsequence] = None,
         marginal_safety_cost: float,
         variability: str = "medium",
@@ -1317,11 +1374,12 @@ class LQI(DDOCriterion):
         ----------
         swtp : float or SWTP
             Societal willingness to pay per statistical life.
-        expected_fatalities : float, optional
+        expected_fatalities_given_failure : float, optional
             Expected fatalities conditional on failure.
         consequence : FatalityConsequence, optional
-            Consequence model.  Use this instead of ``expected_fatalities``
-            when exposure and fatality probability should remain explicit.
+            Consequence model.  Use this instead of
+            ``expected_fatalities_given_failure`` when exposure and fatality
+            probability should remain explicit.
         marginal_safety_cost : float
             Marginal annual safety cost used in the LQI target-reliability
             table.
@@ -1330,12 +1388,14 @@ class LQI(DDOCriterion):
         """
 
         swtp_value = cls._as_swtp(swtp)
-        consequence = _lqi_consequence(expected_fatalities, consequence)
+        consequence = _lqi_consequence(expected_fatalities_given_failure, consequence)
         target = lqi_target_reliability(
             lqi_k1(
                 safety_cost_rate=marginal_safety_cost,
                 swtp=swtp_value,
-                expected_fatalities=consequence.expected_fatalities,
+                expected_fatalities_given_failure=(
+                    consequence.expected_fatalities_given_failure
+                ),
             ),
             variability=variability,
         )
@@ -1346,7 +1406,7 @@ class LQI(DDOCriterion):
         cls,
         code: str,
         *,
-        expected_fatalities: Optional[float] = None,
+        expected_fatalities_given_failure: Optional[float] = None,
         consequence: Optional[FatalityConsequence] = None,
         marginal_safety_cost: float,
         indexed: Optional[bool] = None,
@@ -1356,7 +1416,7 @@ class LQI(DDOCriterion):
 
         return cls.from_swtp(
             SWTP.from_country(code, indexed=_require_explicit_indexed(indexed)),
-            expected_fatalities=expected_fatalities,
+            expected_fatalities_given_failure=expected_fatalities_given_failure,
             consequence=consequence,
             marginal_safety_cost=marginal_safety_cost,
             variability=variability,
@@ -1369,7 +1429,7 @@ class LQI(DDOCriterion):
         gross_domestic_product_per_capita: float,
         mortality_rate: float,
         demographic_constant: float,
-        expected_fatalities: Optional[float] = None,
+        expected_fatalities_given_failure: Optional[float] = None,
         consequence: Optional[FatalityConsequence] = None,
         marginal_safety_cost: float,
         variability: str = "medium",
@@ -1388,19 +1448,19 @@ class LQI(DDOCriterion):
                 price_year=price_year,
                 source=source,
             ),
-            expected_fatalities=expected_fatalities,
+            expected_fatalities_given_failure=expected_fatalities_given_failure,
             consequence=consequence,
             marginal_safety_cost=marginal_safety_cost,
             variability=variability,
         )
 
     @property
-    def expected_fatalities(self) -> Optional[float]:
+    def expected_fatalities_given_failure(self) -> Optional[float]:
         """Return expected fatalities conditional on failure when available."""
 
         if self.consequence is None:
             return None
-        return self.consequence.expected_fatalities
+        return self.consequence.expected_fatalities_given_failure
 
     @property
     def k1(self) -> Optional[float]:
@@ -1415,7 +1475,7 @@ class LQI(DDOCriterion):
             raise ValueError("LQI criterion requires an SWTP value")
         if self.consequence is None:
             raise ValueError("LQI criterion requires a consequence model")
-        return self.swtp, self.consequence.expected_fatalities
+        return self.swtp, self.consequence.expected_fatalities_given_failure
 
     def risk_cost(
         self,
@@ -1477,8 +1537,8 @@ class LQI(DDOCriterion):
         df = results.copy()
 
         if self.swtp is not None and self.consequence is not None:
-            expected = self.consequence.expected_fatalities
-            df["expected_fatalities"] = expected
+            expected = self.consequence.expected_fatalities_given_failure
+            df["expected_fatalities_given_failure"] = expected
             df["swtp_consequence"] = self.swtp.for_lives(expected)
 
         if self.target is not None:
@@ -1496,7 +1556,7 @@ class DDO:
 
     study: DesignStudy
     criterion: DDOCriterion
-    objective: Optional[CostBenefitModel] = None
+    objective: Optional[DDOObjective] = None
     results: Optional[pd.DataFrame] = field(default=None, init=False, repr=False)
 
     @classmethod
@@ -1504,29 +1564,30 @@ class DDO:
         cls,
         study: DesignStudy,
         *,
-        objective: Optional[CostBenefitModel] = None,
+        objective: Optional[DDOObjective] = None,
         criterion: Optional[LQI] = None,
         country: Optional[str] = None,
         indexed: Optional[bool] = None,
         swtp: Optional[Union[float, SWTP]] = None,
-        expected_fatalities: Optional[float] = None,
+        expected_fatalities_given_failure: Optional[float] = None,
         marginal_safety_cost: Optional[float] = None,
-        variability: str = "medium",
+        variability: Optional[str] = None,
         consequence: Optional[FatalityConsequence] = None,
-        target: Optional[LQITarget] = None,
     ) -> "DDO":
         """Create a DDO study using the LQI criterion."""
 
-        constructor_args = {
-            "country": country,
-            "indexed": indexed,
-            "swtp": swtp,
-            "expected_fatalities": expected_fatalities,
-            "marginal_safety_cost": marginal_safety_cost,
-            "consequence": consequence,
-            "target": target,
-        }
         if criterion is not None:
+            constructor_args = {
+                "country": country,
+                "swtp": swtp,
+                "indexed": indexed,
+                "expected_fatalities_given_failure": (
+                    expected_fatalities_given_failure
+                ),
+                "marginal_safety_cost": marginal_safety_cost,
+                "variability": variability,
+                "consequence": consequence,
+            }
             conflicts = [
                 name for name, value in constructor_args.items() if value is not None
             ]
@@ -1535,40 +1596,41 @@ class DDO:
                     "criterion cannot be combined with LQI construction arguments: "
                     + ", ".join(conflicts)
                 )
+
+        elif country is not None:
+            if swtp is not None:
+                raise ValueError(
+                    "DDO.lqi requires exactly one of criterion, country, or swtp"
+                )
+            _require_lqi_target_inputs(
+                expected_fatalities_given_failure, marginal_safety_cost, consequence
+            )
+            criterion = LQI.from_country(
+                country,
+                expected_fatalities_given_failure=expected_fatalities_given_failure,
+                consequence=consequence,
+                marginal_safety_cost=marginal_safety_cost,
+                indexed=indexed,
+                variability="medium" if variability is None else variability,
+            )
+
         else:
-            if country is not None:
-                _require_lqi_target_inputs(
-                    expected_fatalities, marginal_safety_cost, consequence
+            if swtp is None:
+                raise ValueError(
+                    "DDO.lqi requires exactly one of criterion, country, or swtp"
                 )
-                criterion = LQI.from_country(
-                    country,
-                    expected_fatalities=expected_fatalities,
-                    consequence=consequence,
-                    marginal_safety_cost=marginal_safety_cost,
-                    indexed=indexed,
-                    variability=variability,
-                )
-            elif swtp is not None and (
-                expected_fatalities is not None
-                or consequence is not None
-                or marginal_safety_cost is not None
-            ):
-                _require_lqi_target_inputs(
-                    expected_fatalities, marginal_safety_cost, consequence
-                )
-                criterion = LQI.from_swtp(
-                    swtp,
-                    expected_fatalities=expected_fatalities,
-                    consequence=consequence,
-                    marginal_safety_cost=marginal_safety_cost,
-                    variability=variability,
-                )
-            else:
-                criterion = LQI(
-                    swtp=LQI._as_swtp(swtp) if swtp is not None else None,
-                    consequence=consequence,
-                    target=target,
-                )
+            if indexed is not None:
+                raise ValueError("indexed is only valid with country")
+            _require_lqi_target_inputs(
+                expected_fatalities_given_failure, marginal_safety_cost, consequence
+            )
+            criterion = LQI.from_swtp(
+                swtp,
+                expected_fatalities_given_failure=expected_fatalities_given_failure,
+                consequence=consequence,
+                marginal_safety_cost=marginal_safety_cost,
+                variability="medium" if variability is None else variability,
+            )
 
         return cls(
             study=study,
@@ -1580,17 +1642,9 @@ class DDO:
         """Return a dataframe with reliability, cost, and decision columns."""
 
         df = self.study.evaluate()
-        design_values = df[self.study.variable].to_numpy()
 
         if self.objective is not None:
-            df["objective"] = [
-                self.objective.objective(design, pf)
-                for design, pf in zip(design_values, df["pf"])
-            ]
-            df["annualized_safety_cost"] = [
-                self.objective.annualized_safety_cost(design, pf)
-                for design, pf in zip(design_values, df["pf"])
-            ]
+            df = self.objective.evaluate(df, design=self.study.variable)
 
         return self.criterion.evaluate(df)
 
@@ -1611,13 +1665,41 @@ class DDO:
             raise ValueError("DDO study has not been run")
         return self.results
 
-    def maximize_objective(self) -> pd.Series:
-        """Return the row with the largest objective value."""
+    def _objective_column(self) -> str:
+        if self.objective is not None:
+            return self.objective.objective_column
+        return "objective"
+
+    def maximize_unconstrained_objective(self) -> pd.Series:
+        """Return the row with the largest objective value before feasibility."""
 
         df = self.results if self.results is not None else self.run()
-        if "objective" not in df:
-            raise ValueError("maximize_objective requires a CostBenefitModel")
-        return df.loc[df["objective"].idxmax()]
+        objective_column = self._objective_column()
+        if objective_column not in df:
+            raise ValueError("Objective results are not available")
+        return df.loc[df[objective_column].idxmax()]
+
+    def feasible_results(self) -> pd.DataFrame:
+        """Return evaluated alternatives satisfying the criterion."""
+
+        df = self.results if self.results is not None else self.run()
+        return df.loc[self.criterion.feasible(df)]
+
+    def best_feasible(self) -> pd.Series:
+        """Return the feasible row with the largest objective value."""
+
+        feasible = self.feasible_results()
+        if feasible.empty:
+            raise ValueError("No feasible alternatives satisfy the criterion")
+        objective_column = self._objective_column()
+        if objective_column not in feasible:
+            raise ValueError("Objective results are not available")
+        return feasible.loc[feasible[objective_column].idxmax()]
+
+    def optimize(self) -> pd.Series:
+        """Return the best feasible design alternative."""
+
+        return self.best_feasible()
 
     def plot(
         self,
@@ -1663,6 +1745,7 @@ __all__ = [
     "lqi_target_reliability",
     "present_value_factor",
     "annualized_safety_cost",
+    "DDOObjective",
     "CostBenefitModel",
     "plot_summary",
     "DesignStudy",
