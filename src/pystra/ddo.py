@@ -1,11 +1,11 @@
-"""Design decision optimization and societal risk acceptance helpers.
+"""Design decision optimization and societal risk acceptance.
 
-The functions in this module sit above the reliability methods.  They do
-not change how FORM, SORM, or simulation analyses are run; instead they
-provide a small layer for turning failure probabilities, consequences, and
-costs into design decision optimization studies.  The initial implementation
-supports the JCSS life quality index (LQI) criterion using societal
-willingness-to-pay (SWTP) values.
+The objects in this module sit above the reliability methods.  They do not
+change how FORM, SORM, or simulation analyses are run; instead
+:class:`DDO` applies a selected design decision optimization algorithm to
+failure probabilities, consequences, and costs.  The initial implementation
+provides the :class:`JCSSLQI` algorithm for the JCSS life quality index (LQI)
+criterion using societal willingness-to-pay (SWTP) values.
 """
 
 from __future__ import annotations
@@ -1236,18 +1236,77 @@ class RiskStudy:
         return pd.DataFrame(rows, columns=columns + extra_columns)
 
 
-@dataclass
-class LQIAssessment:
-    """Combine a design study with cost-benefit and LQI acceptance checks."""
+class DDOAlgorithm:
+    """Base interface for design decision optimization algorithms."""
 
-    study: DesignStudy
-    costs: Optional[CostBenefitModel] = None
+    name = "algorithm"
+
+    def evaluate(self, results: pd.DataFrame) -> pd.DataFrame:
+        """Return decision results with algorithm-specific columns."""
+
+        raise NotImplementedError
+
+
+@dataclass(frozen=True)
+class JCSSLQI(DDOAlgorithm):
+    """JCSS LQI/SWTP design decision optimization algorithm.
+
+    The algorithm adds consequence valuation and LQI acceptability columns to
+    the reliability and cost-benefit results produced by :class:`DDO`.
+    """
+
     swtp: Optional[SWTP] = None
     consequence: Optional[FatalityConsequence] = None
     target: Optional[LQITarget] = None
 
+    name = "jcss_lqi"
+
+    def evaluate(self, results: pd.DataFrame) -> pd.DataFrame:
+        """Return decision results with JCSS LQI/SWTP columns."""
+
+        df = results.copy()
+
+        if self.swtp is not None and self.consequence is not None:
+            expected = self.consequence.expected_fatalities
+            df["expected_fatalities"] = expected
+            df["swtp_consequence"] = self.swtp.for_lives(expected)
+
+        if self.target is not None:
+            df["target_pf"] = self.target.pf
+            df["target_beta"] = self.target.beta
+            df["lqi_acceptable"] = df["pf"] <= self.target.pf
+            df["lqi_margin"] = self.target.pf - df["pf"]
+
+        return df
+
+
+@dataclass
+class DDO:
+    """Run a design decision optimization study with a selected algorithm."""
+
+    study: DesignStudy
+    algorithm: DDOAlgorithm
+    costs: Optional[CostBenefitModel] = None
+
+    @classmethod
+    def jcss_lqi(
+        cls,
+        study: DesignStudy,
+        costs: Optional[CostBenefitModel] = None,
+        swtp: Optional[SWTP] = None,
+        consequence: Optional[FatalityConsequence] = None,
+        target: Optional[LQITarget] = None,
+    ) -> "DDO":
+        """Create a DDO study using the JCSS LQI/SWTP algorithm."""
+
+        return cls(
+            study=study,
+            costs=costs,
+            algorithm=JCSSLQI(swtp=swtp, consequence=consequence, target=target),
+        )
+
     def evaluate(self) -> pd.DataFrame:
-        """Return a dataframe with reliability, cost, and acceptance columns."""
+        """Return a dataframe with reliability, cost, and decision columns."""
 
         df = self.study.evaluate()
         design_values = df[self.study.variable].to_numpy()
@@ -1262,18 +1321,16 @@ class LQIAssessment:
                 for design, pf in zip(design_values, df["pf"])
             ]
 
-        if self.swtp is not None and self.consequence is not None:
-            expected = self.consequence.expected_fatalities
-            df["expected_fatalities"] = expected
-            df["swtp_consequence"] = self.swtp.for_lives(expected)
+        return self.algorithm.evaluate(df)
 
-        if self.target is not None:
-            df["target_pf"] = self.target.pf
-            df["target_beta"] = self.target.beta
-            df["lqi_acceptable"] = df["pf"] <= self.target.pf
-            df["lqi_margin"] = self.target.pf - df["pf"]
+    def run(self) -> pd.DataFrame:
+        """Evaluate the DDO study.
 
-        return df
+        ``run`` is provided as a convenience for users familiar with Pystra's
+        analysis objects.  It returns the same dataframe as :meth:`evaluate`.
+        """
+
+        return self.evaluate()
 
     def maximize_objective(self) -> pd.Series:
         """Return the row with the largest objective value."""
@@ -1319,5 +1376,7 @@ __all__ = [
     "plot_summary",
     "DesignStudy",
     "RiskStudy",
-    "LQIAssessment",
+    "DDOAlgorithm",
+    "JCSSLQI",
+    "DDO",
 ]

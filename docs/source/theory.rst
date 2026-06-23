@@ -893,10 +893,10 @@ corresponding target classes are approximated as:
      - :math:`10^{-5}`
 
 The :mod:`pystra.ddo` module provides :func:`~pystra.ddo.lqi_k1`,
-:func:`~pystra.ddo.lqi_target_reliability`, and
-:class:`~pystra.ddo.LQIAssessment` so that a reliability study can be
-evaluated against these values without changing the underlying stochastic
-model.
+:func:`~pystra.ddo.lqi_target_reliability`,
+:class:`~pystra.ddo.JCSSLQI`, and :class:`~pystra.ddo.DDO` so that a
+reliability study can be evaluated by a selected design decision optimization
+algorithm without changing the underlying stochastic model.
 
 For direct JCSS-style optimization, the canonical life-safety risk-cost term
 is
