@@ -943,7 +943,7 @@ def _coerce_reference_designs(reference_designs) -> list[dict[str, Any]]:
     return references
 
 
-def plot_decision_summary(
+def plot_summary(
     data: Any,
     design: str,
     quantities: Optional[Sequence[str]] = None,
@@ -1038,7 +1038,7 @@ def plot_decision_summary(
     try:
         import matplotlib.pyplot as plt
     except ImportError as exc:  # pragma: no cover - depends on optional dependency
-        raise ImportError("plot_decision_summary requires matplotlib") from exc
+        raise ImportError("plot_summary requires matplotlib") from exc
 
     if axes is None:
         if figsize is None:
@@ -1316,7 +1316,7 @@ __all__ = [
     "present_value_factor",
     "annualized_safety_cost",
     "CostBenefitModel",
-    "plot_decision_summary",
+    "plot_summary",
     "DesignStudy",
     "RiskStudy",
     "LQIAssessment",
