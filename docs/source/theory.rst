@@ -2,6 +2,10 @@
 Theoretical Background
 **********************
 
+.. contents:: Outline
+   :local:
+   :depth: 2
+
 Structural Reliability
 ======================
 
@@ -763,11 +767,14 @@ Design decision optimization with societal risk acceptance is normally applied
 after a reliability analysis has estimated :math:`p_f` or :math:`\beta`.  It
 does not require a different FORM, SORM, or simulation model.  Instead, an
 economic objective is evaluated subject to a societal acceptability criterion.
+This follows the risk-based decision framing used in the JCSS risk assessment
+guidance [JCSS2008RiskAssessment]_ [KroonMaes2008RiskFramework]_.
 Pystra's initial DDO criterion uses the life quality index (LQI) to define a
 minimum acceptable life-safety level with societal willingness to pay (SWTP) as
-the life-safety valuation, following the JCSS risk-assessment background
-documents and examples [Rackwitz2008LQI]_ [Streicher2008LQI]_
-[Schubert2009LQI]_.
+the life-safety valuation, following the LQI method and the JCSS
+risk-assessment background documents and examples [Nathwani1997LQI]_
+[Nathwani2009LifeQuality]_ [Rackwitz2002LQI]_ [Rackwitz2008LQI]_
+[Streicher2008LQI]_ [Schubert2009LQI]_ [VanCoile2019ALARP]_.
 
 For life-safety problems, the LQI literature expresses the societal willingness
 to pay (SWTP) to save one statistical life as a function of the gross domestic
@@ -782,8 +789,11 @@ the form
 
 where :math:`g` is the income or GDP measure available for risk reduction,
 :math:`q` is the mortality rate, and :math:`C_x` depends on the mortality
-reduction scheme.  The ``ra.SWTP.from_lqi`` helper
-(:meth:`~pystra.ddo.SWTP.from_lqi`) implements this relationship for
+reduction scheme.  This SWTP interpretation is developed in the LQI literature
+[PandeyNathwani2004LQI]_ [PandeyNathwaniLind2006LQI]_ and used by
+Rackwitz for structural reliability optimization and acceptability
+[Rackwitz2002LQI]_.  The ``ra.SWTP.from_lqi`` helper
+(:meth:`~pystra.ddo.SWTP.from_lqi`) implements the relationship for
 user-supplied demographic values.
 
 Pystra also includes a small source-backed country table from Rackwitz's JCSS
@@ -933,6 +943,8 @@ direct reproduction of the JCSS equations.
 The current implementation separates an objective from an acceptability
 criterion and reserves solver logic for future work.  This keeps LQI in its
 proper role as a minimum safety criterion rather than the optimizer itself.
+Life-cycle cost and utility models based on stochastic renewal processes are a
+natural source for future objective implementations [PandeyWangCheng2015Renewal]_.
 Future non-scalar applications, such as bridge portfolios or networks with
 correlated failures and nonlinear economic consequences, should add a richer
 decision-context abstraction before they add solvers.
