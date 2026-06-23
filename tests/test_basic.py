@@ -224,11 +224,12 @@ def test_cmc_x_all_stores_physical_space():
     options.setPrintOutput(False)
     options.setSamples(100)  # small for speed
     options.setBlockSize(30)  # force multiple blocks (100/30 = 4 blocks)
+    options.target_cov = 0.0  # keep this storage regression test from stopping early
 
     # Use non-normal distributions with clear physical-space properties
     model = ra.model.StochasticModel()
     model.addVariable(ra.Lognormal("X1", 100, 20))  # positive values, mean ~100
-    model.addVariable(ra.Uniform("X2", 10, 5))     # mean=10, bounds ~[1.34, 18.66]
+    model.addVariable(ra.Uniform("X2", 10, 5))  # mean=10, bounds ~[1.34, 18.66]
 
     limit_state = ra.model.LimitState(lambda X1, X2: X1 - X2 - 100)
 
@@ -251,8 +252,8 @@ def test_cmc_x_all_stores_physical_space():
     x2_values = []
     for block in range(samples // block_size):
         base = block * nrv * block_size
-        x1_values.extend(Analysis.x_all[base:base + block_size])
-        x2_values.extend(Analysis.x_all[base + block_size:base + 2*block_size])
+        x1_values.extend(Analysis.x_all[base : base + block_size])
+        x2_values.extend(Analysis.x_all[base + block_size : base + 2 * block_size])
     x1_values = np.array(x1_values)
     x2_values = np.array(x2_values)
 
