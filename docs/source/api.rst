@@ -56,6 +56,16 @@ Load Combinations & Calibration
     pystra.loadcomb
     pystra.calibration
 
+Decision Support
+----------------
+
+.. autosummary::
+    :toctree: gen
+    :template: custom-module-template.rst
+    :recursive:
+
+    pystra.lqi
+
 Distributions
 -------------
 

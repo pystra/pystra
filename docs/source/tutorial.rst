@@ -22,3 +22,4 @@ page.
     notebooks/ex_load_combinations
     notebooks/ex_factor_calibration
     notebooks/ex_generic_calibration
+    notebooks/ex_lqi_swtp

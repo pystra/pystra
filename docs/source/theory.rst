@@ -588,6 +588,187 @@ still an ordinary :class:`~pystra.loadcomb.LoadCombination`; the generated
 cases simply make the FBC and Turkstra assumptions visible in the model.
 
 
+Life Quality Index and SWTP Checks
+==================================
+
+The life quality index (LQI) is normally used after a reliability analysis has
+estimated :math:`p_f` or :math:`\beta`.  It does not require a different FORM,
+SORM, or simulation model.  Instead, the LQI acceptance condition is treated as
+an additional constraint on a design or code-calibration study [Rackwitz2008LQI]_
+[Streicher2008LQI]_.
+
+For life-safety problems, the LQI literature expresses the societal willingness
+to pay (SWTP) to save one statistical life as a function of the gross domestic
+product available for risk reduction, the annual mortality rate, and a
+demographic life-time constant.  In the notation used by Rackwitz, this is of
+the form
+
+.. math::
+   :label: eq:lqi_swtp
+
+   \mathrm{SWTP}_x = \frac{g}{q} C_x
+
+where :math:`g` is the income or GDP measure available for risk reduction,
+:math:`q` is the mortality rate, and :math:`C_x` depends on the mortality
+reduction scheme.  The helper :meth:`pystra.lqi.SWTP.from_lqi` implements this
+relationship for user-supplied demographic values.
+
+Pystra also includes a small source-backed country table from Rackwitz's JCSS
+background document [Rackwitz2008LQI]_.  The anchor values are the
+:math:`G_{\Delta \bar{l}}` column in Table 7, in millions of 1999 PPPUS$:
+
+.. list-table:: Built-in SWTP country values
+   :header-rows: 1
+
+   * - Code
+     - Country
+     - SWTP [10\ :sup:`6` PPPUS$]
+   * - CA
+     - Canada
+     - 1.8
+   * - US
+     - USA
+     - 2.1
+   * - AT
+     - Austria
+     - 1.9
+   * - BE
+     - Belgium
+     - 2.4
+   * - CZ
+     - Czech Republic
+     - 0.54
+   * - DK
+     - Denmark
+     - 1.7
+   * - FI
+     - Finland
+     - 1.3
+   * - FR
+     - France
+     - 1.9
+   * - DE
+     - Germany
+     - 1.9
+   * - IT
+     - Italy
+     - 1.8
+   * - NL
+     - Netherlands
+     - 2.8
+   * - NO
+     - Norway
+     - 1.8
+   * - ES
+     - Spain
+     - 1.3
+   * - SE
+     - Sweden
+     - 1.5
+   * - CH
+     - Switzerland
+     - 1.8
+   * - GB
+     - United Kingdom
+     - 1.7
+   * - JP
+     - Japan
+     - 1.3
+   * - NZ
+     - New Zealand
+     - 1.3
+
+The anchor table is intentionally not overwritten with newer values.  For
+current studies, :func:`~pystra.lqi.index_swtp_record` and
+``swtp_table(indexed=True)`` return a separately traceable indexed table.  The
+built-in indexed view uses the World Bank WDI GDP per capita PPP indicator
+``NY.GDP.PCAP.PP.CD`` to scale each Rackwitz anchor value from 1999 to 2024
+[WorldBankWDI]_.  This is a practical update of the LQI income term :math:`g`;
+it is not a substitute for a full recalculation of mortality tables,
+discounting, and age averaging.
+
+Fischer, Barnardo, and Faber [Fischer2012LQI]_ provide a convenient way to
+turn an SWTP value and expected fatalities into minimum target reliabilities.
+For medium variability, define the safety cost ratio
+
+.. math::
+   :label: eq:lqi_k1
+
+   K_1 = \frac{C_1(\gamma_S + \omega)}
+              {\mathrm{SWTP}\,N_F}
+
+where :math:`C_1(\gamma_S + \omega)` is the marginal safety cost term and
+:math:`N_F` is the expected number of fatalities conditional on failure.  The
+corresponding target classes are approximated as:
+
+.. list-table:: LQI target reliability classes for medium variability
+   :header-rows: 1
+
+   * - Safety cost ratio :math:`K_1`
+     - Cost class
+     - :math:`\beta`
+     - :math:`p_f`
+   * - :math:`10^{-3}` to :math:`10^{-2}`
+     - Large
+     - 3.1
+     - :math:`10^{-3}`
+   * - :math:`10^{-4}` to :math:`10^{-3}`
+     - Medium
+     - 3.7
+     - :math:`10^{-4}`
+   * - :math:`10^{-5}` to :math:`10^{-4}`
+     - Small
+     - 4.2
+     - :math:`10^{-5}`
+
+The :mod:`pystra.lqi` module provides :func:`~pystra.lqi.lqi_k1`,
+:func:`~pystra.lqi.lqi_target_reliability`, and
+:class:`~pystra.lqi.LQIAssessment` so that a reliability study can be
+evaluated against these values without changing the underlying stochastic
+model.
+
+For direct JCSS-style optimization, the canonical life-safety risk-cost term
+is
+
+.. math::
+   :label: eq:lqi_jcss_risk_cost
+
+   S(p) = C(p) + \mathrm{SWTP}\,N_F\,h(p)
+
+where :math:`C(p)` is the safety or construction cost and :math:`h(p)` is a
+failure rate or annual failure probability.  The marginal acceptance condition
+is
+
+.. math::
+   :label: eq:lqi_jcss_acceptance
+
+   \frac{dC(p)}{dp} \ge
+   -\mathrm{SWTP}\,N_F\,\frac{dh(p)}{dp}.
+
+Pystra exposes these directly as
+:func:`~pystra.lqi.jcss_lqi_risk_cost` and
+:func:`~pystra.lqi.jcss_lqi_acceptability`.  These functions accept failure
+rates supplied by any model, so the same interface can later be used with
+system or network reliability results rather than only single components.
+
+For system and network studies, the preferred interface is
+:class:`~pystra.lqi.RiskResult`.  A risk result records the annual failure
+rate, expected fatalities per year, and expected economic loss per year.  It
+can be created directly or aggregated from a scenario table with
+:meth:`~pystra.lqi.RiskResult.from_scenarios`.  In that form each row may
+represent a correlated joint failure state, such as two bridges closed by the
+same flood event, with a nonlinear consequence already assigned by a traffic
+or repair model.  Pystra then evaluates
+
+.. math::
+   :label: eq:lqi_network_risk_cost
+
+   C(p) + E[L_E(p)] + \mathrm{SWTP}\,E[N_F(p)]
+
+without imposing any independence, additivity, or component-system topology
+assumption on the upstream risk model.
+
+
 Simulation Methods
 ==================
 

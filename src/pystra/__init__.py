@@ -9,6 +9,7 @@ engineering systems using established structural reliability methods:
 - **Monte Carlo** simulation (Crude, Line Sampling, Subset Simulation)
 - **Sensitivity analysis** of the reliability index
 - **Load combination** and **partial factor calibration**
+- **Life quality index** (LQI) and societal willingness-to-pay checks
 
 All SciPy continuous distributions can be used as random variables,
 alongside Pystra's own specialised distributions (e.g. Gumbel,
@@ -53,3 +54,4 @@ from .sensitivity import *
 from .fbc import *
 from .loadcomb import *
 from .calibration import *
+from .lqi import *
