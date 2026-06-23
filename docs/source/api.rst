@@ -62,6 +62,16 @@ Load Combinations & Calibration
     pystra.loadcomb
     pystra.calibration
 
+Design Decision Optimization
+----------------------------
+
+.. autosummary::
+    :toctree: gen
+    :template: custom-module-template.rst
+    :recursive:
+
+    pystra.ddo
+
 Distributions
 -------------
 

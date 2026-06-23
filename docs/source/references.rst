@@ -47,6 +47,34 @@ References
 
 .. [Faber2009] Faber, Michael H. (2009). Risk and Safety in Engineering. SS 2009. Lecture Notes. Swiss Federal Institut of Technology Zurich.
 
+.. [Fischer2012LQI] Fischer, K., Barnardo-Viljoen, C., and Faber, M. H. (2012). Deriving target reliabilities from the LQI. LQI Symposium, Kgs. Lyngby, Denmark, August 21-23, 2012. Available via `ResearchGate <https://www.researchgate.net/publication/289533079_Deriving_target_reliabilities_from_the_LQI>`__.
+
+.. [JCSS2008RiskAssessment] Joint Committee on Structural Safety (JCSS). (2008). Risk Assessment in Engineering: Principles, System Representation & Risk Criteria. Edited by M. H. Faber. ISBN 978-3-909386-78-9. PDF: `JCSS <https://www.jcss-lc.org/publications/raie/01_jcss_riskassessment.pdf>`__.
+
+.. [KroonMaes2008RiskFramework] Kroon, I. B. and Maes, M. A. (2008). Theoretical Framework for Risk Assessment and Evaluation. Background Documents on Risk Assessment in Engineering, Document #1. Joint Committee on Structural Safety. PDF: `JCSS <https://www.jcss-lc.org/publications/raie/03_risk_backgrounddoc_theoretical_framework_for_risk_assessment_and_evaluation.pdf>`__.
+
+.. [Nathwani1997LQI] Nathwani, J. S., Lind, N. C., and Pandey, M. D. (1997). Affordable Safety by Choice: The Life Quality Method. Institute for Risk Research, University of Waterloo. PDF summary: `University of Waterloo <https://irr.uwaterloo.ca/pdf_files/LQI_Summary.pdf>`__.
+
+.. [Nathwani2009LifeQuality] Nathwani, J. S., Pandey, M. D., and Lind, N. C. (2009). Engineering Decisions for Life Quality: How Safe is Safe Enough? Springer Series in Reliability Engineering. `doi:10.1007/978-1-84882-602-1 <https://doi.org/10.1007/978-1-84882-602-1>`__.
+
+.. [PandeyNathwani2004LQI] Pandey, M. D. and Nathwani, J. S. (2004). "Life quality index for the estimation of societal willingness-to-pay for safety". Structural Safety, 26(2), 181-199. `doi:10.1016/j.strusafe.2003.05.001 <https://doi.org/10.1016/j.strusafe.2003.05.001>`__.
+
+.. [PandeyNathwaniLind2006LQI] Pandey, M. D., Nathwani, J. S., and Lind, N. C. (2006). "The derivation and calibration of the Life-Quality Index (LQI) from economic principles". Structural Safety, 28(4), 341-360. `doi:10.1016/j.strusafe.2005.10.001 <https://doi.org/10.1016/j.strusafe.2005.10.001>`__.
+
+.. [PandeyWangCheng2015Renewal] Pandey, M. D., Wang, Z., and Cheng, T. (2015). Stochastic Renewal Process Models for Life Cycle Cost and Utility Analysis. In Proceedings of the 12th International Conference on Applications of Statistics and Probability in Civil Engineering (ICASP12), Vancouver, Canada. `doi:10.14288/1.0076240 <https://doi.org/10.14288/1.0076240>`__.
+
+.. [Rackwitz2002LQI] Rackwitz, R. (2002). "Optimization and risk acceptability based on the Life Quality Index". Structural Safety, 24(2-4), 297-331. `doi:10.1016/S0167-4730(02)00029-2 <https://doi.org/10.1016/S0167-4730(02)00029-2>`__.
+
+.. [Rackwitz2008LQI] Rackwitz, R. (2008). The Philosophy Behind the Life Quality Index and Empirical Verification. Basic Documents on Risk Assessment in Engineering, Document #4. Joint Committee on Structural Safety. PDF: `JCSS <https://www.jcss-lc.org/publications/raie/06_risk_backgrounddoc_lqi_philosophy.pdf>`__.
+
+.. [Schubert2009LQI] Schubert, M. and Faber, M. H. (2009). Examples on the Application of the LQI Criterion. JCSS Documents on Risk Assessment in Engineering, Joint Committee on Structural Safety, June 2009. PDF: `JCSS <https://www.jcss-lc.org/publications/raie/11_example_jcss_ms_2.pdf>`__.
+
+.. [Streicher2008LQI] Streicher, H. and Rackwitz, R. (2008). Optimization with a LQI Acceptance Criterion. Background Documents on Risk Assessment in Engineering, Document #5. Joint Committee on Structural Safety. PDF: `JCSS <https://www.jcss-lc.org/publications/raie/07_risk_backgrounddoc_lqi_optimization.pdf>`__.
+
+.. [VanCoile2019ALARP] Van Coile, R., Jomaas, G., and Bisby, L. (2019). "Defining ALARP for fire safety engineering design via the Life Quality Index". Fire Safety Journal, 107, 1-14. `doi:10.1016/j.firesaf.2019.04.015 <https://doi.org/10.1016/j.firesaf.2019.04.015>`__.
+
+.. [WorldBankWDI] World Bank. World Development Indicators: GDP per capita, PPP (current international $), indicator NY.GDP.PCAP.PP.CD. `World Bank DataBank <https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.CD>`__.
+
 .. [Madsen2006] Madsen, Henrik O., S. Krenk, and Niels C. Lind (2006). Methods of Structrual Safety. Mineola, NY: Dover Publications. isbn: 9780486445977.
 
 .. [Thoft-Christensen] Thoft-Christensen, Palle and Michael J. Baker (1982). Structural Reliability Theory and its Applications. Heidelberg: Springer Verlag. isbn: 9783540117315.
