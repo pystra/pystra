@@ -588,14 +588,17 @@ still an ordinary :class:`~pystra.loadcomb.LoadCombination`; the generated
 cases simply make the FBC and Turkstra assumptions visible in the model.
 
 
-Life Quality Index and SWTP Checks
-==================================
+Design Decision Optimization and Societal Risk Acceptance
+=========================================================
 
-The life quality index (LQI) is normally used after a reliability analysis has
-estimated :math:`p_f` or :math:`\beta`.  It does not require a different FORM,
-SORM, or simulation model.  Instead, the LQI acceptance condition is treated as
-an additional constraint on a design or code-calibration study [Rackwitz2008LQI]_
-[Streicher2008LQI]_ [Schubert2009LQI]_.
+Design decision optimization with societal risk acceptance is normally applied
+after a reliability analysis has estimated :math:`p_f` or :math:`\beta`.  It
+does not require a different FORM, SORM, or simulation model.  Instead, the
+economic objective and the societal acceptability criterion are treated as
+post-processing checks on a design or code-calibration study.  The initial
+Pystra implementation uses the JCSS life quality index (LQI) criterion with
+societal willingness to pay (SWTP) as the life-safety valuation
+[Rackwitz2008LQI]_ [Streicher2008LQI]_ [Schubert2009LQI]_.
 
 For life-safety problems, the LQI literature expresses the societal willingness
 to pay (SWTP) to save one statistical life as a function of the gross domestic
@@ -610,7 +613,7 @@ the form
 
 where :math:`g` is the income or GDP measure available for risk reduction,
 :math:`q` is the mortality rate, and :math:`C_x` depends on the mortality
-reduction scheme.  The helper :meth:`pystra.lqi.SWTP.from_lqi` implements this
+reduction scheme.  The helper :meth:`pystra.ddo.SWTP.from_lqi` implements this
 relationship for user-supplied demographic values.
 
 Pystra also includes a small source-backed country table from Rackwitz's JCSS
@@ -679,7 +682,7 @@ background document [Rackwitz2008LQI]_.  The anchor values are the
      - 1.3
 
 The anchor table is intentionally not overwritten with newer values.  For
-current studies, :func:`~pystra.lqi.index_swtp_record` and
+current studies, :func:`~pystra.ddo.index_swtp_record` and
 ``swtp_table(indexed=True)`` return a separately traceable indexed table.  The
 built-in indexed view uses the World Bank WDI GDP per capita PPP indicator
 ``NY.GDP.PCAP.PP.CD`` to scale each Rackwitz anchor value from 1999 to 2024
@@ -721,9 +724,9 @@ corresponding target classes are approximated as:
      - 4.2
      - :math:`10^{-5}`
 
-The :mod:`pystra.lqi` module provides :func:`~pystra.lqi.lqi_k1`,
-:func:`~pystra.lqi.lqi_target_reliability`, and
-:class:`~pystra.lqi.LQIAssessment` so that a reliability study can be
+The :mod:`pystra.ddo` module provides :func:`~pystra.ddo.lqi_k1`,
+:func:`~pystra.ddo.lqi_target_reliability`, and
+:class:`~pystra.ddo.LQIAssessment` so that a reliability study can be
 evaluated against these values without changing the underlying stochastic
 model.
 
@@ -746,8 +749,8 @@ is
    -\mathrm{SWTP}\,N_F\,\frac{dh(p)}{dp}.
 
 Pystra exposes these directly as
-:func:`~pystra.lqi.jcss_lqi_risk_cost` and
-:func:`~pystra.lqi.jcss_lqi_acceptability`.  These functions accept failure
+:func:`~pystra.ddo.jcss_lqi_risk_cost` and
+:func:`~pystra.ddo.jcss_lqi_acceptability`.  These functions accept failure
 rates supplied by any model.
 
 

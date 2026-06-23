@@ -209,7 +209,7 @@ def test_design_study_assessment_and_objective_selection():
     assert best["As"] == pytest.approx(85.1)
 
 
-def test_plot_lqi_summary_returns_axes_for_design_table():
+def test_plot_decision_summary_returns_axes_for_design_table():
     matplotlib = pytest.importorskip("matplotlib")
     matplotlib.use("Agg", force=True)
     plt = pytest.importorskip("matplotlib.pyplot")
@@ -222,7 +222,7 @@ def test_plot_lqi_summary_returns_axes_for_design_table():
         }
     )
 
-    fig, axes = ra.plot_lqi_summary(
+    fig, axes = ra.plot_decision_summary(
         data,
         design="As",
         quantities=["objective", "pf"],
