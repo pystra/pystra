@@ -101,7 +101,7 @@ def test_canonical_jcss_lqi_acceptability_and_risk_cost():
     ) == pytest.approx(-55_000)
 
 
-def test_scenario_risk_result_supports_correlated_network_states():
+def test_scenario_risk_result_supports_correlated_scenarios():
     scenarios = pd.DataFrame(
         {
             "state": ["A", "B", "A+B"],
@@ -131,7 +131,7 @@ def test_scenario_risk_result_supports_correlated_network_states():
     ] == pytest.approx(1600.0)
 
 
-def test_risk_study_evaluates_design_dependent_network_scenarios():
+def test_risk_study_evaluates_design_dependent_scenarios():
     def scenarios_for_strengthening(strengthening):
         scale = 1.0 - strengthening
         return pd.DataFrame(
@@ -207,3 +207,32 @@ def test_design_study_assessment_and_objective_selection():
     assert results.loc[results["As"] == 70.0, "lqi_acceptable"].item() is False
     assert results.loc[results["As"] == 85.1, "lqi_acceptable"].item() is True
     assert best["As"] == pytest.approx(85.1)
+
+
+def test_plot_lqi_summary_returns_axes_for_design_table():
+    matplotlib = pytest.importorskip("matplotlib")
+    matplotlib.use("Agg", force=True)
+    plt = pytest.importorskip("matplotlib.pyplot")
+
+    data = pd.DataFrame(
+        {
+            "As": [70.0, 85.1, 93.0],
+            "pf": [1e-3, 2.5e-5, 5e-6],
+            "objective": [10_000.0, 72_000.0, 52_000.0],
+        }
+    )
+
+    fig, axes = ra.plot_lqi_summary(
+        data,
+        design="As",
+        quantities=["objective", "pf"],
+        labels={"As": "cross section", "pf": "failure probability"},
+        reference_designs={"optimum": 85.1, "acceptable": 93.0},
+        target_failure_probability=1e-4,
+    )
+
+    assert len(axes) == 2
+    assert axes[1].get_yscale() == "log"
+    assert axes[-1].get_xlabel() == "cross section"
+
+    plt.close(fig)
