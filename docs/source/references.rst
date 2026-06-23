@@ -43,6 +43,8 @@ Breitung 1984
 
 .. [Rackwitz2008LQI] Rackwitz, R. (2008). The Philosophy Behind the Life Quality Index and Empirical Verification. Basic Documents on Risk Assessment in Engineering, Document #4. Joint Committee on Structural Safety. PDF: `JCSS <https://www.jcss-lc.org/publications/raie/06_risk_backgrounddoc_lqi_philosophy.pdf>`__.
 
+.. [Schubert2009LQI] Schubert, M. and Faber, M. H. (2009). Examples on the Application of the LQI Criterion. JCSS Documents on Risk Assessment in Engineering, Joint Committee on Structural Safety, June 2009. PDF: `JCSS <https://www.jcss-lc.org/publications/raie/11_example_jcss_ms_2.pdf>`__.
+
 .. [Streicher2008LQI] Streicher, H. and Rackwitz, R. (2008). Optimization with a LQI Acceptance Criterion. Background Documents on Risk Assessment in Engineering, Document #5. Joint Committee on Structural Safety. PDF: `JCSS <https://www.jcss-lc.org/publications/raie/07_risk_backgrounddoc_lqi_optimization.pdf>`__.
 
 .. [WorldBankWDI] World Bank. World Development Indicators: GDP per capita, PPP (current international $), indicator NY.GDP.PCAP.PP.CD. `World Bank DataBank <https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.CD>`__.

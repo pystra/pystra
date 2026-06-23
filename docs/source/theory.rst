@@ -595,7 +595,7 @@ The life quality index (LQI) is normally used after a reliability analysis has
 estimated :math:`p_f` or :math:`\beta`.  It does not require a different FORM,
 SORM, or simulation model.  Instead, the LQI acceptance condition is treated as
 an additional constraint on a design or code-calibration study [Rackwitz2008LQI]_
-[Streicher2008LQI]_.
+[Streicher2008LQI]_ [Schubert2009LQI]_.
 
 For life-safety problems, the LQI literature expresses the societal willingness
 to pay (SWTP) to save one statistical life as a function of the gross domestic
