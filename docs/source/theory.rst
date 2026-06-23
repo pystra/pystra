@@ -761,13 +761,13 @@ Design Decision Optimization and Societal Risk Acceptance
 
 Design decision optimization with societal risk acceptance is normally applied
 after a reliability analysis has estimated :math:`p_f` or :math:`\beta`.  It
-does not require a different FORM, SORM, or simulation model.  Instead, the
-economic objective and the societal acceptability criterion are treated as
-post-processing checks on a design or code-calibration study.  Pystra's
-initial DDO algorithm uses the life quality index (LQI) criterion
-with societal willingness to pay (SWTP) as the life-safety valuation,
-following the JCSS risk-assessment background documents and examples
-[Rackwitz2008LQI]_ [Streicher2008LQI]_ [Schubert2009LQI]_.
+does not require a different FORM, SORM, or simulation model.  Instead, an
+economic objective is evaluated subject to a societal acceptability criterion.
+Pystra's initial DDO criterion uses the life quality index (LQI) to define a
+minimum acceptable life-safety level with societal willingness to pay (SWTP) as
+the life-safety valuation, following the JCSS risk-assessment background
+documents and examples [Rackwitz2008LQI]_ [Streicher2008LQI]_
+[Schubert2009LQI]_.
 
 For life-safety problems, the LQI literature expresses the societal willingness
 to pay (SWTP) to save one statistical life as a function of the gross domestic
@@ -853,12 +853,13 @@ background document [Rackwitz2008LQI]_.  The anchor values are the
 
 The anchor table is intentionally not overwritten with newer values.  For
 current studies, :func:`~pystra.ddo.index_swtp_record` and
-``swtp_table(indexed=True)`` return a separately traceable indexed table.  The
-built-in indexed view uses the World Bank WDI GDP per capita PPP indicator
-``NY.GDP.PCAP.PP.CD`` to scale each Rackwitz anchor value from 1999 to 2024
-[WorldBankWDI]_.  This is a practical update of the LQI income term :math:`g`;
-it is not a substitute for a full recalculation of mortality tables,
-discounting, and age averaging.
+``swtp_table(indexed=True)`` return a separately traceable indexed table.
+High-level country-based LQI construction requires users to choose
+``indexed=True`` or ``indexed=False`` explicitly.  The built-in indexed view
+uses the World Bank WDI GDP per capita PPP indicator ``NY.GDP.PCAP.PP.CD`` to
+scale each Rackwitz anchor value from 1999 to 2024 [WorldBankWDI]_.  This is a
+practical update of the LQI income term :math:`g`; it is not a substitute for a
+full recalculation of mortality tables, discounting, and age averaging.
 
 Fischer, Barnardo, and Faber [Fischer2012LQI]_ provide a convenient way to
 turn an SWTP value and expected fatalities into minimum target reliabilities.
@@ -895,12 +896,13 @@ corresponding target classes are approximated as:
      - :math:`10^{-5}`
 
 For normal studies, ``ra.LQI`` (:class:`~pystra.ddo.LQI`) builds this target
-directly from a country SWTP value or a user-supplied SWTP value, fatalities,
-and marginal safety cost.  The lower-level :func:`~pystra.ddo.lqi_k1` and
+directly from a country SWTP value or a user-supplied SWTP value, expected
+fatalities or an explicit consequence model, and marginal safety cost.  The
+lower-level :func:`~pystra.ddo.lqi_k1` and
 :func:`~pystra.ddo.lqi_target_reliability` helpers remain available in
 :mod:`pystra.ddo` for reproducing the source tables.  ``ra.DDO``
-(:class:`~pystra.ddo.DDO`) then evaluates the selected design decision
-optimization algorithm without changing the underlying stochastic model.
+(:class:`~pystra.ddo.DDO`) then evaluates the selected objective and criterion
+without changing the underlying stochastic model.
 
 For direct JCSS-style optimization, the canonical life-safety risk-cost term
 is
@@ -920,10 +922,18 @@ is
    \frac{dC(p)}{dp} \ge
    -\mathrm{SWTP}\,N_F\,\frac{dh(p)}{dp}.
 
-Pystra exposes these directly as
+``ra.LQI`` exposes these operations as methods such as
+``risk_cost`` and ``marginal_acceptance``.  The underlying
 :func:`~pystra.ddo.jcss_lqi_risk_cost` and
-:func:`~pystra.ddo.jcss_lqi_acceptability`.  These functions accept failure
-rates supplied by any model.
+:func:`~pystra.ddo.jcss_lqi_acceptability` functions remain available for
+direct reproduction of the JCSS equations.
+
+The current implementation separates an objective from an acceptability
+criterion and reserves solver logic for future work.  This keeps LQI in its
+proper role as a minimum safety criterion rather than the optimizer itself.
+Future non-scalar applications, such as bridge portfolios or networks with
+correlated failures and nonlinear economic consequences, should add a richer
+decision-context abstraction before they add solvers.
 
 
 Simulation Methods

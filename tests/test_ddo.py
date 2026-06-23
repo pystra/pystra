@@ -8,8 +8,10 @@ import pystra as ra
 def test_ddo_namespace_is_explicit():
     assert hasattr(ra, "ddo")
     assert hasattr(ra, "DDO")
+    assert hasattr(ra, "DDOCriterion")
     assert hasattr(ra, "LQI")
     assert hasattr(ra, "SWTP")
+    assert not hasattr(ra, "RiskStudy")
     assert not hasattr(ra, "plot_summary")
 
 
@@ -55,7 +57,7 @@ def test_lqi_builds_target_from_country():
     criterion = ra.LQI.from_country(
         "CH",
         indexed=True,
-        fatalities=12,
+        expected_fatalities=12,
         marginal_safety_cost=5_000,
     )
 
@@ -65,6 +67,32 @@ def test_lqi_builds_target_from_country():
     assert criterion.target.cost_class == "small"
     assert criterion.target.pf == pytest.approx(1e-5)
     assert criterion.target.beta == pytest.approx(4.2)
+    assert criterion.risk_cost(1000, 1e-4) == pytest.approx(
+        1000 + criterion.swtp.for_lives(12) * 1e-4
+    )
+
+
+def test_lqi_country_requires_explicit_index_choice():
+    with pytest.raises(ValueError, match="indexed=True or indexed=False"):
+        ra.LQI.from_country(
+            "CH",
+            expected_fatalities=12,
+            marginal_safety_cost=5_000,
+        )
+
+
+def test_lqi_can_use_explicit_consequence():
+    criterion = ra.LQI.from_swtp(
+        ra.SWTP(5_000_000),
+        consequence=ra.FatalityConsequence(
+            people_exposed=20,
+            probability_death_given_failure=0.5,
+        ),
+        marginal_safety_cost=5_000,
+    )
+
+    assert criterion.expected_fatalities == pytest.approx(10)
+    assert criterion.k1 == pytest.approx(1e-4)
 
 
 def test_cost_benefit_model_matches_jcss_notebook_values():
@@ -208,19 +236,19 @@ def test_ddo_runs_lqi_algorithm_and_selects_objective():
     algorithm = ra.LQI.from_country(
         "CH",
         indexed=True,
-        fatalities=12,
+        expected_fatalities=12,
         marginal_safety_cost=5_000,
     )
     ddo = ra.DDO(
         study=study,
-        costs=model,
-        algorithm=algorithm,
+        objective=model,
+        criterion=algorithm,
     )
 
     results = ddo.run()
     best = ddo.maximize_objective()
 
-    assert ddo.algorithm.name == "lqi"
+    assert ddo.criterion.name == "lqi"
     assert ddo.getResults().equals(results)
     assert list(results.columns) == [
         "As",
@@ -253,17 +281,41 @@ def test_ddo_lqi_constructor_builds_algorithm():
         study=study,
         country="CH",
         indexed=True,
-        fatalities=12,
+        expected_fatalities=12,
         marginal_safety_cost=5_000,
     )
 
-    assert isinstance(ddo.algorithm, ra.LQI)
+    assert isinstance(ddo.criterion, ra.LQI)
     with pytest.raises(ValueError, match="not been run"):
         ddo.getResults()
 
     results = ddo.run()
     assert ddo.getResults().loc[0, "target_pf"].item() == pytest.approx(1e-5)
     assert results.loc[0, "lqi_acceptable"].item() is False
+
+
+def test_ddo_is_keyword_only_and_validates_lqi_conflicts():
+    study = ra.ddo.DesignStudy(
+        variable="As",
+        values=[85.1],
+        analysis=lambda area: {"pf": 2.5708544377963726e-5},
+    )
+    criterion = ra.LQI.from_swtp(
+        5_000_000,
+        expected_fatalities=12,
+        marginal_safety_cost=5_000,
+    )
+
+    with pytest.raises(TypeError):
+        ra.DDO(study, criterion)
+
+    with pytest.raises(ValueError, match="criterion cannot be combined"):
+        ra.DDO.lqi(
+            study=study,
+            criterion=criterion,
+            country="CH",
+            indexed=True,
+        )
 
 
 def test_plot_summary_returns_axes_for_design_table():

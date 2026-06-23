@@ -61,13 +61,11 @@ from . import ddo
 from .ddo import (
     CostBenefitModel,
     DDO,
-    DDOAlgorithm,
+    DDOCriterion,
     DesignStudy,
     FatalityConsequence,
     LQI,
     LQITarget,
     RiskResult,
-    RiskStudy,
-    ScenarioRiskModel,
     SWTP,
 )
