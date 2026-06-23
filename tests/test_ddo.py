@@ -7,7 +7,9 @@ import pystra as ra
 
 def test_ddo_namespace_is_explicit():
     assert hasattr(ra, "ddo")
-    assert not hasattr(ra, "SWTP")
+    assert hasattr(ra, "DDO")
+    assert hasattr(ra, "LQI")
+    assert hasattr(ra, "SWTP")
     assert not hasattr(ra, "plot_summary")
 
 
@@ -47,6 +49,22 @@ def test_lqi_target_reliability_table_and_ratio():
     assert target.beta == pytest.approx(3.7)
     assert high_variability.pf == pytest.approx(5e-4)
     assert high_variability.beta < target.beta
+
+
+def test_lqi_builds_target_from_country():
+    criterion = ra.LQI.from_country(
+        "CH",
+        indexed=True,
+        fatalities=12,
+        marginal_safety_cost=5_000,
+    )
+
+    assert criterion.swtp.price_year == 2024
+    assert criterion.expected_fatalities == pytest.approx(12)
+    assert criterion.k1 == pytest.approx(5_000 / (criterion.swtp.value_per_life * 12))
+    assert criterion.target.cost_class == "small"
+    assert criterion.target.pf == pytest.approx(1e-5)
+    assert criterion.target.beta == pytest.approx(4.2)
 
 
 def test_cost_benefit_model_matches_jcss_notebook_values():
@@ -187,14 +205,13 @@ def test_ddo_runs_lqi_algorithm_and_selects_objective():
         construction_cost=lambda As: 5000 * As,
         failure_cost=lambda As: 5000 * As + 12 * 1.8e6 + 3e4,
     )
-    algorithm = ra.ddo.LQICriterion(
-        swtp=ra.ddo.SWTP.from_country("CH"),
-        consequence=ra.ddo.FatalityConsequence(
-            people_exposed=12, probability_death_given_failure=1
-        ),
-        target=ra.ddo.lqi_target_reliability(5e-4),
+    algorithm = ra.LQI.from_country(
+        "CH",
+        indexed=True,
+        fatalities=12,
+        marginal_safety_cost=5_000,
     )
-    ddo = ra.ddo.DDO(
+    ddo = ra.DDO(
         study=study,
         costs=model,
         algorithm=algorithm,
@@ -220,7 +237,8 @@ def test_ddo_runs_lqi_algorithm_and_selects_objective():
     ]
     assert np.isfinite(results["beta"]).all()
     assert results.loc[results["As"] == 70.0, "lqi_acceptable"].item() is False
-    assert results.loc[results["As"] == 85.1, "lqi_acceptable"].item() is True
+    assert results.loc[results["As"] == 85.1, "lqi_acceptable"].item() is False
+    assert results.loc[results["As"] == 93.0, "lqi_acceptable"].item() is True
     assert best["As"] == pytest.approx(85.1)
 
 
@@ -231,18 +249,21 @@ def test_ddo_lqi_constructor_builds_algorithm():
         analysis=lambda area: {"pf": 2.5708544377963726e-5},
     )
 
-    ddo = ra.ddo.DDO.lqi(
+    ddo = ra.DDO.lqi(
         study=study,
-        target=ra.ddo.lqi_target_reliability(5e-4),
+        country="CH",
+        indexed=True,
+        fatalities=12,
+        marginal_safety_cost=5_000,
     )
 
-    assert isinstance(ddo.algorithm, ra.ddo.LQICriterion)
+    assert isinstance(ddo.algorithm, ra.LQI)
     with pytest.raises(ValueError, match="not been run"):
         ddo.getResults()
 
     results = ddo.run()
-    assert ddo.getResults().loc[0, "lqi_acceptable"].item() is True
-    assert results.loc[0, "lqi_acceptable"].item() is True
+    assert ddo.getResults().loc[0, "target_pf"].item() == pytest.approx(1e-5)
+    assert results.loc[0, "lqi_acceptable"].item() is False
 
 
 def test_plot_summary_returns_axes_for_design_table():

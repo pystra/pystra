@@ -4,8 +4,9 @@ The objects in this module sit above the reliability methods.  They do not
 change how FORM, SORM, or simulation analyses are run; instead
 :class:`DDO` applies a selected design decision optimization algorithm to
 failure probabilities, consequences, and costs.  The initial implementation
-provides the :class:`LQICriterion` algorithm for the life quality index (LQI)
-criterion using societal willingness-to-pay (SWTP) values.
+provides the :class:`LQI` algorithm for design decision optimization with the
+life quality index (LQI) criterion using societal willingness-to-pay (SWTP)
+values.
 """
 
 from __future__ import annotations
@@ -1247,9 +1248,22 @@ class DDOAlgorithm:
         raise NotImplementedError
 
 
+def _require_lqi_target_inputs(
+    fatalities: Optional[float], marginal_safety_cost: Optional[float]
+) -> None:
+    missing = []
+    if fatalities is None:
+        missing.append("fatalities")
+    if marginal_safety_cost is None:
+        missing.append("marginal_safety_cost")
+    if missing:
+        names = " and ".join(missing)
+        raise ValueError(f"LQI target construction requires {names}")
+
+
 @dataclass(frozen=True)
-class LQICriterion(DDOAlgorithm):
-    """LQI/SWTP design decision optimization algorithm.
+class LQI(DDOAlgorithm):
+    """Design decision optimization with the LQI criterion.
 
     The algorithm adds consequence valuation and LQI acceptability columns to
     the reliability and cost-benefit results produced by :class:`DDO`.
@@ -1260,6 +1274,111 @@ class LQICriterion(DDOAlgorithm):
     target: Optional[LQITarget] = None
 
     name = "lqi"
+
+    @staticmethod
+    def _as_swtp(swtp: Union[float, SWTP]) -> SWTP:
+        return swtp if isinstance(swtp, SWTP) else SWTP(float(swtp))
+
+    @classmethod
+    def from_swtp(
+        cls,
+        swtp: Union[float, SWTP],
+        *,
+        fatalities: float,
+        marginal_safety_cost: float,
+        variability: str = "medium",
+    ) -> "LQI":
+        """Create an LQI criterion from an SWTP value.
+
+        Parameters
+        ----------
+        swtp : float or SWTP
+            Societal willingness to pay per statistical life.
+        fatalities : float
+            Expected fatalities conditional on failure.
+        marginal_safety_cost : float
+            Marginal annual safety cost used in the LQI target-reliability
+            table.
+        variability : {"low", "medium", "high"}, optional
+            Variability class for the LQI target-reliability table.
+        """
+
+        swtp_value = cls._as_swtp(swtp)
+        consequence = FatalityConsequence(people_exposed=fatalities)
+        target = lqi_target_reliability(
+            lqi_k1(
+                safety_cost_rate=marginal_safety_cost,
+                swtp=swtp_value,
+                expected_fatalities=consequence.expected_fatalities,
+            ),
+            variability=variability,
+        )
+        return cls(swtp=swtp_value, consequence=consequence, target=target)
+
+    @classmethod
+    def from_country(
+        cls,
+        code: str,
+        *,
+        fatalities: float,
+        marginal_safety_cost: float,
+        indexed: bool = False,
+        variability: str = "medium",
+    ) -> "LQI":
+        """Create an LQI criterion from a built-in country SWTP value."""
+
+        return cls.from_swtp(
+            SWTP.from_country(code, indexed=indexed),
+            fatalities=fatalities,
+            marginal_safety_cost=marginal_safety_cost,
+            variability=variability,
+        )
+
+    @classmethod
+    def from_lqi(
+        cls,
+        *,
+        gross_domestic_product_per_capita: float,
+        mortality_rate: float,
+        demographic_constant: float,
+        fatalities: float,
+        marginal_safety_cost: float,
+        variability: str = "medium",
+        currency: str = "currency units",
+        price_year: Optional[int] = None,
+        source: Optional[str] = "LQI relation SWTP = g / q * G",
+    ) -> "LQI":
+        """Create an LQI criterion from the LQI SWTP relation."""
+
+        return cls.from_swtp(
+            SWTP.from_lqi(
+                gross_domestic_product_per_capita=gross_domestic_product_per_capita,
+                mortality_rate=mortality_rate,
+                demographic_constant=demographic_constant,
+                currency=currency,
+                price_year=price_year,
+                source=source,
+            ),
+            fatalities=fatalities,
+            marginal_safety_cost=marginal_safety_cost,
+            variability=variability,
+        )
+
+    @property
+    def expected_fatalities(self) -> Optional[float]:
+        """Return expected fatalities conditional on failure when available."""
+
+        if self.consequence is None:
+            return None
+        return self.consequence.expected_fatalities
+
+    @property
+    def k1(self) -> Optional[float]:
+        """Return the LQI safety cost ratio when a target is available."""
+
+        if self.target is None:
+            return None
+        return self.target.k1
 
     def evaluate(self, results: pd.DataFrame) -> pd.DataFrame:
         """Return decision results with LQI/SWTP columns."""
@@ -1294,16 +1413,50 @@ class DDO:
         cls,
         study: DesignStudy,
         costs: Optional[CostBenefitModel] = None,
-        swtp: Optional[SWTP] = None,
+        *,
+        criterion: Optional[LQI] = None,
+        country: Optional[str] = None,
+        indexed: bool = False,
+        swtp: Optional[Union[float, SWTP]] = None,
+        fatalities: Optional[float] = None,
+        marginal_safety_cost: Optional[float] = None,
+        variability: str = "medium",
         consequence: Optional[FatalityConsequence] = None,
         target: Optional[LQITarget] = None,
     ) -> "DDO":
-        """Create a DDO study using the LQI/SWTP algorithm."""
+        """Create a DDO study using the LQI criterion."""
+
+        if criterion is None:
+            if country is not None:
+                _require_lqi_target_inputs(fatalities, marginal_safety_cost)
+                criterion = LQI.from_country(
+                    country,
+                    fatalities=fatalities,
+                    marginal_safety_cost=marginal_safety_cost,
+                    indexed=indexed,
+                    variability=variability,
+                )
+            elif swtp is not None and (
+                fatalities is not None or marginal_safety_cost is not None
+            ):
+                _require_lqi_target_inputs(fatalities, marginal_safety_cost)
+                criterion = LQI.from_swtp(
+                    swtp,
+                    fatalities=fatalities,
+                    marginal_safety_cost=marginal_safety_cost,
+                    variability=variability,
+                )
+            else:
+                criterion = LQI(
+                    swtp=LQI._as_swtp(swtp) if swtp is not None else None,
+                    consequence=consequence,
+                    target=target,
+                )
 
         return cls(
             study=study,
             costs=costs,
-            algorithm=LQICriterion(swtp=swtp, consequence=consequence, target=target),
+            algorithm=criterion,
         )
 
     def evaluate(self) -> pd.DataFrame:
@@ -1386,6 +1539,6 @@ __all__ = [
     "DesignStudy",
     "RiskStudy",
     "DDOAlgorithm",
-    "LQICriterion",
+    "LQI",
     "DDO",
 ]

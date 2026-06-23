@@ -56,6 +56,18 @@ from .fbc import *
 from .loadcomb import *
 from .calibration import *
 
-# Design decision optimization lives under an explicit namespace to keep the
-# criterion-specific helpers out of the package top level.
+# Design decision optimization
 from . import ddo
+from .ddo import (
+    CostBenefitModel,
+    DDO,
+    DDOAlgorithm,
+    DesignStudy,
+    FatalityConsequence,
+    LQI,
+    LQITarget,
+    RiskResult,
+    RiskStudy,
+    ScenarioRiskModel,
+    SWTP,
+)

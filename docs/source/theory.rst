@@ -763,8 +763,8 @@ Design decision optimization with societal risk acceptance is normally applied
 after a reliability analysis has estimated :math:`p_f` or :math:`\beta`.  It
 does not require a different FORM, SORM, or simulation model.  Instead, the
 economic objective and the societal acceptability criterion are treated as
-post-processing checks on a design or code-calibration study.  The initial
-Pystra's initial DDO algorithm uses the life quality index (LQI) criterion
+post-processing checks on a design or code-calibration study.  Pystra's
+initial DDO algorithm uses the life quality index (LQI) criterion
 with societal willingness to pay (SWTP) as the life-safety valuation,
 following the JCSS risk-assessment background documents and examples
 [Rackwitz2008LQI]_ [Streicher2008LQI]_ [Schubert2009LQI]_.
@@ -782,8 +782,9 @@ the form
 
 where :math:`g` is the income or GDP measure available for risk reduction,
 :math:`q` is the mortality rate, and :math:`C_x` depends on the mortality
-reduction scheme.  The helper :meth:`pystra.ddo.SWTP.from_lqi` implements this
-relationship for user-supplied demographic values.
+reduction scheme.  The ``ra.SWTP.from_lqi`` helper
+(:meth:`~pystra.ddo.SWTP.from_lqi`) implements this relationship for
+user-supplied demographic values.
 
 Pystra also includes a small source-backed country table from Rackwitz's JCSS
 background document [Rackwitz2008LQI]_.  The anchor values are the
@@ -893,11 +894,13 @@ corresponding target classes are approximated as:
      - 4.2
      - :math:`10^{-5}`
 
-The :mod:`pystra.ddo` module provides :func:`~pystra.ddo.lqi_k1`,
-:func:`~pystra.ddo.lqi_target_reliability`,
-:class:`~pystra.ddo.LQICriterion`, and :class:`~pystra.ddo.DDO` so that a
-reliability study can be evaluated by a selected design decision optimization
-algorithm without changing the underlying stochastic model.
+For normal studies, ``ra.LQI`` (:class:`~pystra.ddo.LQI`) builds this target
+directly from a country SWTP value or a user-supplied SWTP value, fatalities,
+and marginal safety cost.  The lower-level :func:`~pystra.ddo.lqi_k1` and
+:func:`~pystra.ddo.lqi_target_reliability` helpers remain available in
+:mod:`pystra.ddo` for reproducing the source tables.  ``ra.DDO``
+(:class:`~pystra.ddo.DDO`) then evaluates the selected design decision
+optimization algorithm without changing the underlying stochastic model.
 
 For direct JCSS-style optimization, the canonical life-safety risk-cost term
 is
