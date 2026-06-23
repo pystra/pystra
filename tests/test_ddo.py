@@ -170,7 +170,7 @@ def test_risk_study_evaluates_design_dependent_scenarios():
     assert results.loc[1, "annual_failure_rate"] < results.loc[0, "annual_failure_rate"]
 
 
-def test_ddo_runs_jcss_lqi_algorithm_and_selects_objective():
+def test_ddo_runs_lqi_algorithm_and_selects_objective():
     probabilities = {70.0: 7.9e-4, 85.1: 2.5708544377963726e-5, 93.0: 1.0e-6}
 
     def analysis(area):
@@ -187,7 +187,7 @@ def test_ddo_runs_jcss_lqi_algorithm_and_selects_objective():
         construction_cost=lambda As: 5000 * As,
         failure_cost=lambda As: 5000 * As + 12 * 1.8e6 + 3e4,
     )
-    algorithm = ra.ddo.JCSSLQI(
+    algorithm = ra.ddo.LQICriterion(
         swtp=ra.ddo.SWTP.from_country("CH"),
         consequence=ra.ddo.FatalityConsequence(
             people_exposed=12, probability_death_given_failure=1
@@ -203,7 +203,8 @@ def test_ddo_runs_jcss_lqi_algorithm_and_selects_objective():
     results = ddo.run()
     best = ddo.maximize_objective()
 
-    assert ddo.algorithm.name == "jcss_lqi"
+    assert ddo.algorithm.name == "lqi"
+    assert ddo.getResults().equals(results)
     assert list(results.columns) == [
         "As",
         "pf",
@@ -223,20 +224,24 @@ def test_ddo_runs_jcss_lqi_algorithm_and_selects_objective():
     assert best["As"] == pytest.approx(85.1)
 
 
-def test_ddo_jcss_lqi_constructor_builds_algorithm():
+def test_ddo_lqi_constructor_builds_algorithm():
     study = ra.ddo.DesignStudy(
         variable="As",
         values=[85.1],
         analysis=lambda area: {"pf": 2.5708544377963726e-5},
     )
 
-    ddo = ra.ddo.DDO.jcss_lqi(
+    ddo = ra.ddo.DDO.lqi(
         study=study,
         target=ra.ddo.lqi_target_reliability(5e-4),
     )
-    results = ddo.evaluate()
 
-    assert isinstance(ddo.algorithm, ra.ddo.JCSSLQI)
+    assert isinstance(ddo.algorithm, ra.ddo.LQICriterion)
+    with pytest.raises(ValueError, match="not been run"):
+        ddo.getResults()
+
+    results = ddo.run()
+    assert ddo.getResults().loc[0, "lqi_acceptable"].item() is True
     assert results.loc[0, "lqi_acceptable"].item() is True
 
 

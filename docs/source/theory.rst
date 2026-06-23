@@ -764,8 +764,9 @@ after a reliability analysis has estimated :math:`p_f` or :math:`\beta`.  It
 does not require a different FORM, SORM, or simulation model.  Instead, the
 economic objective and the societal acceptability criterion are treated as
 post-processing checks on a design or code-calibration study.  The initial
-Pystra implementation uses the JCSS life quality index (LQI) criterion with
-societal willingness to pay (SWTP) as the life-safety valuation
+Pystra's initial DDO algorithm uses the life quality index (LQI) criterion
+with societal willingness to pay (SWTP) as the life-safety valuation,
+following the JCSS risk-assessment background documents and examples
 [Rackwitz2008LQI]_ [Streicher2008LQI]_ [Schubert2009LQI]_.
 
 For life-safety problems, the LQI literature expresses the societal willingness
@@ -894,7 +895,7 @@ corresponding target classes are approximated as:
 
 The :mod:`pystra.ddo` module provides :func:`~pystra.ddo.lqi_k1`,
 :func:`~pystra.ddo.lqi_target_reliability`,
-:class:`~pystra.ddo.JCSSLQI`, and :class:`~pystra.ddo.DDO` so that a
+:class:`~pystra.ddo.LQICriterion`, and :class:`~pystra.ddo.DDO` so that a
 reliability study can be evaluated by a selected design decision optimization
 algorithm without changing the underlying stochastic model.
 

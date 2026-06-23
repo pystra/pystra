@@ -4,13 +4,13 @@ The objects in this module sit above the reliability methods.  They do not
 change how FORM, SORM, or simulation analyses are run; instead
 :class:`DDO` applies a selected design decision optimization algorithm to
 failure probabilities, consequences, and costs.  The initial implementation
-provides the :class:`JCSSLQI` algorithm for the JCSS life quality index (LQI)
+provides the :class:`LQICriterion` algorithm for the life quality index (LQI)
 criterion using societal willingness-to-pay (SWTP) values.
 """
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from typing import Any, Callable, Iterable, Mapping, Optional, Sequence, Union
 
 import numpy as np
@@ -1248,8 +1248,8 @@ class DDOAlgorithm:
 
 
 @dataclass(frozen=True)
-class JCSSLQI(DDOAlgorithm):
-    """JCSS LQI/SWTP design decision optimization algorithm.
+class LQICriterion(DDOAlgorithm):
+    """LQI/SWTP design decision optimization algorithm.
 
     The algorithm adds consequence valuation and LQI acceptability columns to
     the reliability and cost-benefit results produced by :class:`DDO`.
@@ -1259,10 +1259,10 @@ class JCSSLQI(DDOAlgorithm):
     consequence: Optional[FatalityConsequence] = None
     target: Optional[LQITarget] = None
 
-    name = "jcss_lqi"
+    name = "lqi"
 
     def evaluate(self, results: pd.DataFrame) -> pd.DataFrame:
-        """Return decision results with JCSS LQI/SWTP columns."""
+        """Return decision results with LQI/SWTP columns."""
 
         df = results.copy()
 
@@ -1287,9 +1287,10 @@ class DDO:
     study: DesignStudy
     algorithm: DDOAlgorithm
     costs: Optional[CostBenefitModel] = None
+    results: Optional[pd.DataFrame] = field(default=None, init=False, repr=False)
 
     @classmethod
-    def jcss_lqi(
+    def lqi(
         cls,
         study: DesignStudy,
         costs: Optional[CostBenefitModel] = None,
@@ -1297,12 +1298,12 @@ class DDO:
         consequence: Optional[FatalityConsequence] = None,
         target: Optional[LQITarget] = None,
     ) -> "DDO":
-        """Create a DDO study using the JCSS LQI/SWTP algorithm."""
+        """Create a DDO study using the LQI/SWTP algorithm."""
 
         return cls(
             study=study,
             costs=costs,
-            algorithm=JCSSLQI(swtp=swtp, consequence=consequence, target=target),
+            algorithm=LQICriterion(swtp=swtp, consequence=consequence, target=target),
         )
 
     def evaluate(self) -> pd.DataFrame:
@@ -1330,12 +1331,20 @@ class DDO:
         analysis objects.  It returns the same dataframe as :meth:`evaluate`.
         """
 
-        return self.evaluate()
+        self.results = self.evaluate()
+        return self.results
+
+    def getResults(self) -> pd.DataFrame:
+        """Return the results from the most recent :meth:`run` call."""
+
+        if self.results is None:
+            raise ValueError("DDO study has not been run")
+        return self.results
 
     def maximize_objective(self) -> pd.Series:
         """Return the row with the largest objective value."""
 
-        df = self.evaluate()
+        df = self.results if self.results is not None else self.run()
         if "objective" not in df:
             raise ValueError("maximize_objective requires a CostBenefitModel")
         return df.loc[df["objective"].idxmax()]
@@ -1377,6 +1386,6 @@ __all__ = [
     "DesignStudy",
     "RiskStudy",
     "DDOAlgorithm",
-    "JCSSLQI",
+    "LQICriterion",
     "DDO",
 ]
