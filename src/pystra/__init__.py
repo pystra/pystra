@@ -55,4 +55,7 @@ from .system import *
 from .fbc import *
 from .loadcomb import *
 from .calibration import *
-from .ddo import *
+
+# Design decision optimization lives under an explicit namespace to keep the
+# criterion-specific helpers out of the package top level.
+from . import ddo

@@ -5,8 +5,14 @@ import pytest
 import pystra as ra
 
 
+def test_ddo_namespace_is_explicit():
+    assert hasattr(ra, "ddo")
+    assert not hasattr(ra, "SWTP")
+    assert not hasattr(ra, "plot_summary")
+
+
 def test_swtp_from_lqi_and_country_lookup():
-    swtp = ra.SWTP.from_lqi(
+    swtp = ra.ddo.SWTP.from_lqi(
         gross_domestic_product_per_capita=25010,
         mortality_rate=0.16,
         demographic_constant=16,
@@ -15,25 +21,25 @@ def test_swtp_from_lqi_and_country_lookup():
     )
 
     assert swtp.value_per_life == pytest.approx(2_501_000)
-    assert ra.get_swtp("DE") == pytest.approx(1_900_000)
-    assert ra.get_swtp("UK") == pytest.approx(1_700_000)
-    assert ra.get_swtp("US", indexed=True) == pytest.approx(5_220_864, rel=1e-4)
-    assert ra.get_swtp_record("New Zealand").code == "NZ"
-    assert ra.swtp_table().loc["NL", "value_per_life"] == pytest.approx(2_800_000)
-    indexed = ra.swtp_table(indexed=True)
+    assert ra.ddo.get_swtp("DE") == pytest.approx(1_900_000)
+    assert ra.ddo.get_swtp("UK") == pytest.approx(1_700_000)
+    assert ra.ddo.get_swtp("US", indexed=True) == pytest.approx(5_220_864, rel=1e-4)
+    assert ra.ddo.get_swtp_record("New Zealand").code == "NZ"
+    assert ra.ddo.swtp_table().loc["NL", "value_per_life"] == pytest.approx(2_800_000)
+    indexed = ra.ddo.swtp_table(indexed=True)
     assert indexed.loc["CH", "price_year"] == 2024
     assert indexed.loc["CH", "index_factor"] == pytest.approx(2.7775, rel=1e-4)
 
 
 def test_lqi_target_reliability_table_and_ratio():
-    k1 = ra.lqi_k1(
+    k1 = ra.ddo.lqi_k1(
         safety_cost_rate=1_000,
-        swtp=ra.SWTP(5_000_000),
+        swtp=ra.ddo.SWTP(5_000_000),
         expected_fatalities=2,
     )
 
-    target = ra.lqi_target_reliability(k1)
-    high_variability = ra.lqi_target_reliability(k1, variability="high")
+    target = ra.ddo.lqi_target_reliability(k1)
+    high_variability = ra.ddo.lqi_target_reliability(k1, variability="high")
 
     assert k1 == pytest.approx(1e-4)
     assert target.cost_class == "medium"
@@ -46,7 +52,7 @@ def test_lqi_target_reliability_table_and_ratio():
 def test_cost_benefit_model_matches_jcss_notebook_values():
     area = 85.1
     failure_probability = 2.5708544377963726e-05
-    model = ra.CostBenefitModel(
+    model = ra.ddo.CostBenefitModel(
         benefit_rate=1.2e4,
         interest_rate=0.02,
         service_life=100,
@@ -74,14 +80,14 @@ def test_canonical_jcss_lqi_acceptability_and_risk_cost():
     def safety_cost(p):
         return 1e6 + 1e4 * p**1.25
 
-    margin_low = ra.jcss_lqi_acceptability(
+    margin_low = ra.ddo.jcss_lqi_acceptability(
         safety_cost=safety_cost,
         failure_rate=failure_probability,
         design=3.0,
         swtp=5e6,
         expected_fatalities=10,
     )
-    margin_high = ra.jcss_lqi_acceptability(
+    margin_high = ra.ddo.jcss_lqi_acceptability(
         safety_cost=safety_cost,
         failure_rate=failure_probability,
         design=4.4,
@@ -91,8 +97,10 @@ def test_canonical_jcss_lqi_acceptability_and_risk_cost():
 
     assert margin_low < 0
     assert margin_high > 0
-    assert ra.jcss_lqi_risk_cost(1000, 1e-4, ra.SWTP(5e6), 10) == pytest.approx(6000)
-    assert ra.jcss_systematic_reconstruction_objective(
+    assert ra.ddo.jcss_lqi_risk_cost(1000, 1e-4, ra.ddo.SWTP(5e6), 10) == pytest.approx(
+        6000
+    )
+    assert ra.ddo.jcss_systematic_reconstruction_objective(
         benefit_rate=20_000,
         safety_cost=1_000_000,
         failure_rate=1e-4,
@@ -112,15 +120,15 @@ def test_scenario_risk_result_supports_correlated_scenarios():
         }
     )
 
-    risk = ra.RiskResult.from_scenarios(scenarios, failure_col="failure")
-    swtp = ra.SWTP(5.0e6)
+    risk = ra.ddo.RiskResult.from_scenarios(scenarios, failure_col="failure")
+    swtp = ra.ddo.SWTP(5.0e6)
 
     assert risk.annual_failure_rate == pytest.approx(3.7e-3)
     assert risk.expected_fatalities == pytest.approx(0.00125)
     assert risk.expected_economic_loss == pytest.approx(5850.0)
     assert risk.life_safety_cost(swtp) == pytest.approx(6250.0)
     assert risk.total_risk_cost(swtp) == pytest.approx(12100.0)
-    assert ra.jcss_lqi_risk_cost_from_result(
+    assert ra.ddo.jcss_lqi_risk_cost_from_result(
         safety_cost=100_000,
         risk=risk,
         swtp=swtp,
@@ -142,10 +150,10 @@ def test_risk_study_evaluates_design_dependent_scenarios():
             }
         )
 
-    model = ra.ScenarioRiskModel(scenarios_for_strengthening)
-    study = ra.RiskStudy(variable="strengthening", values=[0.0, 0.25], model=model)
+    model = ra.ddo.ScenarioRiskModel(scenarios_for_strengthening)
+    study = ra.ddo.RiskStudy(variable="strengthening", values=[0.0, 0.25], model=model)
 
-    results = study.evaluate(swtp=ra.SWTP(5.0e6))
+    results = study.evaluate(swtp=ra.ddo.SWTP(5.0e6))
 
     assert list(results.columns) == [
         "strengthening",
@@ -169,22 +177,24 @@ def test_design_study_assessment_and_objective_selection():
         pf = probabilities[float(area)]
         return {"pf": pf}
 
-    study = ra.DesignStudy(variable="As", values=[70.0, 85.1, 93.0], analysis=analysis)
-    model = ra.CostBenefitModel(
+    study = ra.ddo.DesignStudy(
+        variable="As", values=[70.0, 85.1, 93.0], analysis=analysis
+    )
+    model = ra.ddo.CostBenefitModel(
         benefit_rate=1.2e4,
         interest_rate=0.02,
         service_life=100,
         construction_cost=lambda As: 5000 * As,
         failure_cost=lambda As: 5000 * As + 12 * 1.8e6 + 3e4,
     )
-    assessment = ra.LQIAssessment(
+    assessment = ra.ddo.LQIAssessment(
         study=study,
         costs=model,
-        swtp=ra.SWTP.from_country("CH"),
-        consequence=ra.FatalityConsequence(
+        swtp=ra.ddo.SWTP.from_country("CH"),
+        consequence=ra.ddo.FatalityConsequence(
             people_exposed=12, probability_death_given_failure=1
         ),
-        target=ra.lqi_target_reliability(5e-4),
+        target=ra.ddo.lqi_target_reliability(5e-4),
     )
 
     results = assessment.evaluate()
@@ -222,7 +232,7 @@ def test_plot_summary_returns_axes_for_design_table():
         }
     )
 
-    fig, axes = ra.plot_summary(
+    fig, axes = ra.ddo.plot_summary(
         data,
         design="As",
         quantities=["objective", "pf"],
