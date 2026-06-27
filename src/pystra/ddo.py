@@ -448,6 +448,7 @@ class TargetReliability:
             "cost_class",
             "variability",
             "converged",
+            "source",
         ):
             value = getattr(self, name)
             if value is not None:

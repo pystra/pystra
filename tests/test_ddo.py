@@ -64,6 +64,9 @@ def test_lqi_target_reliability_table_and_ratio():
     assert high_variability.pf == pytest.approx(5e-4)
     assert high_variability.beta < target.beta
     assert ra.LQI.lookup_target(k1).pf == pytest.approx(target.pf)
+    # Looked-up targets carry their source; calculated targets do not.
+    assert "source" in target.to_dict()
+    assert "source" not in ra.LQI.derive_target(k1).to_dict()
 
     table = {
         "large": (1e-3, 1e-3, 3.1),
