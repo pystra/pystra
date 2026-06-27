@@ -11,7 +11,7 @@ values.
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, replace
 from typing import Any, Callable, Iterable, Mapping, Optional, Sequence, Union
 
 import numpy as np
@@ -454,6 +454,52 @@ class TargetReliability:
                 data[name] = value
         data.update(self.metadata or {})
         return data
+
+    def for_period(
+        self, years: float, dependence_interval: float = 1.0
+    ) -> "TargetReliability":
+        """Return the target converted to a reference period of ``years``.
+
+        The annual reliability index is mapped to an equivalent index over
+        ``years``, assuming the maximum load effect renews every
+        ``dependence_interval`` years.  ``dependence_interval=1`` treats the
+        annual maxima as independent (the most onerous case), while
+        ``dependence_interval=years`` treats the period as fully dependent and
+        leaves the index unchanged.
+
+        Parameters
+        ----------
+        years : float
+            Reference period in years.
+        dependence_interval : float, optional
+            Renewal interval of the governing maximum, in years; must lie in
+            ``(0, years]``.
+
+        Returns
+        -------
+        TargetReliability
+            A new target at the reference period, with the original ``method``
+            and class labels retained and ``reference_period_years`` /
+            ``dependence_interval`` recorded in ``metadata``.
+        """
+
+        if years <= 0:
+            raise ValueError("years must be positive")
+        if not 0 < dependence_interval <= years:
+            raise ValueError("dependence_interval must be in (0, years]")
+
+        annual_pf = float(norm.cdf(-self.beta))
+        periods = years / dependence_interval
+        period_pf = 1.0 - (1.0 - annual_pf) ** periods
+        metadata = dict(self.metadata or {})
+        metadata["reference_period_years"] = years
+        metadata["dependence_interval"] = dependence_interval
+        return replace(
+            self,
+            pf=period_pf,
+            beta=_beta_from_failure_probability(period_pf),
+            metadata=metadata,
+        )
 
 
 @dataclass(frozen=True)
@@ -2069,6 +2115,44 @@ class DDO:
         if objective_column not in feasible:
             raise ValueError("Objective results are not available")
         return feasible.loc[feasible[objective_column].idxmax()]
+
+    def summary(self) -> pd.DataFrame:
+        """Return the key decision points as a small labelled table.
+
+        One row for the unconstrained economic optimum and, when the criterion
+        admits one, a second for the best feasible alternative.  Columns are the
+        design variable, ``pf``, ``beta`` (when present), the objective, and the
+        criterion's feasibility flag.  This is the table a designer reads off a
+        study, without rebuilding it row by row.
+        """
+
+        df = self._results_or_run()
+        objective_column = self._objective_column()
+        if objective_column not in df:
+            raise ValueError("DDO.summary requires an objective")
+
+        points = [("economic optimum", self.economic_optimum())]
+        feasible = self.feasible_results()
+        if not feasible.empty:
+            points.append(
+                ("best feasible", feasible.loc[feasible[objective_column].idxmax()])
+            )
+
+        feasibility_column = getattr(self.criterion, "feasibility_column", None)
+        candidate_columns = [
+            self.study.variable,
+            "pf",
+            "beta",
+            objective_column,
+            feasibility_column,
+        ]
+        columns = [
+            column
+            for column in candidate_columns
+            if column is not None and column in df
+        ]
+        rows = [{"point": label, **{c: row[c] for c in columns}} for label, row in points]
+        return pd.DataFrame(rows, columns=["point"] + columns)
 
     def plot(
         self,

@@ -279,6 +279,66 @@ def test_lqi_acceptability_boundary_finds_acceptance_design():
         lqi.acceptability_boundary(safety_cost, failure_probability, bounds=(2.0, 2.5))
 
 
+def test_target_reliability_for_period():
+    target = ra.LQI.lookup_target(1e-4)  # annual beta 3.7
+    assert target.beta == pytest.approx(3.7)
+
+    independent = target.for_period(50)
+    partial = target.for_period(50, dependence_interval=10)
+    dependent = target.for_period(50, dependence_interval=50)
+
+    # More renewals over the period give a lower equivalent reliability index.
+    assert independent.beta < partial.beta < target.beta
+    # Fully dependent over the period leaves the index unchanged.
+    assert dependent.beta == pytest.approx(target.beta)
+    assert dependent.pf == pytest.approx(float(ra.Normal("u", 0, 1).cdf(-target.beta)))
+    assert independent.metadata["reference_period_years"] == 50
+    assert independent.method == target.method
+
+    with pytest.raises(ValueError):
+        target.for_period(0)
+    with pytest.raises(ValueError):
+        target.for_period(50, dependence_interval=60)
+
+
+def test_ddo_summary_reports_decision_points():
+    probabilities = {70.0: 7.9e-4, 85.1: 2.5708544377963726e-5, 93.0: 1.0e-6}
+    study = ra.ddo.DesignStudy(
+        variable="As",
+        values=[70.0, 85.1, 93.0],
+        analysis=lambda area: {"pf": probabilities[float(area)]},
+    )
+    model = ra.ddo.CostBenefitModel(
+        benefit_rate=1.2e4,
+        interest_rate=0.02,
+        service_life=100,
+        construction_cost=lambda As: 5000 * As,
+        failure_cost=lambda As: 5000 * As + 12 * 1.8e6 + 3e4,
+    )
+    criterion = ra.LQI.from_country(
+        "CH",
+        indexed=True,
+        expected_fatalities_given_failure=12,
+        marginal_safety_cost=5_000,
+    )
+
+    summary = ra.DDO(study=study, objective=model, criterion=criterion).summary()
+
+    assert list(summary["point"]) == ["economic optimum", "best feasible"]
+    assert list(summary.columns) == [
+        "point",
+        "As",
+        "pf",
+        "beta",
+        "objective",
+        "lqi_acceptable",
+    ]
+    assert summary.loc[0, "As"] == pytest.approx(85.1)
+    assert summary.loc[1, "As"] == pytest.approx(93.0)
+    assert not summary.loc[0, "lqi_acceptable"]  # economic optimum is infeasible
+    assert summary.loc[1, "lqi_acceptable"]
+
+
 def test_scenario_risk_result_supports_correlated_scenarios():
     scenarios = pd.DataFrame(
         {
