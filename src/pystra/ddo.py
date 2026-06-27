@@ -16,6 +16,7 @@ from typing import Any, Callable, Iterable, Mapping, Optional, Sequence, Union
 
 import numpy as np
 import pandas as pd
+from scipy.optimize import brentq, minimize_scalar
 from scipy.stats import norm
 
 SWTP_COUNTRY_SOURCE = (
@@ -383,15 +384,76 @@ class FatalityConsequence:
 
 
 @dataclass(frozen=True)
-class LQITarget:
-    """Target failure probability and reliability index from an LQI criterion."""
+class TargetReliability:
+    """Target failure probability and reliability index from a calibration.
 
-    k1: float
+    A single result type for every target-reliability route in this module: the
+    rounded LQI table lookup (:meth:`LQI.lookup_target`), the LQI marginal
+    optimization (:meth:`LQI.derive_target`), and the Rackwitz/Steenbergen
+    code-calibration model (:meth:`RackwitzTargetModel.calibrate`).  Only ``pf``,
+    ``beta`` and ``method`` are always populated; fields that do not apply to a
+    given route are left as ``None``.
+
+    Parameters
+    ----------
+    pf : float
+        Annual failure probability or rate at the target.
+    beta : float
+        Reliability index corresponding to ``pf``.
+    method : str
+        Route that produced the target, e.g. ``"lqi-table"``,
+        ``"LQI marginal"`` or ``"Rackwitz/Steenbergen"``.
+    k1 : float, optional
+        LQI safety cost ratio, when the target comes from the LQI route.
+    cost_class : str, optional
+        Discrete cost-class label from the rounded LQI table.
+    variability : str, optional
+        Variability class used for the rounded LQI table.
+    design : float, optional
+        Optimizing design parameter for calculated targets (the mean
+        resistance-to-load ratio in the Rackwitz examples).
+    objective : float, optional
+        Objective value at the optimizing design.
+    converged : bool, optional
+        Whether the underlying optimization converged.
+    message : str, optional
+        Solver message for calculated targets.
+    source : str, optional
+        Literature source carried with a looked-up target.
+    metadata : mapping, optional
+        Additional model parameters or labels.
+    """
+
     pf: float
     beta: float
-    cost_class: str
-    variability: str = "medium"
-    source: str = SWTP_TARGET_SOURCE
+    method: str
+    k1: Optional[float] = None
+    cost_class: Optional[str] = None
+    variability: Optional[str] = None
+    design: Optional[float] = None
+    objective: Optional[float] = None
+    converged: Optional[bool] = None
+    message: str = ""
+    source: Optional[str] = None
+    metadata: Mapping[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict:
+        """Return the populated scalar quantities as a dictionary."""
+
+        data = {"method": self.method, "pf": self.pf, "beta": self.beta}
+        for name in (
+            "design",
+            "objective",
+            "k1",
+            "cost_class",
+            "variability",
+            "converged",
+        ):
+            value = getattr(self, name)
+            if value is not None:
+                data[name] = value
+        data.update(self.metadata or {})
+        return data
 
 
 @dataclass(frozen=True)
@@ -613,6 +675,320 @@ def _as_scalar_or_array(value):
     return float(array) if array.ndim == 0 else array
 
 
+def _beta_from_failure_probability(pf: float) -> float:
+    if pf < 0 or pf > 1:
+        raise ValueError("failure probability must be in [0, 1]")
+    if pf == 0:
+        return float("inf")
+    if pf == 1:
+        return float("-inf")
+    return -float(norm.ppf(pf))
+
+
+def lognormal_ratio_failure_probability(
+    design: Union[float, np.ndarray],
+    resistance_cov: float,
+    load_cov: float,
+) -> Union[float, np.ndarray]:
+    """Return ``P(R - S <= 0)`` for independent lognormal resistance and load.
+
+    ``design`` is the ratio ``E[R] / E[S]``.  The expression is the closed-form
+    reliability model used in the Rackwitz/JCSS target-reliability examples.
+    """
+
+    if resistance_cov < 0:
+        raise ValueError("resistance_cov must be non-negative")
+    if load_cov < 0:
+        raise ValueError("load_cov must be non-negative")
+    if resistance_cov == 0 and load_cov == 0:
+        raise ValueError("at least one coefficient of variation must be positive")
+
+    design_ratio = np.asarray(design, dtype=float)
+    if np.any(design_ratio <= 0):
+        raise ValueError("design must be positive")
+
+    numerator = np.log(
+        design_ratio * np.sqrt((1.0 + load_cov**2) / (1.0 + resistance_cov**2))
+    )
+    denominator = np.sqrt(np.log((1.0 + resistance_cov**2) * (1.0 + load_cov**2)))
+    return _as_scalar_or_array(norm.cdf(-numerator / denominator))
+
+
+@dataclass
+class TargetReliabilityCalibration:
+    """One-dimensional calibration for deriving a target reliability.
+
+    The calibration maximizes a user-supplied objective over a scalar design
+    variable and then evaluates the associated failure probability.  It is the
+    generic calculation layer behind the built-in Rackwitz and LQI marginal
+    target helpers.
+    """
+
+    objective: Callable[[float], float]
+    failure_probability: Callable[[float], float]
+    bounds: tuple[float, float] = (1.0, 15.0)
+    variable: str = "design"
+    metadata: Optional[Mapping[str, Any]] = None
+
+    def run(self) -> TargetReliability:
+        """Run the bounded scalar optimization."""
+
+        lower, upper = map(float, self.bounds)
+        if lower >= upper:
+            raise ValueError("bounds must be an increasing (lower, upper) pair")
+
+        solution = minimize_scalar(
+            lambda value: -float(self.objective(value)),
+            bounds=(lower, upper),
+            method="bounded",
+        )
+        design = float(solution.x)
+        objective = float(self.objective(design))
+        pf = float(self.failure_probability(design))
+        beta = _beta_from_failure_probability(pf)
+
+        metadata = dict(self.metadata or {})
+        metadata.setdefault("variable", self.variable)
+
+        return TargetReliability(
+            pf=pf,
+            beta=beta,
+            method=str(metadata.get("method", "calibration")),
+            design=design,
+            objective=objective,
+            converged=bool(solution.success),
+            message=str(solution.message),
+            metadata=metadata,
+        )
+
+
+@dataclass(frozen=True)
+class RackwitzTargetModel:
+    """Rackwitz/Steenbergen target-reliability model for code calibration.
+
+    The model follows the normalized life-cycle objective used by Rackwitz and
+    restated by Steenbergen, Rózsás, and Vrouwenvelder.  Costs are expressed
+    relative to the base construction cost ``C0`` and the design variable is
+    the mean resistance-to-load ratio ``p = E[R] / E[S]``.
+    """
+
+    safety_cost_ratio: float
+    failure_cost_ratio: float
+    resistance_cov: float = 0.3
+    load_cov: float = 0.3
+    base_cost: float = 1.0
+    interest_rate: float = 0.035
+    obsolescence_rate: float = 0.02
+    load_occurrence_rate: float = 1.0
+    serviceability_cost_ratio: float = 0.3
+    demolition_cost_ratio: float = 0.2
+    serviceability_resistance_ratio: float = 1.5
+    benefit_rate: float = 0.0
+
+    def __post_init__(self):
+        if self.safety_cost_ratio <= 0:
+            raise ValueError("safety_cost_ratio must be positive")
+        if self.failure_cost_ratio < 0:
+            raise ValueError("failure_cost_ratio must be non-negative")
+        if self.base_cost <= 0:
+            raise ValueError("base_cost must be positive")
+        if self.interest_rate <= 0:
+            raise ValueError("interest_rate must be positive")
+        if self.obsolescence_rate < 0:
+            raise ValueError("obsolescence_rate must be non-negative")
+        if self.load_occurrence_rate < 0:
+            raise ValueError("load_occurrence_rate must be non-negative")
+        if self.serviceability_cost_ratio < 0:
+            raise ValueError("serviceability_cost_ratio must be non-negative")
+        if self.demolition_cost_ratio < 0:
+            raise ValueError("demolition_cost_ratio must be non-negative")
+        if self.serviceability_resistance_ratio <= 0:
+            raise ValueError("serviceability_resistance_ratio must be positive")
+
+    @property
+    def metadata(self) -> dict:
+        """Return source parameters used by the normalized model."""
+
+        return {
+            "method": "Rackwitz/Steenbergen",
+            "safety_cost_ratio": self.safety_cost_ratio,
+            "failure_cost_ratio": self.failure_cost_ratio,
+            "resistance_cov": self.resistance_cov,
+            "load_cov": self.load_cov,
+        }
+
+    def construction_cost(self, design: float) -> float:
+        """Return ``C(p) = C0 + C1 p``."""
+
+        if design <= 0:
+            raise ValueError("design must be positive")
+        return self.base_cost * (1.0 + self.safety_cost_ratio * float(design))
+
+    def failure_probability(self, design: float) -> float:
+        """Return the ULS failure probability for a design value."""
+
+        return float(
+            lognormal_ratio_failure_probability(
+                design, self.resistance_cov, self.load_cov
+            )
+        )
+
+    def serviceability_probability(self, design: float) -> float:
+        """Return the SLS failure probability for a design value."""
+
+        return float(
+            lognormal_ratio_failure_probability(
+                float(design) / self.serviceability_resistance_ratio,
+                self.resistance_cov,
+                self.load_cov,
+            )
+        )
+
+    def objective(self, design: float) -> float:
+        """Return the normalized Rackwitz/Steenbergen life-cycle objective."""
+
+        construction = self.construction_cost(design)
+        serviceability = self.base_cost * self.serviceability_cost_ratio
+        demolition = self.base_cost * self.demolition_cost_ratio
+        failure_cost = self.base_cost * self.failure_cost_ratio
+
+        gamma = self.interest_rate
+        benefit = self.benefit_rate / gamma
+        serviceability_loss = (
+            serviceability
+            * self.load_occurrence_rate
+            / gamma
+            * self.serviceability_probability(design)
+        )
+        obsolescence_loss = (construction + demolition) * self.obsolescence_rate / gamma
+        failure_loss = (
+            (construction + failure_cost)
+            * self.load_occurrence_rate
+            / gamma
+            * self.failure_probability(design)
+        )
+        return float(
+            benefit
+            - construction
+            - serviceability_loss
+            - obsolescence_loss
+            - failure_loss
+        )
+
+    def calibration(
+        self, bounds: tuple[float, float] = (1.0, 15.0)
+    ) -> TargetReliabilityCalibration:
+        """Return a generic calibration object for this model."""
+
+        return TargetReliabilityCalibration(
+            objective=self.objective,
+            failure_probability=self.failure_probability,
+            bounds=bounds,
+            variable="p",
+            metadata=self.metadata,
+        )
+
+    def calibrate(
+        self, bounds: tuple[float, float] = (1.0, 15.0)
+    ) -> TargetReliability:
+        """Return the target reliability implied by this model."""
+
+        return self.calibration(bounds=bounds).run()
+
+    @classmethod
+    def table(
+        cls,
+        safety_costs: Optional[Mapping[str, float]] = None,
+        failure_costs: Optional[Mapping[str, float]] = None,
+        bounds: tuple[float, float] = (1.0, 15.0),
+        **kwargs,
+    ) -> pd.DataFrame:
+        """Calculate a Rackwitz-style target-reliability table.
+
+        The defaults are representative values from the broad classes used in
+        the literature, not a retyping of any rounded target table.
+        """
+
+        if safety_costs is None:
+            safety_costs = {"large": 0.3, "normal": 0.03, "small": 0.003}
+        if failure_costs is None:
+            failure_costs = {"minor": 0.5, "moderate": 2.5, "large": 6.5}
+
+        rows = []
+        for safety_label, safety_cost_ratio in safety_costs.items():
+            for failure_label, failure_cost_ratio in failure_costs.items():
+                model = cls(
+                    safety_cost_ratio=safety_cost_ratio,
+                    failure_cost_ratio=failure_cost_ratio,
+                    **kwargs,
+                )
+                result = model.calibrate(bounds=bounds)
+                row = result.to_dict()
+                row.update(
+                    {
+                        "relative_safety_cost": safety_label,
+                        "failure_consequence": failure_label,
+                    }
+                )
+                rows.append(row)
+
+        columns = [
+            "relative_safety_cost",
+            "failure_consequence",
+            "safety_cost_ratio",
+            "failure_cost_ratio",
+            "design",
+            "pf",
+            "beta",
+            "objective",
+            "resistance_cov",
+            "load_cov",
+            "converged",
+        ]
+        return pd.DataFrame(rows, columns=columns)
+
+
+def derive_lqi_target(
+    k1: float,
+    resistance_cov: float = 0.4,
+    load_cov: float = 0.4,
+    bounds: tuple[float, float] = (1.0, 20.0),
+) -> TargetReliability:
+    """Calculate an LQI target from the marginal optimization condition.
+
+    This derives a target reliability by minimizing the non-dimensional
+    expression ``K1 * p + P_f(p)`` for the same lognormal resistance-demand
+    model used in the Rackwitz examples.  The table returned by
+    :func:`lqi_target_reliability` remains the rounded source-table lookup.
+    """
+
+    if k1 <= 0:
+        raise ValueError("k1 must be positive")
+
+    def failure_probability(design):
+        return lognormal_ratio_failure_probability(design, resistance_cov, load_cov)
+
+    calibration = TargetReliabilityCalibration(
+        objective=lambda design: -(k1 * design + failure_probability(design)),
+        failure_probability=failure_probability,
+        bounds=bounds,
+        variable="p",
+        metadata={
+            "method": "LQI marginal",
+            "k1": k1,
+            "resistance_cov": resistance_cov,
+            "load_cov": load_cov,
+        },
+    )
+    return calibration.run()
+
+
+def rackwitz_table(**kwargs) -> pd.DataFrame:
+    """Calculate the default Rackwitz/Steenbergen target-reliability table."""
+
+    return RackwitzTargetModel.table(**kwargs)
+
+
 def jcss_lqi_risk_cost(
     safety_cost: Union[float, np.ndarray],
     failure_rate: Union[float, np.ndarray],
@@ -763,7 +1139,7 @@ def jcss_systematic_reconstruction_objective(
     )
 
 
-def lqi_target_reliability(k1: float, variability: str = "medium") -> LQITarget:
+def lqi_target_reliability(k1: float, variability: str = "medium") -> TargetReliability:
     """Return an LQI target reliability for a safety cost ratio.
 
     Parameters
@@ -803,12 +1179,14 @@ def lqi_target_reliability(k1: float, variability: str = "medium") -> LQITarget:
         pf = float(np.clip(pf, np.finfo(float).tiny, 1.0 - np.finfo(float).eps))
         beta = -float(norm.ppf(pf))
 
-    return LQITarget(
-        k1=k1,
+    return TargetReliability(
         pf=float(pf),
         beta=float(beta),
+        method="lqi-table",
+        k1=k1,
         cost_class=cost_class,
         variability=key,
+        source=SWTP_TARGET_SOURCE,
     )
 
 
@@ -955,8 +1333,9 @@ def _default_decision_plot_quantities(data: pd.DataFrame) -> list[str]:
         "pf",
         "annual_failure_rate",
         "annualized_safety_cost",
+        "acceptability_margin",
         "lqi_marginal_term",
-        "lqi_margin",
+        "screening_margin",
         "objective",
     ]
     return [column for column in candidates if column in data]
@@ -1017,7 +1396,7 @@ def plot_summary(
         Name of the design-variable column.
     quantities : sequence of str, optional
         Result columns to plot.  When omitted, common decision columns such as
-        ``pf``, ``annualized_safety_cost``, ``lqi_margin``, and ``objective``
+        ``pf``, ``annualized_safety_cost``, ``screening_margin``, and ``objective``
         are used when present.
     labels : mapping, optional
         Axis label overrides keyed by column name.  The design column may also
@@ -1129,7 +1508,7 @@ def plot_summary(
                 fontstyle="italic",
             )
 
-        if quantity in {"lqi_margin", "lqi_marginal_term"}:
+        if quantity in {"screening_margin", "acceptability_margin", "lqi_marginal_term"}:
             axis.axhline(0.0, color="0.35", linewidth=0.9)
 
         if target_failure_probability is not None and quantity in {
@@ -1252,12 +1631,18 @@ class RiskStudy:
         return RiskResult.from_scenarios(result, metadata={self.variable: value})
 
     def evaluate(self, swtp: Optional[Union[float, SWTP]] = None) -> pd.DataFrame:
-        """Return risk quantities for each design value."""
+        """Return risk quantities for each design value.
+
+        The annual failure rate is also exposed as a ``pf`` column so that the
+        same :class:`DDO` orchestration, objectives, and criteria used with a
+        :class:`DesignStudy` accept a :class:`RiskStudy` unchanged.
+        """
 
         rows = []
         for value in self.values:
             risk = self._evaluate_model(value)
             row = risk.to_dict()
+            row["pf"] = risk.annual_failure_rate
             row[self.variable] = value
             if swtp is not None:
                 row["life_safety_cost"] = risk.life_safety_cost(swtp)
@@ -1267,6 +1652,7 @@ class RiskStudy:
         columns = [
             self.variable,
             "annual_failure_rate",
+            "pf",
             "beta",
             "expected_fatalities",
             "expected_economic_loss",
@@ -1298,21 +1684,6 @@ class DDOCriterion:
         if self.feasibility_column not in results:
             raise KeyError(f"Feasibility column {self.feasibility_column!r} is missing")
         return results[self.feasibility_column].astype(bool)
-
-
-def _require_lqi_target_inputs(
-    expected_fatalities_given_failure: Optional[float],
-    marginal_safety_cost: Optional[float],
-    consequence: Optional[FatalityConsequence] = None,
-) -> None:
-    missing = []
-    if expected_fatalities_given_failure is None and consequence is None:
-        missing.append("expected_fatalities_given_failure or consequence")
-    if marginal_safety_cost is None:
-        missing.append("marginal_safety_cost")
-    if missing:
-        names = " and ".join(missing)
-        raise ValueError(f"LQI target construction requires {names}")
 
 
 def _lqi_consequence(
@@ -1349,7 +1720,7 @@ class LQI(DDOCriterion):
 
     swtp: Optional[SWTP] = None
     consequence: Optional[FatalityConsequence] = None
-    target: Optional[LQITarget] = None
+    target: Optional[TargetReliability] = None
 
     name = "lqi"
     feasibility_column = "lqi_acceptable"
@@ -1357,6 +1728,28 @@ class LQI(DDOCriterion):
     @staticmethod
     def _as_swtp(swtp: Union[float, SWTP]) -> SWTP:
         return swtp if isinstance(swtp, SWTP) else SWTP(float(swtp))
+
+    @staticmethod
+    def lookup_target(k1: float, variability: str = "medium") -> TargetReliability:
+        """Return the rounded source-table LQI target for ``k1``."""
+
+        return lqi_target_reliability(k1, variability=variability)
+
+    @staticmethod
+    def derive_target(
+        k1: float,
+        resistance_cov: float = 0.4,
+        load_cov: float = 0.4,
+        bounds: tuple[float, float] = (1.0, 20.0),
+    ) -> TargetReliability:
+        """Calculate an LQI target from the marginal optimization condition."""
+
+        return derive_lqi_target(
+            k1,
+            resistance_cov=resistance_cov,
+            load_cov=load_cov,
+            bounds=bounds,
+        )
 
     @classmethod
     def from_swtp(
@@ -1518,18 +1911,79 @@ class LQI(DDOCriterion):
             expected,
         )
 
-    def marginal_acceptance(
+    def acceptability_margin_at(
         self,
         safety_cost: Callable[[float], float],
         failure_rate: Callable[[float], float],
         design: float,
         step: Optional[float] = None,
     ) -> float:
-        """Return the finite-difference JCSS LQI acceptability margin."""
+        """Return the finite-difference LQI acceptability margin at a design.
+
+        This is :meth:`acceptability_margin` evaluated from cost and failure-rate
+        callables, differentiating each by central finite differences.
+        """
 
         dcost = finite_difference_derivative(safety_cost, design, step=step)
         drate = finite_difference_derivative(failure_rate, design, step=step)
         return self.acceptability_margin(dcost, drate)
+
+    def acceptability_boundary(
+        self,
+        safety_cost: Callable[[float], float],
+        failure_rate: Callable[[float], float],
+        bounds: tuple[float, float],
+        step: Optional[float] = None,
+    ) -> float:
+        """Return the design where the LQI acceptability margin changes sign.
+
+        The marginal acceptability margin ``dC/dp + SWTP * N_F * dh/dp`` is
+        negative where society would still pay to reduce risk and non-negative
+        once the marginal cost of safety meets or exceeds the SWTP-valued risk
+        reduction.  The acceptance boundary is the design at which the margin is
+        zero, i.e. the social optimum of the LQI criterion.  Root finding uses
+        Brent's method over ``bounds`` and requires the margin to change sign
+        across the interval.
+
+        Parameters
+        ----------
+        safety_cost : callable
+            Safety or construction cost as a function of the design value.
+        failure_rate : callable
+            Annual failure probability or rate as a function of the design.
+        bounds : tuple of float
+            Increasing ``(lower, upper)`` search interval bracketing the
+            boundary.
+        step : float, optional
+            Finite-difference step for the marginal derivatives.
+
+        Returns
+        -------
+        float
+            Design value at which the marginal LQI margin is zero.
+        """
+
+        lower, upper = map(float, bounds)
+        if lower >= upper:
+            raise ValueError("bounds must be an increasing (lower, upper) pair")
+
+        def margin(design: float) -> float:
+            return self.acceptability_margin_at(
+                safety_cost, failure_rate, design, step=step
+            )
+
+        lower_margin = margin(lower)
+        if lower_margin == 0.0:
+            return lower
+        upper_margin = margin(upper)
+        if upper_margin == 0.0:
+            return upper
+        if (lower_margin > 0.0) == (upper_margin > 0.0):
+            raise ValueError(
+                "marginal LQI margin does not change sign over bounds; "
+                "no acceptability boundary in the given interval"
+            )
+        return float(brentq(margin, lower, upper))
 
     def evaluate(self, results: pd.DataFrame) -> pd.DataFrame:
         """Return decision results with LQI/SWTP columns."""
@@ -1545,147 +1999,55 @@ class LQI(DDOCriterion):
             df["target_pf"] = self.target.pf
             df["target_beta"] = self.target.beta
             df["lqi_acceptable"] = df["pf"] <= self.target.pf
-            df["lqi_margin"] = self.target.pf - df["pf"]
+            # Screening slack: positive when pf is below the target.  Distinct
+            # from the marginal-cost acceptability margin (acceptability_margin).
+            df["screening_margin"] = self.target.pf - df["pf"]
 
         return df
 
 
 @dataclass
 class DDO:
-    """Evaluate a decision context with an objective and acceptability criterion."""
+    """Evaluate a decision context with an objective and acceptability criterion.
 
-    study: DesignStudy
+    Construct directly from the three pieces::
+
+        ddo = DDO(study, objective=CostBenefitModel(...), criterion=LQI.from_country(...))
+
+    :meth:`run` evaluates every alternative and caches the table; :meth:`optimize`
+    returns the best feasible alternative and :meth:`economic_optimum` the
+    unconstrained economic best.
+    """
+
+    study: Union[DesignStudy, "RiskStudy"]
     criterion: DDOCriterion
     objective: Optional[DDOObjective] = None
     results: Optional[pd.DataFrame] = field(default=None, init=False, repr=False)
 
-    def __init__(
-        self,
-        *,
-        study: DesignStudy,
-        criterion: DDOCriterion,
-        objective: Optional[DDOObjective] = None,
-    ):
-        self.study = study
-        self.criterion = criterion
-        self.objective = objective
-        self.results = None
-
-    @classmethod
-    def lqi(
-        cls,
-        study: DesignStudy,
-        *,
-        objective: Optional[DDOObjective] = None,
-        criterion: Optional[LQI] = None,
-        country: Optional[str] = None,
-        indexed: Optional[bool] = None,
-        swtp: Optional[Union[float, SWTP]] = None,
-        expected_fatalities_given_failure: Optional[float] = None,
-        marginal_safety_cost: Optional[float] = None,
-        variability: Optional[str] = None,
-        consequence: Optional[FatalityConsequence] = None,
-    ) -> "DDO":
-        """Create a DDO study using the LQI criterion."""
-
-        if criterion is not None:
-            constructor_args = {
-                "country": country,
-                "swtp": swtp,
-                "indexed": indexed,
-                "expected_fatalities_given_failure": (
-                    expected_fatalities_given_failure
-                ),
-                "marginal_safety_cost": marginal_safety_cost,
-                "variability": variability,
-                "consequence": consequence,
-            }
-            conflicts = [
-                name for name, value in constructor_args.items() if value is not None
-            ]
-            if conflicts:
-                raise ValueError(
-                    "criterion cannot be combined with LQI construction arguments: "
-                    + ", ".join(conflicts)
-                )
-
-        elif country is not None:
-            if swtp is not None:
-                raise ValueError(
-                    "DDO.lqi requires exactly one of criterion, country, or swtp"
-                )
-            _require_lqi_target_inputs(
-                expected_fatalities_given_failure, marginal_safety_cost, consequence
-            )
-            criterion = LQI.from_country(
-                country,
-                expected_fatalities_given_failure=expected_fatalities_given_failure,
-                consequence=consequence,
-                marginal_safety_cost=marginal_safety_cost,
-                indexed=indexed,
-                variability="medium" if variability is None else variability,
-            )
-
-        else:
-            if swtp is None:
-                raise ValueError(
-                    "DDO.lqi requires exactly one of criterion, country, or swtp"
-                )
-            if indexed is not None:
-                raise ValueError("indexed is only valid with country")
-            _require_lqi_target_inputs(
-                expected_fatalities_given_failure, marginal_safety_cost, consequence
-            )
-            criterion = LQI.from_swtp(
-                swtp,
-                expected_fatalities_given_failure=expected_fatalities_given_failure,
-                consequence=consequence,
-                marginal_safety_cost=marginal_safety_cost,
-                variability="medium" if variability is None else variability,
-            )
-
-        return cls(
-            study=study,
-            objective=objective,
-            criterion=criterion,
-        )
-
-    def evaluate(self) -> pd.DataFrame:
-        """Return a dataframe with reliability, cost, and decision columns."""
-
+    def _evaluate(self) -> pd.DataFrame:
         df = self.study.evaluate()
-
         if self.objective is not None:
             df = self.objective.evaluate(df, design=self.study.variable)
-
         return self.criterion.evaluate(df)
 
     def run(self) -> pd.DataFrame:
-        """Evaluate the DDO study.
+        """Evaluate every alternative and cache the decision table."""
 
-        ``run`` is provided as a convenience for users familiar with Pystra's
-        analysis objects.  It returns the same dataframe as :meth:`evaluate`.
-        """
-
-        self.results = self.evaluate()
+        self.results = self._evaluate()
         return self.results
 
-    def getResults(self) -> pd.DataFrame:
-        """Return the results from the most recent :meth:`run` call."""
-
-        if self.results is None:
-            raise ValueError("DDO study has not been run")
-        return self.results
+    def _results_or_run(self) -> pd.DataFrame:
+        return self.results if self.results is not None else self.run()
 
     def _objective_column(self) -> str:
         if self.objective is not None:
             return self.objective.objective_column
         return "objective"
 
-    def maximize_unconstrained_objective(self) -> pd.Series:
-        """Return the row with the largest objective value before feasibility."""
+    def economic_optimum(self) -> pd.Series:
+        """Return the alternative with the largest objective, ignoring feasibility."""
 
-        df = self.results if self.results is not None else self.run()
+        df = self._results_or_run()
         objective_column = self._objective_column()
         if objective_column not in df:
             raise ValueError("Objective results are not available")
@@ -1694,11 +2056,11 @@ class DDO:
     def feasible_results(self) -> pd.DataFrame:
         """Return evaluated alternatives satisfying the criterion."""
 
-        df = self.results if self.results is not None else self.run()
+        df = self._results_or_run()
         return df.loc[self.criterion.feasible(df)]
 
-    def best_feasible(self) -> pd.Series:
-        """Return the feasible row with the largest objective value."""
+    def optimize(self) -> pd.Series:
+        """Return the feasible alternative with the largest objective value."""
 
         feasible = self.feasible_results()
         if feasible.empty:
@@ -1708,11 +2070,6 @@ class DDO:
             raise ValueError("Objective results are not available")
         return feasible.loc[feasible[objective_column].idxmax()]
 
-    def optimize(self) -> pd.Series:
-        """Return the best feasible design alternative."""
-
-        return self.best_feasible()
-
     def plot(
         self,
         design: Optional[str] = None,
@@ -1721,48 +2078,37 @@ class DDO:
     ):
         """Plot results from the most recent run."""
 
-        df = self.results if self.results is not None else self.run()
+        df = self._results_or_run()
         design_column = self.study.variable if design is None else design
         return plot_summary(df, design=design_column, quantities=quantities, **kwargs)
 
 
+# Public surface.  The canonical workflow is object-based: build an ``SWTP``
+# and an ``LQI`` criterion, a ``CostBenefitModel`` objective and a
+# ``DesignStudy`` (or ``RiskStudy``), combine them in a ``DDO``, and read the
+# decision off ``DDO.run``/``optimize``.  The free ``jcss_lqi_*`` /
+# ``lqi_target_reliability`` / ``derive_lqi_target`` / ``rackwitz_table``
+# functions, the SWTP table helpers, and ``TargetReliabilityCalibration`` remain
+# importable from ``pystra.ddo`` as a low-level functional layer, but are kept
+# out of ``__all__`` so the object API is the obvious entry point.
 __all__ = [
-    "SWTP_COUNTRY_SOURCE",
-    "SWTP_TARGET_SOURCE",
-    "SWTP_INDEX_SOURCE",
-    "SWTP_INDEX_INDICATOR",
-    "SWTPIndexRecord",
-    "SWTPRecord",
-    "SWTP_COUNTRY_VALUES",
-    "SWTP_GDP_PPP_INDEX_2024",
-    "SWTP_ALIASES",
-    "get_swtp_index_record",
-    "index_swtp_record",
-    "get_swtp_record",
-    "get_swtp",
-    "swtp_table",
+    # Societal value of life
     "SWTP",
     "FatalityConsequence",
-    "LQITarget",
-    "RiskResult",
-    "ScenarioRiskModel",
-    "lqi_k1",
-    "jcss_lqi_risk_cost",
-    "jcss_lqi_risk_cost_from_result",
-    "jcss_lqi_acceptability_margin",
-    "finite_difference_derivative",
-    "jcss_lqi_acceptability",
-    "jcss_lqi_is_acceptable",
-    "jcss_systematic_reconstruction_objective",
-    "lqi_target_reliability",
-    "present_value_factor",
-    "annualized_safety_cost",
-    "DDOObjective",
+    # Acceptability criterion and its result type
+    "LQI",
+    "TargetReliability",
+    # Objective
     "CostBenefitModel",
-    "plot_summary",
+    # Studies
     "DesignStudy",
     "RiskStudy",
-    "DDOCriterion",
-    "LQI",
+    "ScenarioRiskModel",
+    "RiskResult",
+    # Orchestration
     "DDO",
+    "DDOObjective",
+    "DDOCriterion",
+    # Code-calibration target model
+    "RackwitzTargetModel",
 ]

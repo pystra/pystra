@@ -6,14 +6,25 @@ import pystra as ra
 
 
 def test_ddo_namespace_is_explicit():
+    # Canonical object surface is promoted to the package top level.
     assert hasattr(ra, "ddo")
     assert hasattr(ra, "DDO")
     assert hasattr(ra, "DDOCriterion")
     assert hasattr(ra, "DDOObjective")
     assert hasattr(ra, "LQI")
     assert hasattr(ra, "SWTP")
-    assert not hasattr(ra, "RiskStudy")
+    assert hasattr(ra, "TargetReliability")
+    assert hasattr(ra, "RackwitzTargetModel")
+    assert hasattr(ra, "RiskStudy")
+    assert hasattr(ra, "ScenarioRiskModel")
+
+    # Low-level helpers stay importable from the module but off the top level.
     assert not hasattr(ra, "plot_summary")
+    assert not hasattr(ra, "TargetReliabilityCalibration")
+    assert hasattr(ra.ddo, "plot_summary")
+    assert hasattr(ra.ddo, "TargetReliabilityCalibration")
+    assert hasattr(ra.ddo, "lqi_k1")
+    assert hasattr(ra.ddo, "jcss_lqi_risk_cost")
 
 
 def test_swtp_from_lqi_and_country_lookup():
@@ -52,6 +63,76 @@ def test_lqi_target_reliability_table_and_ratio():
     assert target.beta == pytest.approx(3.7)
     assert high_variability.pf == pytest.approx(5e-4)
     assert high_variability.beta < target.beta
+    assert ra.LQI.lookup_target(k1).pf == pytest.approx(target.pf)
+
+    table = {
+        "large": (1e-3, 1e-3, 3.1),
+        "medium": (1e-4, 1e-4, 3.7),
+        "small": (1e-5, 1e-5, 4.2),
+    }
+    for cost_class, (representative_k1, pf, beta) in table.items():
+        target = ra.ddo.lqi_target_reliability(representative_k1)
+        assert target.cost_class == cost_class
+        assert target.pf == pytest.approx(pf)
+        assert target.beta == pytest.approx(beta)
+
+
+def test_lognormal_ratio_failure_probability():
+    assert ra.ddo.lognormal_ratio_failure_probability(1.0, 0.3, 0.3) == pytest.approx(
+        0.5
+    )
+    assert ra.ddo.lognormal_ratio_failure_probability(2.0, 0.3, 0.3) < 0.5
+
+    with pytest.raises(ValueError, match="at least one"):
+        ra.ddo.lognormal_ratio_failure_probability(1.0, 0.0, 0.0)
+
+
+def test_lqi_target_can_be_derived_from_marginal_model():
+    target = ra.LQI.derive_target(1e-4, resistance_cov=0.4, load_cov=0.4)
+
+    assert target.converged is True
+    assert target.metadata["method"] == "LQI marginal"
+    assert target.design == pytest.approx(7.543754537126031)
+    assert target.pf == pytest.approx(1.0408151381574544e-4)
+    assert target.beta == pytest.approx(3.7088982796733925)
+
+
+def test_rackwitz_target_model_calibrates_reliability():
+    model = ra.RackwitzTargetModel(
+        safety_cost_ratio=0.03,
+        failure_cost_ratio=2.5,
+    )
+
+    result = model.calibrate()
+
+    assert isinstance(result, ra.TargetReliability)
+    assert result.method == "Rackwitz/Steenbergen"
+    assert result.converged is True
+    assert result.metadata["method"] == "Rackwitz/Steenbergen"
+    assert result.design == pytest.approx(4.837456940394679)
+    assert result.pf == pytest.approx(7.320203882099348e-05)
+    assert result.beta == pytest.approx(3.797090962287968)
+
+
+def test_rackwitz_target_table_calculates_class_grid():
+    table = ra.RackwitzTargetModel.table()
+
+    assert table.shape[0] == 9
+    assert list(table.columns[:7]) == [
+        "relative_safety_cost",
+        "failure_consequence",
+        "safety_cost_ratio",
+        "failure_cost_ratio",
+        "design",
+        "pf",
+        "beta",
+    ]
+
+    moderate = table[table["failure_consequence"] == "moderate"]
+    assert moderate["beta"].is_monotonic_increasing
+
+    normal = table[table["relative_safety_cost"] == "normal"]
+    assert normal["beta"].is_monotonic_increasing
 
 
 def test_lqi_builds_target_from_country():
@@ -163,6 +244,41 @@ def test_canonical_jcss_lqi_acceptability_and_risk_cost():
     ) == pytest.approx(-55_000)
 
 
+def test_lqi_acceptability_boundary_finds_acceptance_design():
+    lqi = ra.LQI.from_lqi(
+        gross_domestic_product_per_capita=35931.0,
+        mortality_rate=0.175,
+        demographic_constant=18.9,
+        expected_fatalities_given_failure=12,
+        marginal_safety_cost=5000,
+    )
+
+    def safety_cost(p):
+        return 1e6 + 1e4 * p**1.25
+
+    def failure_probability(p):
+        return ra.ddo.lognormal_ratio_failure_probability(p, 0.2, 0.3)
+
+    boundary = lqi.acceptability_boundary(
+        safety_cost, failure_probability, bounds=(2.0, 6.0)
+    )
+
+    # Margin is zero at the boundary (negligible against the O(1e4)
+    # derivative scale) and changes sign across it.
+    assert lqi.acceptability_margin_at(
+        safety_cost, failure_probability, boundary
+    ) == pytest.approx(0.0, abs=1e-3)
+    assert (
+        lqi.acceptability_margin_at(safety_cost, failure_probability, boundary - 0.5) < 0
+    )
+    assert (
+        lqi.acceptability_margin_at(safety_cost, failure_probability, boundary + 0.5) > 0
+    )
+
+    with pytest.raises(ValueError):
+        lqi.acceptability_boundary(safety_cost, failure_probability, bounds=(2.0, 2.5))
+
+
 def test_scenario_risk_result_supports_correlated_scenarios():
     scenarios = pd.DataFrame(
         {
@@ -212,6 +328,7 @@ def test_risk_study_evaluates_design_dependent_scenarios():
     assert list(results.columns) == [
         "strengthening",
         "annual_failure_rate",
+        "pf",
         "beta",
         "expected_fatalities",
         "expected_economic_loss",
@@ -219,6 +336,8 @@ def test_risk_study_evaluates_design_dependent_scenarios():
         "total_risk_cost",
         "design",
     ]
+    # The pf alias lets a RiskStudy feed the same DDO objects as a DesignStudy.
+    assert (results["pf"] == results["annual_failure_rate"]).all()
     assert results.loc[0, "total_risk_cost"] == pytest.approx(12100.0)
     assert results.loc[1, "total_risk_cost"] == pytest.approx(9075.0)
     assert results.loc[1, "annual_failure_rate"] < results.loc[0, "annual_failure_rate"]
@@ -254,11 +373,11 @@ def test_ddo_runs_lqi_algorithm_and_selects_objective():
     )
 
     results = ddo.run()
-    unconstrained_best = ddo.maximize_unconstrained_objective()
-    feasible_best = ddo.best_feasible()
+    unconstrained_best = ddo.economic_optimum()
+    feasible_best = ddo.optimize()
 
     assert ddo.criterion.name == "lqi"
-    assert ddo.getResults().equals(results)
+    assert ddo.results.equals(results)
     assert list(results.columns) == [
         "As",
         "pf",
@@ -270,7 +389,7 @@ def test_ddo_runs_lqi_algorithm_and_selects_objective():
         "target_pf",
         "target_beta",
         "lqi_acceptable",
-        "lqi_margin",
+        "screening_margin",
     ]
     assert np.isfinite(results["beta"]).all()
     assert results.loc[results["As"] == 70.0, "lqi_acceptable"].item() is False
@@ -281,35 +400,45 @@ def test_ddo_runs_lqi_algorithm_and_selects_objective():
     assert ddo.optimize()["As"] == pytest.approx(93.0)
 
 
-def test_ddo_lqi_constructor_builds_algorithm():
+def test_ddo_direct_construction_caches_results():
     study = ra.ddo.DesignStudy(
         variable="As",
         values=[85.1],
         analysis=lambda area: {"pf": 2.5708544377963726e-5},
     )
-
-    ddo = ra.DDO.lqi(
-        study=study,
-        country="CH",
+    criterion = ra.LQI.from_country(
+        "CH",
         indexed=True,
         expected_fatalities_given_failure=12,
         marginal_safety_cost=5_000,
     )
 
+    ddo = ra.DDO(study=study, criterion=criterion)
+
     assert isinstance(ddo.criterion, ra.LQI)
-    with pytest.raises(ValueError, match="not been run"):
-        ddo.getResults()
+    assert ddo.results is None
 
     results = ddo.run()
-    assert ddo.getResults().loc[0, "target_pf"].item() == pytest.approx(1e-5)
+    assert ddo.results is results
+    assert ddo.results.loc[0, "target_pf"].item() == pytest.approx(1e-5)
     assert results.loc[0, "lqi_acceptable"].item() is False
 
 
-def test_ddo_is_keyword_only_and_validates_lqi_conflicts():
-    study = ra.ddo.DesignStudy(
-        variable="As",
-        values=[85.1],
-        analysis=lambda area: {"pf": 2.5708544377963726e-5},
+def test_ddo_accepts_a_risk_study():
+    def scenarios(strengthening):
+        scale = 1.0 - strengthening
+        return pd.DataFrame(
+            {
+                "probability": np.array([2.0e-3, 1.5e-3, 2.0e-4]) * scale,
+                "fatalities": [0.2, 0.3, 2.0],
+                "economic_loss": [1.0e6, 1.5e6, 8.0e6],
+            }
+        )
+
+    study = ra.ddo.RiskStudy(
+        variable="strengthening",
+        values=[0.0, 0.5],
+        model=ra.ddo.ScenarioRiskModel(scenarios),
     )
     criterion = ra.LQI.from_swtp(
         5_000_000,
@@ -317,40 +446,11 @@ def test_ddo_is_keyword_only_and_validates_lqi_conflicts():
         marginal_safety_cost=5_000,
     )
 
-    with pytest.raises(TypeError):
-        ra.DDO(study, criterion)
-
-    with pytest.raises(ValueError, match="criterion cannot be combined"):
-        ra.DDO.lqi(
-            study=study,
-            criterion=criterion,
-            country="CH",
-            indexed=True,
-        )
-
-    with pytest.raises(ValueError, match="criterion cannot be combined"):
-        ra.DDO.lqi(
-            study=study,
-            criterion=criterion,
-            variability="high",
-        )
-
-    with pytest.raises(ValueError, match="exactly one"):
-        ra.DDO.lqi(
-            study=study,
-            country="CH",
-            swtp=5_000_000,
-            indexed=True,
-            expected_fatalities_given_failure=12,
-            marginal_safety_cost=5_000,
-        )
-
-    with pytest.raises(ValueError, match="requires expected_fatalities_given_failure"):
-        ra.DDO.lqi(
-            study=study,
-            swtp=5_000_000,
-            marginal_safety_cost=5_000,
-        )
+    # The same DDO orchestration accepts a RiskStudy via the pf alias.
+    results = ra.DDO(study=study, criterion=criterion).run()
+    assert "pf" in results
+    assert "lqi_acceptable" in results
+    assert (results["pf"] == results["annual_failure_rate"]).all()
 
 
 def test_plot_summary_returns_axes_for_design_table():
