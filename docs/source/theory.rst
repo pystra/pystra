@@ -894,11 +894,43 @@ where :math:`p = E[R]/E[S]`, :math:`C(p)=C_0+C_1p`, :math:`\gamma` is the
 discount or interest rate, :math:`\omega` is the obsolescence rate, and
 :math:`\lambda` is the load occurrence rate.  Pystra uses a closed-form
 lognormal resistance-demand model for :math:`P_f(p)` in this calibration.
-Because the objective is normalized by the base construction cost, the
-resulting target table depends only on the relative cost and consequence
-ratios, not on a particular jurisdiction; the calibrated classes can be
-compared with the rounded target reliabilities tabulated in the JCSS
-Probabilistic Model Code [JCSSPMC2001]_ and ISO 2394 [ISO2394]_.
+
+Every cost is normalized by the base construction cost :math:`C_0`
+(``base_cost``), so the model's cost inputs are *ratios* to :math:`C_0`, mapped
+to :class:`~pystra.ddo.RackwitzTargetModel` parameters as follows.
+
+.. list-table:: Normalized cost inputs (fractions of :math:`C_0`)
+   :header-rows: 1
+
+   * - Symbol
+     - Parameter
+     - Meaning
+   * - :math:`C_1/C_0`
+     - ``safety_cost_ratio``
+     - marginal safety cost per unit of :math:`p`
+   * - :math:`H/C_0`
+     - ``failure_cost_ratio``
+     - failure (ULS) consequence cost
+   * - :math:`U/C_0`
+     - ``serviceability_cost_ratio``
+     - serviceability (SLS) cost
+   * - :math:`A/C_0`
+     - ``demolition_cost_ratio``
+     - demolition / obsolescence cost
+   * - :math:`b/C_0`
+     - ``benefit_rate``
+     - constant annual benefit (independent of :math:`p`)
+
+The rates :math:`\gamma`, :math:`\omega`, and :math:`\lambda` are
+``interest_rate``, ``obsolescence_rate``, and ``load_occurrence_rate``.  Because
+the objective is normalized by :math:`C_0`, the resulting target table depends
+only on these relative cost and consequence ratios, not on a particular
+jurisdiction; the calibrated classes can be compared with the rounded target
+reliabilities tabulated in the JCSS Probabilistic Model Code [JCSSPMC2001]_ and
+ISO 2394 [ISO2394]_.  A table for other classes is recalculated by passing
+``safety_costs`` (the :math:`C_1/C_0` values) and ``failure_costs`` (the
+:math:`H/C_0` values) to
+:meth:`~pystra.ddo.RackwitzTargetModel.table`.
 
 Fischer, Barnardo, and Faber [Fischer2012LQI]_ provide a convenient LQI route
 for turning an SWTP value and expected fatalities given failure into minimum

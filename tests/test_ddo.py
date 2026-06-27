@@ -117,6 +117,18 @@ def test_rackwitz_target_model_calibrates_reliability():
     assert result.beta == pytest.approx(3.797090962287968)
 
 
+def test_rackwitz_objective_scales_with_base_cost():
+    kwargs = dict(safety_cost_ratio=0.03, failure_cost_ratio=2.5, benefit_rate=0.1)
+    unit = ra.RackwitzTargetModel(base_cost=1.0, **kwargs)
+    scaled = ra.RackwitzTargetModel(base_cost=10.0, **kwargs)
+
+    # With the annual benefit normalized to C0, every objective term scales
+    # linearly with base_cost (including the benefit, which the old code did
+    # not scale), and the optimizing design is unchanged.
+    assert scaled.objective(5.0) == pytest.approx(10.0 * unit.objective(5.0))
+    assert scaled.calibrate().design == pytest.approx(unit.calibrate().design)
+
+
 def test_rackwitz_target_table_calculates_class_grid():
     table = ra.RackwitzTargetModel.table()
 
@@ -307,6 +319,16 @@ def test_target_reliability_for_period():
         target.for_period(0)
     with pytest.raises(ValueError):
         target.for_period(50, dependence_interval=60)
+
+
+def test_target_reliability_validates_pf():
+    # Boundary probabilities are allowed.
+    ra.TargetReliability(pf=0.0, beta=float("inf"), method="x")
+    ra.TargetReliability(pf=1.0, beta=float("-inf"), method="x")
+    with pytest.raises(ValueError, match="pf must be in"):
+        ra.TargetReliability(pf=1.5, beta=0.0, method="x")
+    with pytest.raises(ValueError, match="pf must be in"):
+        ra.TargetReliability(pf=-0.1, beta=0.0, method="x")
 
 
 def test_ddo_construction_is_keyword_only():

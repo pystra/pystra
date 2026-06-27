@@ -437,6 +437,10 @@ class TargetReliability:
     source: Optional[str] = None
     metadata: Mapping[str, Any] = field(default_factory=dict)
 
+    def __post_init__(self):
+        if not 0.0 <= self.pf <= 1.0:
+            raise ValueError("pf must be in [0, 1]")
+
     def to_dict(self) -> dict:
         """Return the populated scalar quantities as a dictionary."""
 
@@ -818,9 +822,48 @@ class RackwitzTargetModel:
     """Rackwitz/Steenbergen target-reliability model for code calibration.
 
     The model follows the normalized life-cycle objective used by Rackwitz and
-    restated by Steenbergen, Rózsás, and Vrouwenvelder.  Costs are expressed
-    relative to the base construction cost ``C0`` and the design variable is
-    the mean resistance-to-load ratio ``p = E[R] / E[S]``.
+    restated by Steenbergen, Rózsás, and Vrouwenvelder.  Every cost is expressed
+    as a fraction of the base construction cost ``C0`` (``base_cost``), and the
+    design variable is the mean resistance-to-load ratio ``p = E[R] / E[S]``.
+    The construction cost is ``C(p) = C0 + C1 p = base_cost * (1 +
+    safety_cost_ratio * p)``, so the cost inputs below are ratios to ``C0``.
+
+    Parameters
+    ----------
+    safety_cost_ratio : float
+        Marginal safety cost ``C1 / C0`` -- the extra construction cost per unit
+        of ``p`` as a fraction of the base cost.  Larger values make safety
+        relatively more expensive and lower the optimal target.
+    failure_cost_ratio : float
+        Failure (ULS) consequence cost ``H / C0``.
+    resistance_cov, load_cov : float, optional
+        Coefficients of variation of resistance and load in the closed-form
+        lognormal ``P_f(p)`` model.
+    base_cost : float, optional
+        Base construction cost ``C0``.  Because every other cost is a ratio to
+        it, its value does not change the calibrated target; defaults to 1.
+    interest_rate : float, optional
+        Discount/interest rate ``gamma``.
+    obsolescence_rate : float, optional
+        Obsolescence rate ``omega``.
+    load_occurrence_rate : float, optional
+        Load occurrence rate ``lambda`` (renewals per year).
+    serviceability_cost_ratio : float, optional
+        Serviceability (SLS) cost ``U / C0``.
+    demolition_cost_ratio : float, optional
+        Demolition/obsolescence cost ``A / C0``.
+    serviceability_resistance_ratio : float, optional
+        Ratio of the ULS to SLS resistance thresholds; the SLS check uses
+        ``p / serviceability_resistance_ratio``.
+    benefit_rate : float, optional
+        Constant annual benefit ``b / C0``.  It is independent of ``p`` and so
+        does not affect the optimum; defaults to 0.
+
+    Notes
+    -----
+    To recalibrate a whole table for your own classes, pass ``safety_costs``
+    (the ``C1 / C0`` values) and ``failure_costs`` (the ``H / C0`` values) to
+    :meth:`table`.
     """
 
     safety_cost_ratio: float
@@ -904,7 +947,7 @@ class RackwitzTargetModel:
         failure_cost = self.base_cost * self.failure_cost_ratio
 
         gamma = self.interest_rate
-        benefit = self.benefit_rate / gamma
+        benefit = self.base_cost * self.benefit_rate / gamma
         serviceability_loss = (
             serviceability
             * self.load_occurrence_rate
@@ -954,8 +997,28 @@ class RackwitzTargetModel:
     ) -> pd.DataFrame:
         """Calculate a Rackwitz-style target-reliability table.
 
+        Parameters
+        ----------
+        safety_costs : mapping, optional
+            Label -> ``C1 / C0`` (marginal safety cost) for each relative
+            safety-cost class.  Defaults to representative ``large``/``normal``/
+            ``small`` values.
+        failure_costs : mapping, optional
+            Label -> ``H / C0`` (failure consequence cost) for each consequence
+            class.  Defaults to representative ``minor``/``moderate``/``large``
+            values.
+        bounds : tuple of float, optional
+            Search interval for the optimizing ``p``.
+        **kwargs
+            Forwarded to :class:`RackwitzTargetModel` (e.g. ``resistance_cov``,
+            ``interest_rate``) so every model setting can be varied too.
+
+        Notes
+        -----
         The defaults are representative values from the broad classes used in
-        the literature, not a retyping of any rounded target table.
+        the literature, not a retyping of any rounded target table.  Supply your
+        own ``safety_costs`` and ``failure_costs`` to recalibrate for different
+        cost and consequence assumptions.
         """
 
         if safety_costs is None:
