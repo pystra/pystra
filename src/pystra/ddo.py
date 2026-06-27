@@ -460,12 +460,16 @@ class TargetReliability:
     ) -> "TargetReliability":
         """Return the target converted to a reference period of ``years``.
 
-        The annual reliability index is mapped to an equivalent index over
-        ``years``, assuming the maximum load effect renews every
-        ``dependence_interval`` years.  ``dependence_interval=1`` treats the
-        annual maxima as independent (the most onerous case), while
-        ``dependence_interval=years`` treats the period as fully dependent and
-        leaves the index unchanged.
+        The annual failure probability ``pf`` is compounded over ``years``,
+        assuming the governing maximum renews every ``dependence_interval``
+        years.  ``dependence_interval=1`` treats the annual maxima as
+        independent (the most onerous case), while
+        ``dependence_interval=years`` treats the period as fully dependent (a
+        single renewal) and leaves the annual ``pf`` unchanged.
+
+        The conversion uses ``pf`` directly rather than re-deriving an annual
+        probability from ``beta``; for rounded table targets the two are not an
+        exact pair, and compounding ``pf`` is the correct quantity.
 
         Parameters
         ----------
@@ -488,7 +492,7 @@ class TargetReliability:
         if not 0 < dependence_interval <= years:
             raise ValueError("dependence_interval must be in (0, years]")
 
-        annual_pf = float(norm.cdf(-self.beta))
+        annual_pf = float(self.pf)
         periods = years / dependence_interval
         period_pf = 1.0 - (1.0 - annual_pf) ** periods
         metadata = dict(self.metadata or {})
@@ -934,9 +938,7 @@ class RackwitzTargetModel:
             metadata=self.metadata,
         )
 
-    def calibrate(
-        self, bounds: tuple[float, float] = (1.0, 15.0)
-    ) -> TargetReliability:
+    def calibrate(self, bounds: tuple[float, float] = (1.0, 15.0)) -> TargetReliability:
         """Return the target reliability implied by this model."""
 
         return self.calibration(bounds=bounds).run()
@@ -1554,7 +1556,11 @@ def plot_summary(
                 fontstyle="italic",
             )
 
-        if quantity in {"screening_margin", "acceptability_margin", "lqi_marginal_term"}:
+        if quantity in {
+            "screening_margin",
+            "acceptability_margin",
+            "lqi_marginal_term",
+        }:
             axis.axhline(0.0, color="0.35", linewidth=0.9)
 
         if target_failure_probability is not None and quantity in {
@@ -2058,17 +2064,35 @@ class DDO:
 
     Construct directly from the three pieces::
 
-        ddo = DDO(study, objective=CostBenefitModel(...), criterion=LQI.from_country(...))
+        ddo = DDO(
+            study=study,
+            objective=CostBenefitModel(...),
+            criterion=LQI.from_country(...),
+        )
 
-    :meth:`run` evaluates every alternative and caches the table; :meth:`optimize`
-    returns the best feasible alternative and :meth:`economic_optimum` the
-    unconstrained economic best.
+    Construction is keyword-only by design: ``study``, ``objective`` and
+    ``criterion`` are easy to transpose positionally, which would silently
+    misassign them.  :meth:`run` evaluates every alternative and caches the
+    table; :meth:`optimize` returns the best feasible alternative and
+    :meth:`economic_optimum` the unconstrained economic best.
     """
 
     study: Union[DesignStudy, "RiskStudy"]
     criterion: DDOCriterion
     objective: Optional[DDOObjective] = None
     results: Optional[pd.DataFrame] = field(default=None, init=False, repr=False)
+
+    def __init__(
+        self,
+        *,
+        study: Union[DesignStudy, "RiskStudy"],
+        criterion: DDOCriterion,
+        objective: Optional[DDOObjective] = None,
+    ):
+        self.study = study
+        self.criterion = criterion
+        self.objective = objective
+        self.results = None
 
     def _evaluate(self) -> pd.DataFrame:
         df = self.study.evaluate()
@@ -2151,7 +2175,9 @@ class DDO:
             for column in candidate_columns
             if column is not None and column in df
         ]
-        rows = [{"point": label, **{c: row[c] for c in columns}} for label, row in points]
+        rows = [
+            {"point": label, **{c: row[c] for c in columns}} for label, row in points
+        ]
         return pd.DataFrame(rows, columns=["point"] + columns)
 
     def plot(

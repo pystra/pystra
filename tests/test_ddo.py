@@ -269,10 +269,12 @@ def test_lqi_acceptability_boundary_finds_acceptance_design():
         safety_cost, failure_probability, boundary
     ) == pytest.approx(0.0, abs=1e-3)
     assert (
-        lqi.acceptability_margin_at(safety_cost, failure_probability, boundary - 0.5) < 0
+        lqi.acceptability_margin_at(safety_cost, failure_probability, boundary - 0.5)
+        < 0
     )
     assert (
-        lqi.acceptability_margin_at(safety_cost, failure_probability, boundary + 0.5) > 0
+        lqi.acceptability_margin_at(safety_cost, failure_probability, boundary + 0.5)
+        > 0
     )
 
     with pytest.raises(ValueError):
@@ -280,18 +282,21 @@ def test_lqi_acceptability_boundary_finds_acceptance_design():
 
 
 def test_target_reliability_for_period():
-    target = ra.LQI.lookup_target(1e-4)  # annual beta 3.7
-    assert target.beta == pytest.approx(3.7)
+    target = ra.LQI.lookup_target(1e-4)  # annual pf 1e-4
+    assert target.pf == pytest.approx(1e-4)
 
     independent = target.for_period(50)
     partial = target.for_period(50, dependence_interval=10)
     dependent = target.for_period(50, dependence_interval=50)
 
-    # More renewals over the period give a lower equivalent reliability index.
-    assert independent.beta < partial.beta < target.beta
-    # Fully dependent over the period leaves the index unchanged.
-    assert dependent.beta == pytest.approx(target.beta)
-    assert dependent.pf == pytest.approx(float(ra.Normal("u", 0, 1).cdf(-target.beta)))
+    # The conversion compounds the annual pf, not the rounded beta.
+    assert independent.pf == pytest.approx(1.0 - (1.0 - 1e-4) ** 50)
+    assert partial.pf == pytest.approx(1.0 - (1.0 - 1e-4) ** 5)
+    # Fully dependent over the period is a single renewal: pf unchanged.
+    assert dependent.pf == pytest.approx(target.pf)
+
+    # More independent renewals -> higher period pf -> lower index.
+    assert independent.beta < partial.beta < dependent.beta
     assert independent.metadata["reference_period_years"] == 50
     assert independent.method == target.method
 
@@ -299,6 +304,24 @@ def test_target_reliability_for_period():
         target.for_period(0)
     with pytest.raises(ValueError):
         target.for_period(50, dependence_interval=60)
+
+
+def test_ddo_construction_is_keyword_only():
+    study = ra.ddo.DesignStudy(
+        variable="As",
+        values=[85.1],
+        analysis=lambda area: {"pf": 2.5708544377963726e-5},
+    )
+    criterion = ra.LQI.from_swtp(
+        5_000_000,
+        expected_fatalities_given_failure=12,
+        marginal_safety_cost=5_000,
+    )
+
+    # Positional construction is rejected so study/objective/criterion cannot be
+    # silently transposed.
+    with pytest.raises(TypeError):
+        ra.DDO(study, criterion)
 
 
 def test_ddo_summary_reports_decision_points():
