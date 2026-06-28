@@ -46,10 +46,15 @@ def test_swtp_from_lqi_and_country_lookup():
         ra.ddo.get_swtp("DE")
     with pytest.raises(ValueError, match="indexed=True or indexed=False"):
         ra.ddo.get_swtp_record("DE")
-    assert ra.ddo.swtp_table().loc["NL", "value_per_life"] == pytest.approx(2_800_000)
+    assert ra.ddo.swtp_table(indexed=False).loc[
+        "NL", "value_per_life"
+    ] == pytest.approx(2_800_000)
     indexed = ra.ddo.swtp_table(indexed=True)
     assert indexed.loc["CH", "price_year"] == 2024
     assert indexed.loc["CH", "index_factor"] == pytest.approx(2.7775, rel=1e-4)
+    # The anchor table is never returned silently: indexed must be explicit.
+    with pytest.raises(ValueError, match="indexed=True or indexed=False"):
+        ra.ddo.swtp_table()
 
 
 def test_lqi_target_reliability_table_and_ratio():

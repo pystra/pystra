@@ -265,12 +265,17 @@ def get_swtp(
 
 
 def swtp_table(
-    indexed: bool = False,
+    indexed: Optional[bool] = None,
     index_table: Optional[Mapping[str, SWTPIndexRecord]] = None,
 ) -> pd.DataFrame:
-    """Return the built-in country SWTP table as a dataframe."""
+    """Return the built-in country SWTP table as a dataframe.
 
-    if not indexed:
+    ``indexed`` must be supplied explicitly (``False`` for the 1999 Rackwitz
+    anchor table, ``True`` for the indexed current-PPP view); the anchor table
+    is never returned silently.
+    """
+
+    if not _require_explicit_indexed(indexed):
         records = [asdict(record) for record in SWTP_COUNTRY_VALUES.values()]
         return pd.DataFrame.from_records(records).set_index("code")
 
