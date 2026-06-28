@@ -316,7 +316,7 @@ class SWTP:
     def from_lqi(
         cls,
         gross_domestic_product_per_capita: float,
-        mortality_rate: float,
+        work_leisure_parameter: float,
         demographic_constant: float,
         currency: str = "currency units",
         price_year: Optional[int] = None,
@@ -329,8 +329,10 @@ class SWTP:
         gross_domestic_product_per_capita : float
             Gross domestic product per person, denoted ``g`` in the LQI
             literature.
-        mortality_rate : float
-            Annual mortality rate, denoted ``q``.
+        work_leisure_parameter : float
+            The dimensionless LQI work--leisure (income-elasticity) parameter
+            ``q``, typically about 0.1--0.2 (e.g. 0.175 in Schubert and Faber,
+            2009).  This is *not* an annual mortality rate.
         demographic_constant : float
             Demographic life-time constant multiplying ``g / q``.
         currency : str, optional
@@ -341,12 +343,14 @@ class SWTP:
             Source note carried with the value.
         """
 
-        if mortality_rate <= 0:
-            raise ValueError("mortality_rate must be positive")
+        if work_leisure_parameter <= 0:
+            raise ValueError("work_leisure_parameter must be positive")
         if demographic_constant <= 0:
             raise ValueError("demographic_constant must be positive")
         value = (
-            gross_domestic_product_per_capita / mortality_rate * demographic_constant
+            gross_domestic_product_per_capita
+            / work_leisure_parameter
+            * demographic_constant
         )
         return cls(
             value_per_life=value,
@@ -909,6 +913,14 @@ class RackwitzTargetModel:
             "failure_cost_ratio": self.failure_cost_ratio,
             "resistance_cov": self.resistance_cov,
             "load_cov": self.load_cov,
+            "base_cost": self.base_cost,
+            "interest_rate": self.interest_rate,
+            "obsolescence_rate": self.obsolescence_rate,
+            "load_occurrence_rate": self.load_occurrence_rate,
+            "serviceability_cost_ratio": self.serviceability_cost_ratio,
+            "demolition_cost_ratio": self.demolition_cost_ratio,
+            "serviceability_resistance_ratio": self.serviceability_resistance_ratio,
+            "benefit_rate": self.benefit_rate,
         }
 
     def construction_cost(self, design: float) -> float:
@@ -1055,6 +1067,14 @@ class RackwitzTargetModel:
             "objective",
             "resistance_cov",
             "load_cov",
+            "base_cost",
+            "interest_rate",
+            "obsolescence_rate",
+            "load_occurrence_rate",
+            "serviceability_cost_ratio",
+            "demolition_cost_ratio",
+            "serviceability_resistance_ratio",
+            "benefit_rate",
             "converged",
         ]
         return pd.DataFrame(rows, columns=columns)
@@ -1936,7 +1956,7 @@ class LQI(DDOCriterion):
         cls,
         *,
         gross_domestic_product_per_capita: float,
-        mortality_rate: float,
+        work_leisure_parameter: float,
         demographic_constant: float,
         expected_fatalities_given_failure: Optional[float] = None,
         consequence: Optional[FatalityConsequence] = None,
@@ -1946,12 +1966,16 @@ class LQI(DDOCriterion):
         price_year: Optional[int] = None,
         source: Optional[str] = "LQI relation SWTP = g / q * G",
     ) -> "LQI":
-        """Create an LQI criterion from the LQI SWTP relation."""
+        """Create an LQI criterion from the LQI SWTP relation.
+
+        ``work_leisure_parameter`` is the dimensionless LQI parameter ``q``
+        (~0.1--0.2), not an annual mortality rate.
+        """
 
         return cls.from_swtp(
             SWTP.from_lqi(
                 gross_domestic_product_per_capita=gross_domestic_product_per_capita,
-                mortality_rate=mortality_rate,
+                work_leisure_parameter=work_leisure_parameter,
                 demographic_constant=demographic_constant,
                 currency=currency,
                 price_year=price_year,

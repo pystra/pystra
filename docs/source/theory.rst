@@ -789,9 +789,12 @@ the form
    \mathrm{SWTP}_x = \frac{g}{q} C_x
 
 where :math:`g` is the income or GDP measure available for risk reduction,
-:math:`q` is the mortality rate, and :math:`C_x` depends on the mortality
-reduction scheme, discounting, and the predictive cohort life table
-[Rackwitz2004Discounting]_.  This SWTP interpretation is developed in the LQI literature
+:math:`q` is the dimensionless LQI work--leisure (income-elasticity) parameter
+(typically about 0.1--0.2, e.g. 0.175 in Schubert and Faber, 2009; it is *not*
+an annual mortality rate), and :math:`C_x` depends on the mortality reduction
+scheme, discounting, and the predictive cohort life table
+[Rackwitz2004Discounting]_.  In :meth:`~pystra.ddo.SWTP.from_lqi` this parameter
+is named ``work_leisure_parameter``.  This SWTP interpretation is developed in the LQI literature
 [PandeyNathwani2004LQI]_ [PandeyNathwaniLind2006LQI]_ and used by
 Rackwitz for structural reliability optimization and acceptability
 [Rackwitz2002LQI]_.  The ``ra.SWTP.from_lqi`` helper

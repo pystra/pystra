@@ -30,7 +30,7 @@ def test_ddo_namespace_is_explicit():
 def test_swtp_from_lqi_and_country_lookup():
     swtp = ra.ddo.SWTP.from_lqi(
         gross_domestic_product_per_capita=25010,
-        mortality_rate=0.16,
+        work_leisure_parameter=0.16,
         demographic_constant=16,
         currency="PPPUSD",
         price_year=1999,
@@ -115,6 +115,17 @@ def test_rackwitz_target_model_calibrates_reliability():
     assert result.design == pytest.approx(4.837456940394679)
     assert result.pf == pytest.approx(7.320203882099348e-05)
     assert result.beta == pytest.approx(3.797090962287968)
+    # Full model provenance is carried, not just the cost ratios.
+    assert result.metadata["interest_rate"] == pytest.approx(0.035)
+    assert {
+        "base_cost",
+        "obsolescence_rate",
+        "load_occurrence_rate",
+        "serviceability_cost_ratio",
+        "demolition_cost_ratio",
+        "serviceability_resistance_ratio",
+        "benefit_rate",
+    } <= set(result.metadata)
 
 
 def test_rackwitz_objective_scales_with_base_cost():
@@ -131,6 +142,11 @@ def test_rackwitz_objective_scales_with_base_cost():
 
 def test_rackwitz_target_table_calculates_class_grid():
     table = ra.RackwitzTargetModel.table()
+
+    # Rates and ratios that users can vary via **kwargs are reported too.
+    assert {"interest_rate", "obsolescence_rate", "benefit_rate", "base_cost"} <= set(
+        table.columns
+    )
 
     assert table.shape[0] == 9
     assert list(table.columns[:7]) == [
@@ -262,7 +278,7 @@ def test_canonical_jcss_lqi_acceptability_and_risk_cost():
 def test_lqi_acceptability_boundary_finds_acceptance_design():
     lqi = ra.LQI.from_lqi(
         gross_domestic_product_per_capita=35931.0,
-        mortality_rate=0.175,
+        work_leisure_parameter=0.175,
         demographic_constant=18.9,
         expected_fatalities_given_failure=12,
         marginal_safety_cost=5000,
