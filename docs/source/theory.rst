@@ -779,9 +779,10 @@ risk-assessment background documents and examples [Nathwani1997LQI]_
 
 For life-safety problems, the LQI literature expresses the societal willingness
 to pay (SWTP) to save one statistical life as a function of the gross domestic
-product available for risk reduction, the annual mortality rate, and a
-demographic life-time constant.  In the notation used by Rackwitz, this is of
-the form
+product available for risk reduction, the LQI work--leisure parameter, and a
+demographic life-time constant; mortality enters through the demographic
+constant rather than through that parameter.  In the notation used by Rackwitz,
+this is of the form
 
 .. math::
    :label: eq:lqi_swtp
