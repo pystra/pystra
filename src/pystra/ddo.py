@@ -190,7 +190,7 @@ def get_swtp_index_record(
 
 def get_swtp_record(
     code: str,
-    indexed: bool = False,
+    indexed: Optional[bool] = None,
     index_table: Optional[Mapping[str, SWTPIndexRecord]] = None,
 ) -> SWTPRecord:
     """Return a country-level SWTP record.
@@ -199,9 +199,11 @@ def get_swtp_record(
     ----------
     code : str
         Country code or supported country-name alias.
-    indexed : bool, optional
-        If ``True``, return the Rackwitz value indexed with the built-in
-        World Bank GDP per capita PPP factors.
+    indexed : bool
+        Must be supplied explicitly.  ``False`` returns the 1999 Rackwitz
+        anchor; ``True`` returns the value indexed with the built-in World Bank
+        GDP per capita PPP factors.  There is no default so the anchor is never
+        returned silently.
     index_table : mapping, optional
         Alternate country-code mapping of :class:`SWTPIndexRecord` objects.
 
@@ -211,7 +213,7 @@ def get_swtp_record(
         Source-backed SWTP value.
     """
 
-    if indexed:
+    if _require_explicit_indexed(indexed):
         return index_swtp_record(code, index_table=index_table)
 
     key = _normalise_country_code(code)
@@ -229,7 +231,7 @@ def index_swtp_record(
 ) -> SWTPRecord:
     """Return a Rackwitz SWTP record indexed to a newer target year."""
 
-    base = get_swtp_record(code)
+    base = get_swtp_record(code, indexed=False)
     index = get_swtp_index_record(code, index_table=index_table)
     return SWTPRecord(
         code=base.code,
@@ -248,10 +250,14 @@ def index_swtp_record(
 
 def get_swtp(
     code: str,
-    indexed: bool = False,
+    indexed: Optional[bool] = None,
     index_table: Optional[Mapping[str, SWTPIndexRecord]] = None,
 ) -> float:
-    """Return the SWTP value per statistical life for a country code."""
+    """Return the SWTP value per statistical life for a country code.
+
+    ``indexed`` must be supplied explicitly (``False`` for the 1999 anchor,
+    ``True`` for the indexed value); the anchor is never returned silently.
+    """
 
     return get_swtp_record(
         code, indexed=indexed, index_table=index_table
@@ -2080,10 +2086,11 @@ class LQI(DDOCriterion):
         The marginal acceptability margin ``dC/dp + SWTP * N_F * dh/dp`` is
         negative where society would still pay to reduce risk and non-negative
         once the marginal cost of safety meets or exceeds the SWTP-valued risk
-        reduction.  The acceptance boundary is the design at which the margin is
-        zero, i.e. the social optimum of the LQI criterion.  Root finding uses
-        Brent's method over ``bounds`` and requires the margin to change sign
-        across the interval.
+        reduction.  The boundary is the design at which the margin is zero: the
+        minimum design the LQI criterion accepts (the marginal acceptability
+        boundary), which is a minimum safety requirement, not the economic
+        optimum.  Root finding uses Brent's method over ``bounds`` and requires
+        the margin to change sign across the interval.
 
         Parameters
         ----------

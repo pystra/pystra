@@ -101,8 +101,8 @@ The object API below is the recommended entry point.
     DDOCriterion
     RackwitzTargetModel
 
-The functions below are the low-level layer that backs the object API.  They
-remain importable from ``pystra.ddo`` for direct reproduction of the JCSS/LQI
+The low-level helpers and record types below back the object API.  They remain
+importable from ``pystra.ddo`` for direct reproduction of the JCSS/LQI
 equations, but the object API above is preferred.
 
 .. autosummary::

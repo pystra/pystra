@@ -37,10 +37,15 @@ def test_swtp_from_lqi_and_country_lookup():
     )
 
     assert swtp.value_per_life == pytest.approx(2_501_000)
-    assert ra.ddo.get_swtp("DE") == pytest.approx(1_900_000)
-    assert ra.ddo.get_swtp("UK") == pytest.approx(1_700_000)
+    assert ra.ddo.get_swtp("DE", indexed=False) == pytest.approx(1_900_000)
+    assert ra.ddo.get_swtp("UK", indexed=False) == pytest.approx(1_700_000)
     assert ra.ddo.get_swtp("US", indexed=True) == pytest.approx(5_220_864, rel=1e-4)
-    assert ra.ddo.get_swtp_record("New Zealand").code == "NZ"
+    assert ra.ddo.get_swtp_record("New Zealand", indexed=False).code == "NZ"
+    # The anchor is never returned silently: indexed must be explicit.
+    with pytest.raises(ValueError, match="indexed=True or indexed=False"):
+        ra.ddo.get_swtp("DE")
+    with pytest.raises(ValueError, match="indexed=True or indexed=False"):
+        ra.ddo.get_swtp_record("DE")
     assert ra.ddo.swtp_table().loc["NL", "value_per_life"] == pytest.approx(2_800_000)
     indexed = ra.ddo.swtp_table(indexed=True)
     assert indexed.loc["CH", "price_year"] == 2024
