@@ -384,6 +384,100 @@ FORM corresponds to a linearization of the failure surface :math:`g({\bf Z}) =
 reliability index :math:`\beta` can be computed.
 
 
+.. _theory_strong_maximum:
+.. _/theory.rst#theory-strong-maximum:
+
+Strong Maximum Test
+====================
+
+A converged local FORM design point need not represent every important
+failure region. The Strong Maximum Test [DutfoyLebrun2006]_ probes an enlarged
+sphere around the origin for failure points outside the candidate's vicinity.
+Pystra implements the independent standard-normal case described by
+`OpenTURNS <https://openturns.github.io/openturns/latest/theory/reliability_sensitivity/strong_maximum_test.html>`_.
+See :doc:`notebooks/ex_strong_maximum` for geometric examples and
+:ref:`chap_strong_maximum` for the API.
+
+Sphere geometry
+----------------
+
+Let the candidate be :math:`u^*`, with :math:`\beta=\|u^*\|>0`, and assume
+that the origin is strictly safe. A density ratio :math:`0<\varepsilon<1`
+defines the relevant normal-density radius :math:`r_\varepsilon`:
+
+.. math::
+
+   \frac{\varphi_n(r_\varepsilon e)}{\varphi_n(u^*)}=\varepsilon,
+   \qquad r_\varepsilon=\sqrt{\beta^2-2\log\varepsilon},
+   \qquad \|e\|=1.
+
+With enlargement factor :math:`\tau>1`, the sampled sphere has radius
+
+.. math::
+
+   r=\beta+\tau(r_\varepsilon-\beta)
+     =\beta(1+\tau\delta_\varepsilon),\qquad
+   \delta_\varepsilon=r_\varepsilon/\beta-1.
+
+Independent Gaussian directions normalized to length :math:`r` give uniform
+sphere samples. A point is near the candidate when
+
+.. math::
+
+   u\cdot\frac{u^*}{\beta}>\beta,
+   \quad\text{equivalently}\quad
+   \cos\angle(u,u^*)>\frac{\beta}{r}.
+
+Crossing near/far with safe/failure gives four retained point groups.
+Pystra classifies failure by :math:`g<0`. Far failure points are possible
+restart locations for additional design-point searches, not optimized design
+points themselves. The magnitude of :math:`g` does not measure a region's
+probability importance.
+
+Cap probability and evaluation budget
+--------------------------------------
+
+The reference detection cap has half-angle
+:math:`\theta=\arccos(r_\varepsilon/r)`, which differs from the candidate
+vicinity angle :math:`\arccos(\beta/r)`. For dimension :math:`n>1`, its
+normalized surface area is
+
+.. math::
+
+   p_\mathrm{cap}=\frac12 I_{\sin^2\theta}
+       \left(\frac{n-1}{2},\frac12\right),
+
+where :math:`I` is the regularized incomplete beta function. In one dimension
+the sphere consists of two points and :math:`p_\mathrm{cap}=1/2`.
+For :math:`N` independent samples, nominal cap-detection confidence is
+
+.. math::
+
+   c_N=1-(1-p_\mathrm{cap})^N,\qquad
+   N=\left\lceil\frac{\log(1-c)}{\log(1-p_\mathrm{cap})}\right\rceil.
+
+Pystra rounds upward to meet the requested nominal confidence; OpenTURNS'
+reference implementation rounds to the nearest integer. Users can specify
+confidence or a fixed count, with a hard ``max_points`` budget checked before
+sphere evaluation. The total is :math:`N+2` point evaluations including the
+origin and boundary checks. The cap can become small in high dimensions,
+so inspect the budget before using an expensive structural model.
+
+Interpretation and limitations
+-------------------------------
+
+Nominal confidence is a sampling statement about hitting a fixed cap under
+the test's local-plane and failure-region extent assumptions. It is not a
+posterior probability that FORM is correct, a failure-probability estimate,
+or a bound on approximation error. A bounded failure island entirely inside
+the sphere cannot be detected, regardless of sample count. The tutorial
+constructs such an island closer to the origin than the supplied candidate.
+
+Use the diagnostic on individual ``SystemFORM.component_results`` to look
+for missed regions within each component. Checking every component does not
+validate the system probability. The current test requires independent
+standard-normal coordinates.
+
 Second-Order Reliability Method (SORM)
 ======================================
 

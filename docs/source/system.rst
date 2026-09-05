@@ -153,7 +153,9 @@ Series results include Ditlevsen bounds and ``intersections``. Parallel results
 include the marginal/Frechet bounds. These bounds apply to the linearized
 events, with numerically evaluated probabilities. They are not guaranteed
 bounds on the original nonlinear system. Component FORM may also find a local
-design point; convergence alone does not establish global accuracy.
+design point; convergence alone does not establish global accuracy. The optional
+:ref:`Strong Maximum Test <chap_strong_maximum>` can check each component
+for competing regions on an enlarged sphere.
 
 The method is exact up to integration error for affine limit states in
 standard-normal space. For nonlinear components, compare with original-system

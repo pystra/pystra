@@ -16,6 +16,7 @@ page.
     notebooks/ex_intro
     notebooks/ex_simulation
     notebooks/ex_scipy_distributions
+    notebooks/ex_strong_maximum
     notebooks/ex_sensitivity
     notebooks/ex_ddm
     notebooks/ex_timing
