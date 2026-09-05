@@ -10,6 +10,8 @@ Unreleased
 
 Added
 ~~~~~
+- ``SystemFORM`` for component-based series/parallel reliability, joint normal
+  probabilities, component diagnostics and bounds on the linearized event.
 - ``pystra.system`` module for composing named component limit states into
   nested series, parallel, k-of-n, cut-set, and tie-set system limit states.
 - ``pystra.ditlevsen_bounds`` for second-order bounds from component event
@@ -19,6 +21,14 @@ Added
   transformations.
 - System reliability tutorial notebook and theory content with classical
   benchmark references.
+
+Fixed
+~~~~~
+- Component limit-state adapters now filter unused shared-model variables.
+- FORM distinguishes convergence from iteration exhaustion and rejects invalid
+  or zero gradients. Nonconverged runs warn and have ``results_valid=False``.
+- Ditlevsen bounds reject missing pairs, nonfinite inputs and intersections
+  inconsistent with marginal probabilities.
 
 v1.6.0 (2026-03-16)
 --------------------

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
+import warnings
 from scipy.stats import norm as normal
 from .analysis import AnalysisObject
 from .correlation import setModifiedCorrelationMatrix
@@ -58,12 +59,25 @@ class Form(AnalysisObject):
         self.step = None
         self.beta = None
         self.Pf = None
+        self.converged = False
+        self.e1 = None
+        self.e2 = None
 
     def run(self):
         """
         Executes the FORM analysis
         """
-        self.results_valid = True
+        self.results_valid = False
+        self.converged = False
+        self.beta = self.Pf = None
+        self.i = self.e1 = self.e2 = None
+        imax = self.options.getImax()
+        if (
+            isinstance(imax, bool)
+            or not isinstance(imax, (int, np.integer))
+            or imax < 1
+        ):
+            raise ValueError("FORM iteration limit must be a positive integer")
 
         self.init_run()
 
@@ -91,6 +105,15 @@ class Form(AnalysisObject):
 
             # Evaluate limit-state function and its gradient
             self.computeLimitState()
+            if (
+                not np.all(np.isfinite(self.G))
+                or not np.all(np.isfinite(self.gradient))
+                or not np.isfinite(np.linalg.norm(self.gradient))
+                or np.linalg.norm(self.gradient) == 0
+            ):
+                raise ValueError(
+                    "FORM requires finite limit-state values and a nonzero finite gradient"
+                )
 
             # Set scale parameter Go and inform about struct. resp.
             if i == 1:
@@ -105,8 +128,10 @@ class Form(AnalysisObject):
             self.computeGamma()
 
             # Check convergence
-            e1 = np.absolute(self.G * self.Go ** (-1))[0]
+            scale = float(np.abs(self.Go).item()) or 1.0
+            e1 = float(np.abs(self.G).item()) / scale
             e2 = np.linalg.norm(self.u - self.alpha.dot(self.u).dot(self.alpha))
+            self.e1, self.e2 = e1, float(e2)
             condition1 = e1 < self.options.getE1()
             condition2 = e2 < self.options.getE2()
             condition3 = i == self.options.getImax()
@@ -115,6 +140,7 @@ class Form(AnalysisObject):
 
             if condition1 and condition2 or condition3:
                 self.i = i
+                self.converged = bool(condition1 and condition2)
                 convergence = True
 
             # space for some recording stuff
@@ -139,9 +165,14 @@ class Form(AnalysisObject):
 
         # Compute failure probability
         self.computeFailureProbability()
+        self.results_valid = self.converged
+        if not self.converged:
+            warnings.warn(
+                "FORM did not converge within the iteration limit", RuntimeWarning
+            )
 
         # Show Results
-        if self.options.getPrintOutput():
+        if self.options.getPrintOutput() and self.results_valid:
             self.showResults()
 
     def computeStartingPoint(self):

@@ -4,12 +4,14 @@
 System Reliability
 ******************
 
-Pystra supports simple structural system composition through the
-``pystra.system`` module.  The module does not introduce a separate
-probability approximation method.  It builds an equivalent scalar
-limit-state function from named component limit states, and that function can
-then be used with the existing FORM, SORM, Monte Carlo, line sampling, subset
-simulation workflows.
+Pystra separates the system failure event from its probability calculation.
+The ``pystra.system`` topology classes compose component limit states for
+simulation. ``SystemFORM`` estimates series and parallel probabilities from
+separate component FORM analyses in one shared standard-normal space.
+
+Do not use ordinary FORM or SORM on the combined min/max function as a general
+system reliability method. One tangent plane can miss other failure regions,
+and ties can give misleading or zero finite-difference gradients.
 
 The sign convention is the usual Pystra convention: positive values are safe
 and negative values indicate failure.
@@ -36,8 +38,8 @@ without enumerating every failure path manually.  This includes common branch
 system benchmarks such as the :ref:`four-branch series example
 <ref-schueremans-2005>`.
 
-Example
-=======
+Original-system Monte Carlo
+===========================
 
 .. code-block:: python
 
@@ -66,12 +68,97 @@ Example
    model.addVariable(ra.Normal("A", 1.0, 0.5))
    model.addVariable(ra.Normal("B", 1.0, 0.5))
 
-   form = ra.Form(stochastic_model=model, limit_state=limit_state)
-   form.run()
+   import numpy as np
+
+   options = ra.AnalysisOptions()
+   options.setSamples(100_000)  # maximum budget; may stop at target CoV
+   options.setPrintOutput(False)
+   np.random.seed(2026)
+   mc = ra.CrudeMonteCarlo(
+       stochastic_model=model, limit_state=limit_state,
+       analysis_options=options,
+   )
+   mc.run()
+   print(mc.getFailure(), mc.cov_q_bar[mc.k - 1], mc.k)
+
+Monte Carlo evaluates the original nonlinear failure event, including mixed
+and cut/tie-set topologies. The reported CoV describes sampling uncertainty.
+Zero observed failures do not establish a zero failure probability: increase
+the sample budget or use a validated rare-event method. The legacy Monte Carlo
+beta value is not meaningful when no failures are observed.
 
 Component functions may use only the stochastic variables they need.  Extra
 model variables are filtered at the component boundary, which keeps small
 component functions reusable inside larger systems.
+
+Component-based system FORM
+===========================
+
+.. code-block:: python
+
+   from scipy.stats import norm
+
+   model = ra.StochasticModel()
+   model.addVariable(ra.Normal("X", 0.0, 1.0))
+   model.addVariable(ra.Normal("Y", 0.0, 1.0))
+   components = [
+       ra.Component("a", lambda X: 3.0 - X),
+       ra.Component("b", lambda Y: 3.0 - Y),
+   ]
+   analysis = ra.SystemFORM(ra.SeriesSystem(components), model)
+   analysis.run()
+   print(analysis.getFailure())  # approximately 0.002697974
+   print(analysis.getBeta())     # equivalent system index
+   print(analysis.bounds)        # Ditlevsen bounds on the linearized event
+   print(analysis.correlation)   # correlations of normal scores
+   print(analysis.component_results["a"].getDesignPoint())
+
+   p = norm.sf(3.0)
+   assert abs(analysis.getFailure() - (2*p - p*p)) < 1e-10
+
+Use ``ParallelSystem(components)`` for joint failure; the exact result in this
+example is ``p*p``. Homogeneous nesting is flattened and shared component
+objects are analysed once. Component names must be unique. Mixed topology,
+k-of-n and cut/tie-set inputs are currently rejected by ``SystemFORM``; use
+original-system simulation for these events.
+
+For each component, FORM finds a tangent failure half-space in the same
+independent standard-normal coordinates:
+
+.. math::
+
+   F_i \approx \{\alpha_i^T U > \beta_i\},
+   \qquad R_{ij}=\alpha_i^T\alpha_j.
+
+This includes dependence caused by shared variables and the Nataf input
+correlation model. ``correlation`` is the correlation of the linearized normal
+scores, not of the physical variables or binary failure indicators. All
+components retain the full model variable order. DDM functions must return
+gradients in that full order, including zeros for unused variables.
+
+``component_results`` retains the individual ``Form`` objects, including
+``converged``, ``e1`` and ``e2`` diagnostics. A failed component analysis raises
+an error and leaves the system result invalid. Ordinary ``Form`` now warns
+when it exhausts its iterations, and marks ``results_valid`` false.
+
+Series probabilities are integrated as disjoint first-failure events, avoiding
+subtraction of an almost-unit survival probability. Parallel probabilities
+use the joint normal failure event. Singular component correlation matrices
+are supported. ``maxpts``, ``abseps`` and ``releps`` control integration effort
+and requested tolerances; they do not certify numerical accuracy in rare
+multivariate tails. Bivariate integration uses relative-tolerance quadrature.
+Check sensitivity to tighter tolerances for demanding problems.
+
+Series results include Ditlevsen bounds and ``intersections``. Parallel results
+include the marginal/Frechet bounds. These bounds apply to the linearized
+events, with numerically evaluated probabilities. They are not guaranteed
+bounds on the original nonlinear system. Component FORM may also find a local
+design point; convergence alone does not establish global accuracy.
+
+The method is exact up to integration error for affine limit states in
+standard-normal space. For nonlinear components, compare with original-system
+simulation. The four-branch notebook illustrates the difference between the
+first-order approximation and the nonlinear event probability.
 
 Event Topologies
 ================
@@ -118,10 +205,12 @@ This can be represented directly from named components:
        components=components,
    )
 
-Event-counting and cut/tie-set systems preserve the correct failure sign for
-simulation, subset simulation, and Boolean enumeration.  They are not generally
-smooth limit-state functions, so FORM/SORM results should be interpreted with
-care unless the topology reduces to a smooth min/max envelope.
+These topologies preserve the failure sign for direct Monte Carlo and Boolean
+enumeration. The current k-of-n performance function is a discrete count;
+its plateaus make it unsuitable as a general subset-simulation performance
+measure. Existing line sampling assumes one failure tail per line, and existing
+importance sampling uses one FORM design point. Neither should be assumed to
+cover arbitrary system failure regions.
 
 Ditlevsen Bounds
 ================
@@ -130,7 +219,10 @@ When component event probabilities and pairwise intersection probabilities are
 available, :func:`pystra.ditlevsen_bounds` computes :ref:`Ditlevsen's
 second-order bounds <ref-ditlevsen-1979>` for a union of failure
 events.  The event ordering can be supplied explicitly, or exhaustively
-optimized for small systems.
+optimized for small systems. Every pair must be supplied (explicit zero for
+disjoint events); nonfinite values and violations of marginal/Frechet bounds
+are rejected. These checks do not prove global consistency of all supplied
+probabilities.
 
 .. code-block:: python
 
@@ -156,22 +248,21 @@ responsibility of the selected Pystra analysis method and its
 transformation, following the same conceptual split used in structural
 reliability methods generally.
 
-This first implementation deliberately avoids first-order system reliability
-method approximations and automatic failure-path enumeration.  Those methods
-can be useful, but they need additional assumptions about the component
-design points, dependence model, and transformation ordering.  In particular,
-Rosenblatt-based first-order system approximations can be sensitive to the
-conditioning order used for the transformation [Meinen2025]_.  For now,
-simulation methods can estimate the probability of failure from the composed
-system limit-state function directly.
+``SystemFORM`` uses Pystra's existing Nataf transformation, with the same
+factorisation choice for every component. Automatic failure-path enumeration,
+load redistribution and importance sampling around multiple design points
+remain future extensions.
 
 Validation Benchmarks
 =====================
 
 The current validation suite checks exact Boolean behaviour for series,
 parallel, k-of-n, cut-set, and tie-set systems; integration with Pystra's
-``LimitState`` evaluation; a FORM smoke test for smooth min/max systems; and
-Ditlevsen bounds for simple and published series-system cases.
+``LimitState`` evaluation; independent and correlated linear system
+probabilities; identical and opposing component directions; positive rescaling;
+shared components; failed FORM diagnostics; and Ditlevsen input validation.
+The legacy combined-limit-state FORM smoke test checks execution only, not
+system probability accuracy.
 
 The next benchmarks to add before extending the approximation methods are:
 
