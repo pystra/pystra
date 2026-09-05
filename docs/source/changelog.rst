@@ -10,6 +10,10 @@ Unreleased
 
 Added
 ~~~~~
+- ``StrongMaximumTest`` for optional post-FORM sphere diagnostics, with
+  reproducible sampling, explicit budgets and candidate point groups.
+- Strong Maximum Test tutorial notebook and theory derivation, including
+  competing regions, evaluation budgets and a bounded-island counterexample.
 - ``SystemFORM`` for component-based series/parallel reliability, joint normal
   probabilities, component diagnostics and bounds on the linearized event.
 - ``pystra.system`` module for composing named component limit states into
