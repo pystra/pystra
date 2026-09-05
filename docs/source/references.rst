@@ -2,6 +2,10 @@
 References
 **********
 
+.. [LebrunDutfoy2009a] Lebrun, R. and Dutfoy, A. (2009). "A generalization of the Nataf transformation to distributions with elliptical copula". Probabilistic Engineering Mechanics, 24, 172–178. `doi:10.1016/j.probengmech.2008.05.001 <https://doi.org/10.1016/j.probengmech.2008.05.001>`_.
+
+.. [LebrunDutfoy2009b] Lebrun, R. and Dutfoy, A. (2009). "Do Rosenblatt and Nataf isoprobabilistic transformations really differ?" Probabilistic Engineering Mechanics, 24, 577–584. `doi:10.1016/j.probengmech.2009.04.006 <https://doi.org/10.1016/j.probengmech.2009.04.006>`_.
+
 .. [Bourinet2009] J.-M. Bourinet, C. Mattrand, and V Dubourg. A review of recent features and improvements added to FERUM software. In Proc. of the 10th International Conference on Structural Safety and Reliability (ICOSSAR’09), Osaka, Japan, 2009.
 
 .. [Bourinet2010] J.-M. Bourinet. FERUM 4.1 User’s Guide, 2010.

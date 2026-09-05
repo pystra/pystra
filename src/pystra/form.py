@@ -33,11 +33,18 @@ class Form(AnalysisObject):
     is called First Order Reliability Method (FORM) and :math:`\beta` is the
     First Order Reliability Index. [Madsen2006]_
 
+    Explicit Student-t generalized Nataf instead uses spherical Student-t
+    coordinates and the Student-t half-space tail. ``getBeta()`` remains
+    the signed geometric distance; ``getEquivalentBeta()`` returns the
+    normal-equivalent index computed from the failure probability.
+
     :Attributes:
       - stochastic_model (StochasticModel): Information about the model
       - limit_state (LimitState): Information about the limit state
       - analysis_option (AnalysisOption): Option for the structural analysis
     """
+
+    supports_spherical_space = True
 
     def __init__(self, stochastic_model=None, limit_state=None, analysis_options=None):
         super().__init__(
@@ -300,7 +307,14 @@ class Form(AnalysisObject):
 
     def computeFailureProbability(self):
         """Compute probability of failure"""
-        self.Pf = normal.cdf(-self.beta)
+        marginal = getattr(self.transform, "standard_marginal", normal)
+        self.Pf = float(marginal.sf(self.beta))
+
+    def getEquivalentBeta(self):
+        """Return -Phi^-1(Pf), including for non-normal standard spaces."""
+        if not self.results_valid:
+            raise ValueError("Analysis has no valid result")
+        return float(-normal.ppf(self.Pf))
 
     def showResults(self):
         """Show results"""

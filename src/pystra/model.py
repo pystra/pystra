@@ -14,7 +14,7 @@ class StochasticModel:
         model.getConstants()     # legacy, equivalent
     """
 
-    def __init__(self):
+    def __init__(self, joint_distribution=None):
         """
         Use ordered dictionary to make sure that the order corresponds to the
         correlation matrix
@@ -26,6 +26,15 @@ class StochasticModel:
         self._Ro = None
         self._call_function = 0
         self._consts = {}
+        self._copula = None
+        if joint_distribution is not None:
+            from .joint import JointDistribution
+
+            if not isinstance(joint_distribution, JointDistribution):
+                raise TypeError("Expected a JointDistribution")
+            for marginal in joint_distribution.marginals:
+                self.addVariable(marginal)
+            self.setCopula(joint_distribution.copula)
 
     def addVariable(self, obj):
         """Add a random variable or constant to the model.
@@ -49,6 +58,8 @@ class StochasticModel:
 
         if obj.getName() in self._names:
             raise Exception(f'variable name "{obj.getName()}" already exists')
+        if isinstance(obj, Distribution) and self._copula is not None:
+            raise ValueError("Add all random variables before setting the copula")
 
         # append the variable name
         self._names.append(obj.getName())
@@ -88,11 +99,20 @@ class StochasticModel:
     @property
     def correlation(self):
         """Correlation matrix (n × n numpy array)."""
-        return self._correlation
+        return self.getCorrelation()
 
     @correlation.setter
     def correlation(self, value):
-        self._correlation = value
+        self.setCorrelation(value)
+
+    @property
+    def copula(self):
+        """Explicit dependence specification, or None for legacy Pearson input."""
+        return self._copula
+
+    @copula.setter
+    def copula(self, value):
+        self.setCopula(value)
 
     @property
     def modified_correlation(self):
@@ -139,9 +159,38 @@ class StochasticModel:
         if hasattr(obj, "getMatrix"):
             obj = obj.getMatrix()
         self._correlation = np.asarray(obj)
+        self._copula = None
+        self._Ro = None
 
     def getCorrelation(self):
+        if self._copula is not None:
+            raise ValueError(
+                "Physical Pearson correlation is not specified by an explicit copula; use getCopula()"
+            )
         return self._correlation
+
+    def setCopula(self, copula):
+        """Replace legacy Pearson dependence with an explicit copula."""
+        from .joint import JointDistribution
+
+        JointDistribution(self._marg, copula)  # validate before changing state
+        self._copula = copula
+        self._correlation = None
+        self._Ro = None
+
+    def getCopula(self):
+        return self._copula
+
+    def getJointDistribution(self):
+        """Return marginals plus the explicit or calibrated Gaussian copula."""
+        from .joint import JointDistribution
+        from .copula import GaussianCopula
+        from .correlation import computeModifiedCorrelationMatrix
+
+        copula = self._copula
+        if copula is None:
+            copula = GaussianCopula(computeModifiedCorrelationMatrix(self))
+        return JointDistribution(self._marg, copula)
 
     def setModifiedCorrelation(self, correlation):
         self._Ro = correlation

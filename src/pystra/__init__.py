@@ -37,6 +37,8 @@ __version__ = "1.6.0"
 # Distributions
 from .distributions import *
 from .correlation import CorrelationMatrix
+from .copula import *
+from .joint import *
 
 # Inputparameter
 from .model import *

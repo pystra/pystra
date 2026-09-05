@@ -130,8 +130,8 @@ independent standard-normal coordinates:
    F_i \approx \{\alpha_i^T U > \beta_i\},
    \qquad R_{ij}=\alpha_i^T\alpha_j.
 
-This includes dependence caused by shared variables and the Nataf input
-correlation model. ``correlation`` is the correlation of the linearized normal
+This includes dependence caused by shared variables and the input copula.
+``correlation`` is the correlation of the linearized normal
 scores, not of the physical variables or binary failure indicators. All
 components retain the full model variable order. DDM functions must return
 gradients in that full order, including zeros for unused variables.
@@ -250,8 +250,11 @@ responsibility of the selected Pystra analysis method and its
 transformation, following the same conceptual split used in structural
 reliability methods generally.
 
-``SystemFORM`` uses Pystra's existing Nataf transformation, with the same
-factorisation choice for every component. Automatic failure-path enumeration,
+``SystemFORM`` requires independent normal coordinates, with the same
+transformation and conditioning order for every component. Gaussian Nataf
+and :ref:`Rosenblatt transformations <chap_copulas>` are supported. For a
+Student-t copula, use Rosenblatt; spherical Student-t Nataf space is rejected.
+Automatic failure-path enumeration,
 load redistribution and importance sampling around multiple design points
 remain future extensions.
 
