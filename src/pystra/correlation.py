@@ -86,6 +86,17 @@ def computeModifiedCorrelationMatrix(stochastic_model):
         The symmetric modified correlation matrix ``Ro`` of shape
         ``(n, n)`` in standard-normal space.
     """
+    copula = stochastic_model.getCopula()
+    if copula is not None:
+        from .copula import GaussianCopula, StudentTCopula
+
+        if isinstance(copula, GaussianCopula) and not isinstance(
+            copula, StudentTCopula
+        ):
+            return copula.correlation
+        raise ValueError(
+            "Gaussian correlation modification does not apply to this copula"
+        )
     marg = stochastic_model.getMarginalDistributions()
     R = stochastic_model.getCorrelation()
     nvr = len(marg)

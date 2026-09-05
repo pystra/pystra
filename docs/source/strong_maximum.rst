@@ -67,8 +67,9 @@ Alternatively, specify a point explicitly:
    competing_g = check.getValues("far_failure")
 
 The explicit point must be a finite vector in the model's independent
-standard-normal coordinates. ``analysis_options`` selects its Nataf
-factorisation.
+standard-normal coordinates. ``analysis_options`` selects its transformation
+and, for Rosenblatt, conditioning order. For a non-Gaussian copula, use
+:ref:`Rosenblatt <chap_copulas>`; spherical Student-t Nataf space is rejected.
 The test verifies a strictly safe origin and a boundary
 residual no greater than ``getE1() * abs(g(origin))``. It rejects candidates
 near the origin and nonconverged FORM inputs. It does not independently solve

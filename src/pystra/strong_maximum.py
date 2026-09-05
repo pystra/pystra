@@ -122,6 +122,10 @@ class StrongMaximumTest(AnalysisObject):
             design_point = form.getDesignPoint()
             if form.getBeta() <= 0:
                 raise ValueError("Strong Maximum Test requires a safe-origin candidate")
+            if form.transform.standard_space != "normal":
+                raise ValueError(
+                    "Strong Maximum Test currently requires independent normal space; select Rosenblatt"
+                )
         elif any(arg is None for arg in (stochastic_model, limit_state, design_point)):
             raise ValueError("Supply form or model, limit_state and design_point")
         # Independent evaluator state; do not overwrite the Form limit state's

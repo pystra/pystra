@@ -10,10 +10,15 @@ Unreleased
 
 Added
 ~~~~~
+- Executed copula/transformation and Strong Maximum Test tutorial notebooks,
+  with derivations and validation examples in the theoretical background.
+- ``JointDistribution`` separates continuous marginals and copula dependence:
+  Gaussian, Student-t, independent and bivariate Frank copulas, with densities,
+  CDFs, sampling, normal Rosenblatt and elliptical Nataf transformations.
+- FORM supports spherical Student-t Nataf space with the Student-t tail;
+  ``getEquivalentBeta()`` returns the normal-equivalent probability index.
 - ``StrongMaximumTest`` for optional post-FORM sphere diagnostics, with
   reproducible sampling, explicit budgets and candidate point groups.
-- Strong Maximum Test tutorial notebook and theory derivation, including
-  competing regions, evaluation budgets and a bounded-island counterexample.
 - ``SystemFORM`` for component-based series/parallel reliability, joint normal
   probabilities, component diagnostics and bounds on the linearized event.
 - ``pystra.system`` module for composing named component limit states into
@@ -28,11 +33,16 @@ Added
 
 Fixed
 ~~~~~
+- Numerical sensitivity analyses preserve the selected transformation options.
 - Component limit-state adapters now filter unused shared-model variables.
 - FORM distinguishes convergence from iteration exhaustion and rejects invalid
   or zero gradients. Nonconverged runs warn and have ``results_valid=False``.
 - Ditlevsen bounds reject missing pairs, nonfinite inputs and intersections
   inconsistent with marginal probabilities.
+
+Changed
+~~~~~~~
+- SciPy minimum version is 1.11 for multivariate Student-t CDF integration.
 
 v1.6.0 (2026-03-16)
 --------------------

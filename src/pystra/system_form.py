@@ -217,6 +217,10 @@ class SystemFORM(AnalysisObject):
             self.component_results[component.name] = form
             try:
                 form.run()
+                if form.transform.standard_space != "normal":
+                    raise ValueError(
+                        "SystemFORM requires independent normal space; select Rosenblatt"
+                    )
             except (ValueError, FloatingPointError) as error:
                 raise RuntimeError(
                     f"Component '{component.name}' FORM failed: {error}"
