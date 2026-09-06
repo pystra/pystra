@@ -85,8 +85,9 @@ local to the run, with documented invalidation and RNG ownership.
 For code calibration, prioritize the normalized workflow: candidate factors,
 code designs, reliability evaluation, and comparison against targets. Keep
 probability models separate from factor sets. The specialized inverse workflow
-uses separate solve-designs, derive-factors, select-factors, and verify-designs
-operations from the migration plan; do not force all code studies through it.
+uses the separate `solve_designs`, `derive_factors`, `select_factors`,
+`design_with_factors` and `verify_designs` operations documented in the
+[migration guide](docs/source/migrating.rst); do not force all code studies through it.
 Preserve governing-case information and numerical diagnostics. A convenience
 runner composes operations; it does not duplicate them.
 
@@ -129,8 +130,11 @@ python -m pytest -q
 
 Run Black on changed Python files and include formatting in the appropriate
 commit. Black remains the formatter during migration. Run
-`python scripts/api_inventory.py --check-names` for the function/method and
-migrated-class naming check. Attribute/parameter cleanup and import enforcement
+`python scripts/api_inventory.py --check-names --check-migration` for naming,
+baseline API coverage, and current calibration signature checks. Update the
+reviewed migration records alongside contract changes; historical naming maps
+are not the current calibration API. Remaining attribute/parameter cleanup and
+import enforcement
 remain later stages; existing legacy fields are not a precedent for new code.
 CI also executes every indexed tutorial using `scripts/execute_notebooks.py`.
 

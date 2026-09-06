@@ -91,6 +91,8 @@ class LoadCombination:
     correlation : pandas.DataFrame, optional
         Physical Pearson correlations labelled by random-variable names.
 
+    Notes
+    -----
     Input objects are copied. Accessors and model construction return copies,
     so candidate overrides cannot mutate the stored case definitions.
     """

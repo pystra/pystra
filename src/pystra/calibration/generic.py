@@ -219,6 +219,8 @@ class GenericCalibration:
     live_load_ratios, dead_load_ratios : sequence of float
         Nonempty one-dimensional grids in [0, 1]. They are copied to tuples.
 
+    Notes
+    -----
     ``run`` returns a new result; no model registration or result cache is
     retained. Supply the same model with different CodeFactors to compare
     candidates. Automated factor fitting is deliberately a separate operation.

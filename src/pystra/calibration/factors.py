@@ -85,6 +85,8 @@ class FactorCalibrationProblem:
     design_parameter : str
         Name of a common Constant multiplying the resistance term.
 
+    Notes
+    -----
     Inputs are snapshotted. Numerical operations use named coordinates and
     arrays; no DataFrame carries state between stages. The default design
     rule is z = load_effect / resistance_effect, evaluated at unit z with the
