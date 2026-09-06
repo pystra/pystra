@@ -3,6 +3,15 @@ Instructions for Developers
 
 This file presents instructions for ``Pystra`` developers.
 
+.. note::
+
+   For v3 onward, follow the repository's
+   :download:`contributor guide <../../CONTRIBUTING.md>` and
+   :download:`migration plan <../v3.0-migration-plan.md>`.
+   Target ``v3.0`` for migration work. The distribution examples below describe
+   the current implementation and will migrate with the API; legacy names are
+   not the convention for new v3 interfaces.
+
 .. _install_dev:
 
 Create working repository with developer install
@@ -53,9 +62,9 @@ Develop and create pull-request (PR)
 
 	git checkout -b <new-branch>
 
-2. Pull updates from Pystra main ::
+2. Pull updates from the target integration branch (``v3.0`` during migration) ::
 	
-	git pull upstream main 
+	git pull upstream v3.0
 
 3. Develop package
 
@@ -77,8 +86,9 @@ Develop and create pull-request (PR)
 	* ``make html``
 	* ``xdg-open build/html/index.html``
 
-8. Update version number in ``./src/pystra/__init__.py`` (the docs
-   version is derived automatically via ``conf.py``).
+8. Update relevant documentation and migration notes. Release maintainers
+   update the version in ``./src/pystra/__init__.py``; ordinary contributions
+   do not bump it (the docs version is derived via ``conf.py``).
 
 9. Stage changes; commit; and push to remote fork
 

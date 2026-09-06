@@ -56,6 +56,13 @@ available.
 
 .. _`IFMA`: http://www.ifma.fr/Recherche/Labos/FERUM
 
+Contributing
+============
+
+See the `contributor guide <CONTRIBUTING.md>`_ for v3 coding conventions,
+numerical validation, and pull-request guidance, and the
+`3.0 migration plan <docs/v3.0-migration-plan.md>`_ for the release sequence.
+
 Credits
 =======
 Pystra is built on PyRe by Jürgen Hackl; FERUM4.1 by Jean-Marc Bourinet; FERUM by Terje Haukaas and Armen Der Kiureghian.
