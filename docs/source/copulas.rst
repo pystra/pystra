@@ -156,6 +156,77 @@ orders reproduce FORM probabilities approximately 0.107 and 0.122; direct
 integration gives approximately 0.1038. With Gaussian latent correlation
 0.5, both orders and Cholesky Nataf give approximately 0.09758.
 
+System reliability and conditioning order
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Meinen and Steenbergen (2025), `Application of the Rosenblatt transformation
+in First-Order System Reliability approximations
+<https://doi.org/10.1016/j.strusafe.2024.102521>`_, extend the exponential
+example to a two-component series system. Example 1 uses Gaussian latent
+correlation 0.5 or Frank parameter **4.73**, rather than the earlier benchmark's
+10. For fully dependent identical components, both components use the same
+pair of variables, so their union must equal a single component event.
+
+``tests/test_rosenblatt_system_order.py`` reproduces the shared-order results:
+
+.. list-table:: Fully dependent identical components: system failure probability
+   :header-rows: 1
+
+   * - Copula
+     - Canonical Rosenblatt / FORM
+     - Reverse Rosenblatt / FORM
+     - Direct original-event integration
+   * - Gaussian, latent correlation 0.5
+     - 0.0975813
+     - 0.0975813
+     - 0.0871846
+   * - Frank, theta 4.73
+     - 0.1019922
+     - 0.1142769
+     - 0.0932253
+
+The direct reference integrates the physical failure event along each coordinate
+separately; both evaluations agree. The dependent-system CMC probabilities in
+Section 3.3 of the paper appear transposed between Gaussian and Frank. The
+values above use the stated copula parameters and marginal rates, supported by
+direct sampling, rather than adopting that apparent transcription error.
+
+A fully specified copula fixes the joint law. It does **not** make the FORM
+approximation invariant to a nonlinear change of reference coordinates.
+Gaussian Rosenblatt orders are related by an orthogonal transformation:
+applying one common order to every component preserves the tangent-event
+correlations and system probability. For a Frank copula, changing order can
+change the transformed failure-surface geometry and hence the approximation.
+The original-event probability remains independent of either choice.
+
+Alpha vectors from different conditioning orders cannot simply be dotted
+together, even when their entries carry the same original variable names.
+Deliberately doing so reproduces the paper's invalid mixed-order probabilities
+of approximately 0.133 (Gaussian) and 0.156 (Frank) for identical events.
+``SystemForm`` avoids this construction by analyzing every component against
+one complete model and one transformation configuration. A second regression
+uses the paper's distinct-component variation, verifying Gaussian system
+invariance between Nataf and both Rosenblatt orders.
+
+These are first-order system approximations. Their normal-score dependence
+is still represented by the tangent-plane alpha products; a non-Gaussian
+input copula does not turn those planes into an exact system failure event.
+Use original-event integration or simulation to assess approximation error.
+Exploring several orders is a sensitivity diagnostic, not a certified bound
+or an automatic prescription to select the largest probability.
+
+The same three regressions pass against the v1 copula feature commit
+``f3d0d1f`` after adapting the four changed API spellings. They are suitable
+for backport with that feature; this does not imply copula support is present
+in the released v1 package. The paper's larger Example 2 also needs explicit
+joint dependence across components. Its local-component autocorrelation
+approximation should not be substituted silently for a complete joint law.
+PySTRA's Frank implementation currently supports two variables; composition
+of independent Frank blocks is a separate extension.
+
+Numerical limits
+~~~~~~~~~~~~~~~~
+
 Transformations require finite points and resolvable interior probabilities;
 they do not silently clip a failed tail calculation into the unit interval.
 Gaussian and Student-t joint transformations use survival functions where

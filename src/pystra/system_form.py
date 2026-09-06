@@ -16,7 +16,8 @@ __all__ = ["SystemForm"]
 class SystemForm(AnalysisObject):
     """Approximate a series or parallel system using component tangent planes.
 
-    All components use the same complete stochastic model and Nataf transform.
+    All components use the same complete stochastic model and transformation
+    into independent normal coordinates, including the same Rosenblatt order.
     Homogeneous nested series/parallel systems are flattened; mixed topologies
     are rejected. Use original-system Monte Carlo for general topologies.
 
