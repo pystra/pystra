@@ -1,5 +1,5 @@
 Migrating from 1.x to 2.0
-========================
+=========================
 
 This page describes the API currently implemented on the ``v2.0`` development
 branch (``2.0.0.dev0``). The remaining result, options, parameter, and
