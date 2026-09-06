@@ -305,3 +305,11 @@ convergence status. It replaces the development branch's getters and mutable
 The final estimate uses ``n_estimation`` independent points. ``seed`` controls
 run-owned randomness. Explicit ``Surrogate`` implementations can be supplied
 for extension. See :doc:`notebooks/ex_active_learning` for scope and limitations.
+
+PCE now defaults to adaptive sparse fitting: ``method="lars"`` with candidate
+degrees 1 through 5. An integer ``degree`` fits a single candidate. Pass
+``method="ols"`` for dense fitting. ``q_norm`` accepts one or more hyperbolic
+truncations and ``max_interaction`` limits interaction order. Sparse PCE's
+default initial design is ``max(30, 5*n_variables)``. ``fit_result`` returns
+immutable selection diagnostics. Both PCE methods use core NumPy/SciPy;
+Kriging retains the optional scikit-learn dependency.

@@ -109,7 +109,7 @@ def test_pce_polynomial_exactness_local_spread_and_repeatability():
     rng = np.random.default_rng(13)
     points = rng.normal(size=(70, 2))
     values = 1 + points[:, 0] - 0.3 * points[:, 1] ** 2
-    surrogate = PceSurrogate(degree=2, seed=4)
+    surrogate = PceSurrogate(degree=2, method="ols", seed=4)
     surrogate.fit(points, values)
     query = rng.normal(size=(40, 2))
     mean, std = surrogate.predict(query)
@@ -142,19 +142,29 @@ def test_pce_polynomial_exactness_local_spread_and_repeatability():
         ("beam", "kriging", "u"),
         ("normal_sum", "pce", "u"),
         ("beam", "pce", "u"),
+        ("four_branch", "pce", "u"),
     ],
 )
 def test_standard_benchmarks(problem, surrogate, learning, seed):
     if surrogate == "kriging":
         pytest.importorskip("sklearn")
     model, limit_state, reference = benchmark(problem)
-    settings = {"n_restarts": 0} if surrogate == "kriging" else {"degree": 2}
+    settings = {"n_restarts": 0} if surrogate == "kriging" else {}
+    nonsmooth_pce = problem == "four_branch" and surrogate == "pce"
+    if nonsmooth_pce:
+        settings = {
+            "degree": tuple(range(2, 13)),
+            "q_norm": (0.75, 1.0),
+            "degree_early_stop": False,
+        }
     analysis = ActiveLearning(
         stochastic_model=model,
         limit_state=limit_state,
         surrogate=surrogate,
         learning_function=learning,
         surrogate_kwargs=settings,
+        n_initial=50 if nonsmooth_pce else None,
+        learning_threshold=3 if nonsmooth_pce else None,
         n_candidates=12_000,
         n_estimation=100_000,
         seed=seed,
@@ -172,7 +182,11 @@ def test_standard_benchmarks(problem, surrogate, learning, seed):
     points = np.random.default_rng(892).normal(size=(100_000, model.n_marg))
     truth = analysis._evaluate(points) <= 0
     prediction = analysis._predict(analysis.surrogate_model, points)[0] <= 0
-    assert np.mean(truth != prediction) < 0.1 * reference
+    # A global polynomial approximates this nonsmooth minimum less closely
+    # than Kriging: permit at most 15% of Pf in misclassified probability
+    # mass (10% for the other cases), separately from the same Pf criterion.
+    classification_fraction = 0.15 if nonsmooth_pce else 0.1
+    assert np.mean(truth != prediction) < classification_fraction * reference
     if problem == "four_branch":
         along = (points[:, 0] + points[:, 1]) / np.sqrt(2)
         across = (points[:, 0] - points[:, 1]) / np.sqrt(2)
@@ -255,7 +269,7 @@ import sys
 sys.modules['sklearn'] = None
 import pystra
 from pystra.active_learning import KrigingSurrogate, PceSurrogate
-PceSurrogate()
+PceSurrogate(method="ols")
 try:
     KrigingSurrogate()
 except ImportError as exc:

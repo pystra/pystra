@@ -1537,7 +1537,8 @@ A Student-t spherical Nataf space is unsupported; select Rosenblatt instead.
 
 The surrogate is refitted after each enrichment. Previously evaluated
 candidates cannot be selected again. The default initial size is
-``max(12, 2*n_variables)``; PCE uses at least twice its basis size by default.
+``max(12, 2*n_variables)``; sparse PCE uses ``max(30, 5*n_variables)``.
+Dense OLS uses twice its largest total-degree basis size by default.
 The final probability estimate uses an independent Monte Carlo population
 that never participates in fitting or point selection.
 
@@ -1549,13 +1550,34 @@ normalization and a small numerical nugget. Install the optional ``al`` extra.
 Optimizer convergence warnings remain visible; they concern hyperparameter
 fitting, separately from the reliability stopping status.
 
-``PceSurrogate`` uses normalized probabilists' Hermite polynomials through a
-fixed total degree. An overdetermined, full-rank least-squares fit supplies
-the mean. Pairs-bootstrap refits supply **point-dependent prediction spread**.
-Rank-deficient bootstrap draws are retried with a finite budget. This uses
-the bootstrap local-error idea of Marelli and Sudret [MarelliSudret2018]_,
-but omits their sparse basis selection, degree adaptation and batch enrichment.
-It is a dense fixed-basis variant, not a reproduction of their full algorithm.
+``PceSurrogate`` uses normalized probabilists' Hermite polynomials, selecting
+sparse terms by hybrid least-angle regression [BlatmanSudret2011]_. The default
+candidate degrees are 1 through 5. ``degree`` and ``q_norm`` can each specify
+an increasing sequence: every candidate is fitted and the best corrected
+leave-one-out error retained. Hyperbolic truncation and ``max_interaction``
+limit the candidate dictionary; ``max_terms`` guards against excessive size.
+
+The implementation adapts the local UQLab 2.2.0 routines, with the copyright
+and BSD terms retained in ``THIRD_PARTY_NOTICES``. Direct numerical regression
+fixtures compare the original UQLab routines under Octave with PySTRA.
+SVD solves replace normal-equation inverses; bootstrap indices are sampled
+uniformly. ``method="ols"`` retains dense least-squares fitting.
+
+UQLab's centered, normalized path scoring selects a sparse support. A final
+OLS fit on the original Hermite columns supplies the mean and corrected LOO
+score used to compare degrees/truncations. ``fit_result`` exposes the selected
+degree, q-norm, indices, coefficients and candidate error diagnostics.
+Optional early stopping can miss an isolated higher-order term: set
+``degree_early_stop=False`` and ``q_norm_early_stop=False`` for exhaustive search.
+
+Pairs-bootstrap refits of the **selected sparse support** supply local spread,
+following the fast-bootstrap approach of [MarelliSudret2018]_. Selection is
+repeated at each enrichment, but held fixed within each bootstrap ensemble.
+The reliability loop still enriches one point at a time; batch enrichment and
+full bootstrap model reselection are separate extensions. Rank-deficient
+bootstrap draws use minimum-norm least squares, as in UQLab, and their count
+is exposed in ``fit_result.n_rank_deficient_bootstrap``. This makes a weak
+resampled design visible without conditioning the bootstrap on full rank.
 
 Bootstrap spread is not a Gaussian posterior, a calibrated confidence band,
 or a bound on polynomial truncation bias. A common bias across all bootstrap

@@ -139,3 +139,5 @@ References
 
 
 .. [MarelliSudret2018] Marelli, S. and Sudret, B. (2018). An active-learning algorithm that combines sparse polynomial chaos expansions and bootstrap for structural reliability analysis. Structural Safety, 75, 67–74. `doi:10.1016/j.strusafe.2018.06.003 <https://doi.org/10.1016/j.strusafe.2018.06.003>`_.
+
+.. [BlatmanSudret2011] Blatman, G. and Sudret, B. (2011). Adaptive sparse polynomial chaos expansion based on Least Angle Regression. Journal of Computational Physics, 230, 2345–2367. `doi:10.1016/j.jcp.2010.12.021 <https://doi.org/10.1016/j.jcp.2010.12.021>`_.

@@ -265,3 +265,8 @@ Active learning integration (2.0 development)
   final sampling, explicit results/status, owned RNGs and benchmark validation.
 * Added an attributed benchmark tutorial and retained optional Kriging dependencies.
 * Aligned metadata and documentation with the GPL-3.0-or-later licence notice.
+
+* Adaptive sparse PCE now follows UQLab 2.2.0 hybrid-LARS and corrected-LOO
+  selection across polynomial degrees and hyperbolic truncations. Added
+  immutable fit diagnostics, direct UQLab numerical fixtures, retained BSD
+  notices and documented uniform-bootstrap correction.
