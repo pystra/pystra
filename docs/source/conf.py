@@ -16,9 +16,7 @@ import sys
 src_path = os.path.abspath("../../src/")
 sys.path.insert(0, src_path)
 os.environ["PYTHONPATH"] = os.pathsep.join(
-    [src_path, os.environ["PYTHONPATH"]]
-    if "PYTHONPATH" in os.environ
-    else [src_path]
+    [src_path, os.environ["PYTHONPATH"]] if "PYTHONPATH" in os.environ else [src_path]
 )
 from pystra import __version__ as ver
 

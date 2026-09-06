@@ -90,6 +90,7 @@ class MaxParent(Distribution):
                 (q - self.max_dist.mean) / self.max_dist.stdv
             )
         else:
+
             def logcdf(q):
                 with np.errstate(divide="ignore"):
                     return np.log(self.max_dist.cdf(q))
