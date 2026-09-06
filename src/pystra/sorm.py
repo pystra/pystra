@@ -39,6 +39,12 @@ class Sorm(AnalysisObject):
         Options controlling the analysis.
     form : Form, optional
         A pre-computed FORM result. If ``None``, FORM is run automatically.
+        SORM requires a successfully converged FORM analysis before running.
+
+    Notes
+    -----
+    Result attributes are ``None`` before analysis and are cleared when a new
+    run begins. ``results_valid`` becomes ``True`` only after fitting completes.
 
     Attributes
     ----------
@@ -87,14 +93,27 @@ class Sorm(AnalysisObject):
         else:
             self.form = form
 
-        self.betaHL = 0
-        self.kappa = 0
+        self._reset_results()
+
+    def _reset_results(self):
+        """Invalidate previous SORM output before attempting another run."""
+        self.results_valid = False
+        self.betaHL = None
+        self.kappa = None
         self.kappa_pf = None
         self.fit_type = None
-        self.pf2_breitung = 0
-        self.betag_breitung = 0
-        self.pf2_breitung_m = 0
-        self.betag_breitung_m = 0
+        self.pf2_breitung = None
+        self.betag_breitung = None
+        self.pf2_breitung_m = None
+        self.betag_breitung_m = None
+
+    def _prepare_run(self, fit_type):
+        """Require a valid FORM design point before preparing either fit."""
+        self._reset_results()
+        if not self.form.results_valid or not self.form.converged:
+            raise RuntimeError("SORM requires a successfully converged FORM analysis")
+        self.init_run()
+        self.fit_type = fit_type
 
     def run(self, fit_type="cf"):
         """Run SORM analysis.
@@ -112,25 +131,23 @@ class Sorm(AnalysisObject):
         ------
         ValueError
             If *fit_type* is not ``'cf'`` or ``'pf'``.
+        RuntimeError
+            If the FORM analysis has not run or did not converge successfully.
         """
-        self.results_valid = True
-        self.init_run()
-        self.fit_type = fit_type
-
         if fit_type == "cf":
             self.run_curvefit()
         elif fit_type == "pf":
             self.run_pointfit()
         else:
+            self._reset_results()
             raise ValueError(
                 f"Unknown fit_type '{fit_type}'. Use 'cf' (curve-fitting) "
                 f"or 'pf' (point-fitting)."
             )
 
     def run_curvefit(self):
-        """
-        Run SORM analysis using curve fitting
-        """
+        """Run curve-fitting; require a successfully converged FORM analysis."""
+        self._prepare_run("cf")
         hess_G = self.computeHessian()
         R1 = self.orthonormal_matrix()
         A = R1 @ hess_G @ R1.T / np.linalg.norm(self.form.gradient)
@@ -140,6 +157,7 @@ class Sorm(AnalysisObject):
         self.kappa = np.sort(kappa)
         self.pf_breitung(self.betaHL, self.kappa)
         self.pf_breitung_m(self.betaHL, self.kappa)
+        self.results_valid = True
         if self.options.getPrintOutput():
             self.showResults()
 
@@ -168,7 +186,14 @@ class Sorm(AnalysisObject):
         See Also
         --------
         run_curvefit : Alternative SORM approach using Hessian eigenvalues.
+
+        Raises
+        ------
+        RuntimeError
+            If the FORM analysis has not run or did not converge successfully,
+            or a fitting point cannot be found.
         """
+        self._prepare_run("pf")
         beta = self.form.getBeta()
         nrv = self.form.alpha.shape[1]
         R1 = self.orthonormal_matrix()
@@ -199,6 +224,7 @@ class Sorm(AnalysisObject):
         self._pf_breitung_pf(beta, kappa_minus, kappa_plus)
         self._pf_breitung_m_pf(beta, kappa_minus, kappa_plus)
 
+        self.results_valid = True
         if self.options.getPrintOutput():
             self.showResults()
 
@@ -425,15 +451,11 @@ class Sorm(AnalysisObject):
         print("=" * n_hyphen)
         print("{:15s} \t\t {:1.10e}".format("Pf FORM", pfFORM))
         print("{:15s} \t\t {:1.10e}".format("Pf SORM Breitung", self.pf2_breitung))
-        print(
-            "{:15s} \t {:1.10e}".format("Pf SORM Breitung HR", self.pf2_breitung_m)
-        )
+        print("{:15s} \t {:1.10e}".format("Pf SORM Breitung HR", self.pf2_breitung_m))
         print("{:15s} \t\t {:2.10f}".format("Beta_HL", betaHL))
         print("{:15s} \t\t {:2.10f}".format("Beta_G Breitung", self.betag_breitung))
         print(
-            "{:15s} \t\t {:2.10f}".format(
-                "Beta_G Breitung HR", self.betag_breitung_m
-            )
+            "{:15s} \t\t {:2.10f}".format("Beta_G Breitung HR", self.betag_breitung_m)
         )
         print(
             "{:15s} \t\t {:d}".format("Model Evaluations", self.model.getCallFunction())
