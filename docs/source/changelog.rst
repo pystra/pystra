@@ -34,6 +34,9 @@ Added
 Fixed
 ~~~~~
 - Numerical sensitivity analyses preserve the selected transformation options.
+- SORM rejects unrun or nonconverged FORM analyses before curve-fitting or
+  point-fitting. Failed retries clear previous SORM output, and results become
+  valid only after fitting completes.
 - Component limit-state adapters now filter unused shared-model variables.
 - FORM distinguishes convergence from iteration exhaustion and rejects invalid
   or zero gradients. Nonconverged runs warn and have ``results_valid=False``.
