@@ -52,6 +52,11 @@ signatures, assigned attributes, dependency versions, and observed exports.
 Inventory inclusion does not imply that an internal helper or an incidental
 third-party export is a supported public API.
 
+The distribution package now explicitly exports PySTRA classes. Import NumPy
+and SciPy helpers directly from their own packages. Previously leaked SciPy
+objects no longer shadow the ``beta``, ``gamma``, ``gumbel``, ``uniform``, and
+``weibull`` distribution modules.
+
 Current example
 ---------------
 
@@ -89,6 +94,10 @@ All 478 tests and all 13 indexed tutorials pass before and after the naming
 pass. Canonicalizing the mapped identifiers gives matching Python syntax trees
 across all 45 package modules, apart from documentation and version metadata.
 No numerical formulas or tolerances changed in the naming commit.
+
+A follow-up replaces wildcard imports in the distribution package to correct
+the module collisions described above. Five import regression cases bring the
+current suite to 483 tests.
 
 The SORM prerequisite fix is included. Monte Carlo also now reports an infinite
 estimated reliability index when no failures are sampled, consistent with its

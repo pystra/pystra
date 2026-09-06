@@ -1,5 +1,8 @@
 """Tests for all pystra distribution classes."""
 
+import importlib
+from types import ModuleType
+
 import pytest
 import numpy as np
 from scipy.stats import norm as scipy_norm
@@ -27,6 +30,25 @@ from pystra.distributions import (
     ScipyDistribution,
     ZeroInflated,
 )
+
+
+@pytest.mark.parametrize(
+    "module_name, class_name",
+    [
+        ("beta", "Beta"),
+        ("gamma", "Gamma"),
+        ("gumbel", "Gumbel"),
+        ("uniform", "Uniform"),
+        ("weibull", "Weibull"),
+    ],
+)
+def test_distribution_modules_are_not_shadowed_by_scipy(module_name, class_name):
+    """Dotted imports and API discovery must resolve to PySTRA modules."""
+    module = getattr(ra.distributions, module_name)
+    assert isinstance(module, ModuleType)
+    assert module is importlib.import_module(f"pystra.distributions.{module_name}")
+    assert getattr(module, class_name) is getattr(ra, class_name)
+
 
 # ---------------------------------------------------------------------------
 # StdNormal

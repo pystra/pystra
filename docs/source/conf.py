@@ -113,7 +113,7 @@ html_theme_options = {
 html_context = {
     "github_user": "pystra",
     "github_repo": "pystra",
-    "github_version": "main",
+    "github_version": "v2.0",
     "doc_path": "docs/source/",
 }
 
