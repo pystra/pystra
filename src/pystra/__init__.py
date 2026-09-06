@@ -51,6 +51,7 @@ from .ss import *
 from .sensitivity import *
 from .system import *
 from .system_form import *
+from .strong_maximum import *
 
 # Calibration
 from .fbc import *

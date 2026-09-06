@@ -112,3 +112,5 @@ References
 .. _ref-daniels-1945:
 
 .. [Daniels1945] Daniels, H. E. (1945). "The statistical theory of the strength of bundles of threads. I". Proceedings of the Royal Society of London. Series A, Mathematical and Physical Sciences, 183(995), 405-435. `doi:10.1098/rspa.1945.0011 <https://doi.org/10.1098/rspa.1945.0011>`_.
+
+.. [DutfoyLebrun2006] Dutfoy, A. and Lebrun, R. (2006). "The Strong Maximum Test: an efficient way to assess the quality of a design point". PSAM8, New Orleans. Algorithm described in the `OpenTURNS theory documentation <https://openturns.github.io/openturns/latest/theory/reliability_sensitivity/strong_maximum_test.html>`_.

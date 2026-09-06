@@ -12,6 +12,7 @@ Core Framework
     :maxdepth: 1
 
     system
+    strong_maximum
 
 .. autosummary::
     :toctree: gen
@@ -32,6 +33,7 @@ Reliability Methods
     :recursive:
 
     pystra.form
+    pystra.strong_maximum
     pystra.sorm
     pystra.mc
     pystra.ls
