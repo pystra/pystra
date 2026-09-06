@@ -5,12 +5,12 @@ This file presents instructions for ``Pystra`` developers.
 
 .. note::
 
-   For v3 onward, follow the repository's
+   For v2 onward, follow the repository's
    :download:`contributor guide <../../CONTRIBUTING.md>` and
-   :download:`migration plan <../v3.0-migration-plan.md>`.
-   Target ``v3.0`` for migration work. The distribution examples below describe
+   :download:`migration plan <../v2.0-migration-plan.md>`.
+   Target ``v2.0`` for migration work. The distribution examples below describe
    the current implementation and will migrate with the API; legacy names are
-   not the convention for new v3 interfaces.
+   not the convention for new v2 interfaces.
 
 .. _install_dev:
 
@@ -62,9 +62,9 @@ Develop and create pull-request (PR)
 
 	git checkout -b <new-branch>
 
-2. Pull updates from the target integration branch (``v3.0`` during migration) ::
+2. Pull updates from the target integration branch (``v2.0`` during migration) ::
 	
-	git pull upstream v3.0
+	git pull upstream v2.0
 
 3. Develop package
 

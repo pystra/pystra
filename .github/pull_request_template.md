@@ -15,7 +15,7 @@ Identify checks not run and any remaining limitations.
 
 ## Review
 
-- [ ] Targets the intended branch (`v3.0` for the migration).
+- [ ] Targets the intended branch (`v2.0` for the migration).
 - [ ] Follows `CONTRIBUTING.md`; public API changes update migration documentation.
 - [ ] Separates mechanical changes from numerical/behavior changes where practical.
 - [ ] Includes appropriate regression/reference evidence and documentation, or explains why not needed.

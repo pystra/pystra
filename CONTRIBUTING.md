@@ -5,9 +5,9 @@ tools for code calibration and structural assessment. Contributions should
 make those methods easier to understand, verify, and use. General UQ features
 need a specific structural reliability use case to fit the project.
 
-This guide establishes the conventions for v3 onward. During the migration,
-target `v3.0` for breaking changes and follow the
-[migration plan](docs/v3.0-migration-plan.md). Existing code still contains
+This guide establishes the conventions for v2 onward. During the migration,
+target `v2.0` for breaking changes and follow the
+[migration plan](docs/v2.0-migration-plan.md). Existing code still contains
 legacy APIs: their presence is not a style precedent. Implement the agreed
 stage without introducing a second competing API. Changes intended for the
 stable line retain its compatibility requirements.
@@ -23,7 +23,7 @@ required for every change.
 Keep numerical changes, mechanical renaming, formatting, and file moves in
 separate commits wherever practical. Update the migration manifest/guide when
 an import, parameter, result schema, default, or supported extension hook changes.
-After 3.0, public API changes follow the documented deprecation and release policy.
+After 2.0, public API changes follow the documented deprecation and release policy.
 
 ## Naming and public interfaces
 
@@ -79,7 +79,7 @@ composes those operations; it does not duplicate them.
 ## Numerical contracts and evidence
 
 Document coordinate systems, Jacobian direction, variable ordering, failure
-event convention, and reference-period assumptions. Use the agreed 3.0 point
+event convention, and reference-period assumptions. Use the agreed 2.0 point
 and batch shapes at public boundaries; adapt existing kernels explicitly during
 migration. Never infer array orientation from a square shape.
 

@@ -59,9 +59,9 @@ available.
 Contributing
 ============
 
-See the `contributor guide <CONTRIBUTING.md>`_ for v3 coding conventions,
+See the `contributor guide <CONTRIBUTING.md>`_ for v2 coding conventions,
 numerical validation, and pull-request guidance, and the
-`3.0 migration plan <docs/v3.0-migration-plan.md>`_ for the release sequence.
+`2.0 migration plan <docs/v2.0-migration-plan.md>`_ for the release sequence.
 
 Credits
 =======
