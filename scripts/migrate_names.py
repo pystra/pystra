@@ -123,6 +123,9 @@ def main():
     changed = []
     for name in filter(None, paths):
         path = root / name
+        if name == "docs/source/migrating.rst":
+            # The migration table intentionally shows both old and new names.
+            continue
         if not name.startswith(("src/", "tests/", "examples/", "docs/source/")):
             continue
         if path.suffix not in (".py", ".rst", ".md", ".ipynb"):
