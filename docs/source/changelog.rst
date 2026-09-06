@@ -256,3 +256,12 @@ Initial release.
 - Nataf isoprobabilistic transformation.
 - 15+ probability distributions.
 - Stochastic model and limit state function framework.
+
+Active learning integration (2.0 development)
+---------------------------------------------
+
+* Integrated the previously separate ``al`` branch as ``pystra.active_learning``.
+* Corrected EFF, added bootstrap PCE spread in normal coordinates, independent
+  final sampling, explicit results/status, owned RNGs and benchmark validation.
+* Added an attributed benchmark tutorial and retained optional Kriging dependencies.
+* Aligned metadata and documentation with the GPL-3.0-or-later licence notice.

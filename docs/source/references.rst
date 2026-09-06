@@ -130,3 +130,12 @@ References
 .. [Daniels1945] Daniels, H. E. (1945). "The statistical theory of the strength of bundles of threads. I". Proceedings of the Royal Society of London. Series A, Mathematical and Physical Sciences, 183(995), 405-435. `doi:10.1098/rspa.1945.0011 <https://doi.org/10.1098/rspa.1945.0011>`_.
 
 .. [DutfoyLebrun2006] Dutfoy, A. and Lebrun, R. (2006). "The Strong Maximum Test: an efficient way to assess the quality of a design point". PSAM8, New Orleans. Algorithm described in the `OpenTURNS theory documentation <https://openturns.github.io/openturns/latest/theory/reliability_sensitivity/strong_maximum_test.html>`_.
+.. [Echard2011] Echard, B., Gayton, N., & Lemaire, M. (2011). AK-MCS: An active learning reliability method combining Kriging and Monte Carlo Simulation. Structural Safety, 33(2), 145–154.
+
+.. [Bichon2008] Bichon, B. J., Eldred, M. S., Swiler, L. P., Mahadevan, S., & McFarland, J. M. (2008). Efficient global reliability analysis for nonlinear implicit performance functions. AIAA Journal, 46(10), 2459–2468.
+
+.. [Moustapha2022] Moustapha, M., Marelli, S., & Sudret, B. (2022). Active learning for structural reliability: Survey, general framework and benchmark. Structural Safety, 96, 102174.
+
+
+
+.. [MarelliSudret2018] Marelli, S. and Sudret, B. (2018). An active-learning algorithm that combines sparse polynomial chaos expansions and bootstrap for structural reliability analysis. Structural Safety, 75, 67–74. `doi:10.1016/j.strusafe.2018.06.003 <https://doi.org/10.1016/j.strusafe.2018.06.003>`_.

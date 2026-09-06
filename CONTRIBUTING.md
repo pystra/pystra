@@ -160,3 +160,12 @@ version bumps; ordinary contributions should not bump the package version.
 The migration plan defines the broader release matrix, benchmark comparisons,
 packaging checks, and documentation gates. Small documentation edits do not
 require rerunning the entire numerical suite.
+
+## Licence and method provenance
+
+PySTRA is GPL-3.0-or-later. Preserve copyright and licence notices when adapting
+code, and identify its source and changes. Cite the original papers and benchmark
+definitions; distinguish reproductions from variants and software comparisons.
+Do not imply endorsement by the cited authors or toolbox developers. Include
+independent reference calculations and explicit statistical tolerances for
+stochastic methods. Run optional active-learning checks with `.[test,al]`.

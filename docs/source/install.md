@@ -24,6 +24,13 @@ To work with the 2.0 development API documented on this branch: ::
     cd pystra
     pip install -e ".[test]"
 
+Active learning is available on the 2.0 development branch. For its optional
+Kriging dependency, install from the checkout: ::
+
+    pip install -e ".[al]"
+
+The PCE implementation uses the core NumPy/SciPy dependencies.
+
 For contributions, first fork the repo and clone from your fork.
 `Here <https://www.dataschool.io/how-to-contribute-on-github/>`_ is a good guide on this workflow.
 

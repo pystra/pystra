@@ -1518,6 +1518,90 @@ impractically large number of samples.  A benchmark comparison of simulation
 methods on high-dimensional problems is given in [Schueller2007]_.
 
 
+Active Learning Reliability
+===========================
+
+``pystra.active_learning.ActiveLearning`` combines a surrogate with Monte
+Carlo classification and sequential true limit-state evaluations. Kriging
+follows the AK-MCS approach [Echard2011]_. The separation of surrogate,
+reliability estimator, learning function and stopping criterion follows the
+framework discussed by [Moustapha2022]_. See the
+:doc:`notebooks/ex_active_learning` tutorial for independent benchmark references.
+
+An initial Latin hypercube design and a fixed normal Monte Carlo candidate
+pool are constructed in **independent standard normal coordinates**. The
+configured Nataf or Rosenblatt transformation maps only true evaluations to
+physical space. Thus Hermite orthogonality is with respect to independent
+normals, including when physical marginals are nonnormal or dependent.
+A Student-t spherical Nataf space is unsupported; select Rosenblatt instead.
+
+The surrogate is refitted after each enrichment. Previously evaluated
+candidates cannot be selected again. The default initial size is
+``max(12, 2*n_variables)``; PCE uses at least twice its basis size by default.
+The final probability estimate uses an independent Monte Carlo population
+that never participates in fitting or point selection.
+
+Surrogates and uncertainty
+--------------------------
+
+Kriging uses scikit-learn's Matérn 5/2 Gaussian process with response
+normalization and a small numerical nugget. Install the optional ``al`` extra.
+Optimizer convergence warnings remain visible; they concern hyperparameter
+fitting, separately from the reliability stopping status.
+
+``PceSurrogate`` uses normalized probabilists' Hermite polynomials through a
+fixed total degree. An overdetermined, full-rank least-squares fit supplies
+the mean. Pairs-bootstrap refits supply **point-dependent prediction spread**.
+Rank-deficient bootstrap draws are retried with a finite budget. This uses
+the bootstrap local-error idea of Marelli and Sudret [MarelliSudret2018]_,
+but omits their sparse basis selection, degree adaptation and batch enrichment.
+It is a dense fixed-basis variant, not a reproduction of their full algorithm.
+
+Bootstrap spread is not a Gaussian posterior, a calibrated confidence band,
+or a bound on polynomial truncation bias. A common bias across all bootstrap
+fits can produce confidently wrong classifications, particularly for nonsmooth
+series-system surfaces. Use independent true evaluations, polynomial-degree
+checks and benchmark comparisons before trusting a PCE reliability estimate.
+
+Learning functions
+------------------
+
+The U-function [Echard2011]_ selects the smallest value of
+:math:`U=|\mu|/\sigma`, stopping when its minimum reaches the configurable
+threshold (default 2). At zero spread, U is infinite away from the boundary
+and zero on it.
+
+The expected feasibility function [Bichon2008]_ selects the largest
+
+.. math::
+
+   \mathrm{EFF} = E[\max(0,\varepsilon-|G|)],
+   \qquad G\sim N(\mu,\sigma^2),\quad \varepsilon=2\sigma.
+
+This expectation is symmetric in the mean and nonnegative. Its default
+stopping tolerance is :math:`10^{-3}` in **limit-state units**, so rescaling
+the limit state requires rescaling this tolerance. Zero spread gives zero
+EFF. With PCE, the Gaussian assumption is a heuristic applied to bootstrap
+spread; it does not convert that spread into a posterior distribution.
+
+Stopping and interpretation
+---------------------------
+
+Learning stops when the configured score threshold is met and the candidate
+pool contains both predicted failure and survival. An evaluation budget or
+exhausted pool returns explicit nonconvergence. The independent final sample
+must also meet ``target_cov`` (default 0.1); otherwise the status is
+``sampling_precision``. Zero or all failures never pass this precision check.
+
+The immutable result contains the estimate, normal-equivalent beta,
+convergence status, true evaluation count, history, conditional sampling CoV
+and an exact 95% binomial interval. These sampling diagnostics exclude
+surrogate error. A successful stopping status concerns the sampled points;
+it cannot guarantee discovery of disconnected failure regions or eliminate
+surrogate bias. Nonconvergence emits a warning and preserves an explicitly
+unfinished estimate for diagnosis.
+
+
 Sensitivity Analysis
 ====================
 

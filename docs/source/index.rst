@@ -7,7 +7,7 @@
    :scale: 50
 
 |Code style: black|
-|License: MIT|
+|License: GPLv3+|
 .. |version|
 |Github issues|
 |Github pull requests|
@@ -23,8 +23,8 @@
 .. |Code style: black| image:: https://img.shields.io/badge/code%20style-black-000000.svg 
    :target: https://github.com/psf/black
 
-.. |License: MIT| image:: https://img.shields.io/badge/License-MIT-yellow.svg 
-   :target: https://opensource.org/licenses/MIT
+.. |License: GPLv3+| image:: https://img.shields.io/badge/License-GPLv3%2B-blue.svg
+   :target: https://www.gnu.org/licenses/gpl-3.0.html
 
 .. 
 .. |version| image:: https://img.shields.io/github/downloads/pystra/pystra/total?label=version
@@ -58,7 +58,7 @@ Welcome to Pystra's documentation!
 :Authors: The Pystra Developers (Colin Caprani & Jürgen Hackl )
 :Web site: http://github.com/pystra/pystra
 :Copyright: This document has been placed in the public domain.
-:License: Pystra is released under the Apache 2.0 licence.
+:License: Pystra is released under the GNU GPL version 3 or later.
 :Version: |version|
 
 Pystra (Python Structural Reliability Analysis) is a python package for

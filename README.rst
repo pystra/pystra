@@ -84,3 +84,9 @@ List of References
 [DerKiureghian2006] A. Der Kiureghian, T. Haukaas, and K. Fujimura. Structural reliability software at the University of California, Berkeley. Structural Safety, 28(1-2):44–67, 2006.
 
 [Hackl2013] J. Hackl. Generic Framework for Stochastic Modeling of Reinforced Concrete Deterioration Caused by Corrosion. Master’s thesis, Norwegian University of Science and Technology, Trondheim, Norway, 2013.
+
+Licence
+-------
+
+PySTRA is distributed under the GNU General Public License, version 3 or
+later (GPL-3.0-or-later). See ``LICENSE`` for the terms and retained PyRe notice.

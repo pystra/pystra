@@ -288,3 +288,20 @@ coverage and current calibration definition/signature records.
 ``scripts/execute_notebooks.py --output-dir DIR``
 executes the tutorials listed in the tutorial index in fresh kernels. CI runs
 these checks, the test suite, formatting, documentation, and package builds.
+
+Active learning development branch
+----------------------------------
+
+The previously unmerged ``al`` work is integrated into 2.0. Import from
+``pystra.active_learning``. ``PceSurrogate``, ``learning_u`` and
+``learning_eff`` follow the 2.0 naming conventions. Surrogates now consume
+independent normal coordinates, not physical points.
+
+``ActiveLearning.run()`` returns an immutable ``ActiveLearningResult`` with
+``failure_probability``, ``beta``, conditional sampling diagnostics and explicit
+convergence status. It replaces the development branch's getters and mutable
+``Pf``/history fields. Settings are keyword-only; use lowercase ``u`` or ``eff``.
+``learning_threshold`` and ``target_cov`` replace beta-stability settings.
+The final estimate uses ``n_estimation`` independent points. ``seed`` controls
+run-owned randomness. Explicit ``Surrogate`` implementations can be supplied
+for extension. See :doc:`notebooks/ex_active_learning` for scope and limitations.

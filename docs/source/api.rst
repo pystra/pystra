@@ -41,6 +41,7 @@ Reliability Methods
     pystra.ls
     pystra.ss
     pystra.sensitivity
+    pystra.active_learning
 
 Probability Transformation
 --------------------------
