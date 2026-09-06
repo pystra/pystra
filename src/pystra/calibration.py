@@ -130,10 +130,8 @@ class Calibration:
         None.
 
         """
-        print(
-            f" \n β = {form.getBeta():.3f} \n α = {form.getAlpha().round(3)}\
-              \n x* = {form.getDesignPoint(False).round(3)}"
-        )
+        print(f" \n β = {form.getBeta():.3f} \n α = {form.getAlpha().round(3)}\
+              \n x* = {form.getDesignPoint(False).round(3)}")
 
     @staticmethod
     def _get_missing_element(mainlist, subsetlist):
@@ -266,11 +264,9 @@ class Calibration:
             form = rel_func(**kwargs)
             if print_output:
                 ## Change to inbuilt
-                print(
-                    f"\n{Zk=} \n β = {form.getBeta():.3f} \
+                print(f"\n{Zk=} \n β = {form.getBeta():.3f} \
                       \n α = {form.getAlpha()} \
-                     \n x* = {form.getDesignPoint(False)}"
-                )
+                     \n x* = {form.getDesignPoint(False)}")
             return beta_t - form.beta
 
         if max_iter is None:

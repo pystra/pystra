@@ -135,9 +135,7 @@ class ZeroInflated(Distribution):
         """
 
         mean = self.q * self.dist.mean
-        stdv = np.sqrt(
-            self.q * self.dist.stdv**2 + self.p * self.q * self.dist.mean**2
-        )
+        stdv = np.sqrt(self.q * self.dist.stdv**2 + self.p * self.q * self.dist.mean**2)
 
         return mean, stdv
 

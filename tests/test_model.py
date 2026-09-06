@@ -6,7 +6,6 @@ import pystra as ra
 from pystra.distributions import Normal, Lognormal, Constant
 from pystra.correlation import CorrelationMatrix, computeModifiedCorrelationMatrix
 
-
 # ---------------------------------------------------------------------------
 # StochasticModel
 # ---------------------------------------------------------------------------

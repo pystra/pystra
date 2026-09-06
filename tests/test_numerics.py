@@ -6,7 +6,6 @@ from pystra.quadrature import quadratureRule
 from pystra.integration import zi_and_xi, rho_integral
 from pystra.distributions import Normal
 
-
 # ---------------------------------------------------------------------------
 # Quadrature Rule
 # ---------------------------------------------------------------------------

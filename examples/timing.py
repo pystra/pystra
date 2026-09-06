@@ -4,12 +4,12 @@
 """
 This file examines the speed up possible when using the built-in distribution
 function implementations, rather than the generic (but more comprehensive) ones
-provided by SciPy. Where performance is critical, implementation of a 
-user-defined distribution object that avoids error checks and user input 
+provided by SciPy. Where performance is critical, implementation of a
+user-defined distribution object that avoids error checks and user input
 validation on each call could be beneficial.
 
 Called as: `$python timing.py` results in output like:
-    
+
     ```
     Total time taken (s)
     Built-in: 1.8919757150579244; Scipy: 5.2964311360847205
@@ -19,6 +19,7 @@ Called as: `$python timing.py` results in output like:
     ```
 
 """
+
 import pystra as ra
 from scipy.stats import norm, lognorm, uniform
 import numpy as np

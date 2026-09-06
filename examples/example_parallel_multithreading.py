@@ -19,7 +19,6 @@ from multiprocessing import Process, Value, Array
 import time
 import datetime
 
-
 start_time = time.time()
 
 

@@ -20,7 +20,6 @@ os.environ["PYTHONPATH"] = os.pathsep.join(
 )
 from pystra import __version__ as ver
 
-
 # -- Project information -----------------------------------------------------
 
 project = "PySTRA"
