@@ -1,0 +1,1092 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pystra.loadcomb &#8212; PySTRA 1.6.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=9bc076a2" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/documentation_options.js?v=72d88caf"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pystra/loadcomb';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.6.0" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 1.6.0 documentation - Home"/>
+    <img src="../../_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 1.6.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tutorial.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../theory.html">
+    Theoretical Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../references.html">
+    References
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../developer.html">
+    Instructions for Developers
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tutorial.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../theory.html">
+    Theoretical Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../references.html">
+    References
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../developer.html">
+    Instructions for Developers
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">pystra.loadcomb</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for pystra.loadcomb</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LimitState</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">StochasticModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.form</span><span class="w"> </span><span class="kn">import</span> <span class="n">Form</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.correlation</span><span class="w"> </span><span class="kn">import</span> <span class="n">CorrelationMatrix</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.distributions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Constant</span><span class="p">,</span> <span class="n">Distribution</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.fbc</span><span class="w"> </span><span class="kn">import</span> <span class="n">FBCProcess</span>
+
+
+<div class="viewcode-block" id="LoadCombination">
+<a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LoadCombination</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Named load-combination reliability cases.</span>
+
+<span class="sd">    A load combination is represented as a transparent mapping of named</span>
+<span class="sd">    reliability cases.  Each case is itself a mapping of limit-state variable</span>
+<span class="sd">    names to ordinary Pystra :class:`Distribution` or :class:`Constant`</span>
+<span class="sd">    objects.  This keeps the structural reliability model visible: users can</span>
+<span class="sd">    inspect the variables in a case, build a</span>
+<span class="sd">    :class:`~pystra.model.StochasticModel`, or use the convenience FORM runner.</span>
+
+<span class="sd">    Preferred explicit-case interface::</span>
+
+<span class="sd">        LoadCombination(</span>
+<span class="sd">            lsf=lsf,</span>
+<span class="sd">            cases={</span>
+<span class="sd">                "Q1_leading": {"R": R, "G": G, "Q1": Q1max, "Q2": Q2pit},</span>
+<span class="sd">                "Q2_leading": {"R": R, "G": G, "Q1": Q1pit, "Q2": Q2max},</span>
+<span class="sd">            },</span>
+<span class="sd">        )</span>
+
+<span class="sd">    For variable actions represented by Ferry-Borges-Castanheta processes, use</span>
+<span class="sd">    :meth:`LoadCombination.turkstra` to generate explicit leading-action cases</span>
+<span class="sd">    using Turkstra's rule.  The FBC process defines the load magnitude</span>
+<span class="sd">    distributions; Turkstra's rule defines the combination cases.</span>
+
+<span class="sd">    The old ``dict_dist_comb`` / ``dict_comb_cases`` constructor interface is</span>
+<span class="sd">    still accepted for compatibility, but is normalized internally to explicit</span>
+<span class="sd">    cases and emits a deprecation warning.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">lsf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">dict_dist_comb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">list_dist_resist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">list_dist_other</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">corr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">list_const</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">opt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">dict_comb_cases</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">cases</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">constants</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Initialise a load-combination case set.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        lsf : callable, optional</span>
+<span class="sd">            Limit-state function used by :meth:`run_reliability_case` and</span>
+<span class="sd">            :meth:`eval_lsf_kwargs`.  It is optional when the object is only</span>
+<span class="sd">            used to inspect or generate cases.</span>
+<span class="sd">        cases : mapping, optional</span>
+<span class="sd">            Preferred interface.  Mapping of case name to variables for that</span>
+<span class="sd">            case, for example ``{"Q1_leading": {"R": R, "Q1": Q1max}}``.</span>
+<span class="sd">            Values may be supplied as mappings or sequences of Pystra</span>
+<span class="sd">            variables.</span>
+<span class="sd">        constants : mapping or sequence, optional</span>
+<span class="sd">            Constants included in every stochastic model.</span>
+<span class="sd">        corr : pandas.DataFrame, optional</span>
+<span class="sd">            Correlation matrix indexed and columned by random-variable names.</span>
+<span class="sd">        opt : AnalysisOptions, optional</span>
+<span class="sd">            Options passed to the FORM analysis convenience runner.</span>
+<span class="sd">        dict_dist_comb, list_dist_resist, list_dist_other, list_const : optional</span>
+<span class="sd">            Deprecated legacy variables interface.</span>
+<span class="sd">        dict_comb_cases : optional</span>
+<span class="sd">            Deprecated legacy interface.  These inputs are accepted for</span>
+<span class="sd">            compatibility and immediately converted to explicit ``cases``.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lsf</span> <span class="o">=</span> <span class="n">lsf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_corr</span> <span class="o">=</span> <span class="n">corr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">opt</span>
+
+        <span class="k">if</span> <span class="n">constants</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">list_const</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"Specify only one of constants or list_const"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">constant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variables_to_dict</span><span class="p">(</span>
+            <span class="n">constants</span> <span class="k">if</span> <span class="n">constants</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">list_const</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_const</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">constant</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+        <span class="k">if</span> <span class="n">cases</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">legacy_args</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">dict_dist_comb</span><span class="p">,</span>
+                <span class="n">list_dist_resist</span><span class="p">,</span>
+                <span class="n">list_dist_other</span><span class="p">,</span>
+                <span class="n">dict_comb_cases</span><span class="p">,</span>
+            <span class="p">]</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">arg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">legacy_args</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"Specify either cases or legacy load-combination inputs"</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_from_cases</span><span class="p">(</span><span class="n">cases</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_warn_legacy_inputs</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_from_legacy</span><span class="p">(</span>
+                <span class="n">dict_dist_comb</span><span class="o">=</span><span class="n">dict_dist_comb</span><span class="p">,</span>
+                <span class="n">list_dist_resist</span><span class="o">=</span><span class="n">list_dist_resist</span><span class="p">,</span>
+                <span class="n">list_dist_other</span><span class="o">=</span><span class="n">list_dist_other</span><span class="p">,</span>
+                <span class="n">dict_comb_cases</span><span class="o">=</span><span class="n">dict_comb_cases</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_common_labels</span><span class="p">()</span>
+
+<div class="viewcode-block" id="LoadCombination.turkstra">
+<a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination.turkstra">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">turkstra</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">variable</span><span class="p">,</span>
+        <span class="n">reference_period</span><span class="p">,</span>
+        <span class="n">lsf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">resistance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">permanent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">constants</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">corr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">opt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">companion_duration</span><span class="o">=</span><span class="s2">"leading_interval"</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Create leading-action cases using Turkstra's rule.</span>
+
+<span class="sd">        The generated object is still a normal :class:`LoadCombination`.</span>
+<span class="sd">        Calling :meth:`case` reveals the generated distributions for each</span>
+<span class="sd">        leading-action case.</span>
+
+<span class="sd">        This constructor expects variable actions to be represented by</span>
+<span class="sd">        :class:`~pystra.fbc.FBCProcess` objects.  The FBC model supplies the</span>
+<span class="sd">        maximum and companion distributions; Turkstra's rule supplies the</span>
+<span class="sd">        case structure: each variable action is considered as the leading</span>
+<span class="sd">        action in turn, while the remaining variable actions are taken as</span>
+<span class="sd">        companion values.  A companion value may be a point-in-time value or,</span>
+<span class="sd">        for an FBC process with shorter basic intervals, an intermediate</span>
+<span class="sd">        maximum over the leading action's interval.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        variable : mapping</span>
+<span class="sd">            Mapping of variable-action names to :class:`FBCProcess` objects.</span>
+<span class="sd">        reference_period : float</span>
+<span class="sd">            Duration over which the leading action maximum is taken.</span>
+<span class="sd">        lsf : function, optional</span>
+<span class="sd">            Limit-state function.</span>
+<span class="sd">        resistance, permanent, other : mapping or sequence, optional</span>
+<span class="sd">            Common variables included in every case.</span>
+<span class="sd">        constants : mapping or sequence, optional</span>
+<span class="sd">            Constants included in every stochastic model.</span>
+<span class="sd">        companion_duration : {"leading_interval", "point_in_time"} or float</span>
+<span class="sd">            Rule used for non-leading variable actions.  The default takes a</span>
+<span class="sd">            companion maximum over the leading action's basic interval.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        LoadCombination</span>
+<span class="sd">            Load-combination object containing explicit leading-action cases.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">reference_period</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"reference_period must be positive"</span><span class="p">)</span>
+
+        <span class="n">variable</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_variables_to_dict</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">allow_process</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">process</span> <span class="ow">in</span> <span class="n">variable</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">FBCProcess</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"FBC variable actions must be FBCProcess objects"</span><span class="p">)</span>
+
+        <span class="n">common</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="p">(</span><span class="n">resistance</span><span class="p">,</span> <span class="n">permanent</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+            <span class="n">common</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_variables_to_dict</span><span class="p">(</span><span class="n">group</span><span class="p">))</span>
+
+        <span class="n">cases</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">lead_name</span><span class="p">,</span> <span class="n">lead_process</span> <span class="ow">in</span> <span class="n">variable</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">case</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span><span class="n">common</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">process</span> <span class="ow">in</span> <span class="n">variable</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="n">lead_name</span><span class="p">:</span>
+                    <span class="k">case</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="n">reference_period</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">companion_duration</span> <span class="o">==</span> <span class="s2">"leading_interval"</span><span class="p">:</span>
+                    <span class="k">case</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="n">lead_process</span><span class="o">.</span><span class="n">basic_interval</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">companion_duration</span> <span class="o">==</span> <span class="s2">"point_in_time"</span><span class="p">:</span>
+                    <span class="k">case</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">point_in_time</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">case</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="n">companion_duration</span><span class="p">)</span>
+            <span class="n">cases</span><span class="p">[</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">lead_name</span><span class="si">}</span><span class="s2">_leading"</span><span class="p">]</span> <span class="o">=</span> <span class="n">case</span>
+
+        <span class="n">lc</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">lsf</span><span class="o">=</span><span class="n">lsf</span><span class="p">,</span>
+            <span class="n">cases</span><span class="o">=</span><span class="n">cases</span><span class="p">,</span>
+            <span class="n">constants</span><span class="o">=</span><span class="n">constants</span><span class="p">,</span>
+            <span class="n">corr</span><span class="o">=</span><span class="n">corr</span><span class="p">,</span>
+            <span class="n">opt</span><span class="o">=</span><span class="n">opt</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">lc</span><span class="o">.</span><span class="n">distributions_comb</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
+        <span class="n">lc</span><span class="o">.</span><span class="n">distributions_max</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">lc</span><span class="o">.</span><span class="n">cases</span><span class="p">[</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">_leading"</span><span class="p">][</span><span class="n">name</span><span class="p">])</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">variable</span>
+        <span class="p">)</span>
+        <span class="n">lc</span><span class="o">.</span><span class="n">distributions_pit</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">process</span><span class="o">.</span><span class="n">point_in_time</span><span class="p">())</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">process</span> <span class="ow">in</span> <span class="n">variable</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">lc</span><span class="o">.</span><span class="n">distributions_resistance</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_variables_to_dict</span><span class="p">(</span><span class="n">resistance</span><span class="p">)</span>
+        <span class="n">lc</span><span class="o">.</span><span class="n">distributions_other</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="n">lc</span><span class="o">.</span><span class="n">distributions_other</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_variables_to_dict</span><span class="p">(</span><span class="n">permanent</span><span class="p">))</span>
+        <span class="n">lc</span><span class="o">.</span><span class="n">distributions_other</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_variables_to_dict</span><span class="p">(</span><span class="n">other</span><span class="p">))</span>
+        <span class="n">lc</span><span class="o">.</span><span class="n">dict_comb_cases</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span>
+            <span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">_leading"</span><span class="p">,</span> <span class="p">[</span><span class="n">name</span><span class="p">])</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">variable</span>
+        <span class="p">)</span>
+        <span class="n">lc</span><span class="o">.</span><span class="n">comb_cases_max</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">lc</span><span class="o">.</span><span class="n">dict_comb_cases</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="n">lc</span><span class="o">.</span><span class="n">_set_common_labels</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">lc</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_variable_name</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">allow_process</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">valid_types</span> <span class="o">=</span> <span class="p">(</span><span class="n">Distribution</span><span class="p">,</span> <span class="n">Constant</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">allow_process</span><span class="p">:</span>
+            <span class="n">valid_types</span> <span class="o">=</span> <span class="n">valid_types</span> <span class="o">+</span> <span class="p">(</span><span class="n">FBCProcess</span><span class="p">,)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">valid_types</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">allow_process</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                    <span class="s2">"Input is not a Distribution, Constant, or FBCProcess object"</span>
+                <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"Input is not a Distribution or Constant object"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">"getName"</span><span class="p">)</span> <span class="k">else</span> <span class="n">obj</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_variables_to_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="n">allow_process</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variables</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">variables</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_variable_name</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">allow_process</span><span class="o">=</span><span class="n">allow_process</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="n">name</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">'variable key "</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">" does not match object name "</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">"'</span>
+                    <span class="p">)</span>
+                <span class="n">out</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">return</span> <span class="n">out</span>
+
+        <span class="n">out</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
+            <span class="n">out</span><span class="p">[</span><span class="bp">cls</span><span class="o">.</span><span class="n">_variable_name</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">allow_process</span><span class="o">=</span><span class="n">allow_process</span><span class="p">)]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_normalise_cases</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">cases</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cases</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"At least one load-combination case is required"</span><span class="p">)</span>
+
+        <span class="n">out</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">case_name</span><span class="p">,</span> <span class="n">variables</span> <span class="ow">in</span> <span class="n">cases</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">case_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_variables_to_dict</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_warn_legacy_inputs</span><span class="p">():</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">"dict_dist_comb, list_dist_resist, list_dist_other, list_const, "</span>
+            <span class="s2">"and dict_comb_cases are deprecated. Use LoadCombination(cases=...) "</span>
+            <span class="s2">"or LoadCombination.turkstra(...) instead."</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_init_from_cases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cases</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cases</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalise_cases</span><span class="p">(</span><span class="n">cases</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dict_dist_comb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cases</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distributions_comb</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distributions_max</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distributions_pit</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distributions_other</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distributions_resistance</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dict_comb_cases</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">name</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">case</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">case</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cases</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comb_cases_max</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict_comb_cases</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_init_from_legacy</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">dict_dist_comb</span><span class="p">,</span>
+        <span class="n">list_dist_resist</span><span class="p">,</span>
+        <span class="n">list_dist_other</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">dict_comb_cases</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">dict_dist_comb</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">list_dist_resist</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                <span class="s2">"Specify cases=... or the legacy dict_dist_comb/list_dist_resist inputs"</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">distributions_comb</span> <span class="o">=</span> <span class="n">dict_dist_comb</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distributions_max</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">values</span><span class="p">[</span><span class="s2">"max"</span><span class="p">])</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">dict_dist_comb</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distributions_pit</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">values</span><span class="p">[</span><span class="s2">"pit"</span><span class="p">])</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">dict_dist_comb</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distributions_other</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variables_to_dict</span><span class="p">(</span><span class="n">list_dist_other</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distributions_resistance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variables_to_dict</span><span class="p">(</span><span class="n">list_dist_resist</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dict_comb_cases</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">OrderedDict</span><span class="p">((</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">_max"</span><span class="p">,</span> <span class="p">[</span><span class="n">name</span><span class="p">])</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">distributions_max</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dict_comb_cases</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="n">OrderedDict</span><span class="p">(</span><span class="n">dict_comb_cases</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comb_cases_max</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict_comb_cases</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_input</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dict_dist_comb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_dict_dist_comb</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cases</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_dist_comb</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_common_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_comb_cases</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cases</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_comb</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label_comb_cases</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">distributions_comb</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">label_comb_vrs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">distributions_comb</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">label_comb_vrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_case_variable_names</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_resist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">distributions_resistance</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_other</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">distributions_other</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_resist</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_other</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">distributions_comb</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">label_all</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">label_resist</span>
+                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_other</span>
+                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_comb_vrs</span>
+                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_const</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">label_all</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_case_variable_names</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_const</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_all</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">label_all</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dict_label</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"resist"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_resist</span><span class="p">,</span>
+            <span class="s2">"other"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_other</span><span class="p">,</span>
+            <span class="s2">"comb_vrs"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_comb_vrs</span><span class="p">,</span>
+            <span class="s2">"comb_cases"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_comb_cases</span><span class="p">,</span>
+            <span class="s2">"const"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_const</span><span class="p">,</span>
+            <span class="s2">"all"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_all</span><span class="p">,</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_case_variable_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cases</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">case</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+                    <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">names</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_input</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Check consistency of supplied input.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">distributions_max</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">distributions_pit</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                <span class="s2">"</span><span class="se">\n</span><span class="s2">Length of Max variables </span><span class="si">{}</span><span class="s2"> does not match</span><span class="se">\</span>
+<span class="s2">                      length of point-in-time variables </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">distributions_max</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">distributions_pit</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="LoadCombination.get_label">
+<a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination.get_label">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label_type</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Get labels corresponding to label_type.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_label</span><span class="p">[</span><span class="n">label_type</span><span class="p">]</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_num_comb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Legacy method retained for compatibility.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_comb</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cases</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_comb</span>
+
+<div class="viewcode-block" id="LoadCombination.get_num_comb">
+<a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination.get_num_comb">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_num_comb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Get the number of load-combination cases.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_comb</span></div>
+
+
+<div class="viewcode-block" id="LoadCombination.get_dict_dist_comb">
+<a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination.get_dict_dist_comb">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_dict_dist_comb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Get the dictionary of distributions for all load-combination cases.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_dist_comb</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_dict_dist_comb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Create explicit load-combination cases from legacy max/pit inputs.</span>
+<span class="sd">        """</span>
+        <span class="n">dict_dist</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">loadc_name</span><span class="p">,</span> <span class="n">loadc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_comb_cases</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">dict_loadc</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+            <span class="n">dict_loadc</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">distributions_resistance</span><span class="p">)</span>
+            <span class="n">dict_loadc</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">distributions_other</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">distributions_max</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">loadc</span><span class="p">:</span>
+                    <span class="n">dict_loadc</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">dict_loadc</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">distributions_pit</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">dict_dist</span><span class="p">[</span><span class="n">loadc_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">dict_loadc</span>
+        <span class="k">return</span> <span class="n">dict_dist</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_case_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lcn</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">lcn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_comb_cases</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">lcn</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">lcn</span>
+        <span class="k">if</span> <span class="n">lcn</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cases</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">'load-combination case "</span><span class="si">{</span><span class="n">lcn</span><span class="si">}</span><span class="s1">" is not defined'</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lcn</span>
+
+<div class="viewcode-block" id="LoadCombination.case">
+<a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination.case">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">case</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lcn</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Return a shallow copy of an explicit load-combination case.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        lcn : str, optional</span>
+<span class="sd">            Case name.  If omitted, the first case is returned.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        OrderedDict</span>
+<span class="sd">            Mapping of variable name to Pystra variable for the selected case.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">OrderedDict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cases</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_case_name</span><span class="p">(</span><span class="n">lcn</span><span class="p">)])</span></div>
+
+
+<div class="viewcode-block" id="LoadCombination.stochastic_model">
+<a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination.stochastic_model">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stochastic_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lcn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Create a :class:`StochasticModel` for a load-combination case.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        lcn : str, optional</span>
+<span class="sd">            Case name.  If omitted, the first case is used.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Variable overrides.  This is mainly retained for calibration and</span>
+<span class="sd">            sensitivity workflows where constants or distributions are varied.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        StochasticModel</span>
+<span class="sd">            Model containing common constants and the selected case variables.</span>
+<span class="sd">        """</span>
+        <span class="n">variables</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="n">variables</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">constant</span><span class="p">)</span>
+        <span class="n">variables</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">case</span><span class="p">(</span><span class="n">lcn</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
+                <span class="n">variables</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="n">sm</span> <span class="o">=</span> <span class="n">StochasticModel</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">variables</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">sm</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_corr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">corr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_corr_for_stochastic_model</span><span class="p">(</span><span class="n">sm</span><span class="p">)</span>
+            <span class="n">sm</span><span class="o">.</span><span class="n">setCorrelation</span><span class="p">(</span><span class="n">CorrelationMatrix</span><span class="p">(</span><span class="n">corr</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">sm</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_corr_for_stochastic_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stochastic_model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Get correlation data for stochastic model.</span>
+<span class="sd">        """</span>
+        <span class="n">sequence_rvs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">stochastic_model</span><span class="o">.</span><span class="n">getVariables</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">dfcorr_tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_corr</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">sequence_rvs</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">sequence_rvs</span><span class="p">)</span>
+        <span class="n">corr</span> <span class="o">=</span> <span class="n">dfcorr_tmp</span><span class="o">.</span><span class="n">values</span>
+        <span class="k">return</span> <span class="n">corr</span>
+
+<div class="viewcode-block" id="LoadCombination.run_reliability_case">
+<a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination.run_reliability_case">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run_reliability_case</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lcn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Create and run FORM analysis for a load-combination case.</span>
+
+<span class="sd">        This is a convenience wrapper around :meth:`stochastic_model` and</span>
+<span class="sd">        :class:`~pystra.form.Form`.  Users who want full control can call</span>
+<span class="sd">        :meth:`stochastic_model` and instantiate the reliability method</span>
+<span class="sd">        directly.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        lcn : str, optional</span>
+<span class="sd">            Case name.  If omitted, the first case is analysed.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Variable overrides passed to :meth:`stochastic_model`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Form</span>
+<span class="sd">            Completed FORM analysis object.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lsf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"LoadCombination requires an lsf to run reliability cases"</span><span class="p">)</span>
+        <span class="n">ls</span> <span class="o">=</span> <span class="n">LimitState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lsf</span><span class="p">)</span>
+        <span class="n">sm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stochastic_model</span><span class="p">(</span><span class="n">lcn</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">sm</span><span class="p">,</span> <span class="n">ls</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">Form</span><span class="p">(</span><span class="n">sm</span><span class="p">,</span> <span class="n">ls</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">form</span></div>
+
+
+<div class="viewcode-block" id="LoadCombination.eval_lsf_kwargs">
+<a class="viewcode-back" href="../../gen/pystra.loadcomb.LoadCombination.html#pystra.loadcomb.LoadCombination.eval_lsf_kwargs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">eval_lsf_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">set_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">set_const</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Evaluate the limit-state function with keyword arguments.</span>
+
+<span class="sd">        Missing stochastic variables are assigned ``set_value``.  Missing</span>
+<span class="sd">        constants are assigned their stored value unless ``set_const`` is</span>
+<span class="sd">        supplied.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        set_value : float, optional</span>
+<span class="sd">            Value assigned to missing random variables.</span>
+<span class="sd">        set_const : float, optional</span>
+<span class="sd">            Value assigned to missing constants.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Explicit limit-state function arguments.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Limit-state function value.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lsf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"LoadCombination requires an lsf to evaluate the LSF"</span><span class="p">)</span>
+
+        <span class="n">set_miss</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label_all</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">constant</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">set_miss</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">xx</span><span class="p">:</span> <span class="n">set_value</span> <span class="k">for</span> <span class="n">xx</span> <span class="ow">in</span> <span class="n">set_miss</span><span class="p">})</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">constant</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="n">set_const</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">constant</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">getValue</span><span class="p">()})</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="n">set_const</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">set_const</span><span class="p">})</span>
+        <span class="n">gX</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lsf</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">gX</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2021-2026, The PySTRA Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,549 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "6e11b992-aa12-455e-9293-c58ea93190ff",
+   "metadata": {},
+   "source": [
+    "# Load Combinations\n",
+    "*Pystra* includes the class `LoadCombination` for named structural reliability cases. A load combination case is an explicit mapping from limit-state variables to ordinary Pystra distributions or constants. This keeps the mechanics visible while still providing convenience methods for building stochastic models and running FORM."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "4ad051e1-2a2a-4f90-b5e5-0827693e79bb",
+   "metadata": {},
+   "source": [
+    "## Example\n",
+    "This demonstration problem is adapted from Example 4, pp. 190-191, in [Sørensen (2004)](../references.rst#sorensen-2004). The parameter values are slightly modified for demonstration.\n",
+    "\n",
+    "### Import Libraries"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "0c7b323d-8cf5-480f-91cc-f35a5c4e4035",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pystra as ra\n",
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "from matplotlib import pyplot as plt"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "f08f35b7-1161-4c23-8968-1f0fe8a4512a",
+   "metadata": {},
+   "source": [
+    "### Define the limit state function\n",
+    "The LSF supplied to `LoadCombination` can be any valid *Pystra* LSF. Here the deterministic coefficient `cg` is kept as an explicit input."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "4f3638db-52cd-41d7-87b4-ee9e32b55b9b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def lsf(R, G, Q1, Q2, cg):\n",
+    "    return R - (cg*G + 0.8*Q1 + 0.2*Q2)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "109206fc-f860-4bdb-88d9-45febddd4f17",
+   "metadata": {},
+   "source": [
+    "### Define the load and resistance distributions\n",
+    "Start by defining the distributions that represent the structural reliability model. In this first example we use explicit annual-maximum and point-in-time distributions so that each load case can state exactly which distribution is used."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "37fd36ed-69f3-4cda-b8e6-a39ab9a77c53",
+   "metadata": {},
+   "source": [
+    "Define the annual max distributions"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "8bcb7ba2-9040-4b72-8eff-7df2670188b3",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "Q1max = ra.Gumbel(\"Q1\", 1, 0.2)  # Imposed Load\n",
+    "Q2max = ra.Gumbel(\"Q2\", 1, 0.4)  # Wind Load"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "1d7ca83b-2a26-40f4-a9a2-eef85e1b8a01",
+   "metadata": {},
+   "source": [
+    "Next specify inferred point-in-time distributions. These are ordinary Pystra distributions and can be inspected or used directly."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "73337d04-0df0-4976-a98c-b2d422168c4d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "Q1pit = ra.Gumbel(\"Q1\", 0.89, 0.2)  # Imposed Load\n",
+    "Q2pit = ra.Gumbel(\"Q2\", 0.77, 0.4)  # Wind Load"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "fed703fe-5962-417e-bf91-aa3e577eb56e",
+   "metadata": {},
+   "source": [
+    "Define the deterministic coefficient used by the LSF."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "bfe3da3c-139f-4b82-981e-40aa805be81e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cg = ra.Constant(\"cg\", 0.4)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "cde4241e-7f8a-42eb-99cc-1609d40e6007",
+   "metadata": {},
+   "source": [
+    "Finally, define any other random variables in the problem"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "17279cad-5005-4b99-8d4b-1fb8a64d872f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "Rdist = ra.Lognormal(\"R\", 2.0, 0.15)  # Resistance\n",
+    "Gdist = ra.Normal(\"G\", 1, 0.1)  # Permanent Load (Other load variable)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "07eb5648-75b8-4ee2-bb53-45bd1d0b50e3",
+   "metadata": {},
+   "source": [
+    "### Specify explicit load-combination cases\n",
+    "A `LoadCombination` is now most clearly written as named explicit cases. Each case contains the actual variables used in that reliability analysis. This avoids hiding structural reliability assumptions inside a max/pit switching dictionary.\n",
+    "\n",
+    "The `Q1_leading` and `Q2_leading` cases are Turkstra-style leading-action cases. The `Q1Q2_max` case is also shown as a deliberately conservative comparison where both variable actions are taken as annual maxima."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "20d773b5-21e8-4bf8-bb84-f0523e82c97d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cases = {\n",
+    "    \"Q1Q2_max\": {\"R\": Rdist, \"G\": Gdist, \"Q1\": Q1max, \"Q2\": Q2max},\n",
+    "    \"Q1_leading\": {\"R\": Rdist, \"G\": Gdist, \"Q1\": Q1max, \"Q2\": Q2pit},\n",
+    "    \"Q2_leading\": {\"R\": Rdist, \"G\": Gdist, \"Q1\": Q1pit, \"Q2\": Q2max},\n",
+    "}"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "6ccc43bd-2433-4a25-af26-d7876450bb3f",
+   "metadata": {},
+   "source": [
+    "### Specify user-defined correlation (optional)\n",
+    "A correlation matrix can be supplied for the random variables in the reliability problem."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "ec40a02f-d9db-4cde-8d32-c0ded9bcf5e4",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "variable_names = [\"Q1\", \"Q2\", \"R\", \"G\"]\n",
+    "correlation_values = np.eye(len(variable_names))\n",
+    "correlation = pd.DataFrame(\n",
+    "    data=correlation_values,\n",
+    "    columns=variable_names,\n",
+    "    index=variable_names,\n",
+    ")\n",
+    "rho_q1_q2 = 0.8\n",
+    "correlation.loc[\"Q1\", \"Q2\"] = rho_q1_q2\n",
+    "correlation.loc[\"Q2\", \"Q1\"] = rho_q1_q2\n",
+    "print(correlation)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "6d479d27-a2db-45fa-be11-e0f9e4a39b9d",
+   "metadata": {},
+   "source": [
+    "### Specify user-defined analysis options (optional)\n",
+    "Analysis options can be supplied in the usual Pystra way. In this tutorial we set error thresholds and change the default transform method to use singular value decomposition."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7ef924b2-0b79-4074-9a83-1f1da0f9c812",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "options = ra.AnalysisOptions()\n",
+    "options.setE1(1e-3)\n",
+    "options.setE2(1e-3)\n",
+    "options.setTransform(\"svd\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "15ae1654-accf-47f3-99e0-a09e4ae49c5f",
+   "metadata": {},
+   "source": [
+    "### Instantiate `LoadCombination`\n",
+    "The explicit `cases` mapping is the canonical interface. The remaining arguments are the limit-state function and optional analysis inputs."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "d0c51583-d024-4342-b649-b00db988fdeb",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "lc = ra.LoadCombination(\n",
+    "    lsf=lsf,\n",
+    "    cases=cases,\n",
+    "    constants=[cg],\n",
+    "    corr=correlation,\n",
+    "    opt=options,\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "a80fbdf6-e795-4796-8f5f-25954d4e1e8d",
+   "metadata": {},
+   "source": [
+    "### Inspect the generated stochastic models\n",
+    "Because the cases are explicit, they can be inspected before any analysis is run."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "b4e6c525-404f-4936-9a39-ca8bca694f6c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for name in lc.get_label(\"comb_cases\"):\n",
+    "    print(name, list(lc.case(name).keys()))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "0f947e33-d2ea-4f82-98b9-a31b89ebffde",
+   "metadata": {},
+   "source": [
+    "### Analyse load cases\n",
+    "Run FORM for each named case."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "c4707841-407b-4acb-99fc-efb844058c52",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "form = {}\n",
+    "for name in lc.get_label(\"comb_cases\"):\n",
+    "    form[name] = lc.run_reliability_case(lcn=name)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "d26940b3-0222-49a3-9f86-82c7ef5681d6",
+   "metadata": {},
+   "source": [
+    "#### Detailed output for one load case"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "ad8ecb46-7e53-4e82-8edd-7a7c71869c1c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "form[\"Q1_leading\"].showDetailedOutput()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "07746669-0f9a-4545-9a59-be1375ac4eb8",
+   "metadata": {},
+   "source": [
+    "#### Display reliability per load combination"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "242c33b9-9e5e-4146-9ddc-d517d249cb7e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for name, result in form.items():\n",
+    "    print(f\"{name}: β = {result.getBeta():.2f}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "99f009d5-73bd-429d-ac6d-ca1a4eebe618",
+   "metadata": {},
+   "source": [
+    "## Ferry-Borges-Castanheta process model\n",
+    "For variable actions represented by a Ferry-Borges-Castanheta rectangular-wave process, use `FBCProcess` to expose the process assumptions. The FBC process defines the load magnitude distributions. Turkstra's rule defines the combination cases: each variable action is considered as leading in turn, while the others are taken as companion actions. In this context a companion action may be a point-in-time value or an intermediate maximum over the leading action's interval.\n",
+    "\n",
+    "In Sørensen's imposed-load/wind example the reference period is `T = 1` year. The imposed load has `tau_1 = 0.5` years, so `r_1 = T / tau_1 = 2`. The wind load has `tau_2 = 1 / 360` years, so `r_2 = T / tau_2 = 360`. These recurrence counts describe the underlying FBC process; they are not load-combination factors.\n",
+    "\n",
+    "The easy mistake is to look at the companion wind distribution and conclude that wind has somehow become an `r = 2` process. It has not. If Q1 is leading, Turkstra's rule takes Q2 as the maximum over the Q1 interval `tau_1`. That interval contains `r_2 / r_1 = 180` wind intervals. Written in terms of the annual-maximum wind distribution, this gives `F_Q2C = F_Q2,max ** (1 / r_1) = F_Q2,max ** 0.5`. The wind process still has `r_2 = 360`; the companion wind value is a half-year maximum."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "40969656-ff98-44ed-a1d3-3f49bbc14445",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "reference_period = 1.0\n",
+    "tau_1 = 0.5\n",
+    "tau_2 = 1 / 360\n",
+    "\n",
+    "Q1_process = ra.FBCProcess.from_maximum(\n",
+    "    \"Q1\", maximum=Q1max, maximum_duration=reference_period, basic_interval=tau_1\n",
+    ")\n",
+    "Q2_process = ra.FBCProcess.from_maximum(\n",
+    "    \"Q2\", maximum=Q2max, maximum_duration=reference_period, basic_interval=tau_2\n",
+    ")\n",
+    "\n",
+    "turkstra_lc = ra.LoadCombination.turkstra(\n",
+    "    lsf=lsf,\n",
+    "    resistance={\"R\": Rdist},\n",
+    "    permanent={\"G\": Gdist},\n",
+    "    variable={\"Q1\": Q1_process, \"Q2\": Q2_process},\n",
+    "    constants=[cg],\n",
+    "    reference_period=reference_period,\n",
+    "    corr=correlation,\n",
+    "    opt=options,\n",
+    ")\n",
+    "\n",
+    "for name in turkstra_lc.get_label(\"comb_cases\"):\n",
+    "    case = turkstra_lc.case(name)\n",
+    "    print(f\"{name}:\")\n",
+    "    for load in (\"Q1\", \"Q2\"):\n",
+    "        print(f\"  {load}: {case[load].dist_type}, FBC intervals = {case[load].N:.2f}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "c24c61ab-18e2-4560-9469-1ff97b24059e",
+   "metadata": {},
+   "source": [
+    "The generated Turkstra cases can be analysed in exactly the same way as the manually specified cases."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "05f9a782-d421-4a65-bcbf-1ea61d1b6f78",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "turkstra_form = {}\n",
+    "for name in turkstra_lc.get_label(\"comb_cases\"):\n",
+    "    turkstra_form[name] = turkstra_lc.run_reliability_case(lcn=name)\n",
+    "\n",
+    "for name, result in turkstra_form.items():\n",
+    "    print(f\"{name}: β = {result.getBeta():.2f}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "b5a86d63-da6b-43ea-acd0-10e1daa90c37",
+   "metadata": {
+    "tags": []
+   },
+   "source": [
+    "## Distributions for Load Combinations\n",
+    "\n",
+    "`Pystra` includes a range of tools to represent variable loads and load processes:\n",
+    "\n",
+    "- **Zero-Inflated** distributions allow for a probability of non-occurrence of a load.\n",
+    "- **Maximum** distributions give the distribution of maxima of a supplied parent or point-in-time distribution.\n",
+    "- **MaxParent** distributions infer a parent distribution from a supplied maximum.\n",
+    "- **FBCProcess** wraps `Maximum` and `MaxParent` for Ferry-Borges-Castanheta rectangular-wave process modelling.\n",
+    "- **LoadCombination.turkstra** uses FBC process distributions to generate leading-action combination cases according to Turkstra's rule."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "6ebceb6c-8ac2-4ca4-8c3d-9b34c9e1cb66",
+   "metadata": {},
+   "source": [
+    "### Zero-Inflated Distribution"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "4e164a22-f9d4-4c48-b181-41b7e4d351bf",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "zin = ra.ZeroInflated('Q',ra.Gumbel(\"G\", 0.5, 0.2),p=0.9)\n",
+    "zin.zero_tol = 1e-2\n",
+    "x = np.linspace(-0.5,1.5,1000)\n",
+    "pdf = zin.pdf(x)\n",
+    "cdf = zin.cdf(x)\n",
+    "u = np.linspace(0,1,10001)\n",
+    "ppf = zin.ppf(u)\n",
+    "fig,axs = plt.subplot_mosaic([['a','c'],['b','c']],sharex=True)\n",
+    "ax = axs['a']\n",
+    "ax.plot(x,pdf)\n",
+    "ax.set_ylabel('$f(x)$')\n",
+    "ax.grid()\n",
+    "ax = axs['b']\n",
+    "ax.plot(x,cdf,label='Direct from CDF')\n",
+    "ax.plot(ppf,u,'r:',label='From Inverse CDF')\n",
+    "ax.set_ylabel('$F(x)$')\n",
+    "ax.set_xlabel('$x$')\n",
+    "ax.legend(loc='center right')\n",
+    "ax.grid()\n",
+    "ax = axs['c']\n",
+    "ax.plot(x,-np.log(-np.log(cdf)))\n",
+    "ax.set_ylabel('$-log[-log[F(x)]]$')\n",
+    "ax.set_xlabel('$x$')\n",
+    "ax.grid()\n",
+    "plt.tight_layout();\n",
+    "#fig.set_layout('tight');"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "51831dfb-1f4c-4ad3-b27d-0b17f550fec6",
+   "metadata": {},
+   "source": [
+    "### Example"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "01be04dd-28bc-4ac6-beb0-07357351da52",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def lsf(R,G,Q):\n",
+    "    return R - (G + Q)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "a84bd24f-c19c-4097-803f-f74deaa139db",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def reliability(p=0.0):\n",
+    "    ls = ra.LimitState(lsf)\n",
+    "    sm = ra.StochasticModel()\n",
+    "    sm.addVariable(ra.Lognormal(\"R\", 6.0,0.15))\n",
+    "    sm.addVariable(ra.Normal(\"G\", 4.5, 0.2))\n",
+    "    \n",
+    "    g = ra.Gumbel(\"Q\", 0.5, 0.2)\n",
+    "    if p == 1.0:\n",
+    "        sm.addVariable(ra.Constant(\"Q\",0.0))\n",
+    "    elif p == 0.0:\n",
+    "        sm.addVariable(g)\n",
+    "    else:\n",
+    "        zig = ra.ZeroInflated(\"Q\",g,p=p)\n",
+    "        sm.addVariable(zig)\n",
+    "    \n",
+    "    form = ra.Form(sm,ls)\n",
+    "    form.run()\n",
+    "    \n",
+    "    return form"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "75b7635f-2bec-4532-b240-d47b2558109d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "betas = []\n",
+    "ps = np.linspace(0,1.0,101)\n",
+    "for p in ps:\n",
+    "    form = reliability(p=p)\n",
+    "    betas.append(form.beta)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "c2befd1d-780e-4295-bc3b-a01c958024f9",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "fig,ax = plt.subplots()\n",
+    "ax.plot(ps,betas,'r.:')\n",
+    "ax.set_xlabel('Probability of zero variable load, $p$')\n",
+    "ax.set_ylabel('Reliability index, $β$')\n",
+    "ax.grid();"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "pystra",
+   "language": "python",
+   "name": "pystra"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.10.6"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

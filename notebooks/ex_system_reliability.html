@@ -1,0 +1,982 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>System Reliability &#8212; PySTRA 1.6.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=9bc076a2" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../_static/documentation_options.js?v=72d88caf"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/ex_system_reliability';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="API Reference" href="../api.html" />
+    <link rel="prev" title="Design Decision Optimization with the LQI Criterion" href="ex_design_decision_optimization.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.6.0" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 1.6.0 documentation - Home"/>
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 1.6.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../theory.html">
+    Theoretical Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../developer.html">
+    Instructions for Developers
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../theory.html">
+    Theoretical Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer.html">
+    Instructions for Developers
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="ex_intro.html">Introductory Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_simulation.html">Simulation Methods: CMC, Line Sampling, and Subset Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_scipy_distributions.html">SciPy Distribution Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_sensitivity.html">Sensitivity Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_ddm.html">Direct Differentiation Method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_timing.html">Pystra Timing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_load_combinations.html">Load Combinations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_factor_calibration.html">Safety Factor Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_generic_calibration.html">Generic Code Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ex_design_decision_optimization.html">Design Decision Optimization with the LQI Criterion</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">System Reliability</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../tutorial.html" class="nav-link">Tutorials</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">System Reliability</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="System-Reliability">
+<h1>System Reliability<a class="headerlink" href="#System-Reliability" title="Link to this heading">#</a></h1>
+<p>This notebook demonstrates the <code class="docutils literal notranslate"><span class="pre">pystra.system</span></code> topology layer on classical system-reliability examples. The key distinction is that Pystra asks the user to encode the system event they intend to analyse; it does not infer the structural topology automatically.</p>
+<p>The examples cover:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Example</p></th>
+<th class="head"><p>Reference</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://pystra.github.io/pystra/references.html#ref-schueremans-2005">Four-branch case</a></p></td>
+<td><p><a class="reference external" href="https://pystra.github.io/pystra/references.html#ref-schueremans-2005">Schueremans2005</a></p></td>
+<td><p>Series system as a minimum of branch limit states</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://pystra.github.io/pystra/references.html#ref-daniels-1945">Daniels bundle</a></p></td>
+<td><p><a class="reference external" href="https://pystra.github.io/pystra/references.html#ref-daniels-1945">Daniels1945</a></p></td>
+<td><p>Classical equal-load-sharing benchmark</p></td>
+</tr>
+<tr class="row-even"><td><p>k-of-n system</p></td>
+<td><p><a class="reference external" href="https://pystra.github.io/pystra/references.html#ref-ditlevsen-2007">Ditlevsen2007</a></p></td>
+<td><p>Event-counting topology</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://pystra.github.io/pystra/references.html#ref-song-2003">Cut-set system</a></p></td>
+<td><p><a class="reference external" href="https://pystra.github.io/pystra/references.html#ref-song-2003">Song2003</a></p></td>
+<td><p>Minimal cut-set encoding</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://pystra.github.io/pystra/references.html#ref-ditlevsen-1979">Ditlevsen bounds</a> and <a class="reference external" href="https://pystra.github.io/pystra/references.html#ref-maincon-2000">Mainçon series
+benchmark</a></p></td>
+<td><p><a class="reference external" href="https://pystra.github.io/pystra/references.html#ref-ditlevsen-1979">Ditlevsen1979</a>,
+<a class="reference external" href="https://pystra.github.io/pystra/references.html#ref-maincon-2000">Maincon2000</a></p></td>
+<td><p>Bounds from component and pairwise event probabilities</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">binom</span>
+
+<span class="k">for</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">(),</span> <span class="o">*</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">parents</span><span class="p">):</span>
+    <span class="n">src</span> <span class="o">=</span> <span class="n">candidate</span> <span class="o">/</span> <span class="s2">"src"</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">src</span> <span class="o">/</span> <span class="s2">"pystra"</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">src</span><span class="p">))</span>
+        <span class="k">break</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ra</span>
+
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">20260425</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<section id="Four-Branch-Series-System">
+<h2>Four-Branch Series System<a class="headerlink" href="#Four-Branch-Series-System" title="Link to this heading">#</a></h2>
+<p>The <a class="reference external" href="https://pystra.github.io/pystra/references.html#ref-schueremans-2005">four-branch case</a> is a standard benchmark for algorithms that must find several disconnected failure regions. It is naturally a series system:</p>
+<div class="math notranslate nohighlight">
+\[g_\mathrm{sys}(x) = \min(g_1, g_2, g_3, g_4).\]</div>
+<p>For independent <span class="math notranslate nohighlight">\(X_1, X_2 \sim \mathcal{N}(0, 1)\)</span>, the branch functions are:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+g_1 &amp;= 3 + 0.1(X_1 - X_2)^2 - \frac{X_1 + X_2}{\sqrt{2}}, \\
+g_2 &amp;= 3 + 0.1(X_1 - X_2)^2 + \frac{X_1 + X_2}{\sqrt{2}}, \\
+g_3 &amp;= (X_1 - X_2) + \frac{6}{\sqrt{2}}, \\
+g_4 &amp;= (X_2 - X_1) + \frac{6}{\sqrt{2}}.
+\end{aligned}\end{split}\]</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sqrt2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+<span class="n">four_branch</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">SeriesSystem</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="n">ra</span><span class="o">.</span><span class="n">Component</span><span class="p">(</span><span class="s2">"g1"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">:</span> <span class="mf">3.0</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="p">(</span><span class="n">X1</span> <span class="o">-</span> <span class="n">X2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="n">X1</span> <span class="o">+</span> <span class="n">X2</span><span class="p">)</span> <span class="o">/</span> <span class="n">sqrt2</span><span class="p">),</span>
+        <span class="n">ra</span><span class="o">.</span><span class="n">Component</span><span class="p">(</span><span class="s2">"g2"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">:</span> <span class="mf">3.0</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="p">(</span><span class="n">X1</span> <span class="o">-</span> <span class="n">X2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">X1</span> <span class="o">+</span> <span class="n">X2</span><span class="p">)</span> <span class="o">/</span> <span class="n">sqrt2</span><span class="p">),</span>
+        <span class="n">ra</span><span class="o">.</span><span class="n">Component</span><span class="p">(</span><span class="s2">"g3"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">:</span> <span class="p">(</span><span class="n">X1</span> <span class="o">-</span> <span class="n">X2</span><span class="p">)</span> <span class="o">+</span> <span class="mf">6.0</span> <span class="o">/</span> <span class="n">sqrt2</span><span class="p">),</span>
+        <span class="n">ra</span><span class="o">.</span><span class="n">Component</span><span class="p">(</span><span class="s2">"g4"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">:</span> <span class="p">(</span><span class="n">X2</span> <span class="o">-</span> <span class="n">X1</span><span class="p">)</span> <span class="o">+</span> <span class="mf">6.0</span> <span class="o">/</span> <span class="n">sqrt2</span><span class="p">),</span>
+    <span class="p">],</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"four_branch"</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">n_samples</span> <span class="o">=</span> <span class="mi">200_000</span>
+<span class="n">x1</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span>
+<span class="n">x2</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span>
+<span class="n">failed</span> <span class="o">=</span> <span class="n">four_branch</span><span class="o">.</span><span class="n">failure_mask</span><span class="p">(</span><span class="n">X1</span><span class="o">=</span><span class="n">x1</span><span class="p">,</span> <span class="n">X2</span><span class="o">=</span><span class="n">x2</span><span class="p">)</span>
+
+<span class="n">pf_hat</span> <span class="o">=</span> <span class="n">failed</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">cov_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">pf_hat</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_samples</span> <span class="o">*</span> <span class="n">pf_hat</span><span class="p">))</span>
+<span class="nb">float</span><span class="p">(</span><span class="n">pf_hat</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">cov_hat</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(0.00434, 0.0338684769766651)
+</pre></div></div>
+</div>
+<p>The estimate should be close to the usual reference probability of about <span class="math notranslate nohighlight">\(4.5 \times 10^{-3}\)</span>. The precise Monte Carlo value changes with the sample size and seed; the point here is that the system topology is encoded directly from the branch functions.</p>
+</section>
+<section id="Daniels-Equal-Load-Sharing-Bundle">
+<h2>Daniels Equal-Load-Sharing Bundle<a class="headerlink" href="#Daniels-Equal-Load-Sharing-Bundle" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://pystra.github.io/pystra/references.html#ref-daniels-1945">Daniels’ six-thread example</a> gives the individual thread strengths</p>
+<div class="math notranslate nohighlight">
+\[3.2,\ 5.2,\ 4.4,\ 8.2,\ 6.1,\ 5.7.\]</div>
+<p>For an equal-load-sharing bundle, sort the strengths in descending order and compute <span class="math notranslate nohighlight">\(r\sigma_r\)</span>. The bundle strength is the maximum of those products.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">thread_strengths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.2</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">,</span> <span class="mf">4.4</span><span class="p">,</span> <span class="mf">8.2</span><span class="p">,</span> <span class="mf">6.1</span><span class="p">,</span> <span class="mf">5.7</span><span class="p">])</span>
+<span class="n">ordered_strengths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">thread_strengths</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">remaining_threads</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ordered_strengths</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">bundle_loads</span> <span class="o">=</span> <span class="n">remaining_threads</span> <span class="o">*</span> <span class="n">ordered_strengths</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">remaining_threads</span><span class="p">,</span> <span class="n">ordered_strengths</span><span class="p">,</span> <span class="n">bundle_loads</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">bundle_loads</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(array([[ 1. ,  8.2,  8.2],
+        [ 2. ,  6.1, 12.2],
+        [ 3. ,  5.7, 17.1],
+        [ 4. ,  5.2, 20.8],
+        [ 5. ,  4.4, 22. ],
+        [ 6. ,  3.2, 19.2]]),
+ 22.0)
+</pre></div></div>
+</div>
+<p>The maximum is 22.0, matching Daniels’ published example. This is not a <code class="docutils literal notranslate"><span class="pre">KofNSystem</span></code>: after each thread breaks, the load redistributes, so the limit state depends on order statistics rather than only a fixed number of failed components.</p>
+</section>
+<section id="k-of-n-Topology">
+<h2>k-of-n Topology<a class="headerlink" href="#k-of-n-Topology" title="Link to this heading">#</a></h2>
+<p>A k-of-n system fails when at least <code class="docutils literal notranslate"><span class="pre">k</span></code> components have failed. This event-counting representation is useful for simulation and exact Boolean enumeration, but it is discontinuous and should not be treated as a smooth FORM/SORM limit state.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_components</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">k_failures</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">component_pf</span> <span class="o">=</span> <span class="mf">0.05</span>
+
+<span class="n">components</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">ra</span><span class="o">.</span><span class="n">Component</span><span class="p">(</span><span class="sa">f</span><span class="s2">"E</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="o">=</span><span class="sa">f</span><span class="s2">"E</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">event</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_components</span><span class="p">)</span>
+<span class="p">]</span>
+<span class="n">k_of_n</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">KofNSystem</span><span class="p">(</span><span class="n">components</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k_failures</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"three_of_six"</span><span class="p">)</span>
+
+<span class="n">states</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">([</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">],</span> <span class="n">repeat</span><span class="o">=</span><span class="n">n_components</span><span class="p">)))</span><span class="o">.</span><span class="n">T</span>
+<span class="n">state_values</span> <span class="o">=</span> <span class="p">{</span><span class="sa">f</span><span class="s2">"E</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">states</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_components</span><span class="p">)}</span>
+<span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">component_pf</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">component_pf</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">pf_enumerated</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="n">k_of_n</span><span class="o">.</span><span class="n">failure_mask</span><span class="p">(</span><span class="o">**</span><span class="n">state_values</span><span class="p">)]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">pf_binomial</span> <span class="o">=</span> <span class="n">binom</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="n">k_failures</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_components</span><span class="p">,</span> <span class="n">component_pf</span><span class="p">)</span>
+<span class="nb">float</span><span class="p">(</span><span class="n">pf_enumerated</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">pf_binomial</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(0.00222984375, 0.00222984375)
+</pre></div></div>
+</div>
+<p>The exact enumeration agrees with the binomial result because the component events were independent and identically distributed in this example.</p>
+</section>
+<section id="Minimal-Cut-Sets">
+<h2>Minimal Cut Sets<a class="headerlink" href="#Minimal-Cut-Sets" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://pystra.github.io/pystra/references.html#ref-song-2003">Song and Der Kiureghian’s rigid-plastic cantilever-bar example</a> uses the system failure event</p>
+<div class="math notranslate nohighlight">
+\[E_\mathrm{sys} = E_1E_2 \cup E_3E_4 \cup E_3E_5.\]</div>
+<p>Pystra can encode this topology directly. The probability calculation in the paper uses component and joint event probabilities with linear-programming bounds; those LP bounds are a later extension. The topology itself is already usable for simulation when the component limit states are available.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cut_components</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">ra</span><span class="o">.</span><span class="n">Component</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">event</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"E1"</span><span class="p">,</span> <span class="s2">"E2"</span><span class="p">,</span> <span class="s2">"E3"</span><span class="p">,</span> <span class="s2">"E4"</span><span class="p">,</span> <span class="s2">"E5"</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">cantilever_system</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">CutSetSystem</span><span class="p">(</span>
+    <span class="p">[[</span><span class="s2">"E1"</span><span class="p">,</span> <span class="s2">"E2"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"E3"</span><span class="p">,</span> <span class="s2">"E4"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"E3"</span><span class="p">,</span> <span class="s2">"E5"</span><span class="p">]],</span>
+    <span class="n">components</span><span class="o">=</span><span class="n">cut_components</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"cantilever_cut_sets"</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">example_events</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"E1"</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">]),</span>
+    <span class="s2">"E2"</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">]),</span>
+    <span class="s2">"E3"</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">]),</span>
+    <span class="s2">"E4"</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]),</span>
+    <span class="s2">"E5"</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">]),</span>
+<span class="p">}</span>
+<span class="n">example_values</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">mask</span> <span class="ow">in</span> <span class="n">example_events</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+<span class="n">cantilever_system</span><span class="o">.</span><span class="n">failure_mask</span><span class="p">(</span><span class="o">**</span><span class="n">example_values</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([False,  True,  True,  True])
+</pre></div></div>
+</div>
+<p>The four samples above fail only when at least one of the supplied cut sets is complete.</p>
+</section>
+<section id="Ditlevsen-Bounds">
+<h2>Ditlevsen Bounds<a class="headerlink" href="#Ditlevsen-Bounds" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://pystra.github.io/pystra/references.html#ref-ditlevsen-1979">Ditlevsen bounds</a> use component event probabilities and pairwise intersections to bound a union of failure events. For two events the result collapses to exact inclusion-exclusion.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ra</span><span class="o">.</span><span class="n">ditlevsen_bounds</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span> <span class="p">{(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span> <span class="mf">0.03</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(0.27, 0.27)
+</pre></div></div>
+</div>
+<p><a class="reference external" href="https://pystra.github.io/pystra/references.html#ref-maincon-2000">Mainçon’s identical 100-element series-system example</a> reports component failure probability <span class="math notranslate nohighlight">\(P_1 = 1.969 \times 10^{-3}\)</span> and pairwise intersection probability <span class="math notranslate nohighlight">\(P_{12} = 1.361 \times 10^{-3}\)</span>. With equal pairwise intersections, the Ditlevsen upper bound is approximately <span class="math notranslate nohighlight">\(6.216 \times 10^{-2}\)</span>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_events</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="mf">1.969e-3</span>
+<span class="n">p12</span> <span class="o">=</span> <span class="mf">1.361e-3</span>
+
+<span class="n">probabilities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">n_events</span><span class="p">,</span> <span class="n">p1</span><span class="p">)</span>
+<span class="n">intersections</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">n_events</span><span class="p">,</span> <span class="n">n_events</span><span class="p">),</span> <span class="n">p12</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">intersections</span><span class="p">,</span> <span class="n">p1</span><span class="p">)</span>
+
+<span class="n">ra</span><span class="o">.</span><span class="n">ditlevsen_bounds</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="n">intersections</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(0.0025769999999999994, 0.06216099999999983)
+</pre></div></div>
+</div>
+<p>These bounds are deliberately separate from the topology classes. A topology tells Pystra which samples fail; Ditlevsen bounds require marginal and pairwise event probabilities, usually obtained from component analyses, simulation, or reference data.</p>
+</section>
+<section id="Component-based-system-FORM-and-original-system-Monte-Carlo">
+<h2>Component-based system FORM and original-system Monte Carlo<a class="headerlink" href="#Component-based-system-FORM-and-original-system-Monte-Carlo" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">SystemFORM</span></code> runs each component separately in the same complete stochastic model. It supports series and parallel events, including homogeneous nesting. Mixed and cut/tie-set systems use original-system simulation for now.</p>
+<p>The four-branch tangent-plane probability is about 0.00539, whereas the nonlinear event probability is about 0.00446. The difference is FORM approximation error, not sampling error. Bounds reported here apply to the tangent-plane events only.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">"X1"</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">"X2"</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+
+<span class="n">system_form</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">SystemFORM</span><span class="p">(</span><span class="n">four_branch</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+<span class="n">system_form</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"System FORM:"</span><span class="p">,</span> <span class="n">system_form</span><span class="o">.</span><span class="n">getFailure</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Linearized-event bounds:"</span><span class="p">,</span> <span class="n">system_form</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Original nonlinear event (earlier simulation):"</span><span class="p">,</span> <span class="n">pf_hat</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Component betas:"</span><span class="p">,</span> <span class="n">system_form</span><span class="o">.</span><span class="n">betas</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+System FORM: 0.005392305084089622
+Linearized-event bounds: (0.005392305084089622, 0.005394124771863334)
+Original nonlinear event (earlier simulation): 0.00434
+Component betas: [3.00042432 2.9995758  3.         3.        ]
+</pre></div></div>
+</div>
+<p>For an exact check, two independent components with beta = 2 give series probability <code class="docutils literal notranslate"><span class="pre">2*p</span> <span class="pre">-</span> <span class="pre">p*p</span></code> and parallel probability <code class="docutils literal notranslate"><span class="pre">p*p</span></code>. Monte Carlo below evaluates the original series event. Its CoV reports sampling uncertainty; the sample budget is a maximum and the run may stop early at the target CoV. No observed failures would require more sampling, not a claim of zero risk.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span>
+
+<span class="n">linear_model</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
+<span class="n">linear_model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">"X"</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+<span class="n">linear_model</span><span class="o">.</span><span class="n">addVariable</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">"Y"</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+<span class="n">linear_components</span> <span class="o">=</span> <span class="p">[</span><span class="n">ra</span><span class="o">.</span><span class="n">Component</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">X</span><span class="p">:</span> <span class="mf">2.0</span><span class="o">-</span><span class="n">X</span><span class="p">),</span>
+                     <span class="n">ra</span><span class="o">.</span><span class="n">Component</span><span class="p">(</span><span class="s2">"b"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">Y</span><span class="p">:</span> <span class="mf">2.0</span><span class="o">-</span><span class="n">Y</span><span class="p">)]</span>
+<span class="n">series</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">SeriesSystem</span><span class="p">(</span><span class="n">linear_components</span><span class="p">)</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">topology</span><span class="p">,</span> <span class="n">exact</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">series</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="o">-</span><span class="n">p</span><span class="o">*</span><span class="n">p</span><span class="p">),</span>
+                        <span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">ParallelSystem</span><span class="p">(</span><span class="n">linear_components</span><span class="p">),</span> <span class="n">p</span><span class="o">*</span><span class="n">p</span><span class="p">)]:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">SystemFORM</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">linear_model</span><span class="p">)</span>
+    <span class="n">result</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">topology</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">getFailure</span><span class="p">(),</span> <span class="s2">"exact:"</span><span class="p">,</span> <span class="n">exact</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">getFailure</span><span class="p">(),</span> <span class="n">exact</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
+
+<span class="n">options</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">AnalysisOptions</span><span class="p">()</span>
+<span class="n">options</span><span class="o">.</span><span class="n">setSamples</span><span class="p">(</span><span class="mi">20_000</span><span class="p">)</span>
+<span class="n">options</span><span class="o">.</span><span class="n">setPrintOutput</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">2026</span><span class="p">)</span>
+<span class="n">mc</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">CrudeMonteCarlo</span><span class="p">(</span><span class="n">stochastic_model</span><span class="o">=</span><span class="n">linear_model</span><span class="p">,</span>
+                       <span class="n">limit_state</span><span class="o">=</span><span class="n">series</span><span class="o">.</span><span class="n">as_limit_state</span><span class="p">(),</span>
+                       <span class="n">analysis_options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
+<span class="n">mc</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Monte Carlo:"</span><span class="p">,</span> <span class="n">mc</span><span class="o">.</span><span class="n">getFailure</span><span class="p">(),</span> <span class="s2">"CoV:"</span><span class="p">,</span> <span class="n">mc</span><span class="o">.</span><span class="n">cov_q_bar</span><span class="p">[</span><span class="n">mc</span><span class="o">.</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+      <span class="s2">"samples:"</span><span class="p">,</span> <span class="n">mc</span><span class="o">.</span><span class="n">k</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+series 0.04498269539267562 exact: 0.04498269539269883
+parallel 0.0005175685036590233 exact: 0.0005175685036595636
+Monte Carlo: 0.04288888888888889 CoV: 0.04979520523121099 samples: 9000
+</pre></div></div>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="ex_design_decision_optimization.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Design Decision Optimization with the LQI Criterion</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../api.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">API Reference</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Four-Branch-Series-System">Four-Branch Series System</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Daniels-Equal-Load-Sharing-Bundle">Daniels Equal-Load-Sharing Bundle</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#k-of-n-Topology">k-of-n Topology</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Minimal-Cut-Sets">Minimal Cut Sets</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Ditlevsen-Bounds">Ditlevsen Bounds</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Component-based-system-FORM-and-original-system-Monte-Carlo">Component-based system FORM and original-system Monte Carlo</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/pystra/pystra/edit/main/docs/source/notebooks/ex_system_reliability.ipynb">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2021-2026, The PySTRA Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

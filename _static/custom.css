@@ -1,0 +1,20 @@
+/* Fix pandas DataFrame rendering in dark mode.
+ *
+ * nbsphinx renders notebook output cells with pandas DataFrames that carry
+ * light-mode background colours.  The pydata-sphinx-theme exposes CSS
+ * custom properties for all palette entries, so we override the hard-coded
+ * values using those variables when the dark theme is active.
+ */
+
+[data-theme="dark"] .dataframe,
+[data-theme="dark"] .dataframe td,
+[data-theme="dark"] .dataframe th {
+    background-color: var(--pst-color-background) !important;
+    color: var(--pst-color-text-base) !important;
+    border-color: var(--pst-color-border) !important;
+}
+
+[data-theme="dark"] .dataframe tbody tr:nth-child(odd) td,
+[data-theme="dark"] .dataframe tbody tr:nth-child(odd) th {
+    background-color: var(--pst-color-surface) !important;
+}
