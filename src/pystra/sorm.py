@@ -425,15 +425,11 @@ class Sorm(AnalysisObject):
         print("=" * n_hyphen)
         print("{:15s} \t\t {:1.10e}".format("Pf FORM", pfFORM))
         print("{:15s} \t\t {:1.10e}".format("Pf SORM Breitung", self.pf2_breitung))
-        print(
-            "{:15s} \t {:1.10e}".format("Pf SORM Breitung HR", self.pf2_breitung_m)
-        )
+        print("{:15s} \t {:1.10e}".format("Pf SORM Breitung HR", self.pf2_breitung_m))
         print("{:15s} \t\t {:2.10f}".format("Beta_HL", betaHL))
         print("{:15s} \t\t {:2.10f}".format("Beta_G Breitung", self.betag_breitung))
         print(
-            "{:15s} \t\t {:2.10f}".format(
-                "Beta_G Breitung HR", self.betag_breitung_m
-            )
+            "{:15s} \t\t {:2.10f}".format("Beta_G Breitung HR", self.betag_breitung_m)
         )
         print(
             "{:15s} \t\t {:d}".format("Model Evaluations", self.model.getCallFunction())

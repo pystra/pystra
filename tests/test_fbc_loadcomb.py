@@ -121,14 +121,8 @@ def test_turkstra_cases_match_sorensen_example_4_distribution_exponents():
     q2_leading = lc.case("Q2_leading")
 
     assert pytest.approx(q1_leading["Q1"].cdf(q), abs=1e-8) == Q1max.cdf(q)
-    assert (
-        pytest.approx(q1_leading["Q2"].cdf(q), abs=1e-8)
-        == Q2max.cdf(q) ** 0.5
-    )
-    assert (
-        pytest.approx(q2_leading["Q1"].cdf(q), abs=1e-8)
-        == Q1max.cdf(q) ** 0.5
-    )
+    assert pytest.approx(q1_leading["Q2"].cdf(q), abs=1e-8) == Q2max.cdf(q) ** 0.5
+    assert pytest.approx(q2_leading["Q1"].cdf(q), abs=1e-8) == Q1max.cdf(q) ** 0.5
     assert pytest.approx(q2_leading["Q2"].cdf(q), abs=1e-8) == Q2max.cdf(q)
 
 
