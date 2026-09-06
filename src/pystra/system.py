@@ -1,9 +1,9 @@
 """System reliability limit-state composition.
 
 This module provides a small topology layer for structural system
-reliability.  It does not estimate system reliability directly.  Instead,
-it composes component limit-state functions into a single scalar limit-state
-function that can be passed to Pystra's existing reliability algorithms.
+reliability. It composes component functions into a scalar limit-state function
+for simulation. The separate SystemFORM class estimates series and parallel
+probabilities from component tangent planes.
 
 The sign convention is the standard Pystra convention: positive values are
 safe, and negative values indicate failure.  A series system fails when any
@@ -73,7 +73,11 @@ class Component:
     def as_limit_state(self):
         """Return this component as a Pystra :class:`LimitState`."""
 
-        return self.limit_state
+        # Keep tuple returns intact for direct differentiation. User-supplied
+        # gradients must follow the complete stochastic model variable order.
+        return LimitState(
+            lambda **kwargs: self.limit_state.expression(**self._filter_kwargs(kwargs))
+        )
 
     def getLimitState(self):
         """Return this component as a Pystra :class:`LimitState`.
@@ -185,8 +189,7 @@ class System:
         """Return failure masks for each leaf component."""
 
         return {
-            name: values < 0
-            for name, values in self.component_values(**kwargs).items()
+            name: values < 0 for name, values in self.component_values(**kwargs).items()
         }
 
     def failure_mask(self, **kwargs):
@@ -355,10 +358,18 @@ def ditlevsen_bounds(probabilities, intersections, ordering=None, optimize_order
         raise ValueError("probabilities must be a one-dimensional sequence")
     if len(probabilities) == 0:
         raise ValueError("At least one event probability is required")
-    if np.any((probabilities < 0.0) | (probabilities > 1.0)):
+    if not np.all(np.isfinite(probabilities)) or np.any(
+        (probabilities < 0.0) | (probabilities > 1.0)
+    ):
         raise ValueError("probabilities must be between 0 and 1")
 
     pairwise = _intersection_matrix(intersections, len(probabilities))
+    for i in range(len(probabilities)):
+        for j in range(i):
+            lo = max(0.0, probabilities[i] + probabilities[j] - 1.0)
+            hi = min(probabilities[i], probabilities[j])
+            if not lo - 1e-14 <= pairwise[i, j] <= hi + 1e-14:
+                raise ValueError("intersections violate marginal probability bounds")
 
     if optimize_order:
         if ordering is not None:
@@ -480,15 +491,23 @@ def _component_catalogue(components):
 def _intersection_matrix(intersections, n_events):
     if isinstance(intersections, dict):
         matrix = np.zeros((n_events, n_events), dtype=float)
+        for i in range(n_events):
+            for j in range(i):
+                if (i, j) not in intersections and (j, i) not in intersections:
+                    raise ValueError("Every pairwise intersection must be supplied")
         for key, value in intersections.items():
             i, j = key
+            if not (0 <= i < n_events and 0 <= j < n_events):
+                raise ValueError("Intersection index out of range")
+            if (j, i) in intersections and intersections[j, i] != value:
+                raise ValueError("intersections must be symmetric")
             matrix[i, j] = matrix[j, i] = float(value)
     else:
         matrix = np.asarray(intersections, dtype=float)
 
     if matrix.shape != (n_events, n_events):
         raise ValueError("intersections must be an n x n matrix or pair mapping")
-    if np.any((matrix < 0.0) | (matrix > 1.0)):
+    if not np.all(np.isfinite(matrix)) or np.any((matrix < 0.0) | (matrix > 1.0)):
         raise ValueError("intersections must be between 0 and 1")
     if not np.allclose(matrix, matrix.T):
         raise ValueError("intersections must be symmetric")
@@ -509,6 +528,8 @@ def _ditlevsen_bounds_for_order(probabilities, intersections, ordering):
         lower += max(probabilities[event] - np.sum(previous_intersections), 0.0)
         upper -= np.max(previous_intersections)
 
+    if lower > upper + 1e-12:
+        raise ValueError("Inconsistent probabilities produce reversed bounds")
     return _clip_probability(lower), _clip_probability(upper)
 
 

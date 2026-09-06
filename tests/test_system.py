@@ -22,7 +22,7 @@ def test_component_accepts_limit_state_instance():
     limit_state = ra.LimitState(lambda R, S: R - S)
     component = ra.Component("member", limit_state)
 
-    assert component.as_limit_state() is limit_state
+    assert component.limit_state is limit_state
     np.testing.assert_allclose(
         component.evaluate(R=np.array([5.0]), S=np.array([3.0])),
         np.array([2.0]),
