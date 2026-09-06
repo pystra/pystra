@@ -307,7 +307,7 @@ class Swtp:
             raise ValueError("SWTP value_per_life must be positive")
 
     @classmethod
-    def from_country(cls, code: str, indexed: Optional[bool] = None) -> "SWTP":
+    def from_country(cls, code: str, indexed: Optional[bool] = None) -> "Swtp":
         """Create an SWTP value from the built-in country table.
 
         ``indexed`` must be supplied explicitly.  Use ``indexed=False`` for
@@ -332,7 +332,7 @@ class Swtp:
         currency: str = "currency units",
         price_year: Optional[int] = None,
         source: Optional[str] = "LQI relation SWTP = g / q * G",
-    ) -> "SWTP":
+    ) -> "Swtp":
         """Create an SWTP value from the LQI relation.
 
         Parameters
@@ -1907,7 +1907,7 @@ class Lqi(DdoCriterion):
         consequence: Optional[FatalityConsequence] = None,
         marginal_safety_cost: float,
         variability: str = "medium",
-    ) -> "LQI":
+    ) -> "Lqi":
         """Create an LQI criterion from an SWTP value.
 
         Parameters
@@ -1951,7 +1951,7 @@ class Lqi(DdoCriterion):
         marginal_safety_cost: float,
         indexed: Optional[bool] = None,
         variability: str = "medium",
-    ) -> "LQI":
+    ) -> "Lqi":
         """Create an LQI criterion from a built-in country SWTP value."""
 
         return cls.from_swtp(
@@ -1976,7 +1976,7 @@ class Lqi(DdoCriterion):
         currency: str = "currency units",
         price_year: Optional[int] = None,
         source: Optional[str] = "LQI relation SWTP = g / q * G",
-    ) -> "LQI":
+    ) -> "Lqi":
         """Create an LQI criterion from the LQI SWTP relation.
 
         ``work_leisure_parameter`` is the dimensionless LQI parameter ``q``

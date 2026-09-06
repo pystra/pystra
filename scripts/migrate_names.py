@@ -69,6 +69,11 @@ def python_source(text, classes, callables):
                 mark_strings(node.args[1])
         elif isinstance(node, ast.arg) and node.annotation is not None:
             mark_strings(node.annotation)
+        elif (
+            isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+            and node.returns is not None
+        ):
+            mark_strings(node.returns)
         elif isinstance(node, ast.AnnAssign):
             mark_strings(node.annotation)
 
