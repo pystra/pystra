@@ -70,7 +70,10 @@ from .ddo import (
     DesignStudy,
     FatalityConsequence,
     LQI,
-    LQITarget,
+    RackwitzTargetModel,
     RiskResult,
+    RiskStudy,
+    ScenarioRiskModel,
     SWTP,
+    TargetReliability,
 )

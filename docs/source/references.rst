@@ -53,6 +53,12 @@ References
 
 .. [Fischer2012LQI] Fischer, K., Barnardo-Viljoen, C., and Faber, M. H. (2012). Deriving target reliabilities from the LQI. LQI Symposium, Kgs. Lyngby, Denmark, August 21-23, 2012. Available via `ResearchGate <https://www.researchgate.net/publication/289533079_Deriving_target_reliabilities_from_the_LQI>`__.
 
+.. [Fischer2013MarginalCost] Fischer, K., Virguez, E., Sánchez-Silva, M., and Faber, M. H. (2013). "On the assessment of marginal life saving costs for risk acceptance criteria". Structural Safety, 44, 37-46. `doi:10.1016/j.strusafe.2013.05.001 <https://doi.org/10.1016/j.strusafe.2013.05.001>`__.
+
+.. [ISO2394] International Organization for Standardization (2015). ISO 2394:2015, General principles on reliability for structures. Geneva: ISO.
+
+.. [JCSSPMC2001] Joint Committee on Structural Safety (JCSS). (2001). Probabilistic Model Code. 12th draft. PDF: `JCSS <https://www.jcss-lc.org/publications/jcsspmc/part_i.pdf>`__.
+
 .. [JCSS2008RiskAssessment] Joint Committee on Structural Safety (JCSS). (2008). Risk Assessment in Engineering: Principles, System Representation & Risk Criteria. Edited by M. H. Faber. ISBN 978-3-909386-78-9. PDF: `JCSS <https://www.jcss-lc.org/publications/raie/01_jcss_riskassessment.pdf>`__.
 
 .. [KroonMaes2008RiskFramework] Kroon, I. B. and Maes, M. A. (2008). Theoretical Framework for Risk Assessment and Evaluation. Background Documents on Risk Assessment in Engineering, Document #1. Joint Committee on Structural Safety. PDF: `JCSS <https://www.jcss-lc.org/publications/raie/03_risk_backgrounddoc_theoretical_framework_for_risk_assessment_and_evaluation.pdf>`__.
@@ -67,11 +73,17 @@ References
 
 .. [PandeyWangCheng2015Renewal] Pandey, M. D., Wang, Z., and Cheng, T. (2015). Stochastic Renewal Process Models for Life Cycle Cost and Utility Analysis. In Proceedings of the 12th International Conference on Applications of Statistics and Probability in Civil Engineering (ICASP12), Vancouver, Canada. `doi:10.14288/1.0076240 <https://doi.org/10.14288/1.0076240>`__.
 
+.. [Rackwitz2000CodeMaking] Rackwitz, R. (2000). "Optimization - the basis of code-making and reliability verification". Structural Safety, 22(1), 27-60. `doi:10.1016/S0167-4730(99)00037-5 <https://doi.org/10.1016/S0167-4730(99)00037-5>`__.
+
 .. [Rackwitz2002LQI] Rackwitz, R. (2002). "Optimization and risk acceptability based on the Life Quality Index". Structural Safety, 24(2-4), 297-331. `doi:10.1016/S0167-4730(02)00029-2 <https://doi.org/10.1016/S0167-4730(02)00029-2>`__.
+
+.. [Rackwitz2004Discounting] Rackwitz, R. (2004). "The effect of discounting, different mortality reduction schemes and predictive cohort life tables on risk acceptability criteria". Reliability Engineering & System Safety, 84(3), 337-360. `doi:10.1016/j.ress.2003.12.001 <https://doi.org/10.1016/j.ress.2003.12.001>`__.
 
 .. [Rackwitz2008LQI] Rackwitz, R. (2008). The Philosophy Behind the Life Quality Index and Empirical Verification. Basic Documents on Risk Assessment in Engineering, Document #4. Joint Committee on Structural Safety. PDF: `JCSS <https://www.jcss-lc.org/publications/raie/06_risk_backgrounddoc_lqi_philosophy.pdf>`__.
 
 .. [Schubert2009LQI] Schubert, M. and Faber, M. H. (2009). Examples on the Application of the LQI Criterion. JCSS Documents on Risk Assessment in Engineering, Joint Committee on Structural Safety, June 2009. PDF: `JCSS <https://www.jcss-lc.org/publications/raie/11_example_jcss_ms_2.pdf>`__.
+
+.. [Steenbergen2018Target] Steenbergen, R. D. J. M., Rózsás, Á., and Vrouwenvelder, A. C. W. M. (2018). Target reliability of new and existing structures - A general framework for code making. HERON, 63(3), 219-242. PDF: `TNO <https://publications.tno.nl/publication/34636462/D4WiY8/steenbergen-2018-target.pdf>`__.
 
 .. [Streicher2008LQI] Streicher, H. and Rackwitz, R. (2008). Optimization with a LQI Acceptance Criterion. Background Documents on Risk Assessment in Engineering, Document #5. Joint Committee on Structural Safety. PDF: `JCSS <https://www.jcss-lc.org/publications/raie/07_risk_backgrounddoc_lqi_optimization.pdf>`__.
 
