@@ -26,3 +26,4 @@ page.
     notebooks/ex_generic_calibration
     notebooks/ex_design_decision_optimization
     notebooks/ex_system_reliability
+    notebooks/ex_rosenblatt_system_order

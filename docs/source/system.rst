@@ -254,6 +254,11 @@ reliability methods generally.
 transformation and conditioning order for every component. Gaussian Nataf
 and :ref:`Rosenblatt transformations <chap_copulas>` are supported. For a
 Student-t copula, use Rosenblatt; spherical Student-t Nataf space is rejected.
+
+The :doc:`Rosenblatt ordering tutorial <notebooks/ex_rosenblatt_system_order>`
+reproduces Meinen and Steenbergen's (2025) system example. It shows why a
+shared transformation matters, why a non-Gaussian copula can retain order
+sensitivity in FORM, and how original-event calculations check the approximation.
 Automatic failure-path enumeration,
 load redistribution and importance sampling around multiple design points
 remain future extensions.

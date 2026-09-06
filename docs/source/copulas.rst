@@ -167,7 +167,11 @@ correlation 0.5 or Frank parameter **4.73**, rather than the earlier benchmark's
 10. For fully dependent identical components, both components use the same
 pair of variables, so their union must equal a single component event.
 
-``tests/test_rosenblatt_system_order.py`` reproduces the shared-order results:
+The :doc:`worked tutorial <notebooks/ex_rosenblatt_system_order>` credits
+Meinen and Steenbergen and develops their example with transformation plots,
+shared-event and independent-copy systems, coordinate alignment, integration
+and direct simulation. ``tests/test_rosenblatt_system_order.py`` preserves the
+shared-order results as regressions:
 
 .. list-table:: Fully dependent identical components: system failure probability
    :header-rows: 1
