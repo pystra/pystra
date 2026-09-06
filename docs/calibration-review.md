@@ -7,6 +7,15 @@ see the [naming map](migration/calibration-naming-map.json) for current names.
 The reproduced correctness problems remain unresolved by that naming-only
 change. The recommended structural migration direction is unchanged.
 
+Validation of the naming cleanup passed all 483 tests and the maintained
+factor-calibration, load-combination, and generic-calibration tutorials. The
+archived global-calibration notebook failed both before and after the naming
+pass: its positional constructor arguments misassigned resistance, other
+variables, and constants. A separate notebook repair uses explicit keywords,
+evaluates the second model in its final comparison, and refreshes its outputs.
+This repairs the example without changing runtime algorithms or resolving the
+core correctness findings below.
+
 ## Primary workflow
 
 The maintainer identifies the normalized code-design study implemented by
