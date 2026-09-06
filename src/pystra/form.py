@@ -5,6 +5,7 @@ import numpy as np
 import warnings
 from scipy.stats import norm as normal
 from .analysis import AnalysisObject
+from .results import FormResult
 from .correlation import set_modified_correlation_matrix
 
 __all__ = ["Form"]
@@ -70,9 +71,9 @@ class Form(AnalysisObject):
         self.e1 = None
         self.e2 = None
 
-    def run(self):
+    def run(self) -> FormResult:
         """
-        Executes the FORM analysis
+        Execute FORM and return an immutable :class:`FormResult` snapshot.
         """
         self.results_valid = False
         self.converged = False
@@ -181,6 +182,7 @@ class Form(AnalysisObject):
         # Show Results
         if self.options.get_print_output() and self.results_valid:
             self.show_results()
+        return FormResult.from_analysis(self)
 
     def compute_starting_point(self):
         """Compute starting point for the algorithm"""

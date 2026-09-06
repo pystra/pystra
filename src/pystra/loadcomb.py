@@ -1,540 +1,338 @@
-# -*- coding: utf-8 -*-
+"""Inspectable probabilistic load cases and leading-action case generators."""
 
-from collections import OrderedDict
-import warnings
+from collections.abc import Mapping
+from copy import deepcopy
+from dataclasses import dataclass
+from types import MappingProxyType
+from typing import Tuple, Optional, Callable, Union, Sequence
 
-from .model import LimitState
-from .model import StochasticModel
-from .form import Form
-from .correlation import CorrelationMatrix
+import numpy as np
+
 from .distributions import Constant, Distribution
 from .fbc import FbcProcess
+from .model import StochasticModel
+
+__all__ = ["VariableRoles", "LoadCombination"]
+
+_Variables = Union[
+    Mapping[str, Union[Distribution, Constant]], Sequence[Union[Distribution, Constant]]
+]
+
+
+def _variables(values, *, processes=False):
+    if values is None:
+        return {}
+    entries = (
+        values.items() if isinstance(values, Mapping) else ((v.name, v) for v in values)
+    )
+    result = {}
+    allowed = (
+        (Distribution, Constant, FbcProcess) if processes else (Distribution, Constant)
+    )
+    for name, variable in entries:
+        if not isinstance(variable, allowed):
+            raise TypeError(
+                "Expected a Distribution or Constant"
+                + (" or FbcProcess" if processes else "")
+            )
+        if name != variable.name or name in result:
+            raise ValueError(
+                "Variable names must be unique and agree with mapping keys"
+            )
+        result[name] = deepcopy(variable)
+    return result
+
+
+@dataclass(frozen=True)
+class VariableRoles:
+    """Names of resistance, static/other, and variable-action quantities.
+
+    Model errors belong to the resistance or other group according to the
+    side of the limit state they multiply. Ordering aligns numerical arrays;
+    leading actions are specified separately for each case.
+    """
+
+    resistance: Tuple[str, ...] = ()
+    other: Tuple[str, ...] = ()
+    variable: Tuple[str, ...] = ()
+
+    def __post_init__(self):
+        for field in ("resistance", "other", "variable"):
+            values = getattr(self, field)
+            if isinstance(values, str):
+                raise TypeError("Variable roles require sequences of names")
+            object.__setattr__(self, field, tuple(values))
+        if any(not isinstance(n, str) or not n for n in self.names):
+            raise ValueError("Variable names must be nonempty strings")
+        if len(set(self.names)) != len(self.names):
+            raise ValueError("Variable roles must be disjoint and unique")
+
+    @property
+    def names(self) -> Tuple[str, ...]:
+        """All role names in resistance/other/variable order."""
+        return self.resistance + self.other + self.variable
 
 
 class LoadCombination:
-    """Named load-combination reliability cases.
+    """Named probabilistic cases, with optional factor-calibration metadata.
 
-    A load combination is represented as a transparent mapping of named
-    reliability cases.  Each case is itself a mapping of limit-state variable
-    names to ordinary Pystra :class:`Distribution` or :class:`Constant`
-    objects.  This keeps the structural reliability model visible: users can
-    inspect the variables in a case, build a
-    :class:`~pystra.model.StochasticModel`, or use the convenience FORM runner.
+    Parameters
+    ----------
+    cases : mapping
+        Case names mapped to named distributions/constants or sequences thereof.
+    limit_state : callable, optional
+        Limit-state function. No analysis is run by this object.
+    constants : mapping or sequence, optional
+        Common constants; case variables may not duplicate these names.
+    roles : VariableRoles, optional
+        Explicit roles, required by specialist factor calibration.
+    leading_actions : mapping, optional
+        Case names mapped to tuples of leading variable-action names.
+    correlation : pandas.DataFrame, optional
+        Physical Pearson correlations labelled by random-variable names.
 
-    Preferred explicit-case interface::
-
-        LoadCombination(
-            lsf=lsf,
-            cases={
-                "Q1_leading": {"R": R, "G": G, "Q1": Q1max, "Q2": Q2pit},
-                "Q2_leading": {"R": R, "G": G, "Q1": Q1pit, "Q2": Q2max},
-            },
-        )
-
-    For variable actions represented by Ferry-Borges-Castanheta processes, use
-    :meth:`LoadCombination.turkstra` to generate explicit leading-action cases
-    using Turkstra's rule.  The FBC process defines the load magnitude
-    distributions; Turkstra's rule defines the combination cases.
-
-    The legacy action-based construction route remains transitional in v2,
-    using ``action_distributions`` and ``leading_actions``. It is normalized
-    internally to explicit cases and emits a deprecation warning. The former
-    type-prefixed keyword names are no longer accepted.
+    Input objects are copied. Accessors and model construction return copies,
+    so candidate overrides cannot mutate the stored case definitions.
     """
 
     def __init__(
         self,
-        lsf=None,
-        action_distributions=None,
-        resistance=None,
-        other_variables=None,
-        corr=None,
-        legacy_constants=None,
-        opt=None,
-        leading_actions=None,
-        cases=None,
-        constants=None,
-    ):
-        """Initialise a load-combination case set.
-
-        Parameters
-        ----------
-        lsf : callable, optional
-            Limit-state function used by :meth:`run_reliability_case` and
-            :meth:`eval_lsf_kwargs`.  It is optional when the object is only
-            used to inspect or generate cases.
-        cases : mapping, optional
-            Preferred interface.  Mapping of case name to variables for that
-            case, for example ``{"Q1_leading": {"R": R, "Q1": Q1max}}``.
-            Values may be supplied as mappings or sequences of Pystra
-            variables.
-        constants : mapping or sequence, optional
-            Constants included in every stochastic model.
-        corr : pandas.DataFrame, optional
-            Correlation matrix indexed and columned by random-variable names.
-        opt : AnalysisOptions, optional
-            Options passed to the FORM analysis convenience runner.
-        action_distributions, resistance, other_variables, legacy_constants : optional
-            Deprecated legacy variables interface.
-        leading_actions : optional
-            Deprecated legacy action-based interface. These inputs are immediately
-            converted to explicit ``cases``. Their v2 names differ from v1.
-        """
-        self.lsf = lsf
-        self.correlation = corr
-        self.options = opt
-
-        if constants is not None and legacy_constants is not None:
-            raise Exception("Specify only one of constants or legacy_constants")
-        self.constant = self._variables_to_dict(
-            constants if constants is not None else legacy_constants
-        )
-        self.constant_names = list(self.constant.keys())
-
-        if cases is not None:
-            legacy_args = [
-                action_distributions,
-                resistance,
-                other_variables,
-                leading_actions,
-            ]
-            if any(arg is not None for arg in legacy_args):
-                raise Exception(
-                    "Specify either cases or legacy load-combination inputs"
+        *,
+        cases: Mapping[str, _Variables],
+        limit_state: Optional[Callable] = None,
+        constants: Optional[_Variables] = None,
+        roles: Optional[VariableRoles] = None,
+        leading_actions: Optional[Mapping[str, Sequence[str]]] = None,
+        correlation=None,
+    ) -> None:
+        if not isinstance(cases, Mapping) or not cases:
+            raise ValueError("At least one named case is required")
+        if any(not isinstance(n, str) or not n for n in cases):
+            raise ValueError("Case names must be nonempty strings")
+        if limit_state is not None and not callable(limit_state):
+            raise TypeError("limit_state must be callable")
+        self.limit_state = limit_state
+        self._cases = {name: _variables(values) for name, values in cases.items()}
+        self._constants = _variables(constants)
+        if any(not isinstance(v, Constant) for v in self._constants.values()):
+            raise TypeError("Common constants must be Constant objects")
+        for case in self._cases.values():
+            if set(case) & set(self._constants):
+                raise ValueError("Case variables duplicate common constants")
+        if roles is not None and not isinstance(roles, VariableRoles):
+            raise TypeError("roles must be VariableRoles")
+        self.roles = roles
+        if roles is not None:
+            for case in self._cases.values():
+                random_names = {
+                    n for n, v in case.items() if isinstance(v, Distribution)
+                }
+                if random_names != set(roles.names):
+                    raise ValueError(
+                        "Roles must cover exactly the random variables in every case"
+                    )
+        self._leading_actions = {}
+        if leading_actions is not None:
+            if roles is None or set(leading_actions) != set(cases):
+                raise ValueError(
+                    "Leading actions require roles and an entry for every case"
                 )
-            self._init_from_cases(cases)
-        else:
-            self._warn_legacy_inputs()
-            self._init_from_legacy(
-                action_distributions=action_distributions,
-                resistance=resistance,
-                other_variables=other_variables,
-                leading_actions=leading_actions,
-            )
+            for name, values in leading_actions.items():
+                if isinstance(values, str):
+                    raise TypeError("Leading actions must be sequences of names")
+                values = tuple(values)
+                if (
+                    not values
+                    or len(set(values)) != len(values)
+                    or not set(values) <= set(roles.variable)
+                ):
+                    raise ValueError(
+                        "Leading actions must identify unique variable actions"
+                    )
+                self._leading_actions[name] = values
+        self._correlation = deepcopy(correlation)
+        # Validate all case-dependent correlation subsets before a study starts.
+        for name in self.case_names:
+            self.stochastic_model(name)
 
-        self._set_case_metadata()
+    @property
+    def case_names(self) -> Tuple[str, ...]:
+        """Stable case order."""
+        return tuple(self._cases)
+
+    @property
+    def cases(self) -> dict:
+        """Independent copies of all cases."""
+        return deepcopy(self._cases)
+
+    @property
+    def constants(self) -> dict:
+        """Independent copies of common constants."""
+        return deepcopy(self._constants)
+
+    @property
+    def leading_actions(self) -> Mapping[str, Tuple[str, ...]]:
+        """Read-only case-to-leading-action metadata."""
+        return MappingProxyType(self._leading_actions)
+
+    def case(self, case_name: Optional[str] = None) -> dict:
+        """Return a copy of one case; default to the first case."""
+        name = self.case_names[0] if case_name is None else case_name
+        if name not in self._cases:
+            raise ValueError(f"Unknown case: {name}")
+        return deepcopy(self._cases[name])
+
+    def stochastic_model(
+        self, case_name: Optional[str] = None, *, overrides: Optional[_Variables] = None
+    ) -> StochasticModel:
+        """Build an isolated model; reject unknown or misnamed overrides."""
+        variables = {**deepcopy(self._constants), **self.case(case_name)}
+        replacements = _variables(overrides)
+        unknown = set(replacements) - set(variables)
+        if unknown:
+            raise ValueError(f"Unknown overrides: {sorted(unknown)}")
+        variables.update(replacements)
+        model = StochasticModel()
+        for variable in variables.values():
+            model.add_variable(variable)
+        if self._correlation is not None:
+            names = tuple(model.get_variables())
+            corr = self._correlation
+            if (
+                not hasattr(corr, "reindex")
+                or not corr.index.is_unique
+                or not corr.columns.is_unique
+            ):
+                raise ValueError("correlation must be a uniquely labelled DataFrame")
+            if not set(names) <= set(corr.index) or not set(names) <= set(corr.columns):
+                raise ValueError("Missing correlation labels")
+            values = corr.reindex(index=names, columns=names).to_numpy(dtype=float)
+            if (
+                not np.all(np.isfinite(values))
+                or not np.allclose(values, values.T)
+                or not np.allclose(np.diag(values), 1)
+            ):
+                raise ValueError(
+                    "Correlation must be finite, symmetric, with unit diagonal"
+                )
+            if len(names) and np.min(np.linalg.eigvalsh(values)) <= 0:
+                raise ValueError("Correlation must be positive definite")
+            model.set_correlation(values.copy())
+        return model
+
+    @classmethod
+    def from_actions(
+        cls,
+        *,
+        maxima: Mapping[str, Distribution],
+        companions: Mapping[str, Distribution],
+        resistance: _Variables,
+        other: Optional[_Variables] = None,
+        constants: Optional[_Variables] = None,
+        leading_actions: Optional[Mapping[str, Sequence[str]]] = None,
+        limit_state: Optional[Callable] = None,
+        correlation=None,
+    ) -> "LoadCombination":
+        """Generate cases from explicitly supplied maximum/companion marginals.
+
+        Both mappings use the action names as keys. With no leading metadata,
+        generate one case per action, named ``<action>_max``. No reference-period
+        conversion is inferred; use :meth:`turkstra` for FBC processes.
+        """
+        maxima, companions = _variables(maxima), _variables(companions)
+        if not maxima or set(maxima) != set(companions):
+            raise ValueError(
+                "Maximum and companion actions must have identical nonempty names"
+            )
+        if any(
+            not isinstance(v, Distribution)
+            for v in (*maxima.values(), *companions.values())
+        ):
+            raise TypeError("Actions must be distributions")
+        resistance, other = _variables(resistance), _variables(other)
+        roles = VariableRoles(tuple(resistance), tuple(other), tuple(maxima))
+        leading = (
+            leading_actions
+            if leading_actions is not None
+            else {f"{n}_max": (n,) for n in maxima}
+        )
+        cases = {
+            case: {
+                **resistance,
+                **other,
+                **{
+                    n: value if n in lead else companions[n]
+                    for n, value in maxima.items()
+                },
+            }
+            for case, lead in leading.items()
+        }
+        return cls(
+            cases=cases,
+            limit_state=limit_state,
+            constants=constants,
+            roles=roles,
+            leading_actions=leading,
+            correlation=correlation,
+        )
 
     @classmethod
     def turkstra(
         cls,
-        variable,
-        reference_period,
-        lsf=None,
-        resistance=None,
-        permanent=None,
-        other=None,
-        constants=None,
-        corr=None,
-        opt=None,
-        companion_duration="leading_interval",
-    ):
-        """Create leading-action cases using Turkstra's rule.
+        variable: Mapping[str, FbcProcess],
+        reference_period: float,
+        *,
+        limit_state: Optional[Callable] = None,
+        resistance: Optional[_Variables] = None,
+        permanent: Optional[_Variables] = None,
+        other: Optional[_Variables] = None,
+        constants: Optional[_Variables] = None,
+        correlation=None,
+        companion_duration: Union[str, float] = "leading_interval",
+    ) -> "LoadCombination":
+        """Generate FBC leading/companion cases using Turkstra's rule.
 
-        The generated object is still a normal :class:`LoadCombination`.
-        Calling :meth:`case` reveals the generated distributions for each
-        leading-action case.
-
-        This constructor expects variable actions to be represented by
-        :class:`~pystra.fbc.FbcProcess` objects.  The FBC model supplies the
-        maximum and companion distributions; Turkstra's rule supplies the
-        case structure: each variable action is considered as the leading
-        action in turn, while the remaining variable actions are taken as
-        companion values.  A companion value may be a point-in-time value or,
-        for an FBC process with shorter basic intervals, an intermediate
-        maximum over the leading action's interval.
-
-        Parameters
-        ----------
-        variable : mapping
-            Mapping of variable-action names to :class:`FbcProcess` objects.
-        reference_period : float
-            Duration over which the leading action maximum is taken.
-        lsf : function, optional
-            Limit-state function.
-        resistance, permanent, other : mapping or sequence, optional
-            Common variables included in every case.
-        constants : mapping or sequence, optional
-            Constants included in every stochastic model.
-        companion_duration : {"leading_interval", "point_in_time"} or float
-            Rule used for non-leading variable actions.  The default takes a
-            companion maximum over the leading action's basic interval.
-
-        Returns
-        -------
-        LoadCombination
-            Load-combination object containing explicit leading-action cases.
+        The leading marginal is the maximum over ``reference_period``. A
+        companion uses the leading process's basic interval by default, or
+        ``'point_in_time'`` or an explicitly supplied duration. Units must agree.
         """
-        if reference_period <= 0:
-            raise Exception("reference_period must be positive")
-
-        variable = cls._variables_to_dict(variable, allow_process=True)
-        for process in variable.values():
-            if not isinstance(process, FbcProcess):
-                raise Exception("FBC variable actions must be FbcProcess objects")
-
-        common = OrderedDict()
-        for group in (resistance, permanent, other):
-            common.update(cls._variables_to_dict(group))
-
-        cases = OrderedDict()
-        for lead_name, lead_process in variable.items():
-            case = OrderedDict(common)
+        if not np.isfinite(reference_period) or reference_period <= 0:
+            raise ValueError("reference_period must be finite and positive")
+        variable = _variables(variable, processes=True)
+        if not variable or any(
+            not isinstance(v, FbcProcess) for v in variable.values()
+        ):
+            raise TypeError("Variable actions must be FbcProcess objects")
+        resistance, permanent, other = (
+            _variables(resistance),
+            _variables(permanent),
+            _variables(other),
+        )
+        if set(permanent) & set(other):
+            raise ValueError("Permanent and other variables overlap")
+        common = {**resistance, **permanent, **other}
+        roles = VariableRoles(
+            tuple(resistance), tuple(permanent) + tuple(other), tuple(variable)
+        )
+        cases = {}
+        for lead_name, lead in variable.items():
+            case = dict(common)
             for name, process in variable.items():
                 if name == lead_name:
-                    case[name] = process.maximum(duration=reference_period)
+                    value = process.maximum(duration=reference_period)
                 elif companion_duration == "leading_interval":
-                    case[name] = process.maximum(duration=lead_process.basic_interval)
+                    value = process.maximum(duration=lead.basic_interval)
                 elif companion_duration == "point_in_time":
-                    case[name] = process.point_in_time()
+                    value = process.point_in_time()
                 else:
-                    case[name] = process.maximum(duration=companion_duration)
+                    value = process.maximum(duration=companion_duration)
+                case[name] = value
             cases[f"{lead_name}_leading"] = case
-
-        lc = cls(
-            lsf=lsf,
+        return cls(
             cases=cases,
+            limit_state=limit_state,
             constants=constants,
-            corr=corr,
-            opt=opt,
+            roles=roles,
+            leading_actions={f"{n}_leading": (n,) for n in variable},
+            correlation=correlation,
         )
-
-        lc.action_distributions = OrderedDict(variable)
-        lc.maximum_distributions = OrderedDict(
-            (name, lc.cases[f"{name}_leading"][name]) for name in variable
-        )
-        lc.point_in_time_distributions = OrderedDict(
-            (name, process.point_in_time()) for name, process in variable.items()
-        )
-        lc.resistance_distributions = cls._variables_to_dict(resistance)
-        lc.other_distributions = OrderedDict()
-        lc.other_distributions.update(cls._variables_to_dict(permanent))
-        lc.other_distributions.update(cls._variables_to_dict(other))
-        lc.leading_actions = OrderedDict(
-            (f"{name}_leading", [name]) for name in variable
-        )
-        lc.leading_action_groups = list(lc.leading_actions.values())
-        lc._set_case_metadata()
-
-        return lc
-
-    @staticmethod
-    def _variable_name(obj, allow_process=False):
-        valid_types = (Distribution, Constant)
-        if allow_process:
-            valid_types = valid_types + (FbcProcess,)
-        if not isinstance(obj, valid_types):
-            if allow_process:
-                raise Exception(
-                    "Input is not a Distribution, Constant, or FbcProcess object"
-                )
-            raise Exception("Input is not a Distribution or Constant object")
-        return obj.get_name() if hasattr(obj, "get_name") else obj.name
-
-    @classmethod
-    def _variables_to_dict(cls, variables, allow_process=False):
-        if variables is None:
-            return OrderedDict()
-
-        if isinstance(variables, dict):
-            out = OrderedDict()
-            for key, value in variables.items():
-                name = cls._variable_name(value, allow_process=allow_process)
-                if key != name:
-                    raise Exception(
-                        f'variable key "{key}" does not match object name "{name}"'
-                    )
-                out[name] = value
-            return out
-
-        out = OrderedDict()
-        for value in variables:
-            out[cls._variable_name(value, allow_process=allow_process)] = value
-        return out
-
-    @classmethod
-    def _normalise_cases(cls, cases):
-        if not cases:
-            raise Exception("At least one load-combination case is required")
-
-        out = OrderedDict()
-        for case_name, variables in cases.items():
-            out[case_name] = cls._variables_to_dict(variables)
-        return out
-
-    @staticmethod
-    def _warn_legacy_inputs():
-        warnings.warn(
-            "action_distributions, resistance, other_variables, legacy_constants, "
-            "and leading_actions are deprecated. Use LoadCombination(cases=...) "
-            "or LoadCombination.turkstra(...) instead.",
-            DeprecationWarning,
-            stacklevel=3,
-        )
-
-    def _init_from_cases(self, cases):
-        self.cases = self._normalise_cases(cases)
-        self.case_distributions = self.cases
-        self.action_distributions = OrderedDict()
-        self.maximum_distributions = OrderedDict()
-        self.point_in_time_distributions = OrderedDict()
-        self.other_distributions = OrderedDict()
-        self.resistance_distributions = OrderedDict()
-        self.leading_actions = {
-            name: list(case.keys()) for name, case in self.cases.items()
-        }
-        self.leading_action_groups = list(self.leading_actions.values())
-
-    def _init_from_legacy(
-        self,
-        action_distributions,
-        resistance,
-        other_variables=None,
-        leading_actions=None,
-    ):
-        if action_distributions is None or resistance is None:
-            raise Exception(
-                "Specify cases=... or the legacy action_distributions/resistance inputs"
-            )
-
-        self.action_distributions = action_distributions
-        self.maximum_distributions = OrderedDict(
-            (name, values["max"]) for name, values in action_distributions.items()
-        )
-        self.point_in_time_distributions = OrderedDict(
-            (name, values["pit"]) for name, values in action_distributions.items()
-        )
-        self.other_distributions = self._variables_to_dict(other_variables)
-        self.resistance_distributions = self._variables_to_dict(resistance)
-        self.leading_actions = (
-            OrderedDict((f"{name}_max", [name]) for name in self.maximum_distributions)
-            if leading_actions is None
-            else OrderedDict(leading_actions)
-        )
-        self.leading_action_groups = list(self.leading_actions.values())
-        self._check_input()
-        self.case_distributions = self._build_case_distributions()
-        self.cases = self.case_distributions
-
-    def _set_case_metadata(self):
-        self.case_names = list(self.cases.keys())
-        self.n_cases = len(self.case_names)
-
-        if self.action_distributions:
-            self.variable_action_names = list(self.action_distributions.keys())
-        else:
-            self.variable_action_names = self._case_variable_names()
-
-        self.resistance_names = list(self.resistance_distributions.keys())
-        self.other_names = list(self.other_distributions.keys())
-        if self.resistance_names or self.other_names or self.action_distributions:
-            self.variable_names = (
-                self.resistance_names
-                + self.other_names
-                + self.variable_action_names
-                + self.constant_names
-            )
-        else:
-            self.variable_names = self._case_variable_names()
-            for name in self.constant_names:
-                if name not in self.variable_names:
-                    self.variable_names.append(name)
-
-        self.name_groups = {
-            "resist": self.resistance_names,
-            "other": self.other_names,
-            "comb_vrs": self.variable_action_names,
-            "comb_cases": self.case_names,
-            "const": self.constant_names,
-            "all": self.variable_names,
-        }
-
-    def _case_variable_names(self):
-        names = []
-        for case in self.cases.values():
-            for name in case:
-                if name not in names:
-                    names.append(name)
-        return names
-
-    def _check_input(self):
-        """
-        Check consistency of supplied input.
-        """
-        if len(self.maximum_distributions) != len(self.point_in_time_distributions):
-            raise Exception(
-                "\nLength of Max variables {} does not match\
-                      length of point-in-time variables {}".format(
-                    len(self.maximum_distributions),
-                    len(self.point_in_time_distributions),
-                )
-            )
-
-    def get_group_names(self, group):
-        """
-        Get labels corresponding to group.
-        """
-        return self.name_groups[group]
-
-    def _set_case_count(self):
-        """
-        Legacy method retained for compatibility.
-        """
-        self.n_cases = len(self.cases)
-        return self.n_cases
-
-    def get_case_count(self):
-        """
-        Get the number of load-combination cases.
-        """
-        return self.n_cases
-
-    def get_case_distributions(self):
-        """
-        Get the dictionary of distributions for all load-combination cases.
-        """
-        return self.case_distributions
-
-    def _build_case_distributions(self):
-        """
-        Create explicit load-combination cases from legacy max/pit inputs.
-        """
-        case_distributions = OrderedDict()
-        for loadc_name, loadc in self.leading_actions.items():
-            case_variables = OrderedDict()
-            case_variables.update(self.resistance_distributions)
-            case_variables.update(self.other_distributions)
-            for key, value in self.maximum_distributions.items():
-                if key in loadc:
-                    case_variables[key] = value
-                else:
-                    case_variables[key] = self.point_in_time_distributions[key]
-            case_distributions[loadc_name] = case_variables
-        return case_distributions
-
-    def _resolve_case_name(self, case_name=None):
-        case_name = self.case_names[0] if case_name is None else case_name
-        if case_name not in self.cases:
-            raise Exception(f'load-combination case "{case_name}" is not defined')
-        return case_name
-
-    def case(self, case_name=None):
-        """Return a shallow copy of an explicit load-combination case.
-
-        Parameters
-        ----------
-        case_name : str, optional
-            Case name.  If omitted, the first case is returned.
-
-        Returns
-        -------
-        OrderedDict
-            Mapping of variable name to Pystra variable for the selected case.
-        """
-        return OrderedDict(self.cases[self._resolve_case_name(case_name)])
-
-    def stochastic_model(self, case_name=None, **kwargs):
-        """Create a :class:`StochasticModel` for a load-combination case.
-
-        Parameters
-        ----------
-        case_name : str, optional
-            Case name.  If omitted, the first case is used.
-        **kwargs
-            Variable overrides.  This is mainly retained for calibration and
-            sensitivity workflows where constants or distributions are varied.
-
-        Returns
-        -------
-        StochasticModel
-            Model containing common constants and the selected case variables.
-        """
-        variables = OrderedDict()
-        variables.update(self.constant)
-        variables.update(self.case(case_name))
-        for key, value in kwargs.items():
-            if key in variables:
-                variables[key] = value
-
-        sm = StochasticModel()
-        for variable in variables.values():
-            sm.add_variable(variable)
-        if self.correlation is not None:
-            corr = self._get_corr_for_stochastic_model(sm)
-            sm.set_correlation(CorrelationMatrix(corr))
-        return sm
-
-    def _get_corr_for_stochastic_model(self, stochastic_model):
-        """
-        Get correlation data for stochastic model.
-        """
-        sequence_rvs = list(stochastic_model.get_variables().keys())
-        ordered_correlation = self.correlation.reindex(
-            columns=sequence_rvs, index=sequence_rvs
-        )
-        corr = ordered_correlation.values
-        return corr
-
-    def run_reliability_case(self, case_name=None, **kwargs):
-        """Create and run FORM analysis for a load-combination case.
-
-        This is a convenience wrapper around :meth:`stochastic_model` and
-        :class:`~pystra.form.Form`.  Users who want full control can call
-        :meth:`stochastic_model` and instantiate the reliability method
-        directly.
-
-        Parameters
-        ----------
-        case_name : str, optional
-            Case name.  If omitted, the first case is analysed.
-        **kwargs
-            Variable overrides passed to :meth:`stochastic_model`.
-
-        Returns
-        -------
-        Form
-            Completed FORM analysis object.
-        """
-        if self.lsf is None:
-            raise Exception("LoadCombination requires an lsf to run reliability cases")
-        ls = LimitState(self.lsf)
-        sm = self.stochastic_model(case_name, **kwargs)
-        form = Form(sm, ls) if self.options is None else Form(sm, ls, self.options)
-        form.run()
-        return form
-
-    def eval_lsf_kwargs(self, set_value=0.0, set_const=None, **kwargs):
-        """Evaluate the limit-state function with keyword arguments.
-
-        Missing stochastic variables are assigned ``set_value``.  Missing
-        constants are assigned their stored value unless ``set_const`` is
-        supplied.
-
-        Parameters
-        ----------
-        set_value : float, optional
-            Value assigned to missing random variables.
-        set_const : float, optional
-            Value assigned to missing constants.
-        **kwargs
-            Explicit limit-state function arguments.
-
-        Returns
-        -------
-        float
-            Limit-state function value.
-        """
-        if self.lsf is None:
-            raise Exception("LoadCombination requires an lsf to evaluate the LSF")
-
-        set_miss = (
-            set(self.variable_names) - set(kwargs.keys()) - set(self.constant.keys())
-        )
-        if len(set_miss) > 0:
-            kwargs.update({xx: set_value for xx in set_miss})
-        for key in self.constant:
-            if key not in kwargs and set_const is None:
-                kwargs.update({key: self.constant[key].get_value()})
-            elif key not in kwargs and set_const is not None:
-                kwargs.update({key: set_const})
-        gX = self.lsf(**kwargs)
-        return gX

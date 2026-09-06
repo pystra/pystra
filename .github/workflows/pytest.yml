@@ -58,7 +58,7 @@ jobs:
           python -m pip install -e ".[test,docs]" black==26.5.1 build twine
       - name: Check naming and formatting
         run: |
-          python scripts/api_inventory.py --check-names
+          python scripts/api_inventory.py --check-names --check-migration
           python -m black --check --target-version py39 src tests examples scripts docs/source/conf.py
       - name: Execute maintained tutorials
         run: python scripts/execute_notebooks.py --output-dir docs/source/notebooks

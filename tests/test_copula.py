@@ -132,11 +132,15 @@ def test_generalized_t_nataf_and_form_exact_halfspace():
         analysis_options=opts,
         limit_state=ra.LimitState(lambda X, Y: 3 - X - Y),
     )
-    form.run()
+    result = form.run()
     beta = 3 / np.sqrt(2 + 2 * 0.4)
     assert form.get_beta() == pytest.approx(beta, rel=2e-6)
     assert form.get_failure() == pytest.approx(t.sf(beta, 4), rel=2e-6)
     assert form.get_equivalent_beta() == pytest.approx(-norm.ppf(form.get_failure()))
+    assert result.standard_space == "student_t"
+    assert result.geometric_beta == pytest.approx(beta, rel=2e-6)
+    assert result.beta == pytest.approx(-norm.ppf(t.sf(beta, 4)), rel=2e-6)
+    assert result.failure_probability == pytest.approx(t.sf(beta, 4), rel=2e-6)
     with pytest.raises(ValueError, match="normal space"):
         ra.StrongMaximumTest(form)
     for cls in (ra.CrudeMonteCarlo, ra.Sorm):

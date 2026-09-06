@@ -36,7 +36,7 @@ def test_loadcombination_explicit_cases_builds_stochastic_model():
     z = ra.Constant("z", 1.0)
 
     lc = ra.LoadCombination(
-        lsf=lambda z, R, G, Q: z * R - G - Q,
+        limit_state=lambda z, R, G, Q: z * R - G - Q,
         cases={"Q_leading": {"R": R, "G": G, "Q": Q}},
         constants={"z": z},
     )
@@ -47,8 +47,8 @@ def test_loadcombination_explicit_cases_builds_stochastic_model():
     assert list(case.keys()) == ["R", "G", "Q"]
     assert sm.get_names() == ["z", "R", "G", "Q"]
     assert sm.get_constants()["z"] == 1.0
-    assert lc.get_group_names("comb_cases") == ["Q_leading"]
-    assert lc.get_case_count() == 1
+    assert list(lc.case_names) == ["Q_leading"]
+    assert len(lc.case_names) == 1
 
 
 def test_loadcombination_turkstra_generates_leading_cases_from_fbc_processes():
@@ -58,7 +58,7 @@ def test_loadcombination_turkstra_generates_leading_cases_from_fbc_processes():
     Q2 = ra.FbcProcess("Q2", ra.Normal("Q2", 8, 1), basic_interval=0.10)
 
     lc = ra.LoadCombination.turkstra(
-        lsf=lambda R, G, Q1, Q2: R - G - Q1 - Q2,
+        limit_state=lambda R, G, Q1, Q2: R - G - Q1 - Q2,
         resistance={"R": R},
         permanent={"G": G},
         variable={"Q1": Q1, "Q2": Q2},
@@ -72,12 +72,12 @@ def test_loadcombination_turkstra_generates_leading_cases_from_fbc_processes():
     assert q1_case["Q2"].N == 2.5
     assert q2_case["Q1"].N == 1.0
     assert q2_case["Q2"].N == 10.0
-    assert lc.get_group_names("resist") == ["R"]
-    assert lc.get_group_names("other") == ["G"]
-    assert lc.get_group_names("comb_vrs") == ["Q1", "Q2"]
+    assert list(lc.roles.resistance) == ["R"]
+    assert list(lc.roles.other) == ["G"]
+    assert list(lc.roles.variable) == ["Q1", "Q2"]
     assert lc.leading_actions == {
-        "Q1_leading": ["Q1"],
-        "Q2_leading": ["Q2"],
+        "Q1_leading": ("Q1",),
+        "Q2_leading": ("Q2",),
     }
 
 
@@ -149,23 +149,25 @@ def test_max_parent_ppf_handles_underflow_tail_probability():
     assert pytest.approx(Qmax.dist_obj.logcdf(x), abs=1e-10) == -800
 
 
-def test_loadcombination_legacy_inputs_are_normalized():
+def test_loadcombination_from_actions_copies_inputs_and_preserves_roles():
     R = ra.Normal("R", 100, 10)
     G = ra.Normal("G", 30, 3)
     Qmax = ra.Gumbel("Q", 20, 4)
     Qpit = ra.Normal("Q", 10, 2)
-
-    with pytest.deprecated_call():
-        lc = ra.LoadCombination(
-            lsf=lambda R, G, Q: R - G - Q,
-            action_distributions={"Q": {"max": Qmax, "pit": Qpit}},
-            resistance=[R],
-            other_variables=[G],
-            leading_actions={"Q_max": ["Q"]},
-        )
-
+    lc = ra.LoadCombination.from_actions(
+        limit_state=lambda R, G, Q: R - G - Q,
+        maxima={"Q": Qmax},
+        companions={"Q": Qpit},
+        resistance=[R],
+        other=[G],
+        leading_actions={"Q_max": ["Q"]},
+    )
     case = lc.case("Q_max")
-
-    assert list(case.keys()) == ["R", "G", "Q"]
-    assert case["Q"] is Qmax
-    assert lc.get_case_distributions()["Q_max"]["Q"] is Qmax
+    assert list(case) == ["R", "G", "Q"]
+    assert case["Q"] is not Qmax
+    assert case["Q"].cdf(20) == pytest.approx(Qmax.cdf(20))
+    case["Q"].name = "changed"
+    assert lc.case("Q_max")["Q"].name == "Q"
+    assert lc.roles == ra.VariableRoles(
+        resistance=("R",), other=("G",), variable=("Q",)
+    )

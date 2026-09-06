@@ -52,12 +52,13 @@ def setup1():
 
     loadcombinations = {"Q1_max": ["Q1"], "Q2_max": ["Q2"]}
 
-    lc = ra.LoadCombination(
-        lsf=lsf,
-        action_distributions=Q_dict,
+    lc = ra.LoadCombination.from_actions(
+        limit_state=lsf,
+        maxima={name: values["max"] for name, values in Q_dict.items()},
+        companions={name: values["pit"] for name, values in Q_dict.items()},
         resistance=[Rdist],
-        other_variables=[Gdist],
-        legacy_constants=[z, eg, e1, e2],
+        other=[Gdist],
+        constants=[z, eg, e1, e2],
         leading_actions=loadcombinations,
     )
 
@@ -98,12 +99,13 @@ def setup2():
 
     loadcombinations = {"Q1_max": ["Q1"], "Q2_max": ["Q2"]}
 
-    lc = ra.LoadCombination(
-        lsf=lsf_nonlinear,
-        action_distributions=Q_dict,
-        other_variables=[wS],
+    lc = ra.LoadCombination.from_actions(
+        limit_state=lsf_nonlinear,
+        maxima={name: values["max"] for name, values in Q_dict.items()},
+        companions={name: values["pit"] for name, values in Q_dict.items()},
+        other=[wS],
         resistance=[R, wR],
-        legacy_constants=[z],
+        constants=[z],
         leading_actions=loadcombinations,
     )
 
@@ -152,12 +154,13 @@ def setup3():
     G = ra.Normal("G", 1, 0.1)
 
     loadcombinations = {"Q1_max": ["Q1"], "Q2_max": ["Q2"], "Q3_max": ["Q3"]}
-    lc = ra.LoadCombination(
-        lsf=lsf3,
-        action_distributions=Q_dict,
+    lc = ra.LoadCombination.from_actions(
+        limit_state=lsf3,
+        maxima={name: values["max"] for name, values in Q_dict.items()},
+        companions={name: values["pit"] for name, values in Q_dict.items()},
         resistance=[R],
-        other_variables=[G],
-        legacy_constants=[z, cg, c1, c2, c3],
+        other=[G],
+        constants=[z, cg, c1, c2, c3],
         leading_actions=loadcombinations,
     )
 
@@ -175,16 +178,12 @@ def test_calibration_coeff_opt():
     Perform SORM analysis
     """
     lc, nominal_values, betaT = setup1()
-    calib1 = ra.Calibration(
-        lc,
-        target_beta=betaT,
-        nominal_values=nominal_values,
-        design_parameter="z",
-        factor_method="coeff",
-        design_method="optimize",
-        print_output=False,
+    problem = ra.FactorCalibrationProblem(
+        lc, nominal_values=nominal_values, design_parameter="z"
     )
-    calib1.run()
+    solved = ra.solve_designs(problem, target_beta=betaT, method="root")
+    assert solved.converged
+    factors = ra.derive_factors(solved, method="coeff")
     design_points = pd.DataFrame(
         data=[
             [0.6553, 1.0371, 1.6236, 2.0171, 3.0431],
@@ -209,13 +208,37 @@ def test_calibration_coeff_opt():
     vect_design_z1 = np.array([3.0443, 3.0477])
     vect_design_beta1 = np.array([4.3065, 4.3000])
     # validate results
-    assert pytest.approx(calib1.calibrated_design_points, abs=1e-4) == design_points
-    assert pytest.approx(calib1.resistance_factors, abs=1e-4) == resistance_factors
-    assert pytest.approx(calib1.load_factors, abs=1e-4) == load_factors
-    assert pytest.approx(calib1.combination_factors, abs=1e-4) == combination_factors
-    assert pytest.approx(calib1.get_design_param_factor(), abs=1e-4) == vect_design_z1
+    assert pytest.approx(solved.to_frame(), abs=1e-4) == design_points
+    assert pytest.approx(factors.to_frame("resistance"), abs=1e-4) == resistance_factors
+    assert pytest.approx(factors.to_frame("loads"), abs=1e-4) == load_factors
     assert (
-        pytest.approx(calib1.calc_beta_design_param(np.max(vect_design_z1)), abs=1e-4)
+        pytest.approx(factors.to_frame("combinations"), abs=1e-4) == combination_factors
+    )
+    assert (
+        pytest.approx(
+            ra.design_with_factors(
+                problem,
+                ra.select_factors(
+                    factors,
+                    resistance="minimum",
+                    loads="maximum",
+                    combinations="maximum",
+                ),
+            ).values,
+            abs=1e-4,
+        )
+        == vect_design_z1
+    )
+    assert (
+        pytest.approx(
+            np.array(
+                [
+                    check.reliability.beta
+                    for check in ra.verify_designs(problem, np.max(vect_design_z1))
+                ]
+            ),
+            abs=1e-4,
+        )
         == vect_design_beta1
     )
 
@@ -225,16 +248,12 @@ def test_calibration_mat_opt():
     Perform SORM analysis
     """
     lc, nominal_values, betaT = setup1()
-    calib2 = ra.Calibration(
-        lc,
-        target_beta=betaT,
-        nominal_values=nominal_values,
-        design_parameter="z",
-        factor_method="matrix",
-        design_method="optimize",
-        print_output=False,
+    problem = ra.FactorCalibrationProblem(
+        lc, nominal_values=nominal_values, design_parameter="z"
     )
-    calib2.run()
+    solved = ra.solve_designs(problem, target_beta=betaT, method="root")
+    assert solved.converged
+    factors = ra.derive_factors(solved, method="matrix")
     design_points = pd.DataFrame(
         data=[
             [0.6553, 1.0371, 1.6236, 2.0171, 3.0431],
@@ -259,13 +278,37 @@ def test_calibration_mat_opt():
     vect_design_z2 = np.array([3.0443, 3.0477])
     vect_design_beta2 = np.array([4.3065, 4.3000])
     # validate results
-    assert pytest.approx(calib2.calibrated_design_points, abs=1e-4) == design_points
-    assert pytest.approx(calib2.resistance_factors, abs=1e-4) == resistance_factors
-    assert pytest.approx(calib2.load_factors, abs=1e-4) == load_factors
-    assert pytest.approx(calib2.combination_factors, abs=1e-4) == combination_factors
-    assert pytest.approx(calib2.get_design_param_factor(), abs=1e-4) == vect_design_z2
+    assert pytest.approx(solved.to_frame(), abs=1e-4) == design_points
+    assert pytest.approx(factors.to_frame("resistance"), abs=1e-4) == resistance_factors
+    assert pytest.approx(factors.to_frame("loads"), abs=1e-4) == load_factors
     assert (
-        pytest.approx(calib2.calc_beta_design_param(np.max(vect_design_z2)), abs=1e-4)
+        pytest.approx(factors.to_frame("combinations"), abs=1e-4) == combination_factors
+    )
+    assert (
+        pytest.approx(
+            ra.design_with_factors(
+                problem,
+                ra.select_factors(
+                    factors,
+                    resistance="minimum",
+                    loads="maximum",
+                    combinations="maximum",
+                ),
+            ).values,
+            abs=1e-4,
+        )
+        == vect_design_z2
+    )
+    assert (
+        pytest.approx(
+            np.array(
+                [
+                    check.reliability.beta
+                    for check in ra.verify_designs(problem, np.max(vect_design_z2))
+                ]
+            ),
+            abs=1e-4,
+        )
         == vect_design_beta2
     )
 
@@ -275,16 +318,12 @@ def test_calibration_mat_alpha():
     Perform SORM analysis
     """
     lc, nominal_values, betaT = setup1()
-    calib3 = ra.Calibration(
-        lc,
-        target_beta=betaT,
-        nominal_values=nominal_values,
-        design_parameter="z",
-        factor_method="matrix",
-        design_method="alpha",
-        print_output=False,
+    problem = ra.FactorCalibrationProblem(
+        lc, nominal_values=nominal_values, design_parameter="z"
     )
-    calib3.run()
+    solved = ra.solve_designs(problem, target_beta=betaT, method="alpha")
+    assert solved.converged
+    factors = ra.derive_factors(solved, method="matrix")
     design_points = pd.DataFrame(
         data=[
             [0.6553, 1.0371, 1.6236, 2.0171, 3.0431],
@@ -309,13 +348,37 @@ def test_calibration_mat_alpha():
     vect_design_z3 = np.array([3.0443, 3.0477])
     vect_design_beta3 = np.array([4.3065, 4.3000])
     # validate results
-    assert pytest.approx(calib3.calibrated_design_points, abs=1e-4) == design_points
-    assert pytest.approx(calib3.resistance_factors, abs=1e-4) == resistance_factors
-    assert pytest.approx(calib3.load_factors, abs=1e-4) == load_factors
-    assert pytest.approx(calib3.combination_factors, abs=1e-4) == combination_factors
-    assert pytest.approx(calib3.get_design_param_factor(), abs=1e-4) == vect_design_z3
+    assert pytest.approx(solved.to_frame(), abs=1e-4) == design_points
+    assert pytest.approx(factors.to_frame("resistance"), abs=1e-4) == resistance_factors
+    assert pytest.approx(factors.to_frame("loads"), abs=1e-4) == load_factors
     assert (
-        pytest.approx(calib3.calc_beta_design_param(np.max(vect_design_z3)), abs=1e-4)
+        pytest.approx(factors.to_frame("combinations"), abs=1e-4) == combination_factors
+    )
+    assert (
+        pytest.approx(
+            ra.design_with_factors(
+                problem,
+                ra.select_factors(
+                    factors,
+                    resistance="minimum",
+                    loads="maximum",
+                    combinations="maximum",
+                ),
+            ).values,
+            abs=1e-4,
+        )
+        == vect_design_z3
+    )
+    assert (
+        pytest.approx(
+            np.array(
+                [
+                    check.reliability.beta
+                    for check in ra.verify_designs(problem, np.max(vect_design_z3))
+                ]
+            ),
+            abs=1e-4,
+        )
         == vect_design_beta3
     )
 
@@ -325,15 +388,12 @@ def test_calibration_coeff_opt_nonlinear():
     Perform SORM analysis
     """
     lc, nominal_values, betaT = setup2()
-    calib1 = ra.Calibration(
-        lc,
-        target_beta=betaT,
-        nominal_values=nominal_values,
-        design_parameter="z",
-        factor_method="coeff",
-        design_method="optimize",
+    problem = ra.FactorCalibrationProblem(
+        lc, nominal_values=nominal_values, design_parameter="z"
     )
-    calib1.run()
+    solved = ra.solve_designs(problem, target_beta=betaT, method="root")
+    assert solved.converged
+    factors = ra.derive_factors(solved, method="coeff")
     design_points = pd.DataFrame(
         data=[
             [44.4005, 0.9519, 1.2050, 33.8055, 11.6913, 1.2971],
@@ -360,16 +420,31 @@ def test_calibration_coeff_opt_nonlinear():
     vect_design_z1 = np.array([1.2971, 1.1587])
     vect_design_beta1 = np.array([3.7001, 4.2835])
     # validate results
-    assert pytest.approx(calib1.calibrated_design_points, abs=1e-4) == design_points
-    assert pytest.approx(calib1.resistance_factors, abs=1e-4) == resistance_factors
-    assert pytest.approx(calib1.load_factors, abs=1e-4) == load_factors
-    assert pytest.approx(calib1.combination_factors, abs=1e-4) == combination_factors
+    assert pytest.approx(solved.to_frame(), abs=1e-4) == design_points
+    assert pytest.approx(factors.to_frame("resistance"), abs=1e-4) == resistance_factors
+    assert pytest.approx(factors.to_frame("loads"), abs=1e-4) == load_factors
     assert (
-        pytest.approx(calib1.get_design_param_factor(False, False), abs=1e-3)
+        pytest.approx(factors.to_frame("combinations"), abs=1e-4) == combination_factors
+    )
+    assert (
+        pytest.approx(
+            ra.design_with_factors(
+                problem, ra.select_factors(factors, loads="maximum")
+            ).values,
+            abs=1e-3,
+        )
         == vect_design_z1
     )
     assert (
-        pytest.approx(calib1.calc_beta_design_param(np.max(vect_design_z1)), abs=1e-3)
+        pytest.approx(
+            np.array(
+                [
+                    check.reliability.beta
+                    for check in ra.verify_designs(problem, np.max(vect_design_z1))
+                ]
+            ),
+            abs=1e-3,
+        )
         == vect_design_beta1
     )
 
@@ -379,16 +454,12 @@ def test_calibration_mat_opt_nonlinear():
     Perform SORM analysis
     """
     lc, nominal_values, betaT = setup2()
-    calib2 = ra.Calibration(
-        lc,
-        target_beta=betaT,
-        nominal_values=nominal_values,
-        design_parameter="z",
-        factor_method="matrix",
-        design_method="optimize",
-        print_output=False,
+    problem = ra.FactorCalibrationProblem(
+        lc, nominal_values=nominal_values, design_parameter="z"
     )
-    calib2.run()
+    solved = ra.solve_designs(problem, target_beta=betaT, method="root")
+    assert solved.converged
+    factors = ra.derive_factors(solved, method="matrix")
     design_points = pd.DataFrame(
         data=[
             [44.4005, 0.9519, 1.2050, 33.8055, 11.6913, 1.2971],
@@ -415,16 +486,31 @@ def test_calibration_mat_opt_nonlinear():
     vect_design_z2 = np.array([1.2980, 1.1571])
     vect_design_beta2 = np.array([3.7037, 4.2869])
     # validate results
-    assert pytest.approx(calib2.calibrated_design_points, abs=1e-4) == design_points
-    assert pytest.approx(calib2.resistance_factors, abs=1e-4) == resistance_factors
-    assert pytest.approx(calib2.load_factors, abs=1e-4) == load_factors
-    assert pytest.approx(calib2.combination_factors, abs=1e-4) == combination_factors
+    assert pytest.approx(solved.to_frame(), abs=1e-4) == design_points
+    assert pytest.approx(factors.to_frame("resistance"), abs=1e-4) == resistance_factors
+    assert pytest.approx(factors.to_frame("loads"), abs=1e-4) == load_factors
     assert (
-        pytest.approx(calib2.get_design_param_factor(False, False), abs=1e-3)
+        pytest.approx(factors.to_frame("combinations"), abs=1e-4) == combination_factors
+    )
+    assert (
+        pytest.approx(
+            ra.design_with_factors(
+                problem, ra.select_factors(factors, loads="maximum")
+            ).values,
+            abs=1e-3,
+        )
         == vect_design_z2
     )
     assert (
-        pytest.approx(calib2.calc_beta_design_param(np.max(vect_design_z2)), abs=1e-3)
+        pytest.approx(
+            np.array(
+                [
+                    check.reliability.beta
+                    for check in ra.verify_designs(problem, np.max(vect_design_z2))
+                ]
+            ),
+            abs=1e-3,
+        )
         == vect_design_beta2
     )
 
@@ -434,16 +520,12 @@ def test_calibration_mat_alpha_nonlinear():
     Perform SORM analysis
     """
     lc, nominal_values, betaT = setup2()
-    calib3 = ra.Calibration(
-        lc,
-        target_beta=betaT,
-        nominal_values=nominal_values,
-        design_parameter="z",
-        factor_method="matrix",
-        design_method="alpha",
-        print_output=False,
+    problem = ra.FactorCalibrationProblem(
+        lc, nominal_values=nominal_values, design_parameter="z"
     )
-    calib3.run()
+    solved = ra.solve_designs(problem, target_beta=betaT, method="alpha")
+    assert solved.converged
+    factors = ra.derive_factors(solved, method="matrix")
     design_points = pd.DataFrame(
         data=[
             [44.4005, 0.9519, 1.2050, 33.8055, 11.6913, 1.2971],
@@ -470,16 +552,31 @@ def test_calibration_mat_alpha_nonlinear():
     vect_design_z3 = np.array([1.2980, 1.1571])
     vect_design_beta3 = np.array([3.7037, 4.2869])
     # validate results
-    assert pytest.approx(calib3.calibrated_design_points, abs=1e-4) == design_points
-    assert pytest.approx(calib3.resistance_factors, abs=1e-4) == resistance_factors
-    assert pytest.approx(calib3.load_factors, abs=1e-4) == load_factors
-    assert pytest.approx(calib3.combination_factors, abs=1e-4) == combination_factors
+    assert pytest.approx(solved.to_frame(), abs=1e-4) == design_points
+    assert pytest.approx(factors.to_frame("resistance"), abs=1e-4) == resistance_factors
+    assert pytest.approx(factors.to_frame("loads"), abs=1e-4) == load_factors
     assert (
-        pytest.approx(calib3.get_design_param_factor(False, False), abs=1e-4)
+        pytest.approx(factors.to_frame("combinations"), abs=1e-4) == combination_factors
+    )
+    assert (
+        pytest.approx(
+            ra.design_with_factors(
+                problem, ra.select_factors(factors, loads="maximum")
+            ).values,
+            abs=1e-4,
+        )
         == vect_design_z3
     )
     assert (
-        pytest.approx(calib3.calc_beta_design_param(np.max(vect_design_z3)), abs=1e-3)
+        pytest.approx(
+            np.array(
+                [
+                    check.reliability.beta
+                    for check in ra.verify_designs(problem, np.max(vect_design_z3))
+                ]
+            ),
+            abs=1e-3,
+        )
         == vect_design_beta3
     )
 
@@ -489,16 +586,12 @@ def test_calibration_coeff_opt_3():
     Perform SORM analysis
     """
     lc, nominal_values, betaT = setup3()
-    calib1 = ra.Calibration(
-        lc,
-        target_beta=betaT,
-        nominal_values=nominal_values,
-        design_parameter="z",
-        factor_method="coeff",
-        design_method="optimize",
-        print_output=False,
+    problem = ra.FactorCalibrationProblem(
+        lc, nominal_values=nominal_values, design_parameter="z"
     )
-    calib1.run()
+    solved = ra.solve_designs(problem, target_beta=betaT, method="root")
+    assert solved.converged
+    factors = ra.derive_factors(solved, method="coeff")
     design_points = pd.DataFrame(
         data=[
             [0.6194, 1.0194, 1.8722, 1.2591, 1.6108, 3.5045],
@@ -531,19 +624,41 @@ def test_calibration_coeff_opt_3():
         columns=["G", "Q1", "Q2", "Q3"],
         index=["Q1_max", "Q2_max", "Q3_max"],
     )
-    # calib1.print_detailed_output(precision=4)
-    # print(calib1.nominal_table)
-    # print(calib1.get_design_param_factor())
+    # print(ra.design_with_factors(problem, ra.select_factors(factors, resistance="minimum", loads="maximum", combinations="maximum")).values)
     vect_design_z1 = np.array([3.6709, 3.559, 3.3951])
     vect_design_beta1 = np.array([5.0028, 5.0708, 5.1493])
     # validate results
-    assert pytest.approx(calib1.calibrated_design_points, abs=1e-4) == design_points
-    assert pytest.approx(calib1.resistance_factors, abs=1e-4) == resistance_factors
-    assert pytest.approx(calib1.load_factors, abs=1e-4) == load_factors
-    assert pytest.approx(calib1.combination_factors, abs=1e-4) == combination_factors
-    assert pytest.approx(calib1.get_design_param_factor(), abs=1e-4) == vect_design_z1
+    assert pytest.approx(solved.to_frame(), abs=1e-4) == design_points
+    assert pytest.approx(factors.to_frame("resistance"), abs=1e-4) == resistance_factors
+    assert pytest.approx(factors.to_frame("loads"), abs=1e-4) == load_factors
     assert (
-        pytest.approx(calib1.calc_beta_design_param(np.max(vect_design_z1)), abs=1e-4)
+        pytest.approx(factors.to_frame("combinations"), abs=1e-4) == combination_factors
+    )
+    assert (
+        pytest.approx(
+            ra.design_with_factors(
+                problem,
+                ra.select_factors(
+                    factors,
+                    resistance="minimum",
+                    loads="maximum",
+                    combinations="maximum",
+                ),
+            ).values,
+            abs=1e-4,
+        )
+        == vect_design_z1
+    )
+    assert (
+        pytest.approx(
+            np.array(
+                [
+                    check.reliability.beta
+                    for check in ra.verify_designs(problem, np.max(vect_design_z1))
+                ]
+            ),
+            abs=1e-4,
+        )
         == vect_design_beta1
     )
 
@@ -553,16 +668,12 @@ def test_calibration_mat_opt_3():
     Perform SORM analysis
     """
     lc, nominal_values, betaT = setup3()
-    calib2 = ra.Calibration(
-        lc,
-        target_beta=betaT,
-        nominal_values=nominal_values,
-        design_parameter="z",
-        factor_method="matrix",
-        design_method="optimize",
-        print_output=False,
+    problem = ra.FactorCalibrationProblem(
+        lc, nominal_values=nominal_values, design_parameter="z"
     )
-    calib2.run()
+    solved = ra.solve_designs(problem, target_beta=betaT, method="root")
+    assert solved.converged
+    factors = ra.derive_factors(solved, method="matrix")
     design_points = pd.DataFrame(
         data=[
             [0.6194, 1.0194, 1.8722, 1.2591, 1.6108, 3.5045],
@@ -597,18 +708,39 @@ def test_calibration_mat_opt_3():
     )
     vect_design_z2 = np.array([3.5442, 3.4616, 3.3951])
     vect_design_beta2 = np.array([4.8494, 4.9144, 4.9925])
-    # calib2.print_detailed_output(precision=4)
-    # print(calib2.nominal_table)
-    # print(calib2.get_design_param_factor())
-    # print(calib2.factored_nominals(True,True))
+    # print(ra.design_with_factors(problem, ra.select_factors(factors, resistance="minimum", loads="maximum", combinations="maximum")).values)
     # validate results
-    assert pytest.approx(calib2.calibrated_design_points, abs=1e-4) == design_points
-    assert pytest.approx(calib2.resistance_factors, abs=1e-4) == resistance_factors
-    assert pytest.approx(calib2.load_factors, abs=1e-4) == load_factors
-    assert pytest.approx(calib2.combination_factors, abs=1e-4) == combination_factors
-    assert pytest.approx(calib2.get_design_param_factor(), abs=1e-3) == vect_design_z2
+    assert pytest.approx(solved.to_frame(), abs=1e-4) == design_points
+    assert pytest.approx(factors.to_frame("resistance"), abs=1e-4) == resistance_factors
+    assert pytest.approx(factors.to_frame("loads"), abs=1e-4) == load_factors
     assert (
-        pytest.approx(calib2.calc_beta_design_param(np.max(vect_design_z2)), abs=1e-4)
+        pytest.approx(factors.to_frame("combinations"), abs=1e-4) == combination_factors
+    )
+    assert (
+        pytest.approx(
+            ra.design_with_factors(
+                problem,
+                ra.select_factors(
+                    factors,
+                    resistance="minimum",
+                    loads="maximum",
+                    combinations="maximum",
+                ),
+            ).values,
+            abs=1e-3,
+        )
+        == vect_design_z2
+    )
+    assert (
+        pytest.approx(
+            np.array(
+                [
+                    check.reliability.beta
+                    for check in ra.verify_designs(problem, np.max(vect_design_z2))
+                ]
+            ),
+            abs=1e-4,
+        )
         == vect_design_beta2
     )
 
@@ -618,16 +750,12 @@ def test_calibration_mat_alpha_3():
     Perform SORM analysis
     """
     lc, nominal_values, betaT = setup3()
-    calib3 = ra.Calibration(
-        lc,
-        target_beta=betaT,
-        nominal_values=nominal_values,
-        design_parameter="z",
-        factor_method="matrix",
-        design_method="alpha",
-        print_output=False,
+    problem = ra.FactorCalibrationProblem(
+        lc, nominal_values=nominal_values, design_parameter="z"
     )
-    calib3.run()
+    solved = ra.solve_designs(problem, target_beta=betaT, method="alpha")
+    assert solved.converged
+    factors = ra.derive_factors(solved, method="matrix")
     design_points = pd.DataFrame(
         data=[
             [0.6194, 1.0194, 1.8722, 1.2591, 1.6108, 3.5045],
@@ -663,12 +791,36 @@ def test_calibration_mat_alpha_3():
     vect_design_z3 = np.array([3.5442, 3.4616, 3.3951])
     vect_design_beta3 = np.array([4.8494, 4.9144, 4.9925])
     # validate results
-    assert pytest.approx(calib3.calibrated_design_points, abs=1e-4) == design_points
-    assert pytest.approx(calib3.resistance_factors, abs=1e-4) == resistance_factors
-    assert pytest.approx(calib3.load_factors, abs=1e-4) == load_factors
-    assert pytest.approx(calib3.combination_factors, abs=1e-4) == combination_factors
-    assert pytest.approx(calib3.get_design_param_factor(), abs=1e-3) == vect_design_z3
+    assert pytest.approx(solved.to_frame(), abs=1e-4) == design_points
+    assert pytest.approx(factors.to_frame("resistance"), abs=1e-4) == resistance_factors
+    assert pytest.approx(factors.to_frame("loads"), abs=1e-4) == load_factors
     assert (
-        pytest.approx(calib3.calc_beta_design_param(np.max(vect_design_z3)), abs=1e-4)
+        pytest.approx(factors.to_frame("combinations"), abs=1e-4) == combination_factors
+    )
+    assert (
+        pytest.approx(
+            ra.design_with_factors(
+                problem,
+                ra.select_factors(
+                    factors,
+                    resistance="minimum",
+                    loads="maximum",
+                    combinations="maximum",
+                ),
+            ).values,
+            abs=1e-3,
+        )
+        == vect_design_z3
+    )
+    assert (
+        pytest.approx(
+            np.array(
+                [
+                    check.reliability.beta
+                    for check in ra.verify_designs(problem, np.max(vect_design_z3))
+                ]
+            ),
+            abs=1e-4,
+        )
         == vect_design_beta3
     )

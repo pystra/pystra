@@ -2,8 +2,9 @@ Migrating from 1.x to 2.0
 =========================
 
 This page describes the API currently implemented on the ``v2.0`` development
-branch (``2.0.0.dev0``). The remaining result, options, parameter, and
-calibration changes are described in the
+branch (``2.0.0.dev0``). Naming, the calibration replacement, and the first
+FORM result contract are implemented. Remaining algorithm results, options,
+and parameter changes are described in the
 :download:`migration plan <../v2.0-migration-plan.md>`.
 
 Implemented naming changes
@@ -11,7 +12,8 @@ Implemented naming changes
 
 Functions and methods now use snake_case. Inconsistent class names follow the
 project's CapWords convention. There are no aliases for the replaced names.
-Imports through the existing modules continue to work using the new names.
+Most existing module imports retain their paths. Calibration is now a package
+with explicit exports; its structural changes are described below.
 
 .. list-table:: Representative changes
    :header-rows: 1
@@ -71,77 +73,180 @@ This example uses the implemented development API::
         stochastic_model=model,
         limit_state=ra.LimitState(lambda R, S: R - S),
     )
-    form.run()
-    print(form.get_beta())
+    result = form.run()
+    print(result.beta, result.converged)
 
-The names ``stdv``, ``stochastic_model``, and the getter methods above are
-transitional. This first pass preserves call signatures, array shapes, method
-defaults, and numerical calculations. Algorithm-specific options, returned
-result objects, parameter/attribute cleanup, module organization, and the
-replacement for ``Calibration`` are subsequent migration stages. Scientific
-acronyms such as FORM and LQI retain their conventional spelling in prose.
+The names ``stdv``, ``stochastic_model``, and the existing solver getters are
+transitional. Scientific acronyms such as FORM and LQI retain their
+conventional spelling in prose.
 
-Calibration naming cleanup
---------------------------
+FORM result snapshots
+---------------------
 
-A follow-up replaces the old calibration/load-combination container prefixes
-and compressed names with names describing their purpose. These changes also
-affect keyword arguments, result attributes, and some helper methods. There
-are no aliases for the replaced names.
+``Form.run()`` now returns a ``FormResult``. Its ``beta`` is the normal-equivalent
+reliability index; ``geometric_beta`` retains the signed distance in
+``standard_space``. These differ in Student-t standard space. A normal-space
+index remains finite even when its very small probability underflows to zero.
 
-.. list-table:: Calibration and load-combination names
-   :header-rows: 1
-   :widths: 45 55
+``design_point`` (physical), ``standard_point``, and ``alpha`` are immutable
+one-dimensional tuples in ``variable_names`` order. A later solver run cannot
+change a previous result. Results include convergence, iteration count, and
+limit-state/direction errors. Iteration exhaustion returns ``converged=False``
+with unavailable probability, index, and point fields, and retains the existing
+warning. Invalid input and numerical execution errors still raise. This does
+not yet introduce a common failure policy for every algorithm.
 
-   * - Previous name
-     - Current development name
-   * - ``loadcombobj``
-     - ``load_combinations``
-   * - ``dict_nom_vals`` / ``calibration.dict_nom``
-     - ``nominal_values`` / ``calibration.nominal_values``
-   * - ``calib_var``
-     - ``design_parameter``
-   * - ``calib_method`` / ``est_method``
-     - ``design_method`` / ``factor_method``
-   * - ``calibration.df_nom``
-     - ``calibration.nominal_table``
-   * - ``calibration.dfXstarcal``
-     - ``calibration.calibrated_design_points``
-   * - ``calibration.df_phi`` / ``df_gamma`` / ``df_psi``
-     - ``resistance_factors`` / ``load_factors`` / ``combination_factors``
-   * - ``LoadCombination(dict_dist_comb=...)``
-     - ``LoadCombination(action_distributions=...)``
-   * - ``load_combinations.dict_dist_comb``
-     - ``load_combinations.case_distributions`` (also available as ``cases``)
-   * - ``dict_comb_cases``
-     - ``leading_actions``
-   * - ``list_dist_resist`` / ``list_dist_other`` / ``list_const``
-     - ``resistance`` / ``other_variables`` / ``legacy_constants``
-   * - ``lcn`` / ``label_comb_cases``
-     - ``case_name`` / ``case_names``
-   * - ``get_dict_dist_comb()`` / ``get_num_comb()`` / ``get_label(...)``
-     - ``get_case_distributions()`` / ``get_case_count()`` / ``get_group_names(...)``
+Existing FORM getters remain available during migration. In particular,
+``get_beta()`` still returns the geometric index; use ``result.beta`` when
+comparing probability-equivalent targets across reference spaces. Other
+algorithms have not yet migrated to this result contract.
+
+Normalized code-calibration studies
+-----------------------------------
+
+``GenericCalibration`` is the primary code-calibration workflow. It evaluates
+candidate factors against a probability model over a normalized G/P/Q load-ratio
+grid. It does not silently choose a fitting objective or optimize the factors.
+
+Replace model setters and the 14-position ``GenericModel.get()`` tuple with
+explicit constructor fields. ``NominalValues`` holds characteristic values;
+``CodeFactors`` holds a separate candidate factor set. Both validate positive,
+finite values. ``GenericModel`` copies distributions/constants and optionally
+accepts a copula. The copula follows the random-variable order
+resistance_error, resistance, load_error, dead_load, permanent_load, live_load,
+omitting constants. Independence is the default.
+
+For example::
+
+    from dataclasses import replace
+    import pystra as ra
+
+    model = ra.GenericModel(
+        resistance=ra.Lognormal("R", 1, 0.08),
+        dead_load=ra.Normal("G", 1, 0.08),
+        permanent_load=ra.Normal("P", 1, 0.10),
+        live_load=ra.Normal("Q", 1, 0.10),
+        resistance_error=ra.Lognormal("w_R", 1, 0.05),
+        load_error=ra.Lognormal("w_S", 1, 0.10),
+        nominal_values=ra.NominalValues(1, 1, 1, 1),
+    )
+    factors = ra.CodeFactors(phi=0.8, gamma_g=1.2, gamma_p=1.5, gamma_q=1.6)
+    study = ra.GenericCalibration(
+        live_load_ratios=[0.2, 0.5, 0.8], dead_load_ratios=[0, 0.5, 1]
+    )
+    current = study.run(model, factors, target_beta=3.8)
+    proposed = study.run(model, replace(factors, phi=0.9), target_beta=3.8)
+    print(current.to_frame())
+    fig, ax = ra.plot_calibration(
+        {"Current": current, "Proposed": proposed}, target_beta=3.8
+    )
+
+This replaces ``add_model(...)``, ``analyse()`` and the study's mutable result
+cache. Each ``run(model, factors, *, options=None, target_beta=None)`` returns a
+new ``CodeCalibrationResult`` with the analyzed model snapshot, factors, designs,
+and a ``FormResult`` at every grid point. ``beta`` is a fresh array of shape
+``(n_dead_load_ratios, n_live_load_ratios)``. Failed points are retained as NaN;
+their target margins are unavailable. ``to_frame()`` returns a reporting copy.
+``plot_calibration`` accepts completed results and refuses to draw an envelope
+that would hide failed points. Labels, colors and range annotations belong to
+this plotting function, replacing styling in model registration.
+
+Grids must be nonempty, one-dimensional, and within [0, 1], including endpoints.
+FORM options can be supplied explicitly; the built-in normalized limit state
+currently requires finite-difference derivatives and rejects DDM mode.
+
+Explicit load cases
+-------------------
+
+``LoadCombination`` now stores inspectable probabilistic cases and metadata;
+analysis is explicit through ``analyze_case(cases, case_name, options=...)``.
+Its constructor accepts ``cases``, ``constants``, ``roles``, ``leading_actions``,
+``limit_state`` and labelled Pearson ``correlation``. It validates inputs but
+performs no reliability analysis. Case/model access returns independent copies.
+Unknown variable overrides raise instead of being silently ignored.
+
+Use ``VariableRoles(resistance=(...), other=(...), variable=(...))`` when case
+roles matter. ``leading_actions`` maps each case name to its leading variable
+action names. Explicit-case construction preserves these roles; case insertion
+order never determines a leading action.
+
+Replace the legacy nested ``dict_dist_comb``/``action_distributions`` constructor
+with ``LoadCombination.from_actions(maxima=..., companions=..., resistance=...,
+other=..., constants=..., limit_state=...)``. Maxima and companions are separate
+mappings from action names to distributions. The default generates one
+``<action>_max`` case per action. Use ``LoadCombination.turkstra`` for the retained
+FBC reference-period/companion-duration construction.
+
+The old ``lsf``, ``corr``, ``opt`` and positional constructor arguments are
+removed: use ``limit_state``, ``correlation`` and per-evaluation ``options``.
+``run_reliability_case`` is replaced by ``analyze_case``. Duplicate label groups,
+mutable case-distribution attributes and special zero-filled limit-state
+helpers are removed. Ordinary mappings remain appropriate for named cases,
+nominal values and overrides; fixed records express roles and results.
+
+Specialist design-point factor calibration
+------------------------------------------
+
+The old ``Calibration`` object is removed, without an alias. Its hidden sequence
+of mutable DataFrame attributes is replaced by independently usable operations::
+
+    problem = ra.FactorCalibrationProblem(
+        cases, nominal_values=nominal_values, design_parameter="scale"
+    )
+    targets = ra.solve_designs(problem, target_beta=4.3, method="root")
+    factors = ra.derive_factors(targets, method="matrix")
+    selected = ra.select_factors(
+        factors, resistance="minimum", loads="maximum", combinations="maximum"
+    )
+    designs = ra.design_with_factors(problem, selected)
+    checks = ra.verify_designs(problem, max(designs.values), target_beta=4.3)
+
+Here ``cases`` is a ``LoadCombination`` with explicit roles, leading actions,
+a limit state and a common ``Constant("scale", ...)``. ``nominal_values`` maps
+exactly the random-variable role names to positive characteristic values.
+See the factor-calibration tutorial for complete linear and nonlinear examples.
+
+``solve_designs`` supports ``method="root"`` (fsolve, or Brent with a supplied
+``bracket``) and ``method="alpha"``. The default tolerance is 1e-4 in beta and
+``max_evaluations=100`` limits FORM runs per case, including final verification.
+Each ``CalibratedDesign`` carries the design value, reliability, target residual,
+convergence, evaluation count and message. A failed inner or outer solve remains
+in the result and cannot enter factor derivation. Solver success alone is
+insufficient: the final beta residual must also satisfy the tolerance.
+
+``derive_factors`` supports the original ``matrix`` and ``coeff`` methods.
+These specialist methods require normal standard space and exactly one leading
+case per variable action. Alpha projection also requires normal space. The
+design rule assumes a separable resistance scale with multiplicative model
+errors; designs are checked against the full limit-state residual. Arbitrary
+coupled nonlinear functions are not supported by term isolation. The matrix
+method retains the reference convention of evaluating each action coefficient
+in its own leading case, then assembling by names. Singular systems raise.
+
+``FactorSet`` contains immutable numeric rows with explicit case/variable axes.
+``to_frame("resistance")``, ``to_frame("loads")`` and
+``to_frame("combinations")`` return fresh tables. Selection defaults to
+``"per_case"``; extrema must be requested explicitly, and governing-case ties
+are retained. ``design_with_factors`` returns named design values. Selecting
+their maximum is explicit in the example, followed by verification of every
+case; extrema alone do not establish that targets are met.
+
+Migration records
+-----------------
 
 The :download:`calibration naming map <../migration/calibration-naming-map.json>`
-records identifier changes and qualified parameter/attribute mappings. Apply
-the initial callable/class map first when migrating from 1.x. The calibration
-map distinguishes the old ``dict_dist_comb`` keyword from the attribute of the
-same name: they describe different data. It is not a global text-substitution
-recipe for user scripts.
+records the intermediate naming-only stage. It is historical: several of those
+intermediate names have since been removed. The
+:download:`calibration structure map <../migration/calibration-structure-map.json>`
+records replacement operations and current definitions, signatures and result
+fields. The definition manifest retains a disposition for every baseline
+entry; removed/replaced APIs have no misleading one-to-one current name.
+These maps are not global text-substitution recipes for user scripts.
 
-This cleanup preserves calculations, table shapes, and existing constructor
-paths. The action-based constructor is still transitional and deprecated;
-its nested ``max``/``pit`` distributions retain their existing meaning.
-Explicit ``cases=`` supports reliability evaluation but still lacks the role
-metadata required by the old factor-calibration workflow. The naming changes
-do not correct the ordering, failure-handling, or stale-result problems in the
-:download:`calibration review <../calibration-review.md>`.
-
-The normalized ``GenericCalibration`` workflow remains the primary direction
-for the replacement API. The current factor tables are transitional results,
-and this cleanup does not replace the old ``Calibration`` object. Readable
-local ``df`` names, statistical degrees of freedom, and conversion methods such
-as ``to_dict()`` retain their meanings.
+The :download:`calibration review <../calibration-review.md>` records the original
+reproductions and their resolution. Readable local ``df`` names, statistical
+degrees of freedom and conversion methods such as ``to_dict()`` retain their
+meanings; pseudo-Hungarian container prefixes are removed.
 
 Integration and validation
 --------------------------
@@ -159,7 +264,10 @@ No numerical formulas or tolerances changed in the naming commit.
 
 A follow-up replaces wildcard imports in the distribution package to correct
 the module collisions described above. Five import regression cases bring the
-current suite to 483 tests.
+suite to 483 tests at that checkpoint. The calibration replacement adds direct
+analytic and failure regressions while preserving all nine specialist reference
+tests. Both original 10-by-10 generic tutorial grids match to floating-point
+precision. See the migration plan for the latest validation record.
 
 The SORM prerequisite fix is included. Monte Carlo also now reports an infinite
 estimated reliability index when no failures are sampled, consistent with its
@@ -175,6 +283,8 @@ outputs and ignores untracked files. It is a repository maintenance tool,
 not a type-aware converter for arbitrary user scripts.
 
 ``scripts/api_inventory.py --check-names`` checks package function/method names
-and the migrated class names. ``scripts/execute_notebooks.py --output-dir DIR``
+and the migrated class names. ``--check-migration`` verifies baseline manifest
+coverage and current calibration definition/signature records.
+``scripts/execute_notebooks.py --output-dir DIR``
 executes the tutorials listed in the tutorial index in fresh kernels. CI runs
 these checks, the test suite, formatting, documentation, and package builds.

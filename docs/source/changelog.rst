@@ -10,6 +10,10 @@ Unreleased
 
 Added
 ~~~~~
+- Immutable ``FormResult`` snapshots, including convergence, normal-equivalent
+  beta, geometric beta and ordered physical/reference design points.
+- Explicit code factors, nominal values and isolated generic-calibration study
+  results, with separate plotting and optional copula dependence.
 - Executed copula/transformation and Strong Maximum Test tutorial notebooks,
   with derivations and validation examples in the theoretical background.
 - ``JointDistribution`` separates continuous marginals and copula dependence:
@@ -33,6 +37,9 @@ Added
 
 Fixed
 ~~~~~
+- Calibration now respects named case roles and design parameters, rejects
+  failed target solves, and retains failed generic-study points without stale
+  cached results. Factor assembly is independent of case/variable ordering.
 - Monte Carlo's estimated reliability index is infinite when no failures are
   observed, consistent with the zero probability estimate. This point estimate
   does not establish zero true failure probability from a finite sample.
@@ -48,6 +55,10 @@ Fixed
 
 Changed
 ~~~~~~~
+- Removed the stateful ``Calibration`` class in favor of explicit target solving,
+  factor derivation, selection, design and verification operations.
+- ``LoadCombination`` stores explicit cases and roles; separate evaluation and
+  maximum/companion factories replace its legacy dictionary constructor.
 - The ``v2.0`` development branch uses snake_case function/method names and
   consistent class names, without legacy aliases. See :doc:`migrating` for the
   implemented naming map and remaining migration stages.

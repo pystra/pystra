@@ -1,7 +1,7 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "baseline_revision": "69dd5f0625bbf36822c7d7db3f0685d3da299367",
-  "scope": "Definitions through the calibration naming follow-up; calibration parameter/attribute changes are in calibration-naming-map.json. Final result/options/schema contracts remain pending. Private helpers and incidental exports are not automatically supported APIs.",
+  "scope": "All baseline definitions through the v2 calibration structural replacement and first FORM result contract. Null current names mark removal/replacement, not an automatic rename. Replacement operations can require rewritten inputs. See calibration-structure-map.json for implemented signatures and fields. Remaining algorithm results/options/parameters are pending; private inventory entries are not supported public APIs.",
   "definitions": [
     {
       "old": "pystra.analysis.AnalysisObject",
@@ -209,321 +209,522 @@
     },
     {
       "old": "pystra.calibration.Calibration",
-      "current": "pystra.calibration.Calibration",
+      "current": null,
       "kind": "class",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.FactorCalibrationProblem",
+        "pystra.calibration.factors.solve_designs",
+        "pystra.calibration.factors.derive_factors",
+        "pystra.calibration.factors.select_factors",
+        "pystra.calibration.factors.design_with_factors",
+        "pystra.calibration.factors.verify_designs"
+      ]
     },
     {
       "old": "pystra.calibration.Calibration.__init__",
-      "current": "pystra.calibration.Calibration.__init__",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.FactorCalibrationProblem"
+      ]
     },
     {
       "old": "pystra.calibration.Calibration._print_form_results",
-      "current": "pystra.calibration.Calibration._print_form_results",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.TargetDesigns.to_frame",
+        "pystra.calibration.factors.FactorSet.to_frame"
+      ]
     },
     {
       "old": "pystra.calibration.Calibration._get_missing_element",
-      "current": "pystra.calibration.Calibration._get_missing_element",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "removed",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API."
     },
     {
       "old": "pystra.calibration.Calibration._set_labels",
-      "current": "pystra.calibration.Calibration._get_case_metadata",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "removed",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API."
     },
     {
       "old": "pystra.calibration.Calibration.calc_lsf_eval_df",
-      "current": "pystra.calibration.Calibration.evaluate_variable_effects",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "removed",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API."
     },
     {
       "old": "pystra.calibration.Calibration._calibration_optimize",
-      "current": "pystra.calibration.Calibration._calibration_optimize",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.solve_designs"
+      ]
     },
     {
       "old": "pystra.calibration.Calibration._calibration_alpha",
-      "current": "pystra.calibration.Calibration._calibration_alpha",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.solve_designs"
+      ]
     },
     {
       "old": "pystra.calibration.Calibration.calc_design_param_Xst",
-      "current": "pystra.calibration.Calibration.design_parameter_from_point",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.FactorCalibrationProblem.design_from_point"
+      ]
     },
     {
       "old": "pystra.calibration.Calibration._get_df_Xstar",
-      "current": "pystra.calibration.Calibration._collect_design_points",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.TargetDesigns.to_frame"
+      ]
     },
     {
       "old": "pystra.calibration.Calibration._get_df_Xstar_labels",
-      "current": "pystra.calibration.Calibration._design_point_names",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.TargetDesigns.to_frame"
+      ]
     },
     {
       "old": "pystra.calibration.Calibration.run",
-      "current": "pystra.calibration.Calibration.run",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.FactorCalibrationProblem",
+        "pystra.calibration.factors.solve_designs",
+        "pystra.calibration.factors.derive_factors",
+        "pystra.calibration.factors.select_factors",
+        "pystra.calibration.factors.design_with_factors",
+        "pystra.calibration.factors.verify_designs"
+      ]
     },
     {
       "old": "pystra.calibration.Calibration._run_calibration",
-      "current": "pystra.calibration.Calibration._run_calibration",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.solve_designs"
+      ]
     },
     {
       "old": "pystra.calibration.Calibration._estimate_factors_coeff",
-      "current": "pystra.calibration.Calibration._estimate_factors_coeff",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.derive_factors"
+      ]
     },
     {
       "old": "pystra.calibration.Calibration.get_psi_max",
-      "current": "pystra.calibration.Calibration.get_psi_max",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.select_factors"
+      ]
     },
     {
       "old": "pystra.calibration.Calibration._calibrate_design_param",
-      "current": "pystra.calibration.Calibration._calibrate_design_param",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.solve_designs"
+      ]
     },
     {
       "old": "pystra.calibration.Calibration._estimate_factors_matrix",
-      "current": "pystra.calibration.Calibration._estimate_factors_matrix",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.derive_factors"
+      ]
     },
     {
       "old": "pystra.calibration.Calibration.calc_pg_coeff",
-      "current": "pystra.calibration.Calibration.calc_pg_coeff",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.derive_factors"
+      ]
     },
     {
       "old": "pystra.calibration.Calibration.calc_Xst_nom",
-      "current": "pystra.calibration.Calibration.normalize_design_points",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.derive_factors"
+      ]
     },
     {
       "old": "pystra.calibration.Calibration.calc_phi",
-      "current": "pystra.calibration.Calibration.calc_phi",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.derive_factors"
+      ]
     },
     {
       "old": "pystra.calibration.Calibration.get_phi_min",
-      "current": "pystra.calibration.Calibration.get_phi_min",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.select_factors"
+      ]
     },
     {
       "old": "pystra.calibration.Calibration.calc_gamma",
-      "current": "pystra.calibration.Calibration.calc_gamma",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.derive_factors"
+      ]
     },
     {
       "old": "pystra.calibration.Calibration.calc_pg_matrix",
-      "current": "pystra.calibration.Calibration.calc_pg_matrix",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.derive_factors"
+      ]
     },
     {
       "old": "pystra.calibration.Calibration.calc_phiRz_egS_vect",
-      "current": "pystra.calibration.Calibration._combination_factor_rhs",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.derive_factors"
+      ]
     },
     {
       "old": "pystra.calibration.Calibration.calc_epgS_mat",
-      "current": "pystra.calibration.Calibration._combination_factor_matrix",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.derive_factors"
+      ]
     },
     {
       "old": "pystra.calibration.Calibration._get_psi_row_mat",
-      "current": "pystra.calibration.Calibration._expand_combination_factors",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.derive_factors"
+      ]
     },
     {
       "old": "pystra.calibration.Calibration.calc_beta_design_param",
-      "current": "pystra.calibration.Calibration.calc_beta_design_param",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.verify_designs"
+      ]
     },
     {
       "old": "pystra.calibration.Calibration.calc_df_pgRS",
-      "current": "pystra.calibration.Calibration.factored_nominals",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "removed",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API."
     },
     {
       "old": "pystra.calibration.Calibration.get_design_param_factor",
-      "current": "pystra.calibration.Calibration.get_design_param_factor",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.design_with_factors"
+      ]
     },
     {
       "old": "pystra.calibration.Calibration.print_detailed_output",
-      "current": "pystra.calibration.Calibration.print_detailed_output",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.TargetDesigns.to_frame",
+        "pystra.calibration.factors.FactorSet.to_frame"
+      ]
     },
     {
       "old": "pystra.calibration.GenericModel",
-      "current": "pystra.calibration.GenericModel",
+      "current": "pystra.calibration.generic.GenericModel",
       "kind": "class",
-      "status": "unchanged"
+      "status": "changed_contract",
+      "notes": "Still exported from pystra.calibration; explicit constructor inputs replace setters."
     },
     {
       "old": "pystra.calibration.GenericModel.__init__",
-      "current": "pystra.calibration.GenericModel.__init__",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Construct explicit model/factor/nominal records; use named fields instead of mutation or a positional tuple.",
+      "replacements": [
+        "pystra.calibration.generic.GenericModel"
+      ]
     },
     {
       "old": "pystra.calibration.GenericModel.set_factors",
-      "current": "pystra.calibration.GenericModel.set_factors",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Construct explicit model/factor/nominal records; use named fields instead of mutation or a positional tuple.",
+      "replacements": [
+        "pystra.calibration.generic.CodeFactors"
+      ]
     },
     {
       "old": "pystra.calibration.GenericModel.set_distributions",
-      "current": "pystra.calibration.GenericModel.set_distributions",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Construct explicit model/factor/nominal records; use named fields instead of mutation or a positional tuple.",
+      "replacements": [
+        "pystra.calibration.generic.GenericModel"
+      ]
     },
     {
       "old": "pystra.calibration.GenericModel.set_nominals",
-      "current": "pystra.calibration.GenericModel.set_nominals",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Construct explicit model/factor/nominal records; use named fields instead of mutation or a positional tuple.",
+      "replacements": [
+        "pystra.calibration.generic.NominalValues"
+      ]
     },
     {
       "old": "pystra.calibration.GenericModel.set_model_errors",
-      "current": "pystra.calibration.GenericModel.set_model_errors",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Construct explicit model/factor/nominal records; use named fields instead of mutation or a positional tuple.",
+      "replacements": [
+        "pystra.calibration.generic.GenericModel"
+      ]
     },
     {
       "old": "pystra.calibration.GenericModel.set_resistance_params",
-      "current": "pystra.calibration.GenericModel.set_resistance_params",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Construct explicit model/factor/nominal records; use named fields instead of mutation or a positional tuple.",
+      "replacements": [
+        "pystra.calibration.generic.GenericModel"
+      ]
     },
     {
       "old": "pystra.calibration.GenericModel.set_dead_params",
-      "current": "pystra.calibration.GenericModel.set_dead_params",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Construct explicit model/factor/nominal records; use named fields instead of mutation or a positional tuple.",
+      "replacements": [
+        "pystra.calibration.generic.GenericModel"
+      ]
     },
     {
       "old": "pystra.calibration.GenericModel.set_permanent_params",
-      "current": "pystra.calibration.GenericModel.set_permanent_params",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Construct explicit model/factor/nominal records; use named fields instead of mutation or a positional tuple.",
+      "replacements": [
+        "pystra.calibration.generic.GenericModel"
+      ]
     },
     {
       "old": "pystra.calibration.GenericModel.set_live_params",
-      "current": "pystra.calibration.GenericModel.set_live_params",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Construct explicit model/factor/nominal records; use named fields instead of mutation or a positional tuple.",
+      "replacements": [
+        "pystra.calibration.generic.GenericModel"
+      ]
     },
     {
       "old": "pystra.calibration.GenericModel.get",
-      "current": "pystra.calibration.GenericModel.get",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Construct explicit model/factor/nominal records; use named fields instead of mutation or a positional tuple.",
+      "replacements": [
+        "pystra.calibration.generic.GenericModel"
+      ]
     },
     {
       "old": "pystra.calibration.GenericCalibration",
-      "current": "pystra.calibration.GenericCalibration",
+      "current": "pystra.calibration.generic.GenericCalibration",
       "kind": "class",
-      "status": "unchanged"
+      "status": "changed_contract",
+      "notes": "Still exported from pystra.calibration; explicit ratio grids and model/factor inputs. See structure map."
     },
     {
       "old": "pystra.calibration.GenericCalibration.__init__",
-      "current": "pystra.calibration.GenericCalibration.__init__",
+      "current": "pystra.calibration.generic.GenericCalibration.__init__",
       "kind": "callable",
-      "status": "unchanged"
+      "status": "changed_contract",
+      "notes": "Still exported from pystra.calibration; explicit ratio grids and model/factor inputs. See structure map."
     },
     {
       "old": "pystra.calibration.GenericCalibration.add_model",
-      "current": "pystra.calibration.GenericCalibration.add_model",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "No registration/cache; pass model and factors to run. Styling belongs to the plotting adapter. The normalized limit state is internal.",
+      "replacements": [
+        "pystra.calibration.generic.GenericCalibration.run",
+        "pystra.calibration.generic.CodeCalibrationResult"
+      ]
     },
     {
       "old": "pystra.calibration.GenericCalibration.lsf",
-      "current": "pystra.calibration.GenericCalibration.lsf",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "removed",
+      "notes": "No registration/cache; pass model and factors to run. Styling belongs to the plotting adapter. The normalized limit state is internal."
     },
     {
       "old": "pystra.calibration.GenericCalibration.design",
-      "current": "pystra.calibration.GenericCalibration.design",
+      "current": "pystra.calibration.generic.GenericCalibration.design",
       "kind": "callable",
-      "status": "unchanged"
+      "status": "changed_contract",
+      "notes": "Still exported from pystra.calibration; explicit ratio grids and model/factor inputs. See structure map."
     },
     {
       "old": "pystra.calibration.GenericCalibration.analyse_design",
-      "current": "pystra.calibration.GenericCalibration.analyse_design",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "No registration/cache; pass model and factors to run. Styling belongs to the plotting adapter. The normalized limit state is internal.",
+      "replacements": [
+        "pystra.calibration.generic.GenericCalibration.run",
+        "pystra.calibration.generic.CodeCalibrationResult"
+      ]
     },
     {
       "old": "pystra.calibration.GenericCalibration.get_reliabilities",
-      "current": "pystra.calibration.GenericCalibration.get_reliabilities",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "No registration/cache; pass model and factors to run. Styling belongs to the plotting adapter. The normalized limit state is internal.",
+      "replacements": [
+        "pystra.calibration.generic.GenericCalibration.run",
+        "pystra.calibration.generic.CodeCalibrationResult"
+      ]
     },
     {
       "old": "pystra.calibration.GenericCalibration.analyse",
-      "current": "pystra.calibration.GenericCalibration.analyse",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "No registration/cache; pass model and factors to run. Styling belongs to the plotting adapter. The normalized limit state is internal.",
+      "replacements": [
+        "pystra.calibration.generic.GenericCalibration.run",
+        "pystra.calibration.generic.CodeCalibrationResult"
+      ]
     },
     {
       "old": "pystra.calibration.GenericCalibration.add_range",
-      "current": "pystra.calibration.GenericCalibration.add_range",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "No registration/cache; pass model and factors to run. Styling belongs to the plotting adapter. The normalized limit state is internal.",
+      "replacements": [
+        "pystra.calibration.plotting.plot_calibration"
+      ]
     },
     {
       "old": "pystra.calibration.GenericCalibration.plot_region",
-      "current": "pystra.calibration.GenericCalibration.plot_region",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "No registration/cache; pass model and factors to run. Styling belongs to the plotting adapter. The normalized limit state is internal.",
+      "replacements": [
+        "pystra.calibration.plotting.plot_calibration"
+      ]
     },
     {
       "old": "pystra.calibration.GenericCalibration.beta_region_plot",
-      "current": "pystra.calibration.GenericCalibration.beta_region_plot",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "No registration/cache; pass model and factors to run. Styling belongs to the plotting adapter. The normalized limit state is internal.",
+      "replacements": [
+        "pystra.calibration.plotting.plot_calibration"
+      ]
     },
     {
       "old": "pystra.calibration.GenericCalibration.plot",
-      "current": "pystra.calibration.GenericCalibration.plot",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "No registration/cache; pass model and factors to run. Styling belongs to the plotting adapter. The normalized limit state is internal.",
+      "replacements": [
+        "pystra.calibration.plotting.plot_calibration"
+      ]
     },
     {
       "old": "pystra.cholesky_sensitivity.cholesky_with_derivative",
@@ -2359,7 +2560,8 @@
       "old": "pystra.form.Form.run",
       "current": "pystra.form.Form.run",
       "kind": "callable",
-      "status": "unchanged"
+      "status": "changed_contract",
+      "notes": "See calibration-structure-map.json and the migration guide for constructor, evaluation and result changes."
     },
     {
       "old": "pystra.form.Form.computeStartingPoint",
@@ -2611,139 +2813,180 @@
       "old": "pystra.loadcomb.LoadCombination",
       "current": "pystra.loadcomb.LoadCombination",
       "kind": "class",
-      "status": "unchanged"
+      "status": "changed_contract",
+      "notes": "See calibration-structure-map.json and the migration guide for constructor, evaluation and result changes."
     },
     {
       "old": "pystra.loadcomb.LoadCombination.__init__",
       "current": "pystra.loadcomb.LoadCombination.__init__",
       "kind": "callable",
-      "status": "unchanged"
+      "status": "changed_contract",
+      "notes": "See calibration-structure-map.json and the migration guide for constructor, evaluation and result changes."
     },
     {
       "old": "pystra.loadcomb.LoadCombination.turkstra",
       "current": "pystra.loadcomb.LoadCombination.turkstra",
       "kind": "callable",
-      "status": "unchanged"
+      "status": "changed_contract",
+      "notes": "See calibration-structure-map.json and the migration guide for constructor, evaluation and result changes."
     },
     {
       "old": "pystra.loadcomb.LoadCombination._variable_name",
-      "current": "pystra.loadcomb.LoadCombination._variable_name",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "removed",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs."
     },
     {
       "old": "pystra.loadcomb.LoadCombination._variables_to_dict",
-      "current": "pystra.loadcomb.LoadCombination._variables_to_dict",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "removed",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs."
     },
     {
       "old": "pystra.loadcomb.LoadCombination._normalise_cases",
-      "current": "pystra.loadcomb.LoadCombination._normalise_cases",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "removed",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs."
     },
     {
       "old": "pystra.loadcomb.LoadCombination._warn_legacy_inputs",
-      "current": "pystra.loadcomb.LoadCombination._warn_legacy_inputs",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "removed",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs."
     },
     {
       "old": "pystra.loadcomb.LoadCombination._init_from_cases",
-      "current": "pystra.loadcomb.LoadCombination._init_from_cases",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "removed",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs."
     },
     {
       "old": "pystra.loadcomb.LoadCombination._init_from_legacy",
-      "current": "pystra.loadcomb.LoadCombination._init_from_legacy",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs.",
+      "replacements": [
+        "pystra.loadcomb.LoadCombination.from_actions"
+      ]
     },
     {
       "old": "pystra.loadcomb.LoadCombination._set_common_labels",
-      "current": "pystra.loadcomb.LoadCombination._set_case_metadata",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "removed",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs."
     },
     {
       "old": "pystra.loadcomb.LoadCombination._case_variable_names",
-      "current": "pystra.loadcomb.LoadCombination._case_variable_names",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "removed",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs."
     },
     {
       "old": "pystra.loadcomb.LoadCombination._check_input",
-      "current": "pystra.loadcomb.LoadCombination._check_input",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "removed",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs."
     },
     {
       "old": "pystra.loadcomb.LoadCombination.get_label",
-      "current": "pystra.loadcomb.LoadCombination.get_group_names",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs.",
+      "replacements": [
+        "pystra.loadcomb.VariableRoles"
+      ]
     },
     {
       "old": "pystra.loadcomb.LoadCombination._set_num_comb",
-      "current": "pystra.loadcomb.LoadCombination._set_case_count",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "removed",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs."
     },
     {
       "old": "pystra.loadcomb.LoadCombination.get_num_comb",
-      "current": "pystra.loadcomb.LoadCombination.get_case_count",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs.",
+      "replacements": [
+        "pystra.loadcomb.LoadCombination.case_names"
+      ]
     },
     {
       "old": "pystra.loadcomb.LoadCombination.get_dict_dist_comb",
-      "current": "pystra.loadcomb.LoadCombination.get_case_distributions",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs.",
+      "replacements": [
+        "pystra.loadcomb.LoadCombination.cases"
+      ]
     },
     {
       "old": "pystra.loadcomb.LoadCombination._create_dict_dist_comb",
-      "current": "pystra.loadcomb.LoadCombination._build_case_distributions",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs.",
+      "replacements": [
+        "pystra.loadcomb.LoadCombination.from_actions"
+      ]
     },
     {
       "old": "pystra.loadcomb.LoadCombination._case_name",
-      "current": "pystra.loadcomb.LoadCombination._resolve_case_name",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "removed",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs."
     },
     {
       "old": "pystra.loadcomb.LoadCombination.case",
       "current": "pystra.loadcomb.LoadCombination.case",
       "kind": "callable",
-      "status": "unchanged"
+      "status": "changed_contract",
+      "notes": "See calibration-structure-map.json and the migration guide for constructor, evaluation and result changes."
     },
     {
       "old": "pystra.loadcomb.LoadCombination.stochastic_model",
       "current": "pystra.loadcomb.LoadCombination.stochastic_model",
       "kind": "callable",
-      "status": "unchanged"
+      "status": "changed_contract",
+      "notes": "See calibration-structure-map.json and the migration guide for constructor, evaluation and result changes."
     },
     {
       "old": "pystra.loadcomb.LoadCombination._get_corr_for_stochastic_model",
-      "current": "pystra.loadcomb.LoadCombination._get_corr_for_stochastic_model",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "removed",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs."
     },
     {
       "old": "pystra.loadcomb.LoadCombination.run_reliability_case",
-      "current": "pystra.loadcomb.LoadCombination.run_reliability_case",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs.",
+      "replacements": [
+        "pystra.calibration.factors.analyze_case"
+      ]
     },
     {
       "old": "pystra.loadcomb.LoadCombination.eval_lsf_kwargs",
-      "current": "pystra.loadcomb.LoadCombination.eval_lsf_kwargs",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "removed",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs."
     },
     {
       "old": "pystra.ls.LineSampling",

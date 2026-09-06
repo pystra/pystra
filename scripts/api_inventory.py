@@ -6,6 +6,7 @@ helpers. An observed symbol is not automatically a supported extension point.
 
 import argparse
 import ast
+from collections import Counter
 import importlib
 import importlib.metadata
 import inspect
@@ -114,6 +115,51 @@ def inventory(root):
     }
 
 
+def check_migration(root):
+    """Check baseline coverage and references in the reviewed migration records."""
+    directory = root / "docs/migration"
+    baseline = json.loads((directory / "api-baseline.json").read_text())
+    migration = json.loads((directory / "api-migration.json").read_text())
+    structure = json.loads((directory / "calibration-structure-map.json").read_text())
+    current = definitions(root)
+    names = {d["name"] for d in current}
+    errors = []
+    if Counter(d["name"] for d in baseline["definitions"]) != Counter(
+        d["old"] for d in migration["definitions"]
+    ):
+        errors.append("Migration manifest must retain every baseline definition")
+    for entry in migration["definitions"]:
+        references = entry.get("replacements", [])
+        if entry["current"] is not None:
+            references = [entry["current"], *references]
+        elif entry["status"] not in ("removed", "replaced"):
+            errors.append(f"Missing disposition for {entry['old']}")
+        if entry["status"] == "replaced" and not entry.get("replacements"):
+            errors.append(f"Missing replacement for {entry['old']}")
+        for name in references:
+            if name not in names:
+                errors.append(f"Unknown definition {name} for {entry['old']}")
+    for workflow in structure["replacement_workflows"].values():
+        for name in workflow:
+            if name not in names:
+                errors.append(f"Unknown workflow definition {name}")
+    expected = [
+        d
+        for d in current
+        if d["name"].startswith(
+            ("pystra.calibration.", "pystra.loadcomb.", "pystra.results.")
+        )
+        or d["name"] == "pystra.form.Form.run"
+    ]
+    if structure["definitions"] != expected:
+        errors.append("Calibration structure inventory differs from current source")
+    if errors:
+        raise SystemExit("Migration errors:\n" + "\n".join(errors))
+    print(
+        "Migration coverage, definition references, and calibration contracts passed."
+    )
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -121,10 +167,13 @@ def main():
     )
     parser.add_argument("--output", type=Path)
     parser.add_argument("--check-names", action="store_true")
+    parser.add_argument("--check-migration", action="store_true")
     args = parser.parse_args()
     if args.check_names:
         check_names(args.root)
-    else:
+    if args.check_migration:
+        check_migration(args.root)
+    if not (args.check_names or args.check_migration):
         if args.output is None:
             parser.error("--output is required when capturing an inventory")
         data = inventory(args.root.resolve())

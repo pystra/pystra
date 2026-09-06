@@ -1,20 +1,35 @@
 # Calibration review for PySTRA 2.0
 
-Reviewed 6 September 2026 at `13cc782`. Findings below describe that snapshot
-and use its original identifiers. A subsequent naming cleanup replaces the
-audited prefixes and related compressed names in calibration/load combinations;
-see the [naming map](migration/calibration-naming-map.json) for current names.
-The reproduced correctness problems remain unresolved by that naming-only
-change. The recommended structural migration direction is unchanged.
+Reviewed 6 September 2026 at `13cc782`. The review below records that snapshot
+and uses its original identifiers. The intermediate [naming map](migration/calibration-naming-map.json)
+is historical; use the [migration guide](source/migrating.rst) and
+[structure map](migration/calibration-structure-map.json) for the implemented API.
 
-Validation of the naming cleanup passed all 483 tests and the maintained
-factor-calibration, load-combination, and generic-calibration tutorials. The
-archived global-calibration notebook failed both before and after the naming
-pass: its positional constructor arguments misassigned resistance, other
-variables, and constants. A separate notebook repair uses explicit keywords,
-evaluates the second model in its final comparison, and refreshes its outputs.
-This repairs the example without changing runtime algorithms or resolving the
-core correctness findings below.
+## Resolution on v2.0
+
+The stateful `Calibration` class has been removed. `GenericCalibration.run`
+returns isolated code-study results; specialist target solving, factor
+derivation, selection, design and verification are separate operations.
+`LoadCombination` now supplies explicit cases and roles without running FORM.
+
+| Reviewed problem | Implemented resolution and regression evidence |
+| --- | --- |
+| Case order changes factors | Assembly and selection use leading-action names. Coefficient/matrix tests reorder cases and variable roles for both linear and nonlinear fixtures. |
+| Explicit cases lose roles | Validated `VariableRoles` and `leading_actions` are constructor inputs. Missing roles cannot enter factor calibration. |
+| Failed FORM accepted | Immutable `FormResult` has unavailable estimates on failure. Generic grids retain unsuccessful points; factor derivation rejects failed target solutions. |
+| Stale generic results | Model/factors are separate inputs to each run, with copied model/result data and no result cache. The original phi=0.8/1.0 reproduction now returns distinct, stable results. |
+| Hard-coded design parameter | Every specialist operation uses the named design parameter. Root/alpha regressions and the nonlinear tutorial use `scale`. |
+| Outer solve failure hidden | Results carry status, residual, message and a per-case FORM budget including final verification. Budget, unbracketed-target and failed-inner-solve regressions reject unsuccessful designs. |
+
+All nine existing specialist reference tests retain their expected values.
+The original generic tutorial's two 100-point grids agree within 1.3e-14.
+The archived global-calibration example now consumes `FactorSet` results and
+explicit design/verification functions. No automatic code-factor objective or
+fitting policy has been introduced. Factor extraction remains a specialist
+normal-space, separable-design method; arbitrary nonlinear decomposition is
+not claimed. Remaining broader result/options work is in the migration plan.
+
+The following sections preserve the original assessment and rationale.
 
 ## Primary workflow
 

@@ -45,6 +45,7 @@ from .model import *
 
 # Analysis
 from .analysis import *
+from .results import FormResult
 from .form import *
 from .mc import *
 from .sorm import *

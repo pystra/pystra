@@ -34,6 +34,7 @@ Reliability Methods
     :recursive:
 
     pystra.form
+    pystra.results
     pystra.strong_maximum
     pystra.sorm
     pystra.mc
@@ -58,6 +59,12 @@ Probability Transformation
 
 Load Combinations & Calibration
 -------------------------------
+
+Start with ``GenericModel``, ``CodeFactors`` and ``GenericCalibration.run`` for
+normalized code studies; ``plot_calibration`` consumes completed results.
+Specialist design-point methods are separate operations in
+``pystra.calibration.factors``. See :doc:`migrating` for their sequence and
+assumptions, and the calibration tutorials for worked examples.
 
 .. autosummary::
     :toctree: gen
