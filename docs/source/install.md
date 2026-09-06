@@ -8,19 +8,19 @@ Required Dependencies
 ---------------------
 - Python 3.9 or later
 - numpy
-- scipy
+- scipy 1.11 or later
 - matplotlib
 - pandas
 
 Installation
 ------------
-The easiest way to install `Pystra` is from PyPI: ::
+The easiest way to install the latest stable `Pystra` release is from PyPI: ::
 
     pip install pystra
 
-For users wishing to develop: ::
+To work with the 2.0 development API documented on this branch: ::
 
-    git clone https://github.com/pystra/pystra.git
+    git clone --branch v2.0 https://github.com/pystra/pystra.git
     cd pystra
     pip install -e ".[test]"
 
@@ -40,4 +40,3 @@ Bugs and feature requests
 -------------------------
 Report problems with the installation, bugs in the code, or feature
 requests at the `issue tracker <https://github.com/pystra/pystra/issues>`_.
-

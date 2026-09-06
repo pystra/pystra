@@ -104,18 +104,21 @@ numerical evidence, rather than a contributor's personal style.
 ## Local workflow and pull requests
 
 Create a feature branch from the current integration branch. Install in a
-virtual environment using the dependency versions supported by that branch:
+virtual environment. Use Python 3.13 for the documentation/formatting tools;
+the runtime test matrix currently retains Python 3.9 through 3.13:
 
 ```sh
 python -m pip install -e '.[test,docs]'
-python -m pip install black
+python -m pip install black==26.5.1
 python -m pytest -q
 ```
 
 Run Black on changed Python files and include formatting in the appropriate
-commit. Black remains the formatter during migration. Naming/import lint checks
-will be introduced as planned; this guide does not imply they are already
-configured. Run the checks actually present on the target branch.
+commit. Black remains the formatter during migration. Run
+`python scripts/api_inventory.py --check-names` for the function/method and
+migrated-class naming check. Attribute/parameter cleanup and import enforcement
+remain later stages; existing legacy fields are not a precedent for new code.
+CI also executes every indexed tutorial using `scripts/execute_notebooks.py`.
 
 For documentation-only layout/link edits, build from `docs` using saved
 notebook outputs:

@@ -14,6 +14,11 @@ includes methods for summarizing output. Pystra is also closely integrated with 
 Installation
 ============
 
+This branch develops PySTRA 2.0. Its API changes are described in the
+`migration guide <docs/source/migrating.rst>`_. The PyPI command below installs
+the latest stable release; to work on this branch, use an editable checkout
+as described in the contributor guide.
+
 To install *Pystra* just do:
 
   $ pip install pystra
