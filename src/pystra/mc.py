@@ -176,11 +176,13 @@ class MonteCarlo(AnalysisObject):
             self.Pf = 0
 
     def computeBeta(self):
-        """Compute beta value"""
-        if self.sum_q > 0:
-            self.beta = -StdNormal.ppf(self.Pf)
-        else:
-            self.beta = 0
+        """Convert the probability estimate to a normal-equivalent index.
+
+        No observed failures gives an infinite estimated index, not zero.
+        This describes the point estimate; a finite sample cannot establish
+        that the true failure probability is zero.
+        """
+        self.beta = -StdNormal.ppf(self.Pf)
 
     def computeBins(self, samples):
         """Return an optimal amount of bins for a histogram

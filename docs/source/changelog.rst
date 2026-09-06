@@ -33,6 +33,9 @@ Added
 
 Fixed
 ~~~~~
+- Monte Carlo's estimated reliability index is infinite when no failures are
+  observed, consistent with the zero probability estimate. This point estimate
+  does not establish zero true failure probability from a finite sample.
 - Numerical sensitivity analyses preserve the selected transformation options.
 - SORM rejects unrun or nonconverged FORM analyses before curve-fitting or
   point-fitting. Failed retries clear previous SORM output, and results become
