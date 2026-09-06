@@ -34,9 +34,20 @@ After 2.0, public API changes follow the documented deprecation and release poli
 - Prefer `std`, `start_point`, `limit_state`, `model`, `options`, `n_samples`,
   `max_iterations`, `failure_probability`, and `reference_period`. Use `analyze`
   in Python identifiers. Keep established `pdf`, `cdf`, `ppf`, `beta`, and `alpha`.
-- Name quantities by meaning. Avoid type-prefixed public names (`dict_nom`,
-  `dfXstar`, `list_form_obj`) and compressed compound identifiers. Private
-  helpers also follow the naming policy.
+- Name quantities by meaning. Do not use pseudo-Hungarian container/type
+  prefixes such as `dict_`, `list_`, or `arr_`, or compressed forms such as
+  `dfXstarcal`. This applies to parameters, attributes, private
+  helpers, and local variables throughout the codebase, not only public APIs.
+  Use `nominal_values`, `design_points`, or `reliability_results` rather than
+  `dict_nom`, `dfXstar`, or `list_form_obj`. Replace cryptic abbreviations with
+  meaningful names; deleting the prefix alone is not sufficient. Express
+  container types through type annotations. Conventional `df` or a readable
+  name such as `factors_df` is acceptable for a local DataFrame in a short
+  pandas operation when it aids clarity. Prefer semantic names for parameters,
+  persistent attributes, and returned results. Judge meaning rather than
+  banning words: `list_cases()` describes an operation, and `cut_sets` describes
+  a reliability concept. These are different from naming a variable
+  `list_cases` merely because its container happens to be a Python list.
 - Mathematical local names such as `x`, `u`, and `rho` are appropriate near an
   equation. Preserve user-provided variable names and external API spellings;
   a limit-state argument `R` can remain `R` when it names the model variable.
@@ -71,10 +82,13 @@ Do not mutate caller-owned models, mappings, arrays, or distributions while
 iterating candidate designs. Keep caches, evaluation counts, and random state
 local to the run, with documented invalidation and RNG ownership.
 
-For calibration, follow the separate solve-designs, derive-factors,
-select-factors, and verify-designs operations in the migration plan. Preserve
-governing-case information and numerical diagnostics. A convenience runner
-composes those operations; it does not duplicate them.
+For code calibration, prioritize the normalized workflow: candidate factors,
+code designs, reliability evaluation, and comparison against targets. Keep
+probability models separate from factor sets. The specialized inverse workflow
+uses separate solve-designs, derive-factors, select-factors, and verify-designs
+operations from the migration plan; do not force all code studies through it.
+Preserve governing-case information and numerical diagnostics. A convenience
+runner composes operations; it does not duplicate them.
 
 ## Numerical contracts and evidence
 
