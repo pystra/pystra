@@ -1,7 +1,11 @@
 # Calibration review for PySTRA 2.0
 
-Reviewed 6 September 2026 at `13cc782`. This records current behavior and the
-recommended migration direction; the runtime implementation is unchanged.
+Reviewed 6 September 2026 at `13cc782`. Findings below describe that snapshot
+and use its original identifiers. A subsequent naming cleanup replaces the
+audited prefixes and related compressed names in calibration/load combinations;
+see the [naming map](migration/calibration-naming-map.json) for current names.
+The reproduced correctness problems remain unresolved by that naming-only
+change. The recommended structural migration direction is unchanged.
 
 ## Primary workflow
 
@@ -52,7 +56,7 @@ values, and factors phi/gamma_g/gamma_p/gamma_q = 0.8/1.2/1.5/1.6. The failed
 FORM check followed the change to phi=1.0. These values reproduce software
 behavior; they are not recommended engineering inputs.
 
-## Quick naming audit
+## Quick naming audit before cleanup
 
 An identifier-token scan of all 45 runtime Python modules, excluding comments
 and strings, found the following distinct spellings and code occurrences.

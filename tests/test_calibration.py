@@ -54,20 +54,20 @@ def setup1():
 
     lc = ra.LoadCombination(
         lsf=lsf,
-        dict_dist_comb=Q_dict,
-        list_dist_resist=[Rdist],
-        list_dist_other=[Gdist],
-        list_const=[z, eg, e1, e2],
-        dict_comb_cases=loadcombinations,
+        action_distributions=Q_dict,
+        resistance=[Rdist],
+        other_variables=[Gdist],
+        legacy_constants=[z, eg, e1, e2],
+        leading_actions=loadcombinations,
     )
 
     Qk = np.array([Q1max.ppf(0.98), Q2max.ppf(0.98)])
     Gk = np.array([Gdist.mean])
     Rk = np.array([Rdist.ppf(0.05)])
     rvs_all = ["R", "G", "Q1", "Q2", "Q3"]
-    dict_nom = dict(zip(rvs_all, np.concatenate([Rk, Gk, Qk])))
+    nominal_values = dict(zip(rvs_all, np.concatenate([Rk, Gk, Qk])))
     betaT = 4.3
-    return lc, dict_nom, betaT
+    return lc, nominal_values, betaT
 
 
 def setup2():
@@ -100,15 +100,15 @@ def setup2():
 
     lc = ra.LoadCombination(
         lsf=lsf_nonlinear,
-        dict_dist_comb=Q_dict,
-        list_dist_other=[wS],
-        list_dist_resist=[R, wR],
-        list_const=[z],
-        dict_comb_cases=loadcombinations,
+        action_distributions=Q_dict,
+        other_variables=[wS],
+        resistance=[R, wR],
+        legacy_constants=[z],
+        leading_actions=loadcombinations,
     )
 
     rvs_all = ["wR", "wS", "R", "Q1", "Q2"]
-    dict_nom = dict(
+    nominal_values = dict(
         zip(
             rvs_all,
             np.array([1.0, 1.0, R.ppf(0.05), Q1_max.ppf(0.95), Q2_max.ppf(0.95)]),
@@ -116,7 +116,7 @@ def setup2():
     )
 
     betaT = 3.7
-    return lc, dict_nom, betaT
+    return lc, nominal_values, betaT
 
 
 def setup3():
@@ -154,38 +154,38 @@ def setup3():
     loadcombinations = {"Q1_max": ["Q1"], "Q2_max": ["Q2"], "Q3_max": ["Q3"]}
     lc = ra.LoadCombination(
         lsf=lsf3,
-        dict_dist_comb=Q_dict,
-        list_dist_resist=[R],
-        list_dist_other=[G],
-        list_const=[z, cg, c1, c2, c3],
-        dict_comb_cases=loadcombinations,
+        action_distributions=Q_dict,
+        resistance=[R],
+        other_variables=[G],
+        legacy_constants=[z, cg, c1, c2, c3],
+        leading_actions=loadcombinations,
     )
 
     Qk = np.array([Q1max.ppf(0.95), Q2max.ppf(0.95), Q3max.ppf(0.90)])
     Gk = np.array([G.ppf(0.5)])
     Rk = np.array([R.ppf(0.05)])
     rvs_all = ["R", "G", "Q1", "Q2", "Q3"]
-    dict_nom = dict(zip(rvs_all, np.concatenate([Rk, Gk, Qk])))
+    nominal_values = dict(zip(rvs_all, np.concatenate([Rk, Gk, Qk])))
     betaT = 4.8
-    return lc, dict_nom, betaT
+    return lc, nominal_values, betaT
 
 
 def test_calibration_coeff_opt():
     """
     Perform SORM analysis
     """
-    lc, dict_nom, betaT = setup1()
+    lc, nominal_values, betaT = setup1()
     calib1 = ra.Calibration(
         lc,
         target_beta=betaT,
-        dict_nom_vals=dict_nom,
-        calib_var="z",
-        est_method="coeff",
-        calib_method="optimize",
+        nominal_values=nominal_values,
+        design_parameter="z",
+        factor_method="coeff",
+        design_method="optimize",
         print_output=False,
     )
     calib1.run()
-    dfXst = pd.DataFrame(
+    design_points = pd.DataFrame(
         data=[
             [0.6553, 1.0371, 1.6236, 2.0171, 3.0431],
             [0.6550, 1.0371, 1.5129, 2.2458, 3.0477],
@@ -193,15 +193,15 @@ def test_calibration_coeff_opt():
         columns=["R", "G", "Q1", "Q2", "z"],
         index=["Q1_max", "Q2_max"],
     )
-    dfphi = pd.DataFrame(
+    resistance_factors = pd.DataFrame(
         data=[[0.8469], [0.8465]], columns=["R"], index=["Q1_max", "Q2_max"]
     )
-    dfgamma = pd.DataFrame(
+    load_factors = pd.DataFrame(
         data=[[1.0371, 1.0692, 1.1026], [1.0371, 1.0692, 1.1026]],
         columns=["G", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
     )
-    dfpsi = pd.DataFrame(
+    combination_factors = pd.DataFrame(
         data=[[1.0, 1.0, 0.8982], [1.0, 0.9318, 1.0]],
         columns=["G", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
@@ -209,10 +209,10 @@ def test_calibration_coeff_opt():
     vect_design_z1 = np.array([3.0443, 3.0477])
     vect_design_beta1 = np.array([4.3065, 4.3000])
     # validate results
-    assert pytest.approx(calib1.dfXstarcal, abs=1e-4) == dfXst
-    assert pytest.approx(calib1.df_phi, abs=1e-4) == dfphi
-    assert pytest.approx(calib1.df_gamma, abs=1e-4) == dfgamma
-    assert pytest.approx(calib1.df_psi, abs=1e-4) == dfpsi
+    assert pytest.approx(calib1.calibrated_design_points, abs=1e-4) == design_points
+    assert pytest.approx(calib1.resistance_factors, abs=1e-4) == resistance_factors
+    assert pytest.approx(calib1.load_factors, abs=1e-4) == load_factors
+    assert pytest.approx(calib1.combination_factors, abs=1e-4) == combination_factors
     assert pytest.approx(calib1.get_design_param_factor(), abs=1e-4) == vect_design_z1
     assert (
         pytest.approx(calib1.calc_beta_design_param(np.max(vect_design_z1)), abs=1e-4)
@@ -224,18 +224,18 @@ def test_calibration_mat_opt():
     """
     Perform SORM analysis
     """
-    lc, dict_nom, betaT = setup1()
+    lc, nominal_values, betaT = setup1()
     calib2 = ra.Calibration(
         lc,
         target_beta=betaT,
-        dict_nom_vals=dict_nom,
-        calib_var="z",
-        est_method="matrix",
-        calib_method="optimize",
+        nominal_values=nominal_values,
+        design_parameter="z",
+        factor_method="matrix",
+        design_method="optimize",
         print_output=False,
     )
     calib2.run()
-    dfXst = pd.DataFrame(
+    design_points = pd.DataFrame(
         data=[
             [0.6553, 1.0371, 1.6236, 2.0171, 3.0431],
             [0.6550, 1.0371, 1.5129, 2.2458, 3.0477],
@@ -243,15 +243,15 @@ def test_calibration_mat_opt():
         columns=["R", "G", "Q1", "Q2", "z"],
         index=["Q1_max", "Q2_max"],
     )
-    dfphi = pd.DataFrame(
+    resistance_factors = pd.DataFrame(
         data=[[0.8469], [0.8465]], columns=["R"], index=["Q1_max", "Q2_max"]
     )
-    dfgamma = pd.DataFrame(
+    load_factors = pd.DataFrame(
         data=[[1.0371, 1.0692, 1.1026], [1.0371, 1.0692, 1.1026]],
         columns=["G", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
     )
-    dfpsi = pd.DataFrame(
+    combination_factors = pd.DataFrame(
         data=[[1.0, 1.0, 0.8982], [1.0, 0.9318, 1.0]],
         columns=["G", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
@@ -259,10 +259,10 @@ def test_calibration_mat_opt():
     vect_design_z2 = np.array([3.0443, 3.0477])
     vect_design_beta2 = np.array([4.3065, 4.3000])
     # validate results
-    assert pytest.approx(calib2.dfXstarcal, abs=1e-4) == dfXst
-    assert pytest.approx(calib2.df_phi, abs=1e-4) == dfphi
-    assert pytest.approx(calib2.df_gamma, abs=1e-4) == dfgamma
-    assert pytest.approx(calib2.df_psi, abs=1e-4) == dfpsi
+    assert pytest.approx(calib2.calibrated_design_points, abs=1e-4) == design_points
+    assert pytest.approx(calib2.resistance_factors, abs=1e-4) == resistance_factors
+    assert pytest.approx(calib2.load_factors, abs=1e-4) == load_factors
+    assert pytest.approx(calib2.combination_factors, abs=1e-4) == combination_factors
     assert pytest.approx(calib2.get_design_param_factor(), abs=1e-4) == vect_design_z2
     assert (
         pytest.approx(calib2.calc_beta_design_param(np.max(vect_design_z2)), abs=1e-4)
@@ -274,18 +274,18 @@ def test_calibration_mat_alpha():
     """
     Perform SORM analysis
     """
-    lc, dict_nom, betaT = setup1()
+    lc, nominal_values, betaT = setup1()
     calib3 = ra.Calibration(
         lc,
         target_beta=betaT,
-        dict_nom_vals=dict_nom,
-        calib_var="z",
-        est_method="matrix",
-        calib_method="alpha",
+        nominal_values=nominal_values,
+        design_parameter="z",
+        factor_method="matrix",
+        design_method="alpha",
         print_output=False,
     )
     calib3.run()
-    dfXst = pd.DataFrame(
+    design_points = pd.DataFrame(
         data=[
             [0.6553, 1.0371, 1.6236, 2.0171, 3.0431],
             [0.6550, 1.0371, 1.5129, 2.2458, 3.0477],
@@ -293,15 +293,15 @@ def test_calibration_mat_alpha():
         columns=["R", "G", "Q1", "Q2", "z"],
         index=["Q1_max", "Q2_max"],
     )
-    dfphi = pd.DataFrame(
+    resistance_factors = pd.DataFrame(
         data=[[0.8469], [0.8465]], columns=["R"], index=["Q1_max", "Q2_max"]
     )
-    dfgamma = pd.DataFrame(
+    load_factors = pd.DataFrame(
         data=[[1.0371, 1.0692, 1.1026], [1.0371, 1.0692, 1.1026]],
         columns=["G", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
     )
-    dfpsi = pd.DataFrame(
+    combination_factors = pd.DataFrame(
         data=[[1.0, 1.0, 0.8982], [1.0, 0.9318, 1.0]],
         columns=["G", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
@@ -309,10 +309,10 @@ def test_calibration_mat_alpha():
     vect_design_z3 = np.array([3.0443, 3.0477])
     vect_design_beta3 = np.array([4.3065, 4.3000])
     # validate results
-    assert pytest.approx(calib3.dfXstarcal, abs=1e-4) == dfXst
-    assert pytest.approx(calib3.df_phi, abs=1e-4) == dfphi
-    assert pytest.approx(calib3.df_gamma, abs=1e-4) == dfgamma
-    assert pytest.approx(calib3.df_psi, abs=1e-4) == dfpsi
+    assert pytest.approx(calib3.calibrated_design_points, abs=1e-4) == design_points
+    assert pytest.approx(calib3.resistance_factors, abs=1e-4) == resistance_factors
+    assert pytest.approx(calib3.load_factors, abs=1e-4) == load_factors
+    assert pytest.approx(calib3.combination_factors, abs=1e-4) == combination_factors
     assert pytest.approx(calib3.get_design_param_factor(), abs=1e-4) == vect_design_z3
     assert (
         pytest.approx(calib3.calc_beta_design_param(np.max(vect_design_z3)), abs=1e-4)
@@ -324,17 +324,17 @@ def test_calibration_coeff_opt_nonlinear():
     """
     Perform SORM analysis
     """
-    lc, dict_nom, betaT = setup2()
+    lc, nominal_values, betaT = setup2()
     calib1 = ra.Calibration(
         lc,
         target_beta=betaT,
-        dict_nom_vals=dict_nom,
-        calib_var="z",
-        est_method="coeff",
-        calib_method="optimize",
+        nominal_values=nominal_values,
+        design_parameter="z",
+        factor_method="coeff",
+        design_method="optimize",
     )
     calib1.run()
-    dfXst = pd.DataFrame(
+    design_points = pd.DataFrame(
         data=[
             [44.4005, 0.9519, 1.2050, 33.8055, 11.6913, 1.2971],
             [44.7632, 0.9526, 1.2014, 19.1578, 21.8479, 1.1553],
@@ -342,17 +342,17 @@ def test_calibration_coeff_opt_nonlinear():
         columns=["R", "wR", "wS", "Q1", "Q2", "z"],
         index=["Q1_max", "Q2_max"],
     )
-    dfphi = pd.DataFrame(
+    resistance_factors = pd.DataFrame(
         data=[[0.8857, 0.9519], [0.8929, 0.9526]],
         columns=["R", "wR"],
         index=["Q1_max", "Q2_max"],
     )
-    dfgamma = pd.DataFrame(
+    load_factors = pd.DataFrame(
         data=[[1.2050, 0.9677, 0.9381], [1.2014, 0.9677, 0.9381]],
         columns=["wS", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
     )
-    dfpsi = pd.DataFrame(
+    combination_factors = pd.DataFrame(
         data=[[1.0, 1.0, 0.5351], [1.0, 0.5667, 1.0]],
         columns=["wS", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
@@ -360,10 +360,10 @@ def test_calibration_coeff_opt_nonlinear():
     vect_design_z1 = np.array([1.2971, 1.1587])
     vect_design_beta1 = np.array([3.7001, 4.2835])
     # validate results
-    assert pytest.approx(calib1.dfXstarcal, abs=1e-4) == dfXst
-    assert pytest.approx(calib1.df_phi, abs=1e-4) == dfphi
-    assert pytest.approx(calib1.df_gamma, abs=1e-4) == dfgamma
-    assert pytest.approx(calib1.df_psi, abs=1e-4) == dfpsi
+    assert pytest.approx(calib1.calibrated_design_points, abs=1e-4) == design_points
+    assert pytest.approx(calib1.resistance_factors, abs=1e-4) == resistance_factors
+    assert pytest.approx(calib1.load_factors, abs=1e-4) == load_factors
+    assert pytest.approx(calib1.combination_factors, abs=1e-4) == combination_factors
     assert (
         pytest.approx(calib1.get_design_param_factor(False, False), abs=1e-3)
         == vect_design_z1
@@ -378,18 +378,18 @@ def test_calibration_mat_opt_nonlinear():
     """
     Perform SORM analysis
     """
-    lc, dict_nom, betaT = setup2()
+    lc, nominal_values, betaT = setup2()
     calib2 = ra.Calibration(
         lc,
         target_beta=betaT,
-        dict_nom_vals=dict_nom,
-        calib_var="z",
-        est_method="matrix",
-        calib_method="optimize",
+        nominal_values=nominal_values,
+        design_parameter="z",
+        factor_method="matrix",
+        design_method="optimize",
         print_output=False,
     )
     calib2.run()
-    dfXst = pd.DataFrame(
+    design_points = pd.DataFrame(
         data=[
             [44.4005, 0.9519, 1.2050, 33.8055, 11.6913, 1.2971],
             [44.7632, 0.9526, 1.2014, 19.1578, 21.8479, 1.1553],
@@ -397,17 +397,17 @@ def test_calibration_mat_opt_nonlinear():
         columns=["R", "wR", "wS", "Q1", "Q2", "z"],
         index=["Q1_max", "Q2_max"],
     )
-    dfphi = pd.DataFrame(
+    resistance_factors = pd.DataFrame(
         data=[[0.8857, 0.9519], [0.8929, 0.9526]],
         columns=["R", "wR"],
         index=["Q1_max", "Q2_max"],
     )
-    dfgamma = pd.DataFrame(
+    load_factors = pd.DataFrame(
         data=[[1.2050, 0.9677, 0.9381], [1.2014, 0.9677, 0.9381]],
         columns=["wS", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
     )
-    dfpsi = pd.DataFrame(
+    combination_factors = pd.DataFrame(
         data=[[1.0, 1.0, 0.5367], [1.0, 0.5651, 1.0]],
         columns=["wS", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
@@ -415,10 +415,10 @@ def test_calibration_mat_opt_nonlinear():
     vect_design_z2 = np.array([1.2980, 1.1571])
     vect_design_beta2 = np.array([3.7037, 4.2869])
     # validate results
-    assert pytest.approx(calib2.dfXstarcal, abs=1e-4) == dfXst
-    assert pytest.approx(calib2.df_phi, abs=1e-4) == dfphi
-    assert pytest.approx(calib2.df_gamma, abs=1e-4) == dfgamma
-    assert pytest.approx(calib2.df_psi, abs=1e-4) == dfpsi
+    assert pytest.approx(calib2.calibrated_design_points, abs=1e-4) == design_points
+    assert pytest.approx(calib2.resistance_factors, abs=1e-4) == resistance_factors
+    assert pytest.approx(calib2.load_factors, abs=1e-4) == load_factors
+    assert pytest.approx(calib2.combination_factors, abs=1e-4) == combination_factors
     assert (
         pytest.approx(calib2.get_design_param_factor(False, False), abs=1e-3)
         == vect_design_z2
@@ -433,18 +433,18 @@ def test_calibration_mat_alpha_nonlinear():
     """
     Perform SORM analysis
     """
-    lc, dict_nom, betaT = setup2()
+    lc, nominal_values, betaT = setup2()
     calib3 = ra.Calibration(
         lc,
         target_beta=betaT,
-        dict_nom_vals=dict_nom,
-        calib_var="z",
-        est_method="matrix",
-        calib_method="alpha",
+        nominal_values=nominal_values,
+        design_parameter="z",
+        factor_method="matrix",
+        design_method="alpha",
         print_output=False,
     )
     calib3.run()
-    dfXst = pd.DataFrame(
+    design_points = pd.DataFrame(
         data=[
             [44.4005, 0.9519, 1.2050, 33.8055, 11.6913, 1.2971],
             [44.7632, 0.9526, 1.2014, 19.1578, 21.8479, 1.1553],
@@ -452,17 +452,17 @@ def test_calibration_mat_alpha_nonlinear():
         columns=["R", "wR", "wS", "Q1", "Q2", "z"],
         index=["Q1_max", "Q2_max"],
     )
-    dfphi = pd.DataFrame(
+    resistance_factors = pd.DataFrame(
         data=[[0.8857, 0.9519], [0.8929, 0.9526]],
         columns=["R", "wR"],
         index=["Q1_max", "Q2_max"],
     )
-    dfgamma = pd.DataFrame(
+    load_factors = pd.DataFrame(
         data=[[1.2050, 0.9677, 0.9381], [1.2014, 0.9677, 0.9381]],
         columns=["wS", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
     )
-    dfpsi = pd.DataFrame(
+    combination_factors = pd.DataFrame(
         data=[[1.0, 1.0, 0.5367], [1.0, 0.5651, 1.0]],
         columns=["wS", "Q1", "Q2"],
         index=["Q1_max", "Q2_max"],
@@ -470,10 +470,10 @@ def test_calibration_mat_alpha_nonlinear():
     vect_design_z3 = np.array([1.2980, 1.1571])
     vect_design_beta3 = np.array([3.7037, 4.2869])
     # validate results
-    assert pytest.approx(calib3.dfXstarcal, abs=1e-4) == dfXst
-    assert pytest.approx(calib3.df_phi, abs=1e-4) == dfphi
-    assert pytest.approx(calib3.df_gamma, abs=1e-4) == dfgamma
-    assert pytest.approx(calib3.df_psi, abs=1e-4) == dfpsi
+    assert pytest.approx(calib3.calibrated_design_points, abs=1e-4) == design_points
+    assert pytest.approx(calib3.resistance_factors, abs=1e-4) == resistance_factors
+    assert pytest.approx(calib3.load_factors, abs=1e-4) == load_factors
+    assert pytest.approx(calib3.combination_factors, abs=1e-4) == combination_factors
     assert (
         pytest.approx(calib3.get_design_param_factor(False, False), abs=1e-4)
         == vect_design_z3
@@ -488,18 +488,18 @@ def test_calibration_coeff_opt_3():
     """
     Perform SORM analysis
     """
-    lc, dict_nom, betaT = setup3()
+    lc, nominal_values, betaT = setup3()
     calib1 = ra.Calibration(
         lc,
         target_beta=betaT,
-        dict_nom_vals=dict_nom,
-        calib_var="z",
-        est_method="coeff",
-        calib_method="optimize",
+        nominal_values=nominal_values,
+        design_parameter="z",
+        factor_method="coeff",
+        design_method="optimize",
         print_output=False,
     )
     calib1.run()
-    dfXst = pd.DataFrame(
+    design_points = pd.DataFrame(
         data=[
             [0.6194, 1.0194, 1.8722, 1.2591, 1.6108, 3.5045],
             [0.6137, 1.0202, 1.4497, 1.727, 1.7667, 3.4546],
@@ -508,12 +508,12 @@ def test_calibration_coeff_opt_3():
         columns=["R", "G", "Q1", "Q2", "Q3", "z"],
         index=["Q1_max", "Q2_max", "Q3_max"],
     )
-    dfphi = pd.DataFrame(
+    resistance_factors = pd.DataFrame(
         data=[[0.8005], [0.7931], [0.7915]],
         columns=["R"],
         index=["Q1_max", "Q2_max", "Q3_max"],
     )
-    dfgamma = pd.DataFrame(
+    load_factors = pd.DataFrame(
         data=[
             [1.0194, 1.3634, 1.1072, 1.2269],
             [1.0202, 1.3634, 1.1072, 1.2269],
@@ -522,7 +522,7 @@ def test_calibration_coeff_opt_3():
         columns=["G", "Q1", "Q2", "Q3"],
         index=["Q1_max", "Q2_max", "Q3_max"],
     )
-    dfpsi = pd.DataFrame(
+    combination_factors = pd.DataFrame(
         data=[
             [1.0, 1.0, 0.7291, 0.8627],
             [1.0, 0.7743, 1.0, 0.9463],
@@ -532,15 +532,15 @@ def test_calibration_coeff_opt_3():
         index=["Q1_max", "Q2_max", "Q3_max"],
     )
     # calib1.print_detailed_output(precision=4)
-    # print(calib1.df_nom)
+    # print(calib1.nominal_table)
     # print(calib1.get_design_param_factor())
     vect_design_z1 = np.array([3.6709, 3.559, 3.3951])
     vect_design_beta1 = np.array([5.0028, 5.0708, 5.1493])
     # validate results
-    assert pytest.approx(calib1.dfXstarcal, abs=1e-4) == dfXst
-    assert pytest.approx(calib1.df_phi, abs=1e-4) == dfphi
-    assert pytest.approx(calib1.df_gamma, abs=1e-4) == dfgamma
-    assert pytest.approx(calib1.df_psi, abs=1e-4) == dfpsi
+    assert pytest.approx(calib1.calibrated_design_points, abs=1e-4) == design_points
+    assert pytest.approx(calib1.resistance_factors, abs=1e-4) == resistance_factors
+    assert pytest.approx(calib1.load_factors, abs=1e-4) == load_factors
+    assert pytest.approx(calib1.combination_factors, abs=1e-4) == combination_factors
     assert pytest.approx(calib1.get_design_param_factor(), abs=1e-4) == vect_design_z1
     assert (
         pytest.approx(calib1.calc_beta_design_param(np.max(vect_design_z1)), abs=1e-4)
@@ -552,18 +552,18 @@ def test_calibration_mat_opt_3():
     """
     Perform SORM analysis
     """
-    lc, dict_nom, betaT = setup3()
+    lc, nominal_values, betaT = setup3()
     calib2 = ra.Calibration(
         lc,
         target_beta=betaT,
-        dict_nom_vals=dict_nom,
-        calib_var="z",
-        est_method="matrix",
-        calib_method="optimize",
+        nominal_values=nominal_values,
+        design_parameter="z",
+        factor_method="matrix",
+        design_method="optimize",
         print_output=False,
     )
     calib2.run()
-    dfXst = pd.DataFrame(
+    design_points = pd.DataFrame(
         data=[
             [0.6194, 1.0194, 1.8722, 1.2591, 1.6108, 3.5045],
             [0.6137, 1.0202, 1.4497, 1.7270, 1.7667, 3.4546],
@@ -572,12 +572,12 @@ def test_calibration_mat_opt_3():
         columns=["R", "G", "Q1", "Q2", "Q3", "z"],
         index=["Q1_max", "Q2_max", "Q3_max"],
     )
-    dfphi = pd.DataFrame(
+    resistance_factors = pd.DataFrame(
         data=[[0.8005], [0.7931], [0.7915]],
         columns=["R"],
         index=["Q1_max", "Q2_max", "Q3_max"],
     )
-    dfgamma = pd.DataFrame(
+    load_factors = pd.DataFrame(
         data=[
             [1.0194, 1.3634, 1.1072, 1.2269],
             [1.0202, 1.3634, 1.1072, 1.2269],
@@ -586,7 +586,7 @@ def test_calibration_mat_opt_3():
         columns=["G", "Q1", "Q2", "Q3"],
         index=["Q1_max", "Q2_max", "Q3_max"],
     )
-    dfpsi = pd.DataFrame(
+    combination_factors = pd.DataFrame(
         data=[
             [1.0, 1.0, 0.7778, 0.7997],
             [1.0, 0.8352, 1.0, 0.7997],
@@ -598,14 +598,14 @@ def test_calibration_mat_opt_3():
     vect_design_z2 = np.array([3.5442, 3.4616, 3.3951])
     vect_design_beta2 = np.array([4.8494, 4.9144, 4.9925])
     # calib2.print_detailed_output(precision=4)
-    # print(calib2.df_nom)
+    # print(calib2.nominal_table)
     # print(calib2.get_design_param_factor())
-    # print(calib2.calc_df_pg_rs(True,True))
+    # print(calib2.factored_nominals(True,True))
     # validate results
-    assert pytest.approx(calib2.dfXstarcal, abs=1e-4) == dfXst
-    assert pytest.approx(calib2.df_phi, abs=1e-4) == dfphi
-    assert pytest.approx(calib2.df_gamma, abs=1e-4) == dfgamma
-    assert pytest.approx(calib2.df_psi, abs=1e-4) == dfpsi
+    assert pytest.approx(calib2.calibrated_design_points, abs=1e-4) == design_points
+    assert pytest.approx(calib2.resistance_factors, abs=1e-4) == resistance_factors
+    assert pytest.approx(calib2.load_factors, abs=1e-4) == load_factors
+    assert pytest.approx(calib2.combination_factors, abs=1e-4) == combination_factors
     assert pytest.approx(calib2.get_design_param_factor(), abs=1e-3) == vect_design_z2
     assert (
         pytest.approx(calib2.calc_beta_design_param(np.max(vect_design_z2)), abs=1e-4)
@@ -617,18 +617,18 @@ def test_calibration_mat_alpha_3():
     """
     Perform SORM analysis
     """
-    lc, dict_nom, betaT = setup3()
+    lc, nominal_values, betaT = setup3()
     calib3 = ra.Calibration(
         lc,
         target_beta=betaT,
-        dict_nom_vals=dict_nom,
-        calib_var="z",
-        est_method="matrix",
-        calib_method="alpha",
+        nominal_values=nominal_values,
+        design_parameter="z",
+        factor_method="matrix",
+        design_method="alpha",
         print_output=False,
     )
     calib3.run()
-    dfXst = pd.DataFrame(
+    design_points = pd.DataFrame(
         data=[
             [0.6194, 1.0194, 1.8722, 1.2591, 1.6108, 3.5045],
             [0.6137, 1.0202, 1.4497, 1.7270, 1.7667, 3.4546],
@@ -637,12 +637,12 @@ def test_calibration_mat_alpha_3():
         columns=["R", "G", "Q1", "Q2", "Q3", "z"],
         index=["Q1_max", "Q2_max", "Q3_max"],
     )
-    dfphi = pd.DataFrame(
+    resistance_factors = pd.DataFrame(
         data=[[0.8005], [0.7931], [0.7915]],
         columns=["R"],
         index=["Q1_max", "Q2_max", "Q3_max"],
     )
-    dfgamma = pd.DataFrame(
+    load_factors = pd.DataFrame(
         data=[
             [1.0194, 1.3634, 1.1072, 1.2269],
             [1.0202, 1.3634, 1.1072, 1.2269],
@@ -651,7 +651,7 @@ def test_calibration_mat_alpha_3():
         columns=["G", "Q1", "Q2", "Q3"],
         index=["Q1_max", "Q2_max", "Q3_max"],
     )
-    dfpsi = pd.DataFrame(
+    combination_factors = pd.DataFrame(
         data=[
             [1.0, 1.0, 0.7778, 0.7997],
             [1.0, 0.8352, 1.0, 0.7997],
@@ -663,10 +663,10 @@ def test_calibration_mat_alpha_3():
     vect_design_z3 = np.array([3.5442, 3.4616, 3.3951])
     vect_design_beta3 = np.array([4.8494, 4.9144, 4.9925])
     # validate results
-    assert pytest.approx(calib3.dfXstarcal, abs=1e-4) == dfXst
-    assert pytest.approx(calib3.df_phi, abs=1e-4) == dfphi
-    assert pytest.approx(calib3.df_gamma, abs=1e-4) == dfgamma
-    assert pytest.approx(calib3.df_psi, abs=1e-4) == dfpsi
+    assert pytest.approx(calib3.calibrated_design_points, abs=1e-4) == design_points
+    assert pytest.approx(calib3.resistance_factors, abs=1e-4) == resistance_factors
+    assert pytest.approx(calib3.load_factors, abs=1e-4) == load_factors
+    assert pytest.approx(calib3.combination_factors, abs=1e-4) == combination_factors
     assert pytest.approx(calib3.get_design_param_factor(), abs=1e-3) == vect_design_z3
     assert (
         pytest.approx(calib3.calc_beta_design_param(np.max(vect_design_z3)), abs=1e-4)

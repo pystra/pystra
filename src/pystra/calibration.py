@@ -18,37 +18,37 @@ class Calibration:
 
     Attributes
     ----------
-    betaT : float
+    beta_t : float
         Target reliability index
-    calib_method : str
+    design_method : str
         The calibration algorithm to use
-    cvar : str
+    design_parameter : str
         The label of the calibration variable.
-    df_nom : DataFrame
+    nominal_table : DataFrame
         A dataframe of nominal values
-    df_Xstar : DataFrame
+    calibrated_design_points : DataFrame
         A dataframe of design point values
-    df_phi : DataFrame
+    resistance_factors : DataFrame
         A dataframe of partial factors for resistances
-    df_gamma : DataFrame
+    load_factors : DataFrame
         A dataframe of partial factors for loads
-    df_psi : DataFrame
+    combination_factors : DataFrame
         A dataframe of load combination factors
-    dict_nom : dict
+    nominal_values : dict
         Dictionary of nominal values
-    est_method : str
+    factor_method : str
         The estimation method
-    label_comb_vrs : str
+    variable_action_names : list of str
         Labels of combination variables
-    label_comb_cases : str
+    case_names : list of str
         Labels of combination load variables
-    label_R : str
+    resistance_names : list of str
         Labels of resistance variables
-    label_other : str
+    other_names : list of str
         Labels of other load variables
-    label_all : str
+    variable_names : list of str
         Labels of all variables including design parameter
-    loadCombObj : LoadCombination
+    load_combinations : LoadCombination
         LoadCombination object
     print_output : bool
         Whether or not to print output to the console
@@ -56,12 +56,12 @@ class Calibration:
 
     def __init__(
         self,
-        loadcombobj,
+        load_combinations,
         target_beta,
-        dict_nom_vals,
-        calib_var,
-        calib_method="optimize",
-        est_method="matrix",
+        nominal_values,
+        design_parameter,
+        design_method="optimize",
+        factor_method="matrix",
         print_output=False,
     ):
         """
@@ -69,18 +69,18 @@ class Calibration:
 
         Parameters
         ----------
-        loadcombobj : Class object
-            Class LoadCombination object.
+        load_combinations : LoadCombination
+            Load cases and reliability-analysis configuration.
         target_beta : Float
             Target reliability index for calibration.
-        dict_nom_vals : Dictionary
+        nominal_values : Dictionary
             Dictionary of nominal values.
-        calib_var : String
+        design_parameter : String
             Label of calibration variable in the LSF.
-        calib_method : String, optional
+        design_method : String, optional
             Calibration method for the analysis: "optimize" or "alpha".
             The default is "optimize".
-        est_method : String, optional
+        factor_method : String, optional
             Estimation method for the factors: "matrix" or "coeff".
             The default is "matrix".
         print_output : Boolean, optional
@@ -92,27 +92,27 @@ class Calibration:
 
         """
         # Instance attributes
-        self.lc_obj = loadcombobj
+        self.load_combinations = load_combinations
         self.beta_t = target_beta
-        self.calib_method = calib_method
-        self.est_method = est_method
+        self.design_method = design_method
+        self.factor_method = factor_method
         self.print_output = print_output
         # Ensure nominal values are writable — ppf() and np.concatenate()
         # can produce read-only arrays in newer NumPy/SciPy, which would
         # propagate to DataFrames and cause fill_diagonal failures downstream.
-        self.dict_nom = {k: np.float64(v) for k, v in dict_nom_vals.items()}
-        self.df_nom = pd.DataFrame(
-            data=self.dict_nom, index=loadcombobj.label_comb_cases
+        self.nominal_values = {k: np.float64(v) for k, v in nominal_values.items()}
+        self.nominal_table = pd.DataFrame(
+            data=self.nominal_values, index=load_combinations.case_names
         )
         (
-            self.label_R,
-            self.label_other,
-            self.label_comb_vrs,
-            self.label_comb_cases,
-            self.label_all,
-        ) = self._set_labels()
-        self.label_S = self.label_other + self.label_comb_vrs
-        self.cvar = calib_var
+            self.resistance_names,
+            self.other_names,
+            self.variable_action_names,
+            self.case_names,
+            self.variable_names,
+        ) = self._get_case_metadata()
+        self.load_names = self.other_names + self.variable_action_names
+        self.design_parameter = design_parameter
 
     ## Utility Methods
     @staticmethod
@@ -134,55 +134,61 @@ class Calibration:
               \n x* = {form.get_design_point(False).round(3)}")
 
     @staticmethod
-    def _get_missing_element(mainlist, subsetlist):
+    def _get_missing_element(all_names, selected_names):
         """
-        Identify the element in the mainlist which is not present in the subset
+        Identify the element in the all_names which is not present in the subset
         list.
 
         Parameters
         ----------
-        mainlist : List
+        all_names : List
 
-        subsetlist : List
+        selected_names : List
 
 
         Returns
         -------
         missing : List
-            List containing mainlist elements not present in subset list.
+            List containing all_names elements not present in subset list.
 
         """
-        missing = [True if xx not in subsetlist else False for xx in mainlist]
-        missing = list(np.array(mainlist)[missing])
+        missing = [True if xx not in selected_names else False for xx in all_names]
+        missing = list(np.array(all_names)[missing])
         return missing
 
-    def _set_labels(self):
+    def _get_case_metadata(self):
         """
         Set labels of random variables and load cases based on the
         LoadCombination class Object.
 
         Returns
         -------
-        label_R : List
+        resistance_names : List
             List of resistance variables.
-        label_other : List
+        other_names : List
             List of other load variables.
-        label_comb_vrs : List
+        variable_action_names : List
             List of load combination case variables.
-        label_comb_cases : List
+        case_names : List
             List of load combination cases.
-        label_all : List
+        variable_names : List
             List of all random variables.
 
         """
-        label_comb_cases = self.lc_obj.get_label("comb_cases")
-        label_R = self.lc_obj.get_label("resist")
-        label_comb_vrs = self.lc_obj.get_label("comb_vrs")
-        label_other = self.lc_obj.get_label("other")
-        label_all = self.lc_obj.get_label("all")
-        return label_R, label_other, label_comb_vrs, label_comb_cases, label_all
+        case_names = self.load_combinations.get_group_names("comb_cases")
+        resistance_names = self.load_combinations.get_group_names("resist")
+        variable_action_names = self.load_combinations.get_group_names("comb_vrs")
+        other_names = self.load_combinations.get_group_names("other")
+        variable_names = self.load_combinations.get_group_names("all")
+        return (
+            resistance_names,
+            other_names,
+            variable_action_names,
+            case_names,
+            variable_names,
+        )
 
-    def calc_lsf_eval_df(self, df, ret_abs=True):
+    def evaluate_variable_effects(self, df, ret_abs=True):
         """Calculate the LSF evaluation of a Dataframe elements.
 
         Pass each dataframe value to the LSF and get corresponding LSF
@@ -200,18 +206,19 @@ class Calibration:
 
         Returns
         -------
-        df_lsf : Dataframe
+        limit_state_values : Dataframe
             Dataframe containing element-wise LSF evaluation of passed df.
 
         """
 
-        df_lsf = df.copy()
+        limit_state_values = df.copy()
         for col in df:
             jj = [
-                self.lc_obj.eval_lsf_kwargs(**{"z": 1.0, col: xx}) for xx in df_lsf[col]
+                self.load_combinations.eval_lsf_kwargs(**{"z": 1.0, col: xx})
+                for xx in limit_state_values[col]
             ]
-            df_lsf.loc[:, col] = [abs(xx) for xx in jj] if ret_abs else jj
-        return df_lsf
+            limit_state_values.loc[:, col] = [abs(xx) for xx in jj] if ret_abs else jj
+        return limit_state_values
 
     ## Projection Methods
     def _calibration_optimize(
@@ -238,7 +245,7 @@ class Calibration:
         target_beta : Float
             The target reliability index.
         print_output : Bool, optional
-            Display output for print_outputging. The default is False.
+            Display output for diagnostics. The default is False.
         xtol : Float, optional
             Relative error tolerance for convergence. The default is 1e-4.
         max_iter : Integer, optional
@@ -255,12 +262,12 @@ class Calibration:
             The form object at beta_t
 
         """
-        cvar = self.cvar
+        design_parameter = self.design_parameter
 
         def obj_func(Zk, beta_t):
-            val = Constant(cvar, Zk)
-            dict_z = {cvar: val}
-            kwargs.update(dict_z)
+            val = Constant(design_parameter, Zk)
+            design_override = {design_parameter: val}
+            kwargs.update(design_override)
             form = rel_func(**kwargs)
             if print_output:
                 ## Change to inbuilt
@@ -275,9 +282,9 @@ class Calibration:
             Zk_opt = fsolve(
                 obj_func, x0=z0, args=(target_beta), xtol=xtol, maxfev=max_iter
             )
-        val = Constant(cvar, Zk_opt)
-        dict_z = {cvar: val}
-        kwargs.update(dict_z)
+        val = Constant(design_parameter, Zk_opt)
+        design_override = {design_parameter: val}
+        kwargs.update(design_override)
         form = rel_func(**kwargs)
         return Zk_opt, form
 
@@ -305,7 +312,7 @@ class Calibration:
         target_beta : Float
             The target reliability index.
         print_output : Bool, optional
-            Display output for print_outputging. The default is False.
+            Display output for diagnostics. The default is False.
         abstol : Float, optional
             Absolute error tolerance for convergence. The default is 1e-4.
         max_iter : Integer, optional
@@ -322,10 +329,10 @@ class Calibration:
 
         """
         ## Initialize algorithm
-        cvar = self.cvar
-        val = Constant(cvar, z0)
-        dict_z = {cvar: val}
-        kwargs.update(dict_z)
+        design_parameter = self.design_parameter
+        val = Constant(design_parameter, z0)
+        design_override = {design_parameter: val}
+        kwargs.update(design_override)
         form0 = rel_func(**kwargs)
         alpha0 = form0.get_alpha()
         n_iter = 0
@@ -334,7 +341,7 @@ class Calibration:
         form_cal = form0
         beta_cal = beta0
         z_cal = z0
-        columns = self._get_df_xstar_labels(form0)
+        columns = self._design_point_names(form0)
         if print_output:
             print(f"\n ==== Iteration {n_iter} ====")
             self._print_form_results(form0)
@@ -347,12 +354,14 @@ class Calibration:
                 U_cal, form_cal.model.get_marginal_distributions()
             )
             ## Calculate the design parameter for the Calibrated LSF
-            dfXst_cal = pd.DataFrame(data=[Xstar_cal], columns=columns)
-            z_cal = np.array([self.calc_design_param_xst(dfXst_cal)])
+            projected_design_points = pd.DataFrame(data=[Xstar_cal], columns=columns)
+            z_cal = np.array(
+                [self.design_parameter_from_point(projected_design_points)]
+            )
             ## Check Calibrated reliability index
-            val = Constant(cvar, z_cal)
-            dict_z = {cvar: val}
-            kwargs.update(dict_z)
+            val = Constant(design_parameter, z_cal)
+            design_override = {design_parameter: val}
+            kwargs.update(design_override)
             form_cal = rel_func(**kwargs)
             beta_cal = form_cal.get_beta()
             alpha_cal = form_cal.get_alpha()
@@ -368,15 +377,15 @@ class Calibration:
                 break
         return z_cal, form_cal
 
-    def calc_design_param_xst(self, dfXst):
+    def design_parameter_from_point(self, design_points):
         """
         Calculate design parameter for resistance from design points.
 
         Parameters
         ----------
-        dfXst : Dataframe
+        design_points : Dataframe
             Dataframe containing design points.
-            Note: len(dfXst.index) = 1
+            Note: len(design_points.index) = 1
 
         Returns
         -------
@@ -384,44 +393,44 @@ class Calibration:
             design parameter for resistance corresponding to the design pt.
 
         """
-        dfS = dfXst[self.label_other + self.label_comb_vrs]
-        dfS_dict = dfS.to_dict("records")[0]
-        sum_loadeff = self.lc_obj.eval_lsf_kwargs(**dfS_dict)
-        R_dict = dfXst[self.label_R].to_dict("records")[0]
-        sum_resist = self.lc_obj.eval_lsf_kwargs(**R_dict)
+        action_points = design_points[self.other_names + self.variable_action_names]
+        action_values = action_points.to_dict("records")[0]
+        sum_loadeff = self.load_combinations.eval_lsf_kwargs(**action_values)
+        resistance_values = design_points[self.resistance_names].to_dict("records")[0]
+        sum_resist = self.load_combinations.eval_lsf_kwargs(**resistance_values)
         z = sum_loadeff / sum_resist
         z = float(abs(z))
         return z
 
-    def _get_df_xstar(self, list_form_obj, cols=None, idx=None):
+    def _collect_design_points(self, analyses, cols=None, idx=None):
         """
         Get a dataframe of design points in physical space using a list
         of FORM objects
 
         Parameters
         ----------
-        list_form_obj : List
+        analyses : List
             List of FORM objects.
         cols : List or pandas.DataFrame.columns
             Column values for output Dataframe. Default is
-            list_form_obj[0].model.get_names()[1:]
+            analyses[0].model.get_names()[1:]
         idx : List or pandas.DataFrame.index
             Index values for output Dataframe. Default is integer array.
 
         Returns
         -------
-        dfXstar : Dataframe
+        design_points : Dataframe
             Dataframe of design points in physical space.
 
         """
-        Xstar = [xx.get_design_point(uspace=False) for xx in list_form_obj]
-        label_vrs = self._get_df_xstar_labels(list_form_obj[0])
-        cols = label_vrs if cols is None else cols
-        idx = np.arange(len(list_form_obj)) if idx is None else idx
-        dfXstar = pd.DataFrame(data=Xstar, columns=cols, index=idx)
-        return dfXstar
+        Xstar = [xx.get_design_point(uspace=False) for xx in analyses]
+        variable_names = self._design_point_names(analyses[0])
+        cols = variable_names if cols is None else cols
+        idx = np.arange(len(analyses)) if idx is None else idx
+        design_points = pd.DataFrame(data=Xstar, columns=cols, index=idx)
+        return design_points
 
-    def _get_df_xstar_labels(self, form):
+    def _design_point_names(self, form):
         """
         Get labels for the DataFrame of design points using the form objects.
 
@@ -435,16 +444,18 @@ class Calibration:
 
         Returns
         -------
-        label_vrs : list
+        variable_names : list
             Labels for the DataFrame of design points using the form objects.
 
         """
-        label_const = form.model.get_constants().keys()
-        label_all = form.model.get_names()
-        label_vrs = sorted(list(set(label_all) - set(label_const)), key=label_all.index)
-        return label_vrs
+        constant_names = form.model.get_constants().keys()
+        variable_names = form.model.get_names()
+        variable_names = sorted(
+            list(set(variable_names) - set(constant_names)), key=variable_names.index
+        )
+        return variable_names
 
-    def run(self, est_method=None, set_max=False):
+    def run(self, factor_method=None, set_max=False):
         """
         Run calibration analysis to estimate :math:`\\phi`, :math:`\\gamma`,
         and :math:`\\psi` factors, and set class dataframe attributes
@@ -452,7 +463,7 @@ class Calibration:
 
         Parameters
         ----------
-        est_method : String, optional
+        factor_method : String, optional
             Calibration method override. The default is "matrix".
 
         Returns
@@ -460,15 +471,15 @@ class Calibration:
         None.
 
         """
-        est_method = self.est_method if est_method is None else est_method
+        factor_method = self.factor_method if factor_method is None else factor_method
         self._run_calibration()
-        if est_method == "coeff":
-            self.df_phi, self.df_gamma, self.df_psi = self._estimate_factors_coeff(
-                set_max
+        if factor_method == "coeff":
+            self.resistance_factors, self.load_factors, self.combination_factors = (
+                self._estimate_factors_coeff(set_max)
             )
-        elif est_method == "matrix":
-            self.df_phi, self.df_gamma, self.df_psi = self._estimate_factors_matrix(
-                set_max
+        elif factor_method == "matrix":
+            self.resistance_factors, self.load_factors, self.combination_factors = (
+                self._estimate_factors_matrix(set_max)
             )
 
     def _run_calibration(self):
@@ -481,11 +492,11 @@ class Calibration:
         None.
 
         """
-        arr_zcal, list_form_cal = self._calibrate_design_param()
-        self.dfXstarcal = self._get_df_xstar(
-            list_form_cal, idx=self.lc_obj.label_comb_cases
+        calibrated_designs, calibrated_analyses = self._calibrate_design_param()
+        self.calibrated_design_points = self._collect_design_points(
+            calibrated_analyses, idx=self.load_combinations.case_names
         )
-        self.dfXstarcal["z"] = arr_zcal
+        self.calibrated_design_points["z"] = calibrated_designs
 
     def _estimate_factors_coeff(self, set_max=False):
         """
@@ -500,48 +511,58 @@ class Calibration:
 
         Returns
         -------
-        df_phi : Dataframe
+        resistance_factors : Dataframe
             Dataframe of :math:`\\phi` per load case.
-        df_gamma : Dataframe
+        load_factors : Dataframe
             Dataframe of :math:`\\gamma`.
-        df_psi : Dataframe
+        combination_factors : Dataframe
             Dataframe of :math:`\\psi` per load case.
 
         """
-        df_phi, df_gamma, df_psi = self.calc_pg_coeff(
-            self.dfXstarcal, print_output=self.print_output
+        resistance_factors, load_factors, combination_factors = self.calc_pg_coeff(
+            self.calibrated_design_points, print_output=self.print_output
         )
-        df_psi = self.get_psi_max(df_psi) if set_max else df_psi
-        df_phi = self.get_phi_min(df_phi) if set_max else df_phi
-        return df_phi, df_gamma, df_psi
+        combination_factors = (
+            self.get_psi_max(combination_factors) if set_max else combination_factors
+        )
+        resistance_factors = (
+            self.get_phi_min(resistance_factors) if set_max else resistance_factors
+        )
+        return resistance_factors, load_factors, combination_factors
 
-    def get_psi_max(self, dfpsi):
+    def get_psi_max(self, combination_factors):
         """
-        Get :math:`\\psi` dataframe corresponding to maximum estimates of dfpsi.
+        Get :math:`\\psi` dataframe corresponding to maximum estimates of combination_factors.
 
         Parameters
         ----------
-        dfpsi : DataFrame
+        combination_factors : DataFrame
             Dataframe of :math:`\\psi` per load case.
 
         Returns
         -------
-        df_psi_max : DataFrame
+        selected_combination_factors : DataFrame
             Dataframe of :math:`\\psi` corresponding to maximum of each load effect.
 
         """
-        df_psi_max = dfpsi[self.label_comb_vrs].copy()
+        selected_combination_factors = combination_factors[
+            self.variable_action_names
+        ].copy()
         # Set diagonal elements via iloc; np.fill_diagonal on .values or
         # .to_numpy() fails on newer pandas/NumPy where the underlying
         # array may be read-only.
-        for i in range(min(df_psi_max.shape)):
-            df_psi_max.iloc[i, i] = 0.0
-        df_psi_max = df_psi_max.clip(df_psi_max.max(), axis=1)
-        for i in range(min(df_psi_max.shape)):
-            df_psi_max.iloc[i, i] = 1.0
-        if len(self.label_other) > 0:
-            df_psi_max.loc[:, self.label_other] = dfpsi[self.label_other]
-        return df_psi_max
+        for i in range(min(selected_combination_factors.shape)):
+            selected_combination_factors.iloc[i, i] = 0.0
+        selected_combination_factors = selected_combination_factors.clip(
+            selected_combination_factors.max(), axis=1
+        )
+        for i in range(min(selected_combination_factors.shape)):
+            selected_combination_factors.iloc[i, i] = 1.0
+        if len(self.other_names) > 0:
+            selected_combination_factors.loc[:, self.other_names] = combination_factors[
+                self.other_names
+            ]
+        return selected_combination_factors
 
     def _calibrate_design_param(self):
         """
@@ -552,40 +573,40 @@ class Calibration:
 
         Returns
         -------
-        list_z_cal : List
+        calibrated_designs : List
             List of calibrated design parameters per load comb case.
-        list_form_cal : List
+        calibrated_analyses : List
             List of calibrated Pystra FORM objects per load comb case.
 
         """
-        startz = self.lc_obj.constant[self.cvar].get_value()
-        rel_func = self.lc_obj.run_reliability_case
-        list_z_cal = []
-        list_form_cal = []
-        for lc in self.lc_obj.label_comb_cases:
-            if self.calib_method == "optimize":
+        startz = self.load_combinations.constant[self.design_parameter].get_value()
+        rel_func = self.load_combinations.run_reliability_case
+        calibrated_designs = []
+        calibrated_analyses = []
+        for lc in self.load_combinations.case_names:
+            if self.design_method == "optimize":
                 zcal, form = self._calibration_optimize(
                     rel_func,
                     z0=startz,
                     print_output=self.print_output,
                     target_beta=self.beta_t,
-                    lcn=lc,
+                    case_name=lc,
                 )
-            elif self.calib_method == "alpha":
+            elif self.design_method == "alpha":
                 zcal, form = self._calibration_alpha(
                     rel_func,
                     z0=startz,
                     print_output=self.print_output,
                     target_beta=self.beta_t,
-                    lcn=lc,
+                    case_name=lc,
                 )
-            list_z_cal.append(zcal)
-            list_form_cal.append(form)
-        list_z_cal = np.concatenate(list_z_cal)
-        arr_beta = np.array([xx.get_beta() for xx in list_form_cal])
+            calibrated_designs.append(zcal)
+            calibrated_analyses.append(form)
+        calibrated_designs = np.concatenate(calibrated_designs)
+        reliability_indices = np.array([xx.get_beta() for xx in calibrated_analyses])
         if self.print_output:
-            print(f"\n Calibrated reliabilities = {arr_beta}")
-        return list_z_cal, list_form_cal
+            print(f"\n Calibrated reliabilities = {reliability_indices}")
+        return calibrated_designs, calibrated_analyses
 
     def _estimate_factors_matrix(self, set_max=False):
         """
@@ -594,29 +615,33 @@ class Calibration:
 
         Returns
         -------
-        df_phi : Dataframe
+        resistance_factors : Dataframe
             Dataframe of :math:`\\phi` per load case.
-        df_gamma : Dataframe
+        load_factors : Dataframe
             Dataframe of :math:`\\gamma`.
-        df_psi : Dataframe
+        combination_factors : Dataframe
             Dataframe of :math:`\\psi`.
 
         """
-        df_phi, df_gamma, df_psi = self.calc_pg_matrix(
-            self.dfXstarcal, print_output=self.print_output
+        resistance_factors, load_factors, combination_factors = self.calc_pg_matrix(
+            self.calibrated_design_points, print_output=self.print_output
         )
-        df_phi = self.get_phi_min(df_phi) if set_max else df_phi
-        df_psi = self.get_psi_max(df_psi) if set_max else df_psi
-        return df_phi, df_gamma, df_psi
+        resistance_factors = (
+            self.get_phi_min(resistance_factors) if set_max else resistance_factors
+        )
+        combination_factors = (
+            self.get_psi_max(combination_factors) if set_max else combination_factors
+        )
+        return resistance_factors, load_factors, combination_factors
 
-    def calc_pg_coeff(self, dfXst, print_output=False):
+    def calc_pg_coeff(self, design_points, print_output=False):
         """
         Calculate :math:`\\phi`, :math:`\\gamma`, and :math:`\\psi` for the given set of design
         points and nominals using comparison of design pt coefficients approach.
 
         Parameters
         ----------
-        dfXst : Dataframe
+        design_points : Dataframe
             Dataframe containing all design points at target reliability.
         print_output : Boolean, optional
             print_output flag for displaying intermediate and final output of function.
@@ -624,33 +649,37 @@ class Calibration:
 
         Returns
         -------
-        df_phi : Dataframe
+        resistance_factors : Dataframe
             Dataframe containing :math:`\\phi` estimates for resistance variables
             per load case.
-        df_gamma : Dataframe
+        load_factors : Dataframe
             Dataframe containing :math:`\\gamma` estimates for all static and
             combination load variables per load case.
-        df_psi : Dataframe
+        combination_factors : Dataframe
             Dataframe containing :math:`\\psi` estimates for all static and
             combination load variables per load case.
 
         """
         ## Estimate :math:`\\phi` and :math:`\\gamma`
-        df_Xst_nom = self.calc_xst_nom(dfXstar=dfXst)
-        df_phi = self.calc_phi(df_Xst_nom)
-        df_gamma_static, df_gamma_comb = self.calc_gamma(df_Xst_nom)
-        df_gamma = pd.concat((df_gamma_static, df_gamma_comb), axis=1)
+        normalized_design_points = self.normalize_design_points(
+            design_points=design_points
+        )
+        resistance_factors = self.calc_phi(normalized_design_points)
+        static_load_factors, variable_load_factors = self.calc_gamma(
+            normalized_design_points
+        )
+        load_factors = pd.concat((static_load_factors, variable_load_factors), axis=1)
         ## Estimate :math:`\\psi`
-        df_psi = dfXst / df_gamma / self.df_nom
-        df_psi = df_psi[self.label_S]
+        combination_factors = design_points / load_factors / self.nominal_table
+        combination_factors = combination_factors[self.load_names]
         if print_output:
-            print(f"\n $\\phi$, \n {df_phi}")
-            print(f"\n $\\gamma$ static, \n {df_gamma_static}")
-            print(f"\n $\\gamma$ comb vrs, \n {df_gamma_comb}")
-            print(f"\n psi, \n {df_psi}")
-        return df_phi, df_gamma, df_psi
+            print(f"\n $\\phi$, \n {resistance_factors}")
+            print(f"\n $\\gamma$ static, \n {static_load_factors}")
+            print(f"\n $\\gamma$ comb vrs, \n {variable_load_factors}")
+            print(f"\n psi, \n {combination_factors}")
+        return resistance_factors, load_factors, combination_factors
 
-    def calc_xst_nom(self, dfXstar):
+    def normalize_design_points(self, design_points):
         """
         Calculate the design point DataFrame divided by the nominal values
         per load case and adjust for :math:`\\psi` factors for combination
@@ -658,36 +687,36 @@ class Calibration:
 
         Parameters
         ----------
-        dfXstar : DataFrame
+        design_points : DataFrame
             DataFrame containing all design points at target reliability for
             all load cases.
 
         Returns
         -------
-        df_Xst_nom : DataFrame
+        normalized_design_points : DataFrame
             Design point DataFrame factored by the nominal values
             per load case.
 
         """
-        df_Xst_nom = dfXstar / self.df_nom
+        normalized_design_points = design_points / self.nominal_table
 
         # Adjust for :math:`\\psi` factors; replace with non :math:`\\psi`
         # entries
-        for comb, vrs in self.lc_obj.dict_comb_cases.items():
-            other_combs = set(self.label_comb_cases) - set([comb])
-            gamma = df_Xst_nom.loc[comb, vrs]
-            df_Xst_nom.loc[list(other_combs), vrs] = gamma.values
-        df_Xst_nom = df_Xst_nom[dfXstar.columns]
-        return df_Xst_nom
+        for comb, vrs in self.load_combinations.leading_actions.items():
+            other_combs = set(self.case_names) - set([comb])
+            gamma = normalized_design_points.loc[comb, vrs]
+            normalized_design_points.loc[list(other_combs), vrs] = gamma.values
+        normalized_design_points = normalized_design_points[design_points.columns]
+        return normalized_design_points
 
-    def calc_phi(self, dfXstnom):
+    def calc_phi(self, normalized_design_points):
         """
         Calculate resistance factors :math:`\\phi` from a dataframe of design points
         factored by the nominal values.
 
         Parameters
         ----------
-        dfXstnom : DataFrame
+        normalized_design_points : DataFrame
             Design point DataFrame factored by the nominal values
             per load case.
         set_max : Boolean, optional
@@ -696,49 +725,51 @@ class Calibration:
 
         Returns
         -------
-        df_phi : DataFrame
+        resistance_factors : DataFrame
             Resistance factors :math:`\\phi` for resistance variables per load case.
 
         """
-        df_phi = dfXstnom[self.label_R]
-        return df_phi
+        resistance_factors = normalized_design_points[self.resistance_names]
+        return resistance_factors
 
-    def get_phi_min(self, dfphi_):
-        dfphi = dfphi_.copy()
-        dfphi = dfphi.clip(upper=dfphi.min(), axis=1)
-        return dfphi
+    def get_phi_min(self, case_resistance_factors):
+        resistance_factors = case_resistance_factors.copy()
+        resistance_factors = resistance_factors.clip(
+            upper=resistance_factors.min(), axis=1
+        )
+        return resistance_factors
 
-    def calc_gamma(self, dfXstnom):
+    def calc_gamma(self, normalized_design_points):
         """
         Calculate Load factors :math:`\\gamma` from a dataframe of design points
         factored by the nominal values.
 
         Parameters
         ----------
-        dfXstnom : DataFrame
+        normalized_design_points : DataFrame
             Design point DataFrame factored by the nominal values
             per load case.
 
         Returns
         -------
-        dfgamma_static : DataFrame
+        static_load_factors : DataFrame
             Load factors for static variables per load case.
-        dfgamma_comb : DataFrame
+        variable_load_factors : DataFrame
             Load factors for combination variables per load case.
 
         """
-        dfgamma_static = dfXstnom[self.label_other]
-        dfgamma_comb = dfXstnom[self.label_comb_vrs]
-        return dfgamma_static, dfgamma_comb
+        static_load_factors = normalized_design_points[self.other_names]
+        variable_load_factors = normalized_design_points[self.variable_action_names]
+        return static_load_factors, variable_load_factors
 
-    def calc_pg_matrix(self, dfXst, print_output=False):
+    def calc_pg_matrix(self, design_points, print_output=False):
         """
         Calculate :math:`\\phi`, :math:`\\gamma`, and :math:`\\psi` for
         the given set of design points and nominals using the Matrix approach.
 
         Parameters
         ----------
-        dfXst : Dataframe
+        design_points : Dataframe
             Dataframe containing all design points at target reliability.
         print_output : Boolean, optional
             print_output flag for displaying intermediate and final output of function.
@@ -746,52 +777,58 @@ class Calibration:
 
         Returns
         -------
-        df_phi : Dataframe
+        resistance_factors : Dataframe
             Dataframe containing :math:`\\phi` estimates for resistance variables
             per load case.
-        df_gamma : Dataframe
+        load_factors : Dataframe
             Dataframe containing :math:`\\gamma` estimates for all static and
             combination load variables per load case.
-        df_psi : Dataframe
+        combination_factors : Dataframe
             Dataframe containing :math:`\\psi` estimates for all static and
             combination load variables per load case.
 
         """
         ## Estimate :math:`\\phi` and :math:`\\gamma`
-        df_Xst_nom = self.calc_xst_nom(dfXstar=dfXst)
-        df_phi = self.calc_phi(df_Xst_nom)
-        df_gamma_static, df_gamma_comb = self.calc_gamma(df_Xst_nom)
+        normalized_design_points = self.normalize_design_points(
+            design_points=design_points
+        )
+        resistance_factors = self.calc_phi(normalized_design_points)
+        static_load_factors, variable_load_factors = self.calc_gamma(
+            normalized_design_points
+        )
 
-        df_gamma = pd.concat((df_gamma_static, df_gamma_comb), axis=1)
+        load_factors = pd.concat((static_load_factors, variable_load_factors), axis=1)
         ## Estimate :math:`\\psi`
         # Get RHS :math:`\\phi~R~z-\\gamma_g~G-\\gamma_i~S_i`
-        phiRz_egS = self.calc_phi_rz_eg_s_vect(dfXst)
+        phiRz_egS = self._combination_factor_rhs(design_points)
         # Get LHS :math:`\\gamma_j~S_j`
-        df_gamma_nom = pd.concat([df_phi, df_gamma], axis=1) * self.df_nom
-        epgS_mat = self.calc_epg_s_mat(df_gamma_nom)
+        factored_nominals = (
+            pd.concat([resistance_factors, load_factors], axis=1) * self.nominal_table
+        )
+        epgS_mat = self._combination_factor_matrix(factored_nominals)
         # Estimate
         psi = np.linalg.solve(epgS_mat, phiRz_egS)
-        psi_mat = self._get_psi_row_mat(len(self.label_other), psi)
-        df_psi = pd.DataFrame(
-            data=psi_mat, columns=df_gamma.columns, index=df_gamma.index
+        psi_mat = self._expand_combination_factors(len(self.other_names), psi)
+        combination_factors = pd.DataFrame(
+            data=psi_mat, columns=load_factors.columns, index=load_factors.index
         )
         if self.print_output:
-            print(f"\n $\\phi$, \n {df_phi}")
-            print(f"\n $\\gamma$ static, \n {df_gamma_static}")
-            print(f"\n $\\gamma$ comb vrs, \n {df_gamma_comb}")
+            print(f"\n $\\phi$, \n {resistance_factors}")
+            print(f"\n $\\gamma$ static, \n {static_load_factors}")
+            print(f"\n $\\gamma$ comb vrs, \n {variable_load_factors}")
             print(f"\n egS Matrix, \n {epgS_mat}")
             print(f"\n zpR-gS Vector, \n {phiRz_egS}")
-            print(f"\n psi, \n {df_psi}")
-        return df_phi, df_gamma, df_psi
+            print(f"\n psi, \n {combination_factors}")
+        return resistance_factors, load_factors, combination_factors
 
-    def calc_phi_rz_eg_s_vect(self, dfXstar):
+    def _combination_factor_rhs(self, design_points):
         """
         Get RHS for matrix estimation method,
         :math:`\\phi~R~z-\\gamma_g~G-\\gamma_i~S_i`
 
         Parameters
         ----------
-        dfXstar : Dataframe
+        design_points : Dataframe
             Dataframe containing all design points at target reliability.
 
         Returns
@@ -801,23 +838,28 @@ class Calibration:
 
         """
         ## Initialize the vector
-        phiRz_egS_vect = np.zeros(len(dfXstar.index))
+        phiRz_egS_vect = np.zeros(len(design_points.index))
         idx = 0
-        for comb in dfXstar.index:
-            # Get RVs with cvar except the other combination variable(s)
-            s_label = self.lc_obj.dict_comb_cases[comb]
-            s_other = set(self.label_comb_vrs) - set(s_label)
-            label_all_rvs = (
-                self.label_R + self.label_comb_vrs + self.label_other + [self.cvar]
+        for comb in design_points.index:
+            # Get RVs with design_parameter except the other combination variable(s)
+            s_label = self.load_combinations.leading_actions[comb]
+            s_other = set(self.variable_action_names) - set(s_label)
+            random_variable_names = (
+                self.resistance_names
+                + self.variable_action_names
+                + self.other_names
+                + [self.design_parameter]
             )
-            list_others = list(set(label_all_rvs) - s_other)
+            included_variables = list(set(random_variable_names) - s_other)
             # Pass RVs except the other combination variable(s) to the LSF
-            dfXstar_dict = dfXstar.loc[[comb], list_others].to_dict("records")[0]
-            phiRz_egS_vect[idx] = self.lc_obj.eval_lsf_kwargs(**dfXstar_dict)
+            point_values = design_points.loc[[comb], included_variables].to_dict(
+                "records"
+            )[0]
+            phiRz_egS_vect[idx] = self.load_combinations.eval_lsf_kwargs(**point_values)
             idx += 1
         return phiRz_egS_vect
 
-    def calc_epg_s_mat(self, dfgammanom):
+    def _combination_factor_matrix(self, factored_nominals):
         """Get LHS for matrix estimation method, :math:`\\gamma_j~S_j`.
         The LHS is evaluated by evaluating the LSF with appropriate random
         variables to account for any constant multipliers. The implementation
@@ -826,7 +868,7 @@ class Calibration:
 
         Parameters
         ----------
-        dfgammanom : Dataframe
+        factored_nominals : Dataframe
             Dataframe containing product of nominal values and safety factors,
             along with calibrated z values.
 
@@ -838,31 +880,33 @@ class Calibration:
         """
 
         ## Initialize the vector
-        epgS_mat = np.zeros((len(dfgammanom.index), len(self.label_comb_vrs)))
+        epgS_mat = np.zeros(
+            (len(factored_nominals.index), len(self.variable_action_names))
+        )
         idx = 0
-        for comb in dfgammanom.index:
+        for comb in factored_nominals.index:
             # Get load comb RV with other RVs
-            s_label = self.lc_obj.dict_comb_cases[comb]
-            rvs_for_lhs = list(set(self.label_other) | set(s_label))
+            s_label = self.load_combinations.leading_actions[comb]
+            rvs_for_lhs = list(set(self.other_names) | set(s_label))
             # Pass load comb RV with other RVs to the LSF
-            dfXstar_dict_comb = dfgammanom.loc[[comb], rvs_for_lhs].to_dict("records")[
-                0
-            ]
-            if len(self.label_other) > 0:
-                dfXstar_dict_other = dfgammanom.loc[[comb], self.label_other].to_dict(
-                    "records"
-                )[0]
+            leading_action_values = factored_nominals.loc[[comb], rvs_for_lhs].to_dict(
+                "records"
+            )[0]
+            if len(self.other_names) > 0:
+                other_action_values = factored_nominals.loc[
+                    [comb], self.other_names
+                ].to_dict("records")[0]
             else:
-                dfXstar_dict_other = {}
-            epgS_mat[:, idx] = self.lc_obj.eval_lsf_kwargs(
-                **dfXstar_dict_comb
-            ) - self.lc_obj.eval_lsf_kwargs(**dfXstar_dict_other)
+                other_action_values = {}
+            epgS_mat[:, idx] = self.load_combinations.eval_lsf_kwargs(
+                **leading_action_values
+            ) - self.load_combinations.eval_lsf_kwargs(**other_action_values)
             idx += 1
         epgS_mat = epgS_mat * -1
         np.fill_diagonal(epgS_mat, 0)
         return epgS_mat
 
-    def _get_psi_row_mat(self, num_other_vrs, psi_comb_vrs):
+    def _expand_combination_factors(self, num_other_vrs, psi_comb_vrs):
         """
         Convert :math:`\\psi` estimates for load case variables into :math:`\\psi` matrix for all
         random variables (including non load case, i.e. other, variables). Each
@@ -909,24 +953,24 @@ class Calibration:
 
         Returns
         -------
-        arr_beta : Array
+        reliability_indices : Array
             Array containing reliability indices corresponding to design_z for
             each load combination case.
 
         """
-        cvar = self.cvar
-        val = Constant(cvar, design_z)
-        dict_z = {cvar: val}
-        list_form_des = [
-            self.lc_obj.run_reliability_case(lcn=xx, **dict_z)
-            for xx in self.lc_obj.label_comb_cases
+        design_parameter = self.design_parameter
+        val = Constant(design_parameter, design_z)
+        design_override = {design_parameter: val}
+        design_analyses = [
+            self.load_combinations.run_reliability_case(case_name=xx, **design_override)
+            for xx in self.load_combinations.case_names
         ]
-        arr_beta = np.array([xx.get_beta() for xx in list_form_des])
+        reliability_indices = np.array([xx.get_beta() for xx in design_analyses])
         if self.print_output:
-            print(f"\n Design reliabilities = {arr_beta}")
-        return arr_beta
+            print(f"\n Design reliabilities = {reliability_indices}")
+        return reliability_indices
 
-    def calc_df_pg_rs(self, min_phi, max_psi):
+    def factored_nominals(self, min_phi, max_psi):
         """
         Calculate the DataFrame of all resistance and load variables nominal
         values multiplied by their respective factors, :math:`\\phi`, :math:`\\gamma`,
@@ -934,17 +978,29 @@ class Calibration:
 
         Returns
         -------
-        df_pgRS : DataFrame
+        factored_design_values : DataFrame
 
 
         """
-        df_pgRS = self.df_nom.copy()
-        df_phi = self.get_phi_min(self.df_phi) if min_phi else self.df_phi
-        df_psi = self.get_psi_max(self.df_psi) if max_psi else self.df_psi
-        df_gamma = self.df_gamma.max()
-        df_pgRS.loc[:, self.label_S] = df_pgRS[self.label_S] * df_gamma * df_psi
-        df_pgRS.loc[:, self.label_R] = df_pgRS[self.label_R] * df_phi
-        return df_pgRS
+        factored_design_values = self.nominal_table.copy()
+        resistance_factors = (
+            self.get_phi_min(self.resistance_factors)
+            if min_phi
+            else self.resistance_factors
+        )
+        combination_factors = (
+            self.get_psi_max(self.combination_factors)
+            if max_psi
+            else self.combination_factors
+        )
+        load_factors = self.load_factors.max()
+        factored_design_values.loc[:, self.load_names] = (
+            factored_design_values[self.load_names] * load_factors * combination_factors
+        )
+        factored_design_values.loc[:, self.resistance_names] = (
+            factored_design_values[self.resistance_names] * resistance_factors
+        )
+        return factored_design_values
 
     def get_design_param_factor(self, min_phi=True, max_psi=True):
         """
@@ -953,14 +1009,16 @@ class Calibration:
 
         Returns
         -------
-        array_z : Array
+        design_values : Array
             Array containing design parameters for all load combination cases.
 
         """
-        df_pgRS = self.calc_df_pg_rs(min_phi, max_psi)
-        list_cols = [df_pgRS.loc[[xx], :] for xx in self.label_comb_cases]
-        array_z = np.array([self.calc_design_param_xst(xx) for xx in list_cols])
-        return array_z
+        factored_design_values = self.factored_nominals(min_phi, max_psi)
+        factored_cases = [factored_design_values.loc[[xx], :] for xx in self.case_names]
+        design_values = np.array(
+            [self.design_parameter_from_point(xx) for xx in factored_cases]
+        )
+        return design_values
 
     def print_detailed_output(self, precision=2):
         """
@@ -980,10 +1038,10 @@ class Calibration:
         n = AnalysisObject.N_HYPH
         print("\n")
         print("=" * n)
-        print("X* = \n", self.dfXstarcal.round(precision))
-        print("\nphi = ", "\n", self.df_phi.round(precision))
-        print("\ngamma =", "\n", self.df_gamma.round(precision))
-        print("\npsi = ", "\n", self.df_psi.round(precision))
+        print("X* = \n", self.calibrated_design_points.round(precision))
+        print("\nphi = ", "\n", self.resistance_factors.round(precision))
+        print("\ngamma =", "\n", self.load_factors.round(precision))
+        print("\npsi = ", "\n", self.combination_factors.round(precision))
         print("=" * n)
 
 
@@ -1308,8 +1366,8 @@ class GenericCalibration:
 
         """
         self.is_analysed = False
-        model_dict = {"model": model, "betas": None, "color": color, "label": label}
-        self.prob_models.append(model_dict)
+        model_entry = {"model": model, "betas": None, "color": color, "label": label}
+        self.prob_models.append(model_entry)
 
     def lsf(self, z, aq, ag, wR, R, wS, G, P, Q):
         """

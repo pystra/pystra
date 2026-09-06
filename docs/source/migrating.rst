@@ -44,8 +44,8 @@ Imports through the existing modules continue to work using the new names.
    * - ``DDO``, ``DDOCriterion``, ``LQI``, ``SWTP``
      - ``Ddo``, ``DdoCriterion``, ``Lqi``, ``Swtp``
 
-The :download:`complete naming map <../migration/naming-map.json>` records all
-126 changed spellings. The :download:`definition manifest <../migration/api-migration.json>`
+The :download:`initial naming map <../migration/naming-map.json>` records the
+first 126 changed spellings. The :download:`definition manifest <../migration/api-migration.json>`
 maps all 645 inventoried definitions, including private helpers. The
 :download:`baseline inventory <../migration/api-baseline.json>` records
 signatures, assigned attributes, dependency versions, and observed exports.
@@ -80,6 +80,68 @@ defaults, and numerical calculations. Algorithm-specific options, returned
 result objects, parameter/attribute cleanup, module organization, and the
 replacement for ``Calibration`` are subsequent migration stages. Scientific
 acronyms such as FORM and LQI retain their conventional spelling in prose.
+
+Calibration naming cleanup
+--------------------------
+
+A follow-up replaces the old calibration/load-combination container prefixes
+and compressed names with names describing their purpose. These changes also
+affect keyword arguments, result attributes, and some helper methods. There
+are no aliases for the replaced names.
+
+.. list-table:: Calibration and load-combination names
+   :header-rows: 1
+   :widths: 45 55
+
+   * - Previous name
+     - Current development name
+   * - ``loadcombobj``
+     - ``load_combinations``
+   * - ``dict_nom_vals`` / ``calibration.dict_nom``
+     - ``nominal_values`` / ``calibration.nominal_values``
+   * - ``calib_var``
+     - ``design_parameter``
+   * - ``calib_method`` / ``est_method``
+     - ``design_method`` / ``factor_method``
+   * - ``calibration.df_nom``
+     - ``calibration.nominal_table``
+   * - ``calibration.dfXstarcal``
+     - ``calibration.calibrated_design_points``
+   * - ``calibration.df_phi`` / ``df_gamma`` / ``df_psi``
+     - ``resistance_factors`` / ``load_factors`` / ``combination_factors``
+   * - ``LoadCombination(dict_dist_comb=...)``
+     - ``LoadCombination(action_distributions=...)``
+   * - ``load_combinations.dict_dist_comb``
+     - ``load_combinations.case_distributions`` (also available as ``cases``)
+   * - ``dict_comb_cases``
+     - ``leading_actions``
+   * - ``list_dist_resist`` / ``list_dist_other`` / ``list_const``
+     - ``resistance`` / ``other_variables`` / ``legacy_constants``
+   * - ``lcn`` / ``label_comb_cases``
+     - ``case_name`` / ``case_names``
+   * - ``get_dict_dist_comb()`` / ``get_num_comb()`` / ``get_label(...)``
+     - ``get_case_distributions()`` / ``get_case_count()`` / ``get_group_names(...)``
+
+The :download:`calibration naming map <../migration/calibration-naming-map.json>`
+records identifier changes and qualified parameter/attribute mappings. Apply
+the initial callable/class map first when migrating from 1.x. The calibration
+map distinguishes the old ``dict_dist_comb`` keyword from the attribute of the
+same name: they describe different data. It is not a global text-substitution
+recipe for user scripts.
+
+This cleanup preserves calculations, table shapes, and existing constructor
+paths. The action-based constructor is still transitional and deprecated;
+its nested ``max``/``pit`` distributions retain their existing meaning.
+Explicit ``cases=`` supports reliability evaluation but still lacks the role
+metadata required by the old factor-calibration workflow. The naming changes
+do not correct the ordering, failure-handling, or stale-result problems in the
+:download:`calibration review <../calibration-review.md>`.
+
+The normalized ``GenericCalibration`` workflow remains the primary direction
+for the replacement API. The current factor tables are transitional results,
+and this cleanup does not replace the old ``Calibration`` object. Readable
+local ``df`` names, statistical degrees of freedom, and conversion methods such
+as ``to_dict()`` retain their meanings.
 
 Integration and validation
 --------------------------

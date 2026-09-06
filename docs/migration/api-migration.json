@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "baseline_revision": "69dd5f0625bbf36822c7d7db3f0685d3da299367",
-  "scope": "Definitions only; final result/options/parameter/attribute/schema contracts are pending. Private helpers and incidental exports are not automatically supported APIs.",
+  "scope": "Definitions through the calibration naming follow-up; calibration parameter/attribute changes are in calibration-naming-map.json. Final result/options/schema contracts remain pending. Private helpers and incidental exports are not automatically supported APIs.",
   "definitions": [
     {
       "old": "pystra.analysis.AnalysisObject",
@@ -233,15 +233,15 @@
     },
     {
       "old": "pystra.calibration.Calibration._set_labels",
-      "current": "pystra.calibration.Calibration._set_labels",
+      "current": "pystra.calibration.Calibration._get_case_metadata",
       "kind": "callable",
-      "status": "unchanged"
+      "status": "renamed"
     },
     {
       "old": "pystra.calibration.Calibration.calc_lsf_eval_df",
-      "current": "pystra.calibration.Calibration.calc_lsf_eval_df",
+      "current": "pystra.calibration.Calibration.evaluate_variable_effects",
       "kind": "callable",
-      "status": "unchanged"
+      "status": "renamed"
     },
     {
       "old": "pystra.calibration.Calibration._calibration_optimize",
@@ -257,19 +257,19 @@
     },
     {
       "old": "pystra.calibration.Calibration.calc_design_param_Xst",
-      "current": "pystra.calibration.Calibration.calc_design_param_xst",
+      "current": "pystra.calibration.Calibration.design_parameter_from_point",
       "kind": "callable",
       "status": "renamed"
     },
     {
       "old": "pystra.calibration.Calibration._get_df_Xstar",
-      "current": "pystra.calibration.Calibration._get_df_xstar",
+      "current": "pystra.calibration.Calibration._collect_design_points",
       "kind": "callable",
       "status": "renamed"
     },
     {
       "old": "pystra.calibration.Calibration._get_df_Xstar_labels",
-      "current": "pystra.calibration.Calibration._get_df_xstar_labels",
+      "current": "pystra.calibration.Calibration._design_point_names",
       "kind": "callable",
       "status": "renamed"
     },
@@ -317,7 +317,7 @@
     },
     {
       "old": "pystra.calibration.Calibration.calc_Xst_nom",
-      "current": "pystra.calibration.Calibration.calc_xst_nom",
+      "current": "pystra.calibration.Calibration.normalize_design_points",
       "kind": "callable",
       "status": "renamed"
     },
@@ -347,21 +347,21 @@
     },
     {
       "old": "pystra.calibration.Calibration.calc_phiRz_egS_vect",
-      "current": "pystra.calibration.Calibration.calc_phi_rz_eg_s_vect",
+      "current": "pystra.calibration.Calibration._combination_factor_rhs",
       "kind": "callable",
       "status": "renamed"
     },
     {
       "old": "pystra.calibration.Calibration.calc_epgS_mat",
-      "current": "pystra.calibration.Calibration.calc_epg_s_mat",
+      "current": "pystra.calibration.Calibration._combination_factor_matrix",
       "kind": "callable",
       "status": "renamed"
     },
     {
       "old": "pystra.calibration.Calibration._get_psi_row_mat",
-      "current": "pystra.calibration.Calibration._get_psi_row_mat",
+      "current": "pystra.calibration.Calibration._expand_combination_factors",
       "kind": "callable",
-      "status": "unchanged"
+      "status": "renamed"
     },
     {
       "old": "pystra.calibration.Calibration.calc_beta_design_param",
@@ -371,7 +371,7 @@
     },
     {
       "old": "pystra.calibration.Calibration.calc_df_pgRS",
-      "current": "pystra.calibration.Calibration.calc_df_pg_rs",
+      "current": "pystra.calibration.Calibration.factored_nominals",
       "kind": "callable",
       "status": "renamed"
     },
@@ -2663,9 +2663,9 @@
     },
     {
       "old": "pystra.loadcomb.LoadCombination._set_common_labels",
-      "current": "pystra.loadcomb.LoadCombination._set_common_labels",
+      "current": "pystra.loadcomb.LoadCombination._set_case_metadata",
       "kind": "callable",
-      "status": "unchanged"
+      "status": "renamed"
     },
     {
       "old": "pystra.loadcomb.LoadCombination._case_variable_names",
@@ -2681,39 +2681,39 @@
     },
     {
       "old": "pystra.loadcomb.LoadCombination.get_label",
-      "current": "pystra.loadcomb.LoadCombination.get_label",
+      "current": "pystra.loadcomb.LoadCombination.get_group_names",
       "kind": "callable",
-      "status": "unchanged"
+      "status": "renamed"
     },
     {
       "old": "pystra.loadcomb.LoadCombination._set_num_comb",
-      "current": "pystra.loadcomb.LoadCombination._set_num_comb",
+      "current": "pystra.loadcomb.LoadCombination._set_case_count",
       "kind": "callable",
-      "status": "unchanged"
+      "status": "renamed"
     },
     {
       "old": "pystra.loadcomb.LoadCombination.get_num_comb",
-      "current": "pystra.loadcomb.LoadCombination.get_num_comb",
+      "current": "pystra.loadcomb.LoadCombination.get_case_count",
       "kind": "callable",
-      "status": "unchanged"
+      "status": "renamed"
     },
     {
       "old": "pystra.loadcomb.LoadCombination.get_dict_dist_comb",
-      "current": "pystra.loadcomb.LoadCombination.get_dict_dist_comb",
+      "current": "pystra.loadcomb.LoadCombination.get_case_distributions",
       "kind": "callable",
-      "status": "unchanged"
+      "status": "renamed"
     },
     {
       "old": "pystra.loadcomb.LoadCombination._create_dict_dist_comb",
-      "current": "pystra.loadcomb.LoadCombination._create_dict_dist_comb",
+      "current": "pystra.loadcomb.LoadCombination._build_case_distributions",
       "kind": "callable",
-      "status": "unchanged"
+      "status": "renamed"
     },
     {
       "old": "pystra.loadcomb.LoadCombination._case_name",
-      "current": "pystra.loadcomb.LoadCombination._case_name",
+      "current": "pystra.loadcomb.LoadCombination._resolve_case_name",
       "kind": "callable",
-      "status": "unchanged"
+      "status": "renamed"
     },
     {
       "old": "pystra.loadcomb.LoadCombination.case",

@@ -1,0 +1,375 @@
+{
+  "schema_version": 1,
+  "baseline_revision": "e2a7337fcd17e2ac53e76c5a84d2162379bf479b",
+  "scope": "Calibration/load-combination naming only. Existing formulas, data shapes, legacy-constructor behavior and known correctness limitations are retained. Names are context-sensitive; this is not a global user-code substitution map.",
+  "identifiers": {
+    "dict_nom_vals": "nominal_values",
+    "dict_nom": "nominal_values",
+    "dict_dist_comb": "action_distributions",
+    "dict_comb_cases": "leading_actions",
+    "dict_dist": "case_distributions",
+    "dict_loadc": "case_variables",
+    "dict_label": "name_groups",
+    "dict_z": "design_override",
+    "list_dist_resist": "resistance",
+    "list_dist_other": "other_variables",
+    "list_const": "legacy_constants",
+    "list_form_obj": "analyses",
+    "list_form_cal": "calibrated_analyses",
+    "list_form_des": "design_analyses",
+    "list_z_cal": "calibrated_designs",
+    "list_others": "included_variables",
+    "list_cols": "factored_cases",
+    "arr_zcal": "calibrated_designs",
+    "arr_beta": "reliability_indices",
+    "array_z": "design_values",
+    "df_nom": "nominal_table",
+    "dfXstarcal": "calibrated_design_points",
+    "dfXst": "design_points",
+    "dfXstar": "design_points",
+    "dfXst_cal": "projected_design_points",
+    "dfXstnom": "normalized_design_points",
+    "df_Xst_nom": "normalized_design_points",
+    "dfS": "action_points",
+    "dfS_dict": "action_values",
+    "R_dict": "resistance_values",
+    "dfXstar_dict": "point_values",
+    "dfXstar_dict_comb": "leading_action_values",
+    "dfXstar_dict_other": "other_action_values",
+    "df_corr": "correlation",
+    "dfcorr_tmp": "ordered_correlation",
+    "df_phi": "resistance_factors",
+    "dfphi": "resistance_factors",
+    "dfphi_": "case_resistance_factors",
+    "df_gamma": "load_factors",
+    "dfgamma": "load_factors",
+    "dfgamma_static": "static_load_factors",
+    "df_gamma_static": "static_load_factors",
+    "dfgamma_comb": "variable_load_factors",
+    "df_gamma_comb": "variable_load_factors",
+    "df_gamma_nom": "factored_nominals",
+    "dfgammanom": "factored_nominals",
+    "df_psi": "combination_factors",
+    "dfpsi": "combination_factors",
+    "df_psi_max": "selected_combination_factors",
+    "df_lsf": "limit_state_values",
+    "df_pgRS": "factored_design_values",
+    "model_dict": "model_entry",
+    "mainlist": "all_names",
+    "subsetlist": "selected_names",
+    "calc_lsf_eval_df": "evaluate_variable_effects",
+    "_get_df_xstar": "_collect_design_points",
+    "_get_df_xstar_labels": "_design_point_names",
+    "calc_xst_nom": "normalize_design_points",
+    "calc_design_param_xst": "design_parameter_from_point",
+    "calc_phi_rz_eg_s_vect": "_combination_factor_rhs",
+    "calc_epg_s_mat": "_combination_factor_matrix",
+    "_get_psi_row_mat": "_expand_combination_factors",
+    "calc_df_pg_rs": "factored_nominals",
+    "get_dict_dist_comb": "get_case_distributions",
+    "_create_dict_dist_comb": "_build_case_distributions",
+    "loadcombobj": "load_combinations",
+    "lc_obj": "load_combinations",
+    "calib_var": "design_parameter",
+    "cvar": "design_parameter",
+    "calib_method": "design_method",
+    "est_method": "factor_method",
+    "lcn": "case_name",
+    "_case_name": "_resolve_case_name",
+    "label_R": "resistance_names",
+    "label_resist": "resistance_names",
+    "label_S": "load_names",
+    "label_other": "other_names",
+    "label_comb_vrs": "variable_action_names",
+    "label_comb_cases": "case_names",
+    "label_const": "constant_names",
+    "label_all": "variable_names",
+    "label_vrs": "variable_names",
+    "label_all_rvs": "random_variable_names",
+    "label_type": "group",
+    "comb_cases_max": "leading_action_groups",
+    "num_comb": "n_cases",
+    "_set_num_comb": "_set_case_count",
+    "get_num_comb": "get_case_count",
+    "get_label": "get_group_names",
+    "_set_common_labels": "_set_case_metadata",
+    "_set_labels": "_get_case_metadata",
+    "distributions_comb": "action_distributions",
+    "distributions_max": "maximum_distributions",
+    "distributions_pit": "point_in_time_distributions",
+    "distributions_resistance": "resistance_distributions",
+    "distributions_other": "other_distributions",
+    "df_gamma_opt": "optimized_load_factors",
+    "df_phi_opt": "optimized_resistance_factors",
+    "df_psi_opt": "optimized_combination_factors",
+    "list_betaj": "case_reliabilities",
+    "list_factors": "factor_values",
+    "list_g": "load_factor_row",
+    "list_phi": "resistance_factor_row",
+    "list_psi1": "q1_leading_factors",
+    "list_psi2": "q2_leading_factors",
+    "list_wj": "case_weights",
+    "create_df_gamma": "make_load_factor_table",
+    "create_df_phi": "make_resistance_factor_table",
+    "create_df_psi": "make_combination_factor_table"
+  },
+  "attribute_overrides": {
+    "dict_dist_comb": "case_distributions"
+  },
+  "definitions": [
+    {
+      "old": "pystra.calibration.Calibration",
+      "current": "pystra.calibration.Calibration",
+      "attributes": {
+        "calib_method": "design_method",
+        "cvar": "design_parameter",
+        "dfXstarcal": "calibrated_design_points",
+        "df_gamma": "load_factors",
+        "df_nom": "nominal_table",
+        "df_phi": "resistance_factors",
+        "df_psi": "combination_factors",
+        "dict_nom": "nominal_values",
+        "est_method": "factor_method",
+        "label_R": "resistance_names",
+        "label_S": "load_names",
+        "label_all": "variable_names",
+        "label_comb_cases": "case_names",
+        "label_comb_vrs": "variable_action_names",
+        "label_other": "other_names",
+        "lc_obj": "load_combinations"
+      }
+    },
+    {
+      "old": "pystra.calibration.Calibration.__init__",
+      "current": "pystra.calibration.Calibration.__init__",
+      "parameters": {
+        "loadcombobj": "load_combinations",
+        "dict_nom_vals": "nominal_values",
+        "calib_var": "design_parameter",
+        "calib_method": "design_method",
+        "est_method": "factor_method"
+      }
+    },
+    {
+      "old": "pystra.calibration.Calibration._get_missing_element",
+      "current": "pystra.calibration.Calibration._get_missing_element",
+      "parameters": {
+        "mainlist": "all_names",
+        "subsetlist": "selected_names"
+      }
+    },
+    {
+      "old": "pystra.calibration.Calibration._set_labels",
+      "current": "pystra.calibration.Calibration._get_case_metadata",
+      "parameters": {}
+    },
+    {
+      "old": "pystra.calibration.Calibration.calc_lsf_eval_df",
+      "current": "pystra.calibration.Calibration.evaluate_variable_effects",
+      "parameters": {}
+    },
+    {
+      "old": "pystra.calibration.Calibration.calc_design_param_xst",
+      "current": "pystra.calibration.Calibration.design_parameter_from_point",
+      "parameters": {
+        "dfXst": "design_points"
+      }
+    },
+    {
+      "old": "pystra.calibration.Calibration._get_df_xstar",
+      "current": "pystra.calibration.Calibration._collect_design_points",
+      "parameters": {
+        "list_form_obj": "analyses"
+      }
+    },
+    {
+      "old": "pystra.calibration.Calibration._get_df_xstar_labels",
+      "current": "pystra.calibration.Calibration._design_point_names",
+      "parameters": {}
+    },
+    {
+      "old": "pystra.calibration.Calibration.run",
+      "current": "pystra.calibration.Calibration.run",
+      "parameters": {
+        "est_method": "factor_method"
+      }
+    },
+    {
+      "old": "pystra.calibration.Calibration.get_psi_max",
+      "current": "pystra.calibration.Calibration.get_psi_max",
+      "parameters": {
+        "dfpsi": "combination_factors"
+      }
+    },
+    {
+      "old": "pystra.calibration.Calibration.calc_pg_coeff",
+      "current": "pystra.calibration.Calibration.calc_pg_coeff",
+      "parameters": {
+        "dfXst": "design_points"
+      }
+    },
+    {
+      "old": "pystra.calibration.Calibration.calc_xst_nom",
+      "current": "pystra.calibration.Calibration.normalize_design_points",
+      "parameters": {
+        "dfXstar": "design_points"
+      }
+    },
+    {
+      "old": "pystra.calibration.Calibration.calc_phi",
+      "current": "pystra.calibration.Calibration.calc_phi",
+      "parameters": {
+        "dfXstnom": "normalized_design_points"
+      }
+    },
+    {
+      "old": "pystra.calibration.Calibration.get_phi_min",
+      "current": "pystra.calibration.Calibration.get_phi_min",
+      "parameters": {
+        "dfphi_": "case_resistance_factors"
+      }
+    },
+    {
+      "old": "pystra.calibration.Calibration.calc_gamma",
+      "current": "pystra.calibration.Calibration.calc_gamma",
+      "parameters": {
+        "dfXstnom": "normalized_design_points"
+      }
+    },
+    {
+      "old": "pystra.calibration.Calibration.calc_pg_matrix",
+      "current": "pystra.calibration.Calibration.calc_pg_matrix",
+      "parameters": {
+        "dfXst": "design_points"
+      }
+    },
+    {
+      "old": "pystra.calibration.Calibration.calc_phi_rz_eg_s_vect",
+      "current": "pystra.calibration.Calibration._combination_factor_rhs",
+      "parameters": {
+        "dfXstar": "design_points"
+      }
+    },
+    {
+      "old": "pystra.calibration.Calibration.calc_epg_s_mat",
+      "current": "pystra.calibration.Calibration._combination_factor_matrix",
+      "parameters": {
+        "dfgammanom": "factored_nominals"
+      }
+    },
+    {
+      "old": "pystra.calibration.Calibration._get_psi_row_mat",
+      "current": "pystra.calibration.Calibration._expand_combination_factors",
+      "parameters": {}
+    },
+    {
+      "old": "pystra.calibration.Calibration.calc_df_pg_rs",
+      "current": "pystra.calibration.Calibration.factored_nominals",
+      "parameters": {}
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination",
+      "current": "pystra.loadcomb.LoadCombination",
+      "attributes": {
+        "comb_cases_max": "leading_action_groups",
+        "df_corr": "correlation",
+        "dict_comb_cases": "leading_actions",
+        "dict_dist_comb": "case_distributions",
+        "dict_label": "name_groups",
+        "distributions_comb": "action_distributions",
+        "distributions_max": "maximum_distributions",
+        "distributions_other": "other_distributions",
+        "distributions_pit": "point_in_time_distributions",
+        "distributions_resistance": "resistance_distributions",
+        "label_all": "variable_names",
+        "label_comb_cases": "case_names",
+        "label_comb_vrs": "variable_action_names",
+        "label_const": "constant_names",
+        "label_other": "other_names",
+        "label_resist": "resistance_names",
+        "num_comb": "n_cases"
+      }
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination.__init__",
+      "current": "pystra.loadcomb.LoadCombination.__init__",
+      "parameters": {
+        "dict_dist_comb": "action_distributions",
+        "list_dist_resist": "resistance",
+        "list_dist_other": "other_variables",
+        "list_const": "legacy_constants",
+        "dict_comb_cases": "leading_actions"
+      }
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination._init_from_legacy",
+      "current": "pystra.loadcomb.LoadCombination._init_from_legacy",
+      "parameters": {
+        "dict_dist_comb": "action_distributions",
+        "list_dist_resist": "resistance",
+        "list_dist_other": "other_variables",
+        "dict_comb_cases": "leading_actions"
+      }
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination._set_common_labels",
+      "current": "pystra.loadcomb.LoadCombination._set_case_metadata",
+      "parameters": {}
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination.get_label",
+      "current": "pystra.loadcomb.LoadCombination.get_group_names",
+      "parameters": {
+        "label_type": "group"
+      }
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination._set_num_comb",
+      "current": "pystra.loadcomb.LoadCombination._set_case_count",
+      "parameters": {}
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination.get_num_comb",
+      "current": "pystra.loadcomb.LoadCombination.get_case_count",
+      "parameters": {}
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination.get_dict_dist_comb",
+      "current": "pystra.loadcomb.LoadCombination.get_case_distributions",
+      "parameters": {}
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination._create_dict_dist_comb",
+      "current": "pystra.loadcomb.LoadCombination._build_case_distributions",
+      "parameters": {}
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination._case_name",
+      "current": "pystra.loadcomb.LoadCombination._resolve_case_name",
+      "parameters": {
+        "lcn": "case_name"
+      }
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination.case",
+      "current": "pystra.loadcomb.LoadCombination.case",
+      "parameters": {
+        "lcn": "case_name"
+      }
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination.stochastic_model",
+      "current": "pystra.loadcomb.LoadCombination.stochastic_model",
+      "parameters": {
+        "lcn": "case_name"
+      }
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination.run_reliability_case",
+      "current": "pystra.loadcomb.LoadCombination.run_reliability_case",
+      "parameters": {
+        "lcn": "case_name"
+      }
+    }
+  ]
+}

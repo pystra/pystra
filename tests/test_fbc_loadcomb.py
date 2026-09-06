@@ -47,8 +47,8 @@ def test_loadcombination_explicit_cases_builds_stochastic_model():
     assert list(case.keys()) == ["R", "G", "Q"]
     assert sm.get_names() == ["z", "R", "G", "Q"]
     assert sm.get_constants()["z"] == 1.0
-    assert lc.get_label("comb_cases") == ["Q_leading"]
-    assert lc.get_num_comb() == 1
+    assert lc.get_group_names("comb_cases") == ["Q_leading"]
+    assert lc.get_case_count() == 1
 
 
 def test_loadcombination_turkstra_generates_leading_cases_from_fbc_processes():
@@ -72,10 +72,10 @@ def test_loadcombination_turkstra_generates_leading_cases_from_fbc_processes():
     assert q1_case["Q2"].N == 2.5
     assert q2_case["Q1"].N == 1.0
     assert q2_case["Q2"].N == 10.0
-    assert lc.get_label("resist") == ["R"]
-    assert lc.get_label("other") == ["G"]
-    assert lc.get_label("comb_vrs") == ["Q1", "Q2"]
-    assert lc.dict_comb_cases == {
+    assert lc.get_group_names("resist") == ["R"]
+    assert lc.get_group_names("other") == ["G"]
+    assert lc.get_group_names("comb_vrs") == ["Q1", "Q2"]
+    assert lc.leading_actions == {
         "Q1_leading": ["Q1"],
         "Q2_leading": ["Q2"],
     }
@@ -158,14 +158,14 @@ def test_loadcombination_legacy_inputs_are_normalized():
     with pytest.deprecated_call():
         lc = ra.LoadCombination(
             lsf=lambda R, G, Q: R - G - Q,
-            dict_dist_comb={"Q": {"max": Qmax, "pit": Qpit}},
-            list_dist_resist=[R],
-            list_dist_other=[G],
-            dict_comb_cases={"Q_max": ["Q"]},
+            action_distributions={"Q": {"max": Qmax, "pit": Qpit}},
+            resistance=[R],
+            other_variables=[G],
+            leading_actions={"Q_max": ["Q"]},
         )
 
     case = lc.case("Q_max")
 
     assert list(case.keys()) == ["R", "G", "Q"]
     assert case["Q"] is Qmax
-    assert lc.get_dict_dist_comb()["Q_max"]["Q"] is Qmax
+    assert lc.get_case_distributions()["Q_max"]["Q"] is Qmax

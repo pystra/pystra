@@ -36,21 +36,22 @@ class LoadCombination:
     using Turkstra's rule.  The FBC process defines the load magnitude
     distributions; Turkstra's rule defines the combination cases.
 
-    The old ``dict_dist_comb`` / ``dict_comb_cases`` constructor interface is
-    still accepted for compatibility, but is normalized internally to explicit
-    cases and emits a deprecation warning.
+    The legacy action-based construction route remains transitional in v2,
+    using ``action_distributions`` and ``leading_actions``. It is normalized
+    internally to explicit cases and emits a deprecation warning. The former
+    type-prefixed keyword names are no longer accepted.
     """
 
     def __init__(
         self,
         lsf=None,
-        dict_dist_comb=None,
-        list_dist_resist=None,
-        list_dist_other=None,
+        action_distributions=None,
+        resistance=None,
+        other_variables=None,
         corr=None,
-        list_const=None,
+        legacy_constants=None,
         opt=None,
-        dict_comb_cases=None,
+        leading_actions=None,
         cases=None,
         constants=None,
     ):
@@ -73,29 +74,29 @@ class LoadCombination:
             Correlation matrix indexed and columned by random-variable names.
         opt : AnalysisOptions, optional
             Options passed to the FORM analysis convenience runner.
-        dict_dist_comb, list_dist_resist, list_dist_other, list_const : optional
+        action_distributions, resistance, other_variables, legacy_constants : optional
             Deprecated legacy variables interface.
-        dict_comb_cases : optional
-            Deprecated legacy interface.  These inputs are accepted for
-            compatibility and immediately converted to explicit ``cases``.
+        leading_actions : optional
+            Deprecated legacy action-based interface. These inputs are immediately
+            converted to explicit ``cases``. Their v2 names differ from v1.
         """
         self.lsf = lsf
-        self.df_corr = corr
+        self.correlation = corr
         self.options = opt
 
-        if constants is not None and list_const is not None:
-            raise Exception("Specify only one of constants or list_const")
+        if constants is not None and legacy_constants is not None:
+            raise Exception("Specify only one of constants or legacy_constants")
         self.constant = self._variables_to_dict(
-            constants if constants is not None else list_const
+            constants if constants is not None else legacy_constants
         )
-        self.label_const = list(self.constant.keys())
+        self.constant_names = list(self.constant.keys())
 
         if cases is not None:
             legacy_args = [
-                dict_dist_comb,
-                list_dist_resist,
-                list_dist_other,
-                dict_comb_cases,
+                action_distributions,
+                resistance,
+                other_variables,
+                leading_actions,
             ]
             if any(arg is not None for arg in legacy_args):
                 raise Exception(
@@ -105,13 +106,13 @@ class LoadCombination:
         else:
             self._warn_legacy_inputs()
             self._init_from_legacy(
-                dict_dist_comb=dict_dist_comb,
-                list_dist_resist=list_dist_resist,
-                list_dist_other=list_dist_other,
-                dict_comb_cases=dict_comb_cases,
+                action_distributions=action_distributions,
+                resistance=resistance,
+                other_variables=other_variables,
+                leading_actions=leading_actions,
             )
 
-        self._set_common_labels()
+        self._set_case_metadata()
 
     @classmethod
     def turkstra(
@@ -197,22 +198,22 @@ class LoadCombination:
             opt=opt,
         )
 
-        lc.distributions_comb = OrderedDict(variable)
-        lc.distributions_max = OrderedDict(
+        lc.action_distributions = OrderedDict(variable)
+        lc.maximum_distributions = OrderedDict(
             (name, lc.cases[f"{name}_leading"][name]) for name in variable
         )
-        lc.distributions_pit = OrderedDict(
+        lc.point_in_time_distributions = OrderedDict(
             (name, process.point_in_time()) for name, process in variable.items()
         )
-        lc.distributions_resistance = cls._variables_to_dict(resistance)
-        lc.distributions_other = OrderedDict()
-        lc.distributions_other.update(cls._variables_to_dict(permanent))
-        lc.distributions_other.update(cls._variables_to_dict(other))
-        lc.dict_comb_cases = OrderedDict(
+        lc.resistance_distributions = cls._variables_to_dict(resistance)
+        lc.other_distributions = OrderedDict()
+        lc.other_distributions.update(cls._variables_to_dict(permanent))
+        lc.other_distributions.update(cls._variables_to_dict(other))
+        lc.leading_actions = OrderedDict(
             (f"{name}_leading", [name]) for name in variable
         )
-        lc.comb_cases_max = list(lc.dict_comb_cases.values())
-        lc._set_common_labels()
+        lc.leading_action_groups = list(lc.leading_actions.values())
+        lc._set_case_metadata()
 
         return lc
 
@@ -263,8 +264,8 @@ class LoadCombination:
     @staticmethod
     def _warn_legacy_inputs():
         warnings.warn(
-            "dict_dist_comb, list_dist_resist, list_dist_other, list_const, "
-            "and dict_comb_cases are deprecated. Use LoadCombination(cases=...) "
+            "action_distributions, resistance, other_variables, legacy_constants, "
+            "and leading_actions are deprecated. Use LoadCombination(cases=...) "
             "or LoadCombination.turkstra(...) instead.",
             DeprecationWarning,
             stacklevel=3,
@@ -272,79 +273,79 @@ class LoadCombination:
 
     def _init_from_cases(self, cases):
         self.cases = self._normalise_cases(cases)
-        self.dict_dist_comb = self.cases
-        self.distributions_comb = OrderedDict()
-        self.distributions_max = OrderedDict()
-        self.distributions_pit = OrderedDict()
-        self.distributions_other = OrderedDict()
-        self.distributions_resistance = OrderedDict()
-        self.dict_comb_cases = {
+        self.case_distributions = self.cases
+        self.action_distributions = OrderedDict()
+        self.maximum_distributions = OrderedDict()
+        self.point_in_time_distributions = OrderedDict()
+        self.other_distributions = OrderedDict()
+        self.resistance_distributions = OrderedDict()
+        self.leading_actions = {
             name: list(case.keys()) for name, case in self.cases.items()
         }
-        self.comb_cases_max = list(self.dict_comb_cases.values())
+        self.leading_action_groups = list(self.leading_actions.values())
 
     def _init_from_legacy(
         self,
-        dict_dist_comb,
-        list_dist_resist,
-        list_dist_other=None,
-        dict_comb_cases=None,
+        action_distributions,
+        resistance,
+        other_variables=None,
+        leading_actions=None,
     ):
-        if dict_dist_comb is None or list_dist_resist is None:
+        if action_distributions is None or resistance is None:
             raise Exception(
-                "Specify cases=... or the legacy dict_dist_comb/list_dist_resist inputs"
+                "Specify cases=... or the legacy action_distributions/resistance inputs"
             )
 
-        self.distributions_comb = dict_dist_comb
-        self.distributions_max = OrderedDict(
-            (name, values["max"]) for name, values in dict_dist_comb.items()
+        self.action_distributions = action_distributions
+        self.maximum_distributions = OrderedDict(
+            (name, values["max"]) for name, values in action_distributions.items()
         )
-        self.distributions_pit = OrderedDict(
-            (name, values["pit"]) for name, values in dict_dist_comb.items()
+        self.point_in_time_distributions = OrderedDict(
+            (name, values["pit"]) for name, values in action_distributions.items()
         )
-        self.distributions_other = self._variables_to_dict(list_dist_other)
-        self.distributions_resistance = self._variables_to_dict(list_dist_resist)
-        self.dict_comb_cases = (
-            OrderedDict((f"{name}_max", [name]) for name in self.distributions_max)
-            if dict_comb_cases is None
-            else OrderedDict(dict_comb_cases)
+        self.other_distributions = self._variables_to_dict(other_variables)
+        self.resistance_distributions = self._variables_to_dict(resistance)
+        self.leading_actions = (
+            OrderedDict((f"{name}_max", [name]) for name in self.maximum_distributions)
+            if leading_actions is None
+            else OrderedDict(leading_actions)
         )
-        self.comb_cases_max = list(self.dict_comb_cases.values())
+        self.leading_action_groups = list(self.leading_actions.values())
         self._check_input()
-        self.dict_dist_comb = self._create_dict_dist_comb()
-        self.cases = self.dict_dist_comb
+        self.case_distributions = self._build_case_distributions()
+        self.cases = self.case_distributions
 
-    def _set_common_labels(self):
-        self.label_comb_cases = list(self.cases.keys())
-        self.num_comb = len(self.label_comb_cases)
+    def _set_case_metadata(self):
+        self.case_names = list(self.cases.keys())
+        self.n_cases = len(self.case_names)
 
-        if self.distributions_comb:
-            self.label_comb_vrs = list(self.distributions_comb.keys())
+        if self.action_distributions:
+            self.variable_action_names = list(self.action_distributions.keys())
         else:
-            self.label_comb_vrs = self._case_variable_names()
+            self.variable_action_names = self._case_variable_names()
 
-        self.label_resist = list(self.distributions_resistance.keys())
-        self.label_other = list(self.distributions_other.keys())
-        if self.label_resist or self.label_other or self.distributions_comb:
-            self.label_all = (
-                self.label_resist
-                + self.label_other
-                + self.label_comb_vrs
-                + self.label_const
+        self.resistance_names = list(self.resistance_distributions.keys())
+        self.other_names = list(self.other_distributions.keys())
+        if self.resistance_names or self.other_names or self.action_distributions:
+            self.variable_names = (
+                self.resistance_names
+                + self.other_names
+                + self.variable_action_names
+                + self.constant_names
             )
         else:
-            self.label_all = self._case_variable_names()
-            for name in self.label_const:
-                if name not in self.label_all:
-                    self.label_all.append(name)
+            self.variable_names = self._case_variable_names()
+            for name in self.constant_names:
+                if name not in self.variable_names:
+                    self.variable_names.append(name)
 
-        self.dict_label = {
-            "resist": self.label_resist,
-            "other": self.label_other,
-            "comb_vrs": self.label_comb_vrs,
-            "comb_cases": self.label_comb_cases,
-            "const": self.label_const,
-            "all": self.label_all,
+        self.name_groups = {
+            "resist": self.resistance_names,
+            "other": self.other_names,
+            "comb_vrs": self.variable_action_names,
+            "comb_cases": self.case_names,
+            "const": self.constant_names,
+            "all": self.variable_names,
         }
 
     def _case_variable_names(self):
@@ -359,68 +360,69 @@ class LoadCombination:
         """
         Check consistency of supplied input.
         """
-        if len(self.distributions_max) != len(self.distributions_pit):
+        if len(self.maximum_distributions) != len(self.point_in_time_distributions):
             raise Exception(
                 "\nLength of Max variables {} does not match\
                       length of point-in-time variables {}".format(
-                    len(self.distributions_max), len(self.distributions_pit)
+                    len(self.maximum_distributions),
+                    len(self.point_in_time_distributions),
                 )
             )
 
-    def get_label(self, label_type):
+    def get_group_names(self, group):
         """
-        Get labels corresponding to label_type.
+        Get labels corresponding to group.
         """
-        return self.dict_label[label_type]
+        return self.name_groups[group]
 
-    def _set_num_comb(self):
+    def _set_case_count(self):
         """
         Legacy method retained for compatibility.
         """
-        self.num_comb = len(self.cases)
-        return self.num_comb
+        self.n_cases = len(self.cases)
+        return self.n_cases
 
-    def get_num_comb(self):
+    def get_case_count(self):
         """
         Get the number of load-combination cases.
         """
-        return self.num_comb
+        return self.n_cases
 
-    def get_dict_dist_comb(self):
+    def get_case_distributions(self):
         """
         Get the dictionary of distributions for all load-combination cases.
         """
-        return self.dict_dist_comb
+        return self.case_distributions
 
-    def _create_dict_dist_comb(self):
+    def _build_case_distributions(self):
         """
         Create explicit load-combination cases from legacy max/pit inputs.
         """
-        dict_dist = OrderedDict()
-        for loadc_name, loadc in self.dict_comb_cases.items():
-            dict_loadc = OrderedDict()
-            dict_loadc.update(self.distributions_resistance)
-            dict_loadc.update(self.distributions_other)
-            for key, value in self.distributions_max.items():
+        case_distributions = OrderedDict()
+        for loadc_name, loadc in self.leading_actions.items():
+            case_variables = OrderedDict()
+            case_variables.update(self.resistance_distributions)
+            case_variables.update(self.other_distributions)
+            for key, value in self.maximum_distributions.items():
                 if key in loadc:
-                    dict_loadc[key] = value
+                    case_variables[key] = value
                 else:
-                    dict_loadc[key] = self.distributions_pit[key]
-            dict_dist[loadc_name] = dict_loadc
-        return dict_dist
+                    case_variables[key] = self.point_in_time_distributions[key]
+            case_distributions[loadc_name] = case_variables
+        return case_distributions
 
-    def _case_name(self, lcn=None):
-        lcn = self.label_comb_cases[0] if lcn is None else lcn
-        if lcn not in self.cases:
-            raise Exception(f'load-combination case "{lcn}" is not defined')
-        return lcn
+    def _resolve_case_name(self, case_name=None):
+        case_name = self.case_names[0] if case_name is None else case_name
+        if case_name not in self.cases:
+            raise Exception(f'load-combination case "{case_name}" is not defined')
+        return case_name
 
-    def case(self, lcn=None):
+    def case(self, case_name=None):
         """Return a shallow copy of an explicit load-combination case.
 
         Parameters
         ----------
-        lcn : str, optional
+        case_name : str, optional
             Case name.  If omitted, the first case is returned.
 
         Returns
@@ -428,14 +430,14 @@ class LoadCombination:
         OrderedDict
             Mapping of variable name to Pystra variable for the selected case.
         """
-        return OrderedDict(self.cases[self._case_name(lcn)])
+        return OrderedDict(self.cases[self._resolve_case_name(case_name)])
 
-    def stochastic_model(self, lcn=None, **kwargs):
+    def stochastic_model(self, case_name=None, **kwargs):
         """Create a :class:`StochasticModel` for a load-combination case.
 
         Parameters
         ----------
-        lcn : str, optional
+        case_name : str, optional
             Case name.  If omitted, the first case is used.
         **kwargs
             Variable overrides.  This is mainly retained for calibration and
@@ -448,7 +450,7 @@ class LoadCombination:
         """
         variables = OrderedDict()
         variables.update(self.constant)
-        variables.update(self.case(lcn))
+        variables.update(self.case(case_name))
         for key, value in kwargs.items():
             if key in variables:
                 variables[key] = value
@@ -456,7 +458,7 @@ class LoadCombination:
         sm = StochasticModel()
         for variable in variables.values():
             sm.add_variable(variable)
-        if self.df_corr is not None:
+        if self.correlation is not None:
             corr = self._get_corr_for_stochastic_model(sm)
             sm.set_correlation(CorrelationMatrix(corr))
         return sm
@@ -466,11 +468,13 @@ class LoadCombination:
         Get correlation data for stochastic model.
         """
         sequence_rvs = list(stochastic_model.get_variables().keys())
-        dfcorr_tmp = self.df_corr.reindex(columns=sequence_rvs, index=sequence_rvs)
-        corr = dfcorr_tmp.values
+        ordered_correlation = self.correlation.reindex(
+            columns=sequence_rvs, index=sequence_rvs
+        )
+        corr = ordered_correlation.values
         return corr
 
-    def run_reliability_case(self, lcn=None, **kwargs):
+    def run_reliability_case(self, case_name=None, **kwargs):
         """Create and run FORM analysis for a load-combination case.
 
         This is a convenience wrapper around :meth:`stochastic_model` and
@@ -480,7 +484,7 @@ class LoadCombination:
 
         Parameters
         ----------
-        lcn : str, optional
+        case_name : str, optional
             Case name.  If omitted, the first case is analysed.
         **kwargs
             Variable overrides passed to :meth:`stochastic_model`.
@@ -493,7 +497,7 @@ class LoadCombination:
         if self.lsf is None:
             raise Exception("LoadCombination requires an lsf to run reliability cases")
         ls = LimitState(self.lsf)
-        sm = self.stochastic_model(lcn, **kwargs)
+        sm = self.stochastic_model(case_name, **kwargs)
         form = Form(sm, ls) if self.options is None else Form(sm, ls, self.options)
         form.run()
         return form
@@ -522,7 +526,9 @@ class LoadCombination:
         if self.lsf is None:
             raise Exception("LoadCombination requires an lsf to evaluate the LSF")
 
-        set_miss = set(self.label_all) - set(kwargs.keys()) - set(self.constant.keys())
+        set_miss = (
+            set(self.variable_names) - set(kwargs.keys()) - set(self.constant.keys())
+        )
         if len(set_miss) > 0:
             kwargs.update({xx: set_value for xx in set_miss})
         for key in self.constant:
