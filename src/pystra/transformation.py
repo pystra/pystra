@@ -16,18 +16,18 @@ class Transformation:
     - **SVD**: Ro = (U sqrt(D)) @ (U sqrt(D))^T via the eigendecomposition of
       the symmetric positive-definite matrix Ro.
 
-    Both factorisations satisfy the same identity and therefore produce
-    identical reliability results (design point, reliability index beta,
-    failure probability).  The intermediate correlated standard-normal vector
-    z = inv_T @ u will in general differ between the two methods, but the
-    final physical-space coordinates x are invariant because x_i = F_i^{-1}(
-    Phi(z_i)) depends only on the marginal mapping.
+    The two independent-normal coordinate systems differ by an orthogonal
+    transformation. Corresponding physical design points, beta and probability
+    agree for the same optimum, up to numerical solver error. A fixed numerical
+    u vector generally maps to different physical points under the two factors.
 
     The SVD factorisation is generally more robust because it avoids computing
     the explicit inverse of a triangular factor; instead it works with the
     orthogonal eigenstructure of Ro.  It is recommended when Ro is
     near-singular or poorly conditioned.
     """
+
+    standard_space = "normal"
 
     def __init__(self, transform_type=None):
         """

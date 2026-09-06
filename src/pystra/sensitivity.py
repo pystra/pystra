@@ -159,7 +159,11 @@ class SensitivityAnalysis:
             sensitivities[name] = {p: 0.0 for p in dist.sensitivity_params}
 
         # Get the base result
-        form = Form(stochastic_model=self.model, limit_state=self.limitstate)
+        form = Form(
+            stochastic_model=self.model,
+            limit_state=self.limitstate,
+            analysis_options=self.options,
+        )
         form.run()
         beta0 = form.getBeta()
 
@@ -182,6 +186,7 @@ class SensitivityAnalysis:
                 form = Form(
                     stochastic_model=model1,
                     limit_state=self.limitstate,
+                    analysis_options=self.options,
                 )
                 form.run()
                 beta1 = form.getBeta()
@@ -206,6 +211,13 @@ class SensitivityAnalysis:
         of Bourinet (2017) and Eqs. (17)–(25) for the derivative
         integrals.  No additional FORM runs are required.
         """
+        if self.model.getCopula() is not None or self.options.getTransform() in (
+            "nataf",
+            "rosenblatt",
+        ):
+            raise ValueError(
+                "Closed-form sensitivities assume legacy physical Pearson input; use numerical=True for explicit copulas"
+            )
         # 1. Run FORM
         form = Form(
             stochastic_model=self.model,

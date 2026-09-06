@@ -67,18 +67,62 @@ class AnalysisObject:
             self.options = analysis_options
 
         # Create transformation based on user settings in AnalysisOptions
-        self.transform = Transformation(transform_type=self.options.getTransform())
+        selected = self.options.getTransform()
+        self.transform = Transformation(
+            transform_type=None if selected in ("nataf", "rosenblatt") else selected
+        )
 
         self.results_valid = False
 
     def init_run(self):
-        """Initialise the Nataf transformation before the analysis loop.
+        """Initialise the model's isoprobabilistic transformation.
 
-        Computes the modified (Nataf) correlation matrix and its
-        factorisation.  Must be called at the start of every
+        Uses the explicit copula or calibrates the legacy Gaussian Nataf
+        correlation. Must be called at the start of every
         ``run()`` method in subclasses.
         """
 
+        copula = self.model.getCopula()
+        selected = self.options.getTransform()
+        if copula is not None or selected in ("nataf", "rosenblatt"):
+            from .copula import GaussianCopula, StudentTCopula
+            from .joint import CopulaTransformation
+
+            joint = self.model.getJointDistribution()
+            gaussian = isinstance(joint.copula, GaussianCopula) and not isinstance(
+                joint.copula, StudentTCopula
+            )
+            method = selected
+            if selected is None:
+                method = "nataf" if gaussian else "rosenblatt"
+            if selected in ("cholesky", "svd"):
+                method = "nataf"
+            self.transform = CopulaTransformation(
+                joint,
+                method=method,
+                order=self.options.rosenblatt_order,
+                factorization="svd" if selected == "svd" else "cholesky",
+            )
+            if self.transform.standard_space != "normal" and not getattr(
+                self, "supports_spherical_space", False
+            ):
+                self.results_valid = False
+                raise ValueError(
+                    "This analysis requires independent normal space; select Rosenblatt for this copula"
+                )
+            if gaussian:
+                self.model.setModifiedCorrelation(joint.copula.correlation)
+            if self.options.getPrintOutput():
+                print(
+                    f"Using {type(joint.copula).__name__}, {method} transformation, {self.transform.standard_space} space"
+                )
+            return
+
+        if self.options.rosenblatt_order is not None:
+            raise ValueError(
+                "Conditioning order requires the Rosenblatt transformation"
+            )
+        self.transform = Transformation(selected)
         if self.options.getPrintOutput():
             print("==================================================")
             print("")
@@ -244,6 +288,7 @@ class AnalysisOptions:
         """Amount on bins for the histogram"""
 
         self.transform_type = None
+        self.rosenblatt_order = None
 
     # getter
     def getPrintOutput(self):
@@ -335,4 +380,11 @@ class AnalysisOptions:
         self.samples = samples
 
     def setTransform(self, transform_type):
+        """Select auto (None), cholesky/SVD Nataf, nataf, or rosenblatt."""
+        if transform_type not in (None, "cholesky", "svd", "nataf", "rosenblatt"):
+            raise ValueError("Unknown isoprobabilistic transformation")
         self.transform_type = transform_type
+
+    def setRosenblattOrder(self, order):
+        """Set a permutation of stochastic variable indices for conditioning."""
+        self.rosenblatt_order = None if order is None else tuple(order)

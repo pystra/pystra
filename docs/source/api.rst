@@ -13,6 +13,7 @@ Core Framework
 
     system
     strong_maximum
+    copulas
 
 .. autosummary::
     :toctree: gen
@@ -49,6 +50,8 @@ Probability Transformation
     :recursive:
 
     pystra.transformation
+    pystra.copula
+    pystra.joint
     pystra.correlation
     pystra.integration
     pystra.quadrature
