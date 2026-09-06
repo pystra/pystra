@@ -8,7 +8,7 @@ import scipy.special as spec
 from .distribution import Distribution
 
 
-class TypeIIlargestValue(Distribution):
+class Type2LargestValue(Distribution):
     """Type II largest value distribution
 
     :Attributes:
@@ -23,7 +23,7 @@ class TypeIIlargestValue(Distribution):
         if input_type is None:
             parameter_guess = [2.000001]
             par = opt.fsolve(
-                self.typIIlargest_parameter,
+                self.type2_largest_parameter,
                 parameter_guess,
                 args=(mean, stdv),
             )
@@ -44,9 +44,9 @@ class TypeIIlargestValue(Distribution):
             startpoint=startpoint,
         )
 
-        self.dist_type = "TypeIIlargestValue"
+        self.dist_type = "Type2LargestValue"
 
-    def typIIlargest_parameter(self, x, *args):
+    def type2_largest_parameter(self, x, *args):
         mean, stdv = args
         f = (spec.gamma(1 - 2 / x) - (spec.gamma(1 - 1 / x)) ** 2) ** 0.5 - (
             stdv / mean

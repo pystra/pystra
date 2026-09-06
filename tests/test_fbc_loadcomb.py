@@ -9,7 +9,7 @@ import pystra as ra
 
 def test_fbc_process_maximum_uses_interval_count():
     parent = ra.Normal("Q", 10, 2)
-    process = ra.FBCProcess("Q", parent=parent, basic_interval=0.25)
+    process = ra.FbcProcess("Q", parent=parent, basic_interval=0.25)
 
     maximum = process.maximum(duration=1.0)
 
@@ -19,7 +19,7 @@ def test_fbc_process_maximum_uses_interval_count():
 
 def test_fbc_process_from_maximum_recovers_parent_relation():
     annual_max = ra.Gumbel("Q", 10, 2)
-    process = ra.FBCProcess.from_maximum(
+    process = ra.FbcProcess.from_maximum(
         "Q", maximum=annual_max, maximum_duration=1.0, basic_interval=0.25
     )
 
@@ -45,8 +45,8 @@ def test_loadcombination_explicit_cases_builds_stochastic_model():
     sm = lc.stochastic_model("Q_leading")
 
     assert list(case.keys()) == ["R", "G", "Q"]
-    assert sm.getNames() == ["z", "R", "G", "Q"]
-    assert sm.getConstants()["z"] == 1.0
+    assert sm.get_names() == ["z", "R", "G", "Q"]
+    assert sm.get_constants()["z"] == 1.0
     assert lc.get_label("comb_cases") == ["Q_leading"]
     assert lc.get_num_comb() == 1
 
@@ -54,8 +54,8 @@ def test_loadcombination_explicit_cases_builds_stochastic_model():
 def test_loadcombination_turkstra_generates_leading_cases_from_fbc_processes():
     R = ra.Normal("R", 100, 10)
     G = ra.Normal("G", 30, 3)
-    Q1 = ra.FBCProcess("Q1", ra.Normal("Q1", 10, 2), basic_interval=0.25)
-    Q2 = ra.FBCProcess("Q2", ra.Normal("Q2", 8, 1), basic_interval=0.10)
+    Q1 = ra.FbcProcess("Q1", ra.Normal("Q1", 10, 2), basic_interval=0.25)
+    Q2 = ra.FbcProcess("Q2", ra.Normal("Q2", 8, 1), basic_interval=0.10)
 
     lc = ra.LoadCombination.turkstra(
         lsf=lambda R, G, Q1, Q2: R - G - Q1 - Q2,
@@ -82,7 +82,7 @@ def test_loadcombination_turkstra_generates_leading_cases_from_fbc_processes():
 
 
 def test_loadcombination_explicit_cases_reject_fbc_processes():
-    process = ra.FBCProcess("Q", ra.Normal("Q", 10, 2), basic_interval=0.25)
+    process = ra.FbcProcess("Q", ra.Normal("Q", 10, 2), basic_interval=0.25)
 
     with pytest.raises(Exception, match="Distribution or Constant"):
         ra.LoadCombination(cases={"invalid": {"Q": process}})
@@ -106,10 +106,10 @@ def test_turkstra_cases_match_sorensen_example_4_distribution_exponents():
     q = 1.2
     Q1max = ra.Gumbel("Q1", 1.0, 0.2)
     Q2max = ra.Gumbel("Q2", 1.0, 0.4)
-    Q1 = ra.FBCProcess.from_maximum(
+    Q1 = ra.FbcProcess.from_maximum(
         "Q1", maximum=Q1max, maximum_duration=1.0, basic_interval=0.5
     )
-    Q2 = ra.FBCProcess.from_maximum(
+    Q2 = ra.FbcProcess.from_maximum(
         "Q2", maximum=Q2max, maximum_duration=1.0, basic_interval=1 / 360
     )
 
@@ -128,7 +128,7 @@ def test_turkstra_cases_match_sorensen_example_4_distribution_exponents():
 
 def test_from_maximum_round_trip_preserves_high_recurrence_maximum():
     Qmax = ra.Gumbel("Q", 1.0, 0.4)
-    process = ra.FBCProcess.from_maximum(
+    process = ra.FbcProcess.from_maximum(
         "Q", maximum=Qmax, maximum_duration=1.0, basic_interval=1 / 360
     )
 

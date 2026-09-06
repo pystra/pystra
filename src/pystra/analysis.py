@@ -8,7 +8,7 @@ user-configurable parameters for these analyses.
 import numpy as np
 from .model import StochasticModel, LimitState
 from .transformation import Transformation
-from .correlation import setModifiedCorrelationMatrix
+from .correlation import set_modified_correlation_matrix
 
 __all__ = ["AnalysisObject", "AnalysisOptions"]
 
@@ -18,7 +18,7 @@ class AnalysisObject:
 
     .. note::
         Subclasses should use ``self.N_HYPH`` for the width of console
-        separator lines printed by ``showResults()``.
+        separator lines printed by ``show_results()``.
 
     Handles the common set-up shared by all analysis types: storing the
     stochastic model, limit state, and analysis options, and providing
@@ -45,7 +45,7 @@ class AnalysisObject:
         ``True`` after a successful ``run()``.
     """
 
-    N_HYPH = 58  # Width of console separator lines in showResults()
+    N_HYPH = 58  # Width of console separator lines in show_results()
 
     def __init__(self, stochastic_model=None, limit_state=None, analysis_options=None):
         # The stochastic model
@@ -67,7 +67,7 @@ class AnalysisObject:
             self.options = analysis_options
 
         # Create transformation based on user settings in AnalysisOptions
-        selected = self.options.getTransform()
+        selected = self.options.get_transform()
         self.transform = Transformation(
             transform_type=None if selected in ("nataf", "rosenblatt") else selected
         )
@@ -82,13 +82,13 @@ class AnalysisObject:
         ``run()`` method in subclasses.
         """
 
-        copula = self.model.getCopula()
-        selected = self.options.getTransform()
+        copula = self.model.get_copula()
+        selected = self.options.get_transform()
         if copula is not None or selected in ("nataf", "rosenblatt"):
             from .copula import GaussianCopula, StudentTCopula
             from .joint import CopulaTransformation
 
-            joint = self.model.getJointDistribution()
+            joint = self.model.get_joint_distribution()
             gaussian = isinstance(joint.copula, GaussianCopula) and not isinstance(
                 joint.copula, StudentTCopula
             )
@@ -111,8 +111,8 @@ class AnalysisObject:
                     "This analysis requires independent normal space; select Rosenblatt for this copula"
                 )
             if gaussian:
-                self.model.setModifiedCorrelation(joint.copula.correlation)
-            if self.options.getPrintOutput():
+                self.model.set_modified_correlation(joint.copula.correlation)
+            if self.options.get_print_output():
                 print(
                     f"Using {type(joint.copula).__name__}, {method} transformation, {self.transform.standard_space} space"
                 )
@@ -123,7 +123,7 @@ class AnalysisObject:
                 "Conditioning order requires the Rosenblatt transformation"
             )
         self.transform = Transformation(selected)
-        if self.options.getPrintOutput():
+        if self.options.get_print_output():
             print("==================================================")
             print("")
             print("           RUNNING RELIABILITY ANALYSIS")
@@ -138,10 +138,10 @@ class AnalysisObject:
             print("")
 
         # Computation of modified correlation matrix R0
-        setModifiedCorrelationMatrix(self.model)
+        set_modified_correlation_matrix(self.model)
 
         # Compute the isoprobabilistic transform
-        self.transform.compute(self.model.getModifiedCorrelation())
+        self.transform.compute(self.model.get_modified_correlation())
 
 
 class AnalysisOptions:
@@ -291,100 +291,100 @@ class AnalysisOptions:
         self.rosenblatt_order = None
 
     # getter
-    def getPrintOutput(self):
+    def get_print_output(self):
         return self.print_output
 
-    def getFlagSens(self):
+    def get_flag_sens(self):
         return self.flag_sens
 
-    def getMultiProc(self):
+    def get_multi_proc(self):
         return self.multi_proc
 
-    def getBlockSize(self):
+    def get_block_size(self):
         return self.block_size
 
-    def getImax(self):
+    def get_imax(self):
         return self.i_max
 
-    def getE1(self):
+    def get_e1(self):
         return self.e1
 
-    def getE2(self):
+    def get_e2(self):
         return self.e2
 
-    def getStepSize(self):
+    def get_step_size(self):
         return self.step_size
 
-    def getDiffMode(self):
+    def get_diff_mode(self):
         return self.diff_mode
 
-    def getffdpara(self):
+    def get_ffd_parameter(self):
         return self.ffdpara
 
-    def getSamples(self):
+    def get_samples(self):
         """
         Return the number of samples used in MCS
         """
         return self.samples
 
-    def getRandomGenerator(self):
+    def get_random_generator(self):
         return self.random_generator
 
-    def getSimulationPoint(self):
+    def get_simulation_point(self):
         return self.sim_point
 
-    def getSimulationStdv(self):
+    def get_simulation_stdv(self):
         return self.stdv_sim
 
-    def getSimulationCov(self):
+    def get_simulation_cov(self):
         return self.target_cov
 
-    def getTransform(self):
+    def get_transform(self):
         return self.transform_type
 
     # setter
-    def setPrintOutput(self, tof):
+    def set_print_output(self, tof):
         self.print_output = tof
 
-    def setMultiProc(self, multi_proc):
+    def set_multi_proc(self, multi_proc):
         self.multi_proc = multi_proc
 
-    def setBlockSize(self, block_size):
+    def set_block_size(self, block_size):
         self.block_size = block_size
 
-    def setImax(self, i_max):
+    def set_imax(self, i_max):
         self.i_max = i_max
 
-    def setE1(self, e1):
+    def set_e1(self, e1):
         self.e1 = e1
 
-    def setE2(self, e2):
+    def set_e2(self, e2):
         self.e2 = e2
 
-    def setStepSize(self, step_size):
+    def set_step_size(self, step_size):
         self.step_size = step_size
 
-    def setDiffMode(self, diff_mode):
+    def set_diff_mode(self, diff_mode):
         self.diff_mode = diff_mode
 
-    def setffdpara(self, ffdpara):
+    def set_ffd_parameter(self, ffdpara):
         self.ffdpara = ffdpara
 
-    def setBins(self, bins):
+    def set_bins(self, bins):
         self.bins = bins
 
-    def setSamples(self, samples):
+    def set_samples(self, samples):
         """
         Set the number of samples used in MCS
         """
         self.samples = samples
 
-    def setTransform(self, transform_type):
+    def set_transform(self, transform_type):
         """Select auto (None), cholesky/SVD Nataf, nataf, or rosenblatt."""
         if transform_type not in (None, "cholesky", "svd", "nataf", "rosenblatt"):
             raise ValueError("Unknown isoprobabilistic transformation")
         self.transform_type = transform_type
 
-    def setRosenblattOrder(self, order):
+    def set_rosenblatt_order(self, order):
         """Set a permutation of stochastic variable indices for conditioning."""
         self.rosenblatt_order = None if order is None else tuple(order)

@@ -27,7 +27,7 @@ class JointDistribution:
             raise TypeError("Marginals must be Pystra Distribution objects")
         if any(isinstance(m, ZeroInflated) and m.p > 0 for m in self.marginals):
             raise ValueError("Copula transformations require continuous marginals")
-        self.names = tuple(m.getName() for m in self.marginals)
+        self.names = tuple(m.get_name() for m in self.marginals)
         if len(set(self.names)) != len(self.names):
             raise ValueError("Joint marginal names must be unique")
         self.copula = copula
@@ -67,7 +67,7 @@ class JointDistribution:
         p = self.copula.rvs(size, seed)
         return np.column_stack([m.ppf(p[:, i]) for i, m in enumerate(self.marginals)])
 
-    def getTransformation(
+    def make_transformation(
         self, method="rosenblatt", order=None, factorization="cholesky"
     ):
         """Build a normal Rosenblatt or spherical generalized Nataf mapping."""

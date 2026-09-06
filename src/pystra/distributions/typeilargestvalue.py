@@ -6,7 +6,7 @@ from .distribution import Distribution
 from .gumbel import Gumbel
 
 
-class TypeIlargestValue(Distribution):
+class Type1LargestValue(Distribution):
     """Type I largest value distribution
 
     :Attributes:
@@ -28,4 +28,4 @@ class TypeIlargestValue(Distribution):
             startpoint=startpoint,
         )
 
-        self.dist_type = "TypeIlargestValue"
+        self.dist_type = "Type1LargestValue"

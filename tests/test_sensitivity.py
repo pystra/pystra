@@ -5,7 +5,7 @@ import numpy as np
 import pystra as ra
 from pystra.distributions import Normal, Lognormal
 from pystra.distributions.distribution import Distribution
-from pystra.distributions.gev import GEVmax, GEVmin
+from pystra.distributions.gev import GevMax, GevMin
 from pystra.distributions.beta import Beta
 from pystra.distributions.weibull import Weibull
 from pystra.distributions.uniform import Uniform
@@ -16,8 +16,8 @@ class TestSensitivityAnalysis:
     def _make_problem(self):
         """Create a simple reliability problem for sensitivity testing."""
         model = ra.model.StochasticModel()
-        model.addVariable(Normal("R", 10, 2))
-        model.addVariable(Normal("S", 5, 1))
+        model.add_variable(Normal("R", 10, 2))
+        model.add_variable(Normal("S", 5, 1))
 
         def lsf(R, S):
             return R - S
@@ -81,8 +81,8 @@ class TestSensitivityAnalysis:
     def test_with_lognormal(self):
         """Test sensitivity works with non-Normal distributions."""
         model = ra.model.StochasticModel()
-        model.addVariable(Lognormal("R", 10, 2))
-        model.addVariable(Normal("S", 5, 1))
+        model.add_variable(Lognormal("R", 10, 2))
+        model.add_variable(Normal("S", 5, 1))
 
         def lsf(R, S):
             return R - S
@@ -109,7 +109,7 @@ class TestSensitivityAnalysis:
         """SensitivityAnalysis should accept custom options."""
         model, ls = self._make_problem()
         opts = ra.AnalysisOptions()
-        opts.setPrintOutput(False)
+        opts.set_print_output(False)
         sa = ra.SensitivityAnalysis(ls, model, analysis_options=opts)
         result = sa.run()
         assert len(result) == 2
@@ -138,11 +138,11 @@ class TestClosedFormSensitivity:
         Both have CoV = 1, giving an exact beta = 2.1218.
         """
         model = ra.StochasticModel()
-        model.addVariable(Lognormal("X1", 5, 5))
-        model.addVariable(Lognormal("X2", 1, 1))
+        model.add_variable(Lognormal("X1", 5, 5))
+        model.add_variable(Lognormal("X2", 1, 1))
 
         corr = ra.CorrelationMatrix(np.array([[1.0, 0.5], [0.5, 1.0]]))
-        model.setCorrelation(corr)
+        model.set_correlation(corr)
 
         def lsf(X1, X2):
             return X1 - X2
@@ -164,7 +164,7 @@ class TestClosedFormSensitivity:
         """Validate against Table 4 of Bourinet (2017)."""
         model, ls = self._make_bourinet_example2()
         opts = ra.AnalysisOptions()
-        opts.setPrintOutput(False)
+        opts.set_print_output(False)
         sa = ra.SensitivityAnalysis(ls, model, analysis_options=opts)
         result = sa.run(numerical=False)
 
@@ -180,7 +180,7 @@ class TestClosedFormSensitivity:
         """Validate d_beta/d_rho against Eq. (31) of Bourinet (2017)."""
         model, ls = self._make_bourinet_example2()
         opts = ra.AnalysisOptions()
-        opts.setPrintOutput(False)
+        opts.set_print_output(False)
         sa = ra.SensitivityAnalysis(ls, model, analysis_options=opts)
         result = sa.run(numerical=False)
 
@@ -192,8 +192,8 @@ class TestClosedFormSensitivity:
     def test_closed_form_vs_fd_uncorrelated_normals(self):
         """Closed-form and FD should agree for uncorrelated normals."""
         model = ra.StochasticModel()
-        model.addVariable(ra.Normal("R", 10, 2))
-        model.addVariable(ra.Normal("S", 5, 1))
+        model.add_variable(ra.Normal("R", 10, 2))
+        model.add_variable(ra.Normal("S", 5, 1))
 
         def lsf(R, S):
             return R - S
@@ -222,7 +222,7 @@ class TestClosedFormSensitivity:
         """
         model, ls = self._make_bourinet_example2()
         opts = ra.AnalysisOptions()
-        opts.setPrintOutput(False)
+        opts.set_print_output(False)
         sa = ra.SensitivityAnalysis(ls, model, analysis_options=opts)
 
         cf = sa.run(numerical=False)
@@ -248,15 +248,15 @@ class TestSensitivityParams:
         assert sp["std"] == 2.0
 
     def test_gev_sensitivity_params(self):
-        """GEVmax returns {"mean", "std", "shape"}."""
-        dist = GEVmax("X", 100, 20, shape=0.1)
+        """GevMax returns {"mean", "std", "shape"}."""
+        dist = GevMax("X", 100, 20, shape=0.1)
         sp = dist.sensitivity_params
         assert set(sp.keys()) == {"mean", "std", "shape"}
         assert sp["shape"] == 0.1
 
     def test_gevmin_sensitivity_params(self):
-        """GEVmin returns {"mean", "std", "shape"}."""
-        dist = GEVmin("X", 100, 20, shape=0.1)
+        """GevMin returns {"mean", "std", "shape"}."""
+        dist = GevMin("X", 100, 20, shape=0.1)
         sp = dist.sensitivity_params
         assert set(sp.keys()) == {"mean", "std", "shape"}
         assert sp["shape"] == 0.1
@@ -276,8 +276,8 @@ class TestSensitivityParams:
             (Lognormal, {"mean": 10, "stdv": 2}),
             (Uniform, {"mean": 5, "stdv": 0.5}),
             (Gamma, {"mean": 10, "stdv": 2}),
-            (GEVmax, {"mean": 100, "stdv": 20, "shape": 0.1}),
-            (GEVmin, {"mean": 100, "stdv": 20, "shape": 0.1}),
+            (GevMax, {"mean": 100, "stdv": 20, "shape": 0.1}),
+            (GevMin, {"mean": 100, "stdv": 20, "shape": 0.1}),
         ],
     )
     def test_make_copy_roundtrip(self, cls, kwargs):
@@ -310,16 +310,16 @@ class TestSensitivityParams:
 
     def test_make_copy_perturbed_shape(self):
         """_make_copy with perturbed shape for GEV works correctly."""
-        dist = GEVmax("X", 100, 20, shape=0.1)
+        dist = GevMax("X", 100, 20, shape=0.1)
         perturbed = dist._make_copy(shape=0.11)
         # Different shape → different distribution (different CDF)
         x_test = 120.0
         assert perturbed.cdf(x_test) != pytest.approx(dist.cdf(x_test), abs=1e-4)
 
-    def test_dF_dtheta_gev_includes_shape(self):
-        """GEV's dF_dtheta returns derivatives for all sensitivity_params."""
-        dist = GEVmax("X", 100, 20, shape=0.1)
-        dF = dist.dF_dtheta(110.0)
+    def test_d_f_dtheta_gev_includes_shape(self):
+        """GEV's cdf_gradient returns derivatives for all sensitivity_params."""
+        dist = GevMax("X", 100, 20, shape=0.1)
+        dF = dist.cdf_gradient(110.0)
         assert "mean" in dF
         assert "std" in dF
         assert "shape" in dF
@@ -342,7 +342,7 @@ class TestSensitivityParams:
 
     def test_dmoments_dtheta_shape_gev(self):
         """_dmoments_dtheta for 'shape' on GEV returns finite values."""
-        dist = GEVmax("X", 100, 20, shape=0.1)
+        dist = GevMax("X", 100, 20, shape=0.1)
         dmu, dsig = dist._dmoments_dtheta("shape")
         assert np.isfinite(dmu)
         assert np.isfinite(dsig)
@@ -357,15 +357,15 @@ class TestGEVSensitivity:
     def _make_gev_problem():
         """Problem with a GEV load variable."""
         model = ra.StochasticModel()
-        model.addVariable(Normal("R", 50, 5))
-        model.addVariable(GEVmax("S", 20, 8, shape=0.2))
+        model.add_variable(Normal("R", 50, 5))
+        model.add_variable(GevMax("S", 20, 8, shape=0.2))
 
         def lsf(R, S):
             return R - S
 
         ls = ra.LimitState(lsf)
         opts = ra.AnalysisOptions()
-        opts.setPrintOutput(False)
+        opts.set_print_output(False)
         return model, ls, opts
 
     def test_fd_result_includes_shape(self):
@@ -391,7 +391,7 @@ class TestGEVSensitivity:
     def test_gev_shape_sensitivity_sign(self):
         """Increasing GEV shape (heavier tail) should decrease beta.
 
-        For g = R - S with S ~ GEVmax: increasing shape makes the
+        For g = R - S with S ~ GevMax: increasing shape makes the
         right tail of S heavier, increasing the probability of
         large loads, so beta should decrease → ∂β/∂ξ < 0.
         """
@@ -457,11 +457,11 @@ class TestUnsupportedDistributions:
     """Test that unsupported distributions raise clear errors."""
 
     def test_maximum_raises_valueerror(self):
-        """Maximum distribution should raise ValueError in dF_dtheta."""
+        """Maximum distribution should raise ValueError in cdf_gradient."""
         from pystra.distributions.maximum import Maximum
 
         parent = Normal("X", 10, 2)
         dist = Maximum("Xmax", parent, N=100)
 
         with pytest.raises(ValueError, match="does not support sensitivity"):
-            dist.dF_dtheta(12.0)
+            dist.cdf_gradient(12.0)

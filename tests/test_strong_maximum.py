@@ -8,7 +8,7 @@ import pystra as ra
 def model(dimension=2):
     result = ra.StochasticModel()
     for i in range(dimension):
-        result.addVariable(ra.Normal(f"X{i}", 0, 1))
+        result.add_variable(ra.Normal(f"X{i}", 0, 1))
     return result
 
 
@@ -64,8 +64,8 @@ def test_linear_plane_has_no_competing_region_and_partitions_sample():
     result.run()
     assert result.status == "no_competing_region_detected"
     assert not result.has_competing_points
-    assert result.getPoints().shape == (0, 2)
-    assert result.getValues().shape == (0,)
+    assert result.get_points().shape == (0, 2)
+    assert result.get_values().shape == (0,)
     assert result.masks["near_failure"].sum() > 0
     assert result.masks["far_safe"].sum() > 0
     assert not result.masks["near_safe"].any()
@@ -79,8 +79,8 @@ def test_two_equal_modes_are_detected():
     result = raw(lambda X0, **kwargs: 9 - X0**2, point_number=500, seed=3)
     result.run()
     assert result.has_competing_points
-    assert np.all(result.getPoints()[:, 0] < -3)
-    assert np.all(result.getValues() < 0)
+    assert np.all(result.get_points()[:, 0] < -3)
+    assert np.all(result.get_values() < 0)
 
 
 def test_openturns_two_branch_event_detects_other_region():
@@ -95,14 +95,14 @@ def test_openturns_two_branch_event_detects_other_region():
     )
     result.run()
     assert result.has_competing_points
-    assert np.all(result.getPoints()[:, 0] > 0)
+    assert np.all(result.get_points()[:, 0] > 0)
 
 
 def test_post_form_reuses_correlated_transform_without_mutating_evaluator():
     m = model()
-    m.setCorrelation([[1, 0.6], [0.6, 1]])
+    m.set_correlation([[1, 0.6], [0.6, 1]])
     opts = ra.AnalysisOptions()
-    opts.setTransform("svd")
+    opts.set_transform("svd")
     form = ra.Form(
         stochastic_model=m,
         limit_state=ra.LimitState(lambda X0, X1: 3 - X1),
@@ -110,15 +110,15 @@ def test_post_form_reuses_correlated_transform_without_mutating_evaluator():
     )
     form.run()
     last_x = form.limitstate.x.copy()
-    design = form.getDesignPoint().copy()
+    design = form.get_design_point().copy()
     result = ra.StrongMaximumTest(form, point_number=200, seed=2)
     result.run()
     assert not result.has_competing_points
     np.testing.assert_array_equal(form.limitstate.x, last_x)
-    np.testing.assert_array_equal(form.getDesignPoint(), design)
+    np.testing.assert_array_equal(form.get_design_point(), design)
     recovered = np.array(
         [
-            form.transform.x_to_u(x, m.getMarginalDistributions())
+            form.transform.x_to_u(x, m.get_marginal_distributions())
             for x in result.x_points
         ]
     )
@@ -129,7 +129,7 @@ def test_reproducible_local_rng_and_block_size():
     state = np.random.get_state()
     a = raw(point_number=120, seed=9)
     b = raw(point_number=120, seed=9)
-    b.options.setBlockSize(7)
+    b.options.set_block_size(7)
     a.run()
     b.run()
     np.testing.assert_allclose(a.u_points, b.u_points)
@@ -200,7 +200,7 @@ def test_bad_candidate_and_failed_rerun():
     assert result.status == "failed"
     assert result.has_competing_points is None
     with pytest.raises(ValueError, match="no valid result"):
-        result.getPoints()
+        result.get_points()
     with pytest.raises(ValueError, match="boundary"):
         raw(beta=2).run()
     with pytest.raises(ValueError, match="strictly safe"):
@@ -214,9 +214,9 @@ def test_unrun_form_rejected():
 
 def test_non_normal_post_form_evaluates_original_physical_function():
     m = ra.StochasticModel()
-    m.addVariable(ra.Lognormal("R", np.exp(0.5), np.sqrt((np.exp(1) - 1) * np.exp(1))))
-    m.addVariable(ra.Normal("S", 0, 1))
-    m.addVariable(ra.Constant("C", 3))
+    m.add_variable(ra.Lognormal("R", np.exp(0.5), np.sqrt((np.exp(1) - 1) * np.exp(1))))
+    m.add_variable(ra.Normal("S", 0, 1))
+    m.add_variable(ra.Constant("C", 3))
     form = ra.Form(
         stochastic_model=m, limit_state=ra.LimitState(lambda R, S, C: C - np.log(R))
     )
@@ -241,7 +241,7 @@ def test_positive_scaling_preserves_diagnostic():
 
 def test_nonconverged_form_rejected():
     options = ra.AnalysisOptions()
-    options.setImax(1)
+    options.set_imax(1)
     form = ra.Form(
         stochastic_model=model(),
         limit_state=ra.LimitState(lambda X0, X1: 3 - X0),

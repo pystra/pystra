@@ -16,18 +16,18 @@ def setup():
     """
     # Set some options (optional)
     options = ra.AnalysisOptions()
-    options.setPrintOutput(False)
-    options.setSamples(1000)  # only relevant for Monte Carlo
+    options.set_print_output(False)
+    options.set_samples(1000)  # only relevant for Monte Carlo
 
     # Set stochastic model
     stochastic_model = ra.model.StochasticModel()
 
     # Define random variables
-    stochastic_model.addVariable(ra.Lognormal("X1", 500, 100))
-    stochastic_model.addVariable(ra.Normal("X2", 2000, 400))
-    stochastic_model.addVariable(ra.Uniform("X3", 5, 0.5))
+    stochastic_model.add_variable(ra.Lognormal("X1", 500, 100))
+    stochastic_model.add_variable(ra.Normal("X2", 2000, 400))
+    stochastic_model.add_variable(ra.Uniform("X3", 5, 0.5))
 
-    stochastic_model.setCorrelation(
+    stochastic_model.set_correlation(
         ra.correlation.CorrelationMatrix(
             [[1.0, 0.3, 0.2], [0.3, 1.0, 0.2], [0.2, 0.2, 1.0]]
         )
@@ -63,7 +63,7 @@ def test_form_svd():
     Perform FORM analysis using SVD transform
     """
     options, stochastic_model, limit_state = setup()
-    options.setTransform("svd")
+    options.set_transform("svd")
 
     Analysis = ra.Form(
         analysis_options=options,
@@ -133,11 +133,11 @@ def test_sorm_pointfit_linear():
     since a linear surface has zero curvature everywhere.
     """
     options = ra.AnalysisOptions()
-    options.setPrintOutput(False)
+    options.set_print_output(False)
 
     model = ra.model.StochasticModel()
-    model.addVariable(ra.Normal("R", 10, 2))
-    model.addVariable(ra.Normal("S", 5, 1))
+    model.add_variable(ra.Normal("R", 10, 2))
+    model.add_variable(ra.Normal("S", 5, 1))
 
     limit_state = ra.model.LimitState(lambda R, S: R - S)
 
@@ -221,15 +221,15 @@ def test_cmc_x_all_stores_physical_space():
     physical space (original distributions), not the Gaussian space.
     """
     options = ra.AnalysisOptions()
-    options.setPrintOutput(False)
-    options.setSamples(100)  # small for speed
-    options.setBlockSize(30)  # force multiple blocks (100/30 = 4 blocks)
+    options.set_print_output(False)
+    options.set_samples(100)  # small for speed
+    options.set_block_size(30)  # force multiple blocks (100/30 = 4 blocks)
     options.target_cov = 0.0  # keep this storage regression test from stopping early
 
     # Use non-normal distributions with clear physical-space properties
     model = ra.model.StochasticModel()
-    model.addVariable(ra.Lognormal("X1", 100, 20))  # positive values, mean ~100
-    model.addVariable(ra.Uniform("X2", 10, 5))  # mean=10, bounds ~[1.34, 18.66]
+    model.add_variable(ra.Lognormal("X1", 100, 20))  # positive values, mean ~100
+    model.add_variable(ra.Uniform("X2", 10, 5))  # mean=10, bounds ~[1.34, 18.66]
 
     limit_state = ra.model.LimitState(lambda X1, X2: X1 - X2 - 100)
 
@@ -298,7 +298,7 @@ def test_mc_cov_zero_branch():
     Analysis.sum_q = 5.0
     Analysis.sum_q2 = 5.0  # same as sum_q → variance = 0
 
-    Analysis.computeCoefficientOfVariation()
+    Analysis.compute_coefficient_of_variation()
     # Should reach cov_q_bar = 1.0 without AttributeError
     assert Analysis.cov_q_bar[4] == 1.0
 
@@ -351,11 +351,11 @@ def test_form_uncorrelated_normals():
     beta = (mu_R - mu_S) / sqrt(sigma_R^2 + sigma_S^2)
     """
     options = ra.AnalysisOptions()
-    options.setPrintOutput(False)
+    options.set_print_output(False)
 
     model = ra.model.StochasticModel()
-    model.addVariable(ra.Normal("R", 10, 2))
-    model.addVariable(ra.Normal("S", 5, 1))
+    model.add_variable(ra.Normal("R", 10, 2))
+    model.add_variable(ra.Normal("S", 5, 1))
 
     limit_state = ra.model.LimitState(lambda R, S: R - S)
 
@@ -376,11 +376,11 @@ def test_form_with_gumbel():
     FORM with Gumbel distribution.
     """
     options = ra.AnalysisOptions()
-    options.setPrintOutput(False)
+    options.set_print_output(False)
 
     model = ra.model.StochasticModel()
-    model.addVariable(ra.Normal("R", 20, 3))
-    model.addVariable(ra.Gumbel("S", 10, 2))
+    model.add_variable(ra.Normal("R", 20, 3))
+    model.add_variable(ra.Gumbel("S", 10, 2))
 
     limit_state = ra.model.LimitState(lambda R, S: R - S)
 

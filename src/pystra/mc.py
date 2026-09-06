@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 from .analysis import AnalysisObject
 from .distributions import StdNormal
-from .correlation import computeModifiedCorrelationMatrix
+from .correlation import compute_modified_correlation_matrix
 from .form import Form
 
 __all__ = [
@@ -49,7 +49,7 @@ class MonteCarlo(AnalysisObject):
             stochastic_model=stochastic_model,
         )
 
-        self.nrv = self.model.getLenMarginalDistributions()
+        self.nrv = self.model.get_len_marginal_distributions()
         self.point = None
         self.covariance = None
         self.cholesky_covariance = None
@@ -80,23 +80,23 @@ class MonteCarlo(AnalysisObject):
         self.all_G = None
         self.bins = None
 
-    def setPoint(self, point=None):
+    def set_point(self, point=None):
         """Set design point"""
         if point is None:
             self.point = np.zeros((self.nrv, 1))
         else:
             self.point = point
 
-    def computeRandomNumbers(self):
+    def compute_random_numbers(self):
         """Compute random numbers"""
-        if self.options.getRandomGenerator() == 0:
+        if self.options.get_random_generator() == 0:
             self.u = np.dot(self.point, [np.ones(self.block_size)]) + np.dot(
                 self.cholesky_covariance, np.random.randn(self.nrv, self.block_size)
             )
-        elif self.options.getRandomGenerator() == 1:
+        elif self.options.get_random_generator() == 1:
             print("Error: function not yet implemented")
 
-    def computeTransformation(self):
+    def compute_transformation(self):
         """Compute transformation from u to x space
 
         .. note::
@@ -108,21 +108,21 @@ class MonteCarlo(AnalysisObject):
 
         for i in range(self.block_size):
             self.x[:, i] = self.transform.u_to_x(
-                self.u[:, i], self.model.getMarginalDistributions()
+                self.u[:, i], self.model.get_marginal_distributions()
             )
 
-    def computeLimitState(self):
+    def compute_limit_state(self):
         """Evaluate limit-state function"""
         G, _ = self.limitstate.evaluate_lsf(self.x, self.model, self.options, "no")
         self.G = G
 
-    def computeResults(self):
+    def compute_results(self):
         """Collect result of sampling"""
         self.I = np.zeros(self.block_size)
         indx = np.where(self.G[0] < 0)
         self.I[indx] = 1
 
-    def computeSumUpdate(self):
+    def compute_sum_update(self):
         """Update summation"""
         part1 = np.zeros(self.block_size)
         for i in range(self.block_size):
@@ -141,7 +141,7 @@ class MonteCarlo(AnalysisObject):
         self.sum_q += np.sum(self.q)
         self.sum_q2 += np.sum(self.q**2)
 
-    def computeCoefficientOfVariation(self):
+    def compute_coefficient_of_variation(self):
         """Compute Coefficient of Variation"""
         n = self.k - 1
         if self.sum_q > 0:
@@ -161,21 +161,21 @@ class MonteCarlo(AnalysisObject):
             self.q_bar[n] = 0
             self.cov_q_bar[n] = 1.0
 
-    def computePercentDone(self):
+    def compute_percent_done(self):
         """Compute percent done"""
-        if int(self.k * self.options.getSamples() ** (-1) * 20) > self.done:
-            self.done = int(self.k * self.options.getSamples() ** (-1) * 20)
-            if self.options.getPrintOutput():
+        if int(self.k * self.options.get_samples() ** (-1) * 20) > self.done:
+            self.done = int(self.k * self.options.get_samples() ** (-1) * 20)
+            if self.options.get_print_output():
                 print(self.done * 5, "% complete")
 
-    def computeFailureProbability(self):
+    def compute_failure_probability(self):
         """Compute probability of failure"""
         if self.sum_q > 0:
             self.Pf = self.q_bar[self.k - 1]
         else:
             self.Pf = 0
 
-    def computeBeta(self):
+    def compute_beta(self):
         """Convert the probability estimate to a normal-equivalent index.
 
         No observed failures gives an infinite estimated index, not zero.
@@ -184,7 +184,7 @@ class MonteCarlo(AnalysisObject):
         """
         self.beta = -StdNormal.ppf(self.Pf)
 
-    def computeBins(self, samples):
+    def compute_bins(self, samples):
         """Return an optimal amount of bins for a histogram
 
         :Returns:
@@ -197,7 +197,7 @@ class MonteCarlo(AnalysisObject):
             bins = np.ceil(4 * np.sqrt(np.sqrt(samples)))
         return bins
 
-    def getBeta(self):
+    def get_beta(self):
         """Returns the beta value
 
         :Returns:
@@ -205,7 +205,7 @@ class MonteCarlo(AnalysisObject):
         """
         return self.beta
 
-    def getFailure(self):
+    def get_failure(self):
         """Returns the probability of failure
 
         :Returns:
@@ -213,7 +213,7 @@ class MonteCarlo(AnalysisObject):
         """
         return self.Pf
 
-    def getDistributionData(self):
+    def get_distribution_data(self):
         """Returns data for the failure
 
         :Returns:
@@ -221,7 +221,7 @@ class MonteCarlo(AnalysisObject):
         """
         return self.all_G
 
-    def getBins(self):
+    def get_bins(self):
         """Returns the amount on bins
 
         :Returns:
@@ -272,37 +272,37 @@ class CrudeMonteCarlo(MonteCarlo):
         self.init_run()
 
         # Set point for crude Monte Carlo / importance sampling
-        self.setPoint(self.point)
+        self.set_point(self.point)
 
         # Initialize variables
-        self.initializeVariables()
+        self.initialize_variables()
 
         self.k = 0
-        while self.k < self.options.getSamples():
+        while self.k < self.options.get_samples():
             self.block_size = min(
-                self.options.getBlockSize(), self.options.getSamples() - self.k
+                self.options.get_block_size(), self.options.get_samples() - self.k
             )
             self.k += self.block_size
             # Computation of the random numbers
-            self.computeRandomNumbers()
+            self.compute_random_numbers()
 
             # Compute transformation from u to x space
-            self.computeTransformation()
+            self.compute_transformation()
 
             # Evaluate limit-state function
-            self.computeLimitState()
+            self.compute_limit_state()
 
             # Collect result of sampling: if g < 0 , I = 1 , else I = 0
-            self.computeResults()
+            self.compute_results()
 
             # Update sums
-            self.computeSumUpdate()
+            self.compute_sum_update()
 
             # Compute coefficient of variation (of pf)
-            self.computeCoefficientOfVariation()
+            self.compute_coefficient_of_variation()
 
             # Coumpute percent done
-            self.computePercentDone()
+            self.compute_percent_done()
 
             # stroing all values of the limit state function
             if self.u_all is None:
@@ -337,23 +337,23 @@ class CrudeMonteCarlo(MonteCarlo):
                 )
 
             # Check convergence
-            if self.cov_q_bar[self.k - 1] <= self.options.getSimulationCov():
+            if self.cov_q_bar[self.k - 1] <= self.options.get_simulation_cov():
                 break
 
         # Compute failure probability
-        self.computeFailureProbability()
+        self.compute_failure_probability()
 
         # Compute beta value
-        self.computeBeta()
+        self.compute_beta()
 
         # Show Results
-        if self.options.getPrintOutput():
-            self.showResults()
+        if self.options.get_print_output():
+            self.show_results()
 
-    def initializeVariables(self):
+    def initialize_variables(self):
         """Initialization of the simulation variables"""
-        stdv = self.options.getSimulationStdv()
-        samples = self.options.getSamples()
+        stdv = self.options.get_simulation_stdv()
+        samples = self.options.get_samples()
         # Establish covariance matrix, its Cholesky decomposition, and its inverse
         self.covariance = stdv**2 * np.eye(self.nrv)
         self.cholesky_covariance = stdv * np.eye(self.nrv)
@@ -373,7 +373,7 @@ class CrudeMonteCarlo(MonteCarlo):
         self.cov_q_bar[0] = 1.0
         self.done = 0
 
-    def showResults(self):
+    def show_results(self):
         """Show results and plots"""
         if not self.results_valid:
             raise ValueError("Analysis not yet run")
@@ -444,7 +444,7 @@ class ImportanceSampling(CrudeMonteCarlo):
             analysis_options=analysis_options,
         )
         FormAnalysis.run()
-        u = FormAnalysis.getDesignPoint()
+        u = FormAnalysis.get_design_point()
         u = np.transpose([u])
 
         super().__init__(analysis_options, limit_state, stochastic_model, u)
@@ -454,16 +454,16 @@ class ImportanceSampling(CrudeMonteCarlo):
 
         self.init_run()
 
-        print_results = self.options.getPrintOutput()
+        print_results = self.options.get_print_output()
         # regardless, turn off for CMC run
-        self.options.setPrintOutput(False)
+        self.options.set_print_output(False)
         CrudeMonteCarlo.run(self)
         # restore
-        self.options.setPrintOutput(print_results)
-        if self.options.getPrintOutput():
-            self.showResults()
+        self.options.set_print_output(print_results)
+        if self.options.get_print_output():
+            self.show_results()
 
-    def showResults(self):
+    def show_results(self):
         """Show results and plots"""
         if not self.results_valid:
             raise ValueError("Analysis not yet run")
@@ -503,44 +503,44 @@ class DistributionAnalysis(MonteCarlo):
         self.init_run()
 
         # Set point for crude Monte Carlo / importance sampling
-        self.setPoint()
+        self.set_point()
 
         # Initialize variables # Different
-        self.initializeVariables()
+        self.initialize_variables()
 
         self.k = 0
-        while self.k < self.options.getSamples():
+        while self.k < self.options.get_samples():
             self.block_size = min(
-                self.options.getBlockSize(), self.options.getSamples() - self.k
+                self.options.get_block_size(), self.options.get_samples() - self.k
             )
             self.k += self.block_size
 
             # Computation of the random numbers
-            self.computeRandomNumbers()
+            self.compute_random_numbers()
 
             # Comoute Transformation from u to x space
-            self.computeTransformation()
+            self.compute_transformation()
 
             # Evaluate limit-state function and its gradient
-            self.computeLimitState()
+            self.compute_limit_state()
 
             # Collect Data
-            self.computeDataUpdate()
+            self.compute_data_update()
 
             # Coumpute percent done
-            self.computePercentDone()
+            self.compute_percent_done()
 
         # Compute Distribution Data
-        self.computeDistributionData()
+        self.compute_distribution_data()
 
         # Show Results # Different
-        if self.options.getPrintOutput():
-            self.showResults()
+        if self.options.get_print_output():
+            self.show_results()
 
-    def initializeVariables(self):
+    def initialize_variables(self):
         """Initialization of the simulation variables"""
-        stdv = self.options.getSimulationStdv()
-        samples = self.options.getSamples()
+        stdv = self.options.get_simulation_stdv()
+        samples = self.options.get_samples()
         # Establish covariance matrix, its Cholesky decomposition, and its inverse
         self.covariance = stdv**2 * np.eye(self.nrv)
         self.cholesky_covariance = stdv * np.eye(self.nrv)
@@ -552,21 +552,21 @@ class DistributionAnalysis(MonteCarlo):
         self.all_G = np.zeros((ng, samples))
 
         self.done = 0
-        self.bins = self.computeBins(samples)
+        self.bins = self.compute_bins(samples)
 
-    def computeDataUpdate(self):
+    def compute_data_update(self):
         """Update data"""
         indx = list(range((self.k - self.block_size), self.k))
         self.all_X[:, indx] = self.x
         self.all_G[:, indx] = self.G
 
-    def computeDistributionData(self):
+    def compute_distribution_data(self):
         """Compute data for the distributions"""
         x = self.all_G
         x = np.transpose(x)
         self.all_G = x
 
-    def showResults(self):
+    def show_results(self):
         """Show results and plots"""
         if not self.results_valid:
             raise ValueError("Analysis not yet run")
@@ -582,7 +582,7 @@ class DistributionAnalysis(MonteCarlo):
         print("")
 
         npts = 200
-        marg = self.model.getMarginalDistributions()
+        marg = self.model.get_marginal_distributions()
 
         for i in range(self.nrv):
             # Plot simulated distribution
@@ -600,7 +600,7 @@ class DistributionAnalysis(MonteCarlo):
 
             ax.plot(xr, reference_pdf, "r-")
 
-            name = self.model.getNames()[i]
+            name = self.model.get_names()[i]
             string = "Distribution Analysis for " + name
             ax.set_title(string)
             ax.set_xlabel("Random Values")

@@ -2,7 +2,7 @@
 
 import pytest
 import numpy as np
-from pystra.quadrature import quadratureRule
+from pystra.quadrature import quadrature_rule
 from pystra.integration import zi_and_xi, rho_integral
 from pystra.distributions import Normal
 
@@ -15,27 +15,27 @@ class TestQuadratureRule:
     @pytest.mark.parametrize("n", [2, 4, 8, 16])
     def test_points_in_range(self, n):
         """Gauss-Legendre points should lie in [-1, 1]."""
-        bp, wf = quadratureRule(n)
+        bp, wf = quadrature_rule(n)
         assert np.all(bp >= -1.0 - 1e-10)
         assert np.all(bp <= 1.0 + 1e-10)
 
     @pytest.mark.parametrize("n", [2, 4, 8, 16])
     def test_weights_sum(self, n):
         """Gauss-Legendre weights should sum to 2 (integral of 1 over [-1,1])."""
-        bp, wf = quadratureRule(n)
+        bp, wf = quadrature_rule(n)
         assert pytest.approx(np.sum(wf), abs=1e-10) == 2.0
 
     @pytest.mark.parametrize("n", [2, 4, 8])
     def test_point_symmetry(self, n):
         """Points should be symmetric about 0."""
-        bp, wf = quadratureRule(n)
+        bp, wf = quadrature_rule(n)
         bp_sorted = np.sort(bp)
         assert pytest.approx(np.sum(bp_sorted), abs=1e-10) == 0.0
 
     @pytest.mark.parametrize("n", [2, 4, 8])
     def test_weight_symmetry(self, n):
         """Weights should be symmetric."""
-        bp, wf = quadratureRule(n)
+        bp, wf = quadrature_rule(n)
         # Sort by points, then weights should be symmetric
         idx = np.argsort(bp)
         wf_sorted = wf[idx]
@@ -44,14 +44,14 @@ class TestQuadratureRule:
     def test_correct_number_of_points(self):
         """Should return exactly n points and n weights."""
         for n in [2, 3, 5, 10]:
-            bp, wf = quadratureRule(n)
+            bp, wf = quadrature_rule(n)
             assert len(bp) == n
             assert len(wf) == n
 
     @pytest.mark.parametrize("n", [2, 4, 8])
     def test_exactness_polynomials(self, n):
         """n-point rule should exactly integrate polynomials up to degree 2n-1."""
-        bp, wf = quadratureRule(n)
+        bp, wf = quadrature_rule(n)
         for k in range(2 * n):
             # Integral of x^k over [-1, 1]
             numerical = np.sum(wf * bp**k)
@@ -63,7 +63,7 @@ class TestQuadratureRule:
 
     def test_n_equals_2(self):
         """Verify known 2-point rule: ±1/sqrt(3) with weight 1."""
-        bp, wf = quadratureRule(2)
+        bp, wf = quadrature_rule(2)
         bp_sorted = np.sort(bp)
         expected_bp = np.array([-1 / np.sqrt(3), 1 / np.sqrt(3)])
         np.testing.assert_allclose(bp_sorted, expected_bp, atol=1e-10)
@@ -89,7 +89,7 @@ class TestZiAndXi:
         assert WIP.shape == (nIP, nIP)
         assert np.isscalar(detJ)
 
-    def test_detJ_value(self):
+    def test_det_j_value(self):
         """Verify the Jacobian determinant is computed correctly."""
         n1 = Normal("N1", 0, 1)
         n2 = Normal("N2", 0, 1)

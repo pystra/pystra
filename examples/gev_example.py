@@ -19,20 +19,20 @@ def lsf(X1, X2, C):
 
 
 # Create GEV variable and plot it is correct
-X2 = ra.ScipyDist("X2", gev(c=0.1, loc=200, scale=50))
+X2 = ra.ScipyDistribution("X2", gev(c=0.1, loc=200, scale=50))
 X2.plot()
 
 limit_state = ra.LimitState(lsf)
 
 model = ra.StochasticModel()
-model.addVariable(ra.Normal("X1", 500, 100))
-model.addVariable(X2)
-model.addVariable(ra.Constant("C", 50))
+model.add_variable(ra.Normal("X1", 500, 100))
+model.add_variable(X2)
+model.add_variable(ra.Constant("C", 50))
 
 form = ra.Form(stochastic_model=model, limit_state=limit_state)
 form.run()
-form.showDetailedOutput()
+form.show_detailed_output()
 
 sorm = ra.Sorm(stochastic_model=model, limit_state=limit_state, form=form)
 sorm.run()
-sorm.showDetailedOutput()
+sorm.show_detailed_output()

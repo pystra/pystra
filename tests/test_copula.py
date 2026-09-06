@@ -46,7 +46,8 @@ def test_gaussian_joint_equals_multivariate_normal():
 
 def test_t_joint_equals_multivariate_t():
     joint = ra.JointDistribution(
-        [ra.ScipyDist("X", t(4)), ra.ScipyDist("Y", t(4))], ra.StudentTCopula(R, 4)
+        [ra.ScipyDistribution("X", t(4)), ra.ScipyDistribution("Y", t(4))],
+        ra.StudentTCopula(R, 4),
     )
     points = np.array([[0.4, -1], [2, 1.2]])
     np.testing.assert_allclose(
@@ -85,7 +86,7 @@ def test_transform_jacobian_and_density(copula, order):
     joint = ra.JointDistribution(
         [ra.Lognormal("X", 3, 1), ra.Normal("Y", 2, 0.5)], copula
     )
-    transform = joint.getTransformation("rosenblatt", order=order)
+    transform = joint.make_transformation("rosenblatt", order=order)
     u = np.array([0.7, -0.4])
     x = transform.u_to_x(u)
     np.testing.assert_allclose(transform.x_to_u(x), u, atol=1e-9)
@@ -106,8 +107,8 @@ def test_transform_jacobian_and_density(copula, order):
 
 def test_gaussian_nataf_matches_rosenblatt():
     joint = normals(ra.GaussianCopula(R))
-    a = joint.getTransformation("nataf")
-    b = joint.getTransformation("rosenblatt")
+    a = joint.make_transformation("nataf")
+    b = joint.make_transformation("rosenblatt")
     for x in ([0.3, 1.2], [-2, -1], [8, 0]):
         np.testing.assert_allclose(a.x_to_u(x), b.x_to_u(x), atol=1e-12)
         np.testing.assert_allclose(a.u_to_x(a.x_to_u(x)), x, atol=1e-12)
@@ -116,16 +117,16 @@ def test_gaussian_nataf_matches_rosenblatt():
 def test_generalized_t_nataf_and_form_exact_halfspace():
     cop = ra.StudentTCopula(R, 4)
     joint = ra.JointDistribution(
-        [ra.ScipyDist("X", t(4)), ra.ScipyDist("Y", t(4))], cop
+        [ra.ScipyDistribution("X", t(4)), ra.ScipyDistribution("Y", t(4))], cop
     )
-    tr = joint.getTransformation("nataf")
+    tr = joint.make_transformation("nataf")
     x = np.array([1.0, -2.0])
     u = tr.x_to_u(x)
     np.testing.assert_allclose(u, np.linalg.solve(np.linalg.cholesky(R), x), atol=1e-10)
     np.testing.assert_allclose(tr.u_to_x(u), x, atol=1e-10)
     assert tr.standard_space == "student_t"
     opts = ra.AnalysisOptions()
-    opts.setTransform("nataf")
+    opts.set_transform("nataf")
     form = ra.Form(
         stochastic_model=ra.StochasticModel(joint),
         analysis_options=opts,
@@ -133,9 +134,9 @@ def test_generalized_t_nataf_and_form_exact_halfspace():
     )
     form.run()
     beta = 3 / np.sqrt(2 + 2 * 0.4)
-    assert form.getBeta() == pytest.approx(beta, rel=2e-6)
-    assert form.getFailure() == pytest.approx(t.sf(beta, 4), rel=2e-6)
-    assert form.getEquivalentBeta() == pytest.approx(-norm.ppf(form.getFailure()))
+    assert form.get_beta() == pytest.approx(beta, rel=2e-6)
+    assert form.get_failure() == pytest.approx(t.sf(beta, 4), rel=2e-6)
+    assert form.get_equivalent_beta() == pytest.approx(-norm.ppf(form.get_failure()))
     with pytest.raises(ValueError, match="normal space"):
         ra.StrongMaximumTest(form)
     for cls in (ra.CrudeMonteCarlo, ra.Sorm):
@@ -146,7 +147,7 @@ def test_generalized_t_nataf_and_form_exact_halfspace():
         )
         with pytest.raises(ValueError, match="normal space"):
             analysis.run()
-    analysis = ra.SystemFORM(
+    analysis = ra.SystemForm(
         ra.SeriesSystem([ra.Component("a", form.limitstate)]), form.model, opts
     )
     with pytest.raises(RuntimeError, match="normal space"):
@@ -157,8 +158,8 @@ def exponential_model(copula):
     return ra.StochasticModel(
         ra.JointDistribution(
             [
-                ra.ScipyDist("X1", expon(scale=1)),
-                ra.ScipyDist("X2", expon(scale=1 / 3)),
+                ra.ScipyDistribution("X1", expon(scale=1)),
+                ra.ScipyDistribution("X2", expon(scale=1 / 3)),
             ],
             copula,
         )
@@ -171,15 +172,15 @@ def test_lebrun_dutfoy_frank_order_benchmark():
     results = []
     for order in ([0, 1], [1, 0]):
         opts = ra.AnalysisOptions()
-        opts.setTransform("rosenblatt")
-        opts.setRosenblattOrder(order)
+        opts.set_transform("rosenblatt")
+        opts.set_rosenblatt_order(order)
         f = ra.Form(
             stochastic_model=exponential_model(cop),
             analysis_options=opts,
             limit_state=ra.LimitState(lambda X1, X2: 8 * X1 + 2 * X2 - 1),
         )
         f.run()
-        results.append(f.getFailure())
+        results.append(f.get_failure())
     np.testing.assert_allclose(results, [0.107, 0.122], atol=0.00015)
     exact = quad(
         lambda x: np.exp(-x)
@@ -198,28 +199,28 @@ def test_gaussian_order_preserves_form_probability():
         ("rosenblatt", [1, 0]),
     ]:
         opts = ra.AnalysisOptions()
-        opts.setTransform(mode)
-        opts.setRosenblattOrder(order)
+        opts.set_transform(mode)
+        opts.set_rosenblatt_order(order)
         f = ra.Form(
             stochastic_model=exponential_model(ra.GaussianCopula([[1, 0.5], [0.5, 1]])),
             limit_state=ra.LimitState(lambda X1, X2: 8 * X1 + 2 * X2 - 1),
             analysis_options=opts,
         )
         f.run()
-        results.append(f.getFailure())
+        results.append(f.get_failure())
     np.testing.assert_allclose(results, results[0], atol=1e-10)
 
 
 def test_explicit_copula_does_not_reinterpret_latent_as_physical_correlation():
     model = exponential_model(ra.GaussianCopula(R))
     np.testing.assert_array_equal(
-        ra.correlation.computeModifiedCorrelationMatrix(model), R
+        ra.correlation.compute_modified_correlation_matrix(model), R
     )
     with pytest.raises(ValueError, match="Pearson"):
-        model.getCorrelation()
-    model.setCorrelation(np.eye(2))
-    assert model.getCopula() is None
-    np.testing.assert_array_equal(model.getCorrelation(), np.eye(2))
+        model.get_correlation()
+    model.set_correlation(np.eye(2))
+    assert model.get_copula() is None
+    np.testing.assert_array_equal(model.get_correlation(), np.eye(2))
 
 
 def test_kendall_parameterization_and_immutable_matrix():
@@ -255,13 +256,13 @@ def test_dimension_and_continuity_validation():
             [ra.ZeroInflated("X", ra.Normal("Z", 1, 1), 0.2)], ra.IndependentCopula(1)
         )
     with pytest.raises(ValueError, match="elliptical"):
-        normals(ra.FrankCopula(10)).getTransformation("nataf")
+        normals(ra.FrankCopula(10)).make_transformation("nataf")
     with pytest.raises(ValueError, match="permutation"):
-        normals(ra.GaussianCopula(R)).getTransformation("rosenblatt", order=[0, 0])
+        normals(ra.GaussianCopula(R)).make_transformation("rosenblatt", order=[0, 0])
     m = exponential_model(ra.FrankCopula(10))
     with pytest.raises(ValueError, match="before setting"):
-        m.addVariable(ra.Normal("Z", 0, 1))
-    m.addVariable(ra.Constant("C", 3))
+        m.add_variable(ra.Normal("Z", 0, 1))
+    m.add_variable(ra.Constant("C", 3))
 
 
 def test_sampling_seed_and_joint_marginals():
@@ -291,7 +292,7 @@ def test_frank_upper_corner_and_boundary(theta):
 def test_frank_monte_carlo_integrates_original_event():
     m = exponential_model(ra.FrankCopula(10))
     opts = ra.AnalysisOptions()
-    opts.setSamples(5000)
+    opts.set_samples(5000)
     opts.target_cov = 0
     state = np.random.get_state()
     try:
@@ -305,7 +306,7 @@ def test_frank_monte_carlo_integrates_original_event():
     finally:
         np.random.set_state(state)
     assert mc.transform.standard_space == "normal"
-    assert abs(mc.getFailure() - 0.1038) < 5 * np.sqrt(0.1038 * (1 - 0.1038) / 5000)
+    assert abs(mc.get_failure() - 0.1038) < 5 * np.sqrt(0.1038 * (1 - 0.1038) / 5000)
 
 
 def test_t_rosenblatt_supports_system_form_and_strong_maximum():
@@ -313,9 +314,9 @@ def test_t_rosenblatt_supports_system_form_and_strong_maximum():
     system = ra.SeriesSystem(
         [ra.Component("a", lambda X: 3 - X), ra.Component("b", lambda X: 4 - X)]
     )
-    analysis = ra.SystemFORM(system, model)
+    analysis = ra.SystemForm(system, model)
     analysis.run()
-    assert analysis.getFailure() == pytest.approx(norm.sf(3), rel=1e-5)
+    assert analysis.get_failure() == pytest.approx(norm.sf(3), rel=1e-5)
     form = analysis.component_results["a"]
     assert form.transform.method == "rosenblatt"
     check = ra.StrongMaximumTest(form, point_number=100, seed=3)
@@ -328,7 +329,7 @@ def test_numerical_sensitivity_preserves_spherical_t_options():
         ra.JointDistribution([ra.Normal("X", 0, 1)], ra.StudentTCopula([[1]], 4))
     )
     options = ra.AnalysisOptions()
-    options.setTransform("nataf")
+    options.set_transform("nataf")
     options.e1 = options.e2 = 1e-9
     sensitivity = ra.SensitivityAnalysis(
         stochastic_model=model,

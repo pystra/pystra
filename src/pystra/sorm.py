@@ -148,7 +148,7 @@ class Sorm(AnalysisObject):
     def run_curvefit(self):
         """Run curve-fitting; require a successfully converged FORM analysis."""
         self._prepare_run("cf")
-        hess_G = self.computeHessian()
+        hess_G = self.compute_hessian()
         R1 = self.orthonormal_matrix()
         A = R1 @ hess_G @ R1.T / np.linalg.norm(self.form.gradient)
         kappa, _ = np.linalg.eig(A[:-1, :-1])
@@ -158,8 +158,8 @@ class Sorm(AnalysisObject):
         self.pf_breitung(self.betaHL, self.kappa)
         self.pf_breitung_m(self.betaHL, self.kappa)
         self.results_valid = True
-        if self.options.getPrintOutput():
-            self.showResults()
+        if self.options.get_print_output():
+            self.show_results()
 
     def run_pointfit(self):
         """Run SORM analysis using point-fitting.
@@ -194,10 +194,10 @@ class Sorm(AnalysisObject):
             or a fitting point cannot be found.
         """
         self._prepare_run("pf")
-        beta = self.form.getBeta()
+        beta = self.form.get_beta()
         nrv = self.form.alpha.shape[1]
         R1 = self.orthonormal_matrix()
-        marg = self.model.getMarginalDistributions()
+        marg = self.model.get_marginal_distributions()
 
         # Step coefficient controlling trial point distance from design point
         abs_beta = abs(beta)
@@ -225,8 +225,8 @@ class Sorm(AnalysisObject):
         self._pf_breitung_m_pf(beta, kappa_minus, kappa_plus)
 
         self.results_valid = True
-        if self.options.getPrintOutput():
-            self.showResults()
+        if self.options.get_print_output():
+            self.show_results()
 
     def _find_fitting_point(self, axis, sign, beta, k, R1, marg, max_iter=50, tol=1e-6):
         """Find a fitting point on the failure surface and return its curvature.
@@ -281,7 +281,7 @@ class Sorm(AnalysisObject):
             x_col = x[:, np.newaxis] if x.ndim == 1 else x
 
             # Evaluate LSF and gradient in u-space
-            G, grad = self.evaluateLSF(x_col, calc_gradient=True)
+            G, grad = self.evaluate_lsf(x_col, calc_gradient=True)
             G_val = np.squeeze(G)
             grad_u = np.squeeze(grad)
 
@@ -405,7 +405,7 @@ class Sorm(AnalysisObject):
             self.pf2_breitung_m = 0.0
             self.betag_breitung_m = 0.0
 
-    def showResults(self):
+    def show_results(self):
         """Print a compact summary of the SORM results."""
         if not self.results_valid:
             raise ValueError("Analysis not yet run")
@@ -431,17 +431,17 @@ class Sorm(AnalysisObject):
         print("=" * n_hyphen)
         print("")
 
-    def showDetailedOutput(self):
+    def show_detailed_output(self):
         """Print detailed FORM/SORM comparison to the console."""
         if not self.results_valid:
             raise ValueError("Analysis not yet run")
-        names = self.model.getVariables().keys()
-        consts = self.model.getConstants()
-        u_star = self.form.getDesignPoint()
-        x_star = self.form.getDesignPoint(uspace=False)
-        alpha = self.form.getAlpha()
-        betaHL = self.form.getBeta()
-        pfFORM = self.form.getFailure()
+        names = self.model.get_variables().keys()
+        consts = self.model.get_constants()
+        u_star = self.form.get_design_point()
+        x_star = self.form.get_design_point(uspace=False)
+        alpha = self.form.get_alpha()
+        betaHL = self.form.get_beta()
+        pfFORM = self.form.get_failure()
 
         fit_label = " (Point-Fitting)" if self.fit_type == "pf" else ""
         n_hyphen = self.N_HYPH
@@ -458,7 +458,9 @@ class Sorm(AnalysisObject):
             "{:15s} \t\t {:2.10f}".format("Beta_G Breitung HR", self.betag_breitung_m)
         )
         print(
-            "{:15s} \t\t {:d}".format("Model Evaluations", self.model.getCallFunction())
+            "{:15s} \t\t {:d}".format(
+                "Model Evaluations", self.model.get_call_function()
+            )
         )
 
         print("-" * n_hyphen)
@@ -489,7 +491,7 @@ class Sorm(AnalysisObject):
         print("=" * n_hyphen)
         print("")
 
-    def computeHessian(self, diff_type=None):
+    def compute_hessian(self, diff_type=None):
         """
         Computes the matrix of second derivatives using forward finite
         difference, using the evaluation of the gradient already done
@@ -505,14 +507,14 @@ class Sorm(AnalysisObject):
 
         if diff_type is None:
             # Differentiation based on the gradients
-            x0 = self.form.getDesignPoint(uspace=False)
-            _, grad_g0 = self.evaluateLSF(x0[:, np.newaxis], calc_gradient=True)
-            u0 = self.form.getDesignPoint()
+            x0 = self.form.get_design_point(uspace=False)
+            _, grad_g0 = self.evaluate_lsf(x0[:, np.newaxis], calc_gradient=True)
+            u0 = self.form.get_design_point()
             for i in range(nrv):
                 u1 = np.copy(u0)
                 u1[i] += h
-                x1 = self.transform.u_to_x(u1, self.model.getMarginalDistributions())
-                _, grad_g1 = self.evaluateLSF(x1[:, np.newaxis], calc_gradient=True)
+                x1 = self.transform.u_to_x(u1, self.model.get_marginal_distributions())
+                _, grad_g1 = self.evaluate_lsf(x1[:, np.newaxis], calc_gradient=True)
                 hess_G[:, i] = ((grad_g1 - grad_g0) / h).reshape(nrv)
 
         else:
@@ -520,13 +522,13 @@ class Sorm(AnalysisObject):
             # It would be good if u_to_x could take an nvr x nx matrix and
             # return the corresponding x-matrix. This would make it easier to
             # add more numerical differentiation schemes.
-            u0 = self.form.getDesignPoint()
+            u0 = self.form.get_design_point()
 
             all_x_plus = np.zeros((nrv, nrv))
             all_x_minus = np.zeros((nrv, nrv))
             all_x_both = np.zeros((nrv, int(nrv * (nrv - 1) / 2)))
 
-            marg = self.model.getMarginalDistributions()
+            marg = self.model.get_marginal_distributions()
             for i in range(nrv):
                 # Plus perturbation and transformation
                 u_plus = np.copy(u0)
@@ -545,13 +547,13 @@ class Sorm(AnalysisObject):
                     u_both = np.copy(u_plus)
                     u_both[j] += h
                     x_both = self.transform.u_to_x(
-                        u_both, self.model.getMarginalDistributions()
+                        u_both, self.model.get_marginal_distributions()
                     )
                     all_x_both[:, int((i - 1) * (i) / 2) + j] = x_both
 
             # Assemble all x-space vecs, solve for G, then separate
             all_x = np.concatenate((all_x_plus, all_x_minus, all_x_both), axis=1)
-            all_G, _ = self.evaluateLSF(all_x, calc_gradient=False)
+            all_G, _ = self.evaluate_lsf(all_x, calc_gradient=False)
             all_G = all_G.squeeze()
             all_G_plus = all_G[:nrv]
             all_G_minus = all_G[nrv : 2 * nrv]
@@ -574,7 +576,7 @@ class Sorm(AnalysisObject):
 
         return hess_G
 
-    def evaluateLSF(self, x, calc_gradient=False, u_space=True):
+    def evaluate_lsf(self, x, calc_gradient=False, u_space=True):
         """
         For use in computing the Hessian without altering the FORM object.
         Considers the coord transform so the limit state function is evaluated
@@ -591,7 +593,7 @@ class Sorm(AnalysisObject):
             G, grad = self.limitstate.evaluate_lsf(x0, self.model, self.options)
             grad = np.transpose(grad)
             if u_space:
-                marg = self.model.getMarginalDistributions()
+                marg = self.model.get_marginal_distributions()
                 u = self.transform.x_to_u(x0, marg)
                 J_u_x = self.transform.jacobian(u, x0, marg)
                 J_x_u = np.linalg.inv(J_u_x)

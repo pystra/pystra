@@ -87,7 +87,7 @@ class Normal(Distribution):
         J = np.diag(np.repeat(1 / self.stdv, u.size))
         return J
 
-    def dF_dtheta(self, x):
+    def cdf_gradient(self, x):
         r"""Analytical derivatives of the Normal CDF w.r.t. μ and σ.
 
         .. math::

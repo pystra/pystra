@@ -8,10 +8,10 @@ from collections import OrderedDict
 class StochasticModel:
     """Stochastic model
 
-    Attributes can be accessed via properties or the legacy getter methods::
+    Attributes can be accessed via properties or transitional getter methods::
 
         model.constants          # preferred
-        model.getConstants()     # legacy, equivalent
+        model.get_constants()    # transitional, equivalent
     """
 
     def __init__(self, joint_distribution=None):
@@ -33,10 +33,10 @@ class StochasticModel:
             if not isinstance(joint_distribution, JointDistribution):
                 raise TypeError("Expected a JointDistribution")
             for marginal in joint_distribution.marginals:
-                self.addVariable(marginal)
-            self.setCopula(joint_distribution.copula)
+                self.add_variable(marginal)
+            self.set_copula(joint_distribution.copula)
 
-    def addVariable(self, obj):
+    def add_variable(self, obj):
         """Add a random variable or constant to the model.
 
         Parameters
@@ -56,23 +56,23 @@ class StochasticModel:
         if not (isinstance(obj, Distribution) or isinstance(obj, Constant)):
             raise Exception("Input is not a Distribution or Constant object")
 
-        if obj.getName() in self._names:
-            raise Exception(f'variable name "{obj.getName()}" already exists')
+        if obj.get_name() in self._names:
+            raise Exception(f'variable name "{obj.get_name()}" already exists')
         if isinstance(obj, Distribution) and self._copula is not None:
             raise ValueError("Add all random variables before setting the copula")
 
         # append the variable name
-        self._names.append(obj.getName())
+        self._names.append(obj.get_name())
 
         if isinstance(obj, Distribution):
             # append marginal distribution
             self._marg.append(obj)
             # append the Distribution object to the variables (ordered) dictionary
-            self.variables[obj.getName()] = obj
+            self.variables[obj.get_name()] = obj
             # update the default correlation matrix, in accordance with the number of variables
             self._correlation = np.eye(len(self._marg))
         elif isinstance(obj, Constant):
-            self._consts[obj.getName()] = obj.getValue()
+            self._consts[obj.get_name()] = obj.get_value()
 
     # ---- Properties (preferred access) ----
 
@@ -99,11 +99,11 @@ class StochasticModel:
     @property
     def correlation(self):
         """Correlation matrix (n × n numpy array)."""
-        return self.getCorrelation()
+        return self.get_correlation()
 
     @correlation.setter
     def correlation(self, value):
-        self.setCorrelation(value)
+        self.set_correlation(value)
 
     @property
     def copula(self):
@@ -112,7 +112,7 @@ class StochasticModel:
 
     @copula.setter
     def copula(self, value):
-        self.setCopula(value)
+        self.set_copula(value)
 
     @property
     def modified_correlation(self):
@@ -132,44 +132,44 @@ class StochasticModel:
     def call_function(self, value):
         self._call_function = value
 
-    # ---- Legacy getter/setter methods (kept for backward compatibility) ----
+    # ---- Transitional getter/setter methods pending the result/options redesign ----
 
-    def getConstants(self):
+    def get_constants(self):
         return self._consts
 
-    def getVariables(self):
+    def get_variables(self):
         return self.variables
 
-    def getVariable(self, name):
+    def get_variable(self, name):
         return self.variables[name]
 
-    def getNames(self):
+    def get_names(self):
         return self._names
 
-    def getLenMarginalDistributions(self):
+    def get_len_marginal_distributions(self):
         return len(self._marg)
 
-    def getMarginalDistributions(self):
+    def get_marginal_distributions(self):
         return self._marg
 
-    def setMarginalDistributions(self, marg):
+    def set_marginal_distributions(self, marg):
         self._marg = marg
 
-    def setCorrelation(self, obj):
-        if hasattr(obj, "getMatrix"):
-            obj = obj.getMatrix()
+    def set_correlation(self, obj):
+        if hasattr(obj, "get_matrix"):
+            obj = obj.get_matrix()
         self._correlation = np.asarray(obj)
         self._copula = None
         self._Ro = None
 
-    def getCorrelation(self):
+    def get_correlation(self):
         if self._copula is not None:
             raise ValueError(
-                "Physical Pearson correlation is not specified by an explicit copula; use getCopula()"
+                "Physical Pearson correlation is not specified by an explicit copula; use get_copula()"
             )
         return self._correlation
 
-    def setCopula(self, copula):
+    def set_copula(self, copula):
         """Replace legacy Pearson dependence with an explicit copula."""
         from .joint import JointDistribution
 
@@ -178,30 +178,30 @@ class StochasticModel:
         self._correlation = None
         self._Ro = None
 
-    def getCopula(self):
+    def get_copula(self):
         return self._copula
 
-    def getJointDistribution(self):
+    def get_joint_distribution(self):
         """Return marginals plus the explicit or calibrated Gaussian copula."""
         from .joint import JointDistribution
         from .copula import GaussianCopula
-        from .correlation import computeModifiedCorrelationMatrix
+        from .correlation import compute_modified_correlation_matrix
 
         copula = self._copula
         if copula is None:
-            copula = GaussianCopula(computeModifiedCorrelationMatrix(self))
+            copula = GaussianCopula(compute_modified_correlation_matrix(self))
         return JointDistribution(self._marg, copula)
 
-    def setModifiedCorrelation(self, correlation):
+    def set_modified_correlation(self, correlation):
         self._Ro = correlation
 
-    def getModifiedCorrelation(self):
+    def get_modified_correlation(self):
         return self._Ro
 
-    def addCallFunction(self, add):
+    def add_call_function(self, add):
         self._call_function += add
 
-    def getCallFunction(self):
+    def get_call_function(self):
         return self._call_function
 
 
@@ -250,10 +250,10 @@ class LimitState:
 
     # Legacy getter/setter methods (expression is already a public attribute)
 
-    def getExpression(self):
+    def get_expression(self):
         return self.expression
 
-    def setExpression(self, expression):
+    def set_expression(self, expression):
         self.expression = expression
 
     def evaluate_lsf(self, x, stochastic_model, analysis_options, diff_mode=None):
@@ -292,12 +292,12 @@ class LimitState:
         self.x = x
 
         if diff_mode == None:
-            diff_mode = analysis_options.getDiffMode()
+            diff_mode = analysis_options.get_diff_mode()
         else:
             diff_mode = "no"
 
-        if analysis_options.getMultiProc() == 0:
-            raise NotImplementedError("getMultiProc")
+        if analysis_options.get_multi_proc() == 0:
+            raise NotImplementedError("get_multi_proc")
         else:
             # No differentiation for MCS
             if diff_mode == "no":
@@ -313,7 +313,7 @@ class LimitState:
         nrv, nx = x.shape
         G = np.zeros((1, nx))
         grad_G = np.zeros((nrv, nx))
-        block_size = self.options.getBlockSize()
+        block_size = self.options.get_block_size()
         k = 0
         while k < nx:
             block_size = np.min([block_size, nx - k])
@@ -325,7 +325,7 @@ class LimitState:
             G[:, indx] = blockG
             k += block_size
 
-        self.model.addCallFunction(nx)
+        self.model.add_call_function(nx)
 
         return G, grad_G
 
@@ -334,14 +334,14 @@ class LimitState:
         nrv, nx = x.shape
         G = np.zeros((1, nx))
         grad_G = np.zeros((nrv, nx))
-        block_size = self.options.getBlockSize()
+        block_size = self.options.get_block_size()
 
-        ffdpara = self.options.getffdpara()
+        ffdpara = self.options.get_ffd_parameter()
         allx = np.zeros((nrv, nx * (1 + nrv)))
         allx[:] = x
         allh = np.zeros(nrv)
 
-        marg = self.model.getMarginalDistributions()
+        marg = self.model.get_marginal_distributions()
 
         x0 = x
         for j in range(nrv):
@@ -371,7 +371,7 @@ class LimitState:
             indx = list(range(j + 1, 1 + (1 + j + (nx - 1) * (1 + nrv)), (1 + nrv)))
             grad_G[j, :] = (allG[indx] - G) / allh[j]
 
-        self.model.addCallFunction(nx * (1 + nrv))
+        self.model.add_call_function(nx * (1 + nrv))
 
         return G, grad_G
 
@@ -382,7 +382,7 @@ class LimitState:
         grad_G = np.zeros((nrv, nx))
         for k in range(nx):
             G[k], grad_G[:, k : k + 1] = self.compute_lsf(x[:, k : k + 1], ddm=True)
-        self.model.addCallFunction(nx)
+        self.model.add_call_function(nx)
 
         return G, grad_G
 
@@ -409,8 +409,8 @@ class LimitState:
             Gradient vector (if *ddm*) or ``0``.
         """
         _, nc = np.shape(x)
-        variables = self.model.getVariables()
-        constants = self.model.getConstants()
+        variables = self.model.get_variables()
+        constants = self.model.get_constants()
 
         inpdict = dict()
         for i, var in enumerate(variables):

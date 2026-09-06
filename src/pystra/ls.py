@@ -71,7 +71,7 @@ class LineSampling(AnalysisObject):
             stochastic_model=stochastic_model,
         )
         self.form = form
-        self.nrv = self.model.getLenMarginalDistributions()
+        self.nrv = self.model.get_len_marginal_distributions()
         self.alpha = None
         self.Pf = None
         self.beta = None
@@ -84,7 +84,7 @@ class LineSampling(AnalysisObject):
         self.results_valid = True
         self.init_run()
 
-        marg = self.model.getMarginalDistributions()
+        marg = self.model.get_marginal_distributions()
 
         # Obtain important direction from FORM
         if self.form is None:
@@ -97,11 +97,11 @@ class LineSampling(AnalysisObject):
             self.form = _form
 
         # alpha: unit vector pointing toward the failure region in u-space
-        alpha = self.form.getAlpha()  # shape (nrv,)
-        beta_form = self.form.getBeta()
+        alpha = self.form.get_alpha()  # shape (nrv,)
+        beta_form = self.form.get_beta()
         self.alpha = alpha
 
-        N = self.options.getSamples()
+        N = self.options.get_samples()
         n = self.nrv
 
         # Draw N samples in standard normal space
@@ -137,8 +137,8 @@ class LineSampling(AnalysisObject):
             self.beta = -np.inf
             self.cov = np.inf
 
-        if self.options.getPrintOutput():
-            self.showResults()
+        if self.options.get_print_output():
+            self.show_results()
 
     # ------------------------------------------------------------------
     # Private helpers
@@ -210,15 +210,15 @@ class LineSampling(AnalysisObject):
     # Public API
     # ------------------------------------------------------------------
 
-    def getBeta(self):
+    def get_beta(self):
         """Return the reliability index :math:`\\beta`."""
         return self.beta
 
-    def getFailure(self):
+    def get_failure(self):
         """Return the probability of failure."""
         return self.Pf
 
-    def showResults(self):
+    def show_results(self):
         """Print a summary of Line Sampling results to the console."""
         if not self.results_valid:
             raise ValueError("Analysis not yet run")

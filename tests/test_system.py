@@ -72,7 +72,7 @@ def test_parallel_system_uses_maximum_child_limit_state():
 
 
 def test_k_of_n_system_fails_when_k_children_fail():
-    system = ra.KofNSystem(
+    system = ra.KOfNSystem(
         [
             ra.Component("a", lambda A: A),
             ra.Component("b", lambda B: B),
@@ -96,7 +96,7 @@ def test_k_of_n_system_fails_when_k_children_fail():
 
 def test_k_of_n_system_rejects_invalid_k():
     with pytest.raises(ValueError, match="1 <= k"):
-        ra.KofNSystem([ra.Component("a", lambda A: A)], k=0)
+        ra.KOfNSystem([ra.Component("a", lambda A: A)], k=0)
 
 
 def test_nested_system_composition():
@@ -186,12 +186,12 @@ def test_system_as_limit_state_integrates_with_pystra_evaluation():
     limit_state = system.as_limit_state()
 
     model = ra.StochasticModel()
-    model.addVariable(ra.Normal("R", 10.0, 1.0))
-    model.addVariable(ra.Normal("V", 12.0, 1.0))
-    model.addVariable(ra.Normal("S", 4.0, 1.0))
+    model.add_variable(ra.Normal("R", 10.0, 1.0))
+    model.add_variable(ra.Normal("V", 12.0, 1.0))
+    model.add_variable(ra.Normal("S", 4.0, 1.0))
 
     options = ra.AnalysisOptions()
-    options.setPrintOutput(False)
+    options.set_print_output(False)
 
     x = np.array(
         [
@@ -215,12 +215,12 @@ def test_system_limit_state_runs_form_analysis():
     )
 
     model = ra.StochasticModel()
-    model.addVariable(ra.Normal("R", 10.0, 1.0))
-    model.addVariable(ra.Normal("V", 12.0, 1.0))
-    model.addVariable(ra.Normal("S", 4.0, 1.0))
+    model.add_variable(ra.Normal("R", 10.0, 1.0))
+    model.add_variable(ra.Normal("V", 12.0, 1.0))
+    model.add_variable(ra.Normal("S", 4.0, 1.0))
 
     options = ra.AnalysisOptions()
-    options.setPrintOutput(False)
+    options.set_print_output(False)
 
     form = ra.Form(
         stochastic_model=model,
@@ -229,8 +229,8 @@ def test_system_limit_state_runs_form_analysis():
     )
     form.run()
 
-    assert np.isfinite(form.getBeta())
-    assert np.all(form.getFailure() > 0.0)
+    assert np.isfinite(form.get_beta())
+    assert np.all(form.get_failure() > 0.0)
 
 
 def test_component_values_and_failure_masks():

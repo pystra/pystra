@@ -172,11 +172,11 @@ Analytical CDF derivatives (optional)
 The base class computes :math:`\partial F_X/\partial\theta` numerically
 via central differences.  For better accuracy and performance you can
 override
-:meth:`~pystra.distributions.distribution.Distribution.dF_dtheta`
+:meth:`~pystra.distributions.distribution.Distribution.cdf_gradient`
 with analytical expressions.  The Normal and Lognormal distributions
 do this::
 
-    def dF_dtheta(self, x):
+    def cdf_gradient(self, x):
         z = (x - self.mean) / self.stdv
         phi_z = self.std_normal.pdf(z)
         return {
@@ -194,12 +194,12 @@ Verifying your distribution
    run FORM, and check that the reliability index is sensible::
 
        model = ra.StochasticModel()
-       model.addVariable(MyDist("X", 100, 15, shape=0.2))
-       model.addVariable(ra.Normal("Y", 50, 10))
+       model.add_variable(MyDist("X", 100, 15, shape=0.2))
+       model.add_variable(ra.Normal("Y", 50, 10))
        ls = ra.LimitState(lambda X, Y: X - Y)
        f = ra.Form(stochastic_model=model, limit_state=ls)
        f.run()
-       f.showDetailedOutput()
+       f.show_detailed_output()
 
 2. **Round-trip reconstruction** — if you set ``_ctor_kwargs``,
    verify that ``_make_copy()`` with no overrides produces a
@@ -210,7 +210,7 @@ Verifying your distribution
        assert abs(d.cdf(110) - d2.cdf(110)) < 1e-10
 
 3. **Sensitivity analysis** — the closed-form method exercises a lot
-   of the distribution plumbing (``dF_dtheta``, ``_dmoments_dtheta``,
+   of the distribution plumbing (``cdf_gradient``, ``_dmoments_dtheta``,
    ``_make_copy``), so running both methods is a good integration
    check::
 

@@ -24,15 +24,15 @@ Specifying a joint distribution
        ra.StudentTCopula([[1.0, 0.4], [0.4, 1.0]], df=4),
    )
    model = ra.StochasticModel(joint)
-   model.addVariable(ra.Constant("C", 1.0))
+   model.add_variable(ra.Constant("C", 1.0))
    samples = joint.rvs(1000, seed=2026)  # rows of observations, columns R, S
    print(joint.pdf([10.0, 4.0]))
    print(joint.cdf([10.0, 4.0]))
 
 Alternatively, add all random variables to an existing model and then call
-``model.setCopula(copula)``. Constants may be added afterwards. The copula's
+``model.set_copula(copula)``. Constants may be added afterwards. The copula's
 dimension must equal the number of random variables. Named continuous Pystra
-marginals, including ``ScipyDist``, are supported; mixed/discrete marginals
+marginals, including ``ScipyDistribution``, are supported; mixed/discrete marginals
 are outside this implementation's scope. Known zero-inflated marginals with
 positive point mass are rejected.
 
@@ -56,12 +56,12 @@ These matrices generally differ from the physical marginals' Pearson
 correlations. Copula fitting and physical Pearson calibration for Frank or
 Student-t copulas are not included.
 
-Existing ``model.setCorrelation(...)`` retains its physical Pearson meaning
+Existing ``model.set_correlation(...)`` retains its physical Pearson meaning
 and the existing Gaussian Nataf calibration. Setting a copula explicitly
 replaces that specification; setting a correlation explicitly switches back
-to the legacy specification. ``getCorrelation()`` raises for an explicit
+to the legacy specification. ``get_correlation()`` raises for an explicit
 copula to prevent confusion between physical and latent correlations. Use
-``getCopula()`` for the dependence specification. ``getJointDistribution()``
+``get_copula()`` for the dependence specification. ``get_joint_distribution()``
 also works for a legacy model by calibrating its Gaussian copula.
 
 Choosing the transformation
@@ -70,15 +70,15 @@ Choosing the transformation
 .. code-block:: python
 
    options = ra.AnalysisOptions()
-   options.setTransform("rosenblatt")
-   options.setRosenblattOrder([1, 0])  # condition on S before R
+   options.set_transform("rosenblatt")
+   options.set_rosenblatt_order([1, 0])  # condition on S before R
    form = ra.Form(
        stochastic_model=model,
        analysis_options=options,
        limit_state=ra.LimitState(lambda R, S, C: R - C*S),
    )
    form.run()
-   print(form.getBeta(), form.getFailure())
+   print(form.get_beta(), form.get_failure())
 
 Rosenblatt uses sequential conditional CDFs followed by the normal quantile
 function. Its standard coordinates are independent standard normals for
@@ -90,7 +90,7 @@ With default analysis options, an explicit Gaussian copula uses Nataf;
 Student-t and Frank use Rosenblatt. Existing models without an explicit
 copula retain their previous Gaussian Nataf behaviour.
 
-``options.setTransform("nataf")`` selects generalized Nataf for an elliptical
+``options.set_transform("nataf")`` selects generalized Nataf for an elliptical
 copula. ``"cholesky"`` and ``"svd"`` select Nataf factorisations explicitly;
 these choices are unavailable for Frank. Conditioning order applies only to
 Rosenblatt. Gaussian Nataf with Cholesky factorisation equals Rosenblatt in
@@ -103,7 +103,7 @@ Transformations are also available independently of an analysis:
 
 .. code-block:: python
 
-   transform = joint.getTransformation("rosenblatt", order=[1, 0])
+   transform = joint.make_transformation("rosenblatt", order=[1, 0])
    u = transform.x_to_u([10.0, 4.0])
    x = transform.u_to_x(u)
    du_dx = transform.jacobian(u, x)
@@ -132,8 +132,8 @@ The univariate scale is one; when ``df > 2``, covariance is
    P_{f,\mathrm{FORM}} = T_\nu(-\beta),
 
 where :math:`\beta` is the signed geometric distance in this spherical
-space. ``form.getBeta()`` returns this distance, while
-``form.getEquivalentBeta()`` returns :math:`-\Phi^{-1}(P_f)` for comparison
+space. ``form.get_beta()`` returns this distance, while
+``form.get_equivalent_beta()`` returns :math:`-\Phi^{-1}(P_f)` for comparison
 with conventional normal reliability indices.
 
 SORM, system FORM, simulation methods and the Strong Maximum Test currently

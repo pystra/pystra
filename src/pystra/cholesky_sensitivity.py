@@ -67,7 +67,7 @@ def cholesky_with_derivative(R0, dR0):
     return L0, dL0
 
 
-def dinvL0_dtheta(L0, dL0):
+def inverse_cholesky_gradient(L0, dL0):
     r"""Derivative of the inverse Cholesky factor (Bourinet Eq. 19).
 
     .. math::

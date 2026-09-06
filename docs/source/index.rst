@@ -84,6 +84,7 @@ Contents:
    :caption: Contents:
 
    install
+   migrating
    tutorial
    api
    theory

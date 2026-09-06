@@ -2,9 +2,9 @@
 
 The objects in this module sit above the reliability methods.  They do not
 change how FORM, SORM, or simulation analyses are run; instead
-:class:`DDO` evaluates an objective subject to a selected acceptability
+:class:`Ddo` evaluates an objective subject to a selected acceptability
 criterion.  The initial implementation
-provides the :class:`LQI` criterion for minimum acceptable life-safety levels
+provides the :class:`Lqi` criterion for minimum acceptable life-safety levels
 using the life quality index (LQI) and societal willingness-to-pay (SWTP)
 values.
 """
@@ -33,7 +33,7 @@ SWTP_INDEX_INDICATOR = "NY.GDP.PCAP.PP.CD"
 
 
 @dataclass(frozen=True)
-class SWTPIndexRecord:
+class SwtpIndexRecord:
     """Index data used to update an anchored SWTP value.
 
     The built-in index records use GDP per capita in current international
@@ -51,7 +51,7 @@ class SWTPIndexRecord:
 
 
 @dataclass(frozen=True)
-class SWTPRecord:
+class SwtpRecord:
     """Country-level societal willingness-to-pay value.
 
     Parameters
@@ -92,8 +92,8 @@ class SWTPRecord:
         return self.value_per_life / 1_000_000.0
 
 
-def _record(code: str, country: str, value_million: float) -> SWTPRecord:
-    return SWTPRecord(code=code, country=country, value_per_life=value_million * 1e6)
+def _record(code: str, country: str, value_million: float) -> SwtpRecord:
+    return SwtpRecord(code=code, country=country, value_per_life=value_million * 1e6)
 
 
 SWTP_COUNTRY_VALUES = {
@@ -118,8 +118,8 @@ SWTP_COUNTRY_VALUES = {
 }
 
 
-def _index(code: str, base_index: float, target_index: float) -> SWTPIndexRecord:
-    return SWTPIndexRecord(
+def _index(code: str, base_index: float, target_index: float) -> SwtpIndexRecord:
+    return SwtpIndexRecord(
         code=code,
         base_year=1999,
         target_year=2024,
@@ -168,13 +168,13 @@ def _normalise_country_code(code: str) -> str:
     return SWTP_ALIASES.get(key, key)
 
 
-def _index_table(index_table: Optional[Mapping[str, SWTPIndexRecord]] = None):
+def _index_table(index_table: Optional[Mapping[str, SwtpIndexRecord]] = None):
     return SWTP_GDP_PPP_INDEX_2024 if index_table is None else index_table
 
 
 def get_swtp_index_record(
-    code: str, index_table: Optional[Mapping[str, SWTPIndexRecord]] = None
-) -> SWTPIndexRecord:
+    code: str, index_table: Optional[Mapping[str, SwtpIndexRecord]] = None
+) -> SwtpIndexRecord:
     """Return the SWTP index record for a country code."""
 
     key = _normalise_country_code(code)
@@ -191,8 +191,8 @@ def get_swtp_index_record(
 def get_swtp_record(
     code: str,
     indexed: Optional[bool] = None,
-    index_table: Optional[Mapping[str, SWTPIndexRecord]] = None,
-) -> SWTPRecord:
+    index_table: Optional[Mapping[str, SwtpIndexRecord]] = None,
+) -> SwtpRecord:
     """Return a country-level SWTP record.
 
     Parameters
@@ -205,11 +205,11 @@ def get_swtp_record(
         GDP per capita PPP factors.  There is no default so the anchor is never
         returned silently.
     index_table : mapping, optional
-        Alternate country-code mapping of :class:`SWTPIndexRecord` objects.
+        Alternate country-code mapping of :class:`SwtpIndexRecord` objects.
 
     Returns
     -------
-    SWTPRecord
+    SwtpRecord
         Source-backed SWTP value.
     """
 
@@ -227,13 +227,13 @@ def get_swtp_record(
 
 
 def index_swtp_record(
-    code: str, index_table: Optional[Mapping[str, SWTPIndexRecord]] = None
-) -> SWTPRecord:
+    code: str, index_table: Optional[Mapping[str, SwtpIndexRecord]] = None
+) -> SwtpRecord:
     """Return a Rackwitz SWTP record indexed to a newer target year."""
 
     base = get_swtp_record(code, indexed=False)
     index = get_swtp_index_record(code, index_table=index_table)
-    return SWTPRecord(
+    return SwtpRecord(
         code=base.code,
         country=base.country,
         value_per_life=base.value_per_life * index.factor,
@@ -251,7 +251,7 @@ def index_swtp_record(
 def get_swtp(
     code: str,
     indexed: Optional[bool] = None,
-    index_table: Optional[Mapping[str, SWTPIndexRecord]] = None,
+    index_table: Optional[Mapping[str, SwtpIndexRecord]] = None,
 ) -> float:
     """Return the SWTP value per statistical life for a country code.
 
@@ -266,7 +266,7 @@ def get_swtp(
 
 def swtp_table(
     indexed: Optional[bool] = None,
-    index_table: Optional[Mapping[str, SWTPIndexRecord]] = None,
+    index_table: Optional[Mapping[str, SwtpIndexRecord]] = None,
 ) -> pd.DataFrame:
     """Return the built-in country SWTP table as a dataframe.
 
@@ -294,7 +294,7 @@ def swtp_table(
 
 
 @dataclass(frozen=True)
-class SWTP:
+class Swtp:
     """Societal willingness to pay per statistical life."""
 
     value_per_life: float
@@ -403,8 +403,8 @@ class TargetReliability:
     """Target failure probability and reliability index from a calibration.
 
     A single result type for every target-reliability route in this module: the
-    rounded LQI table lookup (:meth:`LQI.lookup_target`), the LQI marginal
-    optimization (:meth:`LQI.derive_target`), and the Rackwitz/Steenbergen
+    rounded LQI table lookup (:meth:`Lqi.lookup_target`), the LQI marginal
+    optimization (:meth:`Lqi.derive_target`), and the Rackwitz/Steenbergen
     code-calibration model (:meth:`RackwitzTargetModel.calibrate`).  Only ``pf``,
     ``beta`` and ``method`` are always populated; fields that do not apply to a
     given route are left as ``None``.
@@ -627,24 +627,24 @@ class RiskResult:
             return -float(norm.ppf(self.annual_failure_rate))
         return None
 
-    def getFailure(self) -> float:
+    def get_failure(self) -> float:
         """Return ``annual_failure_rate`` for reliability-result compatibility."""
 
         return self.annual_failure_rate
 
-    def getBeta(self) -> Optional[float]:
+    def get_beta(self) -> Optional[float]:
         """Return ``beta`` for reliability-result compatibility."""
 
         return self.beta
 
-    def life_safety_cost(self, swtp: Union[float, SWTP]) -> float:
+    def life_safety_cost(self, swtp: Union[float, Swtp]) -> float:
         """Return SWTP-valued expected annual life-safety cost."""
 
         return _swtp_value(swtp) * self.expected_fatalities
 
     def total_risk_cost(
         self,
-        swtp: Optional[Union[float, SWTP]] = None,
+        swtp: Optional[Union[float, Swtp]] = None,
         include_life_safety: bool = True,
     ) -> float:
         """Return expected annual economic plus optional life-safety risk cost."""
@@ -716,7 +716,7 @@ _VARIABILITY_FACTORS = {"medium": 1.0, "high": 5.0, "low": 0.5}
 
 def lqi_k1(
     safety_cost_rate: float,
-    swtp: Union[float, SWTP],
+    swtp: Union[float, Swtp],
     expected_fatalities_given_failure: float,
 ) -> float:
     """Return the LQI safety cost ratio ``K1``.
@@ -726,7 +726,7 @@ def lqi_k1(
     notation the numerator is typically ``C1 * (gamma_s + omega)``.
     """
 
-    value_per_life = swtp.value_per_life if isinstance(swtp, SWTP) else float(swtp)
+    value_per_life = swtp.value_per_life if isinstance(swtp, Swtp) else float(swtp)
     if safety_cost_rate <= 0:
         raise ValueError("safety_cost_rate must be positive")
     if value_per_life <= 0:
@@ -736,8 +736,8 @@ def lqi_k1(
     return safety_cost_rate / (value_per_life * expected_fatalities_given_failure)
 
 
-def _swtp_value(swtp: Union[float, SWTP]) -> float:
-    return swtp.value_per_life if isinstance(swtp, SWTP) else float(swtp)
+def _swtp_value(swtp: Union[float, Swtp]) -> float:
+    return swtp.value_per_life if isinstance(swtp, Swtp) else float(swtp)
 
 
 def _as_scalar_or_array(value):
@@ -1135,7 +1135,7 @@ def rackwitz_table(**kwargs) -> pd.DataFrame:
 def jcss_lqi_risk_cost(
     safety_cost: Union[float, np.ndarray],
     failure_rate: Union[float, np.ndarray],
-    swtp: Union[float, SWTP],
+    swtp: Union[float, Swtp],
     expected_fatalities_given_failure: float,
 ):
     """Return the JCSS LQI life-safety risk cost.
@@ -1159,7 +1159,7 @@ def jcss_lqi_risk_cost(
 def jcss_lqi_risk_cost_from_result(
     safety_cost: float,
     risk: RiskResult,
-    swtp: Union[float, SWTP],
+    swtp: Union[float, Swtp],
     include_economic_loss: bool = False,
 ) -> float:
     """Return JCSS LQI risk cost from an aggregated risk result.
@@ -1181,7 +1181,7 @@ def jcss_lqi_risk_cost_from_result(
 def jcss_lqi_acceptability_margin(
     safety_cost_derivative: float,
     failure_rate_derivative: float,
-    swtp: Union[float, SWTP],
+    swtp: Union[float, Swtp],
     expected_fatalities_given_failure: float,
 ) -> float:
     """Return the JCSS marginal LQI acceptability margin.
@@ -1220,7 +1220,7 @@ def jcss_lqi_acceptability(
     safety_cost: Callable[[float], float],
     failure_rate: Callable[[float], float],
     design: float,
-    swtp: Union[float, SWTP],
+    swtp: Union[float, Swtp],
     expected_fatalities_given_failure: float,
     step: Optional[float] = None,
 ) -> float:
@@ -1237,7 +1237,7 @@ def jcss_lqi_is_acceptable(
     safety_cost: Callable[[float], float],
     failure_rate: Callable[[float], float],
     design: float,
-    swtp: Union[float, SWTP],
+    swtp: Union[float, Swtp],
     expected_fatalities_given_failure: float,
     step: Optional[float] = None,
 ) -> bool:
@@ -1377,7 +1377,7 @@ def annualized_safety_cost(
     )
 
 
-class DDOObjective:
+class DdoObjective:
     """Base interface for DDO objectives."""
 
     name = "objective"
@@ -1390,7 +1390,7 @@ class DDOObjective:
 
 
 @dataclass
-class CostBenefitModel(DDOObjective):
+class CostBenefitModel(DdoObjective):
     """Cost-benefit objective for a reliability design study."""
 
     benefit_rate: float
@@ -1716,9 +1716,9 @@ def _coerce_analysis_result(result: Any) -> Mapping[str, float]:
             else result.get("failure_probability", result.get("failure"))
         )
         beta = result.get("beta", result.get("reliability_index"))
-    elif hasattr(result, "getFailure") or hasattr(result, "getBeta"):
-        pf = result.getFailure() if hasattr(result, "getFailure") else None
-        beta = result.getBeta() if hasattr(result, "getBeta") else None
+    elif hasattr(result, "get_failure") or hasattr(result, "get_beta"):
+        pf = result.get_failure() if hasattr(result, "get_failure") else None
+        beta = result.get_beta() if hasattr(result, "get_beta") else None
     elif isinstance(result, Sequence) and not isinstance(result, (str, bytes)):
         pf = result[0] if len(result) > 0 else None
         beta = result[1] if len(result) > 1 else None
@@ -1777,11 +1777,11 @@ class RiskStudy:
             return result
         return RiskResult.from_scenarios(result, metadata={self.variable: value})
 
-    def evaluate(self, swtp: Optional[Union[float, SWTP]] = None) -> pd.DataFrame:
+    def evaluate(self, swtp: Optional[Union[float, Swtp]] = None) -> pd.DataFrame:
         """Return risk quantities for each design value.
 
         The annual failure rate is also exposed as a ``pf`` column so that the
-        same :class:`DDO` orchestration, objectives, and criteria used with a
+        same :class:`Ddo` orchestration, objectives, and criteria used with a
         :class:`DesignStudy` accept a :class:`RiskStudy` unchanged.
         """
 
@@ -1812,7 +1812,7 @@ class RiskStudy:
         return pd.DataFrame(rows, columns=columns + extra_columns)
 
 
-class DDOCriterion:
+class DdoCriterion:
     """Base interface for DDO acceptability criteria."""
 
     name = "criterion"
@@ -1857,15 +1857,15 @@ def _require_explicit_indexed(indexed: Optional[bool]) -> bool:
 
 
 @dataclass(frozen=True)
-class LQI(DDOCriterion):
+class Lqi(DdoCriterion):
     """Minimum acceptable life-safety criterion using LQI/SWTP.
 
     The criterion adds consequence valuation and LQI acceptability columns to
-    the reliability and objective results produced by :class:`DDO`.  It does
+    the reliability and objective results produced by :class:`Ddo`.  It does
     not select the economic optimum by itself.
     """
 
-    swtp: Optional[SWTP] = None
+    swtp: Optional[Swtp] = None
     consequence: Optional[FatalityConsequence] = None
     target: Optional[TargetReliability] = None
 
@@ -1873,8 +1873,8 @@ class LQI(DDOCriterion):
     feasibility_column = "lqi_acceptable"
 
     @staticmethod
-    def _as_swtp(swtp: Union[float, SWTP]) -> SWTP:
-        return swtp if isinstance(swtp, SWTP) else SWTP(float(swtp))
+    def _as_swtp(swtp: Union[float, Swtp]) -> Swtp:
+        return swtp if isinstance(swtp, Swtp) else Swtp(float(swtp))
 
     @staticmethod
     def lookup_target(k1: float, variability: str = "medium") -> TargetReliability:
@@ -1901,7 +1901,7 @@ class LQI(DDOCriterion):
     @classmethod
     def from_swtp(
         cls,
-        swtp: Union[float, SWTP],
+        swtp: Union[float, Swtp],
         *,
         expected_fatalities_given_failure: Optional[float] = None,
         consequence: Optional[FatalityConsequence] = None,
@@ -1955,7 +1955,7 @@ class LQI(DDOCriterion):
         """Create an LQI criterion from a built-in country SWTP value."""
 
         return cls.from_swtp(
-            SWTP.from_country(code, indexed=_require_explicit_indexed(indexed)),
+            Swtp.from_country(code, indexed=_require_explicit_indexed(indexed)),
             expected_fatalities_given_failure=expected_fatalities_given_failure,
             consequence=consequence,
             marginal_safety_cost=marginal_safety_cost,
@@ -1984,7 +1984,7 @@ class LQI(DDOCriterion):
         """
 
         return cls.from_swtp(
-            SWTP.from_lqi(
+            Swtp.from_lqi(
                 gross_domestic_product_per_capita=gross_domestic_product_per_capita,
                 work_leisure_parameter=work_leisure_parameter,
                 demographic_constant=demographic_constant,
@@ -2014,7 +2014,7 @@ class LQI(DDOCriterion):
             return None
         return self.target.k1
 
-    def _swtp_and_expected_fatalities(self) -> tuple[SWTP, float]:
+    def _swtp_and_expected_fatalities(self) -> tuple[Swtp, float]:
         if self.swtp is None:
             raise ValueError("LQI criterion requires an SWTP value")
         if self.consequence is None:
@@ -2159,12 +2159,12 @@ class LQI(DDOCriterion):
 
 
 @dataclass
-class DDO:
+class Ddo:
     """Evaluate a decision context with an objective and acceptability criterion.
 
     Construct directly from the three pieces::
 
-        ddo = DDO(
+        ddo = Ddo(
             study=study,
             objective=CostBenefitModel(...),
             criterion=LQI.from_country(...),
@@ -2178,16 +2178,16 @@ class DDO:
     """
 
     study: Union[DesignStudy, "RiskStudy"]
-    criterion: DDOCriterion
-    objective: Optional[DDOObjective] = None
+    criterion: DdoCriterion
+    objective: Optional[DdoObjective] = None
     results: Optional[pd.DataFrame] = field(default=None, init=False, repr=False)
 
     def __init__(
         self,
         *,
         study: Union[DesignStudy, "RiskStudy"],
-        criterion: DDOCriterion,
-        objective: Optional[DDOObjective] = None,
+        criterion: DdoCriterion,
+        objective: Optional[DdoObjective] = None,
     ):
         self.study = study
         self.criterion = criterion
@@ -2293,20 +2293,20 @@ class DDO:
         return plot_summary(df, design=design_column, quantities=quantities, **kwargs)
 
 
-# Public surface.  The canonical workflow is object-based: build an ``SWTP``
-# and an ``LQI`` criterion, a ``CostBenefitModel`` objective and a
-# ``DesignStudy`` (or ``RiskStudy``), combine them in a ``DDO``, and read the
-# decision off ``DDO.run``/``optimize``.  The free ``jcss_lqi_*`` /
+# Public surface.  The canonical workflow is object-based: build an ``Swtp``
+# and an ``Lqi`` criterion, a ``CostBenefitModel`` objective and a
+# ``DesignStudy`` (or ``RiskStudy``), combine them in a ``Ddo``, and read the
+# decision off ``Ddo.run``/``optimize``.  The free ``jcss_lqi_*`` /
 # ``lqi_target_reliability`` / ``derive_lqi_target`` / ``rackwitz_table``
 # functions, the SWTP table helpers, and ``TargetReliabilityCalibration`` remain
 # importable from ``pystra.ddo`` as a low-level functional layer, but are kept
 # out of ``__all__`` so the object API is the obvious entry point.
 __all__ = [
     # Societal value of life
-    "SWTP",
+    "Swtp",
     "FatalityConsequence",
     # Acceptability criterion and its result type
-    "LQI",
+    "Lqi",
     "TargetReliability",
     # Objective
     "CostBenefitModel",
@@ -2316,9 +2316,9 @@ __all__ = [
     "ScenarioRiskModel",
     "RiskResult",
     # Orchestration
-    "DDO",
-    "DDOObjective",
-    "DDOCriterion",
+    "Ddo",
+    "DdoObjective",
+    "DdoCriterion",
     # Code-calibration target model
     "RackwitzTargetModel",
 ]

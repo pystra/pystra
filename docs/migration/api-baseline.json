@@ -1,0 +1,5315 @@
+{
+  "schema_version": 1,
+  "revision": "69dd5f0625bbf36822c7d7db3f0685d3da299367",
+  "package_version": "1.6.0",
+  "python": "3.13.12",
+  "dependencies": {
+    "numpy": "2.4.4",
+    "scipy": "1.17.1",
+    "pandas": "3.0.2",
+    "matplotlib": "3.10.8",
+    "pytest": "9.0.2"
+  },
+  "definitions": [
+    {
+      "name": "pystra.analysis.AnalysisObject",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "limitstate",
+        "model",
+        "options",
+        "results_valid",
+        "transform"
+      ]
+    },
+    {
+      "name": "pystra.analysis.AnalysisObject.__init__",
+      "kind": "callable",
+      "signature": "(self, stochastic_model=None, limit_state=None, analysis_options=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisObject.init_run",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "Recorded_u",
+        "Recorded_x",
+        "Ro_method",
+        "bins",
+        "block_size",
+        "diff_mode",
+        "e1",
+        "e2",
+        "ffdpara",
+        "ffdpara_thetag",
+        "flag_sens",
+        "i_max",
+        "multi_proc",
+        "print_output",
+        "random_generator",
+        "rosenblatt_order",
+        "samples",
+        "sim_point",
+        "stdv_sim",
+        "step_size",
+        "target_cov",
+        "transf_type",
+        "transform_type"
+      ]
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.__init__",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.getPrintOutput",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.getFlagSens",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.getMultiProc",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.getBlockSize",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.getImax",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.getE1",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.getE2",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.getStepSize",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.getDiffMode",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.getffdpara",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.getSamples",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.getRandomGenerator",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.getSimulationPoint",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.getSimulationStdv",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.getSimulationCov",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.getTransform",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.setPrintOutput",
+      "kind": "callable",
+      "signature": "(self, tof)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.setMultiProc",
+      "kind": "callable",
+      "signature": "(self, multi_proc)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.setBlockSize",
+      "kind": "callable",
+      "signature": "(self, block_size)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.setImax",
+      "kind": "callable",
+      "signature": "(self, i_max)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.setE1",
+      "kind": "callable",
+      "signature": "(self, e1)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.setE2",
+      "kind": "callable",
+      "signature": "(self, e2)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.setStepSize",
+      "kind": "callable",
+      "signature": "(self, step_size)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.setDiffMode",
+      "kind": "callable",
+      "signature": "(self, diff_mode)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.setffdpara",
+      "kind": "callable",
+      "signature": "(self, ffdpara)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.setBins",
+      "kind": "callable",
+      "signature": "(self, bins)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.setSamples",
+      "kind": "callable",
+      "signature": "(self, samples)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.setTransform",
+      "kind": "callable",
+      "signature": "(self, transform_type)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.analysis.AnalysisOptions.setRosenblattOrder",
+      "kind": "callable",
+      "signature": "(self, order)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "beta_t",
+        "calib_method",
+        "cvar",
+        "dfXstarcal",
+        "df_gamma",
+        "df_nom",
+        "df_phi",
+        "df_psi",
+        "dict_nom",
+        "est_method",
+        "label_R",
+        "label_S",
+        "label_all",
+        "label_comb_cases",
+        "label_comb_vrs",
+        "label_other",
+        "lc_obj",
+        "print_output"
+      ]
+    },
+    {
+      "name": "pystra.calibration.Calibration.__init__",
+      "kind": "callable",
+      "signature": "(self, loadcombobj, target_beta, dict_nom_vals, calib_var, calib_method='optimize', est_method='matrix', print_output=False)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration._print_form_results",
+      "kind": "callable",
+      "signature": "(form)",
+      "decorators": [
+        "staticmethod"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration._get_missing_element",
+      "kind": "callable",
+      "signature": "(mainlist, subsetlist)",
+      "decorators": [
+        "staticmethod"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration._set_labels",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration.calc_lsf_eval_df",
+      "kind": "callable",
+      "signature": "(self, df, ret_abs=True)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration._calibration_optimize",
+      "kind": "callable",
+      "signature": "(self, rel_func, z0, target_beta, print_output=False, xtol=0.0001, max_iter=None, **kwargs)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration._calibration_alpha",
+      "kind": "callable",
+      "signature": "(self, rel_func, z0, target_beta, print_output=False, abstol=0.0001, max_iter=int(100.0), **kwargs)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration.calc_design_param_Xst",
+      "kind": "callable",
+      "signature": "(self, dfXst)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration._get_df_Xstar",
+      "kind": "callable",
+      "signature": "(self, list_form_obj, cols=None, idx=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration._get_df_Xstar_labels",
+      "kind": "callable",
+      "signature": "(self, form)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration.run",
+      "kind": "callable",
+      "signature": "(self, est_method=None, set_max=False)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration._run_calibration",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration._estimate_factors_coeff",
+      "kind": "callable",
+      "signature": "(self, set_max=False)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration.get_psi_max",
+      "kind": "callable",
+      "signature": "(self, dfpsi)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration._calibrate_design_param",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration._estimate_factors_matrix",
+      "kind": "callable",
+      "signature": "(self, set_max=False)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration.calc_pg_coeff",
+      "kind": "callable",
+      "signature": "(self, dfXst, print_output=False)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration.calc_Xst_nom",
+      "kind": "callable",
+      "signature": "(self, dfXstar)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration.calc_phi",
+      "kind": "callable",
+      "signature": "(self, dfXstnom)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration.get_phi_min",
+      "kind": "callable",
+      "signature": "(self, dfphi_)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration.calc_gamma",
+      "kind": "callable",
+      "signature": "(self, dfXstnom)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration.calc_pg_matrix",
+      "kind": "callable",
+      "signature": "(self, dfXst, print_output=False)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration.calc_phiRz_egS_vect",
+      "kind": "callable",
+      "signature": "(self, dfXstar)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration.calc_epgS_mat",
+      "kind": "callable",
+      "signature": "(self, dfgammanom)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration._get_psi_row_mat",
+      "kind": "callable",
+      "signature": "(self, num_other_vrs, psi_comb_vrs)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration.calc_beta_design_param",
+      "kind": "callable",
+      "signature": "(self, design_z)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration.calc_df_pgRS",
+      "kind": "callable",
+      "signature": "(self, min_phi, max_psi)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration.get_design_param_factor",
+      "kind": "callable",
+      "signature": "(self, min_phi=True, max_psi=True)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.Calibration.print_detailed_output",
+      "kind": "callable",
+      "signature": "(self, precision=2)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.GenericModel",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "G",
+        "Gk",
+        "P",
+        "Pk",
+        "Q",
+        "Qk",
+        "R",
+        "Rk",
+        "gamma_g",
+        "gamma_p",
+        "gamma_q",
+        "phi",
+        "wR",
+        "wS"
+      ]
+    },
+    {
+      "name": "pystra.calibration.GenericModel.__init__",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.GenericModel.set_factors",
+      "kind": "callable",
+      "signature": "(self, phi, gamma_g, gamma_p, gamma_q)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.GenericModel.set_distributions",
+      "kind": "callable",
+      "signature": "(self, wR, wS, R, G, P, Q)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.GenericModel.set_nominals",
+      "kind": "callable",
+      "signature": "(self, Rk, Gk, Pk, Qk)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.GenericModel.set_model_errors",
+      "kind": "callable",
+      "signature": "(self, wR, wS)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.GenericModel.set_resistance_params",
+      "kind": "callable",
+      "signature": "(self, R, Rk, phi)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.GenericModel.set_dead_params",
+      "kind": "callable",
+      "signature": "(self, G, Gk, gamma_g)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.GenericModel.set_permanent_params",
+      "kind": "callable",
+      "signature": "(self, P, Pk, gamma_p)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.GenericModel.set_live_params",
+      "kind": "callable",
+      "signature": "(self, Q, Qk, gamma_q)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.GenericModel.get",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.GenericCalibration",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "ag_points",
+        "aq_points",
+        "is_analysed",
+        "prob_models"
+      ]
+    },
+    {
+      "name": "pystra.calibration.GenericCalibration.__init__",
+      "kind": "callable",
+      "signature": "(self, aq_points, ag_points)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.GenericCalibration.add_model",
+      "kind": "callable",
+      "signature": "(self, model, color, label)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.GenericCalibration.lsf",
+      "kind": "callable",
+      "signature": "(self, z, aq, ag, wR, R, wS, G, P, Q)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.GenericCalibration.design",
+      "kind": "callable",
+      "signature": "(self, aq, ag, phi, gamma_g, gamma_p, gamma_q, Rk, Gk, Pk, Qk)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.GenericCalibration.analyse_design",
+      "kind": "callable",
+      "signature": "(self, z, aq, ag, wR, R, wS, G, P, Q)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.GenericCalibration.get_reliabilities",
+      "kind": "callable",
+      "signature": "(self, Aq, Ag, model)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.GenericCalibration.analyse",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.GenericCalibration.add_range",
+      "kind": "callable",
+      "signature": "(self, ax, xl, xu, ytext, text, alpha)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.GenericCalibration.plot_region",
+      "kind": "callable",
+      "signature": "(self, ax, x, beta, facecolor, label)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.GenericCalibration.beta_region_plot",
+      "kind": "callable",
+      "signature": "(self, Aq, data, beta_t, ranges, figsize=(12, 9), **kwargs)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.GenericCalibration.plot",
+      "kind": "callable",
+      "signature": "(self, beta_t=4.7, ranges=None, **kwargs)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.cholesky_sensitivity.cholesky_with_derivative",
+      "kind": "callable",
+      "signature": "(R0, dR0)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.cholesky_sensitivity.dinvL0_dtheta",
+      "kind": "callable",
+      "signature": "(L0, dL0)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula._points",
+      "kind": "callable",
+      "signature": "(points, dimension, interior=False)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula._order",
+      "kind": "callable",
+      "signature": "(order, dimension)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula._sample_size",
+      "kind": "callable",
+      "signature": "(size)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula.Copula",
+      "kind": "class",
+      "bases": [],
+      "attributes": []
+    },
+    {
+      "name": "pystra.copula.Copula.pdf",
+      "kind": "callable",
+      "signature": "(self, probabilities)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula.Copula.rvs",
+      "kind": "callable",
+      "signature": "(self, size=1, seed=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula.GaussianCopula",
+      "kind": "class",
+      "bases": [
+        "Copula"
+      ],
+      "attributes": [
+        "_correlation",
+        "dimension"
+      ]
+    },
+    {
+      "name": "pystra.copula.GaussianCopula.__init__",
+      "kind": "callable",
+      "signature": "(self, correlation)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula.GaussianCopula.correlation",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula.GaussianCopula.kendall_tau",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula.GaussianCopula.from_kendall_tau",
+      "kind": "callable",
+      "signature": "(cls, tau, **kwargs)",
+      "decorators": [
+        "classmethod"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula.GaussianCopula.logpdf",
+      "kind": "callable",
+      "signature": "(self, probabilities)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula.GaussianCopula.cdf",
+      "kind": "callable",
+      "signature": "(self, probabilities, **kwargs)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula.GaussianCopula.rosenblatt",
+      "kind": "callable",
+      "signature": "(self, probabilities, order=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula.GaussianCopula.inverse_rosenblatt",
+      "kind": "callable",
+      "signature": "(self, probabilities, order=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula.IndependentCopula",
+      "kind": "class",
+      "bases": [
+        "GaussianCopula"
+      ],
+      "attributes": []
+    },
+    {
+      "name": "pystra.copula.IndependentCopula.__init__",
+      "kind": "callable",
+      "signature": "(self, dimension)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula.IndependentCopula.cdf",
+      "kind": "callable",
+      "signature": "(self, probabilities, **kwargs)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula.IndependentCopula.from_kendall_tau",
+      "kind": "callable",
+      "signature": "(cls, tau, **kwargs)",
+      "decorators": [
+        "classmethod"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula.StudentTCopula",
+      "kind": "class",
+      "bases": [
+        "GaussianCopula"
+      ],
+      "attributes": [
+        "df"
+      ]
+    },
+    {
+      "name": "pystra.copula.StudentTCopula.__init__",
+      "kind": "callable",
+      "signature": "(self, correlation, df)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula.StudentTCopula.logpdf",
+      "kind": "callable",
+      "signature": "(self, probabilities)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula.StudentTCopula.cdf",
+      "kind": "callable",
+      "signature": "(self, probabilities, **kwargs)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula.StudentTCopula.rosenblatt",
+      "kind": "callable",
+      "signature": "(self, probabilities, order=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula.StudentTCopula.inverse_rosenblatt",
+      "kind": "callable",
+      "signature": "(self, probabilities, order=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula.FrankCopula",
+      "kind": "class",
+      "bases": [
+        "Copula"
+      ],
+      "attributes": [
+        "theta"
+      ]
+    },
+    {
+      "name": "pystra.copula.FrankCopula.__init__",
+      "kind": "callable",
+      "signature": "(self, theta)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula.FrankCopula.cdf",
+      "kind": "callable",
+      "signature": "(self, probabilities)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula.FrankCopula._denominator",
+      "kind": "callable",
+      "signature": "(self, p)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula.FrankCopula.logpdf",
+      "kind": "callable",
+      "signature": "(self, probabilities)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula.FrankCopula.rosenblatt",
+      "kind": "callable",
+      "signature": "(self, probabilities, order=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.copula.FrankCopula.inverse_rosenblatt",
+      "kind": "callable",
+      "signature": "(self, probabilities, order=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.correlation.CorrelationMatrix",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "matrix",
+        "mu",
+        "p1",
+        "p2",
+        "p3",
+        "p4",
+        "sigma"
+      ]
+    },
+    {
+      "name": "pystra.correlation.CorrelationMatrix.__init__",
+      "kind": "callable",
+      "signature": "(self, matrix=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.correlation.CorrelationMatrix.__repr__",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.correlation.CorrelationMatrix.__getitem__",
+      "kind": "callable",
+      "signature": "(self, key)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.correlation.CorrelationMatrix.__setitem__",
+      "kind": "callable",
+      "signature": "(self, key, item)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.correlation.CorrelationMatrix.getMatrix",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.correlation.computeModifiedCorrelationMatrix",
+      "kind": "callable",
+      "signature": "(stochastic_model)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.correlation.absoluteIntegralValue",
+      "kind": "callable",
+      "signature": "(rho0, *args)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.correlation.setModifiedCorrelationMatrix",
+      "kind": "callable",
+      "signature": "(stochastic_model)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ddo.SWTPIndexRecord",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "base_index",
+        "base_year",
+        "code",
+        "factor",
+        "indicator",
+        "source",
+        "target_index",
+        "target_year"
+      ]
+    },
+    {
+      "name": "pystra.ddo.SWTPRecord",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "code",
+        "country",
+        "currency",
+        "notes",
+        "price_year",
+        "source",
+        "value_per_life"
+      ]
+    },
+    {
+      "name": "pystra.ddo.SWTPRecord.value_million",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo._record",
+      "kind": "callable",
+      "signature": "(code: str, country: str, value_million: float)",
+      "decorators": [],
+      "returns": "SWTPRecord"
+    },
+    {
+      "name": "pystra.ddo._index",
+      "kind": "callable",
+      "signature": "(code: str, base_index: float, target_index: float)",
+      "decorators": [],
+      "returns": "SWTPIndexRecord"
+    },
+    {
+      "name": "pystra.ddo._normalise_country_code",
+      "kind": "callable",
+      "signature": "(code: str)",
+      "decorators": [],
+      "returns": "str"
+    },
+    {
+      "name": "pystra.ddo._index_table",
+      "kind": "callable",
+      "signature": "(index_table: Optional[Mapping[str, SWTPIndexRecord]]=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ddo.get_swtp_index_record",
+      "kind": "callable",
+      "signature": "(code: str, index_table: Optional[Mapping[str, SWTPIndexRecord]]=None)",
+      "decorators": [],
+      "returns": "SWTPIndexRecord"
+    },
+    {
+      "name": "pystra.ddo.get_swtp_record",
+      "kind": "callable",
+      "signature": "(code: str, indexed: Optional[bool]=None, index_table: Optional[Mapping[str, SWTPIndexRecord]]=None)",
+      "decorators": [],
+      "returns": "SWTPRecord"
+    },
+    {
+      "name": "pystra.ddo.index_swtp_record",
+      "kind": "callable",
+      "signature": "(code: str, index_table: Optional[Mapping[str, SWTPIndexRecord]]=None)",
+      "decorators": [],
+      "returns": "SWTPRecord"
+    },
+    {
+      "name": "pystra.ddo.get_swtp",
+      "kind": "callable",
+      "signature": "(code: str, indexed: Optional[bool]=None, index_table: Optional[Mapping[str, SWTPIndexRecord]]=None)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.swtp_table",
+      "kind": "callable",
+      "signature": "(indexed: Optional[bool]=None, index_table: Optional[Mapping[str, SWTPIndexRecord]]=None)",
+      "decorators": [],
+      "returns": "pd.DataFrame"
+    },
+    {
+      "name": "pystra.ddo.SWTP",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "currency",
+        "price_year",
+        "source",
+        "value_per_life"
+      ]
+    },
+    {
+      "name": "pystra.ddo.SWTP.__post_init__",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ddo.SWTP.from_country",
+      "kind": "callable",
+      "signature": "(cls, code: str, indexed: Optional[bool]=None)",
+      "decorators": [
+        "classmethod"
+      ],
+      "returns": "'SWTP'"
+    },
+    {
+      "name": "pystra.ddo.SWTP.from_lqi",
+      "kind": "callable",
+      "signature": "(cls, gross_domestic_product_per_capita: float, work_leisure_parameter: float, demographic_constant: float, currency: str='currency units', price_year: Optional[int]=None, source: Optional[str]='LQI relation SWTP = g / q * G')",
+      "decorators": [
+        "classmethod"
+      ],
+      "returns": "'SWTP'"
+    },
+    {
+      "name": "pystra.ddo.SWTP.for_lives",
+      "kind": "callable",
+      "signature": "(self, expected_fatalities: float)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.FatalityConsequence",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "people_exposed",
+        "probability_death_given_failure"
+      ]
+    },
+    {
+      "name": "pystra.ddo.FatalityConsequence.__post_init__",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ddo.FatalityConsequence.expected_fatalities_given_failure",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.TargetReliability",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "beta",
+        "converged",
+        "cost_class",
+        "design",
+        "k1",
+        "message",
+        "metadata",
+        "method",
+        "objective",
+        "pf",
+        "source",
+        "variability"
+      ]
+    },
+    {
+      "name": "pystra.ddo.TargetReliability.__post_init__",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ddo.TargetReliability.to_dict",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": "dict"
+    },
+    {
+      "name": "pystra.ddo.TargetReliability.for_period",
+      "kind": "callable",
+      "signature": "(self, years: float, dependence_interval: float=1.0)",
+      "decorators": [],
+      "returns": "'TargetReliability'"
+    },
+    {
+      "name": "pystra.ddo.RiskResult",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "annual_failure_rate",
+        "expected_economic_loss",
+        "expected_fatalities",
+        "metadata",
+        "scenarios"
+      ]
+    },
+    {
+      "name": "pystra.ddo.RiskResult.__post_init__",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ddo.RiskResult.from_scenarios",
+      "kind": "callable",
+      "signature": "(cls, scenarios: Any, weight_col: str='probability', fatalities_col: str='fatalities', economic_loss_col: str='economic_loss', failure_col: Optional[str]=None, metadata: Optional[Mapping[str, Any]]=None)",
+      "decorators": [
+        "classmethod"
+      ],
+      "returns": "'RiskResult'"
+    },
+    {
+      "name": "pystra.ddo.RiskResult.beta",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": "Optional[float]"
+    },
+    {
+      "name": "pystra.ddo.RiskResult.getFailure",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.RiskResult.getBeta",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": "Optional[float]"
+    },
+    {
+      "name": "pystra.ddo.RiskResult.life_safety_cost",
+      "kind": "callable",
+      "signature": "(self, swtp: Union[float, SWTP])",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.RiskResult.total_risk_cost",
+      "kind": "callable",
+      "signature": "(self, swtp: Optional[Union[float, SWTP]]=None, include_life_safety: bool=True)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.RiskResult.to_dict",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": "dict"
+    },
+    {
+      "name": "pystra.ddo.ScenarioRiskModel",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "economic_loss_col",
+        "failure_col",
+        "fatalities_col",
+        "metadata",
+        "scenarios",
+        "weight_col"
+      ]
+    },
+    {
+      "name": "pystra.ddo.ScenarioRiskModel.evaluate",
+      "kind": "callable",
+      "signature": "(self, design: Any=None)",
+      "decorators": [],
+      "returns": "RiskResult"
+    },
+    {
+      "name": "pystra.ddo.lqi_k1",
+      "kind": "callable",
+      "signature": "(safety_cost_rate: float, swtp: Union[float, SWTP], expected_fatalities_given_failure: float)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo._swtp_value",
+      "kind": "callable",
+      "signature": "(swtp: Union[float, SWTP])",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo._as_scalar_or_array",
+      "kind": "callable",
+      "signature": "(value)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ddo._beta_from_failure_probability",
+      "kind": "callable",
+      "signature": "(pf: float)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.lognormal_ratio_failure_probability",
+      "kind": "callable",
+      "signature": "(design: Union[float, np.ndarray], resistance_cov: float, load_cov: float)",
+      "decorators": [],
+      "returns": "Union[float, np.ndarray]"
+    },
+    {
+      "name": "pystra.ddo.TargetReliabilityCalibration",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "bounds",
+        "failure_probability",
+        "metadata",
+        "objective",
+        "variable"
+      ]
+    },
+    {
+      "name": "pystra.ddo.TargetReliabilityCalibration.run",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": "TargetReliability"
+    },
+    {
+      "name": "pystra.ddo.RackwitzTargetModel",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "base_cost",
+        "benefit_rate",
+        "demolition_cost_ratio",
+        "failure_cost_ratio",
+        "interest_rate",
+        "load_cov",
+        "load_occurrence_rate",
+        "obsolescence_rate",
+        "resistance_cov",
+        "safety_cost_ratio",
+        "serviceability_cost_ratio",
+        "serviceability_resistance_ratio"
+      ]
+    },
+    {
+      "name": "pystra.ddo.RackwitzTargetModel.__post_init__",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ddo.RackwitzTargetModel.metadata",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": "dict"
+    },
+    {
+      "name": "pystra.ddo.RackwitzTargetModel.construction_cost",
+      "kind": "callable",
+      "signature": "(self, design: float)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.RackwitzTargetModel.failure_probability",
+      "kind": "callable",
+      "signature": "(self, design: float)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.RackwitzTargetModel.serviceability_probability",
+      "kind": "callable",
+      "signature": "(self, design: float)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.RackwitzTargetModel.objective",
+      "kind": "callable",
+      "signature": "(self, design: float)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.RackwitzTargetModel.calibration",
+      "kind": "callable",
+      "signature": "(self, bounds: tuple[float, float]=(1.0, 15.0))",
+      "decorators": [],
+      "returns": "TargetReliabilityCalibration"
+    },
+    {
+      "name": "pystra.ddo.RackwitzTargetModel.calibrate",
+      "kind": "callable",
+      "signature": "(self, bounds: tuple[float, float]=(1.0, 15.0))",
+      "decorators": [],
+      "returns": "TargetReliability"
+    },
+    {
+      "name": "pystra.ddo.RackwitzTargetModel.table",
+      "kind": "callable",
+      "signature": "(cls, safety_costs: Optional[Mapping[str, float]]=None, failure_costs: Optional[Mapping[str, float]]=None, bounds: tuple[float, float]=(1.0, 15.0), **kwargs)",
+      "decorators": [
+        "classmethod"
+      ],
+      "returns": "pd.DataFrame"
+    },
+    {
+      "name": "pystra.ddo.derive_lqi_target",
+      "kind": "callable",
+      "signature": "(k1: float, resistance_cov: float=0.4, load_cov: float=0.4, bounds: tuple[float, float]=(1.0, 20.0))",
+      "decorators": [],
+      "returns": "TargetReliability"
+    },
+    {
+      "name": "pystra.ddo.rackwitz_table",
+      "kind": "callable",
+      "signature": "(**kwargs)",
+      "decorators": [],
+      "returns": "pd.DataFrame"
+    },
+    {
+      "name": "pystra.ddo.jcss_lqi_risk_cost",
+      "kind": "callable",
+      "signature": "(safety_cost: Union[float, np.ndarray], failure_rate: Union[float, np.ndarray], swtp: Union[float, SWTP], expected_fatalities_given_failure: float)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ddo.jcss_lqi_risk_cost_from_result",
+      "kind": "callable",
+      "signature": "(safety_cost: float, risk: RiskResult, swtp: Union[float, SWTP], include_economic_loss: bool=False)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.jcss_lqi_acceptability_margin",
+      "kind": "callable",
+      "signature": "(safety_cost_derivative: float, failure_rate_derivative: float, swtp: Union[float, SWTP], expected_fatalities_given_failure: float)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.finite_difference_derivative",
+      "kind": "callable",
+      "signature": "(function: Callable[[float], float], design: float, step: Optional[float]=None)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.jcss_lqi_acceptability",
+      "kind": "callable",
+      "signature": "(safety_cost: Callable[[float], float], failure_rate: Callable[[float], float], design: float, swtp: Union[float, SWTP], expected_fatalities_given_failure: float, step: Optional[float]=None)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.jcss_lqi_is_acceptable",
+      "kind": "callable",
+      "signature": "(safety_cost: Callable[[float], float], failure_rate: Callable[[float], float], design: float, swtp: Union[float, SWTP], expected_fatalities_given_failure: float, step: Optional[float]=None)",
+      "decorators": [],
+      "returns": "bool"
+    },
+    {
+      "name": "pystra.ddo.jcss_systematic_reconstruction_objective",
+      "kind": "callable",
+      "signature": "(benefit_rate: float, safety_cost: float, failure_rate: float, failure_consequence: float, discount_rate: float)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.lqi_target_reliability",
+      "kind": "callable",
+      "signature": "(k1: float, variability: str='medium')",
+      "decorators": [],
+      "returns": "TargetReliability"
+    },
+    {
+      "name": "pystra.ddo.present_value_factor",
+      "kind": "callable",
+      "signature": "(interest_rate: float, service_life: float)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.annualized_safety_cost",
+      "kind": "callable",
+      "signature": "(initial_cost: float, failure_probability: float, service_life: float, interest_rate: float, replacement_cost: Optional[float]=None)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.DDOObjective",
+      "kind": "class",
+      "bases": [],
+      "attributes": []
+    },
+    {
+      "name": "pystra.ddo.DDOObjective.evaluate",
+      "kind": "callable",
+      "signature": "(self, results: pd.DataFrame, design: str)",
+      "decorators": [],
+      "returns": "pd.DataFrame"
+    },
+    {
+      "name": "pystra.ddo.CostBenefitModel",
+      "kind": "class",
+      "bases": [
+        "DDOObjective"
+      ],
+      "attributes": [
+        "benefit_rate",
+        "construction_cost",
+        "failure_cost",
+        "interest_rate",
+        "service_life"
+      ]
+    },
+    {
+      "name": "pystra.ddo.CostBenefitModel._value",
+      "kind": "callable",
+      "signature": "(self, item: Union[float, Callable[[Any], float]], design: Any)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.CostBenefitModel.present_value_factor",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.CostBenefitModel.construction",
+      "kind": "callable",
+      "signature": "(self, design: Any)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.CostBenefitModel.consequence",
+      "kind": "callable",
+      "signature": "(self, design: Any)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.CostBenefitModel.objective",
+      "kind": "callable",
+      "signature": "(self, design: Any, failure_probability: float)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.CostBenefitModel.annualized_safety_cost",
+      "kind": "callable",
+      "signature": "(self, design: Any, failure_probability: float, replacement_cost: Optional[float]=None)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.CostBenefitModel.evaluate",
+      "kind": "callable",
+      "signature": "(self, results: pd.DataFrame, design: str)",
+      "decorators": [],
+      "returns": "pd.DataFrame"
+    },
+    {
+      "name": "pystra.ddo._default_decision_plot_quantities",
+      "kind": "callable",
+      "signature": "(data: pd.DataFrame)",
+      "decorators": [],
+      "returns": "list[str]"
+    },
+    {
+      "name": "pystra.ddo._coerce_reference_designs",
+      "kind": "callable",
+      "signature": "(reference_designs)",
+      "decorators": [],
+      "returns": "list[dict[str, Any]]"
+    },
+    {
+      "name": "pystra.ddo.plot_summary",
+      "kind": "callable",
+      "signature": "(data: Any, design: str, quantities: Optional[Sequence[str]]=None, labels: Optional[Mapping[str, str]]=None, yscales: Optional[Mapping[str, str]]=None, reference_designs: Optional[Any]=None, target_failure_probability: Optional[float]=None, target_label: str='LQI target', invert_yaxis: Optional[Iterable[str]]=None, panel_labels: bool=False, axes: Optional[Sequence[Any]]=None, figsize: Optional[tuple[float, float]]=None, line_kwargs: Optional[Mapping[str, Any]]=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ddo._coerce_analysis_result",
+      "kind": "callable",
+      "signature": "(result: Any)",
+      "decorators": [],
+      "returns": "Mapping[str, float]"
+    },
+    {
+      "name": "pystra.ddo.DesignStudy",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "analysis",
+        "values",
+        "variable"
+      ]
+    },
+    {
+      "name": "pystra.ddo.DesignStudy.evaluate",
+      "kind": "callable",
+      "signature": "(self, include_analysis: bool=False)",
+      "decorators": [],
+      "returns": "pd.DataFrame"
+    },
+    {
+      "name": "pystra.ddo.RiskStudy",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "model",
+        "values",
+        "variable"
+      ]
+    },
+    {
+      "name": "pystra.ddo.RiskStudy._evaluate_model",
+      "kind": "callable",
+      "signature": "(self, value: Any)",
+      "decorators": [],
+      "returns": "RiskResult"
+    },
+    {
+      "name": "pystra.ddo.RiskStudy.evaluate",
+      "kind": "callable",
+      "signature": "(self, swtp: Optional[Union[float, SWTP]]=None)",
+      "decorators": [],
+      "returns": "pd.DataFrame"
+    },
+    {
+      "name": "pystra.ddo.DDOCriterion",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "feasibility_column"
+      ]
+    },
+    {
+      "name": "pystra.ddo.DDOCriterion.evaluate",
+      "kind": "callable",
+      "signature": "(self, results: pd.DataFrame)",
+      "decorators": [],
+      "returns": "pd.DataFrame"
+    },
+    {
+      "name": "pystra.ddo.DDOCriterion.feasible",
+      "kind": "callable",
+      "signature": "(self, results: pd.DataFrame)",
+      "decorators": [],
+      "returns": "pd.Series"
+    },
+    {
+      "name": "pystra.ddo._lqi_consequence",
+      "kind": "callable",
+      "signature": "(expected_fatalities_given_failure: Optional[float], consequence: Optional[FatalityConsequence]=None)",
+      "decorators": [],
+      "returns": "FatalityConsequence"
+    },
+    {
+      "name": "pystra.ddo._require_explicit_indexed",
+      "kind": "callable",
+      "signature": "(indexed: Optional[bool])",
+      "decorators": [],
+      "returns": "bool"
+    },
+    {
+      "name": "pystra.ddo.LQI",
+      "kind": "class",
+      "bases": [
+        "DDOCriterion"
+      ],
+      "attributes": [
+        "consequence",
+        "swtp",
+        "target"
+      ]
+    },
+    {
+      "name": "pystra.ddo.LQI._as_swtp",
+      "kind": "callable",
+      "signature": "(swtp: Union[float, SWTP])",
+      "decorators": [
+        "staticmethod"
+      ],
+      "returns": "SWTP"
+    },
+    {
+      "name": "pystra.ddo.LQI.lookup_target",
+      "kind": "callable",
+      "signature": "(k1: float, variability: str='medium')",
+      "decorators": [
+        "staticmethod"
+      ],
+      "returns": "TargetReliability"
+    },
+    {
+      "name": "pystra.ddo.LQI.derive_target",
+      "kind": "callable",
+      "signature": "(k1: float, resistance_cov: float=0.4, load_cov: float=0.4, bounds: tuple[float, float]=(1.0, 20.0))",
+      "decorators": [
+        "staticmethod"
+      ],
+      "returns": "TargetReliability"
+    },
+    {
+      "name": "pystra.ddo.LQI.from_swtp",
+      "kind": "callable",
+      "signature": "(cls, swtp: Union[float, SWTP], *, expected_fatalities_given_failure: Optional[float]=None, consequence: Optional[FatalityConsequence]=None, marginal_safety_cost: float, variability: str='medium')",
+      "decorators": [
+        "classmethod"
+      ],
+      "returns": "'LQI'"
+    },
+    {
+      "name": "pystra.ddo.LQI.from_country",
+      "kind": "callable",
+      "signature": "(cls, code: str, *, expected_fatalities_given_failure: Optional[float]=None, consequence: Optional[FatalityConsequence]=None, marginal_safety_cost: float, indexed: Optional[bool]=None, variability: str='medium')",
+      "decorators": [
+        "classmethod"
+      ],
+      "returns": "'LQI'"
+    },
+    {
+      "name": "pystra.ddo.LQI.from_lqi",
+      "kind": "callable",
+      "signature": "(cls, *, gross_domestic_product_per_capita: float, work_leisure_parameter: float, demographic_constant: float, expected_fatalities_given_failure: Optional[float]=None, consequence: Optional[FatalityConsequence]=None, marginal_safety_cost: float, variability: str='medium', currency: str='currency units', price_year: Optional[int]=None, source: Optional[str]='LQI relation SWTP = g / q * G')",
+      "decorators": [
+        "classmethod"
+      ],
+      "returns": "'LQI'"
+    },
+    {
+      "name": "pystra.ddo.LQI.expected_fatalities_given_failure",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": "Optional[float]"
+    },
+    {
+      "name": "pystra.ddo.LQI.k1",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": "Optional[float]"
+    },
+    {
+      "name": "pystra.ddo.LQI._swtp_and_expected_fatalities",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": "tuple[SWTP, float]"
+    },
+    {
+      "name": "pystra.ddo.LQI.risk_cost",
+      "kind": "callable",
+      "signature": "(self, safety_cost: Union[float, np.ndarray], failure_rate: Union[float, np.ndarray])",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ddo.LQI.risk_cost_from_result",
+      "kind": "callable",
+      "signature": "(self, safety_cost: float, risk: RiskResult, include_economic_loss: bool=False)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.LQI.acceptability_margin",
+      "kind": "callable",
+      "signature": "(self, safety_cost_derivative: float, failure_rate_derivative: float)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.LQI.acceptability_margin_at",
+      "kind": "callable",
+      "signature": "(self, safety_cost: Callable[[float], float], failure_rate: Callable[[float], float], design: float, step: Optional[float]=None)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.LQI.acceptability_boundary",
+      "kind": "callable",
+      "signature": "(self, safety_cost: Callable[[float], float], failure_rate: Callable[[float], float], bounds: tuple[float, float], step: Optional[float]=None)",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.ddo.LQI.evaluate",
+      "kind": "callable",
+      "signature": "(self, results: pd.DataFrame)",
+      "decorators": [],
+      "returns": "pd.DataFrame"
+    },
+    {
+      "name": "pystra.ddo.DDO",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "criterion",
+        "objective",
+        "results",
+        "study"
+      ]
+    },
+    {
+      "name": "pystra.ddo.DDO.__init__",
+      "kind": "callable",
+      "signature": "(self, *, study: Union[DesignStudy, 'RiskStudy'], criterion: DDOCriterion, objective: Optional[DDOObjective]=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ddo.DDO._evaluate",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": "pd.DataFrame"
+    },
+    {
+      "name": "pystra.ddo.DDO.run",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": "pd.DataFrame"
+    },
+    {
+      "name": "pystra.ddo.DDO._results_or_run",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": "pd.DataFrame"
+    },
+    {
+      "name": "pystra.ddo.DDO._objective_column",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": "str"
+    },
+    {
+      "name": "pystra.ddo.DDO.economic_optimum",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": "pd.Series"
+    },
+    {
+      "name": "pystra.ddo.DDO.feasible_results",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": "pd.DataFrame"
+    },
+    {
+      "name": "pystra.ddo.DDO.optimize",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": "pd.Series"
+    },
+    {
+      "name": "pystra.ddo.DDO.summary",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": "pd.DataFrame"
+    },
+    {
+      "name": "pystra.ddo.DDO.plot",
+      "kind": "callable",
+      "signature": "(self, design: Optional[str]=None, quantities: Optional[Sequence[str]]=None, **kwargs)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.beta.Beta",
+      "kind": "class",
+      "bases": [
+        "Distribution"
+      ],
+      "attributes": [
+        "_ctor_kwargs",
+        "a",
+        "b",
+        "dist_obj",
+        "dist_type"
+      ]
+    },
+    {
+      "name": "pystra.distributions.beta.Beta.__init__",
+      "kind": "callable",
+      "signature": "(self, name, mean, stdv, a=0, b=1, input_type=None, startpoint=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.beta.Beta.beta_parameter",
+      "kind": "callable",
+      "signature": "(self, q, *args)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.chisquare.ChiSquare",
+      "kind": "class",
+      "bases": [
+        "Distribution"
+      ],
+      "attributes": [
+        "dist_obj",
+        "dist_type",
+        "nu"
+      ]
+    },
+    {
+      "name": "pystra.distributions.chisquare.ChiSquare.__init__",
+      "kind": "callable",
+      "signature": "(self, name, mean, stdv=None, input_type=None, startpoint=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.StdNormal",
+      "kind": "class",
+      "bases": [],
+      "attributes": []
+    },
+    {
+      "name": "pystra.distributions.distribution.StdNormal.pdf",
+      "kind": "callable",
+      "signature": "(u)",
+      "decorators": [
+        "staticmethod"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.StdNormal.cdf",
+      "kind": "callable",
+      "signature": "(u)",
+      "decorators": [
+        "staticmethod"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.StdNormal.ppf",
+      "kind": "callable",
+      "signature": "(p)",
+      "decorators": [
+        "staticmethod"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.Constant",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "name",
+        "val"
+      ]
+    },
+    {
+      "name": "pystra.distributions.distribution.Constant.__init__",
+      "kind": "callable",
+      "signature": "(self, name, val)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.Constant.getName",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.Constant.getValue",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.Distribution",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "_ctor_kwargs",
+        "dist_obj",
+        "dist_type",
+        "mean",
+        "name",
+        "startpoint",
+        "stdv"
+      ]
+    },
+    {
+      "name": "pystra.distributions.distribution.Distribution.__init__",
+      "kind": "callable",
+      "signature": "(self, name='', dist_obj=None, mean=None, stdv=None, startpoint=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.Distribution.__repr__",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.Distribution._update_moments",
+      "kind": "callable",
+      "signature": "(self, mean=None, stdv=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.Distribution.getName",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.Distribution.getMean",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.Distribution.getStdv",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.Distribution.getStartPoint",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.Distribution.setStartPoint",
+      "kind": "callable",
+      "signature": "(self, startpoint=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.Distribution.pdf",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.Distribution.cdf",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.Distribution.ppf",
+      "kind": "callable",
+      "signature": "(self, u)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.Distribution.u_to_x",
+      "kind": "callable",
+      "signature": "(self, u)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.Distribution.x_to_u",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.Distribution.jacobian",
+      "kind": "callable",
+      "signature": "(self, u, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.Distribution.sample",
+      "kind": "callable",
+      "signature": "(self, n=1000)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.Distribution.plot",
+      "kind": "callable",
+      "signature": "(self, ax=None, **kwargs)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.Distribution.sensitivity_params",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.Distribution._make_copy",
+      "kind": "callable",
+      "signature": "(self, **overrides)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.Distribution._dmoments_dtheta",
+      "kind": "callable",
+      "signature": "(self, param)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.Distribution.dF_dtheta",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.Distribution.set_location",
+      "kind": "callable",
+      "signature": "(self, loc=0)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.distribution.Distribution.set_scale",
+      "kind": "callable",
+      "signature": "(self, scale=1)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.gamma.Gamma",
+      "kind": "class",
+      "bases": [
+        "Distribution"
+      ],
+      "attributes": [
+        "dist_obj",
+        "dist_type"
+      ]
+    },
+    {
+      "name": "pystra.distributions.gamma.Gamma.__init__",
+      "kind": "callable",
+      "signature": "(self, name, mean, stdv, input_type=None, startpoint=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.gev.GEVmax",
+      "kind": "class",
+      "bases": [
+        "Distribution"
+      ],
+      "attributes": [
+        "_ctor_kwargs",
+        "dist_obj",
+        "dist_type",
+        "mean",
+        "shape",
+        "stdv"
+      ]
+    },
+    {
+      "name": "pystra.distributions.gev.GEVmax.__init__",
+      "kind": "callable",
+      "signature": "(self, name, mean, stdv, shape, input_type=None, startpoint=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.gev.GEVmax.sensitivity_params",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.gev.GEVmin",
+      "kind": "class",
+      "bases": [
+        "Distribution"
+      ],
+      "attributes": [
+        "_ctor_kwargs",
+        "dist_obj",
+        "dist_type",
+        "mean",
+        "shape",
+        "startpoint",
+        "stdv"
+      ]
+    },
+    {
+      "name": "pystra.distributions.gev.GEVmin.__init__",
+      "kind": "callable",
+      "signature": "(self, name, mean, stdv, shape, input_type=None, startpoint=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.gev.GEVmin.sensitivity_params",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.gev.GEVmin.pdf",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.gev.GEVmin.cdf",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.gev.GEVmin.ppf",
+      "kind": "callable",
+      "signature": "(self, u)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.gumbel.Gumbel",
+      "kind": "class",
+      "bases": [
+        "Distribution"
+      ],
+      "attributes": [
+        "dist_obj",
+        "dist_type"
+      ]
+    },
+    {
+      "name": "pystra.distributions.gumbel.Gumbel.__init__",
+      "kind": "callable",
+      "signature": "(self, name, mean, stdv, input_type=None, startpoint=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.lognormal.Lognormal",
+      "kind": "class",
+      "bases": [
+        "Distribution"
+      ],
+      "attributes": [
+        "dist_obj",
+        "dist_type",
+        "lamb",
+        "mean",
+        "stdv",
+        "zeta"
+      ]
+    },
+    {
+      "name": "pystra.distributions.lognormal.Lognormal.__init__",
+      "kind": "callable",
+      "signature": "(self, name, mean, stdv, input_type=None, startpoint=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.lognormal.Lognormal._update_params",
+      "kind": "callable",
+      "signature": "(self, mean, stdv)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.lognormal.Lognormal.pdf",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.lognormal.Lognormal.cdf",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.lognormal.Lognormal.u_to_x",
+      "kind": "callable",
+      "signature": "(self, u)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.lognormal.Lognormal.x_to_u",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.lognormal.Lognormal.dF_dtheta",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.lognormal.Lognormal.set_location",
+      "kind": "callable",
+      "signature": "(self, loc=0)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.lognormal.Lognormal.set_scale",
+      "kind": "callable",
+      "signature": "(self, scale=1)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.maximum.Maximum",
+      "kind": "class",
+      "bases": [
+        "Distribution"
+      ],
+      "attributes": [
+        "N",
+        "dist_type",
+        "mean",
+        "parent",
+        "stdv"
+      ]
+    },
+    {
+      "name": "pystra.distributions.maximum.Maximum.__init__",
+      "kind": "callable",
+      "signature": "(self, name, parent, N, input_type=None, startpoint=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.maximum.Maximum.pdf",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.maximum.Maximum.cdf",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.maximum.Maximum.ppf",
+      "kind": "callable",
+      "signature": "(self, p)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.maximum.Maximum.u_to_x",
+      "kind": "callable",
+      "signature": "(self, u)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.maximum.Maximum.x_to_u",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.maximum.Maximum.jacobian",
+      "kind": "callable",
+      "signature": "(self, u, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.maximum.Maximum._get_stats",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.maximum.Maximum.set_location",
+      "kind": "callable",
+      "signature": "(self, loc=0)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.maximum.Maximum.set_scale",
+      "kind": "callable",
+      "signature": "(self, scale=1)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.maximum.Maximum.update_stats",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.normal.Normal",
+      "kind": "class",
+      "bases": [
+        "Distribution"
+      ],
+      "attributes": [
+        "dist_type",
+        "mean",
+        "stdv"
+      ]
+    },
+    {
+      "name": "pystra.distributions.normal.Normal.__init__",
+      "kind": "callable",
+      "signature": "(self, name, mean, stdv, input_type=None, startpoint=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.normal.Normal.pdf",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.normal.Normal.cdf",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.normal.Normal.ppf",
+      "kind": "callable",
+      "signature": "(self, p)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.normal.Normal.sample",
+      "kind": "callable",
+      "signature": "(self, n=1000)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.normal.Normal.u_to_x",
+      "kind": "callable",
+      "signature": "(self, u)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.normal.Normal.x_to_u",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.normal.Normal.jacobian",
+      "kind": "callable",
+      "signature": "(self, u, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.normal.Normal.dF_dtheta",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.normal.Normal.set_location",
+      "kind": "callable",
+      "signature": "(self, loc=0)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.normal.Normal.set_scale",
+      "kind": "callable",
+      "signature": "(self, scale=1)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.parent.MaxParent",
+      "kind": "class",
+      "bases": [
+        "Distribution"
+      ],
+      "attributes": [
+        "N",
+        "dist_type",
+        "max_dist",
+        "mean",
+        "stdv"
+      ]
+    },
+    {
+      "name": "pystra.distributions.parent.MaxParent.__init__",
+      "kind": "callable",
+      "signature": "(self, name, max_dist, N, input_type=None, startpoint=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.parent.MaxParent.pdf",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.parent.MaxParent.cdf",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.parent.MaxParent.ppf",
+      "kind": "callable",
+      "signature": "(self, p)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.parent.MaxParent.u_to_x",
+      "kind": "callable",
+      "signature": "(self, u)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.parent.MaxParent.x_to_u",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.parent.MaxParent.jacobian",
+      "kind": "callable",
+      "signature": "(self, u, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.parent.MaxParent._get_stats",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.parent.MaxParent.set_location",
+      "kind": "callable",
+      "signature": "(self, loc=0)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.parent.MaxParent.set_scale",
+      "kind": "callable",
+      "signature": "(self, scale=1)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.parent.MaxParent.set_exponent",
+      "kind": "callable",
+      "signature": "(self, N=2)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.parent.MaxParent._update_stats",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.scipydist.ScipyDist",
+      "kind": "class",
+      "bases": [
+        "Distribution"
+      ],
+      "attributes": [
+        "dist_type"
+      ]
+    },
+    {
+      "name": "pystra.distributions.scipydist.ScipyDist.__init__",
+      "kind": "callable",
+      "signature": "(self, name, dist_obj, startpoint=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.shiftedexponential.ShiftedExponential",
+      "kind": "class",
+      "bases": [
+        "Distribution"
+      ],
+      "attributes": [
+        "dist_obj",
+        "dist_type"
+      ]
+    },
+    {
+      "name": "pystra.distributions.shiftedexponential.ShiftedExponential.__init__",
+      "kind": "callable",
+      "signature": "(self, name, mean, stdv, input_type=None, startpoint=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.shiftedlognormal.ShiftedLognormal",
+      "kind": "class",
+      "bases": [
+        "Lognormal"
+      ],
+      "attributes": [
+        "_ctor_kwargs",
+        "dist_obj",
+        "dist_type",
+        "lower",
+        "mean",
+        "stdv"
+      ]
+    },
+    {
+      "name": "pystra.distributions.shiftedlognormal.ShiftedLognormal.__init__",
+      "kind": "callable",
+      "signature": "(self, name, mean, stdv, lower, input_type=None, startpoint=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.shiftedlognormal.ShiftedLognormal._update_params",
+      "kind": "callable",
+      "signature": "(self, mean, stdv, lower=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.shiftedlognormal.ShiftedLognormal.pdf",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.shiftedlognormal.ShiftedLognormal.cdf",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.shiftedlognormal.ShiftedLognormal.u_to_x",
+      "kind": "callable",
+      "signature": "(self, u)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.shiftedlognormal.ShiftedLognormal.x_to_u",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.shiftedlognormal.ShiftedLognormal.set_lower",
+      "kind": "callable",
+      "signature": "(self, lower=0)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.shiftedrayleigh.ShiftedRayleigh",
+      "kind": "class",
+      "bases": [
+        "Distribution"
+      ],
+      "attributes": [
+        "dist_obj",
+        "dist_type"
+      ]
+    },
+    {
+      "name": "pystra.distributions.shiftedrayleigh.ShiftedRayleigh.__init__",
+      "kind": "callable",
+      "signature": "(self, name, mean, stdv, input_type=None, startpoint=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.typeiiismallestvalue.TypeIIIsmallestValue",
+      "kind": "class",
+      "bases": [
+        "Distribution"
+      ],
+      "attributes": [
+        "_ctor_kwargs",
+        "dist_obj",
+        "dist_type",
+        "epsilon"
+      ]
+    },
+    {
+      "name": "pystra.distributions.typeiiismallestvalue.TypeIIIsmallestValue.__init__",
+      "kind": "callable",
+      "signature": "(self, name, mean, stdv, epsilon=0, input_type=None, startpoint=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.typeiilargestvalue.TypeIIlargestValue",
+      "kind": "class",
+      "bases": [
+        "Distribution"
+      ],
+      "attributes": [
+        "dist_obj",
+        "dist_type"
+      ]
+    },
+    {
+      "name": "pystra.distributions.typeiilargestvalue.TypeIIlargestValue.__init__",
+      "kind": "callable",
+      "signature": "(self, name, mean, stdv, input_type=None, startpoint=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.typeiilargestvalue.TypeIIlargestValue.typIIlargest_parameter",
+      "kind": "callable",
+      "signature": "(self, x, *args)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.typeilargestvalue.TypeIlargestValue",
+      "kind": "class",
+      "bases": [
+        "Distribution"
+      ],
+      "attributes": [
+        "dist_obj",
+        "dist_type"
+      ]
+    },
+    {
+      "name": "pystra.distributions.typeilargestvalue.TypeIlargestValue.__init__",
+      "kind": "callable",
+      "signature": "(self, name, mean, stdv, input_type=None, startpoint=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.typeismallestvalue.TypeIsmallestValue",
+      "kind": "class",
+      "bases": [
+        "Distribution"
+      ],
+      "attributes": [
+        "dist_obj",
+        "dist_type"
+      ]
+    },
+    {
+      "name": "pystra.distributions.typeismallestvalue.TypeIsmallestValue.__init__",
+      "kind": "callable",
+      "signature": "(self, name, mean, stdv, input_type=None, startpoint=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.uniform.Uniform",
+      "kind": "class",
+      "bases": [
+        "Distribution"
+      ],
+      "attributes": [
+        "a",
+        "b",
+        "dist_obj",
+        "dist_type"
+      ]
+    },
+    {
+      "name": "pystra.distributions.uniform.Uniform.__init__",
+      "kind": "callable",
+      "signature": "(self, name, mean, stdv, input_type=None, startpoint=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.uniform.Uniform.u_to_x",
+      "kind": "callable",
+      "signature": "(self, u)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.uniform.Uniform.x_to_u",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.weibull.Weibull",
+      "kind": "class",
+      "bases": [
+        "Distribution"
+      ],
+      "attributes": [
+        "_ctor_kwargs",
+        "dist_obj",
+        "dist_type",
+        "epsilon"
+      ]
+    },
+    {
+      "name": "pystra.distributions.weibull.Weibull.__init__",
+      "kind": "callable",
+      "signature": "(self, name, mean, stdv, epsilon=0, input_type=None, startpoint=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.weibull.Weibull.weibull_parameter",
+      "kind": "callable",
+      "signature": "(self, x, *args)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.zeroinflated.ZeroInflated",
+      "kind": "class",
+      "bases": [
+        "Distribution"
+      ],
+      "attributes": [
+        "dist",
+        "dist_type",
+        "mean",
+        "p",
+        "q",
+        "stdv",
+        "zero_tol"
+      ]
+    },
+    {
+      "name": "pystra.distributions.zeroinflated.ZeroInflated.__init__",
+      "kind": "callable",
+      "signature": "(self, name, dist, p, input_type=None, startpoint=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.zeroinflated.ZeroInflated.pdf",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.zeroinflated.ZeroInflated.cdf",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.zeroinflated.ZeroInflated.ppf",
+      "kind": "callable",
+      "signature": "(self, p)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.zeroinflated.ZeroInflated.u_to_x",
+      "kind": "callable",
+      "signature": "(self, u)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.zeroinflated.ZeroInflated.x_to_u",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.zeroinflated.ZeroInflated.jacobian",
+      "kind": "callable",
+      "signature": "(self, u, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.zeroinflated.ZeroInflated._get_stats",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.zeroinflated.ZeroInflated.set_location",
+      "kind": "callable",
+      "signature": "(self, loc=0)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.zeroinflated.ZeroInflated.set_scale",
+      "kind": "callable",
+      "signature": "(self, scale=1)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.zeroinflated.ZeroInflated.set_zero_probability",
+      "kind": "callable",
+      "signature": "(self, p)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.distributions.zeroinflated.ZeroInflated._update_stats",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.fbc.FBCProcess",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "basic_interval",
+        "name",
+        "parent"
+      ]
+    },
+    {
+      "name": "pystra.fbc.FBCProcess.__init__",
+      "kind": "callable",
+      "signature": "(self, name, parent, basic_interval)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.fbc.FBCProcess.from_maximum",
+      "kind": "callable",
+      "signature": "(cls, name, maximum, maximum_duration, basic_interval)",
+      "decorators": [
+        "classmethod"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.fbc.FBCProcess.interval_count",
+      "kind": "callable",
+      "signature": "(self, duration=None, n=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.fbc.FBCProcess.point_in_time",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.fbc.FBCProcess.maximum",
+      "kind": "callable",
+      "signature": "(self, duration=None, n=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.form.Form",
+      "kind": "class",
+      "bases": [
+        "AnalysisObject"
+      ],
+      "attributes": [
+        "G",
+        "Go",
+        "J",
+        "Pf",
+        "alpha",
+        "beta",
+        "converged",
+        "d",
+        "e1",
+        "e2",
+        "gamma",
+        "gradient",
+        "i",
+        "results_valid",
+        "step",
+        "u",
+        "x"
+      ]
+    },
+    {
+      "name": "pystra.form.Form.__init__",
+      "kind": "callable",
+      "signature": "(self, stochastic_model=None, limit_state=None, analysis_options=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.form.Form.run",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.form.Form.computeStartingPoint",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.form.Form.computeTransformation",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.form.Form.computeJacobian",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.form.Form.computeLimitState",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.form.Form.computeAlpha",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.form.Form.computeGamma",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.form.Form.computeSearchDirection",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.form.Form.getStepSize",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.form.Form.computeStepSize",
+      "kind": "callable",
+      "signature": "(self, G, gradient, u, d)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.form.Form.computeBeta",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.form.Form.computeFailureProbability",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.form.Form.getEquivalentBeta",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.form.Form.showResults",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.form.Form.showDetailedOutput",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.form.Form.getBeta",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.form.Form.getFailure",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.form.Form.getDesignPoint",
+      "kind": "callable",
+      "signature": "(self, uspace=True)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.form.Form.getAlpha",
+      "kind": "callable",
+      "signature": "(self, as_dict=False)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.form.Form.getNoFunctionCalls",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.integration.rho_integral",
+      "kind": "callable",
+      "signature": "(rho0, margi, margj, Z1, Z2, X1, X2, WIP, detJ)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.integration.zi_and_xi",
+      "kind": "callable",
+      "signature": "(margi, margj, zmax, nIP)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.integration._phi2",
+      "kind": "callable",
+      "signature": "(Z1, Z2, rho0)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.integration._dphi2_drho0",
+      "kind": "callable",
+      "signature": "(Z1, Z2, rho0, PHI2)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.integration.drho_drho0",
+      "kind": "callable",
+      "signature": "(rho0, margi, margj, Z1, Z2, X1, X2, WIP, detJ)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.integration.drho0_dtheta",
+      "kind": "callable",
+      "signature": "(rho0, margi, margj, Z1, Z2, X1, X2, WIP, detJ, var_idx, param)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.joint.JointDistribution",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "copula",
+        "dimension",
+        "marginals",
+        "names"
+      ]
+    },
+    {
+      "name": "pystra.joint.JointDistribution.__init__",
+      "kind": "callable",
+      "signature": "(self, marginals, copula)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.joint.JointDistribution._points",
+      "kind": "callable",
+      "signature": "(self, points)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.joint.JointDistribution.cdf",
+      "kind": "callable",
+      "signature": "(self, points, **kwargs)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.joint.JointDistribution.logpdf",
+      "kind": "callable",
+      "signature": "(self, points)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.joint.JointDistribution.pdf",
+      "kind": "callable",
+      "signature": "(self, points)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.joint.JointDistribution.rvs",
+      "kind": "callable",
+      "signature": "(self, size=1, seed=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.joint.JointDistribution.getTransformation",
+      "kind": "callable",
+      "signature": "(self, method='rosenblatt', order=None, factorization='cholesky')",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.joint.CopulaTransformation",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "T",
+        "copula",
+        "dimension",
+        "inv_T",
+        "is_student",
+        "joint",
+        "marginals",
+        "method",
+        "order",
+        "standard_marginal",
+        "standard_space",
+        "transform_type"
+      ]
+    },
+    {
+      "name": "pystra.joint.CopulaTransformation.__init__",
+      "kind": "callable",
+      "signature": "(self, joint_distribution, method='rosenblatt', order=None, factorization='cholesky')",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.joint.CopulaTransformation._vector",
+      "kind": "callable",
+      "signature": "(self, values)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.joint.CopulaTransformation._latent",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.joint.CopulaTransformation._physical",
+      "kind": "callable",
+      "signature": "(self, w)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.joint.CopulaTransformation.x_to_u",
+      "kind": "callable",
+      "signature": "(self, x, marg=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.joint.CopulaTransformation.u_to_x",
+      "kind": "callable",
+      "signature": "(self, u, marg=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.joint.CopulaTransformation.jacobian",
+      "kind": "callable",
+      "signature": "(self, u, x, marg=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loadcomb.LoadCombination",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "cases",
+        "comb_cases_max",
+        "constant",
+        "df_corr",
+        "dict_comb_cases",
+        "dict_dist_comb",
+        "dict_label",
+        "distributions_comb",
+        "distributions_max",
+        "distributions_other",
+        "distributions_pit",
+        "distributions_resistance",
+        "label_all",
+        "label_comb_cases",
+        "label_comb_vrs",
+        "label_const",
+        "label_other",
+        "label_resist",
+        "lsf",
+        "num_comb",
+        "options"
+      ]
+    },
+    {
+      "name": "pystra.loadcomb.LoadCombination.__init__",
+      "kind": "callable",
+      "signature": "(self, lsf=None, dict_dist_comb=None, list_dist_resist=None, list_dist_other=None, corr=None, list_const=None, opt=None, dict_comb_cases=None, cases=None, constants=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loadcomb.LoadCombination.turkstra",
+      "kind": "callable",
+      "signature": "(cls, variable, reference_period, lsf=None, resistance=None, permanent=None, other=None, constants=None, corr=None, opt=None, companion_duration='leading_interval')",
+      "decorators": [
+        "classmethod"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.loadcomb.LoadCombination._variable_name",
+      "kind": "callable",
+      "signature": "(obj, allow_process=False)",
+      "decorators": [
+        "staticmethod"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.loadcomb.LoadCombination._variables_to_dict",
+      "kind": "callable",
+      "signature": "(cls, variables, allow_process=False)",
+      "decorators": [
+        "classmethod"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.loadcomb.LoadCombination._normalise_cases",
+      "kind": "callable",
+      "signature": "(cls, cases)",
+      "decorators": [
+        "classmethod"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.loadcomb.LoadCombination._warn_legacy_inputs",
+      "kind": "callable",
+      "signature": "()",
+      "decorators": [
+        "staticmethod"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.loadcomb.LoadCombination._init_from_cases",
+      "kind": "callable",
+      "signature": "(self, cases)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loadcomb.LoadCombination._init_from_legacy",
+      "kind": "callable",
+      "signature": "(self, dict_dist_comb, list_dist_resist, list_dist_other=None, dict_comb_cases=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loadcomb.LoadCombination._set_common_labels",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loadcomb.LoadCombination._case_variable_names",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loadcomb.LoadCombination._check_input",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loadcomb.LoadCombination.get_label",
+      "kind": "callable",
+      "signature": "(self, label_type)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loadcomb.LoadCombination._set_num_comb",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loadcomb.LoadCombination.get_num_comb",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loadcomb.LoadCombination.get_dict_dist_comb",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loadcomb.LoadCombination._create_dict_dist_comb",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loadcomb.LoadCombination._case_name",
+      "kind": "callable",
+      "signature": "(self, lcn=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loadcomb.LoadCombination.case",
+      "kind": "callable",
+      "signature": "(self, lcn=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loadcomb.LoadCombination.stochastic_model",
+      "kind": "callable",
+      "signature": "(self, lcn=None, **kwargs)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loadcomb.LoadCombination._get_corr_for_stochastic_model",
+      "kind": "callable",
+      "signature": "(self, stochastic_model)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loadcomb.LoadCombination.run_reliability_case",
+      "kind": "callable",
+      "signature": "(self, lcn=None, **kwargs)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loadcomb.LoadCombination.eval_lsf_kwargs",
+      "kind": "callable",
+      "signature": "(self, set_value=0.0, set_const=None, **kwargs)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ls.LineSampling",
+      "kind": "class",
+      "bases": [
+        "AnalysisObject"
+      ],
+      "attributes": [
+        "Pf",
+        "_pf_contributions",
+        "alpha",
+        "beta",
+        "cov",
+        "form",
+        "n_samples",
+        "nrv",
+        "results_valid"
+      ]
+    },
+    {
+      "name": "pystra.ls.LineSampling.__init__",
+      "kind": "callable",
+      "signature": "(self, analysis_options=None, limit_state=None, stochastic_model=None, form=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ls.LineSampling.run",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ls.LineSampling._eval_g_at_c",
+      "kind": "callable",
+      "signature": "(self, c, v, alpha, marg)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ls.LineSampling._find_line_intersection",
+      "kind": "callable",
+      "signature": "(self, v, alpha, c_init, marg)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ls.LineSampling.getBeta",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ls.LineSampling.getFailure",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ls.LineSampling.showResults",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.MonteCarlo",
+      "kind": "class",
+      "bases": [
+        "AnalysisObject"
+      ],
+      "attributes": [
+        "G",
+        "I",
+        "Pf",
+        "all_G",
+        "all_G1",
+        "all_X",
+        "approxMC_beta",
+        "approxMC_beta_all",
+        "beta",
+        "bins",
+        "block_size",
+        "cholesky_covariance",
+        "cov_q_bar",
+        "covariance",
+        "done",
+        "factors",
+        "inverse_covariance",
+        "k",
+        "nrv",
+        "point",
+        "q",
+        "q_bar",
+        "sum_q",
+        "sum_q2",
+        "u",
+        "u_all",
+        "x",
+        "x_all"
+      ]
+    },
+    {
+      "name": "pystra.mc.MonteCarlo.__init__",
+      "kind": "callable",
+      "signature": "(self, analysis_options=None, limit_state=None, stochastic_model=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.MonteCarlo.setPoint",
+      "kind": "callable",
+      "signature": "(self, point=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.MonteCarlo.computeRandomNumbers",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.MonteCarlo.computeTransformation",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.MonteCarlo.computeLimitState",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.MonteCarlo.computeResults",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.MonteCarlo.computeSumUpdate",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.MonteCarlo.computeCoefficientOfVariation",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.MonteCarlo.computePercentDone",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.MonteCarlo.computeFailureProbability",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.MonteCarlo.computeBeta",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.MonteCarlo.computeBins",
+      "kind": "callable",
+      "signature": "(self, samples)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.MonteCarlo.getBeta",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.MonteCarlo.getFailure",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.MonteCarlo.getDistributionData",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.MonteCarlo.getBins",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.CrudeMonteCarlo",
+      "kind": "class",
+      "bases": [
+        "MonteCarlo"
+      ],
+      "attributes": [
+        "all_G1",
+        "approxMC_beta",
+        "approxMC_beta_all",
+        "block_size",
+        "cholesky_covariance",
+        "cov_q_bar",
+        "covariance",
+        "done",
+        "factors",
+        "inverse_covariance",
+        "k",
+        "point",
+        "q_bar",
+        "results_valid",
+        "sum_q",
+        "sum_q2",
+        "u_all",
+        "x_all"
+      ]
+    },
+    {
+      "name": "pystra.mc.CrudeMonteCarlo.__init__",
+      "kind": "callable",
+      "signature": "(self, analysis_options=None, limit_state=None, stochastic_model=None, point=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.CrudeMonteCarlo.run",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.CrudeMonteCarlo.initializeVariables",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.CrudeMonteCarlo.showResults",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.ImportanceSampling",
+      "kind": "class",
+      "bases": [
+        "CrudeMonteCarlo"
+      ],
+      "attributes": [
+        "results_valid"
+      ]
+    },
+    {
+      "name": "pystra.mc.ImportanceSampling.__init__",
+      "kind": "callable",
+      "signature": "(self, analysis_options=None, limit_state=None, stochastic_model=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.ImportanceSampling.run",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.ImportanceSampling.showResults",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.DistributionAnalysis",
+      "kind": "class",
+      "bases": [
+        "MonteCarlo"
+      ],
+      "attributes": [
+        "all_G",
+        "all_X",
+        "bins",
+        "block_size",
+        "cholesky_covariance",
+        "covariance",
+        "done",
+        "k",
+        "results_valid"
+      ]
+    },
+    {
+      "name": "pystra.mc.DistributionAnalysis.__init__",
+      "kind": "callable",
+      "signature": "(self, analysis_options=None, limit_state=None, stochastic_model=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.DistributionAnalysis.run",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.DistributionAnalysis.initializeVariables",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.DistributionAnalysis.computeDataUpdate",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.DistributionAnalysis.computeDistributionData",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.mc.DistributionAnalysis.showResults",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "_Ro",
+        "_call_function",
+        "_consts",
+        "_copula",
+        "_correlation",
+        "_marg",
+        "_names",
+        "variables"
+      ]
+    },
+    {
+      "name": "pystra.model.StochasticModel.__init__",
+      "kind": "callable",
+      "signature": "(self, joint_distribution=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.addVariable",
+      "kind": "callable",
+      "signature": "(self, obj)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.constants",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.names",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.n_marg",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.marginal_distributions",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.correlation",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.correlation",
+      "kind": "callable",
+      "signature": "(self, value)",
+      "decorators": [
+        "correlation.setter"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.copula",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.copula",
+      "kind": "callable",
+      "signature": "(self, value)",
+      "decorators": [
+        "copula.setter"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.modified_correlation",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.modified_correlation",
+      "kind": "callable",
+      "signature": "(self, value)",
+      "decorators": [
+        "modified_correlation.setter"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.call_function",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.call_function",
+      "kind": "callable",
+      "signature": "(self, value)",
+      "decorators": [
+        "call_function.setter"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.getConstants",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.getVariables",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.getVariable",
+      "kind": "callable",
+      "signature": "(self, name)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.getNames",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.getLenMarginalDistributions",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.getMarginalDistributions",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.setMarginalDistributions",
+      "kind": "callable",
+      "signature": "(self, marg)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.setCorrelation",
+      "kind": "callable",
+      "signature": "(self, obj)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.getCorrelation",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.setCopula",
+      "kind": "callable",
+      "signature": "(self, copula)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.getCopula",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.getJointDistribution",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.setModifiedCorrelation",
+      "kind": "callable",
+      "signature": "(self, correlation)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.getModifiedCorrelation",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.addCallFunction",
+      "kind": "callable",
+      "signature": "(self, add)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.StochasticModel.getCallFunction",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.LimitState",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "expression",
+        "model",
+        "nrv",
+        "nx",
+        "options",
+        "x"
+      ]
+    },
+    {
+      "name": "pystra.model.LimitState.__init__",
+      "kind": "callable",
+      "signature": "(self, expression=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.LimitState.getExpression",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.LimitState.setExpression",
+      "kind": "callable",
+      "signature": "(self, expression)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.LimitState.evaluate_lsf",
+      "kind": "callable",
+      "signature": "(self, x, stochastic_model, analysis_options, diff_mode=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.LimitState.evaluate_nogradient",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.LimitState.evaluate_ffd",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.LimitState.evaluate_ddm",
+      "kind": "callable",
+      "signature": "(self, x)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.model.LimitState.compute_lsf",
+      "kind": "callable",
+      "signature": "(self, x, ddm=False)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.quadrature.quadratureRule",
+      "kind": "callable",
+      "signature": "(n, wfun=None, alpha=None, beta=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.sensitivity.SensitivityAnalysis",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "limitstate",
+        "model",
+        "options"
+      ]
+    },
+    {
+      "name": "pystra.sensitivity.SensitivityAnalysis.__init__",
+      "kind": "callable",
+      "signature": "(self, limit_state, stochastic_model, analysis_options=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.sensitivity.SensitivityAnalysis.run",
+      "kind": "callable",
+      "signature": "(self, numerical=True, delta=0.01)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.sensitivity.SensitivityAnalysis.run_form",
+      "kind": "callable",
+      "signature": "(self, numerical=True, delta=0.01)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.sensitivity.SensitivityAnalysis.summary",
+      "kind": "callable",
+      "signature": "(self, result)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.sensitivity.SensitivityAnalysis._numerical_sens",
+      "kind": "callable",
+      "signature": "(self, delta)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.sensitivity.SensitivityAnalysis._cf_sens",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.sensitivity.SensitivityAnalysis._compute_dR0_dtheta",
+      "kind": "callable",
+      "signature": "(self, marg, nrv, Ro, R, quad_grids, var_k, param)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.sensitivity.SensitivityAnalysis._select_nIP",
+      "kind": "callable",
+      "signature": "(rho)",
+      "decorators": [
+        "staticmethod"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.sorm.Sorm",
+      "kind": "class",
+      "bases": [
+        "AnalysisObject"
+      ],
+      "attributes": [
+        "betaHL",
+        "betag_breitung",
+        "betag_breitung_m",
+        "fit_type",
+        "form",
+        "kappa",
+        "kappa_pf",
+        "pf2_breitung",
+        "pf2_breitung_m",
+        "results_valid"
+      ]
+    },
+    {
+      "name": "pystra.sorm.Sorm.__init__",
+      "kind": "callable",
+      "signature": "(self, stochastic_model=None, limit_state=None, analysis_options=None, form=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.sorm.Sorm._reset_results",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.sorm.Sorm._prepare_run",
+      "kind": "callable",
+      "signature": "(self, fit_type)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.sorm.Sorm.run",
+      "kind": "callable",
+      "signature": "(self, fit_type='cf')",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.sorm.Sorm.run_curvefit",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.sorm.Sorm.run_pointfit",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.sorm.Sorm._find_fitting_point",
+      "kind": "callable",
+      "signature": "(self, axis, sign, beta, k, R1, marg, max_iter=50, tol=1e-06)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.sorm.Sorm._pf_breitung_pf",
+      "kind": "callable",
+      "signature": "(self, beta, kappa_minus, kappa_plus)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.sorm.Sorm._pf_breitung_m_pf",
+      "kind": "callable",
+      "signature": "(self, beta, kappa_minus, kappa_plus)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.sorm.Sorm.pf_breitung",
+      "kind": "callable",
+      "signature": "(self, beta, kappa)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.sorm.Sorm.pf_breitung_m",
+      "kind": "callable",
+      "signature": "(self, beta, kappa)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.sorm.Sorm.showResults",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.sorm.Sorm.showDetailedOutput",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.sorm.Sorm.computeHessian",
+      "kind": "callable",
+      "signature": "(self, diff_type=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.sorm.Sorm.evaluateLSF",
+      "kind": "callable",
+      "signature": "(self, x, calc_gradient=False, u_space=True)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.sorm.Sorm.orthonormal_matrix",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.sorm.Sorm.gram_schmidt",
+      "kind": "callable",
+      "signature": "(self, A)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ss.SubsetSimulation",
+      "kind": "class",
+      "bases": [
+        "AnalysisObject"
+      ],
+      "attributes": [
+        "Pf",
+        "beta",
+        "conditional_probs",
+        "cov",
+        "n_levels",
+        "p0",
+        "proposal_sigma",
+        "results_valid",
+        "thresholds"
+      ]
+    },
+    {
+      "name": "pystra.ss.SubsetSimulation.__init__",
+      "kind": "callable",
+      "signature": "(self, analysis_options=None, limit_state=None, stochastic_model=None, p0=0.1, proposal_sigma=1.0)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ss.SubsetSimulation.run",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ss.SubsetSimulation._finalise",
+      "kind": "callable",
+      "signature": "(self, Pf, N)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ss.SubsetSimulation._eval_g_batch",
+      "kind": "callable",
+      "signature": "(self, u, marg)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ss.SubsetSimulation._mmh_step",
+      "kind": "callable",
+      "signature": "(self, seeds, seeds_G, threshold, N, nrv, marg)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ss.SubsetSimulation.getBeta",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ss.SubsetSimulation.getFailure",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.ss.SubsetSimulation.showResults",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.strong_maximum.StrongMaximumTest",
+      "kind": "class",
+      "bases": [
+        "AnalysisObject"
+      ],
+      "attributes": [
+        "accuracy_level",
+        "beta",
+        "cap_probability",
+        "confidence_level",
+        "delta_epsilon",
+        "design_point",
+        "evaluation_count",
+        "form",
+        "has_competing_points",
+        "importance_level",
+        "masks",
+        "max_points",
+        "nrv",
+        "point_number",
+        "radius",
+        "requested_confidence_level",
+        "results_valid",
+        "rng",
+        "status",
+        "transform",
+        "u_points",
+        "values",
+        "vicinity_cosine",
+        "x_points"
+      ]
+    },
+    {
+      "name": "pystra.strong_maximum.StrongMaximumTest.__init__",
+      "kind": "callable",
+      "signature": "(self, form=None, *, stochastic_model=None, limit_state=None, design_point=None, analysis_options=None, importance_level=0.15, accuracy_level=3.0, confidence_level=None, point_number=None, seed=None, max_points=1000000)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.strong_maximum.StrongMaximumTest._positive_integer",
+      "kind": "callable",
+      "signature": "(value, name)",
+      "decorators": [
+        "staticmethod"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.strong_maximum.StrongMaximumTest._clear_results",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.strong_maximum.StrongMaximumTest._evaluate",
+      "kind": "callable",
+      "signature": "(self, u)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.strong_maximum.StrongMaximumTest.run",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.strong_maximum.StrongMaximumTest.getPoints",
+      "kind": "callable",
+      "signature": "(self, region='far_failure', uspace=True)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.strong_maximum.StrongMaximumTest.getValues",
+      "kind": "callable",
+      "signature": "(self, region='far_failure')",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.strong_maximum.StrongMaximumTest.showResults",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.Component",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "_signature",
+        "limit_state",
+        "name"
+      ]
+    },
+    {
+      "name": "pystra.system.Component.__init__",
+      "kind": "callable",
+      "signature": "(self, name, limit_state=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.Component.evaluate",
+      "kind": "callable",
+      "signature": "(self, **kwargs)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.Component.as_limit_state",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.Component.getLimitState",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.Component.iter_components",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.Component.components",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.Component.failure_mask",
+      "kind": "callable",
+      "signature": "(self, **kwargs)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.Component._filter_kwargs",
+      "kind": "callable",
+      "signature": "(self, kwargs)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.System",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "children",
+        "name"
+      ]
+    },
+    {
+      "name": "pystra.system.System.__init__",
+      "kind": "callable",
+      "signature": "(self, children: Iterable, name=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.System.components",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.System.iter_components",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.System.evaluate",
+      "kind": "callable",
+      "signature": "(self, **kwargs)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.System.as_limit_state",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.System.getLimitState",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.System.component_values",
+      "kind": "callable",
+      "signature": "(self, **kwargs)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.System.component_failure_masks",
+      "kind": "callable",
+      "signature": "(self, **kwargs)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.System.failure_mask",
+      "kind": "callable",
+      "signature": "(self, **kwargs)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.System._combine",
+      "kind": "callable",
+      "signature": "(self, values)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.SeriesSystem",
+      "kind": "class",
+      "bases": [
+        "System"
+      ],
+      "attributes": []
+    },
+    {
+      "name": "pystra.system.SeriesSystem._combine",
+      "kind": "callable",
+      "signature": "(self, values)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.ParallelSystem",
+      "kind": "class",
+      "bases": [
+        "System"
+      ],
+      "attributes": []
+    },
+    {
+      "name": "pystra.system.ParallelSystem._combine",
+      "kind": "callable",
+      "signature": "(self, values)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.KofNSystem",
+      "kind": "class",
+      "bases": [
+        "System"
+      ],
+      "attributes": [
+        "k"
+      ]
+    },
+    {
+      "name": "pystra.system.KofNSystem.__init__",
+      "kind": "callable",
+      "signature": "(self, children: Iterable, k, name=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.KofNSystem._combine",
+      "kind": "callable",
+      "signature": "(self, values)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.CutSetSystem",
+      "kind": "class",
+      "bases": [
+        "System"
+      ],
+      "attributes": [
+        "cut_sets"
+      ]
+    },
+    {
+      "name": "pystra.system.CutSetSystem.__init__",
+      "kind": "callable",
+      "signature": "(self, cut_sets, components=None, name=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.CutSetSystem._combine",
+      "kind": "callable",
+      "signature": "(self, values)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.TieSetSystem",
+      "kind": "class",
+      "bases": [
+        "System"
+      ],
+      "attributes": [
+        "tie_sets"
+      ]
+    },
+    {
+      "name": "pystra.system.TieSetSystem.__init__",
+      "kind": "callable",
+      "signature": "(self, tie_sets, components=None, name=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.TieSetSystem._combine",
+      "kind": "callable",
+      "signature": "(self, values)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system.ditlevsen_bounds",
+      "kind": "callable",
+      "signature": "(probabilities, intersections, ordering=None, optimize_order=False)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system._as_node",
+      "kind": "callable",
+      "signature": "(obj, index)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system._as_limit_state",
+      "kind": "callable",
+      "signature": "(obj)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system._component_name",
+      "kind": "callable",
+      "signature": "(name, limit_state)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system._call_signature",
+      "kind": "callable",
+      "signature": "(expression: Callable)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system._broadcast_values",
+      "kind": "callable",
+      "signature": "(values)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system._unique_components",
+      "kind": "callable",
+      "signature": "(components)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system._resolve_component_sets",
+      "kind": "callable",
+      "signature": "(component_sets, components)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system._component_catalogue",
+      "kind": "callable",
+      "signature": "(components)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system._intersection_matrix",
+      "kind": "callable",
+      "signature": "(intersections, n_events)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system._ditlevsen_bounds_for_order",
+      "kind": "callable",
+      "signature": "(probabilities, intersections, ordering)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system._clip_probability",
+      "kind": "callable",
+      "signature": "(value)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system_form.SystemFORM",
+      "kind": "class",
+      "bases": [
+        "AnalysisObject"
+      ],
+      "attributes": [
+        "Pf",
+        "abseps",
+        "alphas",
+        "beta",
+        "betas",
+        "bounds",
+        "component_results",
+        "components",
+        "correlation",
+        "intersections",
+        "maxpts",
+        "probabilities",
+        "releps",
+        "results_valid",
+        "system"
+      ]
+    },
+    {
+      "name": "pystra.system_form.SystemFORM.__init__",
+      "kind": "callable",
+      "signature": "(self, system, stochastic_model, analysis_options=None, *, maxpts=1000000, abseps=1e-10, releps=1e-05)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system_form.SystemFORM._clear_results",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system_form.SystemFORM._cdf",
+      "kind": "callable",
+      "signature": "(self, upper, correlation)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system_form.SystemFORM.run",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system_form.SystemFORM.getFailure",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system_form.SystemFORM.getBeta",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.system_form.SystemFORM.showResults",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.transformation.Transformation",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "T",
+        "inv_T",
+        "transform_type",
+        "transform_types"
+      ]
+    },
+    {
+      "name": "pystra.transformation.Transformation.__init__",
+      "kind": "callable",
+      "signature": "(self, transform_type=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.transformation.Transformation.x_to_u",
+      "kind": "callable",
+      "signature": "(self, x, marg)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.transformation.Transformation.u_to_x",
+      "kind": "callable",
+      "signature": "(self, u, marg)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.transformation.Transformation.jacobian",
+      "kind": "callable",
+      "signature": "(self, u, x, marg)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.transformation.Transformation.compute",
+      "kind": "callable",
+      "signature": "(self, Ro)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.transformation.Transformation._computeCholesky",
+      "kind": "callable",
+      "signature": "(self, Ro)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.transformation.Transformation._computeSVD",
+      "kind": "callable",
+      "signature": "(self, Ro)",
+      "decorators": [],
+      "returns": null
+    }
+  ],
+  "observed_exports": {
+    "pystra": {
+      "AnalysisObject": "pystra.analysis.AnalysisObject",
+      "AnalysisOptions": "pystra.analysis.AnalysisOptions",
+      "Beta": "pystra.distributions.beta.Beta",
+      "Calibration": "pystra.calibration.Calibration",
+      "ChiSquare": "pystra.distributions.chisquare.ChiSquare",
+      "Component": "pystra.system.Component",
+      "Constant": "pystra.distributions.distribution.Constant",
+      "Copula": "pystra.copula.Copula",
+      "CopulaTransformation": "pystra.joint.CopulaTransformation",
+      "CorrelationMatrix": "pystra.correlation.CorrelationMatrix",
+      "CostBenefitModel": "pystra.ddo.CostBenefitModel",
+      "CrudeMonteCarlo": "pystra.mc.CrudeMonteCarlo",
+      "CutSetSystem": "pystra.system.CutSetSystem",
+      "DDO": "pystra.ddo.DDO",
+      "DDOCriterion": "pystra.ddo.DDOCriterion",
+      "DDOObjective": "pystra.ddo.DDOObjective",
+      "DesignStudy": "pystra.ddo.DesignStudy",
+      "Distribution": "pystra.distributions.distribution.Distribution",
+      "DistributionAnalysis": "pystra.mc.DistributionAnalysis",
+      "FBCProcess": "pystra.fbc.FBCProcess",
+      "FatalityConsequence": "pystra.ddo.FatalityConsequence",
+      "Form": "pystra.form.Form",
+      "FrankCopula": "pystra.copula.FrankCopula",
+      "GEVmax": "pystra.distributions.gev.GEVmax",
+      "GEVmin": "pystra.distributions.gev.GEVmin",
+      "Gamma": "pystra.distributions.gamma.Gamma",
+      "GaussianCopula": "pystra.copula.GaussianCopula",
+      "GenericCalibration": "pystra.calibration.GenericCalibration",
+      "GenericModel": "pystra.calibration.GenericModel",
+      "Gumbel": "pystra.distributions.gumbel.Gumbel",
+      "ImportanceSampling": "pystra.mc.ImportanceSampling",
+      "IndependentCopula": "pystra.copula.IndependentCopula",
+      "JointDistribution": "pystra.joint.JointDistribution",
+      "KofNSystem": "pystra.system.KofNSystem",
+      "LQI": "pystra.ddo.LQI",
+      "LimitState": "pystra.model.LimitState",
+      "LineSampling": "pystra.ls.LineSampling",
+      "LoadCombination": "pystra.loadcomb.LoadCombination",
+      "Lognormal": "pystra.distributions.lognormal.Lognormal",
+      "MaxParent": "pystra.distributions.parent.MaxParent",
+      "Maximum": "pystra.distributions.maximum.Maximum",
+      "MonteCarlo": "pystra.mc.MonteCarlo",
+      "Normal": "pystra.distributions.normal.Normal",
+      "OrderedDict": "collections.OrderedDict",
+      "ParallelSystem": "pystra.system.ParallelSystem",
+      "RackwitzTargetModel": "pystra.ddo.RackwitzTargetModel",
+      "RiskResult": "pystra.ddo.RiskResult",
+      "RiskStudy": "pystra.ddo.RiskStudy",
+      "SWTP": "pystra.ddo.SWTP",
+      "ScenarioRiskModel": "pystra.ddo.ScenarioRiskModel",
+      "ScipyDist": "pystra.distributions.scipydist.ScipyDist",
+      "SensitivityAnalysis": "pystra.sensitivity.SensitivityAnalysis",
+      "SeriesSystem": "pystra.system.SeriesSystem",
+      "ShiftedExponential": "pystra.distributions.shiftedexponential.ShiftedExponential",
+      "ShiftedLognormal": "pystra.distributions.shiftedlognormal.ShiftedLognormal",
+      "ShiftedRayleigh": "pystra.distributions.shiftedrayleigh.ShiftedRayleigh",
+      "Sorm": "pystra.sorm.Sorm",
+      "StdNormal": "pystra.distributions.distribution.StdNormal",
+      "StochasticModel": "pystra.model.StochasticModel",
+      "StrongMaximumTest": "pystra.strong_maximum.StrongMaximumTest",
+      "StudentTCopula": "pystra.copula.StudentTCopula",
+      "SubsetSimulation": "pystra.ss.SubsetSimulation",
+      "System": "pystra.system.System",
+      "SystemFORM": "pystra.system_form.SystemFORM",
+      "TargetReliability": "pystra.ddo.TargetReliability",
+      "TieSetSystem": "pystra.system.TieSetSystem",
+      "TypeIIIsmallestValue": "pystra.distributions.typeiiismallestvalue.TypeIIIsmallestValue",
+      "TypeIIlargestValue": "pystra.distributions.typeiilargestvalue.TypeIIlargestValue",
+      "TypeIlargestValue": "pystra.distributions.typeilargestvalue.TypeIlargestValue",
+      "TypeIsmallestValue": "pystra.distributions.typeismallestvalue.TypeIsmallestValue",
+      "Uniform": "pystra.distributions.uniform.Uniform",
+      "Weibull": "pystra.distributions.weibull.Weibull",
+      "ZeroInflated": "pystra.distributions.zeroinflated.ZeroInflated",
+      "ditlevsen_bounds": "pystra.system.ditlevsen_bounds",
+      "fsolve": "scipy.optimize._minpack_py.fsolve",
+      "rv_continuous": "scipy.stats._distn_infrastructure.rv_continuous",
+      "rv_frozen": "scipy.stats._distn_infrastructure.rv_frozen"
+    },
+    "pystra.distributions": {
+      "Beta": "pystra.distributions.beta.Beta",
+      "ChiSquare": "pystra.distributions.chisquare.ChiSquare",
+      "Constant": "pystra.distributions.distribution.Constant",
+      "Distribution": "pystra.distributions.distribution.Distribution",
+      "GEVmax": "pystra.distributions.gev.GEVmax",
+      "GEVmin": "pystra.distributions.gev.GEVmin",
+      "Gamma": "pystra.distributions.gamma.Gamma",
+      "Gumbel": "pystra.distributions.gumbel.Gumbel",
+      "Lognormal": "pystra.distributions.lognormal.Lognormal",
+      "MaxParent": "pystra.distributions.parent.MaxParent",
+      "Maximum": "pystra.distributions.maximum.Maximum",
+      "Normal": "pystra.distributions.normal.Normal",
+      "ScipyDist": "pystra.distributions.scipydist.ScipyDist",
+      "ShiftedExponential": "pystra.distributions.shiftedexponential.ShiftedExponential",
+      "ShiftedLognormal": "pystra.distributions.shiftedlognormal.ShiftedLognormal",
+      "ShiftedRayleigh": "pystra.distributions.shiftedrayleigh.ShiftedRayleigh",
+      "StdNormal": "pystra.distributions.distribution.StdNormal",
+      "TypeIIIsmallestValue": "pystra.distributions.typeiiismallestvalue.TypeIIIsmallestValue",
+      "TypeIIlargestValue": "pystra.distributions.typeiilargestvalue.TypeIIlargestValue",
+      "TypeIlargestValue": "pystra.distributions.typeilargestvalue.TypeIlargestValue",
+      "TypeIsmallestValue": "pystra.distributions.typeismallestvalue.TypeIsmallestValue",
+      "Uniform": "pystra.distributions.uniform.Uniform",
+      "Weibull": "pystra.distributions.weibull.Weibull",
+      "ZeroInflated": "pystra.distributions.zeroinflated.ZeroInflated",
+      "rv_continuous": "scipy.stats._distn_infrastructure.rv_continuous",
+      "rv_frozen": "scipy.stats._distn_infrastructure.rv_frozen"
+    },
+    "pystra.ddo": {
+      "Any": "typing.Any",
+      "CostBenefitModel": "pystra.ddo.CostBenefitModel",
+      "DDO": "pystra.ddo.DDO",
+      "DDOCriterion": "pystra.ddo.DDOCriterion",
+      "DDOObjective": "pystra.ddo.DDOObjective",
+      "DesignStudy": "pystra.ddo.DesignStudy",
+      "FatalityConsequence": "pystra.ddo.FatalityConsequence",
+      "LQI": "pystra.ddo.LQI",
+      "RackwitzTargetModel": "pystra.ddo.RackwitzTargetModel",
+      "RiskResult": "pystra.ddo.RiskResult",
+      "RiskStudy": "pystra.ddo.RiskStudy",
+      "SWTP": "pystra.ddo.SWTP",
+      "SWTPIndexRecord": "pystra.ddo.SWTPIndexRecord",
+      "SWTPRecord": "pystra.ddo.SWTPRecord",
+      "ScenarioRiskModel": "pystra.ddo.ScenarioRiskModel",
+      "TargetReliability": "pystra.ddo.TargetReliability",
+      "TargetReliabilityCalibration": "pystra.ddo.TargetReliabilityCalibration",
+      "annualized_safety_cost": "pystra.ddo.annualized_safety_cost",
+      "asdict": "dataclasses.asdict",
+      "brentq": "scipy.optimize._zeros_py.brentq",
+      "dataclass": "dataclasses.dataclass",
+      "derive_lqi_target": "pystra.ddo.derive_lqi_target",
+      "field": "dataclasses.field",
+      "finite_difference_derivative": "pystra.ddo.finite_difference_derivative",
+      "get_swtp": "pystra.ddo.get_swtp",
+      "get_swtp_index_record": "pystra.ddo.get_swtp_index_record",
+      "get_swtp_record": "pystra.ddo.get_swtp_record",
+      "index_swtp_record": "pystra.ddo.index_swtp_record",
+      "jcss_lqi_acceptability": "pystra.ddo.jcss_lqi_acceptability",
+      "jcss_lqi_acceptability_margin": "pystra.ddo.jcss_lqi_acceptability_margin",
+      "jcss_lqi_is_acceptable": "pystra.ddo.jcss_lqi_is_acceptable",
+      "jcss_lqi_risk_cost": "pystra.ddo.jcss_lqi_risk_cost",
+      "jcss_lqi_risk_cost_from_result": "pystra.ddo.jcss_lqi_risk_cost_from_result",
+      "jcss_systematic_reconstruction_objective": "pystra.ddo.jcss_systematic_reconstruction_objective",
+      "lognormal_ratio_failure_probability": "pystra.ddo.lognormal_ratio_failure_probability",
+      "lqi_k1": "pystra.ddo.lqi_k1",
+      "lqi_target_reliability": "pystra.ddo.lqi_target_reliability",
+      "minimize_scalar": "scipy.optimize._minimize.minimize_scalar",
+      "plot_summary": "pystra.ddo.plot_summary",
+      "present_value_factor": "pystra.ddo.present_value_factor",
+      "rackwitz_table": "pystra.ddo.rackwitz_table",
+      "replace": "dataclasses.replace",
+      "swtp_table": "pystra.ddo.swtp_table"
+    }
+  }
+}

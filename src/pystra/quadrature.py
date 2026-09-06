@@ -9,7 +9,7 @@ Nataf correlation integral (see :mod:`pystra.integration`).
 import numpy as np
 
 
-def quadratureRule(n, wfun=None, alpha=None, beta=None):
+def quadrature_rule(n, wfun=None, alpha=None, beta=None):
     """Compute Gauss-Legendre quadrature points and weights.
 
     Returns *n* base points (abscissas) and corresponding weight factors

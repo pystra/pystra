@@ -7,10 +7,10 @@ import pystra as ra
 def simple_model():
     """3-variable stochastic model with correlation."""
     model = ra.model.StochasticModel()
-    model.addVariable(ra.Lognormal("X1", 500, 100))
-    model.addVariable(ra.Normal("X2", 2000, 400))
-    model.addVariable(ra.Uniform("X3", 5, 0.5))
-    model.setCorrelation(
+    model.add_variable(ra.Lognormal("X1", 500, 100))
+    model.add_variable(ra.Normal("X2", 2000, 400))
+    model.add_variable(ra.Uniform("X3", 5, 0.5))
+    model.set_correlation(
         ra.correlation.CorrelationMatrix(
             [[1.0, 0.3, 0.2], [0.3, 1.0, 0.2], [0.2, 0.2, 1.0]]
         )
@@ -22,8 +22,8 @@ def simple_model():
 def uncorrelated_model():
     """2-variable uncorrelated stochastic model."""
     model = ra.model.StochasticModel()
-    model.addVariable(ra.Normal("R", 10, 2))
-    model.addVariable(ra.Normal("S", 5, 1))
+    model.add_variable(ra.Normal("R", 10, 2))
+    model.add_variable(ra.Normal("S", 5, 1))
     return model
 
 
@@ -41,5 +41,5 @@ def simple_limit_state():
 def analysis_options():
     """Default AnalysisOptions with output suppressed."""
     opts = ra.AnalysisOptions()
-    opts.setPrintOutput(False)
+    opts.set_print_output(False)
     return opts

@@ -93,18 +93,18 @@ The object API below is the recommended entry point.
     :template: custom-class-template.rst
     :nosignatures:
 
-    SWTP
+    Swtp
     FatalityConsequence
-    LQI
+    Lqi
     TargetReliability
     CostBenefitModel
     DesignStudy
     RiskStudy
     ScenarioRiskModel
     RiskResult
-    DDO
-    DDOObjective
-    DDOCriterion
+    Ddo
+    DdoObjective
+    DdoCriterion
     RackwitzTargetModel
 
 The low-level helpers and record types below back the object API.  They remain
@@ -136,5 +136,5 @@ equations, but the object API above is preferred.
     get_swtp_index_record
     index_swtp_record
     swtp_table
-    SWTPRecord
-    SWTPIndexRecord
+    SwtpRecord
+    SwtpIndexRecord

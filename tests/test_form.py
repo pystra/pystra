@@ -11,7 +11,7 @@ def test_compute_gamma_uses_diagonal_without_offdiagonal_warning():
 
     with warnings.catch_warnings():
         warnings.simplefilter("error", RuntimeWarning)
-        form.computeGamma()
+        form.compute_gamma()
 
     expected = np.diag(np.sqrt(np.diag(form.J @ form.J.T)))
     np.testing.assert_allclose(form.gamma, expected)

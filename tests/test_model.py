@@ -4,7 +4,7 @@ import pytest
 import numpy as np
 import pystra as ra
 from pystra.distributions import Normal, Lognormal, Constant
-from pystra.correlation import CorrelationMatrix, computeModifiedCorrelationMatrix
+from pystra.correlation import CorrelationMatrix, compute_modified_correlation_matrix
 
 # ---------------------------------------------------------------------------
 # StochasticModel
@@ -14,123 +14,123 @@ from pystra.correlation import CorrelationMatrix, computeModifiedCorrelationMatr
 class TestStochasticModel:
     def test_add_distribution_variable(self):
         model = ra.model.StochasticModel()
-        model.addVariable(Normal("X1", 10, 2))
-        assert len(model.getVariables()) == 1
-        assert "X1" in model.getNames()
+        model.add_variable(Normal("X1", 10, 2))
+        assert len(model.get_variables()) == 1
+        assert "X1" in model.get_names()
 
     def test_add_multiple_variables(self):
         model = ra.model.StochasticModel()
-        model.addVariable(Normal("X1", 10, 2))
-        model.addVariable(Normal("X2", 5, 1))
-        model.addVariable(Normal("X3", 3, 0.5))
-        assert len(model.getVariables()) == 3
-        assert model.getNames() == ["X1", "X2", "X3"]
+        model.add_variable(Normal("X1", 10, 2))
+        model.add_variable(Normal("X2", 5, 1))
+        model.add_variable(Normal("X3", 3, 0.5))
+        assert len(model.get_variables()) == 3
+        assert model.get_names() == ["X1", "X2", "X3"]
 
     def test_add_constant(self):
         model = ra.model.StochasticModel()
-        model.addVariable(Constant("c", 5.0))
-        assert model.getConstants() == {"c": 5.0}
-        assert len(model.getVariables()) == 0
+        model.add_variable(Constant("c", 5.0))
+        assert model.get_constants() == {"c": 5.0}
+        assert len(model.get_variables()) == 0
 
     def test_add_mixed(self):
         model = ra.model.StochasticModel()
-        model.addVariable(Normal("X1", 10, 2))
-        model.addVariable(Constant("c", 3.0))
-        model.addVariable(Normal("X2", 5, 1))
-        assert len(model.getVariables()) == 2
-        assert model.getConstants() == {"c": 3.0}
-        assert model.getNames() == ["X1", "c", "X2"]
+        model.add_variable(Normal("X1", 10, 2))
+        model.add_variable(Constant("c", 3.0))
+        model.add_variable(Normal("X2", 5, 1))
+        assert len(model.get_variables()) == 2
+        assert model.get_constants() == {"c": 3.0}
+        assert model.get_names() == ["X1", "c", "X2"]
 
     def test_duplicate_name_raises(self):
         model = ra.model.StochasticModel()
-        model.addVariable(Normal("X1", 10, 2))
+        model.add_variable(Normal("X1", 10, 2))
         with pytest.raises(Exception, match="already exists"):
-            model.addVariable(Normal("X1", 5, 1))
+            model.add_variable(Normal("X1", 5, 1))
 
     def test_invalid_type_raises(self):
         model = ra.model.StochasticModel()
         with pytest.raises(Exception):
-            model.addVariable("not_a_distribution")
+            model.add_variable("not_a_distribution")
 
     def test_get_variable(self):
         model = ra.model.StochasticModel()
         n = Normal("X1", 10, 2)
-        model.addVariable(n)
-        assert model.getVariable("X1") is n
+        model.add_variable(n)
+        assert model.get_variable("X1") is n
 
     def test_get_marginal_distributions(self):
         model = ra.model.StochasticModel()
         n1 = Normal("X1", 10, 2)
         n2 = Normal("X2", 5, 1)
-        model.addVariable(n1)
-        model.addVariable(n2)
-        marg = model.getMarginalDistributions()
+        model.add_variable(n1)
+        model.add_variable(n2)
+        marg = model.get_marginal_distributions()
         assert len(marg) == 2
         assert marg[0] is n1
         assert marg[1] is n2
 
     def test_default_correlation_is_identity(self):
         model = ra.model.StochasticModel()
-        model.addVariable(Normal("X1", 10, 2))
-        model.addVariable(Normal("X2", 5, 1))
-        corr = model.getCorrelation()
+        model.add_variable(Normal("X1", 10, 2))
+        model.add_variable(Normal("X2", 5, 1))
+        corr = model.get_correlation()
         np.testing.assert_array_equal(corr, np.eye(2))
 
     def test_set_correlation(self):
         model = ra.model.StochasticModel()
-        model.addVariable(Normal("X1", 10, 2))
-        model.addVariable(Normal("X2", 5, 1))
+        model.add_variable(Normal("X1", 10, 2))
+        model.add_variable(Normal("X2", 5, 1))
         C = CorrelationMatrix([[1.0, 0.5], [0.5, 1.0]])
-        model.setCorrelation(C)
+        model.set_correlation(C)
         expected = np.array([[1.0, 0.5], [0.5, 1.0]])
-        np.testing.assert_array_equal(model.getCorrelation(), expected)
+        np.testing.assert_array_equal(model.get_correlation(), expected)
 
     def test_call_function_counter(self):
         model = ra.model.StochasticModel()
-        assert model.getCallFunction() == 0
-        model.addCallFunction(5)
-        assert model.getCallFunction() == 5
-        model.addCallFunction(3)
-        assert model.getCallFunction() == 8
+        assert model.get_call_function() == 0
+        model.add_call_function(5)
+        assert model.get_call_function() == 5
+        model.add_call_function(3)
+        assert model.get_call_function() == 8
 
     # ---- Property access tests ----
 
     def test_properties_match_getters(self):
         """Properties return the same objects as the legacy getter methods."""
         model = ra.model.StochasticModel()
-        model.addVariable(Normal("X1", 10, 2))
-        model.addVariable(Constant("c", 3.0))
-        model.addVariable(Normal("X2", 5, 1))
+        model.add_variable(Normal("X1", 10, 2))
+        model.add_variable(Constant("c", 3.0))
+        model.add_variable(Normal("X2", 5, 1))
 
-        assert model.constants is model.getConstants()
-        assert model.names is model.getNames()
-        assert model.marginal_distributions is model.getMarginalDistributions()
-        assert model.n_marg == model.getLenMarginalDistributions()
-        assert model.correlation is model.getCorrelation()
-        assert model.call_function == model.getCallFunction()
+        assert model.constants is model.get_constants()
+        assert model.names is model.get_names()
+        assert model.marginal_distributions is model.get_marginal_distributions()
+        assert model.n_marg == model.get_len_marginal_distributions()
+        assert model.correlation is model.get_correlation()
+        assert model.call_function == model.get_call_function()
 
     def test_correlation_property_setter(self):
         model = ra.model.StochasticModel()
-        model.addVariable(Normal("X1", 10, 2))
-        model.addVariable(Normal("X2", 5, 1))
+        model.add_variable(Normal("X1", 10, 2))
+        model.add_variable(Normal("X2", 5, 1))
         new_corr = np.array([[1.0, 0.3], [0.3, 1.0]])
         model.correlation = new_corr
         np.testing.assert_array_equal(model.correlation, new_corr)
-        np.testing.assert_array_equal(model.getCorrelation(), new_corr)
+        np.testing.assert_array_equal(model.get_correlation(), new_corr)
 
     def test_modified_correlation_property(self):
         model = ra.model.StochasticModel()
-        model.addVariable(Normal("X1", 10, 2))
-        model.addVariable(Normal("X2", 5, 1))
+        model.add_variable(Normal("X1", 10, 2))
+        model.add_variable(Normal("X2", 5, 1))
         Ro = np.eye(2) * 0.9
         model.modified_correlation = Ro
-        assert model.modified_correlation is model.getModifiedCorrelation()
+        assert model.modified_correlation is model.get_modified_correlation()
 
     def test_call_function_property_setter(self):
         model = ra.model.StochasticModel()
         model.call_function = 42
         assert model.call_function == 42
-        assert model.getCallFunction() == 42
+        assert model.get_call_function() == 42
 
 
 # ---------------------------------------------------------------------------
@@ -141,32 +141,32 @@ class TestStochasticModel:
 class TestLimitState:
     def test_construction_with_lambda(self):
         ls = ra.model.LimitState(lambda X1, X2: X1 - X2)
-        assert ls.getExpression() is not None
+        assert ls.get_expression() is not None
 
     def test_construction_with_function(self):
         def lsf(R, S):
             return R - S
 
         ls = ra.model.LimitState(lsf)
-        assert ls.getExpression() is lsf
+        assert ls.get_expression() is lsf
 
     def test_set_expression(self):
         ls = ra.model.LimitState(lambda X1: X1)
         new_expr = lambda X1, X2: X1 - X2
-        ls.setExpression(new_expr)
-        assert ls.getExpression() is new_expr
+        ls.set_expression(new_expr)
+        assert ls.get_expression() is new_expr
 
     def test_evaluate_lsf_no_gradient(self):
         def lsf(R, S):
             return R - S
 
         model = ra.model.StochasticModel()
-        model.addVariable(Normal("R", 10, 2))
-        model.addVariable(Normal("S", 5, 1))
+        model.add_variable(Normal("R", 10, 2))
+        model.add_variable(Normal("S", 5, 1))
 
         ls = ra.model.LimitState(lsf)
         options = ra.AnalysisOptions()
-        options.setPrintOutput(False)
+        options.set_print_output(False)
 
         # evaluate_nogradient only processes nx > 1, so provide multiple samples
         x = np.array([[10.0, 12.0], [5.0, 3.0]])
@@ -180,13 +180,13 @@ class TestLimitState:
             return c * R - S
 
         model = ra.model.StochasticModel()
-        model.addVariable(Normal("R", 10, 2))
-        model.addVariable(Normal("S", 5, 1))
-        model.addVariable(Constant("c", 2.0))
+        model.add_variable(Normal("R", 10, 2))
+        model.add_variable(Normal("S", 5, 1))
+        model.add_variable(Constant("c", 2.0))
 
         ls = ra.model.LimitState(lsf)
         options = ra.AnalysisOptions()
-        options.setPrintOutput(False)
+        options.set_print_output(False)
 
         # evaluate_nogradient only processes nx > 1
         x = np.array([[10.0, 8.0], [5.0, 3.0]])
@@ -200,12 +200,12 @@ class TestLimitState:
             return R - S
 
         model = ra.model.StochasticModel()
-        model.addVariable(Normal("R", 10, 2))
-        model.addVariable(Normal("S", 5, 1))
+        model.add_variable(Normal("R", 10, 2))
+        model.add_variable(Normal("S", 5, 1))
 
         ls = ra.model.LimitState(lsf)
         options = ra.AnalysisOptions()
-        options.setPrintOutput(False)
+        options.set_print_output(False)
 
         x = np.array([[10.0], [5.0]])
         G, grad_G = ls.evaluate_lsf(x, model, options)
@@ -222,7 +222,7 @@ class TestLimitState:
 class TestCorrelationMatrix:
     def test_construction(self):
         C = CorrelationMatrix([[1.0, 0.5], [0.5, 1.0]])
-        assert C.getMatrix() == [[1.0, 0.5], [0.5, 1.0]]
+        assert C.get_matrix() == [[1.0, 0.5], [0.5, 1.0]]
 
     def test_getitem(self):
         C = CorrelationMatrix([[1.0, 0.3], [0.3, 1.0]])
@@ -234,31 +234,31 @@ class TestCorrelationMatrix:
         r = repr(C)
         assert "1.0" in r
 
-    def test_setCorrelation_accepts_wrapper(self):
-        """setCorrelation accepts a CorrelationMatrix wrapper."""
+    def test_set_correlation_accepts_wrapper(self):
+        """set_correlation accepts a CorrelationMatrix wrapper."""
         model = ra.model.StochasticModel()
-        model.addVariable(Normal("X1", 10, 2))
-        model.addVariable(Normal("X2", 5, 1))
-        model.setCorrelation(CorrelationMatrix([[1.0, 0.5], [0.5, 1.0]]))
+        model.add_variable(Normal("X1", 10, 2))
+        model.add_variable(Normal("X2", 5, 1))
+        model.set_correlation(CorrelationMatrix([[1.0, 0.5], [0.5, 1.0]]))
         np.testing.assert_array_equal(
-            model.getCorrelation(), np.array([[1.0, 0.5], [0.5, 1.0]])
+            model.get_correlation(), np.array([[1.0, 0.5], [0.5, 1.0]])
         )
 
     def test_modified_correlation_uncorrelated_normals(self):
         """For uncorrelated normals, modified correlation should be identity."""
         model = ra.model.StochasticModel()
-        model.addVariable(Normal("X1", 10, 2))
-        model.addVariable(Normal("X2", 5, 1))
+        model.add_variable(Normal("X1", 10, 2))
+        model.add_variable(Normal("X2", 5, 1))
         # Default correlation is identity
-        Ro = computeModifiedCorrelationMatrix(model)
+        Ro = compute_modified_correlation_matrix(model)
         np.testing.assert_allclose(Ro, np.eye(2), atol=1e-4)
 
     def test_modified_correlation_correlated_normals(self):
         """For correlated normals, modified ≈ original (Nataf preserves Normal correlations)."""
         model = ra.model.StochasticModel()
-        model.addVariable(Normal("X1", 10, 2))
-        model.addVariable(Normal("X2", 5, 1))
+        model.add_variable(Normal("X1", 10, 2))
+        model.add_variable(Normal("X2", 5, 1))
         C = CorrelationMatrix([[1.0, 0.5], [0.5, 1.0]])
-        model.setCorrelation(C)
-        Ro = computeModifiedCorrelationMatrix(model)
+        model.set_correlation(C)
+        Ro = compute_modified_correlation_matrix(model)
         np.testing.assert_allclose(Ro, np.array([[1.0, 0.5], [0.5, 1.0]]), atol=1e-2)

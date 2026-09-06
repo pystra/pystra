@@ -10,10 +10,10 @@ from .analysis import AnalysisObject
 from .form import Form
 from .system import Component, SeriesSystem, ParallelSystem, ditlevsen_bounds
 
-__all__ = ["SystemFORM"]
+__all__ = ["SystemForm"]
 
 
-class SystemFORM(AnalysisObject):
+class SystemForm(AnalysisObject):
     """Approximate a series or parallel system using component tangent planes.
 
     All components use the same complete stochastic model and Nataf transform.
@@ -67,7 +67,7 @@ class SystemFORM(AnalysisObject):
         releps=1e-5,
     ):
         if type(system) not in (SeriesSystem, ParallelSystem):
-            raise TypeError("SystemFORM requires a series or parallel system")
+            raise TypeError("SystemForm requires a series or parallel system")
         super().__init__(
             stochastic_model=stochastic_model, analysis_options=analysis_options
         )
@@ -88,7 +88,7 @@ class SystemFORM(AnalysisObject):
 
         visit(system)
         if len({c.name for c in leaves}) != len(leaves):
-            raise ValueError("SystemFORM requires unique component names")
+            raise ValueError("SystemForm requires unique component names")
         if isinstance(maxpts, bool) or int(maxpts) != maxpts or maxpts < 1:
             raise ValueError("maxpts must be a positive integer")
         if not all(np.isfinite(t) and t > 0 for t in (abseps, releps)):
@@ -207,7 +207,7 @@ class SystemFORM(AnalysisObject):
         """Run each unique component once, then integrate the system event."""
         self._clear_results()
         options = copy(self.options)
-        options.setPrintOutput(False)
+        options.set_print_output(False)
         for component in self.components:
             form = Form(
                 stochastic_model=self.model,
@@ -219,19 +219,19 @@ class SystemFORM(AnalysisObject):
                 form.run()
                 if form.transform.standard_space != "normal":
                     raise ValueError(
-                        "SystemFORM requires independent normal space; select Rosenblatt"
+                        "SystemForm requires independent normal space; select Rosenblatt"
                     )
             except (ValueError, FloatingPointError) as error:
                 raise RuntimeError(
                     f"Component '{component.name}' FORM failed: {error}"
                 ) from error
-            if not form.converged or not np.isfinite(form.getBeta()):
+            if not form.converged or not np.isfinite(form.get_beta()):
                 raise RuntimeError(
                     f"Component '{component.name}' FORM did not converge"
                 )
 
-        self.betas = np.array([f.getBeta() for f in self.component_results.values()])
-        self.alphas = np.array([f.getAlpha() for f in self.component_results.values()])
+        self.betas = np.array([f.get_beta() for f in self.component_results.values()])
+        self.alphas = np.array([f.get_alpha() for f in self.component_results.values()])
         self.correlation = np.clip(self.alphas @ self.alphas.T, -1, 1)
         np.fill_diagonal(self.correlation, 1.0)
         # Recognize identical/opposing vectors at floating-point precision;
@@ -295,22 +295,22 @@ class SystemFORM(AnalysisObject):
         self.Pf = float(np.clip(pf, 0, 1))
         self.beta = float(-norm.ppf(self.Pf))
         self.results_valid = True
-        if self.options.getPrintOutput():
-            self.showResults()
+        if self.options.get_print_output():
+            self.show_results()
 
-    def getFailure(self):
+    def get_failure(self):
         """Return the system FORM probability after a successful run."""
         if not self.results_valid:
-            raise ValueError("SystemFORM has no valid result")
+            raise ValueError("SystemForm has no valid result")
         return self.Pf
 
-    def getBeta(self):
+    def get_beta(self):
         """Return -Phi^-1(Pf), the equivalent system reliability index."""
-        self.getFailure()
+        self.get_failure()
         return self.beta
 
-    def showResults(self):
+    def show_results(self):
         """Print the approximation and bounds for its linearized event."""
-        print(f"System FORM Pf: {self.getFailure():.8g}")
+        print(f"System FORM Pf: {self.get_failure():.8g}")
         print(f"Equivalent beta: {self.beta:.8g}")
         print(f"Linearized-event bounds: {self.bounds}")

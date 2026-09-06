@@ -600,7 +600,7 @@ def test_calibration_mat_opt_3():
     # calib2.print_detailed_output(precision=4)
     # print(calib2.df_nom)
     # print(calib2.get_design_param_factor())
-    # print(calib2.calc_df_pgRS(True,True))
+    # print(calib2.calc_df_pg_rs(True,True))
     # validate results
     assert pytest.approx(calib2.dfXstarcal, abs=1e-4) == dfXst
     assert pytest.approx(calib2.df_phi, abs=1e-4) == dfphi

@@ -6,7 +6,7 @@ System Reliability
 
 Pystra separates the system failure event from its probability calculation.
 The ``pystra.system`` topology classes compose component limit states for
-simulation. ``SystemFORM`` estimates series and parallel probabilities from
+simulation. ``SystemForm`` estimates series and parallel probabilities from
 separate component FORM analyses in one shared standard-normal space.
 
 Do not use ordinary FORM or SORM on the combined min/max function as a general
@@ -62,24 +62,24 @@ Original-system Monte Carlo
    limit_state = system.as_limit_state()
 
    model = ra.StochasticModel()
-   model.addVariable(ra.Normal("R", 10.0, 1.0))
-   model.addVariable(ra.Normal("V", 12.0, 1.0))
-   model.addVariable(ra.Normal("S", 4.0, 1.0))
-   model.addVariable(ra.Normal("A", 1.0, 0.5))
-   model.addVariable(ra.Normal("B", 1.0, 0.5))
+   model.add_variable(ra.Normal("R", 10.0, 1.0))
+   model.add_variable(ra.Normal("V", 12.0, 1.0))
+   model.add_variable(ra.Normal("S", 4.0, 1.0))
+   model.add_variable(ra.Normal("A", 1.0, 0.5))
+   model.add_variable(ra.Normal("B", 1.0, 0.5))
 
    import numpy as np
 
    options = ra.AnalysisOptions()
-   options.setSamples(100_000)  # maximum budget; may stop at target CoV
-   options.setPrintOutput(False)
+   options.set_samples(100_000)  # maximum budget; may stop at target CoV
+   options.set_print_output(False)
    np.random.seed(2026)
    mc = ra.CrudeMonteCarlo(
        stochastic_model=model, limit_state=limit_state,
        analysis_options=options,
    )
    mc.run()
-   print(mc.getFailure(), mc.cov_q_bar[mc.k - 1], mc.k)
+   print(mc.get_failure(), mc.cov_q_bar[mc.k - 1], mc.k)
 
 Monte Carlo evaluates the original nonlinear failure event, including mixed
 and cut/tie-set topologies. The reported CoV describes sampling uncertainty.
@@ -99,27 +99,27 @@ Component-based system FORM
    from scipy.stats import norm
 
    model = ra.StochasticModel()
-   model.addVariable(ra.Normal("X", 0.0, 1.0))
-   model.addVariable(ra.Normal("Y", 0.0, 1.0))
+   model.add_variable(ra.Normal("X", 0.0, 1.0))
+   model.add_variable(ra.Normal("Y", 0.0, 1.0))
    components = [
        ra.Component("a", lambda X: 3.0 - X),
        ra.Component("b", lambda Y: 3.0 - Y),
    ]
-   analysis = ra.SystemFORM(ra.SeriesSystem(components), model)
+   analysis = ra.SystemForm(ra.SeriesSystem(components), model)
    analysis.run()
-   print(analysis.getFailure())  # approximately 0.002697974
-   print(analysis.getBeta())     # equivalent system index
+   print(analysis.get_failure())  # approximately 0.002697974
+   print(analysis.get_beta())     # equivalent system index
    print(analysis.bounds)        # Ditlevsen bounds on the linearized event
    print(analysis.correlation)   # correlations of normal scores
-   print(analysis.component_results["a"].getDesignPoint())
+   print(analysis.component_results["a"].get_design_point())
 
    p = norm.sf(3.0)
-   assert abs(analysis.getFailure() - (2*p - p*p)) < 1e-10
+   assert abs(analysis.get_failure() - (2*p - p*p)) < 1e-10
 
 Use ``ParallelSystem(components)`` for joint failure; the exact result in this
 example is ``p*p``. Homogeneous nesting is flattened and shared component
 objects are analysed once. Component names must be unique. Mixed topology,
-k-of-n and cut/tie-set inputs are currently rejected by ``SystemFORM``; use
+k-of-n and cut/tie-set inputs are currently rejected by ``SystemForm``; use
 original-system simulation for these events.
 
 For each component, FORM finds a tangent failure half-space in the same
@@ -169,9 +169,9 @@ Structural systems are often specified as event logic once the engineer has
 identified the relevant component limit states.  Pystra provides three small
 helpers for that layer:
 
-``KofNSystem``
-   fails when at least ``k`` children fail.  ``KofNSystem(children, k=1)`` has
-   the same failure event as a series system, and ``KofNSystem(children, k=n)``
+``KOfNSystem``
+   fails when at least ``k`` children fail.  ``KOfNSystem(children, k=1)`` has
+   the same failure event as a series system, and ``KOfNSystem(children, k=n)``
    has the same failure event as a parallel system.
 
 ``CutSetSystem``
@@ -250,7 +250,7 @@ responsibility of the selected Pystra analysis method and its
 transformation, following the same conceptual split used in structural
 reliability methods generally.
 
-``SystemFORM`` requires independent normal coordinates, with the same
+``SystemForm`` requires independent normal coordinates, with the same
 transformation and conditioning order for every component. Gaussian Nataf
 and :ref:`Rosenblatt transformations <chap_copulas>` are supported. For a
 Student-t copula, use Rosenblatt; spherical Student-t Nataf space is rejected.

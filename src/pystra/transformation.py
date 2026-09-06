@@ -110,13 +110,13 @@ class Transformation:
         Compute the Isoprobabilistic Transformation using the chosen method
         """
         if self.transform_type == self.transform_types[0]:
-            self._computeCholesky(Ro)
+            self._compute_cholesky(Ro)
         elif self.transform_type == self.transform_types[1]:
-            self._computeSVD(Ro)
+            self._compute_svd(Ro)
         else:
             raise ValueError("Transform type not set")
 
-    def _computeCholesky(self, Ro):
+    def _compute_cholesky(self, Ro):
         """
         Compute Cholesky factorisation of the modified correlation matrix.
 
@@ -128,7 +128,7 @@ class Transformation:
         This is the classical Nataf factorisation.  It requires Ro to be
         symmetric positive-definite (all eigenvalues strictly positive).
         """
-        # Ro = self.model.getModifiedCorrelation()
+        # Ro = self.model.get_modified_correlation()
         try:
             L = np.linalg.cholesky(Ro)
         except np.linalg.LinAlgError as e:
@@ -140,7 +140,7 @@ class Transformation:
         self.T = np.linalg.inv(L)
         self.inv_T = L
 
-    def _computeSVD(self, Ro):
+    def _compute_svd(self, Ro):
         """
         Compute SVD-based factorisation of the modified correlation matrix.
 

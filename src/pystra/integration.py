@@ -9,7 +9,7 @@ evaluate the double integral that relates ``rho_0`` to the physical
 correlation using 2-D Gauss-Legendre quadrature.
 """
 
-from .quadrature import quadratureRule
+from .quadrature import quadrature_rule
 
 import numpy as np
 
@@ -101,7 +101,7 @@ def zi_and_xi(margi, margj, zmax, nIP):
     detJ = (zmax - zmin) ** 2 * 4 ** (-1)
 
     # Get integration points and weight in [-1,1], nIP is the number of integration pts
-    xIP, wIP = quadratureRule(nIP)
+    xIP, wIP = quadrature_rule(nIP)
 
     # Transform integration points coordinates from [-1,1] to [zmax,zmin]
     z1 = zmin * np.ones(len(xIP)) + (zmax - zmin) * (xIP + np.ones(len(xIP))) / 2
@@ -261,7 +261,7 @@ def drho0_dtheta(rho0, margi, margj, Z1, Z2, X1, X2, WIP, detJ, var_idx, param):
     sigma = dist.stdv
 
     # ∂X/∂θ_k = -(∂F(X)/∂θ_k) / f(X)
-    dF = dist.dF_dtheta(X)
+    dF = dist.cdf_gradient(X)
     fX = dist.pdf(X)
     # Clip fX away from zero to avoid division by zero in the tails
     fX = np.maximum(fX, 1e-300)

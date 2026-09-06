@@ -100,9 +100,9 @@ and the random variables have to be assigned. To define the random
 variables from :eq:`random_variables` we can use following syntax: ::
 
   # Define random variables
-  stochastic_model.addVariable( Lognormal('X1',500,100) )
-  stochastic_model.addVariable( Normal('X2',2000,400) )
-  stochastic_model.addVariable( Uniform('X3',5,0.5) )
+  stochastic_model.add_variable( Lognormal('X1',500,100) )
+  stochastic_model.add_variable( Normal('X2',2000,400) )
+  stochastic_model.add_variable( Uniform('X3',5,0.5) )
 
 The first parameter is the name of the random variable. The name has to be a
 string and match the arguments in the limit state function, so the input looks like ``'X3'``.
@@ -133,13 +133,13 @@ Notice the initial `*` character is used to dereference the output array.
 We will also define our constant using ``Constant``:  ::
 
   # Define constants
-  stochastic_model.addVariable( Constant('g',1) )
+  stochastic_model.add_variable( Constant('g',1) )
 
 
 To add the correlation matrix to our model: ::
 
   # Define Correlation Matrix
-  stochastic_model.setCorrelation( CorrelationMatrix([[1.0, 0.3, 0.2],
+  stochastic_model.set_correlation( CorrelationMatrix([[1.0, 0.3, 0.2],
                                                       [0.3, 1.0, 0.2],
                                                       [0.2, 0.2, 1.0]]) )
 
@@ -156,7 +156,7 @@ customized options. ::
 
   # Set some options (optional)
   options = AnalysisOptions()
-  # options.setPrintOutput(False)
+  # options.set_print_output(False)
 
 To store the results from the analysis an object must be initialized: ::
 
@@ -178,18 +178,18 @@ example we will get following results: ::
   ==================================================
 
 If we don't like to see the results in the terminal the option
-``setPrintOutput(False)`` has set to be ``False``. There are also some other
+``set_print_output(False)`` has set to be ``False``. There are also some other
 options which can be modified.
 
 To use the results for further calculations, plots etc. the results can get by
 some getter methods ::
 
   # Some single results:
-  beta = Analysis.getBeta()
-  failure = Analysis.getFailure()
+  beta = Analysis.get_beta()
+  failure = Analysis.get_failure()
 
 There is also the possibility to output more detailed results using 
-``showDetailedOutput()``: ::
+``show_detailed_output()``: ::
 
   ======================================================
   FORM
@@ -228,7 +228,7 @@ for the example, this produces the output: ::
 
 Similar to FORM, we can also get more detailed output for diagnostics: ::
 
-    sorm.showDetailedOutput()
+    sorm.show_detailed_output()
 
 which for the example gives: ::
 

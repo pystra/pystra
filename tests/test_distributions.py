@@ -18,13 +18,13 @@ from pystra.distributions import (
     ChiSquare,
     ShiftedExponential,
     ShiftedRayleigh,
-    TypeIlargestValue,
-    TypeIsmallestValue,
-    TypeIIlargestValue,
-    TypeIIIsmallestValue,
+    Type1LargestValue,
+    Type1SmallestValue,
+    Type2LargestValue,
+    Type3SmallestValue,
     Maximum,
     MaxParent,
-    ScipyDist,
+    ScipyDistribution,
     ZeroInflated,
 )
 
@@ -66,14 +66,14 @@ class TestStdNormal:
 class TestConstant:
     def test_creation(self):
         c = Constant("c1", 5.0)
-        assert c.getName() == "c1"
-        assert c.getValue() == 5.0
+        assert c.get_name() == "c1"
+        assert c.get_value() == 5.0
 
     def test_different_types(self):
         c = Constant("c2", 0)
-        assert c.getValue() == 0
+        assert c.get_value() == 0
         c = Constant("c3", -3.14)
-        assert c.getValue() == -3.14
+        assert c.get_value() == -3.14
 
 
 # ---------------------------------------------------------------------------
@@ -89,8 +89,8 @@ SIMPLE_DISTRIBUTIONS = [
     ("Gamma", Gamma("Ga", 10, 2)),
     ("ShiftedExponential", ShiftedExponential("SE", 5, 2)),
     ("ShiftedRayleigh", ShiftedRayleigh("SR", 5, 1)),
-    ("TypeIlargestValue", TypeIlargestValue("T1L", 10, 2)),
-    ("TypeIsmallestValue", TypeIsmallestValue("T1S", 10, 2)),
+    ("Type1LargestValue", Type1LargestValue("T1L", 10, 2)),
+    ("Type1SmallestValue", Type1SmallestValue("T1S", 10, 2)),
 ]
 
 
@@ -146,15 +146,15 @@ class TestDistributionCommon:
         assert samples.shape == (500,)
 
     def test_name(self, dist):
-        assert isinstance(dist.getName(), str)
-        assert len(dist.getName()) > 0
+        assert isinstance(dist.get_name(), str)
+        assert len(dist.get_name()) > 0
 
     def test_startpoint(self, dist):
-        assert np.isfinite(dist.getStartPoint())
+        assert np.isfinite(dist.get_start_point())
 
     def test_repr(self, dist):
         r = repr(dist)
-        assert dist.getName() in r
+        assert dist.get_name() in r
 
 
 # ---------------------------------------------------------------------------
@@ -222,17 +222,17 @@ class TestChiSquare:
 
 class TestTypeIIlargestValue:
     def test_construction(self):
-        d = TypeIIlargestValue("T2L", 100, 10)
+        d = Type2LargestValue("T2L", 100, 10)
         assert np.isfinite(d.mean)
         assert d.stdv > 0
 
     def test_mean_stdv_roundtrip(self):
-        d = TypeIIlargestValue("T2L", 100, 20)
+        d = Type2LargestValue("T2L", 100, 20)
         assert pytest.approx(d.mean, abs=0.5) == 100
         assert pytest.approx(d.stdv, abs=0.5) == 20
 
     def test_ppf_cdf_roundtrip(self):
-        d = TypeIIlargestValue("T2L", 100, 10)
+        d = Type2LargestValue("T2L", 100, 10)
         for p in [0.1, 0.5, 0.9]:
             x = d.ppf(p)
             assert pytest.approx(d.cdf(x), abs=1e-4) == p
@@ -240,11 +240,11 @@ class TestTypeIIlargestValue:
 
 class TestTypeIIIsmallestValue:
     def test_construction(self):
-        d = TypeIIIsmallestValue("T3S", 10, 3)
+        d = Type3SmallestValue("T3S", 10, 3)
         assert pytest.approx(d.mean, abs=0.5) == 10
 
     def test_ppf_cdf_roundtrip(self):
-        d = TypeIIIsmallestValue("T3S", 10, 3)
+        d = Type3SmallestValue("T3S", 10, 3)
         for p in [0.1, 0.5, 0.9]:
             x = d.ppf(p)
             assert pytest.approx(d.cdf(x), abs=1e-4) == p
@@ -263,7 +263,7 @@ class TestMaximum:
         assert d.stdv > 0
         assert d.dist_type == "Maximum"
 
-    def test_cdf_is_parent_cdf_power_N(self):
+    def test_cdf_is_parent_cdf_power_n(self):
         parent = Normal("N", 0, 1)
         d = Maximum("Max", parent, N=5)
         x = 1.0
@@ -276,7 +276,7 @@ class TestMaximum:
             x = d.ppf(p)
             assert pytest.approx(d.cdf(x), abs=1e-3) == p
 
-    def test_N_one_recovers_parent(self):
+    def test_n_one_recovers_parent(self):
         parent = Normal("N", 10, 2)
         d = Maximum("Max", parent, N=1)
         x = 10.0
@@ -292,7 +292,7 @@ class TestMaximum:
         with pytest.raises(Exception):
             Maximum("Max", "not_a_dist", N=5)
 
-    def test_N_less_than_one_raises(self):
+    def test_n_less_than_one_raises(self):
         parent = Normal("N", 10, 2)
         with pytest.raises(Exception):
             Maximum("Max", parent, N=0.5)
@@ -306,7 +306,7 @@ class TestMaxParent:
         assert d.stdv > 0
         assert d.dist_type == "MaxParent"
 
-    def test_cdf_is_max_cdf_root_N(self):
+    def test_cdf_is_max_cdf_root_n(self):
         max_dist = Normal("N", 0, 1)
         d = MaxParent("MP", max_dist, N=5)
         x = 1.0
@@ -321,7 +321,7 @@ class TestMaxParent:
         with pytest.raises(Exception):
             MaxParent("MP", "not_a_dist", N=5)
 
-    def test_N_less_than_one_raises(self):
+    def test_n_less_than_one_raises(self):
         with pytest.raises(Exception):
             MaxParent("MP", Normal("N", 0, 1), N=0.5)
 
@@ -329,21 +329,21 @@ class TestMaxParent:
 class TestScipyDist:
     def test_construction(self):
         frozen = scipy_norm(loc=5, scale=2)
-        d = ScipyDist("SN", frozen)
+        d = ScipyDistribution("SN", frozen)
         assert pytest.approx(d.mean, abs=1e-6) == 5.0
         assert pytest.approx(d.stdv, abs=1e-6) == 2.0
-        assert d.dist_type == "ScipyDist"
+        assert d.dist_type == "ScipyDistribution"
 
     def test_ppf_cdf_roundtrip(self):
         frozen = scipy_norm(loc=5, scale=2)
-        d = ScipyDist("SN", frozen)
+        d = ScipyDistribution("SN", frozen)
         for p in [0.1, 0.5, 0.9]:
             x = d.ppf(p)
             assert pytest.approx(d.cdf(x), abs=1e-6) == p
 
     def test_transform_roundtrip(self):
         frozen = scipy_norm(loc=5, scale=2)
-        d = ScipyDist("SN", frozen)
+        d = ScipyDistribution("SN", frozen)
         for u in [-1.0, 0.0, 1.0]:
             x = d.u_to_x(u)
             u_back = d.x_to_u(x)
@@ -351,17 +351,17 @@ class TestScipyDist:
 
     def test_invalid_input_raises(self):
         with pytest.raises(Exception):
-            ScipyDist("bad", "not_a_dist")
+            ScipyDistribution("bad", "not_a_dist")
 
     def test_set_location(self):
         frozen = scipy_norm(loc=5, scale=2)
-        d = ScipyDist("SN", frozen)
+        d = ScipyDistribution("SN", frozen)
         d.set_location(10)
         assert pytest.approx(d.mean, abs=1e-6) == 10.0
 
     def test_set_scale(self):
         frozen = scipy_norm(loc=5, scale=2)
-        d = ScipyDist("SN", frozen)
+        d = ScipyDistribution("SN", frozen)
         d.set_scale(3)
         assert pytest.approx(d.stdv, abs=1e-6) == 3.0
 

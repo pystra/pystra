@@ -7,7 +7,7 @@ from scipy.stats import gumbel_l as gumbel
 from .distribution import Distribution
 
 
-class TypeIsmallestValue(Distribution):
+class Type1SmallestValue(Distribution):
     """Type I smallest value distribution
 
     :Attributes:
@@ -35,4 +35,4 @@ class TypeIsmallestValue(Distribution):
             startpoint=startpoint,
         )
 
-        self.dist_type = "TypeIsmallestValue"
+        self.dist_type = "Type1SmallestValue"

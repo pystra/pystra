@@ -5,7 +5,7 @@ import numpy as np
 import warnings
 from scipy.stats import norm as normal
 from .analysis import AnalysisObject
-from .correlation import setModifiedCorrelationMatrix
+from .correlation import set_modified_correlation_matrix
 
 __all__ = ["Form"]
 
@@ -34,8 +34,8 @@ class Form(AnalysisObject):
     First Order Reliability Index. [Madsen2006]_
 
     Explicit Student-t generalized Nataf instead uses spherical Student-t
-    coordinates and the Student-t half-space tail. ``getBeta()`` remains
-    the signed geometric distance; ``getEquivalentBeta()`` returns the
+    coordinates and the Student-t half-space tail. ``get_beta()`` remains
+    the signed geometric distance; ``get_equivalent_beta()`` returns the
     normal-equivalent index computed from the failure probability.
 
     :Attributes:
@@ -78,7 +78,7 @@ class Form(AnalysisObject):
         self.converged = False
         self.beta = self.Pf = None
         self.i = self.e1 = self.e2 = None
-        imax = self.options.getImax()
+        imax = self.options.get_imax()
         if (
             isinstance(imax, bool)
             or not isinstance(imax, (int, np.integer))
@@ -89,7 +89,7 @@ class Form(AnalysisObject):
         self.init_run()
 
         # Compute starting point for the algorithm
-        self.computeStartingPoint()
+        self.compute_starting_point()
 
         # Iterations
         # Set parameters for the iterative loop
@@ -100,18 +100,18 @@ class Form(AnalysisObject):
 
         # loope
         while not convergence:
-            if self.options.getPrintOutput():
+            if self.options.get_print_output():
                 print(".......................................")
                 print("Now carrying out iteration number:", i)
 
             # Compute Transformation from u to x space
-            self.computeTransformation()
+            self.compute_transformation()
 
             # Compute the Jacobian
-            self.computeJacobian()
+            self.compute_jacobian()
 
             # Evaluate limit-state function and its gradient
-            self.computeLimitState()
+            self.compute_limit_state()
             if (
                 not np.all(np.isfinite(self.G))
                 or not np.all(np.isfinite(self.gradient))
@@ -125,24 +125,24 @@ class Form(AnalysisObject):
             # Set scale parameter Go and inform about struct. resp.
             if i == 1:
                 self.Go = self.G
-                if self.options.getPrintOutput():
+                if self.options.get_print_output():
                     print("Value of limit-state function in the first step:", self.G)
 
             # Compute alpha vector
-            self.computeAlpha()
+            self.compute_alpha()
 
             # Compute gamma vector
-            self.computeGamma()
+            self.compute_gamma()
 
             # Check convergence
             scale = float(np.abs(self.Go).item()) or 1.0
             e1 = float(np.abs(self.G).item()) / scale
             e2 = np.linalg.norm(self.u - self.alpha.dot(self.u).dot(self.alpha))
             self.e1, self.e2 = e1, float(e2)
-            condition1 = e1 < self.options.getE1()
-            condition2 = e2 < self.options.getE2()
-            condition3 = i == self.options.getImax()
-            if self.options.getPrintOutput():
+            condition1 = e1 < self.options.get_e1()
+            condition2 = e2 < self.options.get_e2()
+            condition3 = i == self.options.get_imax()
+            if self.options.get_print_output():
                 print(f"e1 = {e1:1.6e} , e2 = {e2:1.6e}")
 
             if condition1 and condition2 or condition3:
@@ -155,10 +155,10 @@ class Form(AnalysisObject):
             # Take a step if convergence is not achieved
             if not convergence:
                 # Determine search direction
-                self.computeSearchDirection()
+                self.compute_search_direction()
 
                 # Determine step size
-                self.getStepSize()
+                self.get_step_size()
 
                 # Determine new trial point
                 u_new = self.u + self.step * self.d
@@ -168,10 +168,10 @@ class Form(AnalysisObject):
                 i += 1
 
         # Compute beta value
-        self.computeBeta()
+        self.compute_beta()
 
         # Compute failure probability
-        self.computeFailureProbability()
+        self.compute_failure_probability()
         self.results_valid = self.converged
         if not self.converged:
             warnings.warn(
@@ -179,67 +179,67 @@ class Form(AnalysisObject):
             )
 
         # Show Results
-        if self.options.getPrintOutput() and self.results_valid:
-            self.showResults()
+        if self.options.get_print_output() and self.results_valid:
+            self.show_results()
 
-    def computeStartingPoint(self):
+    def compute_starting_point(self):
         """Compute starting point for the algorithm"""
         x = np.array([])
-        marg = self.model.getMarginalDistributions()
+        marg = self.model.get_marginal_distributions()
         for i in range(len(marg)):
-            x = np.append(x, marg[i].getStartPoint())
+            x = np.append(x, marg[i].get_start_point())
         self.u = self.transform.x_to_u(x, marg)
 
-    def computeTransformation(self):
+    def compute_transformation(self):
         """Compute transformation from u to x space"""
         self.x = np.transpose(
-            [self.transform.u_to_x(self.u, self.model.getMarginalDistributions())]
+            [self.transform.u_to_x(self.u, self.model.get_marginal_distributions())]
         )
 
-    def computeJacobian(self):
+    def compute_jacobian(self):
         """Compute the Jacobian"""
         J_u_x = self.transform.jacobian(
-            self.u, self.x, self.model.getMarginalDistributions()
+            self.u, self.x, self.model.get_marginal_distributions()
         )
         J_x_u = np.linalg.inv(J_u_x)
         self.J = J_x_u
 
-    def computeLimitState(self):
+    def compute_limit_state(self):
         """Evaluate limit-state function and its gradient"""
         G, gradient = self.limitstate.evaluate_lsf(self.x, self.model, self.options)
         self.G = G
         self.gradient = np.dot(np.transpose(gradient), self.J)
 
-    def computeAlpha(self):
+    def compute_alpha(self):
         """Compute alpha vector"""
         self.alpha = -self.gradient * np.linalg.norm(self.gradient) ** (-1)
 
-    def computeGamma(self):
+    def compute_gamma(self):
         """Compute gamma vector"""
         self.gamma = np.diag(np.sqrt(np.diag(np.dot(self.J, np.transpose(self.J)))))
         # Importance vector gamma
         # matmult = np.dot(np.dot(self.alpha, self.J), self.gamma)
         # importance_vector_gamma = matmult / np.linalg.norm(matmult)
 
-    def computeSearchDirection(self):
+    def compute_search_direction(self):
         """Determine search direction"""
         self.d = (
             self.G * np.linalg.norm(self.gradient) ** (-1) + self.alpha.dot(self.u)
         ) * self.alpha - self.u
 
-    def getStepSize(self):
+    def get_step_size(self):
         """Determine step size"""
-        if self.options.getStepSize() == 0:
-            self.step = self.computeStepSize(
+        if self.options.get_step_size() == 0:
+            self.step = self.compute_step_size(
                 self.G,
                 self.gradient,
                 self.u,
                 self.d,
             )
         else:
-            self.step = self.options.getStepSize()
+            self.step = self.options.get_step_size()
 
-    def computeStepSize(self, G, gradient, u, d):
+    def compute_step_size(self, G, gradient, u, d):
         """Calculate the step size for the calculation
 
         :Returns:
@@ -265,13 +265,13 @@ class Form(AnalysisObject):
         Trial_x = np.zeros(Trial_u.shape)
         for j in range(ntrial):
             trial_x = self.transform.u_to_x(
-                Trial_u[:, j], self.model.getMarginalDistributions()
+                Trial_u[:, j], self.model.get_marginal_distributions()
             )
             Trial_x[:, j] = np.transpose(trial_x)
 
-        if self.options.getMultiProc() == 0:
+        if self.options.get_multi_proc() == 0:
             print("Error: function not yet implemented")
-        if self.options.getMultiProc() == 1:
+        if self.options.get_multi_proc() == 1:
             Trial_G, _ = self.limitstate.evaluate_lsf(
                 Trial_x, self.model, self.options, "no"
             )
@@ -293,7 +293,7 @@ class Form(AnalysisObject):
                 merit_new = Merit_new[j]
                 j += 1
                 if j == ntrial and merit_new > merit:
-                    if self.options.getPrintOutput():
+                    if self.options.get_print_output():
                         print(
                             "The step size has been reduced by a factor of 1/",
                             2**ntrial,
@@ -301,22 +301,22 @@ class Form(AnalysisObject):
         step_size = trial_step_size
         return step_size
 
-    def computeBeta(self):
+    def compute_beta(self):
         """Compute beta value"""
         self.beta = np.dot(self.alpha, self.u)[0]
 
-    def computeFailureProbability(self):
+    def compute_failure_probability(self):
         """Compute probability of failure"""
         marginal = getattr(self.transform, "standard_marginal", normal)
         self.Pf = float(marginal.sf(self.beta))
 
-    def getEquivalentBeta(self):
+    def get_equivalent_beta(self):
         """Return -Phi^-1(Pf), including for non-normal standard spaces."""
         if not self.results_valid:
             raise ValueError("Analysis has no valid result")
         return float(-normal.ppf(self.Pf))
 
-    def showResults(self):
+    def show_results(self):
         """Show results"""
         if not self.results_valid:
             raise ValueError("Analysis not yet run")
@@ -331,21 +331,21 @@ class Form(AnalysisObject):
         print(" Failure probability:      ", self.Pf)
         print(
             " Number of calls to the limit-state function:",
-            self.getNoFunctionCalls(),
+            self.get_no_function_calls(),
         )
         print("")
         print("=" * n_hyphen)
         print("")
 
-    def showDetailedOutput(self):
+    def show_detailed_output(self):
         """Get detailed output to console"""
         if not self.results_valid:
             raise ValueError("Analysis not yet run")
-        names = self.model.getVariables().keys()
-        consts = self.model.getConstants()
-        u_star = self.getDesignPoint()
-        x_star = self.getDesignPoint(uspace=False)
-        alpha = self.getAlpha()
+        names = self.model.get_variables().keys()
+        consts = self.model.get_constants()
+        u_star = self.get_design_point()
+        x_star = self.get_design_point(uspace=False)
+        alpha = self.get_alpha()
 
         n_hyphen = self.N_HYPH
         print("")
@@ -355,7 +355,7 @@ class Form(AnalysisObject):
         print("{:15s} \t {:1.10e}".format("Pf", self.Pf))
         print("{:15s} \t {:2.10f}".format("BetaHL", self.beta))
         print(
-            "{:15s} \t {:d}".format("Model Evaluations", self.model.getCallFunction())
+            "{:15s} \t {:d}".format("Model Evaluations", self.model.get_call_function())
         )
         print("-" * n_hyphen)
         print(
@@ -374,7 +374,7 @@ class Form(AnalysisObject):
         print("=" * n_hyphen)
         print("")
 
-    def getBeta(self):
+    def get_beta(self):
         """Returns the beta value
 
         :Returns:
@@ -382,7 +382,7 @@ class Form(AnalysisObject):
         """
         return self.beta
 
-    def getFailure(self):
+    def get_failure(self):
         """Returns the probability of failure
 
         :Returns:
@@ -390,7 +390,7 @@ class Form(AnalysisObject):
         """
         return self.Pf
 
-    def getDesignPoint(self, uspace=True):
+    def get_design_point(self, uspace=True):
         """Returns the design point, defaults to u-space
 
         :Returns:
@@ -399,22 +399,24 @@ class Form(AnalysisObject):
         if uspace:
             return self.u
         else:
-            return self.transform.u_to_x(self.u, self.model.getMarginalDistributions())
+            return self.transform.u_to_x(
+                self.u, self.model.get_marginal_distributions()
+            )
 
-    def getAlpha(self, as_dict=False):
+    def get_alpha(self, as_dict=False):
         """Returns the alpha vector
 
         :Returns:
           - alpha (np.array): Returns the alpha vector
         """
         if as_dict:
-            names = self.model.getNames()
+            names = self.model.get_names()
             alphas = self.alpha[0]
             alpha_dict = {name: alpha for alpha, name in zip(alphas, names)}
             return alpha_dict
         return self.alpha[0]
 
-    def getNoFunctionCalls(self):
+    def get_no_function_calls(self):
         """
         Returns the number of function evaluations used
 
@@ -422,4 +424,4 @@ class Form(AnalysisObject):
           - n (int): Returns the number of function evaluations
 
         """
-        return self.model.getCallFunction()
+        return self.model.get_call_function()

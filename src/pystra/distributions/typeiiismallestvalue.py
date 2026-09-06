@@ -7,7 +7,7 @@ from .distribution import Distribution
 from .weibull import Weibull
 
 
-class TypeIIIsmallestValue(Distribution):
+class Type3SmallestValue(Distribution):
     """Type III smallest value distribution
 
     :Attributes:
@@ -33,4 +33,4 @@ class TypeIIIsmallestValue(Distribution):
             startpoint=startpoint,
         )
 
-        self.dist_type = "TypeIIIsmallestValue"
+        self.dist_type = "Type3SmallestValue"

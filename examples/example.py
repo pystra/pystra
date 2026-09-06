@@ -22,20 +22,20 @@ def main():
 
     # Set some options (optional)
     options = ra.AnalysisOptions()
-    options.setPrintOutput(True)
+    options.set_print_output(True)
 
     stochastic_model = ra.StochasticModel()
     # Define random variables
-    stochastic_model.addVariable(ra.Lognormal("X1", 500, 100))
-    stochastic_model.addVariable(ra.Normal("X2", 2000, 400))
-    stochastic_model.addVariable(ra.Uniform("X3", 5, 0.5))
+    stochastic_model.add_variable(ra.Lognormal("X1", 500, 100))
+    stochastic_model.add_variable(ra.Normal("X2", 2000, 400))
+    stochastic_model.add_variable(ra.Uniform("X3", 5, 0.5))
 
     # Define constants
-    stochastic_model.addVariable(ra.Constant("r", 1.7))
+    stochastic_model.add_variable(ra.Constant("r", 1.7))
 
     # If the random variables are correlatet, then define a correlation matrix,
     # else no correlatin matrix is needed
-    stochastic_model.setCorrelation(
+    stochastic_model.set_correlation(
         ra.CorrelationMatrix([[1.0, 0.3, 0.2], [0.3, 1.0, 0.2], [0.2, 0.2, 1.0]])
     )
 
@@ -47,7 +47,7 @@ def main():
     )
     Analysis.run()
     # More detailed output
-    Analysis.showDetailedOutput()
+    Analysis.show_detailed_output()
 
     # Perform SORM analysis, passing FORM result if it exists
     sorm = ra.Sorm(
@@ -58,7 +58,7 @@ def main():
     )
     sorm.run()
     # Detailed output
-    sorm.showDetailedOutput()
+    sorm.show_detailed_output()
 
     # Perform Distribution analysis
     Analysis = ra.DistributionAnalysis(
@@ -85,8 +85,8 @@ def main():
     Analysis.run()
 
     # Some single results:
-    beta = Analysis.getBeta()
-    pf = Analysis.getFailure()
+    beta = Analysis.get_beta()
+    pf = Analysis.get_failure()
 
     print(f"Beta is {beta}, corresponding to a failure probability of {pf}")
 

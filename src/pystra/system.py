@@ -2,7 +2,7 @@
 
 This module provides a small topology layer for structural system
 reliability. It composes component functions into a scalar limit-state function
-for simulation. The separate SystemFORM class estimates series and parallel
+for simulation. The separate SystemForm class estimates series and parallel
 probabilities from component tangent planes.
 
 The sign convention is the standard Pystra convention: positive values are
@@ -27,7 +27,7 @@ __all__ = [
     "System",
     "SeriesSystem",
     "ParallelSystem",
-    "KofNSystem",
+    "KOfNSystem",
     "CutSetSystem",
     "TieSetSystem",
     "ditlevsen_bounds",
@@ -79,7 +79,7 @@ class Component:
             lambda **kwargs: self.limit_state.expression(**self._filter_kwargs(kwargs))
         )
 
-    def getLimitState(self):
+    def get_limit_state(self):
         """Return this component as a Pystra :class:`LimitState`.
 
         This legacy-style alias mirrors the existing Pystra getter naming.
@@ -154,7 +154,7 @@ class System:
 
         return LimitState(lambda **kwargs: self.evaluate(**kwargs))
 
-    def getLimitState(self):
+    def get_limit_state(self):
         """Return the composed system as a Pystra :class:`LimitState`.
 
         This legacy-style alias mirrors the existing Pystra getter naming.
@@ -229,7 +229,7 @@ class ParallelSystem(System):
         return np.max(arrays, axis=0)
 
 
-class KofNSystem(System):
+class KOfNSystem(System):
     """A system that fails when at least ``k`` child events fail.
 
     Parameters

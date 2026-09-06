@@ -38,12 +38,12 @@ def run_builtin():
     limit_state = ra.LimitState(lsf)
 
     stochastic_model = ra.StochasticModel()
-    stochastic_model.addVariable(ra.Lognormal("X1", 500, 100))
-    stochastic_model.addVariable(ra.Normal("X2", 2000, 400))
-    stochastic_model.addVariable(ra.Uniform("X3", 5, 0.5))
-    stochastic_model.addVariable(ra.Constant("r", 1))
+    stochastic_model.add_variable(ra.Lognormal("X1", 500, 100))
+    stochastic_model.add_variable(ra.Normal("X2", 2000, 400))
+    stochastic_model.add_variable(ra.Uniform("X3", 5, 0.5))
+    stochastic_model.add_variable(ra.Constant("r", 1))
 
-    stochastic_model.setCorrelation(
+    stochastic_model.set_correlation(
         ra.CorrelationMatrix([[1.0, 0.3, 0.2], [0.3, 1.0, 0.2], [0.2, 0.2, 1.0]])
     )
 
@@ -64,19 +64,19 @@ def run_scipy():
     # Lognormal
     zeta = (np.log(1 + (100 / 500) ** 2)) ** 0.5
     lamb = np.log(500) - 0.5 * zeta**2
-    stochastic_model.addVariable(
-        ra.ScipyDist("X1", lognorm(s=zeta, scale=np.exp(lamb)))
+    stochastic_model.add_variable(
+        ra.ScipyDistribution("X1", lognorm(s=zeta, scale=np.exp(lamb)))
     )
     # Normal
-    stochastic_model.addVariable(ra.ScipyDist("X2", norm(loc=2000, scale=400)))
+    stochastic_model.add_variable(ra.ScipyDistribution("X2", norm(loc=2000, scale=400)))
     ## Uniform
     a_b = (0.5**2 * 12) ** (1 / 2)
     a = (2 * 5 - a_b) / 2
-    stochastic_model.addVariable(ra.ScipyDist("X3", uniform(loc=a, scale=a_b)))
+    stochastic_model.add_variable(ra.ScipyDistribution("X3", uniform(loc=a, scale=a_b)))
     # Constant
-    stochastic_model.addVariable(ra.Constant("r", 1))
+    stochastic_model.add_variable(ra.Constant("r", 1))
 
-    stochastic_model.setCorrelation(
+    stochastic_model.set_correlation(
         ra.CorrelationMatrix([[1.0, 0.3, 0.2], [0.3, 1.0, 0.2], [0.2, 0.2, 1.0]])
     )
 

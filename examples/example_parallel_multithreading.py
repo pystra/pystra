@@ -79,13 +79,13 @@ def main():
 
     stochastic_model = StochasticModel()
     # Define random variables
-    stochastic_model.addVariable(Lognormal("X1", 500, 100))
-    stochastic_model.addVariable(Normal("X2", 2000, 400))
-    stochastic_model.addVariable(Uniform("X3", 5, 0.5))
+    stochastic_model.add_variable(Lognormal("X1", 500, 100))
+    stochastic_model.add_variable(Normal("X2", 2000, 400))
+    stochastic_model.add_variable(Uniform("X3", 5, 0.5))
 
     # If the random variables are correlatet, then define a correlation matrix,
     # else no correlatin matrix is needed
-    stochastic_model.setCorrelation(
+    stochastic_model.set_correlation(
         CorrelationMatrix([[1.0, 0.3, 0.2], [0.3, 1.0, 0.2], [0.2, 0.2, 1.0]])
     )
 
@@ -104,8 +104,8 @@ def main():
     # Analysis = ImportanceSampling(analysis_options=options, stochastic_model=stochastic_model, limit_state=limit_state)
     #
     # Some single results:
-    # beta = Analysis.getBeta()
-    # failure = Analysis.getFailure()
+    # beta = Analysis.get_beta()
+    # failure = Analysis.get_failure()
     #    run_time = time.time() - start_time
     #    print str(datetime.timedelta(seconds=run_time))
 

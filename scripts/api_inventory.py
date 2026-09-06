@@ -69,17 +69,21 @@ def definitions(root):
 
 def check_names(root):
     errors = []
+    mapping_path = root / "docs/migration/naming-map.json"
+    legacy_classes = (
+        json.loads(mapping_path.read_text())["classes"] if mapping_path.exists() else {}
+    )
     for path in sorted((root / "src/pystra").rglob("*.py")):
         for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"))):
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and any(
                 c.isupper() for c in node.name
             ):
                 errors.append(f"{path.relative_to(root)}:{node.lineno}: {node.name}")
+            elif isinstance(node, ast.ClassDef) and node.name in legacy_classes:
+                errors.append(f"{path.relative_to(root)}:{node.lineno}: {node.name}")
     if errors:
-        raise SystemExit(
-            "Non-snake-case function/method definitions:\n" + "\n".join(errors)
-        )
-    print("Function and method naming check passed.")
+        raise SystemExit("Naming violations:\n" + "\n".join(errors))
+    print("Function, method, and migrated class naming check passed.")
 
 
 def inventory(root):

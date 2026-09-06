@@ -88,11 +88,11 @@ class Constant:
         self.name = name
         self.val = val
 
-    def getName(self):
+    def get_name(self):
         """Return the constant name."""
         return self.name
 
-    def getValue(self):
+    def get_value(self):
         """Return the constant value."""
         return self.val
 
@@ -161,7 +161,7 @@ class Distribution:
         self.dist_obj = dist_obj
 
         self._update_moments(mean, stdv)
-        self.setStartPoint(startpoint)
+        self.set_start_point(startpoint)
 
     def __repr__(self):
         string = self.name + ": " + self.dist_type + " distribution"
@@ -180,19 +180,19 @@ class Distribution:
         if not np.isfinite(self.stdv):
             raise Exception("Std. deviation must be a positive noninfinite number.")
 
-    def getName(self):
+    def get_name(self):
         return self.name
 
-    def getMean(self):
+    def get_mean(self):
         return self.mean
 
-    def getStdv(self):
+    def get_stdv(self):
         return self.stdv
 
-    def getStartPoint(self):
+    def get_start_point(self):
         return self.startpoint
 
-    def setStartPoint(self, startpoint=None):
+    def set_start_point(self, startpoint=None):
         if startpoint is None:
             self.startpoint = self.mean
         else:
@@ -457,7 +457,7 @@ class Distribution:
             (d_plus.stdv - d_minus.stdv) / (2 * h),
         )
 
-    def dF_dtheta(self, x):
+    def cdf_gradient(self, x):
         r"""Derivatives of the CDF w.r.t. each sensitivity parameter.
 
         Returns ``∂F_X(x)/∂θ`` for every parameter listed by

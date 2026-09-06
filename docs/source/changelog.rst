@@ -16,10 +16,10 @@ Added
   Gaussian, Student-t, independent and bivariate Frank copulas, with densities,
   CDFs, sampling, normal Rosenblatt and elliptical Nataf transformations.
 - FORM supports spherical Student-t Nataf space with the Student-t tail;
-  ``getEquivalentBeta()`` returns the normal-equivalent probability index.
+  ``get_equivalent_beta()`` returns the normal-equivalent probability index.
 - ``StrongMaximumTest`` for optional post-FORM sphere diagnostics, with
   reproducible sampling, explicit budgets and candidate point groups.
-- ``SystemFORM`` for component-based series/parallel reliability, joint normal
+- ``SystemForm`` for component-based series/parallel reliability, joint normal
   probabilities, component diagnostics and bounds on the linearized event.
 - ``pystra.system`` module for composing named component limit states into
   nested series, parallel, k-of-n, cut-set, and tie-set system limit states.
@@ -48,6 +48,9 @@ Fixed
 
 Changed
 ~~~~~~~
+- The ``v2.0`` development branch uses snake_case function/method names and
+  consistent class names, without legacy aliases. See :doc:`migrating` for the
+  implemented naming map and remaining migration stages.
 - SciPy minimum version is 1.11 for multivariate Student-t CDF integration.
 
 v1.6.0 (2026-03-16)

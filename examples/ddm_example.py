@@ -34,23 +34,23 @@ def run(diff_mode):
 
     # Set some options (optional)
     options = ra.AnalysisOptions()
-    options.setPrintOutput(False)
-    options.setDiffMode(diff_mode)
+    options.set_print_output(False)
+    options.set_diff_mode(diff_mode)
 
     stochastic_model = ra.StochasticModel()
 
     # Define random variables
-    stochastic_model.addVariable(ra.Lognormal("X1", 500, 100))
-    stochastic_model.addVariable(ra.Lognormal("X2", 2000, 400))
-    stochastic_model.addVariable(ra.Uniform("X3", 5, 0.5))
-    stochastic_model.addVariable(ra.Lognormal("X4", 450, 90))
-    stochastic_model.addVariable(ra.Lognormal("X5", 1800, 360))
-    stochastic_model.addVariable(ra.Uniform("X6", 4.5, 0.45))
+    stochastic_model.add_variable(ra.Lognormal("X1", 500, 100))
+    stochastic_model.add_variable(ra.Lognormal("X2", 2000, 400))
+    stochastic_model.add_variable(ra.Uniform("X3", 5, 0.5))
+    stochastic_model.add_variable(ra.Lognormal("X4", 450, 90))
+    stochastic_model.add_variable(ra.Lognormal("X5", 1800, 360))
+    stochastic_model.add_variable(ra.Uniform("X6", 4.5, 0.45))
 
     # Define constants
-    stochastic_model.addVariable(ra.Constant("r", 1.7))
+    stochastic_model.add_variable(ra.Constant("r", 1.7))
 
-    stochastic_model.setCorrelation(
+    stochastic_model.set_correlation(
         ra.CorrelationMatrix(
             [
                 [1.0, 0.3, 0.2, 0, 0, 0],

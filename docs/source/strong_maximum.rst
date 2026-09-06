@@ -25,8 +25,8 @@ After FORM
    import pystra as ra
 
    model = ra.StochasticModel()
-   model.addVariable(ra.Normal("X", 0.0, 1.0))
-   model.addVariable(ra.Normal("Y", 0.0, 1.0))
+   model.add_variable(ra.Normal("X", 0.0, 1.0))
+   model.add_variable(ra.Normal("Y", 0.0, 1.0))
    form = ra.Form(
        stochastic_model=model,
        limit_state=ra.LimitState(lambda X, Y: 3.0 - X),
@@ -41,7 +41,7 @@ After FORM
    check.run()
    print(check.status)       # no_competing_region_detected for this plane
    print(check.confidence_level)
-   print(check.getPoints())  # far failure points, in U-space by default
+   print(check.get_points())  # far failure points, in U-space by default
 
 A converged ``Form`` supplies the model, transformation and design point.
 The original limit-state function is evaluated without gradients. The test
@@ -62,16 +62,16 @@ Alternatively, specify a point explicitly:
    )
    check.run()
    print(check.status)  # competing_region_detected: also fails for X < -3
-   competing_u = check.getPoints("far_failure")
-   competing_x = check.getPoints("far_failure", uspace=False)
-   competing_g = check.getValues("far_failure")
+   competing_u = check.get_points("far_failure")
+   competing_x = check.get_points("far_failure", uspace=False)
+   competing_g = check.get_values("far_failure")
 
 The explicit point must be a finite vector in the model's independent
 standard-normal coordinates. ``analysis_options`` selects its transformation
 and, for Rosenblatt, conditioning order. For a non-Gaussian copula, use
 :ref:`Rosenblatt <chap_copulas>`; spherical Student-t Nataf space is rejected.
 The test verifies a strictly safe origin and a boundary
-residual no greater than ``getE1() * abs(g(origin))``. It rejects candidates
+residual no greater than ``get_e1() * abs(g(origin))``. It rejects candidates
 near the origin and nonconverged FORM inputs. It does not independently solve
 the constrained design-point problem for an explicit candidate.
 
@@ -164,11 +164,11 @@ With system reliability
 -----------------------
 
 Run the check separately on the component ``Form`` objects retained by
-``SystemFORM``:
+``SystemForm``:
 
 .. code-block:: python
 
-   # system_form is an already-run ra.SystemFORM object
+   # system_form is an already-run ra.SystemForm object
    checks = {}
    for name, component_form in system_form.component_results.items():
        test = ra.StrongMaximumTest(component_form, point_number=1000, seed=2026)

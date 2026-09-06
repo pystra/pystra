@@ -55,7 +55,7 @@ class SubsetSimulation(AnalysisObject):
     Notes
     -----
     The number of samples per level is taken from
-    ``analysis_options.getSamples()``.
+    ``analysis_options.get_samples()``.
 
     References
     ----------
@@ -93,9 +93,9 @@ class SubsetSimulation(AnalysisObject):
         self.results_valid = True
         self.init_run()
 
-        nrv = self.model.getLenMarginalDistributions()
-        marg = self.model.getMarginalDistributions()
-        N = self.options.getSamples()
+        nrv = self.model.get_len_marginal_distributions()
+        marg = self.model.get_marginal_distributions()
+        N = self.options.get_samples()
         p0 = self.p0
 
         self.thresholds = []
@@ -182,14 +182,14 @@ class SubsetSimulation(AnalysisObject):
         delta_sq = sum((1.0 - p) / (N * p) for p in self.conditional_probs if p > 0.0)
         self.cov = float(np.sqrt(delta_sq)) if delta_sq > 0.0 else 0.0
 
-        if self.options.getPrintOutput():
-            self.showResults()
+        if self.options.get_print_output():
+            self.show_results()
 
     def _eval_g_batch(self, u, marg):
         """Evaluate the LSF for every column of *u* (shape nrv × N)."""
         N = u.shape[1]
         G = np.empty(N)
-        block = self.options.getBlockSize()
+        block = self.options.get_block_size()
         for start in range(0, N, block):
             end = min(start + block, N)
             u_blk = u[:, start:end]
@@ -270,15 +270,15 @@ class SubsetSimulation(AnalysisObject):
     # Public API
     # ------------------------------------------------------------------
 
-    def getBeta(self):
+    def get_beta(self):
         """Return the reliability index :math:`\\beta`."""
         return self.beta
 
-    def getFailure(self):
+    def get_failure(self):
         """Return the probability of failure."""
         return self.Pf
 
-    def showResults(self):
+    def show_results(self):
         """Print a summary of Subset Simulation results to the console."""
         if not self.results_valid:
             raise ValueError("Analysis not yet run")

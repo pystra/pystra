@@ -8,7 +8,7 @@ from .model import StochasticModel
 from .form import Form
 from .correlation import CorrelationMatrix
 from .distributions import Constant, Distribution
-from .fbc import FBCProcess
+from .fbc import FbcProcess
 
 
 class LoadCombination:
@@ -134,7 +134,7 @@ class LoadCombination:
         leading-action case.
 
         This constructor expects variable actions to be represented by
-        :class:`~pystra.fbc.FBCProcess` objects.  The FBC model supplies the
+        :class:`~pystra.fbc.FbcProcess` objects.  The FBC model supplies the
         maximum and companion distributions; Turkstra's rule supplies the
         case structure: each variable action is considered as the leading
         action in turn, while the remaining variable actions are taken as
@@ -145,7 +145,7 @@ class LoadCombination:
         Parameters
         ----------
         variable : mapping
-            Mapping of variable-action names to :class:`FBCProcess` objects.
+            Mapping of variable-action names to :class:`FbcProcess` objects.
         reference_period : float
             Duration over which the leading action maximum is taken.
         lsf : function, optional
@@ -168,8 +168,8 @@ class LoadCombination:
 
         variable = cls._variables_to_dict(variable, allow_process=True)
         for process in variable.values():
-            if not isinstance(process, FBCProcess):
-                raise Exception("FBC variable actions must be FBCProcess objects")
+            if not isinstance(process, FbcProcess):
+                raise Exception("FBC variable actions must be FbcProcess objects")
 
         common = OrderedDict()
         for group in (resistance, permanent, other):
@@ -220,14 +220,14 @@ class LoadCombination:
     def _variable_name(obj, allow_process=False):
         valid_types = (Distribution, Constant)
         if allow_process:
-            valid_types = valid_types + (FBCProcess,)
+            valid_types = valid_types + (FbcProcess,)
         if not isinstance(obj, valid_types):
             if allow_process:
                 raise Exception(
-                    "Input is not a Distribution, Constant, or FBCProcess object"
+                    "Input is not a Distribution, Constant, or FbcProcess object"
                 )
             raise Exception("Input is not a Distribution or Constant object")
-        return obj.getName() if hasattr(obj, "getName") else obj.name
+        return obj.get_name() if hasattr(obj, "get_name") else obj.name
 
     @classmethod
     def _variables_to_dict(cls, variables, allow_process=False):
@@ -455,17 +455,17 @@ class LoadCombination:
 
         sm = StochasticModel()
         for variable in variables.values():
-            sm.addVariable(variable)
+            sm.add_variable(variable)
         if self.df_corr is not None:
             corr = self._get_corr_for_stochastic_model(sm)
-            sm.setCorrelation(CorrelationMatrix(corr))
+            sm.set_correlation(CorrelationMatrix(corr))
         return sm
 
     def _get_corr_for_stochastic_model(self, stochastic_model):
         """
         Get correlation data for stochastic model.
         """
-        sequence_rvs = list(stochastic_model.getVariables().keys())
+        sequence_rvs = list(stochastic_model.get_variables().keys())
         dfcorr_tmp = self.df_corr.reindex(columns=sequence_rvs, index=sequence_rvs)
         corr = dfcorr_tmp.values
         return corr
@@ -527,7 +527,7 @@ class LoadCombination:
             kwargs.update({xx: set_value for xx in set_miss})
         for key in self.constant:
             if key not in kwargs and set_const is None:
-                kwargs.update({key: self.constant[key].getValue()})
+                kwargs.update({key: self.constant[key].get_value()})
             elif key not in kwargs and set_const is not None:
                 kwargs.update({key: set_const})
         gX = self.lsf(**kwargs)

@@ -130,8 +130,8 @@ class Calibration:
         None.
 
         """
-        print(f" \n β = {form.getBeta():.3f} \n α = {form.getAlpha().round(3)}\
-              \n x* = {form.getDesignPoint(False).round(3)}")
+        print(f" \n β = {form.get_beta():.3f} \n α = {form.get_alpha().round(3)}\
+              \n x* = {form.get_design_point(False).round(3)}")
 
     @staticmethod
     def _get_missing_element(mainlist, subsetlist):
@@ -264,9 +264,9 @@ class Calibration:
             form = rel_func(**kwargs)
             if print_output:
                 ## Change to inbuilt
-                print(f"\n{Zk=} \n β = {form.getBeta():.3f} \
-                      \n α = {form.getAlpha()} \
-                     \n x* = {form.getDesignPoint(False)}")
+                print(f"\n{Zk=} \n β = {form.get_beta():.3f} \
+                      \n α = {form.get_alpha()} \
+                     \n x* = {form.get_design_point(False)}")
             return beta_t - form.beta
 
         if max_iter is None:
@@ -327,14 +327,14 @@ class Calibration:
         dict_z = {cvar: val}
         kwargs.update(dict_z)
         form0 = rel_func(**kwargs)
-        alpha0 = form0.getAlpha()
+        alpha0 = form0.get_alpha()
         n_iter = 0
-        beta0 = form0.getBeta()
+        beta0 = form0.get_beta()
         alpha_cal = alpha0
         form_cal = form0
         beta_cal = beta0
         z_cal = z0
-        columns = self._get_df_Xstar_labels(form0)
+        columns = self._get_df_xstar_labels(form0)
         if print_output:
             print(f"\n ==== Iteration {n_iter} ====")
             self._print_form_results(form0)
@@ -344,18 +344,18 @@ class Calibration:
             U_cal = alpha_cal * self.beta_t
             ## X-space projection
             Xstar_cal = form_cal.transform.u_to_x(
-                U_cal, form_cal.model.getMarginalDistributions()
+                U_cal, form_cal.model.get_marginal_distributions()
             )
             ## Calculate the design parameter for the Calibrated LSF
             dfXst_cal = pd.DataFrame(data=[Xstar_cal], columns=columns)
-            z_cal = np.array([self.calc_design_param_Xst(dfXst_cal)])
+            z_cal = np.array([self.calc_design_param_xst(dfXst_cal)])
             ## Check Calibrated reliability index
             val = Constant(cvar, z_cal)
             dict_z = {cvar: val}
             kwargs.update(dict_z)
             form_cal = rel_func(**kwargs)
-            beta_cal = form_cal.getBeta()
-            alpha_cal = form_cal.getAlpha()
+            beta_cal = form_cal.get_beta()
+            alpha_cal = form_cal.get_alpha()
             ## New U-space projection
             U_cal = alpha_cal * self.beta_t
             n_iter += 1  ## Increment number of iterations
@@ -368,7 +368,7 @@ class Calibration:
                 break
         return z_cal, form_cal
 
-    def calc_design_param_Xst(self, dfXst):
+    def calc_design_param_xst(self, dfXst):
         """
         Calculate design parameter for resistance from design points.
 
@@ -393,7 +393,7 @@ class Calibration:
         z = float(abs(z))
         return z
 
-    def _get_df_Xstar(self, list_form_obj, cols=None, idx=None):
+    def _get_df_xstar(self, list_form_obj, cols=None, idx=None):
         """
         Get a dataframe of design points in physical space using a list
         of FORM objects
@@ -404,7 +404,7 @@ class Calibration:
             List of FORM objects.
         cols : List or pandas.DataFrame.columns
             Column values for output Dataframe. Default is
-            list_form_obj[0].model.getNames()[1:]
+            list_form_obj[0].model.get_names()[1:]
         idx : List or pandas.DataFrame.index
             Index values for output Dataframe. Default is integer array.
 
@@ -414,14 +414,14 @@ class Calibration:
             Dataframe of design points in physical space.
 
         """
-        Xstar = [xx.getDesignPoint(uspace=False) for xx in list_form_obj]
-        label_vrs = self._get_df_Xstar_labels(list_form_obj[0])
+        Xstar = [xx.get_design_point(uspace=False) for xx in list_form_obj]
+        label_vrs = self._get_df_xstar_labels(list_form_obj[0])
         cols = label_vrs if cols is None else cols
         idx = np.arange(len(list_form_obj)) if idx is None else idx
         dfXstar = pd.DataFrame(data=Xstar, columns=cols, index=idx)
         return dfXstar
 
-    def _get_df_Xstar_labels(self, form):
+    def _get_df_xstar_labels(self, form):
         """
         Get labels for the DataFrame of design points using the form objects.
 
@@ -439,8 +439,8 @@ class Calibration:
             Labels for the DataFrame of design points using the form objects.
 
         """
-        label_const = form.model.getConstants().keys()
-        label_all = form.model.getNames()
+        label_const = form.model.get_constants().keys()
+        label_all = form.model.get_names()
         label_vrs = sorted(list(set(label_all) - set(label_const)), key=label_all.index)
         return label_vrs
 
@@ -482,7 +482,7 @@ class Calibration:
 
         """
         arr_zcal, list_form_cal = self._calibrate_design_param()
-        self.dfXstarcal = self._get_df_Xstar(
+        self.dfXstarcal = self._get_df_xstar(
             list_form_cal, idx=self.lc_obj.label_comb_cases
         )
         self.dfXstarcal["z"] = arr_zcal
@@ -558,7 +558,7 @@ class Calibration:
             List of calibrated Pystra FORM objects per load comb case.
 
         """
-        startz = self.lc_obj.constant[self.cvar].getValue()
+        startz = self.lc_obj.constant[self.cvar].get_value()
         rel_func = self.lc_obj.run_reliability_case
         list_z_cal = []
         list_form_cal = []
@@ -582,7 +582,7 @@ class Calibration:
             list_z_cal.append(zcal)
             list_form_cal.append(form)
         list_z_cal = np.concatenate(list_z_cal)
-        arr_beta = np.array([xx.getBeta() for xx in list_form_cal])
+        arr_beta = np.array([xx.get_beta() for xx in list_form_cal])
         if self.print_output:
             print(f"\n Calibrated reliabilities = {arr_beta}")
         return list_z_cal, list_form_cal
@@ -636,7 +636,7 @@ class Calibration:
 
         """
         ## Estimate :math:`\\phi` and :math:`\\gamma`
-        df_Xst_nom = self.calc_Xst_nom(dfXstar=dfXst)
+        df_Xst_nom = self.calc_xst_nom(dfXstar=dfXst)
         df_phi = self.calc_phi(df_Xst_nom)
         df_gamma_static, df_gamma_comb = self.calc_gamma(df_Xst_nom)
         df_gamma = pd.concat((df_gamma_static, df_gamma_comb), axis=1)
@@ -650,7 +650,7 @@ class Calibration:
             print(f"\n psi, \n {df_psi}")
         return df_phi, df_gamma, df_psi
 
-    def calc_Xst_nom(self, dfXstar):
+    def calc_xst_nom(self, dfXstar):
         """
         Calculate the design point DataFrame divided by the nominal values
         per load case and adjust for :math:`\\psi` factors for combination
@@ -758,17 +758,17 @@ class Calibration:
 
         """
         ## Estimate :math:`\\phi` and :math:`\\gamma`
-        df_Xst_nom = self.calc_Xst_nom(dfXstar=dfXst)
+        df_Xst_nom = self.calc_xst_nom(dfXstar=dfXst)
         df_phi = self.calc_phi(df_Xst_nom)
         df_gamma_static, df_gamma_comb = self.calc_gamma(df_Xst_nom)
 
         df_gamma = pd.concat((df_gamma_static, df_gamma_comb), axis=1)
         ## Estimate :math:`\\psi`
         # Get RHS :math:`\\phi~R~z-\\gamma_g~G-\\gamma_i~S_i`
-        phiRz_egS = self.calc_phiRz_egS_vect(dfXst)
+        phiRz_egS = self.calc_phi_rz_eg_s_vect(dfXst)
         # Get LHS :math:`\\gamma_j~S_j`
         df_gamma_nom = pd.concat([df_phi, df_gamma], axis=1) * self.df_nom
-        epgS_mat = self.calc_epgS_mat(df_gamma_nom)
+        epgS_mat = self.calc_epg_s_mat(df_gamma_nom)
         # Estimate
         psi = np.linalg.solve(epgS_mat, phiRz_egS)
         psi_mat = self._get_psi_row_mat(len(self.label_other), psi)
@@ -784,7 +784,7 @@ class Calibration:
             print(f"\n psi, \n {df_psi}")
         return df_phi, df_gamma, df_psi
 
-    def calc_phiRz_egS_vect(self, dfXstar):
+    def calc_phi_rz_eg_s_vect(self, dfXstar):
         """
         Get RHS for matrix estimation method,
         :math:`\\phi~R~z-\\gamma_g~G-\\gamma_i~S_i`
@@ -817,7 +817,7 @@ class Calibration:
             idx += 1
         return phiRz_egS_vect
 
-    def calc_epgS_mat(self, dfgammanom):
+    def calc_epg_s_mat(self, dfgammanom):
         """Get LHS for matrix estimation method, :math:`\\gamma_j~S_j`.
         The LHS is evaluated by evaluating the LSF with appropriate random
         variables to account for any constant multipliers. The implementation
@@ -921,12 +921,12 @@ class Calibration:
             self.lc_obj.run_reliability_case(lcn=xx, **dict_z)
             for xx in self.lc_obj.label_comb_cases
         ]
-        arr_beta = np.array([xx.getBeta() for xx in list_form_des])
+        arr_beta = np.array([xx.get_beta() for xx in list_form_des])
         if self.print_output:
             print(f"\n Design reliabilities = {arr_beta}")
         return arr_beta
 
-    def calc_df_pgRS(self, min_phi, max_psi):
+    def calc_df_pg_rs(self, min_phi, max_psi):
         """
         Calculate the DataFrame of all resistance and load variables nominal
         values multiplied by their respective factors, :math:`\\phi`, :math:`\\gamma`,
@@ -957,9 +957,9 @@ class Calibration:
             Array containing design parameters for all load combination cases.
 
         """
-        df_pgRS = self.calc_df_pgRS(min_phi, max_psi)
+        df_pgRS = self.calc_df_pg_rs(min_phi, max_psi)
         list_cols = [df_pgRS.loc[[xx], :] for xx in self.label_comb_cases]
-        array_z = np.array([self.calc_design_param_Xst(xx) for xx in list_cols])
+        array_z = np.array([self.calc_design_param_xst(xx) for xx in list_cols])
         return array_z
 
     def print_detailed_output(self, precision=2):
@@ -1416,23 +1416,23 @@ class GenericCalibration:
         limit_state = LimitState(self.lsf)
 
         stochastic_model = StochasticModel()
-        stochastic_model.addVariable(wR)
-        stochastic_model.addVariable(R)
-        stochastic_model.addVariable(wS)
-        stochastic_model.addVariable(G)
-        stochastic_model.addVariable(P)
-        stochastic_model.addVariable(Q)
+        stochastic_model.add_variable(wR)
+        stochastic_model.add_variable(R)
+        stochastic_model.add_variable(wS)
+        stochastic_model.add_variable(G)
+        stochastic_model.add_variable(P)
+        stochastic_model.add_variable(Q)
 
-        stochastic_model.addVariable(Constant("z", z))
-        stochastic_model.addVariable(Constant("aq", aq))
-        stochastic_model.addVariable(Constant("ag", ag))
+        stochastic_model.add_variable(Constant("z", z))
+        stochastic_model.add_variable(Constant("aq", aq))
+        stochastic_model.add_variable(Constant("ag", ag))
 
         form = Form(
             stochastic_model=stochastic_model,
             limit_state=limit_state,
         )
         form.run()
-        return form.getBeta()
+        return form.get_beta()
 
     def get_reliabilities(self, Aq, Ag, model):
         """

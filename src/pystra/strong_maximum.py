@@ -119,8 +119,8 @@ class StrongMaximumTest(AnalysisObject):
                 )
             stochastic_model, limit_state = form.model, form.limitstate
             analysis_options = form.options
-            design_point = form.getDesignPoint()
-            if form.getBeta() <= 0:
+            design_point = form.get_design_point()
+            if form.get_beta() <= 0:
                 raise ValueError("Strong Maximum Test requires a safe-origin candidate")
             if form.transform.standard_space != "normal":
                 raise ValueError(
@@ -139,7 +139,7 @@ class StrongMaximumTest(AnalysisObject):
         if form is not None:
             self.transform = copy(form.transform)
         self.design_point = np.asarray(design_point, dtype=float).copy()
-        self.nrv = self.model.getLenMarginalDistributions()
+        self.nrv = self.model.get_len_marginal_distributions()
         if self.design_point.shape != (self.nrv,) or not np.all(
             np.isfinite(self.design_point)
         ):
@@ -215,7 +215,7 @@ class StrongMaximumTest(AnalysisObject):
         self.evaluation_count = 0
 
     def _evaluate(self, u):
-        marg = self.model.getMarginalDistributions()
+        marg = self.model.get_marginal_distributions()
         x = np.array([self.transform.u_to_x(point, marg) for point in u])
         if not np.all(np.isfinite(x)):
             raise ValueError("Nonfinite physical coordinates on test sphere")
@@ -235,7 +235,7 @@ class StrongMaximumTest(AnalysisObject):
         try:
             if self.form is None:
                 self.init_run()
-            block = self._positive_integer(self.options.getBlockSize(), "block_size")
+            block = self._positive_integer(self.options.get_block_size(), "block_size")
             _, checks = self._evaluate(
                 np.array([np.zeros(self.nrv), self.design_point])
             )
@@ -243,7 +243,7 @@ class StrongMaximumTest(AnalysisObject):
                 raise ValueError(
                     "Strong Maximum Test requires the origin to be strictly safe"
                 )
-            if abs(checks[1]) > self.options.getE1() * abs(checks[0]):
+            if abs(checks[1]) > self.options.get_e1() * abs(checks[0]):
                 raise ValueError(
                     "Candidate design point is not on the limit-state boundary"
                 )
@@ -281,24 +281,24 @@ class StrongMaximumTest(AnalysisObject):
         except Exception:
             self.status = "failed"
             raise
-        if self.options.getPrintOutput():
-            self.showResults()
+        if self.options.get_print_output():
+            self.show_results()
 
-    def getPoints(self, region="far_failure", uspace=True):
+    def get_points(self, region="far_failure", uspace=True):
         """Return selected points as rows; default is far failure in U-space."""
         if not self.results_valid:
             raise ValueError("Strong Maximum Test has no valid result")
         return (self.u_points if uspace else self.x_points)[self.masks[region]]
 
-    def getValues(self, region="far_failure"):
+    def get_values(self, region="far_failure"):
         """Return original limit-state values for the selected point group."""
         if not self.results_valid:
             raise ValueError("Strong Maximum Test has no valid result")
         return self.values[self.masks[region]]
 
-    def showResults(self):
+    def show_results(self):
         """Print the diagnostic outcome and its nominal sampling confidence."""
-        self.getPoints()
+        self.get_points()
         print(f"Strong Maximum Test: {self.status}")
         print(
             f"Sphere points: {self.point_number}; nominal confidence: {self.confidence_level:.6g}"

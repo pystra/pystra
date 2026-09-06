@@ -51,7 +51,7 @@ class CorrelationMatrix:
     def __setitem__(self, key, item):
         self.matrix[key] = item
 
-    def getMatrix(self):
+    def get_matrix(self):
         """Return the correlation matrix as a NumPy array.
 
         Returns
@@ -62,7 +62,7 @@ class CorrelationMatrix:
         return self.matrix
 
 
-def computeModifiedCorrelationMatrix(stochastic_model):
+def compute_modified_correlation_matrix(stochastic_model):
     r"""Compute the modified (Nataf) correlation matrix.
 
     For each pair of non-normal marginals, the physical-space
@@ -86,7 +86,7 @@ def computeModifiedCorrelationMatrix(stochastic_model):
         The symmetric modified correlation matrix ``Ro`` of shape
         ``(n, n)`` in standard-normal space.
     """
-    copula = stochastic_model.getCopula()
+    copula = stochastic_model.get_copula()
     if copula is not None:
         from .copula import GaussianCopula, StudentTCopula
 
@@ -97,8 +97,8 @@ def computeModifiedCorrelationMatrix(stochastic_model):
         raise ValueError(
             "Gaussian correlation modification does not apply to this copula"
         )
-    marg = stochastic_model.getMarginalDistributions()
-    R = stochastic_model.getCorrelation()
+    marg = stochastic_model.get_marginal_distributions()
+    R = stochastic_model.get_correlation()
     nvr = len(marg)
     n, m = np.shape(R)
     # copy() ensures the array is writable; np.eye may return a read-only
@@ -131,7 +131,7 @@ def computeModifiedCorrelationMatrix(stochastic_model):
 
             if rho != 0:
                 par = opt.fmin(
-                    absoluteIntegralValue,
+                    absolute_integral_value,
                     rho,
                     args=(rho, margi, margj, Z1, Z2, X1, X2, WIP, detJ),
                     disp=False,
@@ -149,7 +149,7 @@ def computeModifiedCorrelationMatrix(stochastic_model):
     return Ro
 
 
-def absoluteIntegralValue(rho0, *args):
+def absolute_integral_value(rho0, *args):
     r"""Objective function for the Nataf correlation optimisation.
 
     Returns ``|rho_target - rho_integral(rho0)|``, which is minimised
@@ -178,12 +178,12 @@ def absoluteIntegralValue(rho0, *args):
     return f
 
 
-def setModifiedCorrelationMatrix(stochastic_model):
+def set_modified_correlation_matrix(stochastic_model):
     """Compute the modified correlation matrix and store it on the model.
 
     Convenience wrapper that calls
-    :func:`computeModifiedCorrelationMatrix` and assigns the result to
-    the stochastic model via ``setModifiedCorrelation``.
+    :func:`compute_modified_correlation_matrix` and assigns the result to
+    the stochastic model via ``set_modified_correlation``.
 
     Parameters
     ----------
@@ -191,5 +191,5 @@ def setModifiedCorrelationMatrix(stochastic_model):
         The model whose modified correlation matrix will be set.
     """
 
-    Ro = computeModifiedCorrelationMatrix(stochastic_model)
-    stochastic_model.setModifiedCorrelation(Ro)
+    Ro = compute_modified_correlation_matrix(stochastic_model)
+    stochastic_model.set_modified_correlation(Ro)

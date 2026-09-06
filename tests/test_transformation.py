@@ -89,7 +89,7 @@ class TestCholeskyTransform:
         assert pytest.approx(J[0, 0], abs=1e-6) == 1 / 2
         assert pytest.approx(J[1, 1], abs=1e-6) == 1 / 3
 
-    def test_T_and_inv_T_are_set(self):
+    def test_t_and_inv_t_are_set(self):
         """After compute, T and inv_T should be defined."""
         Ro = np.eye(2)
         t = Transformation("cholesky")
@@ -97,7 +97,7 @@ class TestCholeskyTransform:
         assert t.T is not None
         assert t.inv_T is not None
 
-    def test_T_times_inv_T_is_identity(self):
+    def test_t_times_inv_t_is_identity(self):
         """T @ inv_T should be identity."""
         Ro = np.array([[1.0, 0.3], [0.3, 1.0]])
         t = Transformation("cholesky")
@@ -133,7 +133,7 @@ class TestSVDTransform:
             u_back = t.x_to_u(x, marg)
             np.testing.assert_allclose(u_back, u_test, atol=1e-6)
 
-    def test_T_times_inv_T_is_identity(self):
+    def test_t_times_inv_t_is_identity(self):
         """T @ inv_T should be identity."""
         Ro = np.array([[1.0, 0.3], [0.3, 1.0]])
         t = Transformation("svd")

@@ -3,7 +3,7 @@
 from .distributions import Distribution, Maximum, MaxParent
 
 
-class FBCProcess:
+class FbcProcess:
     """Ferry-Borges-Castanheta rectangular-wave load process.
 
     The Ferry-Borges-Castanheta (FBC) model represents a load process as a
@@ -41,7 +41,7 @@ class FBCProcess:
     Examples
     --------
     >>> import pystra as ra
-    >>> Q = ra.FBCProcess(
+    >>> Q = ra.FbcProcess(
     ...     "Q", parent=ra.Gumbel("Q", 0.89, 0.2), basic_interval=1/52
     ... )
     >>> Q.point_in_time()
@@ -50,11 +50,11 @@ class FBCProcess:
 
     def __init__(self, name, parent, basic_interval):
         if not isinstance(parent, Distribution):
-            raise Exception("FBCProcess parent must be a Pystra Distribution")
+            raise Exception("FbcProcess parent must be a Pystra Distribution")
         if basic_interval <= 0:
-            raise Exception("FBCProcess basic_interval must be positive")
-        if parent.getName() != name:
-            raise Exception("FBCProcess name must match parent distribution name")
+            raise Exception("FbcProcess basic_interval must be positive")
+        if parent.get_name() != name:
+            raise Exception("FbcProcess name must match parent distribution name")
 
         self.name = name
         self.parent = parent
@@ -82,17 +82,17 @@ class FBCProcess:
 
         Returns
         -------
-        FBCProcess
+        FbcProcess
             Process whose parent distribution is inferred from ``maximum``.
         """
         if maximum_duration <= 0:
-            raise Exception("FBCProcess maximum_duration must be positive")
+            raise Exception("FbcProcess maximum_duration must be positive")
         if basic_interval <= 0:
-            raise Exception("FBCProcess basic_interval must be positive")
+            raise Exception("FbcProcess basic_interval must be positive")
         if not isinstance(maximum, Distribution):
-            raise Exception("FBCProcess maximum must be a Pystra Distribution")
-        if maximum.getName() != name:
-            raise Exception("FBCProcess name must match maximum distribution name")
+            raise Exception("FbcProcess maximum must be a Pystra Distribution")
+        if maximum.get_name() != name:
+            raise Exception("FbcProcess name must match maximum distribution name")
 
         n = max(1.0, maximum_duration / basic_interval)
         parent = MaxParent(name, maximum, N=n)
@@ -121,10 +121,10 @@ class FBCProcess:
             raise Exception("Specify exactly one of duration or n")
         if n is not None:
             if n < 1.0:
-                raise Exception("FBCProcess n must be >= 1.0")
+                raise Exception("FbcProcess n must be >= 1.0")
             return n
         if duration <= 0:
-            raise Exception("FBCProcess duration must be positive")
+            raise Exception("FbcProcess duration must be positive")
         return max(1.0, duration / self.basic_interval)
 
     def point_in_time(self):

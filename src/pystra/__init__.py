@@ -21,18 +21,18 @@ Quick start::
 
     limit_state = ra.LimitState(lambda R, S: R - S)
     model = ra.StochasticModel()
-    model.addVariable(ra.Normal("R", 10, 1))
-    model.addVariable(ra.Normal("S", 5, 1))
+    model.add_variable(ra.Normal("R", 10, 1))
+    model.add_variable(ra.Normal("S", 5, 1))
 
     form = ra.Form(
         stochastic_model=model,
         limit_state=limit_state,
     )
     form.run()
-    print(f"beta = {form.getBeta():.4f}")
+    print(f"beta = {form.get_beta():.4f}")
 """
 
-__version__ = "1.6.0"
+__version__ = "2.0.0.dev0"
 
 # Distributions
 from .distributions import *
@@ -64,16 +64,16 @@ from .calibration import *
 from . import ddo
 from .ddo import (
     CostBenefitModel,
-    DDO,
-    DDOCriterion,
-    DDOObjective,
+    Ddo,
+    DdoCriterion,
+    DdoObjective,
     DesignStudy,
     FatalityConsequence,
-    LQI,
+    Lqi,
     RackwitzTargetModel,
     RiskResult,
     RiskStudy,
     ScenarioRiskModel,
-    SWTP,
+    Swtp,
     TargetReliability,
 )

@@ -21,7 +21,7 @@ Two methods are available, selected via the ``numerical`` flag of
 
 from .form import Form
 from .analysis import AnalysisOptions
-from .cholesky_sensitivity import cholesky_with_derivative, dinvL0_dtheta
+from .cholesky_sensitivity import cholesky_with_derivative, inverse_cholesky_gradient
 from .integration import zi_and_xi, drho_drho0, drho0_dtheta
 import copy
 import numpy as np
@@ -149,7 +149,7 @@ class SensitivityAnalysis:
         finite-difference approximation
         :math:`(\beta_1 - \beta_0) / \Delta\theta`.
         """
-        variables = self.model.getVariables()
+        variables = self.model.get_variables()
         names = list(variables.keys())
 
         # Build result dict with per-variable parameter keys
@@ -165,13 +165,13 @@ class SensitivityAnalysis:
             analysis_options=self.options,
         )
         form.run()
-        beta0 = form.getBeta()
+        beta0 = form.get_beta()
 
         for name in names:
             dist = variables[name]
             for param, val in dist.sensitivity_params.items():
                 model1 = copy.deepcopy(self.model)
-                dist1 = model1.getVariable(name)
+                dist1 = model1.get_variable(name)
 
                 # Perturb and replace using _make_copy
                 h = delta * dist1.stdv
@@ -189,7 +189,7 @@ class SensitivityAnalysis:
                     analysis_options=self.options,
                 )
                 form.run()
-                beta1 = form.getBeta()
+                beta1 = form.get_beta()
                 sensitivities[name][param] = (beta1 - beta0) / delta_actual
 
         return sensitivities
@@ -211,7 +211,7 @@ class SensitivityAnalysis:
         of Bourinet (2017) and Eqs. (17)–(25) for the derivative
         integrals.  No additional FORM runs are required.
         """
-        if self.model.getCopula() is not None or self.options.getTransform() in (
+        if self.model.get_copula() is not None or self.options.get_transform() in (
             "nataf",
             "rosenblatt",
         ):
@@ -227,21 +227,21 @@ class SensitivityAnalysis:
         form.run()
 
         # Extract converged quantities
-        alpha = form.getAlpha()  # shape (nrv,)
-        u_star = form.getDesignPoint()  # shape (nrv,)
-        x_star = form.getDesignPoint(uspace=False)  # shape (nrv,)
+        alpha = form.get_alpha()  # shape (nrv,)
+        u_star = form.get_design_point()  # shape (nrv,)
+        x_star = form.get_design_point(uspace=False)  # shape (nrv,)
 
-        marg = self.model.getMarginalDistributions()
+        marg = self.model.get_marginal_distributions()
         nrv = len(marg)
-        R = self.model.getCorrelation()  # physical correlation
-        Ro = self.model.getModifiedCorrelation()  # modified (Nataf) correlation
+        R = self.model.get_correlation()  # physical correlation
+        Ro = self.model.get_modified_correlation()  # modified (Nataf) correlation
 
         L0 = form.transform.inv_T  # Cholesky factor, shape (n,n)
         L0_inv = form.transform.T  # its inverse
 
         z_star = L0 @ u_star  # correlated std normal at design point
 
-        variables = self.model.getVariables()
+        variables = self.model.get_variables()
         names = list(variables.keys())
 
         # ------------------------------------------------------------------
@@ -257,7 +257,7 @@ class SensitivityAnalysis:
         for i in range(nrv):
             for j in range(i):
                 rho = R[i, j]
-                nIP = self._select_nIP(rho)
+                nIP = self._select_n_ip(rho)
                 grid = zi_and_xi(marg[i], marg[j], 6, nIP)
                 quad_grids[(i, j)] = grid
 
@@ -267,7 +267,7 @@ class SensitivityAnalysis:
             for param in dist_k.sensitivity_params:
                 # --- First term: αᵀ L₀⁻¹ (∂z/∂θ_k) ---
                 # ∂z_i/∂θ_k is nonzero only for i == var_k  (Eq. 22)
-                dF = dist_k.dF_dtheta(x_star[var_k])
+                dF = dist_k.cdf_gradient(x_star[var_k])
                 phi_z = dist_k.std_normal.pdf(z_star[var_k])
                 dz_dtheta = np.zeros(nrv)
                 if phi_z > 1e-300:
@@ -277,12 +277,12 @@ class SensitivityAnalysis:
 
                 # --- Second term: αᵀ (∂L₀⁻¹/∂θ_k) z ---
                 # Need ∂R₀/∂θ_k, then Cholesky diff → ∂L₀/∂θ_k → ∂L₀⁻¹/∂θ_k
-                dR0_dtheta = self._compute_dR0_dtheta(
+                dR0_dtheta = self._compute_d_r0_dtheta(
                     marg, nrv, Ro, R, quad_grids, var_k, param
                 )
 
                 _, dL0 = cholesky_with_derivative(Ro, dR0_dtheta)
-                dL0_inv = dinvL0_dtheta(L0, dL0)
+                dL0_inv = inverse_cholesky_gradient(L0, dL0)
 
                 term2 = alpha @ (dL0_inv @ z_star)
 
@@ -310,7 +310,7 @@ class SensitivityAnalysis:
 
                 # Cholesky diff → ∂L₀⁻¹/∂ρ_ij
                 _, dL0 = cholesky_with_derivative(Ro, dR0)
-                dL0_inv = dinvL0_dtheta(L0, dL0)
+                dL0_inv = inverse_cholesky_gradient(L0, dL0)
 
                 # ∂β/∂ρ_ij = αᵀ (∂L₀⁻¹/∂ρ_ij) z  (first term vanishes)
                 dbeta = float(alpha @ (dL0_inv @ z_star))
@@ -322,7 +322,7 @@ class SensitivityAnalysis:
     # ------------------------------------------------------------------
     # Helpers
     # ------------------------------------------------------------------
-    def _compute_dR0_dtheta(self, marg, nrv, Ro, R, quad_grids, var_k, param):
+    def _compute_d_r0_dtheta(self, marg, nrv, Ro, R, quad_grids, var_k, param):
         r"""Build ∂R₀/∂θ_k for a marginal distribution parameter.
 
         For each pair (i, j), computes ``∂ρ₀,ij/∂θ_k`` using
@@ -381,7 +381,7 @@ class SensitivityAnalysis:
         return dR0
 
     @staticmethod
-    def _select_nIP(rho):
+    def _select_n_ip(rho):
         """Select the number of integration points based on |ρ|."""
         rho_abs = abs(rho)
         if rho_abs > 0.9995:

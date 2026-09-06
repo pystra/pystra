@@ -32,12 +32,12 @@ def lsf(R, S):
 limit_state = ra.LimitState(lsf)
 
 model = ra.StochasticModel()
-model.addVariable(ra.Lognormal("R", 5, 5))
-model.addVariable(ra.Lognormal("S", 1, 1))
-model.setCorrelation(ra.CorrelationMatrix([[1.0, 0.5], [0.5, 1.0]]))
+model.add_variable(ra.Lognormal("R", 5, 5))
+model.add_variable(ra.Lognormal("S", 1, 1))
+model.set_correlation(ra.CorrelationMatrix([[1.0, 0.5], [0.5, 1.0]]))
 
 form = ra.Form(stochastic_model=model, limit_state=limit_state)
-form.showDetailedOutput()
+form.show_detailed_output()
 
 sens = ra.SensitivityAnalysis(stochastic_model=model, limit_state=limit_state)
 results = sens.run_form()

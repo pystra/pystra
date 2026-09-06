@@ -84,7 +84,7 @@ class Lognormal(Distribution):
         u = (np.log(x) - self.lamb) / self.zeta
         return u
 
-    def dF_dtheta(self, x):
+    def cdf_gradient(self, x):
         r"""Analytical derivatives of the Lognormal CDF w.r.t. μ and σ.
 
         The CDF is ``F(x) = Φ((ln x - λ) / ζ)`` where
