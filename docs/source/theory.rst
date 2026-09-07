@@ -1525,7 +1525,9 @@ Active Learning Reliability
 Carlo classification and sequential true limit-state evaluations. Kriging
 follows the AK-MCS approach [Echard2011]_. The separation of surrogate,
 reliability estimator, learning function and stopping criterion follows the
-framework discussed by [Moustapha2022]_. See the
+framework discussed by [Moustapha2022]_. The complementary review
+[TeixeiraNogalOConnor2021]_ surveys the main adaptive metamodel families.
+See :doc:`active_learning` for coverage and proposed extensions, and the
 :doc:`notebooks/ex_active_learning` tutorial for independent benchmark references.
 
 An initial Latin hypercube design and a fixed normal Monte Carlo candidate

@@ -13,6 +13,7 @@ Core Framework
 
     system
     strong_maximum
+    active_learning
     copulas
 
 .. autosummary::

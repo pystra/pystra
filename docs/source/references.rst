@@ -134,10 +134,12 @@ References
 
 .. [Bichon2008] Bichon, B. J., Eldred, M. S., Swiler, L. P., Mahadevan, S., & McFarland, J. M. (2008). Efficient global reliability analysis for nonlinear implicit performance functions. AIAA Journal, 46(10), 2459–2468.
 
-.. [Moustapha2022] Moustapha, M., Marelli, S., & Sudret, B. (2022). Active learning for structural reliability: Survey, general framework and benchmark. Structural Safety, 96, 102174.
+.. [Moustapha2022] Moustapha, M., Marelli, S., & Sudret, B. (2022). Active learning for structural reliability: Survey, general framework and benchmark. Structural Safety, 96, 102174. `doi:10.1016/j.strusafe.2021.102174 <https://doi.org/10.1016/j.strusafe.2021.102174>`_.
 
 
 
 .. [MarelliSudret2018] Marelli, S. and Sudret, B. (2018). An active-learning algorithm that combines sparse polynomial chaos expansions and bootstrap for structural reliability analysis. Structural Safety, 75, 67–74. `doi:10.1016/j.strusafe.2018.06.003 <https://doi.org/10.1016/j.strusafe.2018.06.003>`_.
 
 .. [BlatmanSudret2011] Blatman, G. and Sudret, B. (2011). Adaptive sparse polynomial chaos expansion based on Least Angle Regression. Journal of Computational Physics, 230, 2345–2367. `doi:10.1016/j.jcp.2010.12.021 <https://doi.org/10.1016/j.jcp.2010.12.021>`_.
+
+.. [TeixeiraNogalOConnor2021] Teixeira, R., Nogal, M., and O’Connor, A. (2021). Adaptive approaches in metamodel-based reliability analysis: A review. Structural Safety, 89, 102019. `doi:10.1016/j.strusafe.2020.102019 <https://doi.org/10.1016/j.strusafe.2020.102019>`_.
