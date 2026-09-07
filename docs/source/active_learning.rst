@@ -19,6 +19,10 @@ learning-point selection from stopping based on the probability/reliability
 estimate. Simply implementing a learning function does not reproduce the
 complete algorithm that originally introduced it.
 
+PySTRA targets a carefully validated implementation of established and selected
+modern structural reliability methods, with practical code calibration and
+structural assessment tools.
+
 Surrogate-assisted reliability and the coherent component design are part of
 the **v2.0 release scope**. Kriging's scikit-learn dependency remains an
 optional installation extra. Development proceeds on the v2.0 branch.
@@ -35,28 +39,30 @@ Current coverage on the 2.0 branch
      - Gaps
    * - Surrogates
      - Kriging; adaptive sparse Hermite PCE with selected-support bootstrap;
-       explicit dense OLS option
-     - PC-Kriging; adaptive response-surface workflows; SVM classification
+       explicit dense OLS option; sequential PC-Kriging
+     - Adaptive response-surface workflows; SVM classification
    * - Reliability estimation
      - Independent final MC; replicated subset simulation with adaptive
-       enrichment and independent final sampling
-     - Active-learning integration with importance sampling
+       enrichment and independent final sampling; active Gaussian-mixture
+       importance sampling with explicit centres
+     - Automatic proposal adaptation and true-model correction workflows
    * - Learning functions
-     - Explicit selection interface; U and EFF
-     - Bootstrap voting/fraction of bootstrap replicates (FBR); batch selection
+     - Explicit scalar/ensemble selection interfaces; U, EFF and FBR voting
+     - Clustered batch selection
    * - Stopping
      - Explicit policies for learning thresholds, beta bands, beta stability
        and combined criteria; separate final sampling precision;
+       bootstrap probability-range stopping; weighted sampling diagnostics;
        explicit budget/exhaustion status
-     - Diagnostics for importance-weighted sampling
+     - Bounds accounting for model-selection bias
 
 Standalone FORM, SORM, crude Monte Carlo, importance sampling, line sampling
 and subset simulation already exist. Having these solvers does not mean that
 active learning can compose every standalone solver. ``ActiveLearning`` now
 composes a replicated subset estimator through ``EnrichmentEstimator``.
 The existing standalone subset solver remains a comparison baseline, with its
-original documented CoV limitation. Active importance sampling remains future
-work.
+original documented CoV limitation. ``ImportanceSamplingEstimator`` now composes explicit Gaussian-mixture
+proposals with active learning and independent weighted final estimation.
 
 The fixed-pool Kriging/U loop is an AK-MCS-style implementation. EFF is provided
 as a learning function; this is not a complete EGRA reproduction. Likewise,
@@ -184,26 +190,67 @@ The default U-threshold stopping policy is available, but combined beta-band
 and beta-stability criteria often avoid continued enrichment of remote points
 whose contribution to failure probability is negligible.
 
-Next implementation increments
-------------------------------
+PC-Kriging, bootstrap voting and active importance sampling
+-----------------------------------------------------------
 
-The component foundation above is implemented. Continue the v2.0 sequence with:
+``PcKrigingSurrogate`` selects a sparse Hermite trend, fits its coefficients
+by GLS for each correlation candidate and retains the universal prediction
+variance, including trend uncertainty. Anisotropic Matérn 5/2 correlation is
+the default; Gaussian correlation and fixed length scales are explicit options.
+Likelihood gradients are analytic and scaled per observation. Optimization
+failure invalidates the fit. This implements sequential PC-Kriging, not the
+optimal variant's search along every LAR support. It requires only NumPy/SciPy.
 
-1. Add **PC-Kriging**, combining a selected polynomial trend and a Gaussian
-   process residual with the corresponding predictive uncertainty. Validate
-   against original reference implementations and published problems.
-2. Add **FBR learning** for bootstrap PCE, extending the prediction/selection
-   contract to retain replicate classifications rather than inferring votes
-   from a mean and standard deviation. Include premature-stop cases.
-3. Add an **active-learning importance-sampling** workflow where its proposal
-   assumptions are appropriate; distinguish a design-point-centered proposal
-   from methods that can discover multiple separated failure regions.
+``PceSurrogate.predict_replicates(points)`` exposes actual bootstrap responses,
+shape ``(n_points, n_replicates)``, with consistent replicate columns between
+calls. ``FbrLearning`` minimizes absolute safe/failure vote imbalance divided
+by the number of replicates; zero response counts as failure. It requires an
+``EnsembleSurrogate``. ``EnsembleLearningFunction`` is the corresponding
+extension interface. Scalar U/EFF interfaces remain unchanged.
 
-An adaptive quadratic response-surface workflow is a useful later candidate
-for classical structural-assessment practice. SVM-based reliability can remain
-an optional later extension: a classification margin is not a predictive
-standard deviation and needs its own learning/stopping contract. A generic
-neural-network or general UQ suite is outside this scope.
+The named ``learning_function="fbr"`` defaults to ``BootstrapBounds``: the
+min/max bootstrap probability range divided by the full-design estimate must
+be at most 0.1 for two consecutive fits. These are actual replicate probability
+estimates on the fixed normal pool, not mean/spread approximations. The range
+can exclude the full-design estimate and is not a confidence interval for total
+error. ``LearningStep.bootstrap_probability_band`` records it separately.
+``BootstrapBounds`` rejects weighted or conditional enrichment: such estimators
+do not yet supply replicate probability estimates. FBR selection can still
+use their candidate pools with an explicit alternative stopping policy.
+
+``ImportanceSamplingEstimator`` accepts row-wise normal-coordinate proposal
+``centers``, common spherical ``scale`` and a default 0.1 defensive fraction
+of the target normal distribution. Centres are fixed during a run. A converged
+FORM ``standard_point`` can supply one centre; known separated modes require
+appropriate additional centres. The proposal cannot guarantee discovery of
+unknown modes. Learning adapts the surrogate, while both exploratory and final
+probabilities use ordinary likelihood weighting. Final sampling uses fresh draws.
+
+For samples from proposal :math:`q`, define :math:`Z_i=I_i\phi(u_i)/q(u_i)`.
+The probability estimate is :math:`\bar Z` and its sampling variance is
+:math:`s_Z^2/N`. Weights are not self-normalized. No binomial interval is
+reported. Diagnostics retain effective sample/failure counts, mean/max weights,
+standard error and the raw probability. Out-of-range estimates remain explicitly
+invalid, with the exposed point clipped to a probability endpoint, infinite CoV
+and the raw value preserved. Sensitivity bands are clipped diagnostics.
+Zero/all observed failures and inadequate effective failure counts remain
+incomplete. A zero defensive fraction requires adequate proposal tails for
+finite sampling variance. There is no true-model correction factor in this
+workflow.
+
+See :doc:`notebooks/ex_active_extensions` for composed examples and independent
+checks, and download the :download:`method provenance and UQLab comparison
+<../active-learning-provenance.md>` for exact sources, variants and regeneration.
+
+Scope of later work
+-------------------
+
+System-specific active learning, clustered batch enrichment and automatic
+proposal adaptation are possible later additions. An adaptive quadratic
+response-surface workflow also fits classical assessment practice. These are
+outside the three additions above. SVM reliability needs classification-specific
+learning contracts; a generic neural-network or general UQ suite is outside
+the current scope.
 
 Acceptance evidence
 -------------------

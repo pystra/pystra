@@ -4116,5 +4116,24 @@
       "kind": "callable",
       "status": "renamed"
     }
-  ]
+  ],
+  "active_learning_additions": {
+    "exports": [
+      "PcKrigingSurrogate",
+      "PcKrigingFitResult",
+      "EnsembleSurrogate",
+      "EnsembleLearningFunction",
+      "FbrLearning",
+      "BootstrapBounds",
+      "ImportanceSamplingEstimator",
+      "ImportanceSamplingDiagnostics"
+    ],
+    "import_module": "pystra.active_learning",
+    "named_surrogate": "pc_kriging",
+    "named_learning_function": "fbr",
+    "replicate_contract": "EnsembleSurrogate.predict_replicates: row-wise (n_points, n_replicates>=2), stable replicate columns across calls",
+    "new_history_field": "LearningStep.bootstrap_probability_band: optional immutable pair of actual replicate Pf extremes on fixed IID normal enrichment",
+    "default_change": "FBR defaults to BootstrapBounds; existing U/EFF defaults unchanged",
+    "restrictions": "BootstrapBounds requires an EnsembleSurrogate and fixed IID normal enrichment; spherical Student-t coordinates remain unsupported."
+  }
 }

@@ -88,6 +88,9 @@ class LearningStep:
     failure probability, under the estimator's sampling measure.
     ``estimation_converged`` and optional ``sampling_cov`` record the
     exploratory estimator's completion and precision, not the final sample.
+    ``bootstrap_probability_band`` is the min/max of actual replicate Pf
+    estimates on fixed IID normal enrichment, when requested. It need not
+    enclose the full-design mean prediction and is not a confidence interval.
     """
 
     failure_probability: float
@@ -98,6 +101,14 @@ class LearningStep:
     learning_satisfied: bool
     estimation_converged: bool = True
     sampling_cov: Optional[float] = None
+    bootstrap_probability_band: Optional[tuple] = None
+
+    def __post_init__(self):
+        if self.bootstrap_probability_band is not None:
+            band = tuple(float(value) for value in self.bootstrap_probability_band)
+            if len(band) != 2 or not 0 <= band[0] <= band[1] <= 1:
+                raise ValueError("bootstrap_probability_band must be ordered in [0, 1]")
+            object.__setattr__(self, "bootstrap_probability_band", band)
 
     @property
     def beta(self) -> float:

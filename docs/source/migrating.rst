@@ -366,3 +366,27 @@ have status ``estimation_failed`` if final subset sampling cannot finish.
 Subset diagnostics contain ``SubsetRun`` and ``SubsetLevel`` snapshots, with
 no IID binomial confidence interval. The standalone ``pystra.SubsetSimulation``
 API and numerical implementation are unchanged in this increment.
+
+Additional active-learning contracts
+------------------------------------
+
+The public import path remains ``pystra.active_learning``. The new named
+surrogate is ``"pc_kriging"`` and the new named learning function is ``"fbr"``.
+``PcKrigingSurrogate`` and ``PcKrigingFitResult`` expose sequential PC-Kriging;
+``ImportanceSamplingEstimator`` and ``ImportanceSamplingDiagnostics`` supply
+explicit weighted sampling. Both use independent normal coordinates.
+
+``EnsembleSurrogate.predict_replicates`` and
+``EnsembleLearningFunction.select_replicates`` extend the existing scalar
+contracts without changing U/EFF. ``PceSurrogate`` implements the ensemble
+interface. ``FbrLearning`` requires it; incompatible combinations fail before
+true-model evaluation. Named FBR defaults to ``BootstrapBounds``; existing
+U/EFF defaults remain unchanged. Bootstrap probability stopping is restricted
+to fixed IID normal enrichment and rejected for adaptive weighted/conditional
+pools, including when nested inside ``AllCriteria``.
+
+``LearningStep.bootstrap_probability_band`` is an optional immutable pair of
+actual bootstrap Pf extremes, separate from ``probability_band`` (the
+mean/spread sensitivity diagnostic). ``None`` means it was not calculated.
+Neither field is a confidence interval for total surrogate error. See
+:doc:`active_learning` for formulas, limitations and the worked tutorial.

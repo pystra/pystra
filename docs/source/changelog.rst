@@ -10,6 +10,10 @@ Unreleased
 
 Added
 ~~~~~
+- Sequential PC-Kriging with GLS trend uncertainty and explicit correlation
+  choices; bootstrap voting/FBR with actual probability-range stopping; and
+  active Gaussian-mixture importance sampling with weighted diagnostics.
+  Includes UQLab numerical comparisons and an executed composition tutorial.
 - Worked Rosenblatt-ordering tutorial reproducing Meinen and Steenbergen's
   (2025) system example, with transformation geometry, coordinate alignment,
   and original-event integration/simulation checks.

@@ -9,15 +9,24 @@ from scipy.stats import norm, qmc
 
 from ..analysis import AnalysisObject
 from ._validation import _positive_integer, _points, _training, _predictions
-from .surrogates import Surrogate, KrigingSurrogate, PceSurrogate
-from .learning import LearningDecision, LearningFunction, UFunction, ExpectedFeasibility
+from .surrogates import Surrogate, KrigingSurrogate, PceSurrogate, EnsembleSurrogate
+from .pc_kriging import PcKrigingSurrogate
+from .learning import (
+    LearningDecision,
+    LearningFunction,
+    UFunction,
+    ExpectedFeasibility,
+    EnsembleLearningFunction,
+    FbrLearning,
+    _replicates,
+)
 from .estimation import (
     ReliabilityEstimator,
     MonteCarloEstimator,
     EnrichmentEstimator,
     EnrichmentResult,
 )
-from .stopping import StoppingCriterion, LearningThreshold
+from .stopping import StoppingCriterion, LearningThreshold, BootstrapBounds
 from .results import ActiveLearningResult, LearningStep, ReliabilityEstimate
 
 
@@ -29,11 +38,12 @@ class ActiveLearning(AnalysisObject):
     stochastic_model, limit_state, analysis_options : optional
         Standard PySTRA analysis inputs. Failure is g <= 0.
     surrogate : str or Surrogate
-        'kriging' (default), 'pce', or an explicitly supplied fitted-model
+        'kriging' (default), 'pce', 'pc_kriging', or an explicitly supplied fitted-model
         implementation. A supplied object is refitted in place by run().
     learning_function : str or LearningFunction
-        'u' (default), 'eff', or a stateless selection policy.
-        EFF assumes Gaussian predictive uncertainty.
+        'u' (default), 'eff', 'fbr', or a stateless selection policy.
+        EFF assumes Gaussian predictive uncertainty. FBR requires bootstrap
+        replicates; its default stopping policy is BootstrapBounds.
     n_initial : int, optional
         Initial LHS size: max(12, 2*n_variables), or max(30, 5*n_variables)
         for sparse PCE or estimator-driven enrichment. Dense OLS uses at least twice the largest total-degree
@@ -57,7 +67,8 @@ class ActiveLearning(AnalysisObject):
         Shortcut for the default LearningThreshold's final sampling CoV (0.1).
         Cannot be combined with an explicit stopping criterion.
     stopping_criterion : StoppingCriterion, optional
-        Default LearningThreshold(). Explicit policies separate convergence
+        Default LearningThreshold(), or BootstrapBounds() for FBR.
+        Explicit policies separate convergence
         from selection, for example AllCriteria with beta bounds/stability.
     surrogate_kwargs : mapping, optional
         Constructor settings for a named surrogate.
@@ -99,13 +110,25 @@ class ActiveLearning(AnalysisObject):
             limit_state=limit_state,
             analysis_options=analysis_options,
         )
-        if not isinstance(surrogate, Surrogate) and surrogate not in ("kriging", "pce"):
-            raise ValueError("Unknown surrogate; use 'kriging', 'pce', or a Surrogate")
+        if not isinstance(surrogate, Surrogate) and surrogate not in (
+            "kriging",
+            "pce",
+            "pc_kriging",
+        ):
+            raise ValueError(
+                "Unknown surrogate; use 'kriging', 'pce', 'pc_kriging', or a Surrogate"
+            )
         if isinstance(learning_function, LearningFunction):
             if learning_threshold is not None:
                 raise ValueError(
                     "learning_threshold requires a named learning function"
                 )
+        elif learning_function == "fbr":
+            if learning_threshold is not None:
+                raise ValueError(
+                    "FBR uses bootstrap probability stopping, not learning_threshold"
+                )
+            learning_function = FbrLearning()
         elif isinstance(learning_function, str) and learning_function in ("u", "eff"):
             policy = UFunction if learning_function == "u" else ExpectedFeasibility
             learning_function = (
@@ -114,7 +137,7 @@ class ActiveLearning(AnalysisObject):
                 else policy(threshold=learning_threshold)
             )
         else:
-            raise ValueError("Use 'u', 'eff', or a LearningFunction")
+            raise ValueError("Use 'u', 'eff', 'fbr', or a LearningFunction")
         if estimator is None:
             estimator = MonteCarloEstimator(
                 n_samples=100_000 if n_estimation is None else n_estimation
@@ -126,7 +149,12 @@ class ActiveLearning(AnalysisObject):
                 "n_estimation cannot be combined with an explicit estimator"
             )
         if stopping_criterion is None:
-            stopping_criterion = LearningThreshold(
+            policy = (
+                BootstrapBounds
+                if isinstance(learning_function, FbrLearning)
+                else LearningThreshold
+            )
+            stopping_criterion = policy(
                 target_cov=0.1 if target_cov is None else target_cov
             )
         elif not isinstance(stopping_criterion, StoppingCriterion):
@@ -137,6 +165,18 @@ class ActiveLearning(AnalysisObject):
             )
         if isinstance(surrogate, Surrogate) and surrogate_kwargs:
             raise ValueError("surrogate_kwargs requires a named surrogate")
+        needs_replicates = (
+            isinstance(learning_function, EnsembleLearningFunction)
+            or stopping_criterion.requires_bootstrap
+        )
+        if needs_replicates and not (
+            isinstance(surrogate, EnsembleSurrogate) or surrogate == "pce"
+        ):
+            raise TypeError("Bootstrap learning/stopping requires an EnsembleSurrogate")
+        if stopping_criterion.requires_bootstrap and isinstance(
+            estimator, EnrichmentEstimator
+        ):
+            raise ValueError("BootstrapBounds requires fixed IID normal enrichment")
         self.surrogate = surrogate
         self.learning_function = learning_function
         self.estimator = estimator
@@ -189,12 +229,16 @@ class ActiveLearning(AnalysisObject):
         settings.setdefault("seed", int(rng.integers(2**31 - 1)))
         surrogate = self.surrogate
         if isinstance(surrogate, str):
-            surrogate = {"kriging": KrigingSurrogate, "pce": PceSurrogate}[surrogate](
-                **settings
-            )
+            surrogate = {
+                "kriging": KrigingSurrogate,
+                "pce": PceSurrogate,
+                "pc_kriging": PcKrigingSurrogate,
+            }[surrogate](**settings)
         initial = max(12, 2 * dimension)
         if isinstance(self.estimator, EnrichmentEstimator):
             initial = max(initial, 30, 5 * dimension)
+        if isinstance(surrogate, PcKrigingSurrogate):
+            initial = max(30, 5 * dimension)
         if isinstance(surrogate, PceSurrogate):
             if surrogate.method == "ols":
                 maximum_degree = max(surrogate.degree)
@@ -253,7 +297,32 @@ class ActiveLearning(AnalysisObject):
             if not len(indices):
                 status = "candidate_exhaustion"
                 break
-            decision = self.learning_function.select(mean[indices], std[indices])
+            bootstrap_band = None
+            replicates = None
+            if (
+                isinstance(self.learning_function, EnsembleLearningFunction)
+                or self.stopping_criterion.requires_bootstrap
+            ):
+                batches = []
+                for start in range(0, len(candidates), 2048):
+                    batch = candidates[start : start + 2048]
+                    predictions = _replicates(surrogate.predict_replicates(batch))
+                    if len(predictions) != len(batch):
+                        raise ValueError(
+                            "Surrogate returned the wrong number of replicate predictions"
+                        )
+                    batches.append(predictions)
+                replicates = np.concatenate(batches)
+                if exploration is None:
+                    probabilities = np.mean(replicates <= 0, axis=0)
+                    bootstrap_band = (
+                        float(probabilities.min()),
+                        float(probabilities.max()),
+                    )
+            if isinstance(self.learning_function, EnsembleLearningFunction):
+                decision = self.learning_function.select_replicates(replicates[indices])
+            else:
+                decision = self.learning_function.select(mean[indices], std[indices])
             if not isinstance(decision, LearningDecision):
                 raise TypeError("LearningFunction must return a LearningDecision")
             if decision.index >= len(indices):
@@ -282,6 +351,7 @@ class ActiveLearning(AnalysisObject):
                     learning_satisfied=decision.threshold_satisfied,
                     estimation_converged=estimation_converged,
                     sampling_cov=sampling_cov,
+                    bootstrap_probability_band=bootstrap_band,
                 )
             )
             learned = bool(

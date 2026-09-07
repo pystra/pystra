@@ -7,9 +7,10 @@
 Pystra - Python Structural Reliability Analysis
 ***********************************************
 
-Pystra (Python Structural Reliability Analysis) is a python module for structural reliability analysis. Its flexibility and extensibility make it applicable to a large
-suite of problems. Along with core reliability analysis functionality, Pystra
-includes methods for summarizing output. Pystra is also closely integrated with the usual python scientific packages workflow, numpy and scipy; in particular, all statistical distributions in Scipy can be used in reliability modeling.
+PySTRA provides a carefully validated implementation of established and
+selected modern structural reliability methods, coupled with practical tools
+for code calibration and structural assessment. It integrates with NumPy,
+SciPy and pandas, and supports reliability models defined by Python functions.
 
 Installation
 ============

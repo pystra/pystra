@@ -110,7 +110,15 @@ class PceFitResult:
     n_rank_deficient_bootstrap: int
 
 
-class PceSurrogate(Surrogate):
+class EnsembleSurrogate(Surrogate):
+    """A surrogate that also exposes row-wise replicate predictions."""
+
+    @abstractmethod
+    def predict_replicates(self, points: np.ndarray) -> np.ndarray:
+        """Return (n_points, n_replicates>=2) finite response predictions."""
+
+
+class PceSurrogate(EnsembleSurrogate):
     """Adaptive sparse Hermite PCE with bootstrap local prediction spread.
 
     Parameters
@@ -323,3 +331,17 @@ class PceSurrogate(Surrogate):
         return basis @ self._coefficients, np.std(
             basis @ self._ensemble, axis=1, ddof=1
         )
+
+    def predict_replicates(self, points: np.ndarray) -> np.ndarray:
+        """Return individual selected-support bootstrap responses (columns).
+
+        Replicate columns refer to the same fitted coefficients across calls,
+        enabling probability estimates on a common sample. They do not include
+        model-selection uncertainty. Returned arrays do not alias fitted state.
+        """
+        if self._coefficients is None:
+            raise RuntimeError("Surrogate has not been fitted")
+        points = _points(points)
+        if points.shape[1] != self._dimension:
+            raise ValueError("Prediction dimension differs from training dimension")
+        return _hermite_basis(points, self._powers) @ self._ensemble

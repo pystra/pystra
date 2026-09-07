@@ -120,3 +120,51 @@ def learning_eff(
     values = np.maximum(values, 0.0)  # roundoff only, not an absolute value
     best = int(np.argmax(values))
     return values, best, bool(values[best] < threshold)
+
+
+class EnsembleLearningFunction(LearningFunction):
+    """Selection requiring actual replicate predictions, not Gaussian spread."""
+
+    def select(self, mean: np.ndarray, std: np.ndarray) -> LearningDecision:
+        """Reject lossy mean/std input; use select_replicates instead."""
+        raise TypeError("This learning function requires replicate predictions")
+
+    @abstractmethod
+    def select_replicates(self, predictions: np.ndarray) -> LearningDecision:
+        """Select from finite (n_candidates, n_replicates) predictions."""
+
+
+class FbrLearning(EnsembleLearningFunction):
+    """Minimum bootstrap classification agreement, ``abs(B_safe-B_failure)/B``.
+
+    Marelli & Sudret (2018), Eq. (10), doi:10.1016/j.strusafe.2018.06.003.
+    Zero is maximal disagreement; one is unanimity. Zero response counts as
+    failure. Ties select the first candidate. The threshold flag means all
+    candidates are unanimous; it is not a guarantee of surrogate accuracy.
+    Use BootstrapBounds for the paper's probability-range stopping rule.
+    """
+
+    def select_replicates(self, predictions: np.ndarray) -> LearningDecision:
+        """Use actual classification votes, retaining non-Gaussian behaviour."""
+        predictions = _replicates(predictions)
+        count = predictions.shape[1]
+        failures = np.count_nonzero(predictions <= 0, axis=1)
+        agreement = np.abs(count - 2 * failures) / count
+        index = int(np.argmin(agreement))
+        return LearningDecision(
+            index, float(agreement[index]), bool(agreement[index] == 1)
+        )
+
+
+def _replicates(predictions):
+    predictions = np.asarray(predictions, dtype=float)
+    if (
+        predictions.ndim != 2
+        or not len(predictions)
+        or predictions.shape[1] < 2
+        or not np.all(np.isfinite(predictions))
+    ):
+        raise ValueError(
+            "Replicate predictions must be finite with shape (n_points, n_replicates>=2)"
+        )
+    return predictions

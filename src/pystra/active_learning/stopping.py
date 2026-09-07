@@ -23,6 +23,8 @@ class StoppingCriterion(ABC):
     decision and must document the meaning of convergence.
     """
 
+    requires_bootstrap = False
+
     def __init__(self, *, target_cov: float = 0.1):
         if not np.isfinite(target_cov) or target_cov <= 0:
             raise ValueError("target_cov must be finite and positive")
@@ -154,6 +156,11 @@ class AllCriteria(StoppingCriterion):
                 "criteria must contain one or more StoppingCriterion objects"
             )
 
+    @property
+    def requires_bootstrap(self) -> bool:
+        """Whether any composed rule needs bootstrap probability ranges."""
+        return any(criterion.requires_bootstrap for criterion in self.criteria)
+
     def should_stop(self, history: tuple[LearningStep, ...]) -> bool:
         """Require all component policies on the same complete fit history."""
         return all(criterion.should_stop(history) for criterion in self.criteria)
@@ -161,3 +168,43 @@ class AllCriteria(StoppingCriterion):
     def accepts_estimate(self, estimate: ReliabilityEstimate) -> bool:
         """Require all component sampling checks without recomputing uncertainty."""
         return all(criterion.accepts_estimate(estimate) for criterion in self.criteria)
+
+
+class BootstrapBounds(StoppingCriterion):
+    """Stop when the bootstrap Pf range / full-design Pf is small.
+
+    Marelli & Sudret (2018), Eqs. (8)-(9). Defaults: tolerance 0.1 and two
+    consecutive fits. Uses actual replicate classifications on the fixed IID
+    normal pool, not mean +/- two spread. This range is a bootstrap diagnostic,
+    not a confidence interval accounting for model-selection bias. Final
+    sampling precision is checked independently. Adaptive weighted/conditional
+    enrichment does not yet supply bootstrap probability ranges and is rejected.
+    """
+
+    requires_bootstrap = True
+
+    def __init__(
+        self, *, tolerance: float = 0.1, consecutive: int = 2, target_cov: float = 0.1
+    ):
+        super().__init__(target_cov=target_cov)
+        if not np.isfinite(tolerance) or tolerance <= 0:
+            raise ValueError("tolerance must be finite and positive")
+        self.tolerance = float(tolerance)
+        self.consecutive = _positive_integer(consecutive, "consecutive")
+
+    def should_stop(self, history: tuple[LearningStep, ...]) -> bool:
+        """Apply the relative probability range over the trailing window."""
+        if len(history) < self.consecutive:
+            return False
+        for step in history[-self.consecutive :]:
+            band = step.bootstrap_probability_band
+            if (
+                not step.estimation_converged
+                or not 0 < step.failure_probability < 1
+                or band is None
+                or len(band) != 2
+                or not 0 <= band[0] <= band[1] <= 1
+                or (band[1] - band[0]) / step.failure_probability > self.tolerance
+            ):
+                return False
+        return True

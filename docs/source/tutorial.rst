@@ -21,6 +21,7 @@ page.
     notebooks/ex_active_learning
     notebooks/ex_literature_truss
     notebooks/ex_literature_hat
+    notebooks/ex_active_extensions
     notebooks/ex_active_subset
     notebooks/ex_sensitivity
     notebooks/ex_ddm
