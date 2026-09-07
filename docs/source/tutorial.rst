@@ -19,6 +19,8 @@ page.
     notebooks/ex_copulas
     notebooks/ex_strong_maximum
     notebooks/ex_active_learning
+    notebooks/ex_literature_truss
+    notebooks/ex_literature_hat
     notebooks/ex_active_subset
     notebooks/ex_sensitivity
     notebooks/ex_ddm

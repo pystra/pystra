@@ -217,3 +217,13 @@ sampling error and explicit nonconvergence. These cases do not reproduce the ful
 
 See :doc:`notebooks/ex_active_learning` for implemented methods, numerical
 references and limitations, and :doc:`theory` for their current formulation.
+
+The :doc:`notebooks/ex_literature_truss` and :doc:`notebooks/ex_literature_hat`
+tutorials add a ten-variable structural model and a curved cubic limit state.
+Their :doc:`literature-benchmarks` record published settings, source provenance,
+independent references and discrepancies in the source comparisons.
+
+.. toctree::
+   :hidden:
+
+   literature-benchmarks
