@@ -1541,8 +1541,12 @@ The surrogate is refitted after each enrichment. Previously evaluated
 candidates cannot be selected again. The default initial size is
 ``max(12, 2*n_variables)``; sparse PCE uses ``max(30, 5*n_variables)``.
 Dense OLS uses twice its largest total-degree basis size by default.
-The final probability estimate uses an independent Monte Carlo population
-that never participates in fitting or point selection.
+By default, the final probability estimate uses an independent Monte Carlo
+population that never participates in fitting or point selection. An explicit
+``ReliabilityEstimator`` can replace final estimation and owns its sampling
+uncertainty calculation. The enrichment pool remains fixed normal Monte Carlo;
+active integration with subset simulation or importance sampling is separate
+work, requiring the estimator's sampling measure in candidate diagnostics.
 
 Surrogates and uncertainty
 --------------------------
@@ -1611,15 +1615,52 @@ spread; it does not convert that spread into a posterior distribution.
 Stopping and interpretation
 ---------------------------
 
-Learning stops when the configured score threshold is met and the candidate
-pool contains both predicted failure and survival. An evaluation budget or
-exhausted pool returns explicit nonconvergence. The independent final sample
-must also meet ``target_cov`` (default 0.1); otherwise the status is
-``sampling_precision``. Zero or all failures never pass this precision check.
+The default ``LearningThreshold`` stops enrichment when the configured score
+threshold is met and the candidate pool contains both predicted failure and
+survival. Selection is independent of this decision: a ``LearningFunction``
+returns a selected index, score and threshold flag, while a
+``StoppingCriterion`` inspects the complete fit history.
+
+Every fit records two candidate proportions:
+
+.. math::
+
+   p_{\mathrm{lo}} = \frac{1}{N_c}\sum_j
+       \mathbf{1}\{\mu_j+2\sigma_j\leq0\},\qquad
+   p_{\mathrm{hi}} = \frac{1}{N_c}\sum_j
+       \mathbf{1}\{\mu_j-2\sigma_j\leq0\}.
+
+The corresponding ascending beta band is
+:math:`[\beta_{\mathrm{lo}},\beta_{\mathrm{hi}}]
+=[-\Phi^{-1}(p_{\mathrm{hi}}),-\Phi^{-1}(p_{\mathrm{lo}})]`.
+``BetaBounds`` uses
+:math:`(\beta_{\mathrm{hi}}-\beta_{\mathrm{lo}})/|\hat\beta|\leq0.01`
+for three consecutive fits. ``BetaStability`` instead requires
+:math:`|\hat\beta_i-\hat\beta_{i-1}|/|\hat\beta_i|\leq0.005`
+for three consecutive changes (at least four fits). These are the rules in
+Eqs. (2)-(3) of [Moustapha2022]_, with absolute denominators to also handle
+negative beta. Nonfinite required indices and a zero denominator do not pass.
+``AllCriteria`` requires all supplied policies; setting both beta policies to
+two consecutive tests gives the review's combined rule. Learning-threshold
+acceptance can be included as another requirement.
+
+These bands measure the sensitivity of classifications to surrogate spread.
+They are not rigorous bounds on the true probability, simultaneous Gaussian
+confidence bands, or a correction for model bias. In particular, stable biased
+predictions can pass a beta-stability test. The implementation uses a fixed
+unweighted candidate pool, so these proportions must not be applied unchanged
+to weighted importance samples or conditional subset samples.
+
+An evaluation budget or exhausted pool returns explicit nonconvergence. The
+final sample must separately meet the stopping policy's ``target_cov``
+(default 0.1); otherwise the status is ``sampling_precision``. Zero or all
+failures never pass the built-in precision checks. Estimators supply their own
+CoV and optional confidence interval, including any corrections needed for
+sample dependence; the runner does not impose a binomial formula on them.
 
 The immutable result contains the estimate, normal-equivalent beta,
 convergence status, true evaluation count, history, conditional sampling CoV
-and an exact 95% binomial interval. These sampling diagnostics exclude
+and, for default Monte Carlo, an exact 95% binomial interval. These sampling diagnostics exclude
 surrogate error. A successful stopping status concerns the sampled points;
 it cannot guarantee discovery of disconnected failure regions or eliminate
 surrogate bias. Nonconvergence emits a warning and preserves an explicitly

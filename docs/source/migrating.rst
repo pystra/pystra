@@ -300,11 +300,36 @@ independent normal coordinates, not physical points.
 ``ActiveLearning.run()`` returns an immutable ``ActiveLearningResult`` with
 ``failure_probability``, ``beta``, conditional sampling diagnostics and explicit
 convergence status. It replaces the development branch's getters and mutable
-``Pf``/history fields. Settings are keyword-only; use lowercase ``u`` or ``eff``.
-``learning_threshold`` and ``target_cov`` replace beta-stability settings.
-The final estimate uses ``n_estimation`` independent points. ``seed`` controls
-run-owned randomness. Explicit ``Surrogate`` implementations can be supplied
-for extension. See :doc:`notebooks/ex_active_learning` for scope and limitations.
+``Pf``/history fields. Settings are keyword-only; use lowercase ``u`` or ``eff``
+for the named learning functions. The former development branch's implicit
+beta-stability logic is replaced by explicit stopping policies.
+
+The four components are now ``Surrogate``, ``LearningFunction``,
+``ReliabilityEstimator`` and ``StoppingCriterion``. The import path remains
+``pystra.active_learning``, now a package. Existing concise calls retain the
+same default workflow and numerical settings: ``learning_threshold`` configures
+the named U/EFF policy, ``n_estimation`` configures final independent MC, and
+``target_cov`` configures ``LearningThreshold``. For explicit components use
+``UFunction(threshold=...)``, ``MonteCarloEstimator(n_samples=...)`` and
+``LearningThreshold(target_cov=...)`` instead. Combining a component with its
+shortcut raises ValueError. Configure these objects directly rather than
+assigning former runner attributes ``learning_threshold``, ``n_estimation``
+or ``target_cov``. ``analysis.learning_function`` now holds a policy object.
+
+``BetaBounds``, ``BetaStability`` and ``AllCriteria`` are explicit alternatives.
+History entries add ``probability_band``, ``beta_band`` and
+``learning_satisfied``. The result now stores a single immutable ``estimate``
+record. Attribute access to ``failure_probability``, ``beta``, ``sampling_cov``,
+``sampling_interval`` and ``n_estimation`` is unchanged, but these are properties;
+``dataclasses.asdict(result)`` nests sampling data under ``estimate``. Use named
+fields when constructing result records; their positional constructor has
+changed. A custom estimator may return no sampling interval (None), and
+``result.estimate`` identifies its method, dependence and confidence level.
+
+``seed`` controls run-owned randomness. Explicit surrogate instances retain
+their own optimizer/bootstrap configuration; set their seed at construction.
+See :doc:`active_learning` for composition and extension contracts, and
+:doc:`notebooks/ex_active_learning` for scope and limitations.
 
 PCE now defaults to adaptive sparse fitting: ``method="lars"`` with candidate
 degrees 1 through 5. An integer ``degree`` fits a single candidate. Pass

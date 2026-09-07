@@ -19,6 +19,10 @@ learning-point selection from stopping based on the probability/reliability
 estimate. Simply implementing a learning function does not reproduce the
 complete algorithm that originally introduced it.
 
+Surrogate-assisted reliability and the coherent component design are part of
+the **v2.0 release scope**. Kriging's scikit-learn dependency remains an
+optional installation extra. Development proceeds on the v2.0 branch.
+
 Current coverage on the 2.0 branch
 ----------------------------------
 
@@ -34,22 +38,24 @@ Current coverage on the 2.0 branch
        explicit dense OLS option
      - PC-Kriging; adaptive response-surface workflows; SVM classification
    * - Reliability estimation
-     - Active learning with a Monte Carlo candidate pool and independent
-       final Monte Carlo estimation
+     - Explicit final-estimator interface; MonteCarloEstimator with
+       independent final sampling; fixed MC enrichment pool
      - Active-learning integration with subset simulation and importance sampling
    * - Learning functions
-     - U and EFF
+     - Explicit selection interface; U and EFF
      - Bootstrap voting/fraction of bootstrap replicates (FBR); batch selection
    * - Stopping
-     - Candidate learning threshold, final conditional sampling CoV,
+     - Explicit policies for learning thresholds, beta bands, beta stability
+       and combined criteria; separate final sampling precision;
        explicit budget/exhaustion status
-     - Surrogate-based probability/beta diagnostics; configurable stability
-       and combined criteria
+     - Diagnostics driven by weighted/dependent reliability-estimator samples
 
 Standalone FORM, SORM, crude Monte Carlo, importance sampling, line sampling
 and subset simulation already exist. Having these solvers does not mean that
-active learning can currently compose them. In particular, ``ActiveLearning``
-still fixes its estimator and stopping logic inside its runner.
+active learning can currently compose them. ``ActiveLearning`` now accepts
+explicit final-estimation and stopping components. Its enrichment pool remains
+fixed independent normal MC: substituting a final estimator does not by itself
+implement an adaptive subset-simulation or importance-sampling algorithm.
 
 The current Kriging/U loop is an AK-MCS-style implementation. EFF is provided
 as a learning function; this is not a complete EGRA reproduction. Likewise,
@@ -60,26 +66,85 @@ can span quadratic response surfaces in normal coordinates, but does not
 supply a classical adaptive
 response-surface reliability algorithm.
 
-Recommended next increments
----------------------------
+Composing the implemented methods
+---------------------------------
 
-This is the proposed development sequence, not a list of implemented features:
+The public import path remains ``pystra.active_learning``. Internally,
+surrogates, learning functions, estimation, stopping and results have separate
+modules. For example, with a PySTRA ``model`` and ``limit_state``::
 
-1. Give the reliability estimator and stopping criterion explicit interfaces
-   alongside the existing surrogate interface. Keep coordinates, event signs,
-   sample weights, sampling dependence and uncertainty diagnostics explicit.
-   Add surrogate-based probability/beta convergence diagnostics without
-   presenting them as rigorous bounds on the true failure probability.
-2. Integrate **active Kriging with subset simulation** for rare events. Retain
+   from pystra.active_learning import (
+       ActiveLearning, KrigingSurrogate, MonteCarloEstimator, UFunction,
+       AllCriteria, LearningThreshold, BetaBounds, BetaStability,
+   )
+
+   analysis = ActiveLearning(
+       stochastic_model=model,
+       limit_state=limit_state,
+       surrogate=KrigingSurrogate(seed=7),
+       estimator=MonteCarloEstimator(n_samples=100_000),
+       learning_function=UFunction(threshold=2),
+       stopping_criterion=AllCriteria(criteria=(
+           LearningThreshold(),
+           BetaBounds(consecutive=2),
+           BetaStability(consecutive=2),
+       )),
+       seed=7,
+   )
+   result = analysis.run()
+
+``Surrogate`` predicts mean/spread from row-wise independent standard normal
+points. ``LearningFunction.select`` chooses an available candidate and returns
+a ``LearningDecision``. ``StoppingCriterion`` inspects an immutable fit history
+and separately accepts or rejects final sampling precision. Its policies are
+stateless across runs. ``ReliabilityEstimator.estimate`` receives a batched
+surrogate predictor and a run-owned random generator. It returns a
+``ReliabilityEstimate`` identifying the sampling method, dependence and
+uncertainty calculation. It cannot call the true limit state through this
+interface. Weighted or correlated sampling must provide its own uncertainty
+calculation; the runner does not recompute an IID binomial CoV.
+
+The concise settings ``surrogate="kriging"``, ``learning_function="u"``,
+``n_estimation`` and ``target_cov`` remain available for the default workflow.
+An explicit component cannot be combined with its shortcut settings: configure
+sample size on the estimator, threshold on the learning function and sampling
+precision on the stopping policy. This avoids silently ignored options.
+
+``result.history`` records the candidate probability and the probabilities
+obtained by classifying mean + 2 std and mean - 2 std. Transforming these
+endpoints gives an ascending ``beta_band``. ``BetaBounds`` and
+``BetaStability`` follow Eqs. (2) and (3) of [Moustapha2022]_, including default
+three-consecutive-test requirements. Setting both to two consecutive tests
+reproduces the review's combined stopping rule; the example above adds the
+learning threshold as a third requirement. At beta zero or unresolved infinite
+endpoints, the relevant beta test cannot pass. For negative beta the relative
+denominator uses its absolute value.
+
+These are **surrogate sensitivity diagnostics**, not confidence intervals for
+the true failure probability. Bootstrap spread in particular need not be
+Gaussian and can miss common model bias. A stable but inaccurate surrogate can
+satisfy a beta-stability test. ``result.estimate`` keeps final sampling
+diagnostics separate from these bands, and every default policy still requires
+adequate final sampling precision before reporting convergence.
+
+Next implementation increments
+------------------------------
+
+The component foundation above is implemented. Continue the v2.0 sequence with:
+
+1. Integrate **active Kriging with subset simulation** for rare events. Retain
    the standalone subset solver as a baseline and preserve dependence-aware
-   sampling uncertainty. A frozen-surrogate subset estimate alone does not
+   sampling uncertainty. Replace the fixed enrichment pool with samples from
+   the estimator, carrying its sampling measure through probability and beta
+   diagnostics. A frozen-surrogate subset estimate alone does not
    constitute the complete adaptive algorithm.
-3. Add **PC-Kriging**, combining a selected polynomial trend and a Gaussian
+2. Add **PC-Kriging**, combining a selected polynomial trend and a Gaussian
    process residual with the corresponding predictive uncertainty. Validate
    against original reference implementations and published problems.
-4. Add **FBR learning** for bootstrap PCE and a small set of documented stopping
-   policies. Include both successful and premature-stop cases.
-5. Add an **active-learning importance-sampling** workflow where its proposal
+3. Add **FBR learning** for bootstrap PCE, extending the prediction/selection
+   contract to retain replicate classifications rather than inferring votes
+   from a mean and standard deviation. Include premature-stop cases.
+4. Add an **active-learning importance-sampling** workflow where its proposal
    assumptions are appropriate; distinguish a design-point-centered proposal
    from methods that can discover multiple separated failure regions.
 
