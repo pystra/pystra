@@ -3,8 +3,9 @@
 The four components are a surrogate, reliability estimator, learning function
 and stopping criterion; see Moustapha, Marelli and Sudret (2022),
 doi:10.1016/j.strusafe.2021.102174, and Teixeira, Nogal and O'Connor (2021),
-doi:10.1016/j.strusafe.2020.102019. Current enrichment uses a fixed normal MC
-pool; the estimator interface controls the independent final estimation.
+doi:10.1016/j.strusafe.2020.102019. Enrichment uses a fixed normal MC pool by
+default; SubsetSimulationEstimator generates adaptive conditional populations
+with its own probability diagnostics and independent final estimation.
 Kriging requires the optional ``al`` extra. PCE uses only NumPy/SciPy.
 """
 
@@ -25,7 +26,13 @@ from .learning import (
     learning_u,
     learning_eff,
 )
-from .estimation import ReliabilityEstimator, MonteCarloEstimator
+from .estimation import (
+    ReliabilityEstimator,
+    MonteCarloEstimator,
+    EnrichmentEstimator,
+    EnrichmentResult,
+)
+from .subset import SubsetSimulationEstimator, SubsetRun, SubsetLevel
 from .stopping import (
     StoppingCriterion,
     LearningThreshold,
@@ -52,6 +59,11 @@ __all__ = [
     "learning_eff",
     "ReliabilityEstimator",
     "MonteCarloEstimator",
+    "EnrichmentEstimator",
+    "EnrichmentResult",
+    "SubsetSimulationEstimator",
+    "SubsetRun",
+    "SubsetLevel",
     "StoppingCriterion",
     "LearningThreshold",
     "BetaBounds",

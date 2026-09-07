@@ -11,7 +11,12 @@ from ..analysis import AnalysisObject
 from ._validation import _positive_integer, _points, _training, _predictions
 from .surrogates import Surrogate, KrigingSurrogate, PceSurrogate
 from .learning import LearningDecision, LearningFunction, UFunction, ExpectedFeasibility
-from .estimation import ReliabilityEstimator, MonteCarloEstimator
+from .estimation import (
+    ReliabilityEstimator,
+    MonteCarloEstimator,
+    EnrichmentEstimator,
+    EnrichmentResult,
+)
 from .stopping import StoppingCriterion, LearningThreshold
 from .results import ActiveLearningResult, LearningStep, ReliabilityEstimate
 
@@ -31,16 +36,18 @@ class ActiveLearning(AnalysisObject):
         EFF assumes Gaussian predictive uncertainty.
     n_initial : int, optional
         Initial LHS size: max(12, 2*n_variables), or max(30, 5*n_variables)
-        for sparse PCE. Dense OLS uses at least twice the largest total-degree
+        for sparse PCE or estimator-driven enrichment. Dense OLS uses at least twice the largest total-degree
         basis size.
     n_candidates : int
-        Fixed independent normal enrichment pool (10000).
+        Fixed MC pool size, or maximum size of each estimator-generated
+        enrichment pool (10000). Subset sample size belongs to the estimator.
     n_estimation : int, optional
         Shortcut for the default MonteCarloEstimator population (100000).
         Cannot be combined with an explicit estimator.
     estimator : ReliabilityEstimator, optional
-        Final estimation component; default MonteCarloEstimator(). It owns
-        its sampling uncertainty. This does not change the enrichment pool.
+        Default MonteCarloEstimator(). Owns its sampling uncertainty.
+        EnrichmentEstimator implementations also resample the enrichment
+        pool after every fit and supply measure-correct probability bands.
     max_iterations : int
         Maximum added true evaluations (200), excluding the initial design.
     learning_threshold : float, optional
@@ -55,7 +62,9 @@ class ActiveLearning(AnalysisObject):
     surrogate_kwargs : mapping, optional
         Constructor settings for a named surrogate.
     seed : int, optional
-        Repeatable run-owned LHS, candidates, final population and optimizer.
+        Repeatable run-owned LHS, candidates, final population and named
+        surrogate optimizer. Adaptive exploration reuses a separate seed
+        after each fit; final estimation is independent of that stream.
 
     Notes
     -----
@@ -184,6 +193,8 @@ class ActiveLearning(AnalysisObject):
                 **settings
             )
         initial = max(12, 2 * dimension)
+        if isinstance(self.estimator, EnrichmentEstimator):
+            initial = max(initial, 30, 5 * dimension)
         if isinstance(surrogate, PceSurrogate):
             if surrogate.method == "ols":
                 maximum_degree = max(surrogate.degree)
@@ -200,14 +211,44 @@ class ActiveLearning(AnalysisObject):
             np.clip(uniforms, np.finfo(float).eps, 1 - np.finfo(float).eps)
         )
         observations = self._evaluate(design)
-        candidates = rng.standard_normal((self.n_candidates, dimension))
-        available = np.ones(self.n_candidates, dtype=bool)
+        adaptive = isinstance(self.estimator, EnrichmentEstimator)
+        if adaptive:
+            exploration_seed = int(rng.integers(0, 2**63 - 1))
+        else:
+            candidates = rng.standard_normal((self.n_candidates, dimension))
+            available = np.ones(self.n_candidates, dtype=bool)
         history = []
         learned = False
         status = "max_iterations"
         for iteration in range(self.max_iterations + 1):
             surrogate.fit(design, observations)
-            mean, std = self._predict(surrogate, candidates)
+            exploration = None
+            if adaptive:
+                exploration = self.estimator.explore(
+                    lambda points: self._predict(surrogate, points),
+                    dimension=dimension,
+                    rng=np.random.default_rng(exploration_seed),
+                    n_candidates=self.n_candidates,
+                )
+                if not isinstance(exploration, EnrichmentResult):
+                    raise TypeError(
+                        "EnrichmentEstimator must return an EnrichmentResult"
+                    )
+                candidates, mean, std = (
+                    exploration.points,
+                    exploration.mean,
+                    exploration.std,
+                )
+                if candidates.shape[1] != dimension:
+                    raise ValueError(
+                        "Enrichment dimension differs from the stochastic model"
+                    )
+                observed = {tuple(point) for point in design}
+                available = np.array(
+                    [tuple(point) not in observed for point in candidates]
+                )
+            else:
+                mean, std = self._predict(surrogate, candidates)
             indices = np.flatnonzero(available)
             if not len(indices):
                 status = "candidate_exhaustion"
@@ -219,22 +260,34 @@ class ActiveLearning(AnalysisObject):
                 raise ValueError(
                     "LearningFunction selected an index outside the available pool"
                 )
-            # Diagnostic classifications of the same fixed, unweighted MC pool.
-            # They are not confidence limits on the true failure probability.
-            with np.errstate(over="ignore"):
-                lower = float(np.mean(mean + 2 * std <= 0))
-                upper = float(np.mean(mean - 2 * std <= 0))
+            if exploration is None:
+                # Only the fixed IID normal pool admits unweighted proportions.
+                with np.errstate(over="ignore"):
+                    lower = float(np.mean(mean + 2 * std <= 0))
+                    upper = float(np.mean(mean - 2 * std <= 0))
+                probability = float(np.mean(mean <= 0))
+                estimation_converged, sampling_cov = True, None
+            else:
+                lower, upper = exploration.probability_band
+                probability = exploration.estimate.failure_probability
+                estimation_converged = exploration.estimate.converged
+                sampling_cov = exploration.estimate.sampling_cov
             history.append(
                 LearningStep(
-                    failure_probability=float(np.mean(mean <= 0)),
+                    failure_probability=probability,
                     learning_score=decision.score,
                     n_evaluations=len(design),
                     probability_band=(lower, upper),
                     beta_band=(float(-norm.ppf(upper)), float(-norm.ppf(lower))),
                     learning_satisfied=decision.threshold_satisfied,
+                    estimation_converged=estimation_converged,
+                    sampling_cov=sampling_cov,
                 )
             )
-            learned = bool(self.stopping_criterion.should_stop(tuple(history)))
+            learned = bool(
+                estimation_converged
+                and self.stopping_criterion.should_stop(tuple(history))
+            )
             if learned or iteration == self.max_iterations:
                 break
             selected = indices[decision.index]
@@ -250,9 +303,19 @@ class ActiveLearning(AnalysisObject):
         )
         if not isinstance(estimate, ReliabilityEstimate):
             raise TypeError("ReliabilityEstimator must return a ReliabilityEstimate")
-        converged = bool(learned and self.stopping_criterion.accepts_estimate(estimate))
+        converged = bool(
+            learned
+            and estimate.converged
+            and self.stopping_criterion.accepts_estimate(estimate)
+        )
         if learned:
-            status = "converged" if converged else "sampling_precision"
+            status = (
+                "converged"
+                if converged
+                else (
+                    "sampling_precision" if estimate.converged else "estimation_failed"
+                )
+            )
         self.result = ActiveLearningResult(
             estimate=estimate,
             converged=converged,

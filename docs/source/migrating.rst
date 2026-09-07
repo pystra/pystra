@@ -338,3 +338,31 @@ truncations and ``max_interaction`` limits interaction order. Sparse PCE's
 default initial design is ``max(30, 5*n_variables)``. ``fit_result`` returns
 immutable selection diagnostics. Both PCE methods use core NumPy/SciPy;
 Kriging retains the optional scikit-learn dependency.
+
+Estimator-driven subset enrichment
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``SubsetSimulationEstimator`` implements the new ``EnrichmentEstimator``
+contract. Pass it to ``ActiveLearning(estimator=...)`` to resample conditional
+populations after each fit, then run independent final sampling. Existing
+``ReliabilityEstimator`` subclasses remain final-only and retain fixed MC
+pools. Their implementations need not change. ``EnrichmentResult`` separates
+selection points from estimator-computed probabilities; never average its
+pooled conditional samples to estimate Pf.
+
+For adaptive estimators, ``n_candidates`` caps the selectable pool, while
+``SubsetSimulationEstimator(n_samples=...)`` sets the per-level sample size.
+The default initial design is ``max(30, 5*n_variables)``. Explicit ``n_initial``
+still takes precedence. Exploration uses a repeated separate random stream
+for comparisons; final estimation is independent. Fixed MC seeds and results
+retain their prior behaviour.
+
+``ReliabilityEstimate`` adds ``converged``, ``status`` and ``diagnostics`` with
+backward-compatible defaults for existing component constructors. Completion
+of the sampling algorithm is distinct from adequate CoV. ``LearningStep`` adds
+``estimation_converged`` and optional ``sampling_cov`` for exploration. Built-in
+stopping rules reject incomplete exploratory estimates. The active result may
+have status ``estimation_failed`` if final subset sampling cannot finish.
+Subset diagnostics contain ``SubsetRun`` and ``SubsetLevel`` snapshots, with
+no IID binomial confidence interval. The standalone ``pystra.SubsetSimulation``
+API and numerical implementation are unchanged in this increment.

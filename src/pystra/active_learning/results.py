@@ -21,6 +21,12 @@ class ReliabilityEstimate:
     names that calculation; ``sampling_dependence`` is 'independent' or
     'dependent'. ``n_samples`` counts surrogate classifications, not true
     limit-state evaluations.
+
+    ``converged`` means the estimator reached its target event, separately
+    from satisfying a requested CoV. ``status`` explains incomplete sampling.
+    ``diagnostics`` retains immutable method-specific records (SubsetRun for
+    replicated subset simulation). Incomplete estimates must not be accepted
+    as successful reliability results.
     """
 
     failure_probability: float
@@ -30,6 +36,9 @@ class ReliabilityEstimate:
     n_samples: int
     method: str
     sampling_dependence: str
+    converged: bool = True
+    status: str = "completed"
+    diagnostics: tuple = ()
 
     def __post_init__(self):
         if (
@@ -44,6 +53,9 @@ class ReliabilityEstimate:
             raise ValueError("method must describe the sampling calculation")
         if self.sampling_dependence not in ("independent", "dependent"):
             raise ValueError("sampling_dependence must be 'independent' or 'dependent'")
+        if not isinstance(self.converged, bool):
+            raise ValueError("converged must be a bool")
+        object.__setattr__(self, "diagnostics", tuple(self.diagnostics))
         if self.sampling_interval is None:
             if self.confidence_level is not None:
                 raise ValueError("confidence_level requires a sampling_interval")
@@ -63,14 +75,19 @@ class ReliabilityEstimate:
 
 @dataclass(frozen=True)
 class LearningStep:
-    """One fit's fixed-pool diagnostics and cumulative true evaluation count.
+    """One fit's probability diagnostics and cumulative true evaluation count.
 
-    ``probability_band`` is the ascending pair of candidate proportions for
-    mean + 2*std <= 0 and mean - 2*std <= 0. ``beta_band`` transforms those
+    ``probability_band`` is the ascending pair of probabilities for
+    mean + 2*std <= 0 and mean - 2*std <= 0. The fixed MC workflow uses
+    candidate proportions; adaptive estimators supply their own measure.
+    ``beta_band`` transforms those
     endpoints into ascending reliability indices. These are surrogate
     sensitivity diagnostics, not confidence intervals or true Pf bounds.
     ``learning_satisfied`` is the selection policy's threshold flag, before
-    checking that the full pool contains both failure and survival.
+    applying the stopping policy. The default requires an interior exploratory
+    failure probability, under the estimator's sampling measure.
+    ``estimation_converged`` and optional ``sampling_cov`` record the
+    exploratory estimator's completion and precision, not the final sample.
     """
 
     failure_probability: float
@@ -79,6 +96,8 @@ class LearningStep:
     probability_band: tuple
     beta_band: tuple
     learning_satisfied: bool
+    estimation_converged: bool = True
+    sampling_cov: Optional[float] = None
 
     @property
     def beta(self) -> float:
@@ -94,8 +113,8 @@ class ActiveLearningResult:
     Probability, beta, sampling diagnostics and n_estimation are exposed as
     convenient properties of that record. ``converged`` means the configured
     stopping and sampling criteria passed; it does not guarantee accuracy or
-    discovery of all failure regions. History contains fixed candidate-pool
-    diagnostics, separate from the final estimate.
+    discovery of all failure regions. History contains exploratory probability
+    diagnostics, separate from the independent final estimate.
     """
 
     estimate: ReliabilityEstimate

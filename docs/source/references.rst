@@ -143,3 +143,5 @@ References
 .. [BlatmanSudret2011] Blatman, G. and Sudret, B. (2011). Adaptive sparse polynomial chaos expansion based on Least Angle Regression. Journal of Computational Physics, 230, 2345–2367. `doi:10.1016/j.jcp.2010.12.021 <https://doi.org/10.1016/j.jcp.2010.12.021>`_.
 
 .. [TeixeiraNogalOConnor2021] Teixeira, R., Nogal, M., and O’Connor, A. (2021). Adaptive approaches in metamodel-based reliability analysis: A review. Structural Safety, 89, 102019. `doi:10.1016/j.strusafe.2020.102019 <https://doi.org/10.1016/j.strusafe.2020.102019>`_.
+
+.. [CotterEtAl2013] Cotter, S. L., Roberts, G. O., Stuart, A. M., & White, D. (2013). MCMC methods for functions: Modifying old algorithms to make them faster. Statistical Science, 28(3), 424–446. `doi:10.1214/13-STS421 <https://doi.org/10.1214/13-STS421>`_.

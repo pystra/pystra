@@ -35,14 +35,15 @@ class StoppingCriterion(ABC):
     def accepts_estimate(self, estimate: ReliabilityEstimate) -> bool:
         """Require an interior probability and adequate finite sampling CoV."""
         return bool(
-            0 < estimate.failure_probability < 1
+            estimate.converged
+            and 0 < estimate.failure_probability < 1
             and np.isfinite(estimate.sampling_cov)
             and estimate.sampling_cov <= self.target_cov
         )
 
 
 class LearningThreshold(StoppingCriterion):
-    """Require the selection threshold and both predicted event classes.
+    """Require the selection threshold and an interior failure probability.
 
     This is the existing AK-MCS-style default. It uses the selection policy's
     threshold, so choosing a different learning function also changes that
@@ -50,9 +51,10 @@ class LearningThreshold(StoppingCriterion):
     """
 
     def should_stop(self, history: tuple[LearningStep, ...]) -> bool:
-        """Accept the latest fit only when failure and survival are represented."""
+        """Accept a completed fit with nonzero failure and survival probabilities."""
         return bool(
             history
+            and history[-1].estimation_converged
             and history[-1].learning_satisfied
             and 0 < history[-1].failure_probability < 1
         )
@@ -85,6 +87,8 @@ class BetaBounds(StoppingCriterion):
         if len(history) < self.consecutive:
             return False
         for step in history[-self.consecutive :]:
+            if not step.estimation_converged:
+                return False
             beta = step.beta
             lower, upper = step.beta_band
             if not np.all(np.isfinite((beta, lower, upper))) or beta == 0:
@@ -122,6 +126,8 @@ class BetaStability(StoppingCriterion):
             return False
         window = history[-self.consecutive - 1 :]
         for previous, current in zip(window, window[1:]):
+            if not previous.estimation_converged or not current.estimation_converged:
+                return False
             beta = current.beta
             if not np.all(np.isfinite((beta, previous.beta))) or beta == 0:
                 return False

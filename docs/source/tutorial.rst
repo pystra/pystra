@@ -19,6 +19,7 @@ page.
     notebooks/ex_copulas
     notebooks/ex_strong_maximum
     notebooks/ex_active_learning
+    notebooks/ex_active_subset
     notebooks/ex_sensitivity
     notebooks/ex_ddm
     notebooks/ex_timing

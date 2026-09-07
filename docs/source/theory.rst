@@ -1544,9 +1544,10 @@ Dense OLS uses twice its largest total-degree basis size by default.
 By default, the final probability estimate uses an independent Monte Carlo
 population that never participates in fitting or point selection. An explicit
 ``ReliabilityEstimator`` can replace final estimation and owns its sampling
-uncertainty calculation. The enrichment pool remains fixed normal Monte Carlo;
-active integration with subset simulation or importance sampling is separate
-work, requiring the estimator's sampling measure in candidate diagnostics.
+uncertainty calculation. ``EnrichmentEstimator`` implementations additionally
+supply new candidate populations and probability diagnostics after each fit.
+``SubsetSimulationEstimator`` uses this contract for active subset simulation;
+importance-sampling integration remains separate work.
 
 Surrogates and uncertainty
 --------------------------
@@ -1647,9 +1648,14 @@ acceptance can be included as another requirement.
 These bands measure the sensitivity of classifications to surrogate spread.
 They are not rigorous bounds on the true probability, simultaneous Gaussian
 confidence bands, or a correction for model bias. In particular, stable biased
-predictions can pass a beta-stability test. The implementation uses a fixed
-unweighted candidate pool, so these proportions must not be applied unchanged
-to weighted importance samples or conditional subset samples.
+predictions can pass a beta-stability test. The formulas above apply to the fixed
+unweighted candidate pool. Active subset simulation instead builds nested
+positive-threshold events from mean - 2 std; all three target failure events
+are subsets of the same final conditioning event. Their probabilities use the
+product of intermediate conditional probabilities times the corresponding
+final conditional fraction. Pooled level states serve only for enrichment.
+See :doc:`active_learning` for that construction, the pCN sampling kernel and
+replication-based uncertainty diagnostics.
 
 An evaluation budget or exhausted pool returns explicit nonconvergence. The
 final sample must separately meet the stopping policy's ``target_cov``
@@ -1665,6 +1671,41 @@ surrogate error. A successful stopping status concerns the sampled points;
 it cannot guarantee discovery of disconnected failure regions or eliminate
 surrogate bias. Nonconvergence emits a warning and preserves an explicitly
 unfinished estimate for diagnosis.
+
+
+Replicated subset sampling uncertainty
+--------------------------------------
+
+For conditional level j, let p_j be the indicator mean and S_c the sum of
+centered indicators in chain c. The chain-cluster variance approximation is
+
+.. math::
+
+   v_j = \max\left(\frac{p_j(1-p_j)}{N_j},
+          \frac{C_j}{C_j-1}\frac{\sum_c S_c^2}{N_j^2}\right).
+
+The initial independent level uses only the Bernoulli term. For one subset
+run, :math:`\delta_r^2=\sum_j v_j/p_j^2` gives an approximate squared CoV.
+This accounts for within-chain clustering but omits cross-level dependence
+and shared ancestry between different chains. ``variance_factor`` reports
+the ratio of this level variance to its IID value.
+
+For R independent complete subset runs with estimates q_r, the final estimate
+is their mean. The reported standard error uses
+
+.. math::
+
+   s_{\mathrm{between}}^2 =
+       \frac{\sum_r(q_r-\bar q)^2}{R(R-1)},\qquad
+   s_{\mathrm{within}}^2 = \frac{\sum_r(q_r\delta_r)^2}{R^2},\qquad
+   \mathrm{CoV} = \frac{\max(s_{\mathrm{between}},s_{\mathrm{within}})}{\bar q}.
+
+The replication term captures variation of the complete adaptive sampling
+procedure. The within-chain term prevents spurious precision when a small
+set of replications happens to agree. Neither is a confidence bound, nor do
+they remove the finite-sample bias of adaptive thresholds or surrogate error.
+Incomplete runs, zero estimated probabilities in any replication, and endpoint
+aggregate probabilities yield infinite CoV. No binomial interval is reported.
 
 
 Sensitivity Analysis
