@@ -6,7 +6,7 @@ System Reliability
 
 Pystra separates the system failure event from its probability calculation.
 The ``pystra.system`` topology classes compose component limit states for
-simulation. ``SystemForm`` estimates series and parallel probabilities from
+simulation. ``SystemFORM`` estimates series and parallel probabilities from
 separate component FORM analyses in one shared standard-normal space.
 
 Do not use ordinary FORM or SORM on the combined min/max function as a general
@@ -105,7 +105,7 @@ Component-based system FORM
        ra.Component("a", lambda X: 3.0 - X),
        ra.Component("b", lambda Y: 3.0 - Y),
    ]
-   analysis = ra.SystemForm(ra.SeriesSystem(components), model)
+   analysis = ra.SystemFORM(ra.SeriesSystem(components), model)
    analysis.run()
    print(analysis.get_failure())  # approximately 0.002697974
    print(analysis.get_beta())     # equivalent system index
@@ -119,7 +119,7 @@ Component-based system FORM
 Use ``ParallelSystem(components)`` for joint failure; the exact result in this
 example is ``p*p``. Homogeneous nesting is flattened and shared component
 objects are analysed once. Component names must be unique. Mixed topology,
-k-of-n and cut/tie-set inputs are currently rejected by ``SystemForm``; use
+k-of-n and cut/tie-set inputs are currently rejected by ``SystemFORM``; use
 original-system simulation for these events.
 
 For each component, FORM finds a tangent failure half-space in the same
@@ -250,7 +250,7 @@ responsibility of the selected Pystra analysis method and its
 transformation, following the same conceptual split used in structural
 reliability methods generally.
 
-``SystemForm`` requires independent normal coordinates, with the same
+``SystemFORM`` requires independent normal coordinates, with the same
 transformation and conditioning order for every component. Gaussian Nataf
 and :ref:`Rosenblatt transformations <chap_copulas>` are supported. For a
 Student-t copula, use Rosenblatt; spherical Student-t Nataf space is rejected.

@@ -65,16 +65,16 @@ from .calibration import *
 from . import ddo
 from .ddo import (
     CostBenefitModel,
-    Ddo,
-    DdoCriterion,
-    DdoObjective,
+    DDO,
+    DDOCriterion,
+    DDOObjective,
     DesignStudy,
     FatalityConsequence,
-    Lqi,
+    LQI,
     RackwitzTargetModel,
     RiskResult,
     RiskStudy,
     ScenarioRiskModel,
-    Swtp,
+    SWTP,
     TargetReliability,
 )

@@ -10,10 +10,10 @@ from .analysis import AnalysisObject
 from .form import Form
 from .system import Component, SeriesSystem, ParallelSystem, ditlevsen_bounds
 
-__all__ = ["SystemForm"]
+__all__ = ["SystemFORM"]
 
 
-class SystemForm(AnalysisObject):
+class SystemFORM(AnalysisObject):
     """Approximate a series or parallel system using component tangent planes.
 
     All components use the same complete stochastic model and transformation
@@ -68,7 +68,7 @@ class SystemForm(AnalysisObject):
         releps=1e-5,
     ):
         if type(system) not in (SeriesSystem, ParallelSystem):
-            raise TypeError("SystemForm requires a series or parallel system")
+            raise TypeError("SystemFORM requires a series or parallel system")
         super().__init__(
             stochastic_model=stochastic_model, analysis_options=analysis_options
         )
@@ -89,7 +89,7 @@ class SystemForm(AnalysisObject):
 
         visit(system)
         if len({c.name for c in leaves}) != len(leaves):
-            raise ValueError("SystemForm requires unique component names")
+            raise ValueError("SystemFORM requires unique component names")
         if isinstance(maxpts, bool) or int(maxpts) != maxpts or maxpts < 1:
             raise ValueError("maxpts must be a positive integer")
         if not all(np.isfinite(t) and t > 0 for t in (abseps, releps)):
@@ -220,7 +220,7 @@ class SystemForm(AnalysisObject):
                 form.run()
                 if form.transform.standard_space != "normal":
                     raise ValueError(
-                        "SystemForm requires independent normal space; select Rosenblatt"
+                        "SystemFORM requires independent normal space; select Rosenblatt"
                     )
             except (ValueError, FloatingPointError) as error:
                 raise RuntimeError(
@@ -302,7 +302,7 @@ class SystemForm(AnalysisObject):
     def get_failure(self):
         """Return the system FORM probability after a successful run."""
         if not self.results_valid:
-            raise ValueError("SystemForm has no valid result")
+            raise ValueError("SystemFORM has no valid result")
         return self.Pf
 
     def get_beta(self):

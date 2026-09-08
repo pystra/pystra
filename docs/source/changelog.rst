@@ -30,7 +30,7 @@ Added
   ``get_equivalent_beta()`` returns the normal-equivalent probability index.
 - ``StrongMaximumTest`` for optional post-FORM sphere diagnostics, with
   reproducible sampling, explicit budgets and candidate point groups.
-- ``SystemForm`` for component-based series/parallel reliability, joint normal
+- ``SystemFORM`` for component-based series/parallel reliability, joint normal
   probabilities, component diagnostics and bounds on the linearized event.
 - ``pystra.system`` module for composing named component limit states into
   nested series, parallel, k-of-n, cut-set, and tie-set system limit states.
@@ -62,6 +62,10 @@ Fixed
 
 Changed
 ~~~~~~~
+- Preserved established acronym class names such as ``SystemFORM``,
+  ``FBCProcess``, ``DDO``, ``LQI``, and ``SWTP``, together with ``GEVmax``,
+  ``GEVmin``, and ``ScipyDist``. The initial v2 class recasing is reversed;
+  function and method names continue to use snake_case.
 - Removed the stateful ``Calibration`` class in favor of explicit target solving,
   factor derivation, selection, design and verification operations.
 - ``LoadCombination`` stores explicit cases and roles; separate evaluation and

@@ -2,7 +2,7 @@
 
 This module provides a small topology layer for structural system
 reliability. It composes component functions into a scalar limit-state function
-for simulation. The separate SystemForm class estimates series and parallel
+for simulation. The separate SystemFORM class estimates series and parallel
 probabilities from component tangent planes.
 
 The sign convention is the standard Pystra convention: positive values are

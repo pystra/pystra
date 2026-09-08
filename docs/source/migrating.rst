@@ -39,15 +39,17 @@ with explicit exports; its structural changes are described below.
      - ``distribution.cdf_gradient(x)``
    * - ``joint.getTransformation(...)``
      - ``joint.make_transformation(...)``
-   * - ``SystemFORM``, ``FBCProcess``
-     - ``SystemForm``, ``FbcProcess``
-   * - ``GEVmax``, ``GEVmin``, ``ScipyDist``
-     - ``GevMax``, ``GevMin``, ``ScipyDistribution``
-   * - ``DDO``, ``DDOCriterion``, ``LQI``, ``SWTP``
-     - ``Ddo``, ``DdoCriterion``, ``Lqi``, ``Swtp``
 
-The :download:`initial naming map <../migration/naming-map.json>` records the
-first 126 changed spellings. The :download:`definition manifest <../migration/api-migration.json>`
+The class names ``SystemFORM``, ``FBCProcess``, ``GEVmax``, ``GEVmin``,
+``ScipyDist``, ``DDO``, ``DDOCriterion``, ``DDOObjective``, ``LQI``, ``SWTP``,
+``SWTPRecord``, and ``SWTPIndexRecord`` are retained from v1.x. Acronyms in
+CapWords retain their capitals, as recommended by
+`PEP 8 <https://peps.python.org/pep-0008/#descriptive-naming-styles>`_.
+Existing ``Form`` and ``Sorm`` also retain their names. Earlier v2 development
+snapshots recased these names; those changes have been reversed.
+
+The :download:`naming map <../migration/naming-map.json>` records the
+reviewed spelling changes and retained class names. The :download:`definition manifest <../migration/api-migration.json>`
 maps all 645 inventoried definitions, including private helpers. The
 :download:`baseline inventory <../migration/api-baseline.json>` records
 signatures, assigned attributes, dependency versions, and observed exports.

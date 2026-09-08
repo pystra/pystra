@@ -9,7 +9,7 @@ from typing import Tuple, Optional, Callable, Union, Sequence
 import numpy as np
 
 from .distributions import Constant, Distribution
-from .fbc import FbcProcess
+from .fbc import FBCProcess
 from .model import StochasticModel
 
 __all__ = ["VariableRoles", "LoadCombination"]
@@ -27,13 +27,13 @@ def _variables(values, *, processes=False):
     )
     result = {}
     allowed = (
-        (Distribution, Constant, FbcProcess) if processes else (Distribution, Constant)
+        (Distribution, Constant, FBCProcess) if processes else (Distribution, Constant)
     )
     for name, variable in entries:
         if not isinstance(variable, allowed):
             raise TypeError(
                 "Expected a Distribution or Constant"
-                + (" or FbcProcess" if processes else "")
+                + (" or FBCProcess" if processes else "")
             )
         if name != variable.name or name in result:
             raise ValueError(
@@ -281,7 +281,7 @@ class LoadCombination:
     @classmethod
     def turkstra(
         cls,
-        variable: Mapping[str, FbcProcess],
+        variable: Mapping[str, FBCProcess],
         reference_period: float,
         *,
         limit_state: Optional[Callable] = None,
@@ -302,9 +302,9 @@ class LoadCombination:
             raise ValueError("reference_period must be finite and positive")
         variable = _variables(variable, processes=True)
         if not variable or any(
-            not isinstance(v, FbcProcess) for v in variable.values()
+            not isinstance(v, FBCProcess) for v in variable.values()
         ):
-            raise TypeError("Variable actions must be FbcProcess objects")
+            raise TypeError("Variable actions must be FBCProcess objects")
         resistance, permanent, other = (
             _variables(resistance),
             _variables(permanent),

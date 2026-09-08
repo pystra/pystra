@@ -603,7 +603,7 @@ or a bound on approximation error. A bounded failure island entirely inside
 the sphere cannot be detected, regardless of sample count. The tutorial
 constructs such an island closer to the origin than the supplied candidate.
 
-Use the diagnostic on individual ``SystemForm.component_results`` to look
+Use the diagnostic on individual ``SystemFORM.component_results`` to look
 for missed regions within each component. Checking every component does not
 validate the system probability. With a non-Gaussian copula, use Rosenblatt
 so that the sphere geometry and cap probability apply in independent normal
@@ -809,7 +809,7 @@ rule defines which distributions are placed together in each reliability
 case.  This is the convention followed in Sørensen's notes and common load
 combination examples [Sorensen2004]_ [Faber2009]_.
 
-In Pystra, :class:`~pystra.fbc.FbcProcess` exposes the process distributions:
+In Pystra, :class:`~pystra.fbc.FBCProcess` exposes the process distributions:
 ``point_in_time()`` returns the basic-interval parent distribution, and
 ``maximum(duration=...)`` returns a maximum distribution for the requested
 duration.  :meth:`~pystra.loadcomb.LoadCombination.turkstra` then uses those
@@ -1020,12 +1020,12 @@ where :math:`g` is the income or GDP measure available for risk reduction,
 (typically about 0.1--0.2, e.g. 0.175 in Schubert and Faber, 2009; it is *not*
 an annual mortality rate), and :math:`C_x` depends on the mortality reduction
 scheme, discounting, and the predictive cohort life table
-[Rackwitz2004Discounting]_.  In :meth:`~pystra.ddo.Swtp.from_lqi` this parameter
+[Rackwitz2004Discounting]_.  In :meth:`~pystra.ddo.SWTP.from_lqi` this parameter
 is named ``work_leisure_parameter``.  This SWTP interpretation is developed in the LQI literature
 [PandeyNathwani2004LQI]_ [PandeyNathwaniLind2006LQI]_ and used by
 Rackwitz for structural reliability optimization and acceptability
-[Rackwitz2002LQI]_.  The ``ra.Swtp.from_lqi`` helper
-(:meth:`~pystra.ddo.Swtp.from_lqi`) implements the relationship for
+[Rackwitz2002LQI]_.  The ``ra.SWTP.from_lqi`` helper
+(:meth:`~pystra.ddo.SWTP.from_lqi`) implements the relationship for
 user-supplied demographic values.
 
 Pystra also includes a small source-backed country table from Rackwitz's JCSS
@@ -1198,14 +1198,14 @@ corresponding target classes are approximated as:
      - 4.2
      - :math:`10^{-5}`
 
-For normal studies, ``ra.Lqi`` (:class:`~pystra.ddo.Lqi`) builds this target
+For normal studies, ``ra.LQI`` (:class:`~pystra.ddo.LQI`) builds this target
 directly from a country SWTP value or a user-supplied SWTP value, expected
 fatalities given failure or an explicit consequence model, and marginal safety
-cost.  ``ra.Lqi.lookup_target`` returns the rounded source-table target for a
+cost.  ``ra.LQI.lookup_target`` returns the rounded source-table target for a
 given :math:`K_1`, while the lower-level :func:`~pystra.ddo.lqi_k1` and
 :func:`~pystra.ddo.lqi_target_reliability` helpers remain available in
 :mod:`pystra.ddo`.  When the underlying resistance-demand model should be
-calculated instead of looked up, ``ra.Lqi.derive_target`` solves the marginal
+calculated instead of looked up, ``ra.LQI.derive_target`` solves the marginal
 target problem
 
 .. math::
@@ -1215,10 +1215,10 @@ target problem
    \qquad\mathrm{or}\qquad
    K_1 = -\frac{dP_f(p)}{dp}.
 
-``ra.Ddo`` (:class:`~pystra.ddo.Ddo`) then evaluates the selected objective and
+``ra.DDO`` (:class:`~pystra.ddo.DDO`) then evaluates the selected objective and
 criterion without changing the underlying stochastic model.  The best feasible
-alternative is obtained with ``Ddo.optimize()``; the unconstrained economic
-optimum is available separately as ``Ddo.economic_optimum()``.
+alternative is obtained with ``DDO.optimize()``; the unconstrained economic
+optimum is available separately as ``DDO.economic_optimum()``.
 
 For direct JCSS-style optimization, the canonical life-safety risk-cost term
 is
@@ -1238,7 +1238,7 @@ is
    \frac{dC(p)}{dp} \ge
    -\mathrm{SWTP}\,N_F\,\frac{dh(p)}{dp}.
 
-``ra.Lqi`` exposes these operations as methods such as
+``ra.LQI`` exposes these operations as methods such as
 ``risk_cost``, ``acceptability_margin_at``, and ``acceptability_boundary``.
 The underlying
 :func:`~pystra.ddo.jcss_lqi_risk_cost` and

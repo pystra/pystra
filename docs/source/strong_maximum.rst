@@ -164,11 +164,11 @@ With system reliability
 -----------------------
 
 Run the check separately on the component ``Form`` objects retained by
-``SystemForm``:
+``SystemFORM``:
 
 .. code-block:: python
 
-   # system_form is an already-run ra.SystemForm object
+   # system_form is an already-run ra.SystemFORM object
    checks = {}
    for name, component_form in system_form.component_results.items():
        test = ra.StrongMaximumTest(component_form, point_number=1000, seed=2026)

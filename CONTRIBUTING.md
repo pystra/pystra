@@ -29,8 +29,13 @@ After 2.0, public API changes follow the documented deprecation and release poli
 
 - Use snake_case for functions, methods, parameters, attributes, and compound
   module names; CapWords for classes; UPPER_SNAKE_CASE for constants.
-- Follow the project acronym convention: `Form`, `Sorm`, `SystemForm`,
-  `GevMax`, `FbcProcess`, `Ddo`, `Lqi`, `Swtp`. Use FORM/SORM/etc. in prose.
+- Preserve established acronym class names: `SystemFORM`, `FBCProcess`,
+  `DDO`, `DDOCriterion`, `LQI`, and `SWTP`. PEP 8 recommends retaining all
+  capitals in acronyms within CapWords (for example, `HTTPServerError`).
+  Keep the existing `GEVmax`, `GEVmin`, and `ScipyDist` spellings as well.
+  Do not mechanically recase class names during the migration; existing
+  `Form` and `Sorm` also retain their names. Functions, methods, variables,
+  and modules still use lowercase/snake_case, including their acronyms.
 - Prefer `std`, `start_point`, `limit_state`, `model`, `options`, `n_samples`,
   `max_iterations`, `failure_probability`, and `reference_period`. Use `analyze`
   in Python identifiers. Keep established `pdf`, `cdf`, `ppf`, `beta`, and `alpha`.

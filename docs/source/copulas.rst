@@ -32,7 +32,7 @@ Specifying a joint distribution
 Alternatively, add all random variables to an existing model and then call
 ``model.set_copula(copula)``. Constants may be added afterwards. The copula's
 dimension must equal the number of random variables. Named continuous Pystra
-marginals, including ``ScipyDistribution``, are supported; mixed/discrete marginals
+marginals, including ``ScipyDist``, are supported; mixed/discrete marginals
 are outside this implementation's scope. Known zero-inflated marginals with
 positive point mass are rejected.
 
@@ -207,7 +207,7 @@ Alpha vectors from different conditioning orders cannot simply be dotted
 together, even when their entries carry the same original variable names.
 Deliberately doing so reproduces the paper's invalid mixed-order probabilities
 of approximately 0.133 (Gaussian) and 0.156 (Frank) for identical events.
-``SystemForm`` avoids this construction by analyzing every component against
+``SystemFORM`` avoids this construction by analyzing every component against
 one complete model and one transformation configuration. A second regression
 uses the paper's distinct-component variation, verifying Gaussian system
 invariance between Nataf and both Rosenblatt orders.

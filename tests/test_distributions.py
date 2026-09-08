@@ -27,7 +27,7 @@ from pystra.distributions import (
     Type3SmallestValue,
     Maximum,
     MaxParent,
-    ScipyDistribution,
+    ScipyDist,
     ZeroInflated,
 )
 
@@ -351,21 +351,21 @@ class TestMaxParent:
 class TestScipyDist:
     def test_construction(self):
         frozen = scipy_norm(loc=5, scale=2)
-        d = ScipyDistribution("SN", frozen)
+        d = ScipyDist("SN", frozen)
         assert pytest.approx(d.mean, abs=1e-6) == 5.0
         assert pytest.approx(d.stdv, abs=1e-6) == 2.0
-        assert d.dist_type == "ScipyDistribution"
+        assert d.dist_type == "ScipyDist"
 
     def test_ppf_cdf_roundtrip(self):
         frozen = scipy_norm(loc=5, scale=2)
-        d = ScipyDistribution("SN", frozen)
+        d = ScipyDist("SN", frozen)
         for p in [0.1, 0.5, 0.9]:
             x = d.ppf(p)
             assert pytest.approx(d.cdf(x), abs=1e-6) == p
 
     def test_transform_roundtrip(self):
         frozen = scipy_norm(loc=5, scale=2)
-        d = ScipyDistribution("SN", frozen)
+        d = ScipyDist("SN", frozen)
         for u in [-1.0, 0.0, 1.0]:
             x = d.u_to_x(u)
             u_back = d.x_to_u(x)
@@ -373,17 +373,17 @@ class TestScipyDist:
 
     def test_invalid_input_raises(self):
         with pytest.raises(Exception):
-            ScipyDistribution("bad", "not_a_dist")
+            ScipyDist("bad", "not_a_dist")
 
     def test_set_location(self):
         frozen = scipy_norm(loc=5, scale=2)
-        d = ScipyDistribution("SN", frozen)
+        d = ScipyDist("SN", frozen)
         d.set_location(10)
         assert pytest.approx(d.mean, abs=1e-6) == 10.0
 
     def test_set_scale(self):
         frozen = scipy_norm(loc=5, scale=2)
-        d = ScipyDistribution("SN", frozen)
+        d = ScipyDist("SN", frozen)
         d.set_scale(3)
         assert pytest.approx(d.stdv, abs=1e-6) == 3.0
 

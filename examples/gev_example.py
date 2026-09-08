@@ -19,7 +19,7 @@ def lsf(X1, X2, C):
 
 
 # Create GEV variable and plot it is correct
-X2 = ra.ScipyDistribution("X2", gev(c=0.1, loc=200, scale=50))
+X2 = ra.ScipyDist("X2", gev(c=0.1, loc=200, scale=50))
 X2.plot()
 
 limit_state = ra.LimitState(lsf)

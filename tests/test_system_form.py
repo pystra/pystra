@@ -20,7 +20,7 @@ def test_independent_exact(kind, beta):
     system = kind(
         [ra.Component("x", lambda X: beta - X), ra.Component("y", lambda Y: beta - Y)]
     )
-    analysis = ra.SystemForm(system, model2())
+    analysis = ra.SystemFORM(system, model2())
     analysis.run()
     p = norm.sf(beta)
     exact = 2 * p - p * p if kind is ra.SeriesSystem else p * p
@@ -35,7 +35,7 @@ def test_independent_exact(kind, beta):
 def test_correlated_orthant(kind, rho):
     # P(X>0,Y>0) = 1/4 + asin(rho)/(2*pi).
     system = kind([ra.Component("x", lambda X: -X), ra.Component("y", lambda Y: -Y)])
-    analysis = ra.SystemForm(system, model2(rho))
+    analysis = ra.SystemFORM(system, model2(rho))
     analysis.run()
     joint = 0.25 + np.arcsin(rho) / (2 * np.pi)
     exact = 1 - joint if kind is ra.SeriesSystem else joint
@@ -52,7 +52,7 @@ def test_singular_component_directions(kind, opposing):
             ra.Component("b", lambda X: 3 + X if opposing else 4 - X),
         ]
     )
-    analysis = ra.SystemForm(system, model2())
+    analysis = ra.SystemFORM(system, model2())
     analysis.run()
     if opposing:
         exact = 2 * norm.sf(3) if kind is ra.SeriesSystem else 0
@@ -65,9 +65,9 @@ def test_shared_components_nested_and_rescaling():
     a = ra.Component("a", lambda X: 2 - X)
     b = ra.Component("b", lambda X, Y: 3 - (X + Y) / np.sqrt(2))
     s = ra.SeriesSystem([a, ra.SeriesSystem([a, b])])
-    baseline = ra.SystemForm(s, model2())
+    baseline = ra.SystemFORM(s, model2())
     baseline.run()
-    scaled = ra.SystemForm(
+    scaled = ra.SystemFORM(
         ra.SeriesSystem(
             [
                 ra.Component("a", lambda X: 1000 * (2 - X)),
@@ -90,7 +90,7 @@ def test_single_component_and_full_order_ddm():
     def component(X):
         return 3 - X, np.array([[-1.0], [0.0]])
 
-    analysis = ra.SystemForm(
+    analysis = ra.SystemFORM(
         ra.SeriesSystem([ra.Component("a", component)]), model, options
     )
     analysis.run()
@@ -100,7 +100,7 @@ def test_single_component_and_full_order_ddm():
 def test_nonconvergence_invalidates_system_and_rerun():
     options = ra.AnalysisOptions()
     system = ra.SeriesSystem([ra.Component("a", lambda X: 3 - X)])
-    analysis = ra.SystemForm(system, model2(), options)
+    analysis = ra.SystemFORM(system, model2(), options)
     analysis.run()
     options.set_imax(1)
     with pytest.warns(RuntimeWarning, match="did not converge"):
@@ -112,7 +112,7 @@ def test_nonconvergence_invalidates_system_and_rerun():
 
 
 def test_zero_gradient_rejected():
-    analysis = ra.SystemForm(
+    analysis = ra.SystemFORM(
         ra.SeriesSystem([ra.Component("a", lambda X: X * 0 + 1)]), model2()
     )
     with pytest.raises(RuntimeError, match="nonzero finite gradient"):
@@ -123,7 +123,7 @@ def test_zero_gradient_rejected():
 def test_mixed_topology_rejected():
     a = ra.Component("a", lambda X: X)
     with pytest.raises(TypeError, match="Mixed"):
-        ra.SystemForm(ra.SeriesSystem([ra.ParallelSystem([a])]), model2())
+        ra.SystemFORM(ra.SeriesSystem([ra.ParallelSystem([a])]), model2())
 
 
 @pytest.mark.parametrize(
@@ -153,7 +153,7 @@ def test_four_branch_against_nonlinear_reference():
             ra.Component("g4", lambda X, Y: Y - X + 6 / s2),
         ]
     )
-    analysis = ra.SystemForm(system, model2())
+    analysis = ra.SystemFORM(system, model2())
     analysis.run()
     # Tangent planes give |U1|>3 or |U2|>3 after an orthogonal rotation.
     p = norm.sf(3)
@@ -212,7 +212,7 @@ def test_nataf_factorisation_invariance_with_constants():
                 ra.Component("b", lambda X, Y: 3 - (X + Y)),
             ]
         )
-        analysis = ra.SystemForm(system, model, options)
+        analysis = ra.SystemFORM(system, model, options)
         analysis.run()
         results.append(analysis)
     np.testing.assert_allclose(
@@ -235,14 +235,14 @@ def test_unresolved_multivariate_zero_is_not_reported_as_safe(monkeypatch):
     monkeypatch.setattr(
         "pystra.system_form.multivariate_normal.cdf", lambda *a, **kw: 0.0
     )
-    analysis = ra.SystemForm(system, model)
+    analysis = ra.SystemFORM(system, model)
     with pytest.raises(RuntimeError, match="unresolved zero"):
         analysis.run()
     assert not analysis.results_valid
 
 
 def test_single_rare_parallel_bounds_are_exact():
-    result = ra.SystemForm(
+    result = ra.SystemFORM(
         ra.ParallelSystem([ra.Component("a", lambda X: 8 - X)]), model2()
     )
     result.run()
@@ -263,7 +263,7 @@ def test_three_correlated_normal_orthant(kind, exact):
             ra.Component("c", lambda Z: -Z),
         ]
     )
-    result = ra.SystemForm(system, model)
+    result = ra.SystemFORM(system, model)
     result.run()
     # Trivariate zero-threshold orthant: 1/8 + sum(asin(rho_ij))/(4*pi).
     assert result.get_failure() == pytest.approx(exact, abs=2e-6)
@@ -277,6 +277,6 @@ def test_three_identical_directions():
             ra.Component("c", lambda X: 4 - X),
         ]
     )
-    result = ra.SystemForm(system, model2())
+    result = ra.SystemFORM(system, model2())
     result.run()
     assert result.get_failure() == pytest.approx(norm.sf(4), rel=1e-8, abs=0)

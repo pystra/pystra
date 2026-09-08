@@ -7,7 +7,7 @@ from scipy.stats import rv_continuous
 from .distribution import Distribution
 
 
-class ScipyDistribution(Distribution):
+class ScipyDist(Distribution):
     """Distribution wrapper for a frozen Scipy Stats Distribution object
 
     Discrete random variables not yet supported.
@@ -32,4 +32,4 @@ class ScipyDistribution(Distribution):
             startpoint=startpoint,
         )
 
-        self.dist_type = "ScipyDistribution"
+        self.dist_type = "ScipyDist"

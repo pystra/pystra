@@ -46,7 +46,7 @@ def test_gaussian_joint_equals_multivariate_normal():
 
 def test_t_joint_equals_multivariate_t():
     joint = ra.JointDistribution(
-        [ra.ScipyDistribution("X", t(4)), ra.ScipyDistribution("Y", t(4))],
+        [ra.ScipyDist("X", t(4)), ra.ScipyDist("Y", t(4))],
         ra.StudentTCopula(R, 4),
     )
     points = np.array([[0.4, -1], [2, 1.2]])
@@ -117,7 +117,7 @@ def test_gaussian_nataf_matches_rosenblatt():
 def test_generalized_t_nataf_and_form_exact_halfspace():
     cop = ra.StudentTCopula(R, 4)
     joint = ra.JointDistribution(
-        [ra.ScipyDistribution("X", t(4)), ra.ScipyDistribution("Y", t(4))], cop
+        [ra.ScipyDist("X", t(4)), ra.ScipyDist("Y", t(4))], cop
     )
     tr = joint.make_transformation("nataf")
     x = np.array([1.0, -2.0])
@@ -151,7 +151,7 @@ def test_generalized_t_nataf_and_form_exact_halfspace():
         )
         with pytest.raises(ValueError, match="normal space"):
             analysis.run()
-    analysis = ra.SystemForm(
+    analysis = ra.SystemFORM(
         ra.SeriesSystem([ra.Component("a", form.limitstate)]), form.model, opts
     )
     with pytest.raises(RuntimeError, match="normal space"):
@@ -162,8 +162,8 @@ def exponential_model(copula):
     return ra.StochasticModel(
         ra.JointDistribution(
             [
-                ra.ScipyDistribution("X1", expon(scale=1)),
-                ra.ScipyDistribution("X2", expon(scale=1 / 3)),
+                ra.ScipyDist("X1", expon(scale=1)),
+                ra.ScipyDist("X2", expon(scale=1 / 3)),
             ],
             copula,
         )
@@ -318,7 +318,7 @@ def test_t_rosenblatt_supports_system_form_and_strong_maximum():
     system = ra.SeriesSystem(
         [ra.Component("a", lambda X: 3 - X), ra.Component("b", lambda X: 4 - X)]
     )
-    analysis = ra.SystemForm(system, model)
+    analysis = ra.SystemFORM(system, model)
     analysis.run()
     assert analysis.get_failure() == pytest.approx(norm.sf(3), rel=1e-5)
     form = analysis.component_results["a"]

@@ -3,7 +3,7 @@
 DOI: 10.1016/j.strusafe.2024.102521. The fully dependent system consists
 of identical events on one shared pair of exponential random variables.
 Mixed-order alpha aggregation below intentionally reproduces the invalid
-coordinate mixing discussed in the paper; it is not a SystemForm operation.
+coordinate mixing discussed in the paper; it is not a SystemFORM operation.
 """
 
 import numpy as np
@@ -18,8 +18,8 @@ def _model(copula):
     return ra.StochasticModel(
         ra.JointDistribution(
             [
-                ra.ScipyDistribution("X1", expon(scale=1)),
-                ra.ScipyDistribution("X2", expon(scale=1 / 3)),
+                ra.ScipyDist("X1", expon(scale=1)),
+                ra.ScipyDist("X2", expon(scale=1 / 3)),
             ],
             copula,
         )
@@ -32,7 +32,7 @@ def _system(copula, order, *, method="rosenblatt", distinct=False):
     options.set_rosenblatt_order(order)
     first = lambda X1, X2: 8 * X1 + 2 * X2 - 1
     second = (lambda X1, X2: X2 - 0.5 * X1) if distinct else first
-    analysis = ra.SystemForm(
+    analysis = ra.SystemFORM(
         ra.SeriesSystem([ra.Component("one", first), ra.Component("two", second)]),
         _model(copula),
         options,

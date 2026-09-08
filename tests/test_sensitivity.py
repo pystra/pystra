@@ -5,7 +5,7 @@ import numpy as np
 import pystra as ra
 from pystra.distributions import Normal, Lognormal
 from pystra.distributions.distribution import Distribution
-from pystra.distributions.gev import GevMax, GevMin
+from pystra.distributions.gev import GEVmax, GEVmin
 from pystra.distributions.beta import Beta
 from pystra.distributions.weibull import Weibull
 from pystra.distributions.uniform import Uniform
@@ -248,15 +248,15 @@ class TestSensitivityParams:
         assert sp["std"] == 2.0
 
     def test_gev_sensitivity_params(self):
-        """GevMax returns {"mean", "std", "shape"}."""
-        dist = GevMax("X", 100, 20, shape=0.1)
+        """GEVmax returns {"mean", "std", "shape"}."""
+        dist = GEVmax("X", 100, 20, shape=0.1)
         sp = dist.sensitivity_params
         assert set(sp.keys()) == {"mean", "std", "shape"}
         assert sp["shape"] == 0.1
 
     def test_gevmin_sensitivity_params(self):
-        """GevMin returns {"mean", "std", "shape"}."""
-        dist = GevMin("X", 100, 20, shape=0.1)
+        """GEVmin returns {"mean", "std", "shape"}."""
+        dist = GEVmin("X", 100, 20, shape=0.1)
         sp = dist.sensitivity_params
         assert set(sp.keys()) == {"mean", "std", "shape"}
         assert sp["shape"] == 0.1
@@ -276,8 +276,8 @@ class TestSensitivityParams:
             (Lognormal, {"mean": 10, "stdv": 2}),
             (Uniform, {"mean": 5, "stdv": 0.5}),
             (Gamma, {"mean": 10, "stdv": 2}),
-            (GevMax, {"mean": 100, "stdv": 20, "shape": 0.1}),
-            (GevMin, {"mean": 100, "stdv": 20, "shape": 0.1}),
+            (GEVmax, {"mean": 100, "stdv": 20, "shape": 0.1}),
+            (GEVmin, {"mean": 100, "stdv": 20, "shape": 0.1}),
         ],
     )
     def test_make_copy_roundtrip(self, cls, kwargs):
@@ -310,7 +310,7 @@ class TestSensitivityParams:
 
     def test_make_copy_perturbed_shape(self):
         """_make_copy with perturbed shape for GEV works correctly."""
-        dist = GevMax("X", 100, 20, shape=0.1)
+        dist = GEVmax("X", 100, 20, shape=0.1)
         perturbed = dist._make_copy(shape=0.11)
         # Different shape → different distribution (different CDF)
         x_test = 120.0
@@ -318,7 +318,7 @@ class TestSensitivityParams:
 
     def test_d_f_dtheta_gev_includes_shape(self):
         """GEV's cdf_gradient returns derivatives for all sensitivity_params."""
-        dist = GevMax("X", 100, 20, shape=0.1)
+        dist = GEVmax("X", 100, 20, shape=0.1)
         dF = dist.cdf_gradient(110.0)
         assert "mean" in dF
         assert "std" in dF
@@ -342,7 +342,7 @@ class TestSensitivityParams:
 
     def test_dmoments_dtheta_shape_gev(self):
         """_dmoments_dtheta for 'shape' on GEV returns finite values."""
-        dist = GevMax("X", 100, 20, shape=0.1)
+        dist = GEVmax("X", 100, 20, shape=0.1)
         dmu, dsig = dist._dmoments_dtheta("shape")
         assert np.isfinite(dmu)
         assert np.isfinite(dsig)
@@ -358,7 +358,7 @@ class TestGEVSensitivity:
         """Problem with a GEV load variable."""
         model = ra.StochasticModel()
         model.add_variable(Normal("R", 50, 5))
-        model.add_variable(GevMax("S", 20, 8, shape=0.2))
+        model.add_variable(GEVmax("S", 20, 8, shape=0.2))
 
         def lsf(R, S):
             return R - S
@@ -391,7 +391,7 @@ class TestGEVSensitivity:
     def test_gev_shape_sensitivity_sign(self):
         """Increasing GEV shape (heavier tail) should decrease beta.
 
-        For g = R - S with S ~ GevMax: increasing shape makes the
+        For g = R - S with S ~ GEVmax: increasing shape makes the
         right tail of S heavier, increasing the probability of
         large loads, so beta should decrease → ∂β/∂ξ < 0.
         """
