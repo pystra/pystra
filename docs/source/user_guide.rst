@@ -1,15 +1,34 @@
 User guide
 ==========
 
-These guides explain modelling choices, supported workflows and interpretation
-of results. For worked problems, see :doc:`tutorial`; for signatures and
-parameters, see :doc:`api`.
+Choose a method, build the probability model and check what the result means.
+For a first run, start with :doc:`get_started`. The guides below focus on tasks;
+:doc:`tutorial` contains complete worked problems.
 
 .. toctree::
    :maxdepth: 1
+   :caption: Build and check an analysis
 
+   guides/methods
+   guides/models
+   guides/form_sorm
+   guides/simulation
+   guides/results
+   guides/troubleshooting
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Dependence and advanced methods
+
+   copulas
    system
    strong_maximum
-   copulas
    active_learning
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Engineering workflows
+
+   guides/calibration
+   guides/assessment
    plotting

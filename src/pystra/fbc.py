@@ -44,8 +44,8 @@ class FBCProcess:
     >>> Q = ra.FBCProcess(
     ...     "Q", parent=ra.Gumbel("Q", 0.89, 0.2), basic_interval=1/52
     ... )
-    >>> Q.point_in_time()
-    >>> Q.maximum(duration=50)
+    >>> point_in_time = Q.point_in_time()
+    >>> maximum = Q.maximum(duration=50)
     """
 
     def __init__(self, name, parent, basic_interval):

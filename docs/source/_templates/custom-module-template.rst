@@ -1,5 +1,10 @@
 {{ fullname | escape | underline}}
 
+{% set route = pystra_api_routes.get(fullname.split('.')[1]) %}
+{% if route %}
+**Use it:** :doc:`User guide </{{ route[0] }}>` · :doc:`Worked example </notebooks/{{ route[1] }}>` · :doc:`Theory </theory/{{ route[2] }}>`
+{% endif %}
+
 .. automodule:: {{ fullname }}
 
    {% block attributes %}

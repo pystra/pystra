@@ -1,12 +1,9 @@
 Active-learning reliability
 ***************************
 
-.. contents:: On this page
-   :local:
-   :depth: 2
-
-Active Learning Reliability
+Active learning reliability
 ===========================
+
 
 ``pystra.active_learning.ActiveLearning`` combines a surrogate with Monte
 Carlo classification and sequential true limit-state evaluations. Kriging
@@ -14,7 +11,7 @@ follows the AK-MCS approach [Echard2011]_. The separation of surrogate,
 reliability estimator, learning function and stopping criterion follows the
 framework discussed by [Moustapha2022]_. The complementary review
 [TeixeiraNogalOConnor2021]_ surveys the main adaptive metamodel families.
-See :doc:`/active_learning` for coverage and proposed extensions, and the
+See :doc:`/active_learning` for implemented choices and limitations, and the
 :doc:`/notebooks/ex_active_learning` tutorial for independent benchmark references.
 
 An initial Latin hypercube design and a fixed normal Monte Carlo candidate
@@ -33,8 +30,10 @@ population that never participates in fitting or point selection. An explicit
 ``ReliabilityEstimator`` can replace final estimation and owns its sampling
 uncertainty calculation. ``EnrichmentEstimator`` implementations additionally
 supply new candidate populations and probability diagnostics after each fit.
-``SubsetSimulationEstimator`` uses this contract for active subset simulation;
-importance-sampling integration remains separate work.
+``SubsetSimulationEstimator`` uses this contract for active subset simulation.
+``ImportanceSamplingEstimator`` provides Gaussian-mixture importance sampling
+with explicit centres and weighted probability diagnostics. See
+:doc:`/notebooks/ex_active_extensions` for its coverage and checks.
 
 Surrogates and uncertainty
 --------------------------
@@ -193,3 +192,7 @@ set of replications happens to agree. Neither is a confidence bound, nor do
 they remove the finite-sample bias of adaptive thresholds or surrogate error.
 Incomplete runs, zero estimated probabilities in any replication, and endpoint
 aggregate probabilities yield infinite CoV. No binomial interval is reported.
+
+**Use this method:** :doc:`/active_learning` · :doc:`/notebooks/ex_active_learning` · :doc:`/api/active_learning`
+
+For coordinate conventions, see :doc:`notation`.

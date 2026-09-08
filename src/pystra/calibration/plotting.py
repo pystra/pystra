@@ -39,7 +39,8 @@ def plot_calibration(
         raise ValueError("target_beta must be finite")
     if ax is None:
         _, ax = plt.subplots(figsize=figsize)
-    for label, result in results.items():
+    hatches = ("/", "\\", "x", ".", "o", "+")
+    for index, (label, result) in enumerate(results.items()):
         x, beta = result.live_load_ratios, result.beta
         color = (colors or {}).get(label)
         # The boundary is the smallest dead-load ratio, independent of grid order.
@@ -52,6 +53,8 @@ def plot_calibration(
             beta.max(axis=0),
             alpha=0.5,
             facecolor=line.get_color(),
+            edgecolor=line.get_color(),
+            hatch=hatches[index % len(hatches)],
             label=label,
         )
     for r in ranges or ():

@@ -1,19 +1,16 @@
 Probability transformations and copulas
 ***************************************
 
-.. contents:: On this page
-   :local:
-   :depth: 2
-
-Probability Transformation
+Probability transformation
 ==========================
+
 
 Classical FORM uses independent standard-normal coordinates. A probability
 transformation maps the joint law of the physical variables into that space.
 Generalized Nataf also permits spherical non-normal standard spaces, provided
 the reliability calculation uses the corresponding probability law.
 
-Transformation of Dependent Random Variables using Nataf Approach
+Transformation of dependent random variables using Nataf approach
 -----------------------------------------------------------------
 
 One method to handle this is using the Nataf joint distribution model, if the
@@ -68,7 +65,7 @@ variables :math:`\bf X` is known and the knowledge about the variables
 dependence is limited to correlation coefficients. [Baker2010]_
 [DerKiureghian2006]_
 
-Transformation of Dependent Random Variables using Rosenblatt Approach
+Transformation of dependent random variables using Rosenblatt approach
 ----------------------------------------------------------------------
 
 An alternative to the Nataf approach is to consider the joint pdf of
@@ -253,3 +250,7 @@ For exponential rates 1 and 3, :math:`\theta=10`, and failure event
 0.107 and 0.122 for the two orders, compared with direct integration of
 about 0.1038. This difference is approximation error, not a different
 underlying probability for each order.
+
+**Use this method:** :doc:`/copulas` · :doc:`/notebooks/ex_copulas` · :doc:`/api/probability`
+
+For coordinate conventions, see :doc:`notation`.

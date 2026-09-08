@@ -1,12 +1,8 @@
 System reliability
 ******************
 
-.. contents:: On this page
-   :local:
-   :depth: 2
+.. _id1:
 
-System Reliability
-==================
 
 System reliability concerns a structure whose failure is governed by more than
 one component event.  If the component limit states are
@@ -48,7 +44,7 @@ allow the same system definition to be passed to simulation methods, active
 learning, and, when the envelope is sufficiently smooth near the controlling
 point, FORM/SORM.
 
-k-of-n, Cut-Set, and Tie-Set Systems
+k-of-n, Cut-Set, and Tie-Set systems
 ------------------------------------
 
 More general topologies are often described in terms of events rather than a
@@ -84,7 +80,7 @@ Cut-set and tie-set descriptions are common in structural system reliability
 because they let the engineer encode known collapse mechanisms or load paths
 without enumerating every possible Boolean state [Song2003]_.
 
-Ditlevsen Bounds
+Ditlevsen bounds
 ----------------
 
 For a series system, exact evaluation of
@@ -153,7 +149,7 @@ active-learning methods are therefore better suited to estimating the global
 failure probability unless a dedicated first-order system reliability method
 is used.
 
-First-Order System Reliability
+First-Order system reliability
 ------------------------------
 
 First-order system reliability methods approximate each component failure
@@ -172,3 +168,7 @@ For this reason Pystra currently separates three tasks:
    failure probability directly;
 3. analytical bounds such as Ditlevsen bounds are computed from event
    probabilities when those probabilities are available.
+
+**Use this method:** :doc:`/system` · :doc:`/notebooks/ex_system_reliability` · :doc:`/api/reliability`
+
+For coordinate conventions, see :doc:`notation`.

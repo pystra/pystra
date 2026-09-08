@@ -82,3 +82,7 @@ Worked examples and sources
 * The `European Commission/JRC reliability background report
   <https://eurocodes.jrc.ec.europa.eu/sites/default/files/2024-11/JRC_Reliability_report_final_23Oct2024_with-ids_corrected.pdf>`_
   describes design-value and code-optimisation approaches in Eurocode calibration.
+
+**Use this method:** :doc:`/guides/calibration` · :doc:`/notebooks/ex_generic_calibration` · :doc:`/api/calibration`
+
+For coordinate conventions, see :doc:`notation`.

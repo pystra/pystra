@@ -58,3 +58,5 @@ equations, but the object API above is preferred.
     swtp_table
     SWTPRecord
     SWTPIndexRecord
+
+**Use it:** :doc:`/guides/assessment` · :doc:`/notebooks/ex_design_decision_optimization` · :doc:`/theory/decisions`

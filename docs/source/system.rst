@@ -284,3 +284,5 @@ The next benchmarks to add before extending the approximation methods are:
   [Daniels1945]_;
 - :ref:`Mainçon's correlated series-system cases <ref-maincon-2000>` and
   related equivalent planes comparisons.
+
+**Continue:** :doc:`notebooks/ex_system_reliability` · :doc:`api/reliability` · :doc:`theory/systems`

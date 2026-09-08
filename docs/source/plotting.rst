@@ -4,7 +4,9 @@ Reliability figures
 ``pystra.plotting`` provides common reliability plots. Each function accepts
 an optional Matplotlib ``ax`` and returns ``(figure, ax)``. It does not call
 ``show()``, run an analysis or refit a surrogate. Labels, limits, colours and
-legends can be adjusted using Matplotlib after the call.
+legends can be adjusted using Matplotlib after the call. Calibration envelopes
+use hatching, and PCE-selection and Strong Maximum Test groups use distinct
+markers, so these comparisons do not depend on colour alone.
 
 .. list-table:: Available figures
    :header-rows: 1
@@ -73,3 +75,5 @@ The :doc:`api/plotting` reference gives input shapes, coordinate conventions and
 validation rules. The :doc:`notebooks/ex_active_extensions`,
 :doc:`notebooks/ex_rosenblatt_system_order` and
 :doc:`notebooks/ex_strong_maximum` tutorials demonstrate composed figures.
+
+**Continue:** :doc:`notebooks/ex_generic_calibration` · :doc:`api/plotting` · :doc:`theory/code_calibration`

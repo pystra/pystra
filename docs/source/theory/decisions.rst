@@ -1,12 +1,9 @@
 Design decisions and societal risk
 **********************************
 
-.. contents:: On this page
-   :local:
-   :depth: 2
-
-Design Decision Optimization and Societal Risk Acceptance
+Design Decision optimization and Societal Risk Acceptance
 =========================================================
+
 
 Design decision optimization with societal risk acceptance is normally applied
 after a reliability analysis has estimated :math:`p_f` or :math:`\beta`.  It
@@ -269,3 +266,7 @@ criterion and reserves solver logic for future work.  This keeps LQI in its
 proper role as a minimum safety criterion rather than the optimizer itself.
 Life-cycle cost and utility models based on stochastic renewal processes are a
 natural source for future objective implementations [PandeyWangCheng2015Renewal]_.
+
+**Use this method:** :doc:`/guides/assessment` · :doc:`/notebooks/ex_target_reliability` · :doc:`/api/decisions`
+
+For coordinate conventions, see :doc:`notation`.

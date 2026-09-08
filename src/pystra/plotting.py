@@ -439,12 +439,14 @@ def plot_pce_selection(
     if not valid:
         raise ValueError("No finite candidate scores to plot")
     fig, ax = _axes(ax)
-    for q in sorted({c.q_norm for c in valid}):
+    markers = ("o", "s", "^", "D", "v", "P")
+    for index, q in enumerate(sorted({c.q_norm for c in valid})):
         candidates = sorted((c for c in valid if c.q_norm == q), key=lambda c: c.degree)
         ax.plot(
             [c.degree for c in candidates],
             [c.corrected_loo_error for c in candidates],
-            "o-",
+            linestyle="-",
+            marker=markers[index % len(markers)],
             label=f"q = {q:g}",
         )
     errors = np.array([c.corrected_loo_error for c in valid])
@@ -504,12 +506,19 @@ def plot_strong_maximum(
         "near_safe": "tab:orange",
         "far_safe": "0.65",
     }
+    markers = {
+        "near_failure": "o",
+        "far_failure": "x",
+        "near_safe": "^",
+        "far_safe": "+",
+    }
     for group, color in colors.items():
         points = analysis.get_points(group)
         ax.scatter(
             *points.T,
             s=12,
             color=color,
+            marker=markers[group],
             label=f"{group.replace('_', ' ')} ({len(points)})",
         )
     ax.add_patch(

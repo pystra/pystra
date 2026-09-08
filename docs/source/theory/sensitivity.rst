@@ -1,12 +1,9 @@
 Reliability sensitivity
 ***********************
 
-.. contents:: On this page
-   :local:
-   :depth: 2
-
-Sensitivity Analysis
+Sensitivity analysis
 ====================
+
 
 In structural reliability, knowing the reliability index :math:`\beta` alone
 is often insufficient. Engineers also need to understand *how sensitive*
@@ -19,7 +16,7 @@ Pystra computes the sensitivity
 :math:`\partial\beta/\partial\theta_k` for each distribution parameter
 :math:`\theta_k` using two complementary approaches.
 
-Finite-Difference Method
+Finite-Difference method
 ------------------------
 
 The simplest approach perturbs each parameter by a small amount
@@ -38,7 +35,7 @@ can be numerically unstable when the perturbation changes the Nataf
 transformation significantly — particularly for correlated non-normal
 variables with small sensitivities.
 
-Closed-Form Method (Bourinet 2017)
+Closed-Form method (Bourinet 2017)
 ----------------------------------
 
 A more efficient and accurate approach post-processes the converged FORM
@@ -88,7 +85,7 @@ also available from the closed-form method. Since the marginal
 transformations do not depend on the correlation coefficients, only the
 second term of Equation :eq:`eq:cf_sens` contributes.
 
-Generalised Parameter Support
+Generalised parameter Support
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Beyond mean and standard deviation, distributions may declare additional
@@ -111,3 +108,7 @@ For shape parameters, the partial derivatives
 central differences unless the distribution provides an analytical
 override.  See the :ref:`developer guide <adding_distributions>` for
 implementation details.
+
+**Use this method:** :doc:`/guides/form_sorm` · :doc:`/notebooks/ex_sensitivity` · :doc:`/api/reliability`
+
+For coordinate conventions, see :doc:`notation`.

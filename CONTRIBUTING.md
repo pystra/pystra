@@ -7,7 +7,7 @@ need a specific structural reliability use case to fit the project.
 
 This guide establishes the conventions for v2 onward. During the migration,
 target `v2.0` for breaking changes and follow the
-[migration plan](docs/v2.0-migration-plan.md). Existing code still contains
+[migration plan](https://github.com/pystra/pystra/blob/v2.0/docs/v2.0-migration-plan.md). Existing code still contains
 legacy APIs: their presence is not a style precedent. Implement the agreed
 stage without introducing a second competing API. Changes intended for the
 stable line retain its compatibility requirements.
@@ -92,7 +92,7 @@ code designs, reliability evaluation, and comparison against targets. Keep
 probability models separate from factor sets. The specialized inverse workflow
 uses the separate `solve_designs`, `derive_factors`, `select_factors`,
 `design_with_factors` and `verify_designs` operations documented in the
-[migration guide](docs/source/migrating.rst); do not force all code studies through it.
+[migration guide](https://github.com/pystra/pystra/blob/v2.0/docs/source/migrating.rst); do not force all code studies through it.
 Preserve governing-case information and numerical diagnostics. A convenience
 runner composes operations; it does not duplicate them.
 
@@ -127,8 +127,13 @@ Create a feature branch from the current integration branch. Install in a
 virtual environment. Use Python 3.13 for the documentation/formatting tools;
 the runtime test matrix currently retains Python 3.9 through 3.13:
 
+For a new conda environment, install Python and Pandoc first. Run the package
+commands from your checkout of `v2.0` (or a feature branch based on it):
+
 ```sh
-python -m pip install -e '.[test,docs]'
+conda create -n pystra2.0 python=3.13 pandoc
+conda activate pystra2.0
+python -m pip install -e '.[test,docs,al]'
 python -m pip install black==26.5.1
 python -m pytest -q
 ```
@@ -139,14 +144,15 @@ commit. Black remains the formatter during migration. Run
 baseline API coverage, and current calibration signature checks. Update the
 reviewed migration records alongside contract changes; historical naming maps
 are not the current calibration API. Remaining attribute/parameter cleanup and
-import enforcement
-remain later stages; existing legacy fields are not a precedent for new code.
+import enforcement remain later stages; existing legacy fields are not a precedent for new code.
 CI also executes every indexed tutorial using `scripts/execute_notebooks.py`.
 
 From `docs`, run:
 
 ```sh
 make html SPHINXOPTS="-W --keep-going"
+python ../scripts/check_docs.py build/html
+python -m sphinx -b doctest -W -D nbsphinx_execute=never source build/doctest
 ```
 
 Sphinx executes new or edited notebooks and caches the rendered results.
@@ -167,7 +173,16 @@ python scripts/execute_notebooks.py ex_active_extensions --output-dir docs/sourc
 ```
 
 Omit the notebook name to execute all tutorials in the nested tutorial index,
-as CI does. New methods should include a short runnable
+as CI does. Add each notebook to exactly one category page under
+`docs/source/tutorials/`; add ordinary links for other discovery routes.
+Provide `pystra` notebook metadata with `dependencies` (`core` or `al`) and
+`support_files` (helper filenames, or an empty list). Put related guide, API and
+theory links in the final Markdown cell. For each code cell producing figures,
+set `metadata.pystra.figure_alts` to a list of descriptive strings in image-output
+order. Add a visible Markdown caption after that cell so the explanation is
+also available when the notebook is opened in Jupyter. The local Sphinx
+extension uses those alternatives and creates runnable download bundles.
+New methods should include a short runnable
 example and theory/reference documentation. Keep optional external-solver or
 network-dependent examples identifiable with their required environment.
 
@@ -197,3 +212,9 @@ definitions; distinguish reproductions from variants and software comparisons.
 Do not imply endorsement by the cited authors or toolbox developers. Include
 independent reference calculations and explicit statistical tolerances for
 stochastic methods. Run optional active-learning checks with `.[test,al]`.
+
+## Extension recipes
+
+The [distribution recipe](https://github.com/pystra/pystra/blob/v2.0/docs/source/development/distributions.rst)
+covers distribution construction and sensitivity hooks. The conventions above
+apply to all contributions.

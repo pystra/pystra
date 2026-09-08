@@ -15,52 +15,46 @@ SciPy and pandas, and supports reliability models defined by Python functions.
 Installation
 ============
 
-This branch develops PySTRA 2.0. Its API changes are described in the
-`migration guide <docs/source/migrating.rst>`_. The PyPI command below installs
-the latest stable release; to work on this branch, use an editable checkout
-as described in the contributor guide.
+This branch develops **PySTRA 2.0** with a breaking API. Install this branch to
+run its examples::
 
-To install *Pystra* just do:
+   git clone --branch v2.0 https://github.com/pystra/pystra.git
+   cd pystra
+   python -m pip install -e .
+   python -c "import pystra; print(pystra.__version__)"
 
-  $ pip install pystra
+Use ``python -m pip install -e '.[al]'`` for the optional active-learning
+methods. The `installation guide <docs/source/install.md>`_ covers environments
+and notebooks. Existing users should read the
+`migration guide <docs/source/migrating.rst>`_.
+
+For the stable 1.x release, use ``python -m pip install pystra`` and its
+`stable documentation <https://pystra.github.io/pystra/>`_.
 
 Features
 ========
 
-Pystra provides functionalities to make structural reliability analysis as easy
-as possible. Here is a short list of some of its features:
+* FORM and SORM, direct and importance sampling, line sampling and subset simulation.
+* Explicit copulas and probability transformations, component and system reliability.
+* Code calibration with normalized reliability, load combinations and FBC processes.
+* Structural decision studies, target reliability and consequence/cost models.
+* Optional surrogate-assisted reliability with independent benchmark checks.
+* Result records, tables and reusable plotting helpers for engineering studies.
 
-* Perform reliability analysis with different kinds of Reliability Methods.
-
-* Perform reliability analysis with Crude Monte Carlo Simulation.
-
-* Includes a large suite of well-documented statistical distributions.
-
-* Uses NumPy for numerics wherever possible.
-
-* No limitation on the limit state function.
-
-* Correlation between the random variables are possible.
-
-* Traces can be saved to the disk as plain text.
-
-* Pystra can be embedded in larger programs, and results can be analyzed
-  with the full power of Python.
-
+Limit states are Python functions. Each algorithm has response-smoothness,
+transformation and convergence requirements; use the
+`method-selection guide <docs/source/guides/methods.rst>`_ to choose a starting
+point and plan validation.
 
 Getting started
 ===============
 
-This `Documentation`_ provides all the information needed to install Pystra, code a
-reliability model, run the sampler, save and visualize the results. In
-addition, it contains a list of the statistical distributions currently
-available.
+The `first analysis <docs/source/notebooks/ex_first_analysis.ipynb>`_ checks FORM
+against an exact resistance-minus-load probability. Follow the
+`example categories <docs/source/tutorial.rst>`_ for more advanced methods and
+the `benchmark catalogue <docs/source/benchmarks.rst>`_ for published problems.
+See the `contributor guide <CONTRIBUTING.md>`_ to build the v2 documentation locally.
 
-.. _`Documentation`: http://pystra.github.io/pystra/
-
-.. _`FERUM`: http://www.ce.berkeley.edu/projects/ferum/
-
-.. _`IFMA`: http://www.ifma.fr/Recherche/Labos/FERUM
 
 Contributing
 ============

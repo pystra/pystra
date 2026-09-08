@@ -1,22 +1,17 @@
 Simulation methods
 ******************
 
-.. contents:: On this page
-   :local:
-   :depth: 2
+.. _id1:
 
-Simulation Methods
-==================
 
-The preceding sections describe some methods for determining the reliability
-index :math:`\beta` for some common forms of the limit state
-function. However, it is sometimes extremely difficult or impossible to find
-:math:`\beta`. [Nowak2000]_
+Simulation estimates the event probability directly from sampled evaluations,
+including when a local design-point approximation is inadequate. The starting
+point is the probability integral in Equation :eq:`eq:2_70`. Direct Monte Carlo
+is the basic estimator; importance sampling, line sampling and subset simulation
+seek to reduce the cost of rare-event estimation. [Nowak2000]_ [Faber2009]_
 
-In this case, Equation :eq:`eq:2_70` may also be
-estimated by numerical simulation methods. A large variety of simulation
-techniques can be found in the literature, indeed, the most commonly used
-method is the Monte Carlo method. [Faber2009]_
+See :doc:`/guides/simulation` for the practical workflow and
+:doc:`design_point_methods` for the local approximations being compared.
 
 The principle of simulation methods is to carry out random sampling in the
 physical (or standardized) space. For each of the samples the limit state
@@ -45,7 +40,7 @@ failure can be estimated such as [Malioka2009]_
            \frac{1}{n}\sum_{i=1}^{n} I(g({\bf X})\leq 0)
 
 
-Crude Monte Carlo Simulation
+Crude Monte Carlo simulation
 ============================
 
 The Crude Monte Carlo simulation (CMC) is the most simple form and corresponds
@@ -74,7 +69,7 @@ failure. [Lemaire2010]_
            p_f}} \qquad \text{for} \quad p_f \to 0
 
 
-Importance Sampling
+Importance sampling
 ===================
 
 To decrease the number of simulations and the coefficient of variation, other
@@ -133,7 +128,7 @@ The IS simulation method uses a distribution centered on the design point
 the failure domain can be observed.
 
 
-Line Sampling
+Line sampling
 =============
 
 Line Sampling (LS) is a variance-reduction technique that exploits the
@@ -192,7 +187,7 @@ close to :math:`\beta_{\text{FORM}}` and
 :math:`\operatorname{Var}[\Phi(-c_i)]` is small.
 
 
-Subset Simulation
+Subset simulation
 =================
 
 Subset Simulation (SS) is an adaptive simulation method that decomposes the
@@ -271,3 +266,7 @@ Subset Simulation is particularly effective for small failure probabilities
 (roughly :math:`p_f < 10^{-3}`), where crude Monte Carlo would require an
 impractically large number of samples.  A benchmark comparison of simulation
 methods on high-dimensional problems is given in [Schueller2007]_.
+
+**Use this method:** :doc:`/guides/simulation` · :doc:`/notebooks/ex_simulation` · :doc:`/api/reliability`
+
+For coordinate conventions, see :doc:`notation`.

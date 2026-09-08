@@ -1,97 +1,79 @@
-.. Pystra documentation master file, created by
-   sphinx-quickstart on Tue Apr 16 14:00:44 2013.
+.. _welcome-to-pystra-s-documentation:
 
-.. figure:: images/logo/logo_pystra_mid.png
-   :alt: Pystra logo
-   :align: center
-   :scale: 50
+PySTRA: structural reliability in Python
+========================================
 
-|Code style: black|
-|License: GPLv3+|
-.. |version|
-|Github issues|
-|Github pull requests|
-|PyPI|
-..    |GitHub Workflow Deploy|
-..    |GitHub Workflow Build|
-..    |GitHub Workflow Status|
-..    |GitHub commit activity|
-..    |GitHub last commit|
-|codecov|
+PySTRA implements established and selected modern structural reliability
+methods, with practical tools for code calibration and structural assessment.
+Define your engineering model in Python, quantify its reliability, and inspect
+the assumptions and diagnostics behind the result.
 
-.. |Code style: black| image:: https://img.shields.io/badge/code%20style-black-000000.svg 
-   :target: https://github.com/psf/black
+These pages describe **PySTRA** |release|, the **2.0 development API**.
+Follow :doc:`install` to install this version. Existing users can consult
+:doc:`migrating`; the `stable documentation <https://pystra.github.io/pystra/>`_
+uses the released 1.x API.
 
-.. |License: GPLv3+| image:: https://img.shields.io/badge/License-GPLv3%2B-blue.svg
-   :target: https://www.gnu.org/licenses/gpl-3.0.html
+.. container:: workflow-grid
 
-.. 
-.. |version| image:: https://img.shields.io/github/downloads/pystra/pystra/total?label=version
+   .. container:: workflow-card
 
-.. |GitHub issues| image:: https://img.shields.io/github/issues/pystra/pystra?logoColor=yellowgreen
+      **Run a reliability analysis**
 
-.. |GitHub pull requests| image:: https://img.shields.io/github/issues-pr/pystra/pystra?color=yellowgreen
+      Build a two-variable model and check FORM against an analytic answer.
 
-.. |PyPI| image:: https://img.shields.io/pypi/v/pystra
+      :doc:`Start your first analysis <notebooks/ex_first_analysis>`
 
-.. |GitHub Workflow Deploy| image:: https://img.shields.io/github/workflow/status/pystra/pystra/Build%20and%20deploy
+   .. container:: workflow-card
 
-.. |GitHub Workflow Build| image:: https://img.shields.io/github/workflow/status/pystra/pystra/Deploy%20to%20GitHub%20Pages?label=gh%20page%20build
+      **Calibrate code factors**
 
-.. |GitHub Workflow Status| image:: https://img.shields.io/github/workflow/status/pystra/pystra/Tests?label=Tests
+      Compare candidate factors using normalized reliability and verify
+      the resulting designs.
 
-.. |GitHub commit activity| image:: https://img.shields.io/github/commit-activity/m/pystra/pystra
+      :doc:`Follow the calibration workflow <guides/calibration>`
 
-.. |GitHub last commit| image:: https://img.shields.io/github/last-commit/pystra/pystra?color=ff69b4
+   .. container:: workflow-card
 
-.. |codecov| image:: https://codecov.io/gh/pystra/pystra/branch/main/graph/badge.svg?token=dUTOmPBnyP 
-   :target: https://codecov.io/gh/pystra/pystra
+      **Compare assessment scenarios**
 
-Welcome to Pystra's documentation!
-==================================
+      Evaluate how specified resistance and load assumptions change reliability.
 
-:Date: March 2026
-:Authors: The Pystra Developers (Colin Caprani & Jürgen Hackl )
-:Web site: http://github.com/pystra/pystra
-:Copyright: This document has been placed in the public domain.
-:License: Pystra is released under the GNU GPL version 3 or later.
-:Version: |version|
+      :doc:`Assess a structure <guides/assessment>`
 
-Pystra (Python Structural Reliability Analysis) is a python package for
-structural reliability analysis, originally developed in [Hackl2013]_.
-Its flexibility and extensibility make it applicable to a large suite of
-problems. Along with core reliability analysis functionality, Pystra
-includes methods for summarizing output. Pystra is also closely integrated
-with the usual python scientific packages workflow, numpy and scipy; in
-particular, all statistical distributions in Scipy can be used in
-reliability modeling.
+.. _indices-and-tables:
 
-.. note::
+Find the right material
+-----------------------
 
-   If you have any problems, found bugs in the code or have feature request
-   comments or questions, please raise an issue in the Github 
-.. _`issue tracker`: http://github.com/pystra/pystra/issues .
+* :doc:`get_started` takes you from installation to a checked first result.
+* :doc:`user_guide` helps you choose methods, build models and interpret results.
+* :doc:`tutorial` contains worked tutorials and published benchmark problems.
+* :doc:`api` describes public objects, parameters, results and extension details.
+* :doc:`theory` explains the formulations, assumptions and notation.
 
-
-Contents:
+For method selection, begin with :doc:`guides/methods`. For unexpected results,
+see :doc:`guides/troubleshooting`. To reproduce a paper example, browse the
+:doc:`benchmarks`.
 
 .. toctree::
+   :hidden:
    :maxdepth: 2
-   :caption: Contents:
 
-   install
-   migrating
-   tutorial
+   get_started
    user_guide
+   tutorial
    api
    theory
-   references
+   migrating
    changelog
+   references
    developer
 
-Indices and tables
-==================
+Project and community
+----------------------
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+PySTRA is GPL-3.0-or-later. Its numerical methods build on the work cited in
+:doc:`references`, including the original framework [Hackl2013]_.
+See :doc:`citing` for software citation and method attribution.
+Report questions and reproducible problems through the
+`issue tracker <https://github.com/pystra/pystra/issues>`_.

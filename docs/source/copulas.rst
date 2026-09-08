@@ -240,3 +240,5 @@ roundoff can be amplified substantially by the inverse map. Marginal
 implementations may impose additional tail limits. Joint CDFs for elliptical
 copulas use numerical SciPy integration and accept its integration keyword
 arguments; they are not exact rare-event probability estimators.
+
+**Continue:** :doc:`notebooks/ex_copulas` · :doc:`api/probability` · :doc:`theory/transformations`

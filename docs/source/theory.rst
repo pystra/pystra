@@ -1,10 +1,13 @@
-Theoretical background
-======================
+.. _theoretical-background:
+
+Theory
+======
 
 These pages explain the formulations, assumptions and limitations behind
 PySTRA's reliability algorithms and engineering workflows. Begin with the
 fundamentals and probability transformations, then consult the method you are
-using. Worked applications are organised in :doc:`tutorial`.
+using. :doc:`theory/notation` defines coordinates and reliability indices.
+Worked applications are organised in :doc:`tutorial`.
 
 .. toctree::
    :maxdepth: 1

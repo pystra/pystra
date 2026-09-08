@@ -1,12 +1,8 @@
 Load combinations and FBC processes
 ***********************************
 
-.. contents:: On this page
-   :local:
-   :depth: 2
+.. _id1:
 
-Load Combinations and FBC Processes
-===================================
 
 Load combination reliability problems usually distinguish permanent actions,
 resistance variables, and variable actions that fluctuate in time.  The
@@ -59,3 +55,7 @@ duration.  :meth:`~pystra.loadcomb.LoadCombination.turkstra` then uses those
 process objects to create explicit named leading-action cases.  The result is
 still an ordinary :class:`~pystra.loadcomb.LoadCombination`; the generated
 cases simply make the FBC and Turkstra assumptions visible in the model.
+
+**Use this method:** :doc:`/guides/calibration` · :doc:`/notebooks/ex_load_combinations` · :doc:`/api/calibration`
+
+For coordinate conventions, see :doc:`notation`.

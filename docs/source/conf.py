@@ -16,7 +16,7 @@ import os
 from pathlib import Path
 import sys
 
-src_path = os.path.abspath("../../src/")
+src_path = str(Path(__file__).resolve().parents[2] / "src")
 sys.path.insert(0, src_path)
 os.environ["PYTHONPATH"] = os.pathsep.join(
     [src_path, os.environ["PYTHONPATH"]] if "PYTHONPATH" in os.environ else [src_path]
@@ -29,11 +29,8 @@ project = "PySTRA"
 copyright = "2021-2026, The PySTRA Developers"
 author = "Colin Caprani, Shihab Khan, Jürgen Hackl"
 
-# The full version, including alpha/beta/rc tags
-# The short Major.Minor.Build version
-_v = ver.split(".")
-_build = "".join([c for c in _v[2] if c.isdigit()])
-version = _v[0] + "." + _v[1] + "." + _build
+# Retain the development suffix in every documentation version label.
+version = ver
 release = ver
 
 
@@ -55,6 +52,8 @@ extensions = [
     "sphinx.ext.githubpages",
     # .. "recommonmark",
     "nbsphinx",
+    "myst_parser",
+    "sphinx_copybutton",
 ]
 
 autodoc_member_order = "bysource"
@@ -76,7 +75,7 @@ templates_path = ["_templates"]
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
-source_suffix = [".rst", ".md"]
+source_suffix = {".rst": "restructuredtext", ".md": "restructuredtext"}
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -101,6 +100,9 @@ html_theme_path = [
 ]
 
 html_theme_options = {
+    "header_links_before_dropdown": 5,
+    "navbar_start": ["navbar-logo", "version-status"],
+    "footer_end": ["project-links"],
     "icon_links": [
         {
             "name": "GitHub",
@@ -130,6 +132,10 @@ html_logo = "./images/logo/icon_pystra_small.png"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 html_css_files = ["custom.css"]
+# Copy executable inputs, not notebook outputs or console prompts.
+copybutton_selector = "div.highlight pre:not(.nboutput pre)"
+copybutton_prompt_text = r">>> |\.\.\. |\$ "
+copybutton_prompt_is_regexp = True
 
 
 def _execution_signature():
@@ -171,3 +177,57 @@ def _record_execution_signature(app, env):
 def setup(app):
     app.connect("env-get-outdated", _refresh_notebooks)
     app.connect("env-updated", _record_execution_signature)
+
+
+# Links shared by generated module and class pages.
+autosummary_context = {
+    "pystra_api_routes": {
+        "model": ("guides/models", "ex_first_analysis", "fundamentals"),
+        "analysis": ("guides/models", "ex_first_analysis", "fundamentals"),
+        "distributions": ("copulas", "ex_copulas", "transformations"),
+        "copula": ("copulas", "ex_copulas", "transformations"),
+        "joint": ("copulas", "ex_copulas", "transformations"),
+        "transformation": ("copulas", "ex_copulas", "transformations"),
+        "correlation": ("copulas", "ex_copulas", "transformations"),
+        "integration": ("copulas", "ex_copulas", "transformations"),
+        "quadrature": ("copulas", "ex_copulas", "transformations"),
+        "calibration": (
+            "guides/calibration",
+            "ex_generic_calibration",
+            "code_calibration",
+        ),
+        "loadcomb": (
+            "guides/calibration",
+            "ex_generic_calibration",
+            "code_calibration",
+        ),
+        "fbc": ("guides/calibration", "ex_generic_calibration", "code_calibration"),
+        "ddo": ("guides/assessment", "ex_design_decision_optimization", "decisions"),
+        "active_learning": ("active_learning", "ex_active_learning", "active_learning"),
+        "plotting": ("plotting", "ex_generic_calibration", "code_calibration"),
+        "form": ("guides/methods", "ex_intro", "design_point_methods"),
+        "results": ("guides/methods", "ex_intro", "design_point_methods"),
+        "sorm": ("guides/methods", "ex_intro", "design_point_methods"),
+        "mc": ("guides/methods", "ex_intro", "design_point_methods"),
+        "ls": ("guides/methods", "ex_intro", "design_point_methods"),
+        "ss": ("guides/methods", "ex_intro", "design_point_methods"),
+        "sensitivity": ("guides/methods", "ex_intro", "design_point_methods"),
+        "system": ("guides/methods", "ex_intro", "design_point_methods"),
+        "system_form": ("guides/methods", "ex_intro", "design_point_methods"),
+        "strong_maximum": ("guides/methods", "ex_intro", "design_point_methods"),
+    }
+}
+
+sys.path.insert(0, str(Path(__file__).resolve().parent / "_ext"))
+extensions.append("pystra_docs")
+exclude_patterns.append("_generated/**")
+nbsphinx_prolog = r"""
+{% set notebook = env.docname.split('/')[-1] ~ '.ipynb' %}
+{% set details = env.pystra_notebooks[env.docname] %}
+.. container:: notebook-actions
+
+   :download:`Download notebook <{{ notebook }}>` · :download:`Download runnable bundle <../_generated/notebooks/{{ notebook[:-6] }}.zip>`
+
+   {% if details.dependencies == 'al' %}**Dependencies:** PySTRA with the optional ``al`` extra.{% else %}**Dependencies:** PySTRA core.{% endif %}
+   {% if details.support_files %}**Helper files:** {{ details.support_files | join(', ') }} (included in the bundle).{% endif %}
+"""

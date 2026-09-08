@@ -36,10 +36,12 @@ References
 .. [Nowak2000] Nowak, Andrzej S. and Kevin R. Collins (2000). Reliability of Structures. first edition. McGraw-Hill civil engineering series. McGraw-Hill Higher Education. isbn: 9780070481633.
 
 .. _ref-ditlevsen-2007:
+.. _/references.rst#ref-ditlevsen-2007:
 
 .. [Ditlevsen2007] Ditlevsen, Ove and Henrik O. Madsen (2007). Structural Reliability Methods. Internet edition 2.3.7. published online. Chichester, UK: John Wiley and Sons.
 
 .. _ref-ditlevsen-1979:
+.. _/references.rst#ref-ditlevsen-1979:
 
 .. [Ditlevsen1979] Ditlevsen, O. (1979). "Narrow reliability bounds for structural systems". Journal of Structural Mechanics, 7(4), 435-451. `doi:10.1080/03601217908905328 <https://doi.org/10.1080/03601217908905328>`_.
 
@@ -114,18 +116,22 @@ References
 .. [Schueller2007] Schuëller, G. I., & Pradlwarter, H. J. (2007). Benchmark study on reliability estimation in higher dimensions of structural systems — An overview. Structural Safety, 29(3), 167–182.
 
 .. _ref-schueremans-2005:
+.. _/references.rst#ref-schueremans-2005:
 
 .. [Schueremans2005] Schueremans, L. & Van Gemert, D. (2005). "Benefit of splines and neural networks in simulation based structural reliability analysis". Structural Safety, 27(3), 246-261. `doi:10.1016/j.strusafe.2004.11.001 <https://doi.org/10.1016/j.strusafe.2004.11.001>`_.
 
 .. _ref-maincon-2000:
+.. _/references.rst#ref-maincon-2000:
 
 .. [Maincon2000] Mainçon, P. (2000). "A first order reliability method for series systems". Structural Safety, 22(1), 5-26. `doi:10.1016/S0167-4730(99)00036-3 <https://doi.org/10.1016/S0167-4730(99)00036-3>`_.
 
 .. _ref-song-2003:
+.. _/references.rst#ref-song-2003:
 
 .. [Song2003] Song, J. and Der Kiureghian, A. (2003). "Bounds on system reliability by linear programming". Journal of Engineering Mechanics, 129(6), 627-636. `doi:10.1061/(ASCE)0733-9399(2003)129:6(627) <https://doi.org/10.1061/(ASCE)0733-9399(2003)129:6(627)>`_.
 
 .. _ref-daniels-1945:
+.. _/references.rst#ref-daniels-1945:
 
 .. [Daniels1945] Daniels, H. E. (1945). "The statistical theory of the strength of bundles of threads. I". Proceedings of the Royal Society of London. Series A, Mathematical and Physical Sciences, 183(995), 405-435. `doi:10.1098/rspa.1945.0011 <https://doi.org/10.1098/rspa.1945.0011>`_.
 
@@ -145,3 +151,8 @@ References
 .. [TeixeiraNogalOConnor2021] Teixeira, R., Nogal, M., and O’Connor, A. (2021). Adaptive approaches in metamodel-based reliability analysis: A review. Structural Safety, 89, 102019. `doi:10.1016/j.strusafe.2020.102019 <https://doi.org/10.1016/j.strusafe.2020.102019>`_.
 
 .. [CotterEtAl2013] Cotter, S. L., Roberts, G. O., Stuart, A. M., & White, D. (2013). MCMC methods for functions: Modifying old algorithms to make them faster. Statistical Science, 28(3), 424–446. `doi:10.1214/13-STS421 <https://doi.org/10.1214/13-STS421>`_.
+
+.. toctree::
+   :hidden:
+
+   citing

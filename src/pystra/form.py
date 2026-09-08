@@ -12,37 +12,31 @@ __all__ = ["Form"]
 
 
 class Form(AnalysisObject):
-    r"""First Order Reliability Method (FORM)
+    r"""Find a FORM design point and approximate the failure probability.
 
-    Let :math:`{\\bf Z}` be a set of uncorrelated and standardized normally
-    distributed random variables :math:`( Z_1 ,\dots, Z_n )` in the normalized
-    z-space, corresponding to any set of random variables :math:`{\\bf X} = (
-    X_1 , \dots , X_n )` in the physical x-space, then the limit state surface
-    in x-space is also mapped on the corresponding limit state surface in
-    z-space.
+    Parameters
+    ----------
+    stochastic_model : StochasticModel
+        Named physical variables and their joint probability model.
+    limit_state : LimitState
+        Physical response, with negative values indicating failure.
+    analysis_options : AnalysisOptions, optional
+        Transformation, derivative, iteration and convergence settings.
 
-    The reliability index :math:`\\beta` is the minimum distance from the
-    z-origin to the failure surface. This distance :math:`\\beta` can directly
-    be mapped to a probability of failure
+    Notes
+    -----
+    Call :meth:`run` to obtain an immutable :class:`~pystra.results.FormResult`.
+    Check its ``converged`` flag before using its probability or design point.
+    Numerical convergence does not establish the accuracy of the local
+    boundary approximation or exclude competing failure regions.
 
-    .. math::
+    Independent standard-normal coordinates are the usual choice. Explicit
+    spherical Student-t generalized Nataf instead uses a Student-t half-space
+    tail. ``get_beta()`` is the signed geometric distance;
+    ``get_equivalent_beta()`` and ``FormResult.beta`` are normal-equivalent.
 
-              p_f \\approx p_{f1} = \Phi(-\\beta)
-
-    this corresponds to a linearization of the failure surface. The
-    linearization point is the design point :math:`{\\bf z}^*`. This procedure
-    is called First Order Reliability Method (FORM) and :math:`\beta` is the
-    First Order Reliability Index. [Madsen2006]_
-
-    Explicit Student-t generalized Nataf instead uses spherical Student-t
-    coordinates and the Student-t half-space tail. ``get_beta()`` remains
-    the signed geometric distance; ``get_equivalent_beta()`` returns the
-    normal-equivalent index computed from the failure probability.
-
-    :Attributes:
-      - stochastic_model (StochasticModel): Information about the model
-      - limit_state (LimitState): Information about the limit state
-      - analysis_option (AnalysisOption): Option for the structural analysis
+    See :doc:`/guides/form_sorm` for usage and
+    :doc:`/theory/design_point_methods` for the formulation and references.
     """
 
     supports_spherical_space = True

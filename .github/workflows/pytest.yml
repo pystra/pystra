@@ -67,12 +67,17 @@ jobs:
       - name: Check naming and formatting
         run: |
           python scripts/api_inventory.py --check-names --check-migration
-          python -m black --check --target-version py39 src tests examples scripts docs/source/conf.py docs/source/notebooks/literature_benchmarks.py
+          python -m black --check --target-version py39 src tests examples scripts docs/source/conf.py docs/source/_ext docs/source/notebooks/literature_benchmarks.py
       - name: Execute maintained tutorials
         run: python scripts/execute_notebooks.py --output-dir docs/source/notebooks
       - name: Build documentation
         working-directory: docs
         run: python -m sphinx -b html -W --keep-going -D nbsphinx_execute=never source build/html
+      - name: Check documentation links and downloads
+        run: python scripts/check_docs.py docs/build/html
+      - name: Check guide examples
+        working-directory: docs
+        run: python -m sphinx -b doctest -W --keep-going -D nbsphinx_execute=never source build/doctest
       - name: Build distributions
         run: |
           python -m build

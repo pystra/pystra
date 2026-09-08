@@ -14,3 +14,4 @@ partial-factor tutorial demonstrates factor derivation and verification.
    ../notebooks/ex_generic_calibration
    ../notebooks/ex_factor_calibration
    ../notebooks/ex_design_decision_optimization
+   ../notebooks/ex_target_reliability

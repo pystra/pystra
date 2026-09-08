@@ -12,3 +12,4 @@ failure regions.
    ../notebooks/ex_sensitivity
    ../notebooks/ex_ddm
    ../notebooks/ex_strong_maximum
+   ../notebooks/ex_timing

@@ -1,29 +1,22 @@
 Structural reliability fundamentals
 ***********************************
 
-.. contents:: On this page
-   :local:
-   :depth: 2
-
-Structural Reliability
-======================
+.. _structural-reliability:
 
 
-Structural reliability analysis (SRA) is an important part to handle
-structural engineering applications [Melchers1999]_. This section provides
-a brief introduction to this topic and is also the theoretical background
-for the Python library, Python Structural Reliability Analysis (`Pystra`).
+Structural reliability analysis quantifies the probability that a structure
+fails to satisfy a stated performance requirement, under an explicit model of
+uncertain actions, resistance and model error. [Melchers1999]_
 
-Limit States
+.. _limit-states:
+
+Limit states
 ------------
-The word structural reliability refers to the meaning "how
-much reliable is a structure in terms of fulfilling its
-purpose" [Malioka2009]_. The performance of structures and engineering
-systems was based on deterministic parameters even for a long time, even if it
-was known that all stages of the system involve uncertainties. SRA provides a
-method to take those uncertainties into account in a consistent manner. In
-this content the term probability of failure is more common than
-reliability. [Malioka2009]_
+
+A limit state specifies the boundary between acceptable and unacceptable
+performance. The event must be defined before its probability can be calculated;
+different requirements can produce different component or system events.
+[Malioka2009]_
 
 In general, the term "failure" is a vague definition because it means
 different things in different cases. For this purpose the concept of limit
@@ -80,7 +73,7 @@ For this reason various methods have been developed to overcome these chal-
 lenges. The most common ones are the Monte Carlo simulation method and the
 First Order Reliability Method (FORM).
 
-The Classical Approach
+The Classical approach
 ----------------------
 
 Before discussing more general methods, the principles are shown on a
@@ -157,7 +150,7 @@ Cornell (1969), and is equal to the number of the standard derivation
    :scale: 50
 
 
-Hasofer and Lind Reliability Index
+Hasofer and Lind reliability index
 ----------------------------------
 
 The reliability index can be interpreted as a measure of the distance to the
@@ -209,3 +202,12 @@ problem
 The calculation of :math:`\beta` can be undertaken in a number of different
 ways. In the general case where the failure surface is non-linear, an
 iterative method must be used. [Thoft-Christensen]_
+
+.. toctree::
+   :hidden:
+
+   notation
+
+**Use this method:** :doc:`/guides/models` · :doc:`/notebooks/ex_first_analysis` · :doc:`/api/models`
+
+For coordinate conventions, see :doc:`notation`.

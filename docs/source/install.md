@@ -1,49 +1,80 @@
+.. _required-dependencies:
+
 Installation
 ============
 
-Pystra runs on Mac OS X, Linux, and Windows — any platform where
-Python 3 and the required scientific packages are available.
+These instructions install **PySTRA** |release| **from the v2.0 branch**, matching
+the API used in these pages. Python 3.9 or later is required for the package;
+Python 3.13 is used for the documentation tools.
 
-Required Dependencies
----------------------
-- Python 3.9 or later
-- numpy
-- scipy 1.11 or later
-- matplotlib
-- pandas
+Create an environment
+----------------------
 
-Installation
-------------
-The easiest way to install the latest stable `Pystra` release is from PyPI: ::
+With conda, create and activate an environment::
 
-    pip install pystra
+    conda create -n pystra2.0 python=3.13
+    conda activate pystra2.0
 
-To work with the 2.0 development API documented on this branch: ::
+Alternatively, create a Python virtual environment with
+``python -m venv .venv`` and activate it using
+``source .venv/bin/activate`` on Linux/macOS or
+``.venv\Scripts\Activate.ps1`` in Windows PowerShell.
+
+Install the development package
+-------------------------------
+
+Clone the development branch, then install it into the active environment::
 
     git clone --branch v2.0 https://github.com/pystra/pystra.git
     cd pystra
-    pip install -e ".[test]"
+    python -m pip install -e .
+    python -c "import pystra; print(pystra.__version__)"
 
-Active learning is available on the 2.0 development branch. For its optional
-Kriging dependency, install from the checkout: ::
+The version should begin with ``2.0``; the current version is |release|.
+The core installation includes NumPy, SciPy, Matplotlib and pandas.
+You can now run :doc:`notebooks/ex_first_analysis`.
 
-    pip install -e ".[al]"
+Optional active-learning dependencies
+--------------------------------------
 
-The PCE implementation uses the core NumPy/SciPy dependencies.
+The Kriging and PC-Kriging examples additionally require scikit-learn.
+From the same checkout, install::
 
-For contributions, first fork the repo and clone from your fork.
-`Here <https://www.dataschool.io/how-to-contribute-on-github/>`_ is a good guide on this workflow.
+    python -m pip install -e ".[al]"
 
-Tests
------
-`Pystra` comes with ``pytest`` functions to verify the correct functioning of the package.
-Users can test this using: ::
+PCE and the classical reliability algorithms use the core installation.
+Each example states its dependency requirements. Notebook downloads also
+need Jupyter; install ``jupyterlab`` to run them interactively.
 
-    python -m pytest
+.. _tests:
 
-from the root directory of the package.
+For building all documentation and contributing, follow :doc:`developer`.
+It covers the documentation extras, Pandoc and validation commands.
 
-Bugs and feature requests
+Using the stable release
 -------------------------
-Report problems with the installation, bugs in the code, or feature
-requests at the `issue tracker <https://github.com/pystra/pystra/issues>`_.
+
+To use the released 1.x API, install ``pystra`` from PyPI and follow the
+`stable documentation <https://pystra.github.io/pystra/>`_::
+
+    python -m pip install pystra
+
+The stable release and the development examples use different APIs.
+:doc:`migrating` explains how to update existing code.
+
+.. _bugs-and-feature-requests:
+
+Troubleshooting installation
+----------------------------
+
+If a notebook reports an unexpected version or missing package, check the
+interpreter used by its kernel::
+
+    import sys
+    import pystra
+    print(sys.executable)
+    print(pystra.__version__)
+
+Select the kernel for the environment where PySTRA is installed. For further
+help, report the interpreter, package version and error message in the
+`issue tracker <https://github.com/pystra/pystra/issues>`_.

@@ -1,5 +1,22 @@
+.. _current-coverage-on-the-2-0-branch:
+
 Active-learning methods and literature
 ======================================
+
+Use active learning when true limit-state evaluations are expensive enough to
+justify fitting and sequentially enriching a surrogate. Install the ``al``
+extra, begin with :doc:`notebooks/ex_active_learning`, and reserve true-model
+evaluations for independent validation. A final probability interval is
+conditional on the frozen surrogate and does not measure its approximation bias.
+
+The workflow combines a **surrogate**, a **reliability estimator**, a
+**learning function** and a **stopping criterion**. Choose these explicitly
+using the table below and the composition example. See
+:doc:`guides/troubleshooting` when a run stops at its budget.
+
+Literature basis
+----------------
+
 
 Two complementary reviews guide PySTRA's coverage:
 
@@ -23,12 +40,8 @@ PySTRA targets a carefully validated implementation of established and selected
 modern structural reliability methods, with practical code calibration and
 structural assessment tools.
 
-Surrogate-assisted reliability and the coherent component design are part of
-the **v2.0 release scope**. Kriging's scikit-learn dependency remains an
-optional installation extra. Development proceeds on the v2.0 branch.
-
-Current coverage on the 2.0 branch
-----------------------------------
+Choose the components for your analysis
+---------------------------------------
 
 .. list-table::
    :header-rows: 1
@@ -36,7 +49,7 @@ Current coverage on the 2.0 branch
 
    * - Component
      - Implemented
-     - Gaps
+     - Limitations
    * - Surrogates
      - Kriging; adaptive sparse Hermite PCE with selected-support bootstrap;
        explicit dense OLS option; sequential PC-Kriging
@@ -274,3 +287,5 @@ independent references and discrepancies in the source comparisons.
    :hidden:
 
    literature-benchmarks
+
+**Continue:** :doc:`api/active_learning` · :doc:`theory/active_learning` · :doc:`benchmarks`

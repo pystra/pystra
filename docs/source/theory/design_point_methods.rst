@@ -1,12 +1,9 @@
 FORM, SORM and design-point diagnostics
 ***************************************
 
-.. contents:: On this page
-   :local:
-   :depth: 2
-
-First-Order Reliability Method (FORM)
+First-Order reliability method (FORM)
 =====================================
+
 
 Let :math:`\bf Z` be a set of uncorrelated and standardized normally distributed random
 variables :math:`( Z_1 ,\dots, Z_n )` in the normalized z-space, corresponding
@@ -58,7 +55,7 @@ FORM corresponds to a linearization of the failure surface :math:`g({\bf Z}) =
 reliability index :math:`\beta` can be computed.
 
 
-Second-Order Reliability Method (SORM)
+Second-Order reliability method (SORM)
 ======================================
 
 FORM approximates the failure surface :math:`g({\bf Z}) = 0` by a tangent
@@ -305,3 +302,7 @@ validate the system probability. With a non-Gaussian copula, use Rosenblatt
 so that the sphere geometry and cap probability apply in independent normal
 space. Generalized Student-t Nataf would require different density-radius
 geometry and is not supported by this implementation.
+
+**Use this method:** :doc:`/guides/form_sorm` · :doc:`/notebooks/ex_intro` · :doc:`/api/reliability`
+
+For coordinate conventions, see :doc:`notation`.

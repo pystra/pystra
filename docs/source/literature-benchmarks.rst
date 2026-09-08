@@ -8,8 +8,9 @@ classical approximations and current active-learning components using
 independent probability references. These are reproducible problem definitions
 and PySTRA algorithm variants, not replications of every published setting.
 
-Download :download:`literature_benchmarks.py <notebooks/literature_benchmarks.py>`
-alongside either notebook to run it outside the source tree. The helper is
+Use the runnable-bundle download on either notebook page to include its helper,
+or download :download:`literature_benchmarks.py <notebooks/literature_benchmarks.py>`
+separately. The helper is
 example code, not a new public modelling API. Only NumPy, SciPy and PySTRA
 are needed for these two tutorials; their bootstrap-PCE examples do not
 require the optional Kriging dependency.
@@ -112,3 +113,5 @@ References
   https://doi.org/10.1016/j.strusafe.2020.102019. This complementary review
   motivates coverage across method families; it is not the numerical source
   of the two problems here.
+
+**Continue:** :doc:`benchmarks` · :doc:`tutorials/active_learning` · :doc:`citing`

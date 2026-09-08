@@ -180,3 +180,5 @@ its one tangent plane. It does not validate the whole system probability.
 Multiple component modes are already intentional in system FORM; applying a
 single-candidate check to the combined system event will naturally flag them.
 Pystra does not run these additional evaluations automatically.
+
+**Continue:** :doc:`notebooks/ex_strong_maximum` · :doc:`api/reliability` · :doc:`theory/design_point_methods`
