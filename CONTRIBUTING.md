@@ -138,16 +138,25 @@ import enforcement
 remain later stages; existing legacy fields are not a precedent for new code.
 CI also executes every indexed tutorial using `scripts/execute_notebooks.py`.
 
-For documentation-only layout/link edits, build from `docs` using saved
-notebook outputs:
+Routine documentation builds use saved notebook outputs. From `docs`, run:
 
 ```sh
-python -m sphinx -b html -W --keep-going -D nbsphinx_execute=never source build/html
+make html SPHINXOPTS="-W --keep-going"
 ```
 
 When changing notebook code or APIs used by a notebook, execute the affected
-notebooks and inspect their outputs before building. Saved-output builds alone
-do not validate tutorial execution. New methods should include a short runnable
+notebooks and inspect their outputs before building. From the repository root,
+for example:
+
+```sh
+python scripts/execute_notebooks.py ex_active_extensions --output-dir docs/source/notebooks
+```
+
+Omit the notebook name to execute all indexed tutorials, as CI does. To rerun
+notebooks within Sphinx instead, use
+`make html SPHINXOPTS="-E -W --keep-going -D nbsphinx_execute=always"` from `docs`.
+Saved-output builds alone do not validate tutorial execution.
+New methods should include a short runnable
 example and theory/reference documentation. Keep optional external-solver or
 network-dependent examples identifiable with their required environment.
 
