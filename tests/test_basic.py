@@ -214,63 +214,49 @@ def test_cmc():
     assert Analysis.beta >= 0
 
 
-def test_cmc_x_all_stores_physical_space():
-    """Regression test for issue #90: x_all should store physical-space inputs.
-
-    When multiple blocks are processed, x_all should contain values from the
-    physical space (original distributions), not the Gaussian space.
-    """
+def test_cmc_x_all_stores_physical_space(monkeypatch):
+    """Issue #90: every stored block must match the physical model inputs."""
     options = ra.AnalysisOptions()
     options.set_print_output(False)
-    options.set_samples(100)  # small for speed
-    options.set_block_size(30)  # force multiple blocks (100/30 = 4 blocks)
-    options.target_cov = 0.0  # keep this storage regression test from stopping early
+    options.set_samples(100)
+    options.set_block_size(30)
+    options.target_cov = 0.0  # retain all four blocks, including the final ten
 
-    # Use non-normal distributions with clear physical-space properties
-    model = ra.model.StochasticModel()
-    model.add_variable(ra.Lognormal("X1", 100, 20))  # positive values, mean ~100
-    model.add_variable(ra.Uniform("X2", 10, 5))  # mean=10, bounds ~[1.34, 18.66]
+    # The legacy Monte Carlo runner uses NumPy's global random interface.
+    rng = np.random.default_rng(90)
+    monkeypatch.setattr(np.random, "randn", lambda *shape: rng.standard_normal(shape))
 
-    limit_state = ra.model.LimitState(lambda X1, X2: X1 - X2 - 100)
+    model = ra.StochasticModel()
+    model.add_variable(ra.Lognormal("X1", 100, 20))
+    model.add_variable(ra.Uniform("X2", 10, 5))
+    evaluated_blocks = []
 
-    Analysis = ra.CrudeMonteCarlo(
+    def limit_state(X1, X2):
+        evaluated_blocks.append(np.array([X1, X2], copy=True))
+        return X1 - X2 - 100
+
+    analysis = ra.CrudeMonteCarlo(
         analysis_options=options,
         stochastic_model=model,
-        limit_state=limit_state,
+        limit_state=ra.LimitState(limit_state),
     )
-    Analysis.run()
+    analysis.run()
 
-    # x_all is stored as flat array (nrv * samples)
-    nrv = 2
-    samples = 100
-    block_size = 30
-    assert Analysis.x_all.shape == (nrv * samples,)
-
-    # Extract X1 and X2 values from the flat array
-    # Structure: [X1_block1, X2_block1, X1_block2, X2_block2, ...]
-    x1_values = []
-    x2_values = []
-    for block in range(samples // block_size):
-        base = block * nrv * block_size
-        x1_values.extend(Analysis.x_all[base : base + block_size])
-        x2_values.extend(Analysis.x_all[base + block_size : base + 2 * block_size])
-    x1_values = np.array(x1_values)
-    x2_values = np.array(x2_values)
-
-    # Physical-space checks:
-    # Lognormal: all values should be positive (Gaussian space can be negative)
-    assert np.all(x1_values > 0)
-
-    # Uniform: values should be within bounds [1.34, 18.66]
-    assert np.all(x2_values >= 1.0)
-    assert np.all(x2_values <= 19.0)
-
-    # Mean should be close to expected physical-space values
-    # Lognormal(100, 20) has mean ≈ 100 * exp(0.5 * (20/100)^2) ≈ 100.2
-    assert 90 < np.mean(x1_values) < 110
-
-    # Uniform(10, 5) has mean = 10
-    assert 8 < np.mean(x2_values) < 12
+    assert [block.shape for block in evaluated_blocks] == [
+        (2, 30),
+        (2, 30),
+        (2, 30),
+        (2, 10),
+    ]
+    # x_all is block-major: X1 then X2 within each block. Compare the actual
+    # evaluated inputs, rather than inferring coordinates from sample means.
+    expected = np.concatenate([block.ravel() for block in evaluated_blocks])
+    np.testing.assert_array_equal(analysis.x_all, expected)
+    assert analysis.x_all.shape == (200,)
+    physical = np.concatenate(evaluated_blocks, axis=1)
+    assert np.all(physical[0] > 0)
+    assert np.all(physical[1] >= 10 - np.sqrt(3) * 5)
+    assert np.all(physical[1] <= 10 + np.sqrt(3) * 5)
 
 
 def test_mc_cov_zero_branch():
