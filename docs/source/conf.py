@@ -10,7 +10,10 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+import hashlib
+from importlib import metadata
 import os
+from pathlib import Path
 import sys
 
 src_path = os.path.abspath("../../src/")
@@ -62,10 +65,9 @@ html_show_sourcelink = (
 )
 autodoc_inherit_docstrings = True  # If no docstring, inherit from base class
 set_type_checking_flag = True  # Enable 'expensive' imports for sphinx_autodoc_typehints
-# Routine builds render saved outputs. Execute tutorials explicitly with
-# scripts/execute_notebooks.py, as CI does, or override with
-# -D nbsphinx_execute=always when a build should rerun the notebooks.
-nbsphinx_execute = "never"
+# Execute notebooks when Sphinx reads them. Its document cache reuses unchanged
+# notebooks; the hooks below also invalidate them when their Python inputs change.
+nbsphinx_execute = "always"
 nbsphinx_kernel_name = "python3"
 nbsphinx_allow_errors = False
 add_module_names = False  # Remove namespaces from class/method signatures
@@ -128,3 +130,44 @@ html_logo = "./images/logo/icon_pystra_small.png"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 html_css_files = ["custom.css"]
+
+
+def _execution_signature():
+    """Conservatively track code and environment used by notebook kernels."""
+    root = Path(__file__).resolve().parents[2]
+    digest = hashlib.sha256()
+    paths = sorted((root / "src/pystra").rglob("*.py"))
+    paths += sorted((root / "docs/source/notebooks").glob("*.py"))
+    for path in paths:
+        digest.update(str(path.relative_to(root)).encode())
+        digest.update(path.read_bytes())
+    versions = sorted(
+        (distribution.metadata.get("Name", ""), distribution.version)
+        for distribution in metadata.distributions()
+    )
+    digest.update(repr((sys.executable, sys.version, versions)).encode())
+    return digest.hexdigest()
+
+
+def _refresh_notebooks(app, env, added, changed, removed):
+    if app.config.nbsphinx_execute != "always":
+        return []
+    signature = _execution_signature()
+    app._pystra_execution_signature = signature
+    if getattr(env, "pystra_execution_signature", None) == signature:
+        return []
+    return [
+        name
+        for name in env.found_docs - set(removed)
+        if (Path(app.srcdir) / f"{name}.ipynb").is_file()
+    ]
+
+
+def _record_execution_signature(app, env):
+    if app.config.nbsphinx_execute == "always":
+        env.pystra_execution_signature = app._pystra_execution_signature
+
+
+def setup(app):
+    app.connect("env-get-outdated", _refresh_notebooks)
+    app.connect("env-updated", _record_execution_signature)

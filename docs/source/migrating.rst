@@ -7,6 +7,12 @@ FORM result contract are implemented. Remaining algorithm results, options,
 and parameter changes are described in the
 :download:`migration plan <../v2.0-migration-plan.md>`.
 
+The outstanding feature PRs remain unmerged in 1.x and are reserved for 2.0.
+Their functionality is new in this release, including the Strong Maximum
+Test, copula/joint-distribution support, DDO/LQI refinements, and the SORM
+prerequisite fix. Active learning is also new in 2.0. Earlier feature-branch
+interfaces are development history, not released 1.x APIs to migrate from.
+
 Implemented naming changes
 --------------------------
 
@@ -37,12 +43,12 @@ with explicit exports; its structural changes are described below.
      - ``form.show_results()``
    * - ``distribution.dF_dtheta(x)``
      - ``distribution.cdf_gradient(x)``
-   * - ``joint.getTransformation(...)``
-     - ``joint.make_transformation(...)``
 
 The class names ``SystemFORM``, ``FBCProcess``, ``GEVmax``, ``GEVmin``,
 ``ScipyDist``, ``DDO``, ``DDOCriterion``, ``DDOObjective``, ``LQI``, ``SWTP``,
-``SWTPRecord``, and ``SWTPIndexRecord`` are retained from v1.x. Acronyms in
+``SWTPRecord``, and ``SWTPIndexRecord`` retain their original spellings in the
+source and feature contributions. This does not imply that every class was
+available in a published 1.x release. Acronyms in
 CapWords retain their capitals, as recommended by
 `PEP 8 <https://peps.python.org/pep-0008/#descriptive-naming-styles>`_.
 Existing ``Form`` and ``Sorm`` also retain their names. Earlier v2 development
@@ -55,6 +61,9 @@ maps all 645 inventoried definitions, including private helpers. The
 signatures, assigned attributes, dependency versions, and observed exports.
 Inventory inclusion does not imply that an internal helper or an incidental
 third-party export is a supported public API.
+The baseline includes unmerged feature PRs; its ``1.6.0`` version label does
+not make their interfaces part of the released 1.x API. For new joint
+distributions, use ``joint.make_transformation(...)`` directly.
 
 The distribution package now explicitly exports PySTRA classes. Import NumPy
 and SciPy helpers directly from their own packages. Previously leaked SciPy
@@ -103,17 +112,22 @@ Existing FORM getters remain available during migration. In particular,
 comparing probability-equivalent targets across reference spaces. Other
 algorithms have not yet migrated to this result contract.
 
-Normalized code-calibration studies
------------------------------------
+Code calibration using normalized reliability
+---------------------------------------------
 
-``GenericCalibration`` is the primary code-calibration workflow. It evaluates
+``GenericCalibration`` is renamed ``CodeCalibration``, and ``GenericModel``
+becomes ``NormalizedReliabilityModel``. Their implementation is in
+``pystra.calibration.normalized``. These names describe the engineering
+workflow and probability model; no compatibility aliases are retained.
+
+``CodeCalibration`` is the primary code-calibration workflow. It evaluates
 candidate factors against a probability model over a normalized G/P/Q load-ratio
 grid. It does not silently choose a fitting objective or optimize the factors.
 
 Replace model setters and the 14-position ``GenericModel.get()`` tuple with
 explicit constructor fields. ``NominalValues`` holds characteristic values;
 ``CodeFactors`` holds a separate candidate factor set. Both validate positive,
-finite values. ``GenericModel`` copies distributions/constants and optionally
+finite values. ``NormalizedReliabilityModel`` copies distributions/constants and optionally
 accepts a copula. The copula follows the random-variable order
 resistance_error, resistance, load_error, dead_load, permanent_load, live_load,
 omitting constants. Independence is the default.
@@ -123,7 +137,7 @@ For example::
     from dataclasses import replace
     import pystra as ra
 
-    model = ra.GenericModel(
+    model = ra.NormalizedReliabilityModel(
         resistance=ra.Lognormal("R", 1, 0.08),
         dead_load=ra.Normal("G", 1, 0.08),
         permanent_load=ra.Normal("P", 1, 0.10),
@@ -133,7 +147,7 @@ For example::
         nominal_values=ra.NominalValues(1, 1, 1, 1),
     )
     factors = ra.CodeFactors(phi=0.8, gamma_g=1.2, gamma_p=1.5, gamma_q=1.6)
-    study = ra.GenericCalibration(
+    study = ra.CodeCalibration(
         live_load_ratios=[0.2, 0.5, 0.8], dead_load_ratios=[0, 0.5, 1]
     )
     current = study.run(model, factors, target_beta=3.8)
@@ -186,7 +200,7 @@ mutable case-distribution attributes and special zero-filled limit-state
 helpers are removed. Ordinary mappings remain appropriate for named cases,
 nominal values and overrides; fixed records express roles and results.
 
-Specialist design-point factor calibration
+Partial and combination factor calibration
 ------------------------------------------
 
 The old ``Calibration`` object is removed, without an alias. Its hidden sequence
@@ -253,10 +267,11 @@ meanings; pseudo-Hungarian container prefixes are removed.
 Integration and validation
 --------------------------
 
-The system FORM, Strong Maximum Test, copula/joint distribution, DDO/LQI,
-formatting, and SORM prerequisite fixes are integrated into ``v2.0``. Their
-v1.x PRs remain under separate maintainer control; integrating their commits
-does not retarget or close those PRs.
+The outstanding Strong Maximum Test, copula/joint distribution, DDO/LQI,
+formatting, and SORM prerequisite PRs remain unmerged in 1.x. Their commits
+are included on ``v2.0`` and their changes are reserved for this release.
+System FORM was included earlier. Contributor attribution is retained in
+the integration records and source history.
 
 The corrected reference point is the Git tag ``baseline/v2.0-before-naming``.
 All 478 tests and all 13 indexed tutorials pass before and after the naming
@@ -291,20 +306,19 @@ coverage and current calibration definition/signature records.
 executes the tutorials listed in the tutorial index in fresh kernels. CI runs
 these checks, the test suite, formatting, documentation, and package builds.
 
-Active learning development branch
-----------------------------------
+Active learning: new in 2.0
+---------------------------
 
-The previously unmerged ``al`` work is integrated into 2.0. Import from
+Active learning is a new 2.0 capability, developed from the ``al`` contribution
+and the literature-guided extensions. It remains unmerged in 1.x. Import from
 ``pystra.active_learning``. ``PceSurrogate``, ``learning_u`` and
 ``learning_eff`` follow the 2.0 naming conventions. Surrogates now consume
 independent normal coordinates, not physical points.
 
 ``ActiveLearning.run()`` returns an immutable ``ActiveLearningResult`` with
 ``failure_probability``, ``beta``, conditional sampling diagnostics and explicit
-convergence status. It replaces the development branch's getters and mutable
-``Pf``/history fields. Settings are keyword-only; use lowercase ``u`` or ``eff``
-for the named learning functions. The former development branch's implicit
-beta-stability logic is replaced by explicit stopping policies.
+convergence status. Settings are keyword-only; use lowercase ``u`` or ``eff``
+for the named learning functions. Stopping policies are explicit components.
 
 The four components are now ``Surrogate``, ``LearningFunction``,
 ``ReliabilityEstimator`` and ``StoppingCriterion``. The import path remains

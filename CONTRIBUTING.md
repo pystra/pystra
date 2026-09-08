@@ -143,11 +143,20 @@ import enforcement
 remain later stages; existing legacy fields are not a precedent for new code.
 CI also executes every indexed tutorial using `scripts/execute_notebooks.py`.
 
-Routine documentation builds use saved notebook outputs. From `docs`, run:
+From `docs`, run:
 
 ```sh
 make html SPHINXOPTS="-W --keep-going"
 ```
+
+Sphinx executes new or edited notebooks and caches the rendered results.
+Changes to PySTRA source, notebook helper modules, the Python interpreter or
+installed dependency versions invalidate all notebook results. A first build
+therefore runs every tutorial. Use `-E` for an explicitly fresh build.
+
+To render saved outputs after separately executing the tutorials, use
+`make html SPHINXOPTS="-W --keep-going -D nbsphinx_execute=never"`. This explicit
+shortcut does not validate notebook execution.
 
 When changing notebook code or APIs used by a notebook, execute the affected
 notebooks and inspect their outputs before building. From the repository root,
@@ -157,13 +166,18 @@ for example:
 python scripts/execute_notebooks.py ex_active_extensions --output-dir docs/source/notebooks
 ```
 
-Omit the notebook name to execute all indexed tutorials, as CI does. To rerun
-notebooks within Sphinx instead, use
-`make html SPHINXOPTS="-E -W --keep-going -D nbsphinx_execute=always"` from `docs`.
-Saved-output builds alone do not validate tutorial execution.
-New methods should include a short runnable
+Omit the notebook name to execute all tutorials in the nested tutorial index,
+as CI does. New methods should include a short runnable
 example and theory/reference documentation. Keep optional external-solver or
 network-dependent examples identifiable with their required environment.
+
+Tutorials use sentence-case titles, a short purpose and prerequisites, explicit
+problem assumptions, runnable code, and interpretation of the results. Use
+`import pystra as ra`, Black formatting, explicit seeds for stochastic examples
+and the shared plotting helpers for common reliability figures. Keep benchmark
+attribution and distinguish independent reference probabilities from method
+approximations. Install the project into the environment; do not add repository
+path-search boilerplate to notebooks.
 
 PRs should state the concrete behavior change, API impact, numerical evidence,
 and relevant validation commands/results. Identify skipped checks and known

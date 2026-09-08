@@ -263,7 +263,7 @@ probability error, missed-region/classification error, true model evaluations,
 sampling error and explicit nonconvergence. These cases do not reproduce the full 20-problem review benchmark.
 
 See :doc:`notebooks/ex_active_learning` for implemented methods, numerical
-references and limitations, and :doc:`theory` for their current formulation.
+references and limitations, and :doc:`theory/active_learning` for their formulation.
 
 The :doc:`notebooks/ex_literature_truss` and :doc:`notebooks/ex_literature_hat`
 tutorials add a ten-variable structural model and a curved cubic limit state.

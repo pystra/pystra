@@ -7,9 +7,11 @@ is historical; use the [migration guide](source/migrating.rst) and
 
 ## Resolution on v2.0
 
-The stateful `Calibration` class has been removed. `GenericCalibration.run`
-returns isolated code-study results; specialist target solving, factor
-derivation, selection, design and verification are separate operations.
+The stateful `Calibration` class has been removed. Code calibration now uses
+`NormalizedReliabilityModel`, `CodeFactors` and `CodeCalibration.run`, which
+returns isolated results. Target solving, factor derivation, selection, design
+and verification are operations within this code-calibration workflow. The
+former `GenericModel` and `GenericCalibration` names have been retired.
 `LoadCombination` now supplies explicit cases and roles without running FORM.
 
 | Reviewed problem | Implemented resolution and regression evidence |

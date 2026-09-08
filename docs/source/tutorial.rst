@@ -4,31 +4,18 @@
 Tutorials
 *********
 
-These tutorials will guide you through typical Pystra application. Familiarity
-with Python is assumed, so if you are new to Python, books such as [Lutz2007]_
-or [Langtangen2009]_ are the place to start. Plenty of online documentation
-can also be found on the `Python documentation <https://docs.python.org/3/>`__
-page.
+Start with a first reliability analysis, then choose the methods or engineering
+workflow you need. The categories progress from introductory examples to
+advanced reliability methods and published benchmarks. Familiarity with Python
+and NumPy is assumed.
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
 
-    notebooks/ex_intro
-    notebooks/ex_simulation
-    notebooks/ex_scipy_distributions
-    notebooks/ex_copulas
-    notebooks/ex_strong_maximum
-    notebooks/ex_active_learning
-    notebooks/ex_literature_truss
-    notebooks/ex_literature_hat
-    notebooks/ex_active_extensions
-    notebooks/ex_active_subset
-    notebooks/ex_sensitivity
-    notebooks/ex_ddm
-    notebooks/ex_timing
-    notebooks/ex_load_combinations
-    notebooks/ex_factor_calibration
-    notebooks/ex_generic_calibration
-    notebooks/ex_design_decision_optimization
-    notebooks/ex_system_reliability
-    notebooks/ex_rosenblatt_system_order
+    tutorials/getting_started
+    tutorials/reliability_methods
+    tutorials/systems_dependence
+    tutorials/calibration_decisions
+    tutorials/active_learning
+
+For Python background, see [Lutz2007]_ and [Langtangen2009]_.

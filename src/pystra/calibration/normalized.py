@@ -17,8 +17,8 @@ from ..results import FormResult
 __all__ = [
     "CodeFactors",
     "NominalValues",
-    "GenericModel",
-    "GenericCalibration",
+    "NormalizedReliabilityModel",
+    "CodeCalibration",
     "CodeDesignResult",
     "CodeCalibrationResult",
 ]
@@ -82,7 +82,7 @@ class NominalValues:
 
 
 @dataclass(frozen=True)
-class GenericModel:
+class NormalizedReliabilityModel:
     """Probability model and characteristic values, independent of code factors.
 
     R/G/P/Q distributions use the same normalization as ``nominal_values``;
@@ -117,7 +117,9 @@ class GenericModel:
             object.__setattr__(self, name, deepcopy(value))
             names.append(value.name)
         if len(set(names)) != len(names):
-            raise ValueError("Generic model variable names must be unique")
+            raise ValueError(
+                "Normalized reliability model variable names must be unique"
+            )
         if self.copula is not None:
             object.__setattr__(self, "copula", deepcopy(self.copula))
         self.stochastic_model()  # validate dependence and at least one random input
@@ -168,10 +170,10 @@ class CodeCalibrationResult:
     factors: CodeFactors
     target_beta: Optional[float]
     cases: Tuple[CodeDesignResult, ...]
-    _model: GenericModel
+    _model: NormalizedReliabilityModel
 
     @property
-    def model(self) -> GenericModel:
+    def model(self) -> NormalizedReliabilityModel:
         """Copy of the probability model used for this result."""
         return deepcopy(self._model)
 
@@ -211,7 +213,7 @@ class CodeCalibrationResult:
         )
 
 
-class GenericCalibration:
+class CodeCalibration:
     """Evaluate candidate factors on the normalized G/P/Q code-design grid.
 
     Parameters
@@ -264,7 +266,7 @@ class GenericCalibration:
 
     def run(
         self,
-        model: GenericModel,
+        model: NormalizedReliabilityModel,
         factors: CodeFactors,
         *,
         options: Optional[AnalysisOptions] = None,
@@ -276,8 +278,10 @@ class GenericCalibration:
         iteration-limit failures are represented by unsuccessful FormResults.
         ``beta`` and target margins are normal-equivalent, including for t space.
         """
-        if not isinstance(model, GenericModel) or not isinstance(factors, CodeFactors):
-            raise TypeError("Expected GenericModel and CodeFactors")
+        if not isinstance(model, NormalizedReliabilityModel) or not isinstance(
+            factors, CodeFactors
+        ):
+            raise TypeError("Expected NormalizedReliabilityModel and CodeFactors")
         if options is not None and not isinstance(options, AnalysisOptions):
             raise TypeError("options must be AnalysisOptions")
         if options is not None and options.get_diff_mode() == "ddm":

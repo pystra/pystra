@@ -1,15 +1,15 @@
-"""Code-design studies and specialist design-point factor calibration.
+"""Code calibration through normalized reliability and factor verification.
 
-GenericCalibration evaluates candidate factors on normalized code designs.
-The separate solve/derive/select/verify operations preserve the traditional
-factor-calibration methods without mutable orchestration tables.
+CodeCalibration evaluates candidate factors on normalized code designs.
+The solve/derive/select/verify operations derive candidate partial and
+combination factors from representative cases and check their resulting designs.
 """
 
-from .generic import (
+from .normalized import (
     CodeFactors,
     NominalValues,
-    GenericModel,
-    GenericCalibration,
+    NormalizedReliabilityModel,
+    CodeCalibration,
     CodeDesignResult,
     CodeCalibrationResult,
 )
@@ -33,8 +33,8 @@ from .plotting import plot_calibration
 __all__ = [
     "CodeFactors",
     "NominalValues",
-    "GenericModel",
-    "GenericCalibration",
+    "NormalizedReliabilityModel",
+    "CodeCalibration",
     "CodeDesignResult",
     "CodeCalibrationResult",
     "FactorCalibrationProblem",

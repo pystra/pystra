@@ -12,7 +12,7 @@ from tests.test_calibration import setup1, setup2
 
 def generic_model(*, uncertain_errors=False):
     error = ra.Lognormal if uncertain_errors else None
-    return ra.GenericModel(
+    return ra.NormalizedReliabilityModel(
         resistance=(
             ra.Lognormal("capacity", 1, 0.08)
             if uncertain_errors
@@ -62,7 +62,7 @@ def test_form_result_survives_rerun_and_failed_result_has_no_estimate():
 def test_normalized_design_grid_matches_linear_normal_solution_and_endpoints():
     model = generic_model()
     factors = ra.CodeFactors(0.8, 1.2, 1.5, 1.6)
-    study = ra.GenericCalibration(live_load_ratios=[0, 0.5, 1], dead_load_ratios=[0, 1])
+    study = ra.CodeCalibration(live_load_ratios=[0, 0.5, 1], dead_load_ratios=[0, 1])
     result = study.run(model, factors, target_beta=3)
     assert result.converged
     for case in result.cases:
@@ -86,7 +86,7 @@ def test_factor_comparison_is_fresh_and_snapshots_do_not_alias_models_or_tables(
     model = generic_model(uncertain_errors=True)
     factors = ra.CodeFactors(0.8, 1.2, 1.5, 1.6)
     grid = np.array([0.5])
-    study = ra.GenericCalibration(live_load_ratios=grid, dead_load_ratios=grid)
+    study = ra.CodeCalibration(live_load_ratios=grid, dead_load_ratios=grid)
     first = study.run(model, factors)
     second = study.run(model, replace(factors, phi=1.0))
     assert first.beta.item() == pytest.approx(4.1234292054, abs=1e-6)
@@ -107,7 +107,7 @@ def test_factor_comparison_is_fresh_and_snapshots_do_not_alias_models_or_tables(
 @pytest.mark.parametrize("ratios", [[], [-0.1], [1.1], [np.nan], [[0.5]]])
 def test_invalid_ratio_grids_are_rejected(ratios):
     with pytest.raises(ValueError):
-        ra.GenericCalibration(live_load_ratios=ratios, dead_load_ratios=[0.5])
+        ra.CodeCalibration(live_load_ratios=ratios, dead_load_ratios=[0.5])
 
 
 @pytest.mark.parametrize("value", [0, -1, np.inf, np.nan])
@@ -121,7 +121,7 @@ def test_invalid_nominals_and_factors_are_rejected(value):
 def test_nonconverged_generic_cases_are_retained_and_not_plotted_as_envelopes():
     options = ra.AnalysisOptions()
     options.set_imax(1)
-    study = ra.GenericCalibration(live_load_ratios=[0.3, 0.7], dead_load_ratios=[0.5])
+    study = ra.CodeCalibration(live_load_ratios=[0.3, 0.7], dead_load_ratios=[0.5])
     with pytest.warns(RuntimeWarning, match="did not converge"):
         result = study.run(
             generic_model(uncertain_errors=True),
@@ -142,7 +142,7 @@ def test_generic_correlated_model_uses_explicit_dependence():
     rho = np.eye(4)
     rho[0, 3] = rho[3, 0] = 0.4
     model = replace(model, copula=ra.GaussianCopula(rho))
-    result = ra.GenericCalibration(live_load_ratios=[1], dead_load_ratios=[0]).run(
+    result = ra.CodeCalibration(live_load_ratios=[1], dead_load_ratios=[0]).run(
         model, ra.CodeFactors(1, 1, 1, 1.5)
     )
     expected = 0.5 / np.sqrt((1.5 * 0.1) ** 2 + 0.1**2 - 2 * 1.5 * 0.4 * 0.1 * 0.1)
@@ -313,7 +313,7 @@ def test_bracketed_target_solve_and_full_design_verification():
 def test_plot_uses_smallest_dead_load_ratio_and_does_not_execute_a_study():
     import matplotlib.pyplot as plt
 
-    result = ra.GenericCalibration(
+    result = ra.CodeCalibration(
         live_load_ratios=[0.2, 0.8], dead_load_ratios=[1, 0]
     ).run(generic_model(), ra.CodeFactors(0.8, 1.2, 1.5, 1.6))
     fig, ax = ra.plot_calibration({"example": result})

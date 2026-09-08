@@ -5,11 +5,24 @@ All notable changes to Pystra are documented here.
 
 The format follows `Keep a Changelog <https://keepachangelog.com/>`_.
 
-Unreleased
-----------
+2.0.0 (unreleased)
+------------------
+
+The outstanding feature PRs remain unmerged in 1.x. Their functionality and
+fixes are new for 2.0, alongside the breaking API migration described in
+:doc:`migrating`.
 
 Added
 ~~~~~
+- Active-learning reliability from the ``al`` contribution: Kriging with
+  U/EFF learning, adaptive sparse bootstrap Hermite PCE, independent final
+  sampling, explicit convergence diagnostics and benchmark tutorials.
+- Adaptive sparse PCE based on UQLab 2.2.0 hybrid-LARS and corrected-LOO
+  selection across polynomial degrees and hyperbolic truncations. Includes
+  fit diagnostics, executed UQLab comparisons, retained BSD notices and
+  uniform bootstrap resampling.
+- DDO/LQI refinements from PR #93, including decision-study workflows,
+  target-reliability calculations, source attribution and worked examples.
 - Sequential PC-Kriging with GLS trend uncertainty and explicit correlation
   choices; bootstrap voting/FBR with actual probability-range stopping; and
   active Gaussian-mixture importance sampling with weighted diagnostics.
@@ -19,7 +32,7 @@ Added
   and original-event integration/simulation checks.
 - Immutable ``FormResult`` snapshots, including convergence, normal-equivalent
   beta, geometric beta and ordered physical/reference design points.
-- Explicit code factors, nominal values and isolated generic-calibration study
+- Explicit code factors, nominal values and isolated normalized-reliability study
   results, with separate plotting and optional copula dependence.
 - Executed copula/transformation and Strong Maximum Test tutorial notebooks,
   with derivations and validation examples in the theoretical background.
@@ -62,6 +75,16 @@ Fixed
 
 Changed
 ~~~~~~~
+- Renamed ``GenericCalibration`` to ``CodeCalibration`` and ``GenericModel``
+  to ``NormalizedReliabilityModel``; factor derivation and verification are
+  presented as operations within the same code-calibration workflow.
+- Grouped tutorials and API references by purpose, separated usage guides,
+  and split theory into topic pages. Updated all maintained tutorials and
+  added an independent probability reference for the parabolic benchmark.
+- Added ``pystra.plotting`` helpers for common reliability figures, with
+  explicit coordinates, existing-axis support and diagnostic interpretation.
+- Documentation builds execute changed notebooks, invalidating cached results
+  when PySTRA code, notebook helpers or the Python environment changes.
 - Preserved established acronym class names such as ``SystemFORM``,
   ``FBCProcess``, ``DDO``, ``LQI``, and ``SWTP``, together with ``GEVmax``,
   ``GEVmin``, and ``ScipyDist``. The initial v2 class recasing is reversed;
@@ -74,9 +97,11 @@ Changed
   consistent class names, without legacy aliases. See :doc:`migrating` for the
   implemented naming map and remaining migration stages.
 - SciPy minimum version is 1.11 for multivariate Student-t CDF integration.
+- Metadata and documentation consistently state GPL-3.0-or-later, with
+  retained third-party notices for adapted methods.
 
 v1.6.0 (2026-03-16)
---------------------
+-------------------
 
 Added
 ~~~~~
@@ -127,7 +152,7 @@ Changed
 
 
 v1.4.0 (2026-03-13)
---------------------
+-------------------
 
 Added
 ~~~~~
@@ -168,7 +193,7 @@ Changed
 
 
 v1.3.0 (2024-04-01)
---------------------
+-------------------
 
 Added
 ~~~~~
@@ -181,7 +206,7 @@ Changed
 
 
 v1.2.3 (2023-09-01)
---------------------
+-------------------
 
 Added
 ~~~~~
@@ -199,7 +224,7 @@ Changed
 
 
 v1.2.2 (2023-06-01)
---------------------
+-------------------
 
 Added
 ~~~~~
@@ -211,7 +236,7 @@ Fixed
 
 
 v1.2.1 (2023-04-01)
---------------------
+-------------------
 
 Fixed
 ~~~~~
@@ -220,7 +245,7 @@ Fixed
 
 
 v1.2.0 (2023-02-01)
---------------------
+-------------------
 
 Added
 ~~~~~
@@ -232,7 +257,7 @@ Added
 
 
 v1.1.1 (2022-01-01)
---------------------
+-------------------
 
 Fixed
 ~~~~~
@@ -240,7 +265,7 @@ Fixed
 
 
 v1.1.0 (2021-09-01)
---------------------
+-------------------
 
 Added
 ~~~~~
@@ -255,7 +280,7 @@ Changed
 
 
 v1.0.0 (2021-06-01)
---------------------
+-------------------
 
 Initial release.
 
@@ -264,17 +289,3 @@ Initial release.
 - Nataf isoprobabilistic transformation.
 - 15+ probability distributions.
 - Stochastic model and limit state function framework.
-
-Active learning integration (2.0 development)
----------------------------------------------
-
-* Integrated the previously separate ``al`` branch as ``pystra.active_learning``.
-* Corrected EFF, added bootstrap PCE spread in normal coordinates, independent
-  final sampling, explicit results/status, owned RNGs and benchmark validation.
-* Added an attributed benchmark tutorial and retained optional Kriging dependencies.
-* Aligned metadata and documentation with the GPL-3.0-or-later licence notice.
-
-* Adaptive sparse PCE now follows UQLab 2.2.0 hybrid-LARS and corrected-LOO
-  selection across polynomial degrees and hyperbolic truncations. Added
-  immutable fit diagnostics, direct UQLab numerical fixtures, retained BSD
-  notices and documented uniform-bootstrap correction.

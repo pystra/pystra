@@ -17,7 +17,6 @@
 ..    |GitHub Workflow Status|
 ..    |GitHub commit activity|
 ..    |GitHub last commit|
-..    |Contributor Covenant|
 |codecov|
 
 .. |Code style: black| image:: https://img.shields.io/badge/code%20style-black-000000.svg 
@@ -44,9 +43,6 @@
 .. |GitHub commit activity| image:: https://img.shields.io/github/commit-activity/m/pystra/pystra
 
 .. |GitHub last commit| image:: https://img.shields.io/github/last-commit/pystra/pystra?color=ff69b4
-
-.. |Contributor Covenant| image:: https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg 
-   :target: code_of_conduct.md
 
 .. |codecov| image:: https://codecov.io/gh/pystra/pystra/branch/main/graph/badge.svg?token=dUTOmPBnyP 
    :target: https://codecov.io/gh/pystra/pystra
@@ -86,6 +82,7 @@ Contents:
    install
    migrating
    tutorial
+   user_guide
    api
    theory
    references

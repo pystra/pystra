@@ -4,11 +4,11 @@
   "scope": "Implemented v2 calibration structure and FORM result contract. Definitions include private helpers for inventory completeness, not public support. Dataclass constructor fields appear under class attributes; generated constructors are not AST definitions.",
   "replacement_workflows": {
     "normalized_code_studies": [
-      "pystra.calibration.generic.GenericModel",
-      "pystra.calibration.generic.NominalValues",
-      "pystra.calibration.generic.CodeFactors",
-      "pystra.calibration.generic.GenericCalibration.run",
-      "pystra.calibration.generic.CodeCalibrationResult",
+      "pystra.calibration.normalized.NormalizedReliabilityModel",
+      "pystra.calibration.normalized.NominalValues",
+      "pystra.calibration.normalized.CodeFactors",
+      "pystra.calibration.normalized.CodeCalibration.run",
+      "pystra.calibration.normalized.CodeCalibrationResult",
       "pystra.calibration.plotting.plot_calibration"
     ],
     "specialist_design_point_factors": [
@@ -273,21 +273,21 @@
       "returns": "Tuple[DesignVerification, ...]"
     },
     {
-      "name": "pystra.calibration.generic._positive",
+      "name": "pystra.calibration.normalized._positive",
       "kind": "callable",
       "signature": "(value, name)",
       "decorators": [],
       "returns": null
     },
     {
-      "name": "pystra.calibration.generic._ratios",
+      "name": "pystra.calibration.normalized._ratios",
       "kind": "callable",
       "signature": "(values, name)",
       "decorators": [],
       "returns": null
     },
     {
-      "name": "pystra.calibration.generic.CodeFactors",
+      "name": "pystra.calibration.normalized.CodeFactors",
       "kind": "class",
       "bases": [],
       "attributes": [
@@ -298,14 +298,14 @@
       ]
     },
     {
-      "name": "pystra.calibration.generic.CodeFactors.__post_init__",
+      "name": "pystra.calibration.normalized.CodeFactors.__post_init__",
       "kind": "callable",
       "signature": "(self)",
       "decorators": [],
       "returns": null
     },
     {
-      "name": "pystra.calibration.generic.NominalValues",
+      "name": "pystra.calibration.normalized.NominalValues",
       "kind": "class",
       "bases": [],
       "attributes": [
@@ -316,14 +316,14 @@
       ]
     },
     {
-      "name": "pystra.calibration.generic.NominalValues.__post_init__",
+      "name": "pystra.calibration.normalized.NominalValues.__post_init__",
       "kind": "callable",
       "signature": "(self)",
       "decorators": [],
       "returns": null
     },
     {
-      "name": "pystra.calibration.generic.GenericModel",
+      "name": "pystra.calibration.normalized.NormalizedReliabilityModel",
       "kind": "class",
       "bases": [],
       "attributes": [
@@ -338,21 +338,21 @@
       ]
     },
     {
-      "name": "pystra.calibration.generic.GenericModel.__post_init__",
+      "name": "pystra.calibration.normalized.NormalizedReliabilityModel.__post_init__",
       "kind": "callable",
       "signature": "(self)",
       "decorators": [],
       "returns": null
     },
     {
-      "name": "pystra.calibration.generic.GenericModel.stochastic_model",
+      "name": "pystra.calibration.normalized.NormalizedReliabilityModel.stochastic_model",
       "kind": "callable",
       "signature": "(self)",
       "decorators": [],
       "returns": "StochasticModel"
     },
     {
-      "name": "pystra.calibration.generic.CodeDesignResult",
+      "name": "pystra.calibration.normalized.CodeDesignResult",
       "kind": "class",
       "bases": [],
       "attributes": [
@@ -364,7 +364,7 @@
       ]
     },
     {
-      "name": "pystra.calibration.generic.CodeCalibrationResult",
+      "name": "pystra.calibration.normalized.CodeCalibrationResult",
       "kind": "class",
       "bases": [],
       "attributes": [
@@ -377,16 +377,16 @@
       ]
     },
     {
-      "name": "pystra.calibration.generic.CodeCalibrationResult.model",
+      "name": "pystra.calibration.normalized.CodeCalibrationResult.model",
       "kind": "callable",
       "signature": "(self)",
       "decorators": [
         "property"
       ],
-      "returns": "GenericModel"
+      "returns": "NormalizedReliabilityModel"
     },
     {
-      "name": "pystra.calibration.generic.CodeCalibrationResult.converged",
+      "name": "pystra.calibration.normalized.CodeCalibrationResult.converged",
       "kind": "callable",
       "signature": "(self)",
       "decorators": [
@@ -395,7 +395,7 @@
       "returns": "bool"
     },
     {
-      "name": "pystra.calibration.generic.CodeCalibrationResult.beta",
+      "name": "pystra.calibration.normalized.CodeCalibrationResult.beta",
       "kind": "callable",
       "signature": "(self)",
       "decorators": [
@@ -404,14 +404,14 @@
       "returns": "np.ndarray"
     },
     {
-      "name": "pystra.calibration.generic.CodeCalibrationResult.to_frame",
+      "name": "pystra.calibration.normalized.CodeCalibrationResult.to_frame",
       "kind": "callable",
       "signature": "(self)",
       "decorators": [],
       "returns": "DataFrame"
     },
     {
-      "name": "pystra.calibration.generic.GenericCalibration",
+      "name": "pystra.calibration.normalized.CodeCalibration",
       "kind": "class",
       "bases": [],
       "attributes": [
@@ -420,14 +420,14 @@
       ]
     },
     {
-      "name": "pystra.calibration.generic.GenericCalibration.__init__",
+      "name": "pystra.calibration.normalized.CodeCalibration.__init__",
       "kind": "callable",
       "signature": "(self, *, live_load_ratios: Sequence[float], dead_load_ratios: Sequence[float])",
       "decorators": [],
       "returns": "None"
     },
     {
-      "name": "pystra.calibration.generic.GenericCalibration.live_load_ratios",
+      "name": "pystra.calibration.normalized.CodeCalibration.live_load_ratios",
       "kind": "callable",
       "signature": "(self)",
       "decorators": [
@@ -436,7 +436,7 @@
       "returns": "Tuple[float, ...]"
     },
     {
-      "name": "pystra.calibration.generic.GenericCalibration.dead_load_ratios",
+      "name": "pystra.calibration.normalized.CodeCalibration.dead_load_ratios",
       "kind": "callable",
       "signature": "(self)",
       "decorators": [
@@ -445,7 +445,7 @@
       "returns": "Tuple[float, ...]"
     },
     {
-      "name": "pystra.calibration.generic.GenericCalibration.design",
+      "name": "pystra.calibration.normalized.CodeCalibration.design",
       "kind": "callable",
       "signature": "(*, live_load_ratio: float, dead_load_ratio: float, factors: CodeFactors, nominal_values: NominalValues)",
       "decorators": [
@@ -454,9 +454,9 @@
       "returns": "float"
     },
     {
-      "name": "pystra.calibration.generic.GenericCalibration.run",
+      "name": "pystra.calibration.normalized.CodeCalibration.run",
       "kind": "callable",
-      "signature": "(self, model: GenericModel, factors: CodeFactors, *, options: Optional[AnalysisOptions]=None, target_beta: Optional[float]=None)",
+      "signature": "(self, model: NormalizedReliabilityModel, factors: CodeFactors, *, options: Optional[AnalysisOptions]=None, target_beta: Optional[float]=None)",
       "decorators": [],
       "returns": "CodeCalibrationResult"
     },

@@ -78,3 +78,6 @@ from .ddo import (
     SWTP,
     TargetReliability,
 )
+
+# Figure helpers accept existing axes and never display figures implicitly.
+from . import plotting

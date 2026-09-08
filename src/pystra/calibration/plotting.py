@@ -20,7 +20,7 @@ def plot_calibration(
         Label-to-Matplotlib-color overrides.
     ranges : sequence of mapping, optional
         Plot annotations with xl, xu, ytext, text, alpha keys, retained from the
-        generic tutorial. These are presentation settings, not model inputs.
+        normalized-reliability tutorial. These are presentation settings, not model inputs.
     ax : matplotlib.axes.Axes, optional
         Existing axes. The returned figure is not automatically displayed.
     figsize : tuple, optional
