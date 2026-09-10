@@ -21,10 +21,8 @@ from pystra.distributions import (
     ChiSquare,
     ShiftedExponential,
     ShiftedRayleigh,
-    Type1LargestValue,
-    Type1SmallestValue,
-    Type2LargestValue,
-    Type3SmallestValue,
+    GumbelMin,
+    Frechet,
     Maximum,
     MaxParent,
     ScipyDist,
@@ -40,6 +38,7 @@ from pystra.distributions import (
         ("gumbel", "Gumbel"),
         ("uniform", "Uniform"),
         ("weibull", "Weibull"),
+        ("frechet", "Frechet"),
     ],
 )
 def test_distribution_modules_are_not_shadowed_by_scipy(module_name, class_name):
@@ -111,8 +110,7 @@ SIMPLE_DISTRIBUTIONS = [
     ("Gamma", Gamma("Ga", 10, 2)),
     ("ShiftedExponential", ShiftedExponential("SE", 5, 2)),
     ("ShiftedRayleigh", ShiftedRayleigh("SR", 5, 1)),
-    ("Type1LargestValue", Type1LargestValue("T1L", 10, 2)),
-    ("Type1SmallestValue", Type1SmallestValue("T1S", 10, 2)),
+    ("GumbelMin", GumbelMin("T1S", 10, 2)),
 ]
 
 
@@ -242,34 +240,28 @@ class TestChiSquare:
             assert pytest.approx(d.cdf(x), abs=1e-4) == p
 
 
-class TestTypeIIlargestValue:
+class TestFrechet:
     def test_construction(self):
-        d = Type2LargestValue("T2L", 100, 10)
+        d = Frechet("T2L", 100, 10)
         assert np.isfinite(d.mean)
         assert d.stdv > 0
 
     def test_mean_stdv_roundtrip(self):
-        d = Type2LargestValue("T2L", 100, 20)
+        d = Frechet("T2L", 100, 20)
         assert pytest.approx(d.mean, abs=0.5) == 100
         assert pytest.approx(d.stdv, abs=0.5) == 20
 
     def test_ppf_cdf_roundtrip(self):
-        d = Type2LargestValue("T2L", 100, 10)
+        d = Frechet("T2L", 100, 10)
         for p in [0.1, 0.5, 0.9]:
             x = d.ppf(p)
             assert pytest.approx(d.cdf(x), abs=1e-4) == p
 
 
-class TestTypeIIIsmallestValue:
-    def test_construction(self):
-        d = Type3SmallestValue("T3S", 10, 3)
-        assert pytest.approx(d.mean, abs=0.5) == 10
-
-    def test_ppf_cdf_roundtrip(self):
-        d = Type3SmallestValue("T3S", 10, 3)
-        for p in [0.1, 0.5, 0.9]:
-            x = d.ppf(p)
-            assert pytest.approx(d.cdf(x), abs=1e-4) == p
+def test_gevmax_is_kept_as_an_alias_of_gev():
+    """GEVmax is the one deliberate alias in the 2.0 API."""
+    assert ra.GEVmax is ra.GEV
+    assert ra.distributions.GEVmax is ra.GEV
 
 
 # ---------------------------------------------------------------------------

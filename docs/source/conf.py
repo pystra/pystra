@@ -174,9 +174,17 @@ def _record_execution_signature(app, env):
         env.pystra_execution_signature = app._pystra_execution_signature
 
 
+def _skip_class_aliases(app, what, name, obj, skip, options):
+    """Document a class once, under its own name, not again under an alias."""
+    if isinstance(obj, type) and obj.__name__ != name.rsplit(".", 1)[-1]:
+        return True
+    return None
+
+
 def setup(app):
     app.connect("env-get-outdated", _refresh_notebooks)
     app.connect("env-updated", _record_execution_signature)
+    app.connect("autodoc-skip-member", _skip_class_aliases)
 
 
 # Links shared by generated module and class pages.

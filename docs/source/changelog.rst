@@ -85,10 +85,14 @@ Changed
   explicit coordinates, existing-axis support and diagnostic interpretation.
 - Documentation builds execute changed notebooks, invalidating cached results
   when PySTRA code, notebook helpers or the Python environment changes.
-- Preserved established acronym class names such as ``SystemFORM``,
-  ``FBCProcess``, ``DDO``, ``LQI``, and ``SWTP``, together with ``GEVmax``,
-  ``GEVmin``, and ``ScipyDist``. The initial v2 class recasing is reversed;
-  function and method names continue to use snake_case.
+- Class names follow PEP 8's acronym rule: ``FORM``, ``SORM``,
+  ``FORMResult``, ``SystemFORM``, ``FBCProcess``, ``DDO``, ``LQI``, ``SWTP``,
+  ``PCESurrogate``, ``PCKrigingSurrogate`` and ``FBRLearning``. Extreme-value
+  distributions are named by family — ``Gumbel``, ``GumbelMin``, ``Frechet``,
+  ``Weibull``, ``GEV`` and ``GEVMin`` — replacing the type-numbered classes;
+  ``TypeIlargestValue`` and ``TypeIIIsmallestValue`` duplicated ``Gumbel`` and
+  ``Weibull`` and are removed. ``GEVmax`` remains an alias for ``GEV``, and
+  ``ScipyDist`` keeps its name. Function and method names use snake_case.
 - Removed the stateful ``Calibration`` class in favor of explicit target solving,
   factor derivation, selection, design and verification operations.
 - ``LoadCombination`` stores explicit cases and roles; separate evaluation and

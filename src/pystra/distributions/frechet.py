@@ -8,8 +8,8 @@ import scipy.special as spec
 from .distribution import Distribution
 
 
-class Type2LargestValue(Distribution):
-    """Type II largest value distribution
+class Frechet(Distribution):
+    """Fréchet distribution: the Type II extreme value distribution for maxima.
 
     :Attributes:
       - name (str):   Name of the random variable\n
@@ -23,7 +23,7 @@ class Type2LargestValue(Distribution):
         if input_type is None:
             parameter_guess = [2.000001]
             par = opt.fsolve(
-                self.type2_largest_parameter,
+                self.frechet_parameter,
                 parameter_guess,
                 args=(mean, stdv),
             )
@@ -44,9 +44,9 @@ class Type2LargestValue(Distribution):
             startpoint=startpoint,
         )
 
-        self.dist_type = "Type2LargestValue"
+        self.dist_type = "Frechet"
 
-    def type2_largest_parameter(self, x, *args):
+    def frechet_parameter(self, x, *args):
         mean, stdv = args
         f = (spec.gamma(1 - 2 / x) - (spec.gamma(1 - 1 / x)) ** 2) ** 0.5 - (
             stdv / mean

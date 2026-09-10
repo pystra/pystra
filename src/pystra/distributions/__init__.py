@@ -9,17 +9,14 @@ from .shiftedrayleigh import ShiftedRayleigh
 from .uniform import Uniform
 from .beta import Beta
 from .chisquare import ChiSquare
-from .typeilargestvalue import Type1LargestValue
-from .typeismallestvalue import Type1SmallestValue
-from .typeiilargestvalue import Type2LargestValue
-from .typeiiismallestvalue import Type3SmallestValue
-from .gumbel import Gumbel
+from .gumbel import Gumbel, GumbelMin
+from .frechet import Frechet
 from .weibull import Weibull
 from .maximum import Maximum
 from .scipydist import ScipyDist
 from .parent import MaxParent
 from .zeroinflated import ZeroInflated
-from .gev import GEVmax, GEVmin
+from .gev import GEV, GEVmax, GEVMin
 from .shiftedlognormal import ShiftedLognormal
 
 __all__ = [
@@ -34,17 +31,16 @@ __all__ = [
     "Uniform",
     "Beta",
     "ChiSquare",
-    "Type1LargestValue",
-    "Type1SmallestValue",
-    "Type2LargestValue",
-    "Type3SmallestValue",
     "Gumbel",
+    "GumbelMin",
+    "Frechet",
     "Weibull",
     "Maximum",
     "ScipyDist",
     "MaxParent",
     "ZeroInflated",
+    "GEV",
     "GEVmax",
-    "GEVmin",
+    "GEVMin",
     "ShiftedLognormal",
 ]

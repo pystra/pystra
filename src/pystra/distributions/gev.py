@@ -3,11 +3,13 @@ from scipy.stats import genextreme
 from scipy.special import gamma
 from pystra.distributions import Distribution
 
-__all__ = ["GEVmax", "GEVmin"]
+__all__ = ["GEV", "GEVmax", "GEVMin"]
 
 
-class GEVmax(Distribution):
+class GEV(Distribution):
     """Generalized Extreme Value (GEV) distribution for maxima.
+
+    ``GEVmax`` is an alias for this class.
 
     This distribution unifies the different types of extreme value
     distributions: Gumbel (Type I), Fréchet (Type II), and
@@ -69,11 +71,11 @@ class GEVmax(Distribution):
             startpoint=startpoint,
         )
 
-        self.dist_type = "GEVmax"
+        self.dist_type = "GEV"
 
     @property
     def sensitivity_params(self):
-        r"""Sensitivity parameters for GEVmax.
+        r"""Sensitivity parameters for GEV.
 
         Returns ``{"mean": μ, "std": σ, "shape": ξ}``.  The shape
         parameter ξ controls tail behaviour: ξ < 0 is Weibull (bounded
@@ -82,7 +84,12 @@ class GEVmax(Distribution):
         return {"mean": self.mean, "std": self.stdv, "shape": self.shape}
 
 
-class GEVmin(Distribution):
+# ``GEVmax`` is kept as another name for ``GEV``: the one deliberate alias in
+# the 2.0 API, at the maintainer's request.
+GEVmax = GEV
+
+
+class GEVMin(Distribution):
     """Generalized Extreme Value (GEV) distribution for minima.
 
     This distribution unifies the different types of extreme value distributions: Gumbel (Type I), Fréchet (Type II), and Weibull (Type III).
@@ -156,11 +163,11 @@ class GEVmin(Distribution):
         if startpoint is None:
             self.startpoint = self.mean
 
-        self.dist_type = "GEVmin"
+        self.dist_type = "GEVMin"
 
     @property
     def sensitivity_params(self):
-        r"""Sensitivity parameters for GEVmin.
+        r"""Sensitivity parameters for GEVMin.
 
         Returns ``{"mean": μ, "std": σ, "shape": ξ}``.  The shape
         parameter ξ controls tail behaviour: ξ < 0 is Weibull (bounded

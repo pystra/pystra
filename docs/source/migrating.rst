@@ -59,65 +59,24 @@ name. The bare name is the conventional flavour, maxima for ``Gumbel`` and
 ``Frechet`` and minima for ``Weibull``, and the opposite flavour takes a
 suffix, as in ``GumbelMin`` and ``GEVMin``. ``Frechet`` is the ASCII spelling of Fréchet.
 
-.. _planned-acronym-renames:
-
-Class renames scheduled in this release
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. note::
-
-   These renames are agreed for 2.0 but are **not yet applied** on the
-   ``2.0.0.dev0`` branch. The middle column is what the development branch
-   currently exposes; a dash means the class did not exist in 1.x.
-
-.. list-table::
-   :header-rows: 1
-   :widths: 22 24 20 34
-
-   * - 1.x
-     - Development branch now
-     - 2.0 release
-     - Reason
-   * - ``TypeIlargestValue``
-     - ``Type1LargestValue``
-     - ``Gumbel``
-     - Type I, maxima; identical to the existing ``Gumbel``
-   * - ``TypeIsmallestValue``
-     - ``Type1SmallestValue``
-     - ``GumbelMin``
-     - Type I, minima
-   * - ``TypeIIlargestValue``
-     - ``Type2LargestValue``
-     - ``Frechet``
-     - Type II, maxima
-   * - ``TypeIIIsmallestValue``
-     - ``Type3SmallestValue``
-     - ``Weibull``
-     - Type III, minima; identical to the existing ``Weibull``
-   * - ``GEVmax``
-     - ``GEVmax``
-     - ``GEV``
-     - GEV for maxima; ``GEVmax`` kept as an alias
-   * - ``GEVmin``
-     - ``GEVmin``
-     - ``GEVMin``
-     - GEV for minima; no alias
-
 Implemented naming changes
 --------------------------
 
 Functions and methods now use snake_case. Inconsistent class names follow the
-project's CapWords convention. There are no aliases for the replaced names.
+project's CapWords convention. Apart from ``GEVmax``, there are no aliases for the replaced names.
 Most existing module imports retain their paths. Calibration is now a package
 with explicit exports; its structural changes are described below.
+
+.. _renamed-classes:
 
 Renamed classes
 ~~~~~~~~~~~~~~~
 
-The classes below were renamed in 2.0. Because there are no aliases, a 1.x
-import of an old name raises ``ImportError``. The 1.x extreme-value classes,
-such as ``TypeIlargestValue``, are listed under :ref:`planned-acronym-renames`,
-because their 2.0 names are not yet applied on this branch.
+The classes below were renamed in 2.0. Apart from ``GEVmax``, which remains an
+alias for ``GEV``, there are no aliases, so a 1.x import of an old name raises
+``ImportError``. ``TypeIlargestValue`` and ``TypeIIIsmallestValue`` duplicated
+``Gumbel`` and ``Weibull`` exactly, so those classes are removed and the
+existing names used instead.
 
 .. list-table::
    :header-rows: 1
@@ -129,6 +88,18 @@ because their 2.0 names are not yet applied on this branch.
      - ``FORM``
    * - ``Sorm``
      - ``SORM``
+   * - ``TypeIlargestValue``
+     - ``Gumbel``
+   * - ``TypeIsmallestValue``
+     - ``GumbelMin``
+   * - ``TypeIIlargestValue``
+     - ``Frechet``
+   * - ``TypeIIIsmallestValue``
+     - ``Weibull``
+   * - ``GEVmax``
+     - ``GEV`` (``GEVmax`` still works as an alias)
+   * - ``GEVmin``
+     - ``GEVMin``
    * - ``KofNSystem``
      - ``KOfNSystem``
    * - ``GenericModel``
@@ -139,7 +110,8 @@ because their 2.0 names are not yet applied on this branch.
 Classes added during 2.0 development follow the same rule: ``FORMResult``,
 ``PCESurrogate``, ``PCECandidate``, ``PCEFitResult``, ``PCKrigingSurrogate``,
 ``PCKrigingFitResult`` and ``FBRLearning``. Earlier development snapshots
-spelled them in title case (``FormResult``, ``PceSurrogate`` and so on); those
+spelled them in title case (``FormResult``, ``PceSurrogate`` and so on) and
+numbered the extreme-value classes (``Type1LargestValue`` and so on); those
 spellings were never released.
 
 .. list-table:: Representative changes
@@ -165,15 +137,15 @@ spellings were never released.
    * - ``distribution.dF_dtheta(x)``
      - ``distribution.cdf_gradient(x)``
 
-The class names ``SystemFORM``, ``FBCProcess``, ``GEVmax``, ``GEVmin``,
+The class names ``SystemFORM``, ``FBCProcess``,
 ``ScipyDist``, ``DDO``, ``DDOCriterion``, ``DDOObjective``, ``LQI``, ``SWTP``,
 ``SWTPRecord``, and ``SWTPIndexRecord`` retain their original spellings in the
 source and feature contributions. This does not imply that every class was
 available in a published 1.x release. Acronyms in
 CapWords retain their capitals, as recommended by
 `PEP 8 <https://peps.python.org/pep-0008/#descriptive-naming-styles>`_.
-``Form`` and ``Sorm`` became ``FORM`` and ``SORM`` under the same rule; the
-extreme-value classes follow in this release (see :ref:`planned-acronym-renames`).
+``Form`` and ``Sorm`` became ``FORM`` and ``SORM`` under the same rule, and
+the extreme-value classes are now named by family (see :ref:`renamed-classes`).
 
 The :download:`naming map <../migration/naming-map.json>` records the
 reviewed spelling changes and retained class names. The :download:`definition manifest <../migration/api-migration.json>`

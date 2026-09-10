@@ -8,7 +8,7 @@ from .distribution import Distribution
 
 
 class Weibull(Distribution):
-    """Weibull distribution
+    """Weibull distribution: the Type III extreme value distribution for minima.
 
     :Attributes:
         - name (str):       Name of the random variable\n
