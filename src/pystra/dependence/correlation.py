@@ -15,6 +15,13 @@ import scipy.optimize as opt
 
 from .._numerics.integration import zi_and_xi, rho_integral
 
+__all__ = [
+    "CorrelationMatrix",
+    "compute_modified_correlation_matrix",
+    "absolute_integral_value",
+    "set_modified_correlation_matrix",
+]
+
 
 class CorrelationMatrix:
     r"""Physical-space correlation matrix wrapper.

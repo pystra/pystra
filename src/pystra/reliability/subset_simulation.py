@@ -6,6 +6,8 @@ from scipy.stats import norm as scipy_norm
 
 from .analysis import AnalysisObject
 
+__all__ = ["SubsetSimulation"]
+
 
 class SubsetSimulation(AnalysisObject):
     r"""Subset Simulation (SS) reliability analysis.

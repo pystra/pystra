@@ -16,6 +16,8 @@ from ._validation import _positive_integer, _points, _predictions
 from .estimation import EnrichmentEstimator, EnrichmentResult
 from .results import ReliabilityEstimate
 
+__all__ = ["ImportanceSamplingDiagnostics", "ImportanceSamplingEstimator"]
+
 
 @dataclass(frozen=True)
 class ImportanceSamplingDiagnostics:

@@ -1,0 +1,5 @@
+"""Signpost for a module path that moved in PySTRA 2.0 (generated)."""
+
+raise ImportError(
+    "pystra.ls moved to pystra.reliability.line_sampling in PySTRA 2.0. See https://pystra.github.io/pystra/migrating.html#moved-modules"
+)

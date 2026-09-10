@@ -44,3 +44,12 @@ __all__ = [
     "GEVMin",
     "ShiftedLognormal",
 ]
+
+from .._signposts import DISTRIBUTIONS as _SIGNPOSTS
+
+
+def __getattr__(name):
+    """Name the replacement when code uses a 1.x distribution name or module."""
+    if name in _SIGNPOSTS:
+        raise AttributeError(_SIGNPOSTS[name])
+    raise AttributeError(f"module 'pystra.distributions' has no attribute {name!r}")

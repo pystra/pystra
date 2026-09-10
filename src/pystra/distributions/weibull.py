@@ -6,6 +6,8 @@ import scipy.optimize as opt
 import scipy.special as spec
 from .distribution import Distribution
 
+__all__ = ["Weibull"]
+
 
 class Weibull(Distribution):
     """Weibull distribution: the Type III extreme value distribution for minima.

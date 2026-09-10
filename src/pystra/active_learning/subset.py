@@ -17,6 +17,8 @@ from ._validation import _positive_integer, _predictions
 from .estimation import EnrichmentEstimator, EnrichmentResult
 from .results import ReliabilityEstimate
 
+__all__ = ["SubsetLevel", "SubsetRun", "SubsetSimulationEstimator"]
+
 
 @dataclass(frozen=True)
 class SubsetLevel:

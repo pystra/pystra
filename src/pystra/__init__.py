@@ -34,50 +34,167 @@ Quick start::
 
 __version__ = "2.0.0.dev0"
 
-# Distributions
-from .distributions import *
-from .dependence.correlation import CorrelationMatrix
-from .dependence.copula import *
-from .dependence.joint import *
+from .distributions import (
+    Distribution,
+    StdNormal,
+    Normal,
+    Lognormal,
+    Uniform,
+    Beta,
+    Gamma,
+    ChiSquare,
+    ShiftedExponential,
+    ShiftedLognormal,
+    ShiftedRayleigh,
+    Gumbel,
+    GumbelMin,
+    Frechet,
+    Weibull,
+    GEV,
+    GEVmax,
+    GEVMin,
+    Maximum,
+    MaxParent,
+    ZeroInflated,
+    ScipyDist,
+    Constant,
+)
+from .dependence import (
+    CorrelationMatrix,
+    JointDistribution,
+    GaussianCopula,
+    StudentTCopula,
+    FrankCopula,
+    IndependentCopula,
+    Transformation,
+)
+from .model import (
+    StochasticModel,
+    LimitState,
+)
+from .reliability import (
+    AnalysisObject,
+    AnalysisOptions,
+    FORM,
+    SORM,
+    MonteCarlo,
+    CrudeMonteCarlo,
+    ImportanceSampling,
+    DistributionAnalysis,
+    LineSampling,
+    SubsetSimulation,
+    SensitivityAnalysis,
+    SystemFORM,
+    StrongMaximumTest,
+)
+from .results import (
+    FORMResult,
+)
+from .systems import (
+    Component,
+    System,
+    SeriesSystem,
+    ParallelSystem,
+    CutSetSystem,
+    TieSetSystem,
+    KOfNSystem,
+    ditlevsen_bounds,
+)
+from .loads import (
+    FBCProcess,
+    VariableRoles,
+    LoadCombination,
+)
+from .active_learning import (
+    ActiveLearning,
+    ActiveLearningResult,
+)
+from . import calibration, decision, plotting
+from ._signposts import TOP_LEVEL as _SIGNPOSTS
 
-# Inputparameter
-from .model import *
+__all__ = [
+    "Distribution",
+    "StdNormal",
+    "Normal",
+    "Lognormal",
+    "Uniform",
+    "Beta",
+    "Gamma",
+    "ChiSquare",
+    "ShiftedExponential",
+    "ShiftedLognormal",
+    "ShiftedRayleigh",
+    "Gumbel",
+    "GumbelMin",
+    "Frechet",
+    "Weibull",
+    "GEV",
+    "GEVmax",
+    "GEVMin",
+    "Maximum",
+    "MaxParent",
+    "ZeroInflated",
+    "ScipyDist",
+    "Constant",
+    "CorrelationMatrix",
+    "JointDistribution",
+    "GaussianCopula",
+    "StudentTCopula",
+    "FrankCopula",
+    "IndependentCopula",
+    "Transformation",
+    "StochasticModel",
+    "LimitState",
+    "AnalysisObject",
+    "AnalysisOptions",
+    "FORM",
+    "SORM",
+    "MonteCarlo",
+    "CrudeMonteCarlo",
+    "ImportanceSampling",
+    "DistributionAnalysis",
+    "LineSampling",
+    "SubsetSimulation",
+    "SensitivityAnalysis",
+    "SystemFORM",
+    "StrongMaximumTest",
+    "FORMResult",
+    "Component",
+    "System",
+    "SeriesSystem",
+    "ParallelSystem",
+    "CutSetSystem",
+    "TieSetSystem",
+    "KOfNSystem",
+    "ditlevsen_bounds",
+    "FBCProcess",
+    "VariableRoles",
+    "LoadCombination",
+    "ActiveLearning",
+    "ActiveLearningResult",
+]
 
-# Analysis
-from .reliability.analysis import *
-from .results import FORMResult
-from .reliability.form import *
-from .reliability.monte_carlo import *
-from .reliability.importance_sampling import *
-from .reliability.sorm import *
-from .reliability.line_sampling import *
-from .reliability.subset_simulation import *
-from .reliability.sensitivity import *
-from .systems import *
-from .reliability.system_form import *
-from .reliability.strong_maximum import *
-
-# Calibration
-from .loads import *
-from .calibration import *
-
-# Design decision optimization
-from .decision import ddo
-from .decision.ddo import (
-    CostBenefitModel,
-    DDO,
-    DDOCriterion,
-    DDOObjective,
-    DesignStudy,
-    FatalityConsequence,
-    LQI,
-    RackwitzTargetModel,
-    RiskResult,
-    RiskStudy,
-    ScenarioRiskModel,
-    SWTP,
-    TargetReliability,
+_SUBPACKAGES = (
+    "calibration",
+    "decision",
+    "dependence",
+    "reliability",
+    "loads",
+    "systems",
+    "active_learning",
+    "distributions",
+    "plotting",
 )
 
-# Figure helpers accept existing axes and never display figures implicitly.
-from . import plotting
+
+def __getattr__(name):
+    """Name the replacement when code uses a 1.x name, a moved module or a subpackage name."""
+    if name in _SIGNPOSTS:
+        raise AttributeError(_SIGNPOSTS[name])
+    if not name.startswith("__"):
+        for sub in _SUBPACKAGES:
+            if name in getattr(globals()[sub], "__all__", ()):
+                raise AttributeError(
+                    f"{name} is not exported from pystra; import it from pystra.{sub}"
+                )
+    raise AttributeError(f"module 'pystra' has no attribute {name!r}")

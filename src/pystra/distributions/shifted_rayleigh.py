@@ -6,6 +6,8 @@ from scipy.stats import rayleigh
 
 from .distribution import Distribution
 
+__all__ = ["ShiftedRayleigh"]
+
 
 class ShiftedRayleigh(Distribution):
     """Shifted Rayleigh distribution

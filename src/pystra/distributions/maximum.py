@@ -5,6 +5,8 @@ import numpy as np
 
 from .distribution import Distribution
 
+__all__ = ["Maximum"]
+
 
 class Maximum(Distribution):
     """Distribution of maximima from the passed in parent distribution

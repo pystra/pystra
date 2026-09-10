@@ -4,6 +4,8 @@ from scipy.stats import lognorm
 from .distribution import Distribution
 from .lognormal import Lognormal
 
+__all__ = ["ShiftedLognormal"]
+
 
 class ShiftedLognormal(Lognormal):
     """Shifted Lognormal distribution

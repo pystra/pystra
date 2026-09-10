@@ -7,6 +7,8 @@ import scipy.optimize as opt
 import scipy.special as spec
 from .distribution import Distribution
 
+__all__ = ["Frechet"]
+
 
 class Frechet(Distribution):
     """Fréchet distribution: the Type II extreme value distribution for maxima.

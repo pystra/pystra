@@ -16,6 +16,15 @@ import numpy as np
 from ._pce import _multi_indices, _hermite_basis, _fit_lars, _fit_ols
 from ._validation import _positive_integer, _points, _training
 
+__all__ = [
+    "Surrogate",
+    "KrigingSurrogate",
+    "PCECandidate",
+    "PCEFitResult",
+    "EnsembleSurrogate",
+    "PCESurrogate",
+]
+
 
 class Surrogate(ABC):
     """Predict a scalar limit state in independent standard normal space.

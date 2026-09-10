@@ -5,6 +5,8 @@ from scipy.stats import gamma
 
 from .distribution import Distribution
 
+__all__ = ["Gamma"]
+
 
 class Gamma(Distribution):
     """Gamma distribution

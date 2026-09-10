@@ -8,6 +8,8 @@ from scipy.stats import norm as scipy_norm
 from .analysis import AnalysisObject
 from .form import FORM
 
+__all__ = ["LineSampling"]
+
 
 class LineSampling(AnalysisObject):
     r"""Line Sampling (LS) reliability analysis.

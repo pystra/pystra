@@ -6,6 +6,8 @@ from scipy import special as sp
 import matplotlib.pyplot as plt
 from scipy.stats._distn_infrastructure import rv_frozen
 
+__all__ = ["StdNormal", "Constant", "Distribution"]
+
 
 class StdNormal:
     """Standard normal distribution (mean 0, standard deviation 1).

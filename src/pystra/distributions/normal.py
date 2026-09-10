@@ -5,6 +5,8 @@ import numpy as np
 
 from .distribution import Distribution
 
+__all__ = ["Normal"]
+
 
 class Normal(Distribution):
     """Normal distribution

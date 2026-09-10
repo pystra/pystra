@@ -68,7 +68,7 @@ they are not confidence intervals or bounds on the true failure probability.
 The history plot retains the stopping status and shows exploratory estimates.
 The independent final estimate remains available on the result object.
 
-For code-calibration envelopes, use the existing ``ra.plot_calibration`` helper.
+For code-calibration envelopes, use the existing ``ra.calibration.plot_calibration`` helper.
 See :doc:`notebooks/ex_generic_calibration` for factor comparisons.
 
 The :doc:`api/plotting` reference gives input shapes, coordinate conventions and

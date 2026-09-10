@@ -98,6 +98,11 @@ Changed
   ``systems`` and low-level numerical helpers made private. Load processes and
   load combinations share ``pystra.loads``, and ``ImportanceSampling`` has its
   own module. See the migration guide for moved module paths.
+- The top-level namespace is curated (59 names in ``pystra.__all__``) and every
+  module declares ``__all__``. Code-calibration and decision tools, new in 2.0,
+  are imported from ``pystra.calibration`` and ``pystra.decision``;
+  ``ActiveLearning`` is exported at the top level. Old names and module paths
+  raise errors that name their replacements.
 - Removed the stateful ``Calibration`` class in favor of explicit target solving,
   factor derivation, selection, design and verification operations.
 - ``LoadCombination`` stores explicit cases and roles; separate evaluation and

@@ -5,6 +5,8 @@ from scipy.stats import chi2
 
 from .distribution import Distribution
 
+__all__ = ["ChiSquare"]
+
 
 class ChiSquare(Distribution):
     """Chi-Square distribution

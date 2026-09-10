@@ -5,6 +5,8 @@ from scipy.stats import uniform
 
 from .distribution import Distribution
 
+__all__ = ["Uniform"]
+
 
 class Uniform(Distribution):
     """Uniform distribution

@@ -6,6 +6,8 @@ from scipy.stats import rv_continuous
 
 from .distribution import Distribution
 
+__all__ = ["ScipyDist"]
+
 
 class ScipyDist(Distribution):
     """Distribution wrapper for a frozen Scipy Stats Distribution object

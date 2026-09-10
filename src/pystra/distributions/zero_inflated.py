@@ -3,6 +3,8 @@
 import numpy as np
 from .distribution import Distribution
 
+__all__ = ["ZeroInflated"]
+
 
 class ZeroInflated(Distribution):
     """

@@ -29,6 +29,8 @@ from .estimation import (
 from .stopping import StoppingCriterion, LearningThreshold, BootstrapBounds
 from .results import ActiveLearningResult, LearningStep, ReliabilityEstimate
 
+__all__ = ["ActiveLearning"]
+
 
 class ActiveLearning(AnalysisObject):
     """Enrich a surrogate in independent normal coordinates, then estimate Pf.

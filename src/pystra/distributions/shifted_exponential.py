@@ -5,6 +5,8 @@ from scipy.stats import expon
 
 from .distribution import Distribution
 
+__all__ = ["ShiftedExponential"]
+
 
 class ShiftedExponential(Distribution):
     """Shifted exponential distribution

@@ -6,6 +6,8 @@ from scipy.stats import gumbel_l, gumbel_r as gumbel
 
 from .distribution import Distribution
 
+__all__ = ["Gumbel", "GumbelMin"]
+
 
 class Gumbel(Distribution):
     """Gumbel distribution for maxima: the Type I extreme value distribution.

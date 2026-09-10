@@ -63,7 +63,8 @@ Implemented naming changes
 --------------------------
 
 Functions and methods now use snake_case. Inconsistent class names follow the
-project's CapWords convention. Apart from ``GEVmax``, there are no aliases for the replaced names.
+project's CapWords convention. Apart from ``GEVmax``, there are no aliases for the replaced names; old names
+and module paths raise errors that name their replacements (see :ref:`signposts`).
 Modules moved into subpackages (see :ref:`moved-modules`). Calibration is now a package
 with explicit exports; its structural changes are described below.
 
@@ -73,8 +74,8 @@ Renamed classes
 ~~~~~~~~~~~~~~~
 
 The classes below were renamed in 2.0. Apart from ``GEVmax``, which remains an
-alias for ``GEV``, there are no aliases, so a 1.x import of an old name raises
-``ImportError``. ``TypeIlargestValue`` and ``TypeIIIsmallestValue`` duplicated
+alias for ``GEV``, there are no aliases; an old name raises an error that names its replacement
+(see :ref:`signposts`). ``TypeIlargestValue`` and ``TypeIIIsmallestValue`` duplicated
 ``Gumbel`` and ``Weibull`` exactly, so those classes are removed and the
 existing names used instead.
 
@@ -160,6 +161,48 @@ to ``pystra.dependence``; ``system_form`` and ``strong_maximum`` to
 ``pystra.decision``; and ``fbc`` into ``pystra.loads``. Distribution modules with compound names now use
 snake_case, for example ``pystra.distributions.shifted_lognormal``; import
 the classes themselves from ``pystra`` or ``pystra.distributions``.
+
+.. _top-level-namespace:
+
+Top-level namespace
+~~~~~~~~~~~~~~~~~~~
+
+``import pystra`` gives the everyday modelling classes, distributions,
+dependence models, reliability methods, systems, load processes and result
+types: 59 names, listed in ``pystra.__all__``. Every module declares its own
+``__all__``, and nothing else leaks into the namespace. Specialised workflow
+tools are imported from their subpackage:
+
+- code calibration: ``pystra.calibration`` (``CodeCalibration``,
+  ``solve_designs``, ``derive_factors`` and so on);
+- design decisions and target reliability: ``pystra.decision`` (``DDO``,
+  ``LQI``, ``SWTP``, ``TargetReliability`` and so on);
+- active-learning components: ``pystra.active_learning``. ``ActiveLearning``
+  itself is also available as ``pystra.ActiveLearning``.
+
+These tools are new in 2.0. Using one of their names at the top level raises
+an error that names the subpackage to import it from.
+
+.. _signposts:
+
+Signposts for old names
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Apart from ``GEVmax``, 2.0 keeps no aliases for replaced names, but it tells you
+where each one went:
+
+- ``pystra.Form`` and every other 1.x name raise an ``AttributeError`` that
+  names the replacement, for example "PySTRA 2.0 renamed Form to FORM: use
+  pystra.FORM".
+- ``import pystra.form`` and ``from pystra.form import ...`` raise an
+  ``ImportError`` that names the new module.
+- ``from pystra import Form`` raises Python's own ``ImportError``: Python
+  replaces a package's message with its generic one for this form of import.
+  It adds a "Did you mean" suggestion when the new name is similar, as it is
+  for ``FORM``.
+
+The messages are generated from the migration records by
+``scripts/generate_signposts.py``. They will be removed in 3.0.
 
 .. list-table:: Representative changes
    :header-rows: 1
@@ -277,23 +320,23 @@ For example::
     from dataclasses import replace
     import pystra as ra
 
-    model = ra.NormalizedReliabilityModel(
+    model = ra.calibration.NormalizedReliabilityModel(
         resistance=ra.Lognormal("R", 1, 0.08),
         dead_load=ra.Normal("G", 1, 0.08),
         permanent_load=ra.Normal("P", 1, 0.10),
         live_load=ra.Normal("Q", 1, 0.10),
         resistance_error=ra.Lognormal("w_R", 1, 0.05),
         load_error=ra.Lognormal("w_S", 1, 0.10),
-        nominal_values=ra.NominalValues(1, 1, 1, 1),
+        nominal_values=ra.calibration.NominalValues(1, 1, 1, 1),
     )
-    factors = ra.CodeFactors(phi=0.8, gamma_g=1.2, gamma_p=1.5, gamma_q=1.6)
-    study = ra.CodeCalibration(
+    factors = ra.calibration.CodeFactors(phi=0.8, gamma_g=1.2, gamma_p=1.5, gamma_q=1.6)
+    study = ra.calibration.CodeCalibration(
         live_load_ratios=[0.2, 0.5, 0.8], dead_load_ratios=[0, 0.5, 1]
     )
     current = study.run(model, factors, target_beta=3.8)
     proposed = study.run(model, replace(factors, phi=0.9), target_beta=3.8)
     print(current.to_frame())
-    fig, ax = ra.plot_calibration(
+    fig, ax = ra.calibration.plot_calibration(
         {"Current": current, "Proposed": proposed}, target_beta=3.8
     )
 
@@ -346,16 +389,16 @@ Partial and combination factor calibration
 The old ``Calibration`` object is removed, without an alias. Its hidden sequence
 of mutable DataFrame attributes is replaced by independently usable operations::
 
-    problem = ra.FactorCalibrationProblem(
+    problem = ra.calibration.FactorCalibrationProblem(
         cases, nominal_values=nominal_values, design_parameter="scale"
     )
-    targets = ra.solve_designs(problem, target_beta=4.3, method="root")
-    factors = ra.derive_factors(targets, method="matrix")
-    selected = ra.select_factors(
+    targets = ra.calibration.solve_designs(problem, target_beta=4.3, method="root")
+    factors = ra.calibration.derive_factors(targets, method="matrix")
+    selected = ra.calibration.select_factors(
         factors, resistance="minimum", loads="maximum", combinations="maximum"
     )
-    designs = ra.design_with_factors(problem, selected)
-    checks = ra.verify_designs(problem, max(designs.values), target_beta=4.3)
+    designs = ra.calibration.design_with_factors(problem, selected)
+    checks = ra.calibration.verify_designs(problem, max(designs.values), target_beta=4.3)
 
 Here ``cases`` is a ``LoadCombination`` with explicit roles, leading actions,
 a limit state and a common ``Constant("scale", ...)``. ``nominal_values`` maps

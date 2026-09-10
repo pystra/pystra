@@ -152,7 +152,10 @@ python -m pytest -q
 Run Black on changed Python files and include formatting in the appropriate
 commit. Black remains the formatter during migration. Run
 `python scripts/api_inventory.py --check-names --check-migration` for naming,
-baseline API coverage, and current calibration signature checks. Update the
+baseline API coverage, and current calibration signature checks. After changing
+the migration records or the top-level namespace, run
+`python scripts/generate_signposts.py`; the tests check that the signposts are
+current. Update the
 reviewed migration records alongside contract changes; historical naming maps
 are not the current calibration API. Remaining attribute/parameter cleanup and
 import enforcement remain later stages; existing legacy fields are not a precedent for new code.

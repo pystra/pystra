@@ -6,6 +6,8 @@ from scipy.stats import beta
 import scipy.optimize as opt
 from .distribution import Distribution
 
+__all__ = ["Beta"]
+
 
 class Beta(Distribution):
     """Beta distribution

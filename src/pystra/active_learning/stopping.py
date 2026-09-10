@@ -12,6 +12,15 @@ import numpy as np
 from ._validation import _positive_integer
 from .results import LearningStep, ReliabilityEstimate
 
+__all__ = [
+    "StoppingCriterion",
+    "LearningThreshold",
+    "BetaBounds",
+    "BetaStability",
+    "AllCriteria",
+    "BootstrapBounds",
+]
+
 
 class StoppingCriterion(ABC):
     """Separate surrogate convergence from final sampling precision.

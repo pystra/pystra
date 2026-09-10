@@ -8,6 +8,17 @@ from scipy.stats import norm
 
 from ._validation import _predictions, _positive_integer
 
+__all__ = [
+    "LearningDecision",
+    "LearningFunction",
+    "UFunction",
+    "ExpectedFeasibility",
+    "learning_u",
+    "learning_eff",
+    "EnsembleLearningFunction",
+    "FBRLearning",
+]
+
 
 @dataclass(frozen=True)
 class LearningDecision:

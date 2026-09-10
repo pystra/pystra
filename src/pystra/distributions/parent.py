@@ -7,6 +7,8 @@ import scipy.optimize as opt
 
 from .distribution import Distribution
 
+__all__ = ["MaxParent"]
+
 
 class MaxParent(Distribution):
     """Parent distribution of the provided distribution which represents

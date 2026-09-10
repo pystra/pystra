@@ -1,0 +1,163 @@
+"""Generate PySTRA's migration signposts from the records in docs/migration.
+
+Writes ``src/pystra/_signposts.py``, which holds the messages ``pystra`` and
+``pystra.distributions`` raise for 1.x names and module attributes that moved,
+and a stub module at each released 1.x module path that moved in 2.0. Run it
+after changing the migration records or the top-level namespace; ``--check``
+reports whether the generated files are current.
+"""
+
+import argparse
+import importlib
+import json
+import pathlib
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+GUIDE = "https://pystra.github.io/pystra/migrating.html"
+SUBPACKAGES = (
+    "calibration",
+    "decision",
+    "dependence",
+    "reliability",
+    "loads",
+    "systems",
+    "active_learning",
+    "distributions",
+    "plotting",
+)
+
+
+def resolve(qualname):
+    parts = qualname.split(".")
+    for i in range(len(parts) - 1, 0, -1):
+        try:
+            obj = importlib.import_module(".".join(parts[:i]))
+        except ImportError:
+            continue
+        for attr in parts[i:]:
+            obj = getattr(obj, attr)
+        return obj
+    raise LookupError(qualname)
+
+
+def locate(qualname, pystra):
+    """Public import path of a 2.0 definition, or None when it is private."""
+    name, obj = qualname.rsplit(".", 1)[1], resolve(qualname)
+    if name in pystra.__all__ and vars(pystra).get(name) is obj:
+        return f"pystra.{name}"
+    for sub in SUBPACKAGES:
+        module = importlib.import_module(f"pystra.{sub}")
+        if name in getattr(module, "__all__", ()) and vars(module).get(name) is obj:
+            return f"pystra.{sub}.{name}"
+    return None if "._" in qualname else qualname
+
+
+def join(items):
+    return items[0] if len(items) == 1 else ", ".join(items[:-1]) + " and " + items[-1]
+
+
+def name_message(old, entry, pystra):
+    if entry["current"]:
+        new = entry["current"]
+        new_name, where = new.rsplit(".", 1)[1], locate(new, pystra)
+        if where is None:
+            return f"PySTRA 2.0 made {old} private ({new}); it is not part of the public API. See {GUIDE}"
+        verb = f"renamed {old} to {new_name}" if new_name != old else f"moved {old}"
+        return f"PySTRA 2.0 {verb}: use {where}. See {GUIDE}"
+    replacements = [locate(r, pystra) or r for r in entry.get("replacements", [])]
+    if entry["status"] == "replaced" and replacements:
+        same = (
+            " (an identical distribution)"
+            if "Identical" in entry.get("notes", "")
+            else ""
+        )
+        return f"PySTRA 2.0 replaced {old} with {join(replacements)}{same}. See {GUIDE}"
+    return f"PySTRA 2.0 removed {old}. See {GUIDE}"
+
+
+def module_message(module):
+    old, new = module["old"], module["new"]
+    if not module["public"]:
+        text = f"{old} is private in PySTRA 2.0 ({new}) and not part of the public API."
+    else:
+        text = f"{old} moved to {new} in PySTRA 2.0." + (
+            f" {module['note']}" if module.get("note") else ""
+        )
+    return f"{text} See {GUIDE}#moved-modules"
+
+
+def generate():
+    sys.path.insert(0, str(ROOT / "src"))
+    pystra = importlib.import_module("pystra")
+    distributions = importlib.import_module("pystra.distributions")
+    records = ROOT / "docs/migration"
+    read = lambda name: json.loads((records / name).read_text(encoding="utf-8"))
+    migration = {e["old"]: e for e in read("api-migration.json")["definitions"]}
+    old_names = dict(read("api-baseline.json")["observed_exports"]["pystra"])
+    old_names.update(read("v1-top-level.json")["names"])
+    top, dist = {}, {}
+    for old, qualname in sorted(old_names.items()):
+        if not qualname.startswith("pystra.") or qualname not in migration:
+            continue
+        message = name_message(old, migration[qualname], pystra)
+        if old not in vars(pystra):
+            top[old] = message
+        if qualname.startswith("pystra.distributions.") and old not in vars(
+            distributions
+        ):
+            dist[old] = message
+    stubs = {}
+    for module in read("module-map.json")["modules"]:
+        parent, _, attr = module["old"].rpartition(".")
+        if parent == "pystra" and attr not in vars(pystra):
+            top[attr] = module_message(module)
+            if module["released"]:
+                stubs[ROOT / "src/pystra" / f"{attr}.py"] = (
+                    '"""Signpost for a module path that moved in PySTRA 2.0 (generated)."""\n\n'
+                    f"raise ImportError(\n    {json.dumps(module_message(module))}\n)\n"
+                )
+        elif parent == "pystra.distributions" and attr not in vars(distributions):
+            dist[attr] = module_message(module)
+    body = lambda d: "".join(
+        f"    {json.dumps(k)}: {json.dumps(v)},\n" for k, v in sorted(d.items())
+    )
+    signposts = (
+        '"""Messages for names and module paths that moved or were renamed in PySTRA 2.0.\n\n'
+        "Generated by scripts/generate_signposts.py from docs/migration; do not edit.\n"
+        '"""\n\nTOP_LEVEL = {\n'
+        + body(top)
+        + "}\n\nDISTRIBUTIONS = {\n"
+        + body(dist)
+        + "}\n"
+    )
+    return {ROOT / "src/pystra/_signposts.py": signposts, **stubs}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--check", action="store_true", help="report stale files instead of writing"
+    )
+    args = parser.parse_args()
+    files = generate()
+    stale = [
+        p
+        for p, text in files.items()
+        if not p.exists() or p.read_text(encoding="utf-8") != text
+    ]
+    if args.check:
+        if stale:
+            raise SystemExit(
+                "Stale signposts; run scripts/generate_signposts.py:\n"
+                + "\n".join(str(p.relative_to(ROOT)) for p in stale)
+            )
+        print(f"Signposts are current ({len(files)} files).")
+        return
+    for path in stale:
+        path.write_text(files[path], encoding="utf-8")
+    print(f"Wrote {len(stale)} of {len(files)} signpost files.")
+
+
+if __name__ == "__main__":
+    main()

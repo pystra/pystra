@@ -7,6 +7,8 @@ from .form import FORM
 from .analysis import AnalysisObject
 from scipy.stats import norm as normal
 
+__all__ = ["SORM"]
+
 
 class SORM(AnalysisObject):
     r"""Second Order Reliability Method (SORM).

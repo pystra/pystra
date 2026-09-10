@@ -6,6 +6,8 @@ import math
 from scipy.stats import lognorm
 from .distribution import Distribution
 
+__all__ = ["Lognormal"]
+
 
 class Lognormal(Distribution):
     """Lognormal distribution

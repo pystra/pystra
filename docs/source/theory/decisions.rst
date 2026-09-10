@@ -40,7 +40,7 @@ scheme, discounting, and the predictive cohort life table
 is named ``work_leisure_parameter``.  This SWTP interpretation is developed in the LQI literature
 [PandeyNathwani2004LQI]_ [PandeyNathwaniLind2006LQI]_ and used by
 Rackwitz for structural reliability optimization and acceptability
-[Rackwitz2002LQI]_.  The ``ra.SWTP.from_lqi`` helper
+[Rackwitz2002LQI]_.  The ``ra.decision.SWTP.from_lqi`` helper
 (:meth:`~pystra.decision.ddo.SWTP.from_lqi`) implements the relationship for
 user-supplied demographic values.
 
@@ -214,14 +214,14 @@ corresponding target classes are approximated as:
      - 4.2
      - :math:`10^{-5}`
 
-For normal studies, ``ra.LQI`` (:class:`~pystra.decision.ddo.LQI`) builds this target
+For normal studies, ``ra.decision.LQI`` (:class:`~pystra.decision.ddo.LQI`) builds this target
 directly from a country SWTP value or a user-supplied SWTP value, expected
 fatalities given failure or an explicit consequence model, and marginal safety
-cost.  ``ra.LQI.lookup_target`` returns the rounded source-table target for a
+cost.  ``ra.decision.LQI.lookup_target`` returns the rounded source-table target for a
 given :math:`K_1`, while the lower-level :func:`~pystra.decision.ddo.lqi_k1` and
 :func:`~pystra.decision.ddo.lqi_target_reliability` helpers remain available in
 :mod:`pystra.decision.ddo`.  When the underlying resistance-demand model should be
-calculated instead of looked up, ``ra.LQI.derive_target`` solves the marginal
+calculated instead of looked up, ``ra.decision.LQI.derive_target`` solves the marginal
 target problem
 
 .. math::
@@ -231,7 +231,7 @@ target problem
    \qquad\mathrm{or}\qquad
    K_1 = -\frac{dP_f(p)}{dp}.
 
-``ra.DDO`` (:class:`~pystra.decision.ddo.DDO`) then evaluates the selected objective and
+``ra.decision.DDO`` (:class:`~pystra.decision.ddo.DDO`) then evaluates the selected objective and
 criterion without changing the underlying stochastic model.  The best feasible
 alternative is obtained with ``DDO.optimize()``; the unconstrained economic
 optimum is available separately as ``DDO.economic_optimum()``.
@@ -254,7 +254,7 @@ is
    \frac{dC(p)}{dp} \ge
    -\mathrm{SWTP}\,N_F\,\frac{dh(p)}{dp}.
 
-``ra.LQI`` exposes these operations as methods such as
+``ra.decision.LQI`` exposes these operations as methods such as
 ``risk_cost``, ``acceptability_margin_at``, and ``acceptability_boundary``.
 The underlying
 :func:`~pystra.decision.ddo.jcss_lqi_risk_cost` and

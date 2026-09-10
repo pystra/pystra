@@ -18,6 +18,8 @@ from ._pce import _hermite_basis
 from ._validation import _positive_integer, _points, _training
 from .surrogates import PCESurrogate, PCEFitResult, Surrogate
 
+__all__ = ["PCKrigingFitResult", "PCKrigingSurrogate"]
+
 
 @dataclass(frozen=True)
 class PCKrigingFitResult:
