@@ -95,8 +95,9 @@ Changed
   ``ScipyDist`` keeps its name. Function and method names use snake_case.
 - Modules are grouped into subpackages: ``pystra.reliability``,
   ``pystra.dependence`` and ``pystra.decision``, with ``system`` renamed
-  ``systems`` and low-level numerical helpers made private. See the migration
-  guide for moved module paths.
+  ``systems`` and low-level numerical helpers made private. Load processes and
+  load combinations share ``pystra.loads``, and ``ImportanceSampling`` has its
+  own module. See the migration guide for moved module paths.
 - Removed the stateful ``Calibration`` class in favor of explicit target solving,
   factor derivation, selection, design and verification operations.
 - ``LoadCombination`` stores explicit cases and roles; separate evaluation and

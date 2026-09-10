@@ -147,7 +147,7 @@ def check_migration(root):
         d
         for d in current
         if d["name"].startswith(
-            ("pystra.calibration.", "pystra.loadcomb.", "pystra.results.")
+            ("pystra.calibration.", "pystra.loads.", "pystra.results.")
         )
         or d["name"] == "pystra.reliability.form.FORM.run"
     ]

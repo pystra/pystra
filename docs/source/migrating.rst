@@ -136,7 +136,8 @@ directly needs the new path.
    * - ``pystra.sorm``
      - ``pystra.reliability.sorm``
    * - ``pystra.mc``
-     - ``pystra.reliability.monte_carlo``
+     - ``pystra.reliability.monte_carlo``; ``ImportanceSampling`` is in
+       ``pystra.reliability.importance_sampling``
    * - ``pystra.ls``
      - ``pystra.reliability.line_sampling``
    * - ``pystra.ss``
@@ -147,6 +148,8 @@ directly needs the new path.
      - ``pystra.dependence.correlation``
    * - ``pystra.transformation``
      - ``pystra.dependence.transformation``
+   * - ``pystra.loadcomb``
+     - ``pystra.loads``
    * - ``pystra.integration``, ``pystra.quadrature``,
        ``pystra.cholesky_sensitivity``
      - Private numerical helpers in ``pystra._numerics``; no longer public
@@ -154,7 +157,7 @@ directly needs the new path.
 Modules added during 2.0 development moved with them: ``copula`` and ``joint``
 to ``pystra.dependence``; ``system_form`` and ``strong_maximum`` to
 ``pystra.reliability``; ``system`` to ``pystra.systems``; ``ddo`` to
-``pystra.decision``. Distribution modules with compound names now use
+``pystra.decision``; and ``fbc`` into ``pystra.loads``. Distribution modules with compound names now use
 snake_case, for example ``pystra.distributions.shifted_lognormal``; import
 the classes themselves from ``pystra`` or ``pystra.distributions``.
 

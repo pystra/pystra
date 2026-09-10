@@ -20,10 +20,10 @@
       "pystra.calibration.factors.verify_designs"
     ],
     "probabilistic_cases": [
-      "pystra.loadcomb.LoadCombination",
-      "pystra.loadcomb.VariableRoles",
-      "pystra.loadcomb.LoadCombination.from_actions",
-      "pystra.loadcomb.LoadCombination.turkstra",
+      "pystra.loads.LoadCombination",
+      "pystra.loads.VariableRoles",
+      "pystra.loads.LoadCombination.from_actions",
+      "pystra.loads.LoadCombination.turkstra",
       "pystra.calibration.factors.analyze_case"
     ],
     "form_run": [
@@ -468,14 +468,61 @@
       "returns": null
     },
     {
-      "name": "pystra.loadcomb._variables",
+      "name": "pystra.loads.FBCProcess",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "basic_interval",
+        "name",
+        "parent"
+      ]
+    },
+    {
+      "name": "pystra.loads.FBCProcess.__init__",
+      "kind": "callable",
+      "signature": "(self, name, parent, basic_interval)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loads.FBCProcess.from_maximum",
+      "kind": "callable",
+      "signature": "(cls, name, maximum, maximum_duration, basic_interval)",
+      "decorators": [
+        "classmethod"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.loads.FBCProcess.interval_count",
+      "kind": "callable",
+      "signature": "(self, duration=None, n=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loads.FBCProcess.point_in_time",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loads.FBCProcess.maximum",
+      "kind": "callable",
+      "signature": "(self, duration=None, n=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loads._variables",
       "kind": "callable",
       "signature": "(values, *, processes=False)",
       "decorators": [],
       "returns": null
     },
     {
-      "name": "pystra.loadcomb.VariableRoles",
+      "name": "pystra.loads.VariableRoles",
       "kind": "class",
       "bases": [],
       "attributes": [
@@ -485,14 +532,14 @@
       ]
     },
     {
-      "name": "pystra.loadcomb.VariableRoles.__post_init__",
+      "name": "pystra.loads.VariableRoles.__post_init__",
       "kind": "callable",
       "signature": "(self)",
       "decorators": [],
       "returns": null
     },
     {
-      "name": "pystra.loadcomb.VariableRoles.names",
+      "name": "pystra.loads.VariableRoles.names",
       "kind": "callable",
       "signature": "(self)",
       "decorators": [
@@ -501,7 +548,7 @@
       "returns": "Tuple[str, ...]"
     },
     {
-      "name": "pystra.loadcomb.LoadCombination",
+      "name": "pystra.loads.LoadCombination",
       "kind": "class",
       "bases": [],
       "attributes": [
@@ -514,14 +561,14 @@
       ]
     },
     {
-      "name": "pystra.loadcomb.LoadCombination.__init__",
+      "name": "pystra.loads.LoadCombination.__init__",
       "kind": "callable",
       "signature": "(self, *, cases: Mapping[str, _Variables], limit_state: Optional[Callable]=None, constants: Optional[_Variables]=None, roles: Optional[VariableRoles]=None, leading_actions: Optional[Mapping[str, Sequence[str]]]=None, correlation=None)",
       "decorators": [],
       "returns": "None"
     },
     {
-      "name": "pystra.loadcomb.LoadCombination.case_names",
+      "name": "pystra.loads.LoadCombination.case_names",
       "kind": "callable",
       "signature": "(self)",
       "decorators": [
@@ -530,7 +577,7 @@
       "returns": "Tuple[str, ...]"
     },
     {
-      "name": "pystra.loadcomb.LoadCombination.cases",
+      "name": "pystra.loads.LoadCombination.cases",
       "kind": "callable",
       "signature": "(self)",
       "decorators": [
@@ -539,7 +586,7 @@
       "returns": "dict"
     },
     {
-      "name": "pystra.loadcomb.LoadCombination.constants",
+      "name": "pystra.loads.LoadCombination.constants",
       "kind": "callable",
       "signature": "(self)",
       "decorators": [
@@ -548,7 +595,7 @@
       "returns": "dict"
     },
     {
-      "name": "pystra.loadcomb.LoadCombination.leading_actions",
+      "name": "pystra.loads.LoadCombination.leading_actions",
       "kind": "callable",
       "signature": "(self)",
       "decorators": [
@@ -557,21 +604,21 @@
       "returns": "Mapping[str, Tuple[str, ...]]"
     },
     {
-      "name": "pystra.loadcomb.LoadCombination.case",
+      "name": "pystra.loads.LoadCombination.case",
       "kind": "callable",
       "signature": "(self, case_name: Optional[str]=None)",
       "decorators": [],
       "returns": "dict"
     },
     {
-      "name": "pystra.loadcomb.LoadCombination.stochastic_model",
+      "name": "pystra.loads.LoadCombination.stochastic_model",
       "kind": "callable",
       "signature": "(self, case_name: Optional[str]=None, *, overrides: Optional[_Variables]=None)",
       "decorators": [],
       "returns": "StochasticModel"
     },
     {
-      "name": "pystra.loadcomb.LoadCombination.from_actions",
+      "name": "pystra.loads.LoadCombination.from_actions",
       "kind": "callable",
       "signature": "(cls, *, maxima: Mapping[str, Distribution], companions: Mapping[str, Distribution], resistance: _Variables, other: Optional[_Variables]=None, constants: Optional[_Variables]=None, leading_actions: Optional[Mapping[str, Sequence[str]]]=None, limit_state: Optional[Callable]=None, correlation=None)",
       "decorators": [
@@ -580,7 +627,7 @@
       "returns": "'LoadCombination'"
     },
     {
-      "name": "pystra.loadcomb.LoadCombination.turkstra",
+      "name": "pystra.loads.LoadCombination.turkstra",
       "kind": "callable",
       "signature": "(cls, variable: Mapping[str, FBCProcess], reference_period: float, *, limit_state: Optional[Callable]=None, resistance: Optional[_Variables]=None, permanent: Optional[_Variables]=None, other: Optional[_Variables]=None, constants: Optional[_Variables]=None, correlation=None, companion_duration: Union[str, float]='leading_interval')",
       "decorators": [

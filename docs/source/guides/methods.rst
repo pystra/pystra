@@ -21,7 +21,7 @@ approximation. Use an independent reference or a second method where feasible.
    * - :class:`~pystra.reliability.monte_carlo.CrudeMonteCarlo`
      - Affordable evaluations; a direct check on the physical failure event.
      - Enough observed failures and reported sampling precision.
-   * - :class:`~pystra.reliability.monte_carlo.ImportanceSampling`
+   * - :class:`~pystra.reliability.importance_sampling.ImportanceSampling`
      - A FORM design point identifies an important failure region.
      - Proposal coverage, weight variability and regions away from that point.
    * - :class:`~pystra.reliability.line_sampling.LineSampling`

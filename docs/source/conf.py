@@ -197,12 +197,11 @@ autosummary_context = {
             "ex_generic_calibration",
             "code_calibration",
         ),
-        "loadcomb": (
+        "loads": (
             "guides/calibration",
             "ex_generic_calibration",
             "code_calibration",
         ),
-        "fbc": ("guides/calibration", "ex_generic_calibration", "code_calibration"),
         "active_learning": ("active_learning", "ex_active_learning", "active_learning"),
         "plotting": ("plotting", "ex_generic_calibration", "code_calibration"),
         "results": ("guides/methods", "ex_intro", "design_point_methods"),

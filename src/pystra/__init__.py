@@ -48,6 +48,7 @@ from .reliability.analysis import *
 from .results import FORMResult
 from .reliability.form import *
 from .reliability.monte_carlo import *
+from .reliability.importance_sampling import *
 from .reliability.sorm import *
 from .reliability.line_sampling import *
 from .reliability.subset_simulation import *
@@ -57,8 +58,7 @@ from .reliability.system_form import *
 from .reliability.strong_maximum import *
 
 # Calibration
-from .fbc import *
-from .loadcomb import *
+from .loads import *
 from .calibration import *
 
 # Design decision optimization

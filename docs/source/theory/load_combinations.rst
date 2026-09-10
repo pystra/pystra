@@ -48,12 +48,12 @@ rule defines which distributions are placed together in each reliability
 case.  This is the convention followed in Sørensen's notes and common load
 combination examples [Sorensen2004]_ [Faber2009]_.
 
-In Pystra, :class:`~pystra.fbc.FBCProcess` exposes the process distributions:
+In Pystra, :class:`~pystra.loads.FBCProcess` exposes the process distributions:
 ``point_in_time()`` returns the basic-interval parent distribution, and
 ``maximum(duration=...)`` returns a maximum distribution for the requested
-duration.  :meth:`~pystra.loadcomb.LoadCombination.turkstra` then uses those
+duration.  :meth:`~pystra.loads.LoadCombination.turkstra` then uses those
 process objects to create explicit named leading-action cases.  The result is
-still an ordinary :class:`~pystra.loadcomb.LoadCombination`; the generated
+still an ordinary :class:`~pystra.loads.LoadCombination`; the generated
 cases simply make the FBC and Turkstra assumptions visible in the model.
 
 **Use this method:** :doc:`/guides/calibration` · :doc:`/notebooks/ex_load_combinations` · :doc:`/api/calibration`

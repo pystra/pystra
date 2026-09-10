@@ -18,7 +18,7 @@ from scipy.optimize import fsolve, root_scalar
 from ..reliability.analysis import AnalysisOptions
 from ..distributions import Constant, Distribution
 from ..reliability.form import FORM
-from ..loadcomb import LoadCombination
+from ..loads import LoadCombination
 from ..model import LimitState
 from ..results import FORMResult
 

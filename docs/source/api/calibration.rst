@@ -19,9 +19,9 @@ Public entry points
      - Retain nominal values independently of distributions.
    * - :class:`~pystra.calibration.normalized.CodeCalibration`
      - Assess code-conforming designs over load ratios.
-   * - :class:`~pystra.loadcomb.LoadCombination`
+   * - :class:`~pystra.loads.LoadCombination`
      - Define explicit named reliability cases.
-   * - :class:`~pystra.fbc.FBCProcess`
+   * - :class:`~pystra.loads.FBCProcess`
      - Generate leading and companion action distributions.
 
 **Use it:** :doc:`/guides/calibration` · :doc:`/notebooks/ex_generic_calibration` · :doc:`/theory/code_calibration`
@@ -34,6 +34,5 @@ Module details
    :template: custom-module-template.rst
    :recursive:
 
-   pystra.fbc
-   pystra.loadcomb
+   pystra.loads
    pystra.calibration

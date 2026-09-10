@@ -17,7 +17,7 @@ Public entry points
      - Fit local curvature around a converged FORM point.
    * - :class:`~pystra.reliability.monte_carlo.CrudeMonteCarlo`
      - Estimate the physical event by direct sampling.
-   * - :class:`~pystra.reliability.monte_carlo.ImportanceSampling`
+   * - :class:`~pystra.reliability.importance_sampling.ImportanceSampling`
      - Concentrate weighted samples near a FORM point.
    * - :class:`~pystra.reliability.line_sampling.LineSampling`
      - Estimate probability through line intersections.
@@ -42,6 +42,7 @@ Module details
    pystra.results
    pystra.reliability.sorm
    pystra.reliability.monte_carlo
+   pystra.reliability.importance_sampling
    pystra.reliability.line_sampling
    pystra.reliability.subset_simulation
    pystra.reliability.sensitivity
