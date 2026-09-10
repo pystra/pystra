@@ -136,7 +136,7 @@ numerical evidence, rather than a contributor's personal style.
 
 Create a feature branch from the current integration branch. Install in a
 virtual environment. Use Python 3.13 for the documentation/formatting tools;
-the runtime test matrix currently retains Python 3.9 through 3.13:
+the runtime test matrix covers Python 3.12 and 3.13:
 
 For a new conda environment, install Python and Pandoc first. Run the package
 commands from your checkout of `v2.0` (or a feature branch based on it):

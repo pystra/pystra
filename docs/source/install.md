@@ -4,7 +4,7 @@ Installation
 ============
 
 These instructions install **PySTRA** |release| **from the v2.0 branch**, matching
-the API used in these pages. Python 3.9 or later is required for the package;
+the API used in these pages. Python 3.12 or later is required for the package;
 Python 3.13 is used for the documentation tools.
 
 Create an environment
