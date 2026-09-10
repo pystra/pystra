@@ -4,20 +4,20 @@ from .distribution import StdNormal, Constant, Distribution
 from .normal import Normal
 from .lognormal import Lognormal
 from .gamma import Gamma
-from .shiftedexponential import ShiftedExponential
-from .shiftedrayleigh import ShiftedRayleigh
+from .shifted_exponential import ShiftedExponential
+from .shifted_rayleigh import ShiftedRayleigh
 from .uniform import Uniform
 from .beta import Beta
-from .chisquare import ChiSquare
+from .chi_square import ChiSquare
 from .gumbel import Gumbel, GumbelMin
 from .frechet import Frechet
 from .weibull import Weibull
 from .maximum import Maximum
-from .scipydist import ScipyDist
+from .scipy_dist import ScipyDist
 from .parent import MaxParent
-from .zeroinflated import ZeroInflated
+from .zero_inflated import ZeroInflated
 from .gev import GEV, GEVmax, GEVMin
-from .shiftedlognormal import ShiftedLognormal
+from .shifted_lognormal import ShiftedLognormal
 
 __all__ = [
     "StdNormal",

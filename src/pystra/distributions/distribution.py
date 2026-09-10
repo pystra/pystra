@@ -425,7 +425,7 @@ class Distribution:
         r"""Derivatives of mean and standard deviation w.r.t. a parameter.
 
         Returns ``(∂μ/∂θ, ∂σ/∂θ)`` for the parameter named *param*.
-        This is needed by :func:`~pystra.integration.drho0_dtheta` to
+        This is needed by :func:`~pystra._numerics.integration.drho0_dtheta` to
         evaluate the general form of :math:`\partial h/\partial\theta`
         (Eq. 24 of Bourinet 2017).
 

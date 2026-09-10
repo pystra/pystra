@@ -8,7 +8,7 @@ from matplotlib.figure import Figure
 
 from .active_learning import ActiveLearningResult, PCEFitResult, Surrogate
 from .results import FORMResult
-from .strong_maximum import StrongMaximumTest
+from .reliability.strong_maximum import StrongMaximumTest
 
 __all__ = [
     "plot_limit_state",

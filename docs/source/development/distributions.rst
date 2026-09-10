@@ -11,7 +11,7 @@ approaches are available:
   delegates ``pdf``, ``cdf``, ``ppf``, and the Nataf-space
   transformations automatically.
 - **Hardcoded implementation** — override the transformation and
-  Jacobian methods directly (see :class:`~pystra.distributions.zeroinflated.ZeroInflated`
+  Jacobian methods directly (see :class:`~pystra.distributions.zero_inflated.ZeroInflated`
   for an example).  This is useful for distributions
   that cannot be expressed as a single SciPy object.
 

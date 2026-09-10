@@ -13,15 +13,15 @@ Public entry points
      - Purpose
    * - :class:`~pystra.distributions.normal.Normal`
      - Specify a normal marginal by mean and standard deviation.
-   * - :class:`~pystra.distributions.scipydist.ScipyDist`
+   * - :class:`~pystra.distributions.scipy_dist.ScipyDist`
      - Wrap a parameterised SciPy distribution.
-   * - :class:`~pystra.joint.JointDistribution`
+   * - :class:`~pystra.dependence.joint.JointDistribution`
      - Combine marginals with an explicit copula.
-   * - :class:`~pystra.copula.GaussianCopula`
+   * - :class:`~pystra.dependence.copula.GaussianCopula`
      - Specify Gaussian dependence.
-   * - :class:`~pystra.copula.StudentTCopula`
+   * - :class:`~pystra.dependence.copula.StudentTCopula`
      - Specify Student-t dependence and degrees of freedom.
-   * - :class:`~pystra.copula.FrankCopula`
+   * - :class:`~pystra.dependence.copula.FrankCopula`
      - Specify bivariate Frank dependence.
 
 **Use it:** :doc:`/copulas` · :doc:`/notebooks/ex_copulas` · :doc:`/theory/transformations`
@@ -35,9 +35,7 @@ Module details
    :recursive:
 
    pystra.distributions
-   pystra.copula
-   pystra.joint
-   pystra.transformation
-   pystra.correlation
-   pystra.integration
-   pystra.quadrature
+   pystra.dependence.copula
+   pystra.dependence.joint
+   pystra.dependence.transformation
+   pystra.dependence.correlation

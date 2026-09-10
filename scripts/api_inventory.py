@@ -91,7 +91,7 @@ def inventory(root):
     sys.path.insert(0, str(root / "src"))
     package = importlib.import_module("pystra")
     exports = {}
-    for module_name in ("pystra", "pystra.distributions", "pystra.ddo"):
+    for module_name in ("pystra", "pystra.distributions", "pystra.decision.ddo"):
         module = importlib.import_module(module_name)
         exports[module_name] = {
             name: f"{obj.__module__}.{obj.__qualname__}"
@@ -149,7 +149,7 @@ def check_migration(root):
         if d["name"].startswith(
             ("pystra.calibration.", "pystra.loadcomb.", "pystra.results.")
         )
-        or d["name"] == "pystra.form.FORM.run"
+        or d["name"] == "pystra.reliability.form.FORM.run"
     ]
     if structure["definitions"] != expected:
         errors.append("Calibration structure inventory differs from current source")

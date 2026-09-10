@@ -8,7 +8,7 @@ from scipy.stats import multivariate_normal, norm
 
 from .analysis import AnalysisObject
 from .form import FORM
-from .system import Component, SeriesSystem, ParallelSystem, ditlevsen_bounds
+from ..systems import Component, SeriesSystem, ParallelSystem, ditlevsen_bounds
 
 __all__ = ["SystemFORM"]
 

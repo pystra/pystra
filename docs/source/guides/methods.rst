@@ -12,25 +12,25 @@ approximation. Use an independent reference or a second method where feasible.
    * - Method
      - Useful starting point
      - What to check
-   * - :class:`~pystra.form.FORM`
+   * - :class:`~pystra.reliability.form.FORM`
      - Smooth response with a dominant failure region; economical initial study.
      - Convergence, gradients, competing design points and local approximation error.
-   * - :class:`~pystra.sorm.SORM`
+   * - :class:`~pystra.reliability.sorm.SORM`
      - Curvature near a converged FORM design point matters.
      - Curvature and fitting validity; additional failure regions remain a concern.
-   * - :class:`~pystra.mc.CrudeMonteCarlo`
+   * - :class:`~pystra.reliability.monte_carlo.CrudeMonteCarlo`
      - Affordable evaluations; a direct check on the physical failure event.
      - Enough observed failures and reported sampling precision.
-   * - :class:`~pystra.mc.ImportanceSampling`
+   * - :class:`~pystra.reliability.monte_carlo.ImportanceSampling`
      - A FORM design point identifies an important failure region.
      - Proposal coverage, weight variability and regions away from that point.
-   * - :class:`~pystra.ls.LineSampling`
+   * - :class:`~pystra.reliability.line_sampling.LineSampling`
      - A useful direction is available and line intersections can be found.
      - Direction choice, root searches and boundary geometry along lines.
-   * - :class:`~pystra.ss.SubsetSimulation`
+   * - :class:`~pystra.reliability.subset_simulation.SubsetSimulation`
      - Rare events for which direct Monte Carlo is too costly.
      - Threshold progression, chain mixing and variability across independent runs.
-   * - :class:`~pystra.system_form.SystemFORM`
+   * - :class:`~pystra.reliability.system_form.SystemFORM`
      - A system can be described through component limit states and topology.
      - Every component's convergence and a shared transformation; validate the original event.
    * - :class:`~pystra.active_learning.analysis.ActiveLearning`

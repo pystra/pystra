@@ -10,7 +10,7 @@ Name inputs explicitly
 
 Variable and constant names must match the limit-state function's arguments.
 Most PySTRA marginal constructors take the physical mean and standard deviation;
-:class:`~pystra.distributions.scipydist.ScipyDist` instead wraps an already
+:class:`~pystra.distributions.scipy_dist.ScipyDist` instead wraps an already
 parameterised SciPy distribution. Check the relevant distribution's signature.
 
 .. testcode:: model
@@ -39,11 +39,11 @@ Specify dependence before choosing a transformation
 Independent inputs are the simplest starting point. A marginal distribution
 for each input and a correlation matrix alone do not specify every possible
 joint distribution. The traditional Gaussian/Nataf route interprets a
-:class:`~pystra.correlation.CorrelationMatrix` as physical Pearson correlations;
+:class:`~pystra.dependence.correlation.CorrelationMatrix` as physical Pearson correlations;
 its modified normal-space correlations are computed internally.
 
 For a different dependence model, supply a complete
-:class:`~pystra.joint.JointDistribution` with an explicit copula. Copula parameters
+:class:`~pystra.dependence.joint.JointDistribution` with an explicit copula. Copula parameters
 and physical Pearson correlations are different inputs. See :doc:`/copulas` for
 supported transformations and conditioning order, and preserve variable order
 when supplying matrices, samples and gradients.

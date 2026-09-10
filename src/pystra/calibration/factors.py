@@ -15,9 +15,9 @@ from pandas import DataFrame
 import numpy as np
 from scipy.optimize import fsolve, root_scalar
 
-from ..analysis import AnalysisOptions
+from ..reliability.analysis import AnalysisOptions
 from ..distributions import Constant, Distribution
-from ..form import FORM
+from ..reliability.form import FORM
 from ..loadcomb import LoadCombination
 from ..model import LimitState
 from ..results import FORMResult

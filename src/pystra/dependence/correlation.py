@@ -13,7 +13,7 @@ procedure that finds ``Ro`` from ``R`` and the marginal distributions.
 import numpy as np
 import scipy.optimize as opt
 
-from .integration import zi_and_xi, rho_integral
+from .._numerics.integration import zi_and_xi, rho_integral
 
 
 class CorrelationMatrix:

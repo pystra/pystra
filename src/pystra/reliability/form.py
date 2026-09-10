@@ -5,8 +5,8 @@ import numpy as np
 import warnings
 from scipy.stats import norm as normal
 from .analysis import AnalysisObject
-from .results import FORMResult
-from .correlation import set_modified_correlation_matrix
+from ..results import FORMResult
+from ..dependence.correlation import set_modified_correlation_matrix
 
 __all__ = ["FORM"]
 

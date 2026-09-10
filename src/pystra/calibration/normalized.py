@@ -7,10 +7,10 @@ from pandas import DataFrame
 
 import numpy as np
 
-from ..analysis import AnalysisOptions
-from ..copula import Copula
+from ..reliability.analysis import AnalysisOptions
+from ..dependence.copula import Copula
 from ..distributions import Constant, Distribution
-from ..form import FORM
+from ..reliability.form import FORM
 from ..model import LimitState, StochasticModel
 from ..results import FORMResult
 

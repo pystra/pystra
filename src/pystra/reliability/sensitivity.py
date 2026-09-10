@@ -21,8 +21,11 @@ Two methods are available, selected via the ``numerical`` flag of
 
 from .form import FORM
 from .analysis import AnalysisOptions
-from .cholesky_sensitivity import cholesky_with_derivative, inverse_cholesky_gradient
-from .integration import zi_and_xi, drho_drho0, drho0_dtheta
+from .._numerics.cholesky_sensitivity import (
+    cholesky_with_derivative,
+    inverse_cholesky_gradient,
+)
+from .._numerics.integration import zi_and_xi, drho_drho0, drho0_dtheta
 import copy
 import numpy as np
 

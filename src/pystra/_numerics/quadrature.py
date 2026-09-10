@@ -3,7 +3,7 @@
 """Gauss-Legendre quadrature rule for numerical integration.
 
 This module provides the quadrature points and weights used by the
-Nataf correlation integral (see :mod:`pystra.integration`).
+Nataf correlation integral (see :mod:`pystra._numerics.integration`).
 """
 
 import numpy as np

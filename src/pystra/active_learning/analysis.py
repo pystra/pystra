@@ -7,7 +7,7 @@ import warnings
 import numpy as np
 from scipy.stats import norm, qmc
 
-from ..analysis import AnalysisObject
+from ..reliability.analysis import AnalysisObject
 from ._validation import _positive_integer, _points, _training, _predictions
 from .surrogates import Surrogate, KrigingSurrogate, PCESurrogate, EnsembleSurrogate
 from .pc_kriging import PCKrigingSurrogate

@@ -2299,7 +2299,7 @@ class DDO:
 # decision off ``DDO.run``/``optimize``.  The free ``jcss_lqi_*`` /
 # ``lqi_target_reliability`` / ``derive_lqi_target`` / ``rackwitz_table``
 # functions, the SWTP table helpers, and ``TargetReliabilityCalibration`` remain
-# importable from ``pystra.ddo`` as a low-level functional layer, but are kept
+# importable from ``pystra.decision.ddo`` as a low-level functional layer, but are kept
 # out of ``__all__`` so the object API is the obvious entry point.
 __all__ = [
     # Societal value of life

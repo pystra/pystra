@@ -15,7 +15,7 @@ Public entry points
      - Collect named variables, constants and dependence.
    * - :class:`~pystra.model.LimitState`
      - Wrap the physical response and gradient contract.
-   * - :class:`~pystra.analysis.AnalysisOptions`
+   * - :class:`~pystra.reliability.analysis.AnalysisOptions`
      - Set numerical tolerances, transformation and sampling options.
 
 **Use it:** :doc:`/guides/models` · :doc:`/notebooks/ex_first_analysis` · :doc:`/theory/fundamentals`
@@ -29,4 +29,4 @@ Module details
    :recursive:
 
    pystra.model
-   pystra.analysis
+   pystra.reliability.analysis

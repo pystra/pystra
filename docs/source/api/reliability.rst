@@ -11,19 +11,19 @@ Public entry points
 
    * - Object
      - Purpose
-   * - :class:`~pystra.form.FORM`
+   * - :class:`~pystra.reliability.form.FORM`
      - Find a design point and return convergence diagnostics.
-   * - :class:`~pystra.sorm.SORM`
+   * - :class:`~pystra.reliability.sorm.SORM`
      - Fit local curvature around a converged FORM point.
-   * - :class:`~pystra.mc.CrudeMonteCarlo`
+   * - :class:`~pystra.reliability.monte_carlo.CrudeMonteCarlo`
      - Estimate the physical event by direct sampling.
-   * - :class:`~pystra.mc.ImportanceSampling`
+   * - :class:`~pystra.reliability.monte_carlo.ImportanceSampling`
      - Concentrate weighted samples near a FORM point.
-   * - :class:`~pystra.ls.LineSampling`
+   * - :class:`~pystra.reliability.line_sampling.LineSampling`
      - Estimate probability through line intersections.
-   * - :class:`~pystra.ss.SubsetSimulation`
+   * - :class:`~pystra.reliability.subset_simulation.SubsetSimulation`
      - Reach rare events through conditional samples.
-   * - :class:`~pystra.system_form.SystemFORM`
+   * - :class:`~pystra.reliability.system_form.SystemFORM`
      - Combine component tangent models in a shared space.
    * - :class:`~pystra.results.FORMResult`
      - Retain an immutable FORM result.
@@ -38,13 +38,13 @@ Module details
    :template: custom-module-template.rst
    :recursive:
 
-   pystra.form
+   pystra.reliability.form
    pystra.results
-   pystra.sorm
-   pystra.mc
-   pystra.ls
-   pystra.ss
-   pystra.sensitivity
-   pystra.system
-   pystra.system_form
-   pystra.strong_maximum
+   pystra.reliability.sorm
+   pystra.reliability.monte_carlo
+   pystra.reliability.line_sampling
+   pystra.reliability.subset_simulation
+   pystra.reliability.sensitivity
+   pystra.systems
+   pystra.reliability.system_form
+   pystra.reliability.strong_maximum

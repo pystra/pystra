@@ -13,7 +13,7 @@ from typing import Optional, Sequence, Union
 
 import numpy as np
 
-from .._pce import _multi_indices, _hermite_basis, _fit_lars, _fit_ols
+from ._pce import _multi_indices, _hermite_basis, _fit_lars, _fit_ols
 from ._validation import _positive_integer, _points, _training
 
 

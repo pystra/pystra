@@ -36,25 +36,25 @@ __version__ = "2.0.0.dev0"
 
 # Distributions
 from .distributions import *
-from .correlation import CorrelationMatrix
-from .copula import *
-from .joint import *
+from .dependence.correlation import CorrelationMatrix
+from .dependence.copula import *
+from .dependence.joint import *
 
 # Inputparameter
 from .model import *
 
 # Analysis
-from .analysis import *
+from .reliability.analysis import *
 from .results import FORMResult
-from .form import *
-from .mc import *
-from .sorm import *
-from .ls import *
-from .ss import *
-from .sensitivity import *
-from .system import *
-from .system_form import *
-from .strong_maximum import *
+from .reliability.form import *
+from .reliability.monte_carlo import *
+from .reliability.sorm import *
+from .reliability.line_sampling import *
+from .reliability.subset_simulation import *
+from .reliability.sensitivity import *
+from .systems import *
+from .reliability.system_form import *
+from .reliability.strong_maximum import *
 
 # Calibration
 from .fbc import *
@@ -62,8 +62,8 @@ from .loadcomb import *
 from .calibration import *
 
 # Design decision optimization
-from . import ddo
-from .ddo import (
+from .decision import ddo
+from .decision.ddo import (
     CostBenefitModel,
     DDO,
     DDOCriterion,

@@ -42,8 +42,8 @@ Connect reliability to a decision
 ---------------------------------
 
 For a design or intervention grid,
-:class:`~pystra.ddo.DesignStudy` evaluates a reliability callback at candidate
-values. :class:`~pystra.ddo.DDO` combines the study with an objective and optional
+:class:`~pystra.decision.ddo.DesignStudy` evaluates a reliability callback at candidate
+values. :class:`~pystra.decision.ddo.DDO` combines the study with an objective and optional
 acceptability criterion. Distinguish the economic optimum from a feasible
 optimum under that criterion, as demonstrated in
 :doc:`/notebooks/ex_design_decision_optimization`.

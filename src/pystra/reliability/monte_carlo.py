@@ -4,8 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from .analysis import AnalysisObject
-from .distributions import StdNormal
-from .correlation import compute_modified_correlation_matrix
+from ..distributions import StdNormal
+from ..dependence.correlation import compute_modified_correlation_matrix
 from .form import FORM
 
 __all__ = [

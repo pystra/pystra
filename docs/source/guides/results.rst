@@ -8,7 +8,7 @@ modelling assumptions is incomplete.
 FORM records
 ------------
 
-:meth:`pystra.form.FORM.run` returns an immutable
+:meth:`pystra.reliability.form.FORM.run` returns an immutable
 :class:`~pystra.results.FORMResult`. Its values remain a snapshot if the solver
 is subsequently rerun.
 

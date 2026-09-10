@@ -64,7 +64,7 @@ Implemented naming changes
 
 Functions and methods now use snake_case. Inconsistent class names follow the
 project's CapWords convention. Apart from ``GEVmax``, there are no aliases for the replaced names.
-Most existing module imports retain their paths. Calibration is now a package
+Modules moved into subpackages (see :ref:`moved-modules`). Calibration is now a package
 with explicit exports; its structural changes are described below.
 
 .. _renamed-classes:
@@ -113,6 +113,50 @@ Classes added during 2.0 development follow the same rule: ``FORMResult``,
 spelled them in title case (``FormResult``, ``PceSurrogate`` and so on) and
 numbered the extreme-value classes (``Type1LargestValue`` and so on); those
 spellings were never released.
+
+.. _moved-modules:
+
+Moved modules
+~~~~~~~~~~~~~
+
+Modules are grouped into subpackages in 2.0. Code that imports from the
+top-level ``pystra`` namespace is unaffected; code that imports a module path
+directly needs the new path.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 45 55
+
+   * - 1.x module
+     - 2.0 module
+   * - ``pystra.analysis``
+     - ``pystra.reliability.analysis``
+   * - ``pystra.form``
+     - ``pystra.reliability.form``
+   * - ``pystra.sorm``
+     - ``pystra.reliability.sorm``
+   * - ``pystra.mc``
+     - ``pystra.reliability.monte_carlo``
+   * - ``pystra.ls``
+     - ``pystra.reliability.line_sampling``
+   * - ``pystra.ss``
+     - ``pystra.reliability.subset_simulation``
+   * - ``pystra.sensitivity``
+     - ``pystra.reliability.sensitivity``
+   * - ``pystra.correlation``
+     - ``pystra.dependence.correlation``
+   * - ``pystra.transformation``
+     - ``pystra.dependence.transformation``
+   * - ``pystra.integration``, ``pystra.quadrature``,
+       ``pystra.cholesky_sensitivity``
+     - Private numerical helpers in ``pystra._numerics``; no longer public
+
+Modules added during 2.0 development moved with them: ``copula`` and ``joint``
+to ``pystra.dependence``; ``system_form`` and ``strong_maximum`` to
+``pystra.reliability``; ``system`` to ``pystra.systems``; ``ddo`` to
+``pystra.decision``. Distribution modules with compound names now use
+snake_case, for example ``pystra.distributions.shifted_lognormal``; import
+the classes themselves from ``pystra`` or ``pystra.distributions``.
 
 .. list-table:: Representative changes
    :header-rows: 1

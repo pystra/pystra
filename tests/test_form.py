@@ -2,7 +2,7 @@ import warnings
 
 import numpy as np
 
-from pystra.form import FORM
+from pystra.reliability.form import FORM
 
 
 def test_compute_gamma_uses_diagonal_without_offdiagonal_warning():

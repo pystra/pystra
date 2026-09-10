@@ -11,7 +11,7 @@ def simple_model():
     model.add_variable(ra.Normal("X2", 2000, 400))
     model.add_variable(ra.Uniform("X3", 5, 0.5))
     model.set_correlation(
-        ra.correlation.CorrelationMatrix(
+        ra.dependence.correlation.CorrelationMatrix(
             [[1.0, 0.3, 0.2], [0.3, 1.0, 0.2], [0.2, 0.2, 1.0]]
         )
     )

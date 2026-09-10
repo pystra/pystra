@@ -6,9 +6,9 @@ user-configurable parameters for these analyses.
 """
 
 import numpy as np
-from .model import StochasticModel, LimitState
-from .transformation import Transformation
-from .correlation import set_modified_correlation_matrix
+from ..model import StochasticModel, LimitState
+from ..dependence.transformation import Transformation
+from ..dependence.correlation import set_modified_correlation_matrix
 
 __all__ = ["AnalysisObject", "AnalysisOptions"]
 
@@ -85,8 +85,8 @@ class AnalysisObject:
         copula = self.model.get_copula()
         selected = self.options.get_transform()
         if copula is not None or selected in ("nataf", "rosenblatt"):
-            from .copula import GaussianCopula, StudentTCopula
-            from .joint import CopulaTransformation
+            from ..dependence.copula import GaussianCopula, StudentTCopula
+            from ..dependence.joint import CopulaTransformation
 
             joint = self.model.get_joint_distribution()
             gaussian = isinstance(joint.copula, GaussianCopula) and not isinstance(

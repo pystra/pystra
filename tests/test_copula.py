@@ -218,7 +218,7 @@ def test_gaussian_order_preserves_form_probability():
 def test_explicit_copula_does_not_reinterpret_latent_as_physical_correlation():
     model = exponential_model(ra.GaussianCopula(R))
     np.testing.assert_array_equal(
-        ra.correlation.compute_modified_correlation_matrix(model), R
+        ra.dependence.correlation.compute_modified_correlation_matrix(model), R
     )
     with pytest.raises(ValueError, match="Pearson"):
         model.get_correlation()

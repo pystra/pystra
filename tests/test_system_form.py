@@ -233,7 +233,7 @@ def test_unresolved_multivariate_zero_is_not_reported_as_safe(monkeypatch):
         ]
     )
     monkeypatch.setattr(
-        "pystra.system_form.multivariate_normal.cdf", lambda *a, **kw: 0.0
+        "pystra.reliability.system_form.multivariate_normal.cdf", lambda *a, **kw: 0.0
     )
     analysis = ra.SystemFORM(system, model)
     with pytest.raises(RuntimeError, match="unresolved zero"):

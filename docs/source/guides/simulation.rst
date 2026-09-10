@@ -45,7 +45,7 @@ failure probability; see :doc:`troubleshooting`.
 
 Importance sampling concentrates samples using a proposal distribution and
 weights their contributions. The proposal must cover the important failure
-regions. The traditional :class:`~pystra.mc.ImportanceSampling` uses a FORM-based
+regions. The traditional :class:`~pystra.reliability.monte_carlo.ImportanceSampling` uses a FORM-based
 centre; the separate active-learning estimator supports explicit proposal
 components, as shown in :doc:`/notebooks/ex_active_extensions`.
 

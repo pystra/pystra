@@ -14,7 +14,7 @@ from scipy.linalg import cholesky, cho_solve, solve_triangular
 from scipy.optimize import minimize
 from scipy.spatial.distance import cdist
 
-from .._pce import _hermite_basis
+from ._pce import _hermite_basis
 from ._validation import _positive_integer, _points, _training
 from .surrogates import PCESurrogate, PCEFitResult, Surrogate
 

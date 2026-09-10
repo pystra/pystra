@@ -45,7 +45,7 @@ Added
   reproducible sampling, explicit budgets and candidate point groups.
 - ``SystemFORM`` for component-based series/parallel reliability, joint normal
   probabilities, component diagnostics and bounds on the linearized event.
-- ``pystra.system`` module for composing named component limit states into
+- ``pystra.systems`` module for composing named component limit states into
   nested series, parallel, k-of-n, cut-set, and tie-set system limit states.
 - ``pystra.ditlevsen_bounds`` for second-order bounds from component event
   probabilities and pairwise intersections.
@@ -93,6 +93,10 @@ Changed
   ``TypeIlargestValue`` and ``TypeIIIsmallestValue`` duplicated ``Gumbel`` and
   ``Weibull`` and are removed. ``GEVmax`` remains an alias for ``GEV``, and
   ``ScipyDist`` keeps its name. Function and method names use snake_case.
+- Modules are grouped into subpackages: ``pystra.reliability``,
+  ``pystra.dependence`` and ``pystra.decision``, with ``system`` renamed
+  ``systems`` and low-level numerical helpers made private. See the migration
+  guide for moved module paths.
 - Removed the stateful ``Calibration`` class in favor of explicit target solving,
   factor derivation, selection, design and verification operations.
 - ``LoadCombination`` stores explicit cases and roles; separate evaluation and

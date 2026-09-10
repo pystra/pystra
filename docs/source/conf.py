@@ -191,14 +191,7 @@ def setup(app):
 autosummary_context = {
     "pystra_api_routes": {
         "model": ("guides/models", "ex_first_analysis", "fundamentals"),
-        "analysis": ("guides/models", "ex_first_analysis", "fundamentals"),
         "distributions": ("copulas", "ex_copulas", "transformations"),
-        "copula": ("copulas", "ex_copulas", "transformations"),
-        "joint": ("copulas", "ex_copulas", "transformations"),
-        "transformation": ("copulas", "ex_copulas", "transformations"),
-        "correlation": ("copulas", "ex_copulas", "transformations"),
-        "integration": ("copulas", "ex_copulas", "transformations"),
-        "quadrature": ("copulas", "ex_copulas", "transformations"),
         "calibration": (
             "guides/calibration",
             "ex_generic_calibration",
@@ -210,19 +203,17 @@ autosummary_context = {
             "code_calibration",
         ),
         "fbc": ("guides/calibration", "ex_generic_calibration", "code_calibration"),
-        "ddo": ("guides/assessment", "ex_design_decision_optimization", "decisions"),
         "active_learning": ("active_learning", "ex_active_learning", "active_learning"),
         "plotting": ("plotting", "ex_generic_calibration", "code_calibration"),
-        "form": ("guides/methods", "ex_intro", "design_point_methods"),
         "results": ("guides/methods", "ex_intro", "design_point_methods"),
-        "sorm": ("guides/methods", "ex_intro", "design_point_methods"),
-        "mc": ("guides/methods", "ex_intro", "design_point_methods"),
-        "ls": ("guides/methods", "ex_intro", "design_point_methods"),
-        "ss": ("guides/methods", "ex_intro", "design_point_methods"),
-        "sensitivity": ("guides/methods", "ex_intro", "design_point_methods"),
-        "system": ("guides/methods", "ex_intro", "design_point_methods"),
-        "system_form": ("guides/methods", "ex_intro", "design_point_methods"),
-        "strong_maximum": ("guides/methods", "ex_intro", "design_point_methods"),
+        "reliability": ("guides/methods", "ex_intro", "design_point_methods"),
+        "systems": ("guides/methods", "ex_intro", "design_point_methods"),
+        "dependence": ("copulas", "ex_copulas", "transformations"),
+        "decision": (
+            "guides/assessment",
+            "ex_design_decision_optimization",
+            "decisions",
+        ),
     }
 }
 

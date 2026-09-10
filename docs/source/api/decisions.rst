@@ -1,12 +1,12 @@
 Design decisions and target reliability
 =======================================
 
-.. automodule:: pystra.ddo
+.. automodule:: pystra.decision.ddo
     :no-members:
 
 The object API below is the recommended entry point.
 
-.. currentmodule:: pystra.ddo
+.. currentmodule:: pystra.decision.ddo
 
 .. autosummary::
     :toctree: ../gen
@@ -28,7 +28,7 @@ The object API below is the recommended entry point.
     RackwitzTargetModel
 
 The low-level helpers and record types below back the object API.  They remain
-importable from ``pystra.ddo`` for direct reproduction of the JCSS/LQI
+importable from ``pystra.decision.ddo`` for direct reproduction of the JCSS/LQI
 equations, but the object API above is preferred.
 
 .. autosummary::

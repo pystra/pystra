@@ -2,8 +2,8 @@
 
 import pytest
 import numpy as np
-from pystra.quadrature import quadrature_rule
-from pystra.integration import zi_and_xi, rho_integral
+from pystra._numerics.quadrature import quadrature_rule
+from pystra._numerics.integration import zi_and_xi, rho_integral
 from pystra.distributions import Normal
 
 # ---------------------------------------------------------------------------

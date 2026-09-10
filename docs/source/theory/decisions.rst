@@ -36,12 +36,12 @@ where :math:`g` is the income or GDP measure available for risk reduction,
 (typically about 0.1--0.2, e.g. 0.175 in Schubert and Faber, 2009; it is *not*
 an annual mortality rate), and :math:`C_x` depends on the mortality reduction
 scheme, discounting, and the predictive cohort life table
-[Rackwitz2004Discounting]_.  In :meth:`~pystra.ddo.SWTP.from_lqi` this parameter
+[Rackwitz2004Discounting]_.  In :meth:`~pystra.decision.ddo.SWTP.from_lqi` this parameter
 is named ``work_leisure_parameter``.  This SWTP interpretation is developed in the LQI literature
 [PandeyNathwani2004LQI]_ [PandeyNathwaniLind2006LQI]_ and used by
 Rackwitz for structural reliability optimization and acceptability
 [Rackwitz2002LQI]_.  The ``ra.SWTP.from_lqi`` helper
-(:meth:`~pystra.ddo.SWTP.from_lqi`) implements the relationship for
+(:meth:`~pystra.decision.ddo.SWTP.from_lqi`) implements the relationship for
 user-supplied demographic values.
 
 Pystra also includes a small source-backed country table from Rackwitz's JCSS
@@ -110,7 +110,7 @@ background document [Rackwitz2008LQI]_.  The anchor values are the
      - 1.3
 
 The anchor table is intentionally not overwritten with newer values.  For
-current studies, :func:`~pystra.ddo.index_swtp_record` and
+current studies, :func:`~pystra.decision.ddo.index_swtp_record` and
 ``swtp_table(indexed=True)`` return a separately traceable indexed table.
 High-level country-based LQI construction requires users to choose
 ``indexed=True`` or ``indexed=False`` explicitly.  The built-in indexed view
@@ -126,7 +126,7 @@ rate is the natural reliability measure.  Steenbergen, Rózsás, and
 Vrouwenvelder [Steenbergen2018Target]_ revisit the same framework and
 emphasize annual failure rates as a way to compare targets across design and
 remaining working lives.  In normalized form, the Rackwitz/Steenbergen model
-implemented by :class:`~pystra.ddo.RackwitzTargetModel` maximizes
+implemented by :class:`~pystra.decision.ddo.RackwitzTargetModel` maximizes
 
 .. math::
    :label: eq:rackwitz_target_objective
@@ -143,7 +143,7 @@ lognormal resistance-demand model for :math:`P_f(p)` in this calibration.
 
 Every cost is normalized by the base construction cost :math:`C_0`
 (``base_cost``), so the model's cost inputs are *ratios* to :math:`C_0`, mapped
-to :class:`~pystra.ddo.RackwitzTargetModel` parameters as follows.
+to :class:`~pystra.decision.ddo.RackwitzTargetModel` parameters as follows.
 
 .. list-table:: Normalized cost inputs (fractions of :math:`C_0`)
    :header-rows: 1
@@ -176,7 +176,7 @@ reliabilities tabulated in the JCSS Probabilistic Model Code [JCSSPMC2001]_ and
 ISO 2394 [ISO2394]_.  A table for other classes is recalculated by passing
 ``safety_costs`` (the :math:`C_1/C_0` values) and ``failure_costs`` (the
 :math:`H/C_0` values) to
-:meth:`~pystra.ddo.RackwitzTargetModel.table`.
+:meth:`~pystra.decision.ddo.RackwitzTargetModel.table`.
 
 Fischer, Barnardo, and Faber [Fischer2012LQI]_ provide a convenient LQI route
 for turning an SWTP value and expected fatalities given failure into minimum
@@ -214,13 +214,13 @@ corresponding target classes are approximated as:
      - 4.2
      - :math:`10^{-5}`
 
-For normal studies, ``ra.LQI`` (:class:`~pystra.ddo.LQI`) builds this target
+For normal studies, ``ra.LQI`` (:class:`~pystra.decision.ddo.LQI`) builds this target
 directly from a country SWTP value or a user-supplied SWTP value, expected
 fatalities given failure or an explicit consequence model, and marginal safety
 cost.  ``ra.LQI.lookup_target`` returns the rounded source-table target for a
-given :math:`K_1`, while the lower-level :func:`~pystra.ddo.lqi_k1` and
-:func:`~pystra.ddo.lqi_target_reliability` helpers remain available in
-:mod:`pystra.ddo`.  When the underlying resistance-demand model should be
+given :math:`K_1`, while the lower-level :func:`~pystra.decision.ddo.lqi_k1` and
+:func:`~pystra.decision.ddo.lqi_target_reliability` helpers remain available in
+:mod:`pystra.decision.ddo`.  When the underlying resistance-demand model should be
 calculated instead of looked up, ``ra.LQI.derive_target`` solves the marginal
 target problem
 
@@ -231,7 +231,7 @@ target problem
    \qquad\mathrm{or}\qquad
    K_1 = -\frac{dP_f(p)}{dp}.
 
-``ra.DDO`` (:class:`~pystra.ddo.DDO`) then evaluates the selected objective and
+``ra.DDO`` (:class:`~pystra.decision.ddo.DDO`) then evaluates the selected objective and
 criterion without changing the underlying stochastic model.  The best feasible
 alternative is obtained with ``DDO.optimize()``; the unconstrained economic
 optimum is available separately as ``DDO.economic_optimum()``.
@@ -257,8 +257,8 @@ is
 ``ra.LQI`` exposes these operations as methods such as
 ``risk_cost``, ``acceptability_margin_at``, and ``acceptability_boundary``.
 The underlying
-:func:`~pystra.ddo.jcss_lqi_risk_cost` and
-:func:`~pystra.ddo.jcss_lqi_acceptability` functions remain available for
+:func:`~pystra.decision.ddo.jcss_lqi_risk_cost` and
+:func:`~pystra.decision.ddo.jcss_lqi_acceptability` functions remain available for
 direct reproduction of the JCSS equations.
 
 The current implementation separates an objective from an acceptability

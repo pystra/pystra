@@ -9,7 +9,7 @@ import pytest
 from scipy.stats import norm
 
 import pystra as ra
-from pystra._pce import _hermite_basis
+from pystra.active_learning._pce import _hermite_basis
 from pystra.active_learning import (
     ActiveLearning,
     AllCriteria,

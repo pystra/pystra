@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 from scipy.stats import norm, qmc
 
-from pystra._pce import _fit_ols, _hermite_basis, _multi_indices
+from pystra.active_learning._pce import _fit_ols, _hermite_basis, _multi_indices
 from pystra.active_learning import PCESurrogate
 
 REFERENCE = json.loads(

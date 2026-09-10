@@ -7,7 +7,7 @@
 
 .. currentmodule:: {{ module }}
 
-{% if fullname == 'pystra.form.FORM' %}
+{% if fullname == 'pystra.reliability.form.FORM' %}
 .. autoclass:: {{ objname }}
    :show-inheritance:
 

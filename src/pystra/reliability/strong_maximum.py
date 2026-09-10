@@ -13,7 +13,7 @@ from scipy.special import betainc
 
 from .analysis import AnalysisObject
 from .form import FORM
-from .model import LimitState
+from ..model import LimitState
 
 __all__ = ["StrongMaximumTest"]
 

@@ -5,7 +5,7 @@ System Reliability
 ******************
 
 Pystra separates the system failure event from its probability calculation.
-The ``pystra.system`` topology classes compose component limit states for
+The ``pystra.systems`` topology classes compose component limit states for
 simulation. ``SystemFORM`` estimates series and parallel probabilities from
 separate component FORM analyses in one shared standard-normal space.
 

@@ -2,7 +2,7 @@
 
 import pytest
 import numpy as np
-from pystra.transformation import Transformation
+from pystra.dependence.transformation import Transformation
 from pystra.distributions import Normal, Lognormal, Uniform
 
 

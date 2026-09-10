@@ -4,7 +4,7 @@ import pytest
 import numpy as np
 import pystra as ra
 from pystra.distributions import Normal, Lognormal, Constant
-from pystra.correlation import CorrelationMatrix, compute_modified_correlation_matrix
+from pystra.dependence.correlation import CorrelationMatrix, compute_modified_correlation_matrix
 
 # ---------------------------------------------------------------------------
 # StochasticModel

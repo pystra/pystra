@@ -28,7 +28,7 @@ class StochasticModel:
         self._consts = {}
         self._copula = None
         if joint_distribution is not None:
-            from .joint import JointDistribution
+            from .dependence.joint import JointDistribution
 
             if not isinstance(joint_distribution, JointDistribution):
                 raise TypeError("Expected a JointDistribution")
@@ -171,7 +171,7 @@ class StochasticModel:
 
     def set_copula(self, copula):
         """Replace legacy Pearson dependence with an explicit copula."""
-        from .joint import JointDistribution
+        from .dependence.joint import JointDistribution
 
         JointDistribution(self._marg, copula)  # validate before changing state
         self._copula = copula
@@ -183,9 +183,9 @@ class StochasticModel:
 
     def get_joint_distribution(self):
         """Return marginals plus the explicit or calibrated Gaussian copula."""
-        from .joint import JointDistribution
-        from .copula import GaussianCopula
-        from .correlation import compute_modified_correlation_matrix
+        from .dependence.joint import JointDistribution
+        from .dependence.copula import GaussianCopula
+        from .dependence.correlation import compute_modified_correlation_matrix
 
         copula = self._copula
         if copula is None:
