@@ -28,7 +28,7 @@ Quick start::
     print(f"beta = {result.beta:.4f}")
 """
 
-__version__ = "2.0.0.dev0"
+__version__ = "2.0.0a1"
 
 from .errors import (
     PystraError,
