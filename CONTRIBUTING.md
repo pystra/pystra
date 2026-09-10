@@ -29,13 +29,24 @@ After 2.0, public API changes follow the documented deprecation and release poli
 
 - Use snake_case for functions, methods, parameters, attributes, and compound
   module names; CapWords for classes; UPPER_SNAKE_CASE for constants.
-- Preserve established acronym class names: `SystemFORM`, `FBCProcess`,
-  `DDO`, `DDOCriterion`, `LQI`, and `SWTP`. PEP 8 recommends retaining all
-  capitals in acronyms within CapWords (for example, `HTTPServerError`).
-  Keep the existing `GEVmax`, `GEVmin`, and `ScipyDist` spellings as well.
-  Do not mechanically recase class names during the migration; existing
-  `Form` and `Sorm` also retain their names. Functions, methods, variables,
-  and modules still use lowercase/snake_case, including their acronyms.
+- Capitalise every letter of an acronym inside a CapWords class name. PEP 8
+  (*Descriptive: Naming Styles*) states: "When using acronyms in CapWords,
+  capitalize all the letters of the acronym. Thus HTTPServerError is better
+  than HttpServerError." This is a single rule applied uniformly, not a list
+  of blessed exceptions: `FORM`, `SORM`, `SystemFORM`, `FBCProcess`, `DDO`,
+  `DDOCriterion`, `LQI`, `SWTP`, `PCESurrogate`, `PCKrigingSurrogate`,
+  `FBRLearning`.
+- Name extreme-value distributions by family, not by type numeral: `Gumbel`,
+  `GumbelMin`, `Frechet`, `Weibull`, `GEV`, `GEVMin`. The bare family name is the conventional
+  flavour (maxima for Gumbel and Fréchet, minima for Weibull) and the opposite
+  flavour takes a `Min` or `Max` suffix. Use ASCII in identifiers (`Frechet`)
+  and give the Type I/II/III names in docstrings so users can find them.
+- `ScipyDist` keeps its existing name and is not to be "corrected". `GEVmax`
+  is kept as a permanent alias for `GEV` — the one deliberate alias in the 2.0
+  API.
+- Functions, methods, variables, and modules stay lowercase/snake_case,
+  including their acronyms — PEP 8's rule governs CapWords only, so `run_form`
+  and `pc_kriging.py` are correct as they stand.
 - Prefer `std`, `start_point`, `limit_state`, `model`, `options`, `n_samples`,
   `max_iterations`, `failure_probability`, and `reference_period`. Use `analyze`
   in Python identifiers. Keep established `pdf`, `cdf`, `ppf`, `beta`, and `alpha`.

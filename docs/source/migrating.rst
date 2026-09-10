@@ -13,6 +13,132 @@ Test, copula/joint-distribution support, DDO/LQI refinements, and the SORM
 prerequisite fix. Active learning is also new in 2.0. Earlier feature-branch
 interfaces are development history, not released 1.x APIs to migrate from.
 
+Naming conventions in 2.0
+-------------------------
+
+PySTRA 2.0 adopts PEP 8 throughout the public API. Three rules cover every
+public name, and they are applied uniformly rather than case by case:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 30 25 45
+
+   * - Kind of name
+     - Convention
+     - Example
+   * - Functions, methods, parameters, attributes, modules
+     - ``snake_case``
+     - ``model.add_variable``, ``options.set_imax``
+   * - Classes
+     - ``CapWords``, with acronyms fully capitalised
+     - ``SystemFORM``, ``DDOCriterion``, ``LQI``
+   * - Constants
+     - ``UPPER_SNAKE_CASE``
+     - ``DEFAULT_BLOCK_SIZE``
+
+The acronym rule follows PEP 8's *Descriptive: Naming Styles*, which states:
+"When using acronyms in CapWords, capitalize all the letters of the acronym.
+Thus ``HTTPServerError`` is better than ``HttpServerError``." Because PySTRA's
+domain is dense with acronyms — FORM, SORM, PCE, PC-Kriging, FBR, DDO, LQI,
+SWTP — applying this consistently is what makes the API predictable: if you
+know the acronym, you know how it is spelled in the code.
+
+Note that the rule governs *CapWords only*. Functions, methods and module
+names keep their acronyms lowercase, so ``run_form`` and ``pc_kriging`` are
+correct and are not affected.
+
+``ScipyDist`` keeps its existing name. In 2.0, ``GEVmax`` remains available as
+an alias for ``GEV``; it is the one deliberate alias in the new API.
+
+Extreme-value distributions are named by family rather than by type number.
+The literature labels the three Fisher–Tippett limits with Roman numerals —
+Type I (Gumbel), Type II (Fréchet) and Type III (Weibull), all special cases of
+the generalized extreme value (GEV) distribution — and PySTRA 1.x followed it
+with names such as ``TypeIlargestValue``. In 2.0 the class takes the family
+name. The bare name is the conventional flavour, maxima for ``Gumbel`` and
+``Frechet`` and minima for ``Weibull``, and the opposite flavour takes a
+suffix, as in ``GumbelMin`` and ``GEVMin``. ``Frechet`` is the ASCII spelling of Fréchet.
+
+.. _planned-acronym-renames:
+
+Class renames scheduled in this release
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. note::
+
+   These renames are agreed for 2.0 but are **not yet applied** on the
+   ``2.0.0.dev0`` branch. The middle column is what the development branch
+   currently exposes; a dash means the class did not exist in 1.x.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 22 24 20 34
+
+   * - 1.x
+     - Development branch now
+     - 2.0 release
+     - Reason
+   * - ``Form``
+     - ``Form``
+     - ``FORM``
+     - acronym: first order reliability method
+   * - ``Sorm``
+     - ``Sorm``
+     - ``SORM``
+     - acronym: second order reliability method
+   * - —
+     - ``FormResult``
+     - ``FORMResult``
+     - acronym: FORM
+   * - —
+     - ``PceSurrogate``
+     - ``PCESurrogate``
+     - acronym: polynomial chaos expansion
+   * - —
+     - ``PceCandidate``
+     - ``PCECandidate``
+     - acronym: polynomial chaos expansion
+   * - —
+     - ``PceFitResult``
+     - ``PCEFitResult``
+     - acronym: polynomial chaos expansion
+   * - —
+     - ``PcKrigingSurrogate``
+     - ``PCKrigingSurrogate``
+     - acronym: polynomial chaos Kriging
+   * - —
+     - ``PcKrigingFitResult``
+     - ``PCKrigingFitResult``
+     - acronym: polynomial chaos Kriging
+   * - —
+     - ``FbrLearning``
+     - ``FBRLearning``
+     - acronym: failed bootstrap replicates
+   * - ``TypeIlargestValue``
+     - ``Type1LargestValue``
+     - ``Gumbel``
+     - Type I, maxima; identical to the existing ``Gumbel``
+   * - ``TypeIsmallestValue``
+     - ``Type1SmallestValue``
+     - ``GumbelMin``
+     - Type I, minima
+   * - ``TypeIIlargestValue``
+     - ``Type2LargestValue``
+     - ``Frechet``
+     - Type II, maxima
+   * - ``TypeIIIsmallestValue``
+     - ``Type3SmallestValue``
+     - ``Weibull``
+     - Type III, minima; identical to the existing ``Weibull``
+   * - ``GEVmax``
+     - ``GEVmax``
+     - ``GEV``
+     - GEV for maxima; ``GEVmax`` kept as an alias
+   * - ``GEVmin``
+     - ``GEVmin``
+     - ``GEVMin``
+     - GEV for minima; no alias
+
 Implemented naming changes
 --------------------------
 
@@ -20,6 +146,27 @@ Functions and methods now use snake_case. Inconsistent class names follow the
 project's CapWords convention. There are no aliases for the replaced names.
 Most existing module imports retain their paths. Calibration is now a package
 with explicit exports; its structural changes are described below.
+
+Renamed classes
+~~~~~~~~~~~~~~~
+
+The classes below were renamed in 2.0. Because there are no aliases, a 1.x
+import of an old name raises ``ImportError``. The 1.x extreme-value classes,
+such as ``TypeIlargestValue``, are listed under :ref:`planned-acronym-renames`,
+because their 2.0 names are not yet applied on this branch.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 50 50
+
+   * - 1.x
+     - 2.0
+   * - ``KofNSystem``
+     - ``KOfNSystem``
+   * - ``GenericModel``
+     - ``NormalizedReliabilityModel``
+   * - ``GenericCalibration``
+     - ``CodeCalibration``
 
 .. list-table:: Representative changes
    :header-rows: 1
@@ -51,8 +198,8 @@ source and feature contributions. This does not imply that every class was
 available in a published 1.x release. Acronyms in
 CapWords retain their capitals, as recommended by
 `PEP 8 <https://peps.python.org/pep-0008/#descriptive-naming-styles>`_.
-Existing ``Form`` and ``Sorm`` also retain their names. Earlier v2 development
-snapshots recased these names; those changes have been reversed.
+The remaining title-cased acronym classes are being brought under the same rule
+in this release; see :ref:`planned-acronym-renames` above.
 
 The :download:`naming map <../migration/naming-map.json>` records the
 reviewed spelling changes and retained class names. The :download:`definition manifest <../migration/api-migration.json>`
