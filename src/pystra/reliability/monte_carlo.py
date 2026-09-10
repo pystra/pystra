@@ -111,7 +111,9 @@ class MonteCarlo(AnalysisObject):
 
     def compute_limit_state(self):
         """Evaluate limit-state function"""
-        G, _ = self.limitstate.evaluate_lsf(self.x, self.model, self.options, "no")
+        G, _ = self.limitstate.evaluate_lsf(
+            self.x, self.model, self.options, "no", counter=self._count
+        )
         self.G = G
 
     def compute_results(self):

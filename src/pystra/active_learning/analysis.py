@@ -199,7 +199,7 @@ class ActiveLearning(AnalysisObject):
             [self.transform.u_to_x(point, marginals) for point in points]
         )
         values, _ = self.limitstate.evaluate_lsf(
-            physical.T, self.model, self.options, "no"
+            physical.T, self.model, self.options, "no", counter=self._count
         )
         return _training(points, np.asarray(values).ravel())[1]
 

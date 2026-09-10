@@ -73,6 +73,11 @@ class AnalysisObject:
         )
 
         self.results_valid = False
+        self._n_evaluations = 0
+
+    def _count(self, n):
+        """Record limit-state function calls made by this analysis."""
+        self._n_evaluations += n
 
     def init_run(self):
         """Initialise the model's isoprobabilistic transformation.
@@ -82,6 +87,7 @@ class AnalysisObject:
         ``run()`` method in subclasses.
         """
 
+        self._n_evaluations = 0
         copula = self.model.get_copula()
         selected = self.options.get_transform()
         if copula is not None or selected in ("nataf", "rosenblatt"):

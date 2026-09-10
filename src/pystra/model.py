@@ -245,12 +245,6 @@ class LimitState:
         self.expression = expression
         """Expression of the limit-state function"""
 
-        self.model = None
-        self.options = None
-        self.x = None
-        self.nx = 0
-        self.nrv = 0
-
     # Legacy getter/setter methods (expression is already a public attribute)
 
     def get_expression(self):
@@ -259,12 +253,16 @@ class LimitState:
     def set_expression(self, expression):
         self.expression = expression
 
-    def evaluate_lsf(self, x, stochastic_model, analysis_options, diff_mode=None):
+    def evaluate_lsf(
+        self, x, stochastic_model, analysis_options, diff_mode=None, counter=None
+    ):
         """Evaluate the limit state function and (optionally) its gradient.
 
         Dispatches to the appropriate evaluation strategy based on the
         differentiation mode: no gradient (``"no"``), forward finite
         difference (``"ffd"``), or direct differentiation (``"ddm"``).
+        The limit state keeps no evaluation state and ``x`` is not modified,
+        so analyses sharing a limit state or model cannot interfere.
 
         Parameters
         ----------
@@ -279,6 +277,9 @@ class LimitState:
             Override the differentiation mode.  If a string is passed
             (any value), gradient computation is suppressed
             (``"no"``).
+        counter : callable, optional
+            Called with the number of limit-state function calls made, so
+            an analysis can count its own evaluations.
 
         Returns
         -------
@@ -288,12 +289,6 @@ class LimitState:
             Gradient matrix, shape ``(nrv, nx)``.  Zero when no
             gradient is computed.
         """
-
-        self.model = stochastic_model
-        self.options = analysis_options
-
-        self.x = x
-
         if diff_mode == None:
             diff_mode = analysis_options.get_diff_mode()
         else:
@@ -301,58 +296,50 @@ class LimitState:
 
         if analysis_options.get_multi_proc() == 0:
             raise NotImplementedError("get_multi_proc")
+        x = np.asarray(x)
+        if diff_mode == "no":
+            G, grad_G, calls = self._values(x, stochastic_model, analysis_options)
+        elif diff_mode == "ddm":
+            G, grad_G, calls = self._ddm(x, stochastic_model)
         else:
-            # No differentiation for MCS
-            if diff_mode == "no":
-                G, grad_G = self.evaluate_nogradient(x)
-            elif diff_mode == "ddm":
-                G, grad_G = self.evaluate_ddm(x)
-            else:
-                G, grad_G = self.evaluate_ffd(x)
+            G, grad_G, calls = self._ffd(x, stochastic_model, analysis_options)
+        stochastic_model.add_call_function(calls)
+        if counter is not None:
+            counter(calls)
         return G, grad_G
 
-    def evaluate_nogradient(self, x):
-        """Evaluate the LSF without computing gradients (used for MCS)."""
+    def _values(self, x, model, options):
+        """Limit-state values without gradients (used by simulation)."""
         nrv, nx = x.shape
         G = np.zeros((1, nx))
         grad_G = np.zeros((nrv, nx))
-        block_size = self.options.get_block_size()
+        block_size = options.get_block_size()
         k = 0
         while k < nx:
             block_size = np.min([block_size, nx - k])
             indx = list(range(k, k + block_size))
-            blockx = x[:, indx]
-
-            blockG, _ = self.compute_lsf(blockx)
-
+            blockG, _ = self._call(x[:, indx], model)
             G[:, indx] = blockG
             k += block_size
+        return G, grad_G, nx
 
-        self.model.add_call_function(nx)
-
-        return G, grad_G
-
-    def evaluate_ffd(self, x):
-        """Evaluate the LSF and approximate the gradient by forward finite difference."""
+    def _ffd(self, x, model, options):
+        """Limit-state values and forward finite-difference gradients."""
         nrv, nx = x.shape
-        G = np.zeros((1, nx))
         grad_G = np.zeros((nrv, nx))
-        block_size = self.options.get_block_size()
+        block_size = options.get_block_size()
 
-        ffdpara = self.options.get_ffd_parameter()
+        ffdpara = options.get_ffd_parameter()
         allx = np.zeros((nrv, nx * (1 + nrv)))
         allx[:] = x
         allh = np.zeros(nrv)
 
-        marg = self.model.get_marginal_distributions()
+        marg = model.get_marginal_distributions()
 
-        x0 = x
         for j in range(nrv):
-            x = x0
             allh[j] = marg[j].stdv / ffdpara
-            x[j] = x[j] + allh[j] * np.ones(nx)
             indx = list(range(j + 1, 1 + (1 + j + (nx - 1) * (1 + nrv)), (1 + nrv)))
-            allx[j, indx] = x[j]
+            allx[j, indx] = x[j] + allh[j] * np.ones(nx)
 
         allG = np.zeros(nx * (1 + nrv))
 
@@ -360,10 +347,7 @@ class LimitState:
         while k < (nx * (1 + nrv)):
             block_size = np.min([block_size, nx * (1 + nrv) - k])
             indx = list(range(k, k + block_size))
-            blockx = allx[:, indx]
-
-            blockG, _ = self.compute_lsf(blockx)
-
+            blockG, _ = self._call(allx[:, indx], model)
             allG[indx] = blockG.squeeze()
             k += block_size
 
@@ -374,46 +358,28 @@ class LimitState:
             indx = list(range(j + 1, 1 + (1 + j + (nx - 1) * (1 + nrv)), (1 + nrv)))
             grad_G[j, :] = (allG[indx] - G) / allh[j]
 
-        self.model.add_call_function(nx * (1 + nrv))
+        return G, grad_G, nx * (1 + nrv)
 
-        return G, grad_G
-
-    def evaluate_ddm(self, x):
-        """Evaluate the LSF using direct differentiation (user-supplied gradient)."""
+    def _ddm(self, x, model):
+        """Limit-state values with the user-supplied gradient (direct differentiation)."""
         nrv, nx = x.shape
         G = np.zeros((1, nx))
         grad_G = np.zeros((nrv, nx))
         for k in range(nx):
-            G[k], grad_G[:, k : k + 1] = self.compute_lsf(x[:, k : k + 1], ddm=True)
-        self.model.add_call_function(nx)
+            G[k], grad_G[:, k : k + 1] = self._call(x[:, k : k + 1], model, ddm=True)
+        return G, grad_G, nx
 
-        return G, grad_G
-
-    def compute_lsf(self, x, ddm=False):
+    def _call(self, x, model, ddm=False):
         """Call the user-defined limit state function.
 
-        Builds a keyword-argument dictionary mapping variable names
-        to their column vectors in ``x``, then calls
-        ``self.expression(**kwargs)``.
-
-        Parameters
-        ----------
-        x : ndarray
-            Evaluation points, shape ``(nrv, nc)``.
-        ddm : bool, optional
-            If ``True``, expects the expression to return both the
-            function value and a gradient vector.
-
-        Returns
-        -------
-        G : ndarray
-            Function value(s).
-        gradient : ndarray or int
-            Gradient vector (if *ddm*) or ``0``.
+        Builds a keyword-argument dictionary mapping variable names to their
+        rows of ``x`` (and constants to matching vectors), then calls
+        ``self.expression(**kwargs)``. With ``ddm`` the expression must return
+        both the function value and a gradient vector.
         """
         _, nc = np.shape(x)
-        variables = self.model.get_variables()
-        constants = self.model.get_constants()
+        variables = model.get_variables()
+        constants = model.get_constants()
 
         inpdict = dict()
         for i, var in enumerate(variables):

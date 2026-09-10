@@ -199,7 +199,7 @@ class SubsetSimulation(AnalysisObject):
             for i in range(end - start):
                 x_blk[:, i] = self.transform.u_to_x(u_blk[:, i], marg)
             G_blk, _ = self.limitstate.evaluate_lsf(
-                x_blk, self.model, self.options, "no"
+                x_blk, self.model, self.options, "no", counter=self._count
             )
             G[start:end] = G_blk[0, :]
         return G
@@ -254,7 +254,11 @@ class SubsetSimulation(AnalysisObject):
                 # Accept the joint proposal if it stays in the conditional region
                 x_prop = self.transform.u_to_x(u_prop, marg)
                 G_prop, _ = self.limitstate.evaluate_lsf(
-                    x_prop.reshape(-1, 1), self.model, self.options, "no"
+                    x_prop.reshape(-1, 1),
+                    self.model,
+                    self.options,
+                    "no",
+                    counter=self._count,
                 )
                 g_prop = float(G_prop[0, 0])
 

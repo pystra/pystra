@@ -57,6 +57,12 @@ Added
 
 Fixed
 ~~~~~
+- Forward finite differences modified the evaluation points they were given.
+  FORM's reported results were unaffected, but SORM computed its gradient
+  transformation at points shifted by the difference step (standard deviation
+  / 1000 in each variable), which biased its curvatures. For the FERUM example,
+  the Breitung index moves from 3.85376 to 3.85387, in line with an independent
+  u-space central-difference calculation (3.85389).
 - Distributions reject a zero or negative standard deviation, as their error
   message always said; previously only an infinite value was rejected.
 - Calibration now respects named case roles and design parameters, rejects
@@ -103,6 +109,11 @@ Changed
 - Invalid model and distribution input raises ``ModelError`` (a ``ValueError``)
   instead of a bare ``Exception``; failed analyses raise ``AnalysisError`` (a
   ``RuntimeError``). Both derive from ``PystraError``.
+- Limit-state evaluation no longer stores the model, options and points on the
+  ``LimitState`` or modifies the caller's points, so analyses sharing a limit
+  state or model cannot interfere. Each analysis counts its own evaluations:
+  ``FORM.get_no_function_calls()`` reports the current run rather than the
+  model's running total.
 - The top-level namespace is curated (62 names in ``pystra.__all__``) and every
   module declares ``__all__``. Code-calibration and decision tools, new in 2.0,
   are imported from ``pystra.calibration`` and ``pystra.decision``;

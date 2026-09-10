@@ -109,12 +109,12 @@ def test_post_form_reuses_correlated_transform_without_mutating_evaluator():
         analysis_options=opts,
     )
     form.run()
-    last_x = form.limitstate.x.copy()
     design = form.get_design_point().copy()
     result = ra.StrongMaximumTest(form, point_number=200, seed=2)
     result.run()
     assert not result.has_competing_points
-    np.testing.assert_array_equal(form.limitstate.x, last_x)
+    # The limit state keeps no evaluation state that the test could mutate.
+    assert not hasattr(form.limitstate, "x")
     np.testing.assert_array_equal(form.get_design_point(), design)
     recovered = np.array(
         [

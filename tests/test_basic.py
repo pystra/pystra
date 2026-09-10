@@ -94,7 +94,10 @@ def test_sorm():
 
     # validate results
     assert pytest.approx(Analysis.betaHL, abs=1e-4) == 3.7347
-    assert pytest.approx(Analysis.betag_breitung, abs=1e-4) == 3.8537
+    # An independent u-space central-difference calculation gives 3.85389. The
+    # earlier reference, 3.8537, came from code that transformed SORM gradients
+    # at points shifted by the finite-difference step.
+    assert pytest.approx(Analysis.betag_breitung, abs=1e-4) == 3.8539
     assert pytest.approx(Analysis.betag_breitung_m, abs=2e-4) == 3.8582
 
 
@@ -380,3 +383,47 @@ def test_form_with_gumbel():
     # beta should be positive and reasonable
     assert Analysis.beta > 0
     assert Analysis.beta < 10
+
+
+def test_sorm_curvatures_match_independent_central_differences():
+    """SORM's curvature fit agrees with a u-space Hessian that needs no Jacobian."""
+    options, stochastic_model, limit_state = setup()
+    sorm = ra.SORM(
+        analysis_options=options,
+        stochastic_model=stochastic_model,
+        limit_state=limit_state,
+    )
+    sorm.run()
+    form = sorm.form
+    u0 = np.ravel(form.get_design_point())
+    marg = stochastic_model.get_marginal_distributions()
+    names = stochastic_model.get_variables()
+    constants = stochastic_model.get_constants()
+
+    def g(u):
+        x = np.ravel(form.transform.u_to_x(u, marg))
+        return float(
+            np.ravel(limit_state.expression(**dict(zip(names, x)), **constants))[0]
+        )
+
+    n, d, eye = len(u0), 1e-3, np.eye(len(u0))
+    grad = np.array([(g(u0 + d * e) - g(u0 - d * e)) / (2 * d) for e in eye])
+    hess = np.array(
+        [
+            [
+                (
+                    g(u0 + d * (eye[i] + eye[j]))
+                    - g(u0 + d * (eye[i] - eye[j]))
+                    - g(u0 - d * (eye[i] - eye[j]))
+                    + g(u0 - d * (eye[i] + eye[j]))
+                )
+                / (4 * d * d)
+                for j in range(n)
+            ]
+            for i in range(n)
+        ]
+    )
+    basis = np.linalg.qr(np.column_stack([u0 / np.linalg.norm(u0), eye]))[0][:, 1:n]
+    kappa = np.linalg.eigvalsh(basis.T @ hess @ basis) / np.linalg.norm(grad)
+    # The earlier gradient transformation at shifted points was off by 7.5e-4.
+    assert np.sort(np.ravel(sorm.kappa)) == pytest.approx(np.sort(kappa), abs=3e-4)

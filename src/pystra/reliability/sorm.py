@@ -462,7 +462,7 @@ class SORM(AnalysisObject):
         )
         print(
             "{:15s} \t\t {:d}".format(
-                "Model Evaluations", self.model.get_call_function()
+                "Model Evaluations", self.form._n_evaluations + self._n_evaluations
             )
         )
 
@@ -593,7 +593,9 @@ class SORM(AnalysisObject):
         x0 = np.copy(x)  # avoid modifying argument in func calls below
 
         if calc_gradient:
-            G, grad = self.limitstate.evaluate_lsf(x0, self.model, self.options)
+            G, grad = self.limitstate.evaluate_lsf(
+                x0, self.model, self.options, counter=self._count
+            )
             grad = np.transpose(grad)
             if u_space:
                 marg = self.model.get_marginal_distributions()
@@ -602,7 +604,9 @@ class SORM(AnalysisObject):
                 J_x_u = np.linalg.inv(J_u_x)
                 grad = np.dot(grad, J_x_u)
         else:
-            G, _ = self.limitstate.evaluate_lsf(x0, self.model, self.options)
+            G, _ = self.limitstate.evaluate_lsf(
+                x0, self.model, self.options, counter=self._count
+            )
 
         return G, grad
 

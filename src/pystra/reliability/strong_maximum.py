@@ -219,7 +219,9 @@ class StrongMaximumTest(AnalysisObject):
         x = np.array([self.transform.u_to_x(point, marg) for point in u])
         if not np.all(np.isfinite(x)):
             raise ValueError("Nonfinite physical coordinates on test sphere")
-        values, _ = self.limitstate.evaluate_lsf(x.T, self.model, self.options, "no")
+        values, _ = self.limitstate.evaluate_lsf(
+            x.T, self.model, self.options, "no", counter=self._count
+        )
         self.evaluation_count += len(u)
         values = np.asarray(values).reshape(-1)
         if values.shape != (len(u),) or not np.all(np.isfinite(values)):

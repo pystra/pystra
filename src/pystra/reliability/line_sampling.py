@@ -151,7 +151,7 @@ class LineSampling(AnalysisObject):
         u_pt = v + c * alpha
         x_pt = self.transform.u_to_x(u_pt, marg)
         G, _ = self.limitstate.evaluate_lsf(
-            x_pt.reshape(-1, 1), self.model, self.options, "no"
+            x_pt.reshape(-1, 1), self.model, self.options, "no", counter=self._count
         )
         return float(G[0, 0])
 

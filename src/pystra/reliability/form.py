@@ -202,7 +202,9 @@ class FORM(AnalysisObject):
 
     def compute_limit_state(self):
         """Evaluate limit-state function and its gradient"""
-        G, gradient = self.limitstate.evaluate_lsf(self.x, self.model, self.options)
+        G, gradient = self.limitstate.evaluate_lsf(
+            self.x, self.model, self.options, counter=self._count
+        )
         self.G = G
         self.gradient = np.dot(np.transpose(gradient), self.J)
 
@@ -269,7 +271,7 @@ class FORM(AnalysisObject):
             print("Error: function not yet implemented")
         if self.options.get_multi_proc() == 1:
             Trial_G, _ = self.limitstate.evaluate_lsf(
-                Trial_x, self.model, self.options, "no"
+                Trial_x, self.model, self.options, "no", counter=self._count
             )
             Merit_new = np.zeros(ntrial)
 
@@ -350,9 +352,7 @@ class FORM(AnalysisObject):
         print("=" * n_hyphen)
         print("{:15s} \t {:1.10e}".format("Pf", self.Pf))
         print("{:15s} \t {:2.10f}".format("BetaHL", self.beta))
-        print(
-            "{:15s} \t {:d}".format("Model Evaluations", self.model.get_call_function())
-        )
+        print("{:15s} \t {:d}".format("Model Evaluations", self._n_evaluations))
         print("-" * n_hyphen)
         print(
             "{:10s} \t {:>9s} \t {:>12s} \t {:>9s}".format(
@@ -420,4 +420,4 @@ class FORM(AnalysisObject):
           - n (int): Returns the number of function evaluations
 
         """
-        return self.model.get_call_function()
+        return self._n_evaluations
