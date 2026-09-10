@@ -21,8 +21,8 @@ def main():
     limit_state = ra.LimitState(example_limitstatefunction)
 
     # Set some options (optional)
-    options = ra.AnalysisOptions()
-    options.set_print_output(True)
+    options = ra.FORMOptions()
+    simulation_options = ra.SimulationOptions()
 
     stochastic_model = ra.StochasticModel()
     # Define random variables
@@ -41,8 +41,8 @@ def main():
 
     # Perform FORM analysis
     Analysis = ra.FORM(
-        analysis_options=options,
-        stochastic_model=stochastic_model,
+        options=options,
+        model=stochastic_model,
         limit_state=limit_state,
     )
     Analysis.run()
@@ -51,8 +51,7 @@ def main():
 
     # Perform SORM analysis, passing FORM result if it exists
     sorm = ra.SORM(
-        analysis_options=options,
-        stochastic_model=stochastic_model,
+        model=stochastic_model,
         limit_state=limit_state,
         form=Analysis,
     )
@@ -62,24 +61,24 @@ def main():
 
     # Perform Distribution analysis
     Analysis = ra.DistributionAnalysis(
-        analysis_options=options,
-        stochastic_model=stochastic_model,
+        options=simulation_options,
+        model=stochastic_model,
         limit_state=limit_state,
     )
     Analysis.run()
 
     # Perform Crude Monte Carlo Simulation
     Analysis = ra.CrudeMonteCarlo(
-        analysis_options=options,
-        stochastic_model=stochastic_model,
+        options=simulation_options,
+        model=stochastic_model,
         limit_state=limit_state,
     )
     Analysis.run()
 
     # Perform Importance Sampling
     Analysis = ra.ImportanceSampling(
-        analysis_options=options,
-        stochastic_model=stochastic_model,
+        options=simulation_options,
+        model=stochastic_model,
         limit_state=limit_state,
     )
     Analysis.run()

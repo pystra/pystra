@@ -58,7 +58,9 @@ TOP_LEVEL = {
     "Transformation",
     # reliability methods and results
     "AnalysisObject",
-    "AnalysisOptions",
+    "FORMOptions",
+    "SORMOptions",
+    "SimulationOptions",
     "FORM",
     "SORM",
     "MonteCarlo",

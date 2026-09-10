@@ -27,15 +27,13 @@ def _model(copula):
 
 
 def _system(copula, order, *, method="rosenblatt", distinct=False):
-    options = ra.AnalysisOptions()
-    options.set_transform(method)
-    options.set_rosenblatt_order(order)
+    options = ra.FORMOptions(transform=method, rosenblatt_order=order)
     first = lambda X1, X2: 8 * X1 + 2 * X2 - 1
     second = (lambda X1, X2: X2 - 0.5 * X1) if distinct else first
     analysis = ra.SystemFORM(
-        ra.SeriesSystem([ra.Component("one", first), ra.Component("two", second)]),
         _model(copula),
-        options,
+        ra.SeriesSystem([ra.Component("one", first), ra.Component("two", second)]),
+        options=options,
     )
     analysis.run()
     return analysis

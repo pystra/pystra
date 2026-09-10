@@ -24,12 +24,8 @@ Quick start::
     model.add_variable(ra.Normal("R", 10, 1))
     model.add_variable(ra.Normal("S", 5, 1))
 
-    form = ra.FORM(
-        stochastic_model=model,
-        limit_state=limit_state,
-    )
-    form.run()
-    print(f"beta = {form.get_beta():.4f}")
+    result = ra.FORM(model, limit_state).run()
+    print(f"beta = {result.beta:.4f}")
 """
 
 __version__ = "2.0.0.dev0"
@@ -79,7 +75,6 @@ from .model import (
 )
 from .reliability import (
     AnalysisObject,
-    AnalysisOptions,
     FORM,
     SORM,
     MonteCarlo,
@@ -91,6 +86,11 @@ from .reliability import (
     SensitivityAnalysis,
     SystemFORM,
     StrongMaximumTest,
+)
+from .options import (
+    FORMOptions,
+    SORMOptions,
+    SimulationOptions,
 )
 from .results import (
     FORMResult,
@@ -160,7 +160,9 @@ __all__ = [
     "StochasticModel",
     "LimitState",
     "AnalysisObject",
-    "AnalysisOptions",
+    "FORMOptions",
+    "SORMOptions",
+    "SimulationOptions",
     "FORM",
     "SORM",
     "MonteCarlo",

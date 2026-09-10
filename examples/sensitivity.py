@@ -36,9 +36,9 @@ model.add_variable(ra.Lognormal("R", 5, 5))
 model.add_variable(ra.Lognormal("S", 1, 1))
 model.set_correlation(ra.CorrelationMatrix([[1.0, 0.5], [0.5, 1.0]]))
 
-form = ra.FORM(stochastic_model=model, limit_state=limit_state)
+form = ra.FORM(model=model, limit_state=limit_state)
 form.show_detailed_output()
 
-sens = ra.SensitivityAnalysis(stochastic_model=model, limit_state=limit_state)
-results = sens.run_form()
+sens = ra.SensitivityAnalysis(model=model, limit_state=limit_state)
+results = sens.run()
 print(results)

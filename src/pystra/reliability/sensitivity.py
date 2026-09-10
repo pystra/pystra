@@ -7,12 +7,12 @@ with respect to each distribution parameter declared by
 :attr:`Distribution.sensitivity_params` (by default the mean and
 standard deviation, but subclasses may add shape parameters, etc.).
 
-Two methods are available, selected via the ``numerical`` flag of
-:meth:`SensitivityAnalysis.run`:
+Two methods are available, selected by the ``method`` argument of
+:class:`SensitivityAnalysis`:
 
-- **Finite difference** (``numerical=True``, default): perturbs each
+- **Finite difference** (``method="numerical"``, default): perturbs each
   parameter and re-runs FORM.  Simple but expensive.
-- **Closed-form** (``numerical=False``): post-processes a single FORM
+- **Closed-form** (``method="closed_form"``): post-processes a single FORM
   run using the Cholesky-differentiation approach of
   Bourinet (2017) [Bourinet2017]_.  Also computes correlation
   sensitivities.  Faster and more accurate, especially when the
@@ -20,7 +20,9 @@ Two methods are available, selected via the ``numerical`` flag of
 """
 
 from .form import FORM
-from .analysis import AnalysisOptions
+from ..errors import ModelError
+from ..model import LimitState, StochasticModel
+from ..options import FORMOptions
 from ..results import SensitivityResult
 from .._numerics.cholesky_sensitivity import (
     cholesky_with_derivative,
@@ -28,6 +30,9 @@ from .._numerics.cholesky_sensitivity import (
 )
 from .._numerics.integration import zi_and_xi, drho_drho0, drho0_dtheta
 import copy
+import math
+from numbers import Real
+
 import numpy as np
 
 __all__ = ["SensitivityAnalysis"]
@@ -41,48 +46,62 @@ class SensitivityAnalysis:
     :attr:`Distribution.sensitivity_params` (by default, mean and standard
     deviation; subclasses may add shape parameters, etc.).
 
-    Two algorithms are available, selected by the ``numerical`` argument
-    of :meth:`run`:
+    Two algorithms are available, selected by ``method``:
 
-    - ``numerical=True``  — forward finite differences (default).
-    - ``numerical=False`` — closed-form post-processing of a single FORM
-      run using the approach of Bourinet (2017) [Bourinet2017]_.  This
-      also returns sensitivities to correlation coefficients.
+    - ``"numerical"`` — forward finite differences (default).
+    - ``"closed_form"`` — closed-form post-processing of a single FORM run
+      using the approach of Bourinet (2017) [Bourinet2017]_. This also
+      returns sensitivities to correlation coefficients.
 
     Parameters
     ----------
+    model : StochasticModel
+        The stochastic model (distributions + correlation).
     limit_state : LimitState
         The limit state function definition.
-    stochastic_model : StochasticModel
-        The stochastic model (distributions + correlation).
-    analysis_options : AnalysisOptions, optional
-        Options forwarded to each FORM run.  Defaults are used if
-        ``None``.
+    options : FORMOptions, optional
+        Settings for every FORM run.
+    method : {"numerical", "closed_form"}, default "numerical"
+        Forward finite differences, in which each parameter is perturbed by
+        ``delta`` times its standard deviation and FORM is rerun, or the
+        closed form, which post-processes one FORM run.
+    delta : float, default 0.01
+        Relative perturbation of the numerical method; the closed form does
+        not use it.
     """
 
-    def __init__(self, limit_state, stochastic_model, analysis_options=None):
+    def __init__(
+        self, model, limit_state, *, options=None, method="numerical", delta=0.01
+    ):
+        if not isinstance(model, StochasticModel):
+            raise TypeError("SensitivityAnalysis requires a StochasticModel")
+        if not isinstance(limit_state, LimitState):
+            raise TypeError("SensitivityAnalysis requires a LimitState")
+        if options is None:
+            options = FORMOptions()
+        elif not isinstance(options, FORMOptions):
+            raise TypeError(
+                f"SensitivityAnalysis takes FORMOptions, not {type(options).__name__}"
+            )
+        if method not in ("numerical", "closed_form"):
+            raise ModelError("method must be 'numerical' or 'closed_form'")
+        if (
+            isinstance(delta, bool)
+            or not isinstance(delta, Real)
+            or not math.isfinite(delta)
+            or delta <= 0
+        ):
+            raise ModelError("delta must be a finite positive number")
+        if method == "closed_form" and delta != 0.01:
+            raise ModelError("The closed form does not use delta")
+        self.model = model
         self.limitstate = limit_state
-        self.model = stochastic_model
+        self.options = options
+        self.method = method
+        self.delta = delta
 
-        # Options for the calculation
-        if analysis_options is None:
-            self.options = AnalysisOptions()
-        else:
-            self.options = analysis_options
-
-    def run(self, numerical=True, delta=0.01):
-        r"""Run FORM-based sensitivity analysis.
-
-        Parameters
-        ----------
-        numerical : bool, optional
-            If ``True`` (default), use forward finite differences: each
-            parameter is perturbed by ``delta * stdv`` and FORM is
-            re-run.  If ``False``, use the closed-form approach of
-            Bourinet (2017) which post-processes a single FORM run.
-        delta : float, optional
-            Relative perturbation size for the finite-difference method
-            (default 0.01, i.e. 1 %).  Ignored when ``numerical=False``.
+    def run(self):
+        r"""Run the sensitivity analysis.
 
         Returns
         -------
@@ -95,8 +114,9 @@ class SensitivityAnalysis:
             is :math:`\partial\beta / \partial\rho_{ij}`, with a zero diagonal.
         """
         self._evaluations, self._converged = 0, True
+        numerical = self.method == "numerical"
         if numerical:
-            base, marginal = self._numerical_sens(delta)
+            base, marginal = self._numerical_sens(self.delta)
             correlation = None
         else:
             base, marginal, correlation = self._cf_sens()
@@ -113,30 +133,23 @@ class SensitivityAnalysis:
             failure_probability=base.failure_probability,
             beta=base.beta,
             form=base,
-            approach="numerical" if numerical else "closed_form",
+            approach=self.method,
             marginal={
                 name: {param: float(value) for param, value in params.items()}
                 for name, params in marginal.items()
             },
             correlation=correlation,
-            delta=delta if numerical else None,
+            delta=self.delta if numerical else None,
+            options=self.options,
         )
 
     def _form(self, model):
         """Run FORM on *model*, recording its evaluations and convergence."""
-        form = FORM(
-            stochastic_model=model,
-            limit_state=self.limitstate,
-            analysis_options=self.options,
-        )
+        form = FORM(model, self.limitstate, options=self.options)
         result = form.run()
         self._evaluations += result.n_limit_state_evaluations
         self._converged = self._converged and result.converged
         return form, result
-
-    def run_form(self, numerical=True, delta=0.01):
-        """Alias for :meth:`run` (backwards compatibility)."""
-        return self.run(numerical=numerical, delta=delta)
 
     def summary(self, result):
         """Return a pandas DataFrame of a result's marginal sensitivities.
@@ -219,7 +232,7 @@ class SensitivityAnalysis:
         of Bourinet (2017) and Eqs. (17)–(25) for the derivative
         integrals.  No additional FORM runs are required.
         """
-        if self.model.get_copula() is not None or self.options.get_transform() in (
+        if self.model.get_copula() is not None or self.options.transform in (
             "nataf",
             "rosenblatt",
         ):

@@ -8,6 +8,7 @@ import numpy as np
 from scipy.stats import norm, qmc
 
 from ..reliability.analysis import AnalysisObject
+from ..options import SimulationOptions
 from ._validation import _positive_integer, _points, _training, _predictions
 from .surrogates import Surrogate, KrigingSurrogate, PCESurrogate, EnsembleSurrogate
 from .pc_kriging import PCKrigingSurrogate
@@ -37,8 +38,13 @@ class ActiveLearning(AnalysisObject):
 
     Parameters
     ----------
-    stochastic_model, limit_state, analysis_options : optional
+    model : StochasticModel
+    limit_state : LimitState
         Standard PySTRA analysis inputs. Failure is g <= 0.
+    options : SimulationOptions, optional
+        Block size and transformation. Sample sizes and precision are this
+        class's own arguments, so ``n_samples``, ``target_cov``,
+        ``sampling_std`` and ``bins`` are rejected.
     surrogate : str or Surrogate
         'kriging' (default), 'pce', 'pc_kriging', or an explicitly supplied fitted-model
         implementation. A supplied object is refitted in place by run().
@@ -88,12 +94,14 @@ class ActiveLearning(AnalysisObject):
     independently for the problem being assessed.
     """
 
+    _options_type = SimulationOptions
+
     def __init__(
         self,
+        model,
+        limit_state,
         *,
-        stochastic_model=None,
-        limit_state=None,
-        analysis_options=None,
+        options=None,
         surrogate: Union[str, Surrogate] = "kriging",
         learning_function: Union[str, LearningFunction] = "u",
         n_initial: Optional[int] = None,
@@ -107,10 +115,9 @@ class ActiveLearning(AnalysisObject):
         surrogate_kwargs: Optional[dict] = None,
         seed: Optional[int] = None,
     ):
-        super().__init__(
-            stochastic_model=stochastic_model,
-            limit_state=limit_state,
-            analysis_options=analysis_options,
+        super().__init__(model, limit_state, options)
+        self.options._require_defaults(
+            "ActiveLearning", ("n_samples", "target_cov", "sampling_std", "bins")
         )
         if not isinstance(surrogate, Surrogate) and surrogate not in (
             "kriging",
@@ -198,9 +205,7 @@ class ActiveLearning(AnalysisObject):
         physical = np.asarray(
             [self.transform.u_to_x(point, marginals) for point in points]
         )
-        values, _ = self.limitstate.evaluate_lsf(
-            physical.T, self.model, self.options, "no", counter=self._count
-        )
+        values, _ = self._lsf(physical.T)
         return _training(points, np.asarray(values).ravel())[1]
 
     def _predict(self, surrogate, points):

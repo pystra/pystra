@@ -121,10 +121,18 @@ Changed
   model's running total.
 - ``SensitivityAnalysis.run()`` returns a ``SensitivityResult`` rather than a
   dictionary; the derivatives are in ``marginal`` and ``correlation``.
+- ``AnalysisOptions`` is replaced by frozen ``FORMOptions``, ``SORMOptions`` and
+  ``SimulationOptions``, which validate their values and reject unknown or
+  unused settings. Its nine settings that had no effect are removed, and
+  analyses no longer print.
+- Analysis constructors take ``(model, limit_state, *, options=None, ...)``.
+  ``SensitivityAnalysis`` takes its method and step, and ``SystemFORM`` takes
+  the model first. SORM, importance sampling and line sampling run FORM in
+  ``run()``, not when constructed, and SORM's fit is an option.
 - In the result records, a SORM fit whose curvatures leave Breitung's formula
   undefined has no estimate and status ``not_converged``, where 1.x reported
   0.0; a simulation without failures has an infinite coefficient of variation.
-- The top-level namespace is curated (68 names in ``pystra.__all__``) and every
+- The top-level namespace is curated (70 names in ``pystra.__all__``) and every
   module declares ``__all__``. Code-calibration and decision tools, new in 2.0,
   are imported from ``pystra.calibration`` and ``pystra.decision``;
   ``ActiveLearning`` is exported at the top level. Old names and module paths

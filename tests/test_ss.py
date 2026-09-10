@@ -18,8 +18,7 @@ def simple_rs_model():
     model.add_variable(ra.Normal("R", 10, 2))
     model.add_variable(ra.Normal("S", 5, 1))
     limit_state = ra.LimitState(lambda R, S: R - S)
-    options = ra.AnalysisOptions()
-    options.set_print_output(False)
+    options = ra.SimulationOptions()
     return model, limit_state, options
 
 
@@ -40,8 +39,7 @@ def standard_3rv_model():
         ra.CorrelationMatrix([[1.0, 0.3, 0.2], [0.3, 1.0, 0.2], [0.2, 0.2, 1.0]])
     )
     limit_state = ra.LimitState(lsf)
-    options = ra.AnalysisOptions()
-    options.set_print_output(False)
+    options = ra.SimulationOptions()
     return model, limit_state, options
 
 
@@ -54,11 +52,11 @@ def test_ss_simple_rs():
     """Subset Simulation on R - S problem should give beta close to analytical."""
     np.random.seed(42)
     model, limit_state, options = simple_rs_model()
-    options.set_samples(1000)
+    options = ra.SimulationOptions(n_samples=1000)
 
     analysis = ra.SubsetSimulation(
-        analysis_options=options,
-        stochastic_model=model,
+        options=options,
+        model=model,
         limit_state=limit_state,
         p0=0.1,
     )
@@ -75,11 +73,11 @@ def test_ss_thresholds_decreasing():
     """Intermediate thresholds must be non-increasing, ending at 0."""
     np.random.seed(5)
     model, limit_state, options = simple_rs_model()
-    options.set_samples(500)
+    options = ra.SimulationOptions(n_samples=500)
 
     analysis = ra.SubsetSimulation(
-        analysis_options=options,
-        stochastic_model=model,
+        options=options,
+        model=model,
         limit_state=limit_state,
     )
     analysis.run()
@@ -95,11 +93,11 @@ def test_ss_n_levels_consistent():
     """n_levels must equal the number of thresholds and conditional_probs."""
     np.random.seed(3)
     model, limit_state, options = simple_rs_model()
-    options.set_samples(500)
+    options = ra.SimulationOptions(n_samples=500)
 
     analysis = ra.SubsetSimulation(
-        analysis_options=options,
-        stochastic_model=model,
+        options=options,
+        model=model,
         limit_state=limit_state,
     )
     analysis.run()
@@ -112,11 +110,11 @@ def test_ss_conditional_probs_valid():
     """Conditional probabilities at each level must lie in (0, 1]."""
     np.random.seed(11)
     model, limit_state, options = simple_rs_model()
-    options.set_samples(500)
+    options = ra.SimulationOptions(n_samples=500)
 
     analysis = ra.SubsetSimulation(
-        analysis_options=options,
-        stochastic_model=model,
+        options=options,
+        model=model,
         limit_state=limit_state,
     )
     analysis.run()
@@ -129,11 +127,11 @@ def test_ss_standard_problem():
     """Subset Simulation on the three-variable correlated problem."""
     np.random.seed(77)
     model, limit_state, options = standard_3rv_model()
-    options.set_samples(1000)
+    options = ra.SimulationOptions(n_samples=1000)
 
     analysis = ra.SubsetSimulation(
-        analysis_options=options,
-        stochastic_model=model,
+        options=options,
+        model=model,
         limit_state=limit_state,
         p0=0.1,
     )
@@ -149,8 +147,8 @@ def test_ss_invalid_p0():
     model, limit_state, options = simple_rs_model()
     with pytest.raises(ValueError, match="p0 must be in"):
         ra.SubsetSimulation(
-            analysis_options=options,
-            stochastic_model=model,
+            options=options,
+            model=model,
             limit_state=limit_state,
             p0=1.5,
         )
@@ -160,11 +158,11 @@ def test_ss_product_of_cond_probs():
     """Pf must equal the product of the conditional probabilities."""
     np.random.seed(21)
     model, limit_state, options = simple_rs_model()
-    options.set_samples(500)
+    options = ra.SimulationOptions(n_samples=500)
 
     analysis = ra.SubsetSimulation(
-        analysis_options=options,
-        stochastic_model=model,
+        options=options,
+        model=model,
         limit_state=limit_state,
     )
     analysis.run()
@@ -177,11 +175,11 @@ def test_ss_results_valid_flag():
     """results_valid should be True after run()."""
     np.random.seed(0)
     model, limit_state, options = simple_rs_model()
-    options.set_samples(200)
+    options = ra.SimulationOptions(n_samples=200)
 
     analysis = ra.SubsetSimulation(
-        analysis_options=options,
-        stochastic_model=model,
+        options=options,
+        model=model,
         limit_state=limit_state,
     )
     assert not analysis.results_valid
@@ -193,11 +191,11 @@ def test_ss_get_beta_get_failure_consistent():
     """get_beta() and get_failure() should be consistent with stored attributes."""
     np.random.seed(8)
     model, limit_state, options = simple_rs_model()
-    options.set_samples(300)
+    options = ra.SimulationOptions(n_samples=300)
 
     analysis = ra.SubsetSimulation(
-        analysis_options=options,
-        stochastic_model=model,
+        options=options,
+        model=model,
         limit_state=limit_state,
     )
     analysis.run()
@@ -210,11 +208,11 @@ def test_ss_custom_proposal_sigma():
     """A non-default proposal_sigma should still give valid results."""
     np.random.seed(17)
     model, limit_state, options = simple_rs_model()
-    options.set_samples(500)
+    options = ra.SimulationOptions(n_samples=500)
 
     analysis = ra.SubsetSimulation(
-        analysis_options=options,
-        stochastic_model=model,
+        options=options,
+        model=model,
         limit_state=limit_state,
         proposal_sigma=0.5,
     )

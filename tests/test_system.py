@@ -190,8 +190,7 @@ def test_system_as_limit_state_integrates_with_pystra_evaluation():
     model.add_variable(ra.Normal("V", 12.0, 1.0))
     model.add_variable(ra.Normal("S", 4.0, 1.0))
 
-    options = ra.AnalysisOptions()
-    options.set_print_output(False)
+    options = ra.FORMOptions()
 
     x = np.array(
         [
@@ -200,7 +199,7 @@ def test_system_as_limit_state_integrates_with_pystra_evaluation():
             [4.0, 4.0],
         ]
     )
-    values, gradient = limit_state.evaluate_lsf(x, model, options, diff_mode="no")
+    values, gradient = limit_state.evaluate_lsf(x, model)
 
     np.testing.assert_allclose(values, np.array([[4.0, -2.0]]))
     assert gradient.shape == x.shape
@@ -219,13 +218,12 @@ def test_system_limit_state_runs_form_analysis():
     model.add_variable(ra.Normal("V", 12.0, 1.0))
     model.add_variable(ra.Normal("S", 4.0, 1.0))
 
-    options = ra.AnalysisOptions()
-    options.set_print_output(False)
+    options = ra.FORMOptions()
 
     form = ra.FORM(
-        stochastic_model=model,
+        model=model,
         limit_state=system.as_limit_state(),
-        analysis_options=options,
+        options=options,
     )
     form.run()
 

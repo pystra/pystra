@@ -28,7 +28,7 @@ After FORM
    model.add_variable(ra.Normal("X", 0.0, 1.0))
    model.add_variable(ra.Normal("Y", 0.0, 1.0))
    form = ra.FORM(
-       stochastic_model=model,
+       model,
        limit_state=ra.LimitState(lambda X, Y: 3.0 - X),
    )
    form.run()
@@ -55,7 +55,7 @@ Alternatively, specify a point explicitly:
 .. code-block:: python
 
    check = ra.StrongMaximumTest(
-       stochastic_model=model,
+       model=model,
        limit_state=ra.LimitState(lambda X, Y: 9.0 - X**2),
        design_point=[3.0, 0.0],
        point_number=500, seed=2026,
@@ -67,7 +67,7 @@ Alternatively, specify a point explicitly:
    competing_g = check.get_values("far_failure")
 
 The explicit point must be a finite vector in the model's independent
-standard-normal coordinates. ``analysis_options`` selects its transformation
+standard-normal coordinates. ``options`` (``FORMOptions``) selects its transformation
 and, for Rosenblatt, conditioning order. For a non-Gaussian copula, use
 :ref:`Rosenblatt <chap_copulas>`; spherical Student-t Nataf space is rejected.
 The test verifies a strictly safe origin and a boundary

@@ -6,7 +6,8 @@ import numpy as np
 from .form import FORM
 from .analysis import AnalysisObject
 from scipy.stats import norm as normal
-from ..errors import AnalysisError
+from ..errors import AnalysisError, ModelError
+from ..options import FORMOptions, SORMOptions
 from ..results import FORMResult, SORMResult
 
 __all__ = ["SORM"]
@@ -19,11 +20,11 @@ class SORM(AnalysisObject):
     quadratic surface, improving on the linear FORM approximation. Two
     approaches are available:
 
-    **Curve-fitting** (``fit_type='cf'``, default): computes the Hessian of
+    **Curve-fitting** (``fit="curve"``, default): computes the Hessian of
     the limit state function at the design point, extracts principal
     curvatures as eigenvalues, and applies the Breitung formula.
 
-    **Point-fitting** (``fit_type='pf'``): locates fitting points directly
+    **Point-fitting** (``fit="point"``): locates fitting points directly
     on the failure surface on both sides of each principal axis using Newton
     iteration, then computes curvatures from their positions. This yields
     asymmetric curvatures (different on the positive and negative sides of
@@ -35,15 +36,16 @@ class SORM(AnalysisObject):
 
     Parameters
     ----------
-    stochastic_model : StochasticModel, optional
+    model : StochasticModel
         The stochastic model with random variables and correlations.
-    limit_state : LimitState, optional
+    limit_state : LimitState
         The limit state function.
-    analysis_options : AnalysisOptions, optional
-        Options controlling the analysis.
+    options : SORMOptions, optional
+        The fit, the reported formula and the Hessian step.
     form : FORM, optional
-        A pre-computed FORM result. If ``None``, FORM is run automatically.
-        SORM requires a successfully converged FORM analysis before running.
+        A completed, converged FORM analysis, whose design point,
+        transformation and settings SORM reuses. If ``None``, :meth:`run`
+        first runs FORM with ``options.form``.
 
     Notes
     -----
@@ -74,29 +76,18 @@ class SORM(AnalysisObject):
         Generalised reliability index from the modified Breitung.
     """
 
-    def __init__(
-        self, stochastic_model=None, limit_state=None, analysis_options=None, form=None
-    ):
-        """
-        Class constructor
-        """
-        super().__init__(
-            analysis_options=analysis_options,
-            limit_state=limit_state,
-            stochastic_model=stochastic_model,
-        )
+    _options_type = SORMOptions
 
-        # Has FORM already been run? If it exists it has, otherwise run it now
-        if form is None:
-            self.form = FORM(
-                stochastic_model=self.model,
-                limit_state=self.limitstate,
-                analysis_options=self.options,
+    def __init__(self, model, limit_state, *, options=None, form=None):
+        if form is not None and not isinstance(form, FORM):
+            raise TypeError("form must be a FORM analysis")
+        self.form = form
+        super().__init__(model, limit_state, options)
+        if form is not None and self.options.form != FORMOptions():
+            raise ModelError(
+                "options.form applies only when SORM runs FORM; "
+                "a supplied FORM analysis keeps its own settings"
             )
-            self.form.run()
-        else:
-            self.form = form
-
         self._reset_results()
 
     def _reset_results(self):
@@ -112,25 +103,34 @@ class SORM(AnalysisObject):
         self.betag_breitung_m = None
         self._undefined = set()
 
+    def _form_options(self):
+        return self.options.form if self.form is None else self.form.options
+
+    def _dependence(self):
+        options = self._form_options()
+        return options.transform, options.rosenblatt_order
+
+    def _settings(self):
+        return self._form_options()
+
     def _prepare_run(self, fit_type):
-        """Require a valid FORM design point before preparing either fit."""
+        """Run FORM if needed and require a converged design point."""
         self._reset_results()
+        if self.form is None:
+            form = FORM(self.model, self.limitstate, options=self.options.form)
+            form.run()
+            self.form = form
         if not self.form.results_valid or not self.form.converged:
             raise AnalysisError("SORM requires a successfully converged FORM analysis")
         self.init_run()
         self.fit_type = fit_type
 
-    def run(self, fit_type="cf"):
-        """Run SORM analysis.
+    def run(self):
+        """Run SORM with the fit in ``options.fit``.
 
-        Parameters
-        ----------
-        fit_type : {'cf', 'pf'}, optional
-            Fitting method to use (default ``'cf'``):
-
-            - ``'cf'`` — Curve-fitting via Hessian eigenvalues.
-            - ``'pf'`` — Point-fitting via Newton iteration on the failure
-              surface.
+        Curve fitting uses the eigenvalues of the Hessian at the design
+        point; point fitting locates points on the failure surface by Newton
+        iteration. FORM is run first if no FORM analysis was supplied.
 
         Returns
         -------
@@ -139,21 +139,12 @@ class SORM(AnalysisObject):
 
         Raises
         ------
-        ValueError
-            If *fit_type* is not ``'cf'`` or ``'pf'``.
-        RuntimeError
-            If the FORM analysis has not run or did not converge successfully.
+        AnalysisError
+            If FORM did not converge, or a fitting point cannot be found.
         """
-        if fit_type == "cf":
+        if self.options.fit == "curve":
             return self.run_curvefit()
-        elif fit_type == "pf":
-            return self.run_pointfit()
-        else:
-            self._reset_results()
-            raise ValueError(
-                f"Unknown fit_type '{fit_type}'. Use 'cf' (curve-fitting) "
-                f"or 'pf' (point-fitting)."
-            )
+        return self.run_pointfit()
 
     def run_curvefit(self):
         """Run curve fitting and return a :class:`SORMResult`; FORM must have converged."""
@@ -168,8 +159,6 @@ class SORM(AnalysisObject):
         self.pf_breitung(self.betaHL, self.kappa)
         self.pf_breitung_m(self.betaHL, self.kappa)
         self.results_valid = True
-        if self.options.get_print_output():
-            self.show_results()
         return self._result()
 
     def run_pointfit(self):
@@ -236,8 +225,6 @@ class SORM(AnalysisObject):
         self._pf_breitung_m_pf(beta, kappa_minus, kappa_plus)
 
         self.results_valid = True
-        if self.options.get_print_output():
-            self.show_results()
         return self._result()
 
     def _result(self):
@@ -248,23 +235,24 @@ class SORM(AnalysisObject):
         }
         for name in self._undefined:
             approximations[name] = None
-        estimate = approximations["breitung"]
+        estimate = approximations[self.options.formula]
         return SORMResult(
             method="SORM",
             status="converged" if estimate is not None else "not_converged",
             message=(
                 "Fitted"
                 if estimate is not None
-                else "Breitung's formula is undefined for the fitted curvatures"
+                else f"The {self.options.formula.replace('_', ' ')} formula is undefined for the fitted curvatures"
             ),
             n_limit_state_evaluations=self._n_evaluations,
             variable_names=tuple(self.model.get_variables()),
             failure_probability=estimate,
-            beta=self.betag_breitung if estimate is not None else None,
+            beta=float(-normal.ppf(estimate)) if estimate is not None else None,
             form=FORMResult.from_analysis(self.form),
             fit="curve" if self.fit_type == "cf" else "point",
             curvatures=self.kappa if self.fit_type == "cf" else self.kappa_pf,
-            formula="breitung",
+            formula=self.options.formula,
+            options=self.options,
             approximations=approximations,
         )
 
@@ -377,7 +365,6 @@ class SORM(AnalysisObject):
             )
             self.betag_breitung = float(-normal.ppf(self.pf2_breitung))
         else:
-            print("*** SORM Point-Fitting Breitung error, excessive curvatures")
             self._undefined.add("breitung")
             self.pf2_breitung = 0.0
             self.betag_breitung = 0.0
@@ -406,7 +393,6 @@ class SORM(AnalysisObject):
             )
             self.betag_breitung_m = float(-normal.ppf(self.pf2_breitung_m))
         else:
-            print("*** SORM Point-Fitting Breitung Modified error")
             self._undefined.add("modified_breitung")
             self.pf2_breitung_m = 0.0
             self.betag_breitung_m = 0.0
@@ -424,7 +410,6 @@ class SORM(AnalysisObject):
             )
             self.betag_breitung = float(-normal.ppf(self.pf2_breitung))
         else:
-            print("*** SORM Breitung error, excessive curavtures")
             self._undefined.add("breitung")
             self.pf2_breitung = 0.0
             self.betag_breitung = 0.0
@@ -444,7 +429,6 @@ class SORM(AnalysisObject):
             )
             self.betag_breitung_m = float(-normal.ppf(self.pf2_breitung_m))
         else:
-            print("*** SORM Breitung Modified error")
             self._undefined.add("modified_breitung")
             self.pf2_breitung_m = 0.0
             self.betag_breitung_m = 0.0
@@ -545,7 +529,7 @@ class SORM(AnalysisObject):
 
         """
 
-        h = 1 / self.options.ffdpara
+        h = 1 / self.options.ffd_parameter
         nrv = self.form.alpha.shape[1]
         hess_G = np.zeros((nrv, nrv))
 
@@ -634,9 +618,7 @@ class SORM(AnalysisObject):
         x0 = np.copy(x)  # avoid modifying argument in func calls below
 
         if calc_gradient:
-            G, grad = self.limitstate.evaluate_lsf(
-                x0, self.model, self.options, counter=self._count
-            )
+            G, grad = self._lsf(x0, gradient=True)
             grad = np.transpose(grad)
             if u_space:
                 marg = self.model.get_marginal_distributions()
@@ -645,9 +627,7 @@ class SORM(AnalysisObject):
                 J_x_u = np.linalg.inv(J_u_x)
                 grad = np.dot(grad, J_x_u)
         else:
-            G, _ = self.limitstate.evaluate_lsf(
-                x0, self.model, self.options, counter=self._count
-            )
+            G, _ = self._lsf(x0, gradient=True)
 
         return G, grad
 

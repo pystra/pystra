@@ -21,16 +21,12 @@ def margin(offset=0.0):
 
 
 def options(samples=None, target_cov=None):
-    result = ra.AnalysisOptions()
-    if samples is not None:
-        result.set_samples(samples)
-    if target_cov is not None:
-        result.target_cov = target_cov
-    return result
+    settings = {"n_samples": samples, "target_cov": target_cov}
+    return ra.SimulationOptions(**{k: v for k, v in settings.items() if v is not None})
 
 
 def form():
-    analysis = ra.FORM(stochastic_model=normal_model(), limit_state=margin())
+    analysis = ra.FORM(model=normal_model(), limit_state=margin())
     return analysis, analysis.run()
 
 
@@ -76,8 +72,9 @@ def test_results_compare_by_value_and_form_tabulates_by_variable():
 
 
 def test_unconverged_form_result_has_no_estimate_or_table():
-    analysis = ra.FORM(stochastic_model=normal_model(), limit_state=margin())
-    analysis.options.set_imax(1)
+    analysis = ra.FORM(
+        normal_model(), margin(), options=ra.FORMOptions(max_iterations=1)
+    )
     with pytest.warns(RuntimeWarning, match="did not converge"):
         result = analysis.run()
     assert result.status == "not_converged" and not result.converged
@@ -100,10 +97,12 @@ def test_sorm_result_reports_breitung_and_each_approximation(fit, fit_type, shap
     model = ra.StochasticModel()
     model.add_variable(ra.Lognormal("R", 10.0, 1.5))
     model.add_variable(ra.Normal("S", 5.0, 1.0))
-    first = ra.FORM(stochastic_model=model, limit_state=margin())
+    first = ra.FORM(model=model, limit_state=margin())
     form_result = first.run()
-    sorm = ra.SORM(stochastic_model=model, limit_state=margin(), form=first)
-    result = sorm.run(fit_type=fit_type)
+    sorm = ra.SORM(
+        model=model, limit_state=margin(), form=first, options=ra.SORMOptions(fit=fit)
+    )
+    result = sorm.run()
     assert isinstance(result, ra.SORMResult) and result.status == "converged"
     assert (result.fit, result.formula) == (fit, "breitung")
     assert result.failure_probability == result.approximations["breitung"]
@@ -124,9 +123,9 @@ def curved_sorm(c):
     model.add_variable(ra.Normal("X1", 0.0, 1.0))
     model.add_variable(ra.Normal("X2", 0.0, 1.0))
     limit_state = ra.LimitState(lambda X1, X2: 3 - X2 - c * X1**2)
-    analysis = ra.FORM(stochastic_model=model, limit_state=limit_state)
+    analysis = ra.FORM(model=model, limit_state=limit_state)
     analysis.run()
-    return ra.SORM(stochastic_model=model, limit_state=limit_state, form=analysis).run()
+    return ra.SORM(model=model, limit_state=limit_state, form=analysis).run()
 
 
 def test_sorm_without_a_defined_breitung_estimate_is_not_converged(capsys):
@@ -149,9 +148,9 @@ def test_sorm_keeps_breitung_when_only_the_modified_formula_is_undefined(capsys)
 def crude(samples, offset=3.0, target_cov=None, seed=11):
     np.random.seed(seed)
     analysis = ra.CrudeMonteCarlo(
-        analysis_options=options(samples, target_cov),
+        options=options(samples, target_cov),
         limit_state=margin(offset),
-        stochastic_model=normal_model(),
+        model=normal_model(),
     )
     return analysis, analysis.run()
 
@@ -182,9 +181,9 @@ def test_simulation_without_failures_has_infinite_coefficient_of_variation():
 def test_importance_and_line_sampling_record_their_form_point():
     np.random.seed(5)
     importance = ra.ImportanceSampling(
-        analysis_options=options(2000),
+        options=options(2000),
         limit_state=margin(),
-        stochastic_model=normal_model(),
+        model=normal_model(),
     )
     result = importance.run()
     assert result.method == "ImportanceSampling"
@@ -193,9 +192,9 @@ def test_importance_and_line_sampling_record_their_form_point():
         result.diagnostics["form"].design_point_u, importance.point.ravel()
     )
     lines = ra.LineSampling(
-        analysis_options=options(50),
+        options=options(50),
         limit_state=margin(),
-        stochastic_model=normal_model(),
+        model=normal_model(),
     )
     result = lines.run()
     assert (result.method, result.status) == ("LineSampling", "completed")
@@ -209,9 +208,9 @@ def test_importance_and_line_sampling_record_their_form_point():
 def test_subset_simulation_records_its_levels():
     np.random.seed(7)
     analysis = ra.SubsetSimulation(
-        analysis_options=options(500),
+        options=options(500),
         limit_state=margin(),
-        stochastic_model=normal_model(),
+        model=normal_model(),
     )
     result = analysis.run()
     levels = result.diagnostics
@@ -236,9 +235,9 @@ def test_simulation_records_survive_pickling():
 def test_distribution_analysis_returns_its_samples():
     np.random.seed(9)
     analysis = ra.DistributionAnalysis(
-        analysis_options=options(300),
+        options=options(300),
         limit_state=margin(),
-        stochastic_model=normal_model(),
+        model=normal_model(),
     )
     result = analysis.run()
     assert isinstance(result, ra.DistributionAnalysisResult)
@@ -259,7 +258,7 @@ def test_system_form_result_holds_each_component_record():
     system = ra.SeriesSystem(
         [ra.Component("x", lambda X: 3 - X), ra.Component("y", lambda Y: 3 - Y)]
     )
-    analysis = ra.SystemFORM(system, model)
+    analysis = ra.SystemFORM(model, system)
     result = analysis.run()
     assert isinstance(result, ra.SystemFORMResult) and result.status == "converged"
     assert result.failure_probability == analysis.get_failure()
@@ -276,8 +275,8 @@ def test_system_form_result_holds_each_component_record():
 
 @pytest.mark.parametrize("numerical", [True, False])
 def test_sensitivity_result_holds_read_only_derivatives(numerical):
-    analysis = ra.SensitivityAnalysis(margin(), normal_model())
-    result = analysis.run(numerical=numerical)
+    method = "numerical" if numerical else "closed_form"
+    result = ra.SensitivityAnalysis(normal_model(), margin(), method=method).run()
     assert isinstance(result, ra.SensitivityResult) and result.status == "converged"
     assert result.approach == ("numerical" if numerical else "closed_form")
     assert result.form.beta == result.beta == pytest.approx(5 / np.sqrt(2))

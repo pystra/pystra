@@ -98,7 +98,7 @@ Verifying your distribution
        model.add_variable(MyDist("X", 100, 15, shape=0.2))
        model.add_variable(ra.Normal("Y", 50, 10))
        ls = ra.LimitState(lambda X, Y: X - Y)
-       f = ra.FORM(stochastic_model=model, limit_state=ls)
+       f = ra.FORM(model, ls)
        f.run()
        f.show_detailed_output()
 
@@ -115,9 +115,8 @@ Verifying your distribution
    ``_make_copy``), so running both methods is a good integration
    check::
 
-       sa = ra.SensitivityAnalysis(limit_state, model)
-       fd = sa.run(numerical=True)    # finite-difference
-       cf = sa.run(numerical=False)   # closed-form
+       fd = ra.SensitivityAnalysis(model, limit_state).run()  # finite-difference
+       cf = ra.SensitivityAnalysis(model, limit_state, method="closed_form").run()
 
    FD and CF sensitivities should agree (typically within 5 % for
    mean/std, possibly 10–15 % for shape parameters due to inherent

@@ -5,6 +5,7 @@ import numpy as np
 import warnings
 from scipy.stats import norm as normal
 from .analysis import AnalysisObject
+from ..options import FORMOptions
 from ..results import FORMResult
 from ..dependence.correlation import set_modified_correlation_matrix
 
@@ -16,12 +17,12 @@ class FORM(AnalysisObject):
 
     Parameters
     ----------
-    stochastic_model : StochasticModel
+    model : StochasticModel
         Named physical variables and their joint probability model.
     limit_state : LimitState
         Physical response, with negative values indicating failure.
-    analysis_options : AnalysisOptions, optional
-        Transformation, derivative, iteration and convergence settings.
+    options : FORMOptions, optional
+        Iteration, convergence, differentiation and transformation settings.
 
     Notes
     -----
@@ -41,13 +42,10 @@ class FORM(AnalysisObject):
     """
 
     supports_spherical_space = True
+    _options_type = FORMOptions
 
-    def __init__(self, stochastic_model=None, limit_state=None, analysis_options=None):
-        super().__init__(
-            stochastic_model=stochastic_model,
-            limit_state=limit_state,
-            analysis_options=analysis_options,
-        )
+    def __init__(self, model, limit_state, *, options=None):
+        super().__init__(model, limit_state, options)
 
         self.i = None
         self.u = None
@@ -74,14 +72,6 @@ class FORM(AnalysisObject):
         self.converged = False
         self.beta = self.Pf = None
         self.i = self.e1 = self.e2 = None
-        imax = self.options.get_imax()
-        if (
-            isinstance(imax, bool)
-            or not isinstance(imax, (int, np.integer))
-            or imax < 1
-        ):
-            raise ValueError("FORM iteration limit must be a positive integer")
-
         self.init_run()
 
         # Compute starting point for the algorithm
@@ -96,10 +86,6 @@ class FORM(AnalysisObject):
 
         # loope
         while not convergence:
-            if self.options.get_print_output():
-                print(".......................................")
-                print("Now carrying out iteration number:", i)
-
             # Compute Transformation from u to x space
             self.compute_transformation()
 
@@ -121,9 +107,6 @@ class FORM(AnalysisObject):
             # Set scale parameter Go and inform about struct. resp.
             if i == 1:
                 self.Go = self.G
-                if self.options.get_print_output():
-                    print("Value of limit-state function in the first step:", self.G)
-
             # Compute alpha vector
             self.compute_alpha()
 
@@ -135,12 +118,9 @@ class FORM(AnalysisObject):
             e1 = float(np.abs(self.G).item()) / scale
             e2 = np.linalg.norm(self.u - self.alpha.dot(self.u).dot(self.alpha))
             self.e1, self.e2 = e1, float(e2)
-            condition1 = e1 < self.options.get_e1()
-            condition2 = e2 < self.options.get_e2()
-            condition3 = i == self.options.get_imax()
-            if self.options.get_print_output():
-                print(f"e1 = {e1:1.6e} , e2 = {e2:1.6e}")
-
+            condition1 = e1 < self.options.limit_state_tolerance
+            condition2 = e2 < self.options.gradient_tolerance
+            condition3 = i == self.options.max_iterations
             if condition1 and condition2 or condition3:
                 self.i = i
                 self.converged = bool(condition1 and condition2)
@@ -175,8 +155,6 @@ class FORM(AnalysisObject):
             )
 
         # Show Results
-        if self.options.get_print_output() and self.results_valid:
-            self.show_results()
         return FORMResult.from_analysis(self)
 
     def compute_starting_point(self):
@@ -203,9 +181,7 @@ class FORM(AnalysisObject):
 
     def compute_limit_state(self):
         """Evaluate limit-state function and its gradient"""
-        G, gradient = self.limitstate.evaluate_lsf(
-            self.x, self.model, self.options, counter=self._count
-        )
+        G, gradient = self._lsf(self.x, gradient=True)
         self.G = G
         self.gradient = np.dot(np.transpose(gradient), self.J)
 
@@ -228,7 +204,7 @@ class FORM(AnalysisObject):
 
     def get_step_size(self):
         """Determine step size"""
-        if self.options.get_step_size() == 0:
+        if self.options.step_size == 0:
             self.step = self.compute_step_size(
                 self.G,
                 self.gradient,
@@ -236,7 +212,7 @@ class FORM(AnalysisObject):
                 self.d,
             )
         else:
-            self.step = self.options.get_step_size()
+            self.step = self.options.step_size
 
     def compute_step_size(self, G, gradient, u, d):
         """Calculate the step size for the calculation
@@ -268,35 +244,24 @@ class FORM(AnalysisObject):
             )
             Trial_x[:, j] = np.transpose(trial_x)
 
-        if self.options.get_multi_proc() == 0:
-            print("Error: function not yet implemented")
-        if self.options.get_multi_proc() == 1:
-            Trial_G, _ = self.limitstate.evaluate_lsf(
-                Trial_x, self.model, self.options, "no", counter=self._count
+        Trial_G, _ = self._lsf(Trial_x)
+        Merit_new = np.zeros(ntrial)
+
+        for j in range(ntrial):
+            merit_new = 0.5 * (np.linalg.norm(Trial_u[:, j])) ** 2 + c * np.absolute(
+                Trial_G[0][j]
             )
-            Merit_new = np.zeros(ntrial)
+            Merit_new[j] = merit_new
 
-            for j in range(ntrial):
-                merit_new = 0.5 * (
-                    np.linalg.norm(Trial_u[:, j])
-                ) ** 2 + c * np.absolute(Trial_G[0][j])
-                Merit_new[j] = merit_new
+        trial_step_size = Trial_step_size[0][0]
+        merit_new = Merit_new[0]
 
-            trial_step_size = Trial_step_size[0][0]
-            merit_new = Merit_new[0]
+        j = 0
 
-            j = 0
-
-            while merit_new > merit and j < ntrial:
-                trial_step_size = Trial_step_size[0][j]
-                merit_new = Merit_new[j]
-                j += 1
-                if j == ntrial and merit_new > merit:
-                    if self.options.get_print_output():
-                        print(
-                            "The step size has been reduced by a factor of 1/",
-                            2**ntrial,
-                        )
+        while merit_new > merit and j < ntrial:
+            trial_step_size = Trial_step_size[0][j]
+            merit_new = Merit_new[j]
+            j += 1
         step_size = trial_step_size
         return step_size
 

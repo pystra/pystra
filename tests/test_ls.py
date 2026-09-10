@@ -18,8 +18,7 @@ def simple_rs_model():
     model.add_variable(ra.Normal("R", 10, 2))
     model.add_variable(ra.Normal("S", 5, 1))
     limit_state = ra.LimitState(lambda R, S: R - S)
-    options = ra.AnalysisOptions()
-    options.set_print_output(False)
+    options = ra.SimulationOptions()
     return model, limit_state, options
 
 
@@ -40,8 +39,7 @@ def standard_3rv_model():
         ra.CorrelationMatrix([[1.0, 0.3, 0.2], [0.3, 1.0, 0.2], [0.2, 0.2, 1.0]])
     )
     limit_state = ra.LimitState(lsf)
-    options = ra.AnalysisOptions()
-    options.set_print_output(False)
+    options = ra.SimulationOptions()
     return model, limit_state, options
 
 
@@ -54,11 +52,11 @@ def test_ls_simple_rs():
     """Line Sampling on R - S problem should give beta close to analytical."""
     np.random.seed(42)
     model, limit_state, options = simple_rs_model()
-    options.set_samples(2000)
+    options = ra.SimulationOptions(n_samples=2000)
 
     analysis = ra.LineSampling(
-        analysis_options=options,
-        stochastic_model=model,
+        options=options,
+        model=model,
         limit_state=limit_state,
     )
     analysis.run()
@@ -75,11 +73,11 @@ def test_ls_alpha_is_unit_vector():
     """After run(), alpha must be a unit vector."""
     np.random.seed(0)
     model, limit_state, options = simple_rs_model()
-    options.set_samples(500)
+    options = ra.SimulationOptions(n_samples=500)
 
     analysis = ra.LineSampling(
-        analysis_options=options,
-        stochastic_model=model,
+        options=options,
+        model=model,
         limit_state=limit_state,
     )
     analysis.run()
@@ -91,18 +89,17 @@ def test_ls_with_precomputed_form():
     """Line Sampling accepts a pre-computed FORM result."""
     np.random.seed(7)
     model, limit_state, options = simple_rs_model()
-    options.set_samples(1000)
+    options = ra.SimulationOptions(n_samples=1000)
 
     form = ra.FORM(
-        analysis_options=options,
-        stochastic_model=model,
+        model=model,
         limit_state=limit_state,
     )
     form.run()
 
     analysis = ra.LineSampling(
-        analysis_options=options,
-        stochastic_model=model,
+        options=options,
+        model=model,
         limit_state=limit_state,
         form=form,
     )
@@ -117,11 +114,11 @@ def test_ls_standard_problem():
     """Line Sampling on the three-variable correlated problem."""
     np.random.seed(13)
     model, limit_state, options = standard_3rv_model()
-    options.set_samples(1000)
+    options = ra.SimulationOptions(n_samples=1000)
 
     analysis = ra.LineSampling(
-        analysis_options=options,
-        stochastic_model=model,
+        options=options,
+        model=model,
         limit_state=limit_state,
     )
     analysis.run()
@@ -136,11 +133,11 @@ def test_ls_pf_contributions_shape():
     np.random.seed(99)
     model, limit_state, options = simple_rs_model()
     N = 200
-    options.set_samples(N)
+    options = ra.SimulationOptions(n_samples=N)
 
     analysis = ra.LineSampling(
-        analysis_options=options,
-        stochastic_model=model,
+        options=options,
+        model=model,
         limit_state=limit_state,
     )
     analysis.run()
@@ -155,11 +152,11 @@ def test_ls_results_valid_flag():
     """results_valid should be True after run()."""
     np.random.seed(1)
     model, limit_state, options = simple_rs_model()
-    options.set_samples(100)
+    options = ra.SimulationOptions(n_samples=100)
 
     analysis = ra.LineSampling(
-        analysis_options=options,
-        stochastic_model=model,
+        options=options,
+        model=model,
         limit_state=limit_state,
     )
     assert not analysis.results_valid
@@ -171,11 +168,11 @@ def test_ls_get_beta_get_failure_consistent():
     """get_beta() and get_failure() should be consistent with stored attributes."""
     np.random.seed(5)
     model, limit_state, options = simple_rs_model()
-    options.set_samples(500)
+    options = ra.SimulationOptions(n_samples=500)
 
     analysis = ra.LineSampling(
-        analysis_options=options,
-        stochastic_model=model,
+        options=options,
+        model=model,
         limit_state=limit_state,
     )
     analysis.run()

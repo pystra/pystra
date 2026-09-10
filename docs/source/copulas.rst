@@ -69,13 +69,10 @@ Choosing the transformation
 
 .. code-block:: python
 
-   options = ra.AnalysisOptions()
-   options.set_transform("rosenblatt")
-   options.set_rosenblatt_order([1, 0])  # condition on S before R
+   # Condition on S before R
+   options = ra.FORMOptions(transform="rosenblatt", rosenblatt_order=[1, 0])
    form = ra.FORM(
-       stochastic_model=model,
-       analysis_options=options,
-       limit_state=ra.LimitState(lambda R, S, C: R - C*S),
+       model, ra.LimitState(lambda R, S, C: R - C*S), options=options
    )
    form.run()
    print(form.get_beta(), form.get_failure())
@@ -90,7 +87,7 @@ With default analysis options, an explicit Gaussian copula uses Nataf;
 Student-t and Frank use Rosenblatt. Existing models without an explicit
 copula retain their previous Gaussian Nataf behaviour.
 
-``options.set_transform("nataf")`` selects generalized Nataf for an elliptical
+``FORMOptions(transform="nataf")`` selects generalized Nataf for an elliptical
 copula. ``"cholesky"`` and ``"svd"`` select Nataf factorisations explicitly;
 these choices are unavailable for Frank. Conditioning order applies only to
 Rosenblatt. Gaussian Nataf with Cholesky factorisation equals Rosenblatt in

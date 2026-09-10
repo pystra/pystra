@@ -3,6 +3,9 @@
 import numpy as np
 
 from .form import FORM
+from ..errors import AnalysisError
+from ..options import FORMOptions
+from ..results import FORMResult
 from .monte_carlo import CrudeMonteCarlo
 
 __all__ = ["ImportanceSampling"]
@@ -21,34 +24,40 @@ class ImportanceSampling(CrudeMonteCarlo):
       - stochastic_model (StochasticModel): Information about the model
     """
 
-    def __init__(self, analysis_options=None, limit_state=None, stochastic_model=None):
-        FormAnalysis = FORM(
-            stochastic_model=stochastic_model,
-            limit_state=limit_state,
-            analysis_options=analysis_options,
-        )
-        form_result = FormAnalysis.run()
-        u = FormAnalysis.get_design_point()
-        u = np.transpose([u])
-
-        super().__init__(analysis_options, limit_state, stochastic_model, u)
-        self._form_result = form_result
+    def __init__(self, model, limit_state, *, options=None, form=None):
+        super().__init__(model, limit_state, options=options)
+        if form is not None and not isinstance(form, FORM):
+            raise TypeError("form must be a FORM analysis")
+        self.form = form
+        self._form_result = None
 
     def run(self):
-        """Run importance sampling and return a :class:`SimulationResult`."""
-        self.results_valid = True
+        """Run importance sampling and return a :class:`SimulationResult`.
 
-        self.init_run()
-
-        print_results = self.options.get_print_output()
-        # regardless, turn off for CMC run
-        self.options.set_print_output(False)
-        result = CrudeMonteCarlo.run(self)
-        # restore
-        self.options.set_print_output(print_results)
-        if self.options.get_print_output():
-            self.show_results()
-        return result
+        Samples are centred on the FORM design point. If no completed FORM
+        analysis was supplied, FORM is run first with this analysis's block
+        size and transformation.
+        """
+        if self.form is None:
+            form = FORM(
+                self.model,
+                self.limitstate,
+                options=FORMOptions(
+                    block_size=self.options.block_size,
+                    transform=self.options.transform,
+                    rosenblatt_order=self.options.rosenblatt_order,
+                ),
+            )
+            self._form_result = form.run()
+            self.form = form
+        elif self._form_result is None:
+            if not self.form.results_valid:
+                raise AnalysisError(
+                    "ImportanceSampling requires a completed FORM analysis"
+                )
+            self._form_result = FORMResult.from_analysis(self.form)
+        self.point = np.transpose([self.form.get_design_point()])
+        return CrudeMonteCarlo.run(self)
 
     def _diagnostics(self):
         return {"form": self._form_result}

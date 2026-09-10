@@ -95,7 +95,7 @@ Pystra provides two approaches.
 Curve-Fitting
 -------------
 
-The default method (``fit_type='cf'``) obtains the curvatures from the
+The default method (``fit="curve"``) obtains the curvatures from the
 Hessian matrix of the limit state function.  The Hessian :math:`{\bf H}`
 of :math:`g` at the design point :math:`{\bf z}^*` is computed by finite
 differences of the gradient that is already available from FORM.  This
@@ -126,7 +126,7 @@ This result is asymptotically exact as :math:`\beta \to \infty`.
 Point-Fitting
 -------------
 
-An alternative method (``fit_type='pf'``) determines the curvatures by
+An alternative method (``fit="point"``) determines the curvatures by
 locating fitting points directly on the failure surface, without computing
 the Hessian.  For each of the :math:`n{-}1` principal axes in the rotated
 space, a pair of trial points is placed at :math:`u'_i = \pm k\beta`

@@ -111,8 +111,9 @@ def test_truss_form_and_sorm_published_comparison():
     assert result.converged
     assert result.failure_probability == pytest.approx(0.76e-3, abs=0.005e-3)
     for fit_type in ("cf", "pf"):
-        sorm = ra.SORM(model, state, form=form)
-        sorm.run(fit_type)
+        fit = {"cf": "curve", "pf": "point"}[fit_type]
+        sorm = ra.SORM(model, state, form=form, options=ra.SORMOptions(fit=fit))
+        sorm.run()
         assert sorm.results_valid
         # Breitung accuracy against the probability reference.
         assert sorm.pf2_breitung == pytest.approx(1.53e-3, rel=0.06)
@@ -160,7 +161,7 @@ def test_literature_active_pce(problem, seed):
         else benchmarks.hat_reference()
     )
     analysis = ActiveLearning(
-        stochastic_model=model,
+        model=model,
         limit_state=ra.LimitState(function),
         surrogate=PCESurrogate(
             degree=(1, 2, 3, 4, 5),

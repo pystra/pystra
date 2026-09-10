@@ -48,7 +48,7 @@ def run_builtin():
     )
 
     sorm = ra.SORM(
-        stochastic_model=stochastic_model,
+        model=stochastic_model,
         limit_state=limit_state,
     )
     sorm.run()
@@ -81,7 +81,7 @@ def run_scipy():
     )
 
     sorm = ra.SORM(
-        stochastic_model=stochastic_model,
+        model=stochastic_model,
         limit_state=limit_state,
     )
     sorm.run()

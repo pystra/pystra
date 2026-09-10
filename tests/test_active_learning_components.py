@@ -29,7 +29,7 @@ def linear_analysis(**settings):
     model = ra.StochasticModel()
     model.add_variable(ra.Normal("x", 0, 1))
     return ActiveLearning(
-        stochastic_model=model,
+        model=model,
         limit_state=ra.LimitState(lambda x: 2 - x),
         surrogate=ExactLinear(),
         seed=12,
@@ -307,7 +307,7 @@ def test_combined_beta_policies_on_standard_benchmarks(problem, seed):
     pytest.importorskip("sklearn")
     model, limit_state, reference = benchmark(problem)
     analysis = ActiveLearning(
-        stochastic_model=model,
+        model=model,
         limit_state=limit_state,
         surrogate_kwargs={"n_restarts": 0},
         stopping_criterion=AllCriteria(

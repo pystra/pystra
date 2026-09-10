@@ -25,7 +25,7 @@ parameterised SciPy distribution. Check the relevant distribution's signature.
    model.add_variable(ra.Normal("S", 5.0, 1.0))
    model.add_variable(ra.Constant("resistance_scale", 1.0))
    response = ra.LimitState(limit_state)
-   result = ra.FORM(stochastic_model=model, limit_state=response).run()
+   result = ra.FORM(model, response).run()
    assert result.converged
 
 Here ``R`` and ``S`` use the same force unit. A negative limit state means

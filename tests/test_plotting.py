@@ -29,7 +29,7 @@ def normal_form():
     model.add_variable(ra.Normal("R", 0, 1))
     model.add_variable(ra.Normal("S", 0, 1))
     analysis = ra.FORM(
-        stochastic_model=model,
+        model=model,
         limit_state=ra.LimitState(lambda R, S: 3 - R - 2 * S),
     )
     return analysis, analysis.run()

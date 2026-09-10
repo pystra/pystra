@@ -254,7 +254,14 @@ class LimitState:
         self.expression = expression
 
     def evaluate_lsf(
-        self, x, stochastic_model, analysis_options, diff_mode=None, counter=None
+        self,
+        x,
+        stochastic_model,
+        *,
+        differentiation="no",
+        ffd_parameter=1000,
+        block_size=1000,
+        counter=None,
     ):
         """Evaluate the limit state function and (optionally) its gradient.
 
@@ -271,12 +278,14 @@ class LimitState:
             number of random variables and *nx* the number of points.
         stochastic_model : StochasticModel
             The probabilistic model.
-        analysis_options : AnalysisOptions
-            Algorithm settings (differentiation mode, block size, etc.).
-        diff_mode : str or None, optional
-            Override the differentiation mode.  If a string is passed
-            (any value), gradient computation is suppressed
-            (``"no"``).
+        differentiation : {"no", "ffd", "ddm"}, default "no"
+            Values only, forward finite-difference gradients, or the gradient
+            returned by the function itself (direct differentiation).
+        ffd_parameter : float, default 1000
+            Finite-difference step divisor: each variable is perturbed by its
+            standard deviation divided by this value.
+        block_size : int, default 1000
+            Points passed to the limit-state function per call.
         counter : callable, optional
             Called with the number of limit-state function calls made, so
             an analysis can count its own evaluations.
@@ -289,31 +298,25 @@ class LimitState:
             Gradient matrix, shape ``(nrv, nx)``.  Zero when no
             gradient is computed.
         """
-        if diff_mode == None:
-            diff_mode = analysis_options.get_diff_mode()
-        else:
-            diff_mode = "no"
-
-        if analysis_options.get_multi_proc() == 0:
-            raise NotImplementedError("get_multi_proc")
+        if differentiation not in ("no", "ffd", "ddm"):
+            raise ValueError("differentiation must be 'no', 'ffd' or 'ddm'")
         x = np.asarray(x)
-        if diff_mode == "no":
-            G, grad_G, calls = self._values(x, stochastic_model, analysis_options)
-        elif diff_mode == "ddm":
+        if differentiation == "no":
+            G, grad_G, calls = self._values(x, stochastic_model, block_size)
+        elif differentiation == "ddm":
             G, grad_G, calls = self._ddm(x, stochastic_model)
         else:
-            G, grad_G, calls = self._ffd(x, stochastic_model, analysis_options)
+            G, grad_G, calls = self._ffd(x, stochastic_model, block_size, ffd_parameter)
         stochastic_model.add_call_function(calls)
         if counter is not None:
             counter(calls)
         return G, grad_G
 
-    def _values(self, x, model, options):
+    def _values(self, x, model, block_size):
         """Limit-state values without gradients (used by simulation)."""
         nrv, nx = x.shape
         G = np.zeros((1, nx))
         grad_G = np.zeros((nrv, nx))
-        block_size = options.get_block_size()
         k = 0
         while k < nx:
             block_size = np.min([block_size, nx - k])
@@ -323,13 +326,10 @@ class LimitState:
             k += block_size
         return G, grad_G, nx
 
-    def _ffd(self, x, model, options):
+    def _ffd(self, x, model, block_size, ffdpara):
         """Limit-state values and forward finite-difference gradients."""
         nrv, nx = x.shape
         grad_G = np.zeros((nrv, nx))
-        block_size = options.get_block_size()
-
-        ffdpara = options.get_ffd_parameter()
         allx = np.zeros((nrv, nx * (1 + nrv)))
         allx[:] = x
         allh = np.zeros(nrv)

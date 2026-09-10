@@ -70,16 +70,11 @@ Original-system Monte Carlo
 
    import numpy as np
 
-   options = ra.AnalysisOptions()
-   options.set_samples(100_000)  # maximum budget; may stop at target CoV
-   options.set_print_output(False)
+   # 100 000 samples is the maximum budget; the run may stop at the target CoV
+   options = ra.SimulationOptions(n_samples=100_000)
    np.random.seed(2026)
-   mc = ra.CrudeMonteCarlo(
-       stochastic_model=model, limit_state=limit_state,
-       analysis_options=options,
-   )
-   mc.run()
-   print(mc.get_failure(), mc.cov_q_bar[mc.k - 1], mc.k)
+   result = ra.CrudeMonteCarlo(model, limit_state, options=options).run()
+   print(result.failure_probability, result.coefficient_of_variation, result.n_samples)
 
 Monte Carlo evaluates the original nonlinear failure event, including mixed
 and cut/tie-set topologies. The reported CoV describes sampling uncertainty.
@@ -105,7 +100,7 @@ Component-based system FORM
        ra.Component("a", lambda X: 3.0 - X),
        ra.Component("b", lambda Y: 3.0 - Y),
    ]
-   analysis = ra.SystemFORM(ra.SeriesSystem(components), model)
+   analysis = ra.SystemFORM(model, ra.SeriesSystem(components))
    analysis.run()
    print(analysis.get_failure())  # approximately 0.002697974
    print(analysis.get_beta())     # equivalent system index
@@ -245,8 +240,8 @@ Scope and Transformations
 
 The system module composes limit-state functions in the original physical
 variables.  The isoprobabilistic transformation to standard space remains the
-responsibility of the selected Pystra analysis method and its
-``AnalysisOptions``.  This keeps system topology separate from the probability
+responsibility of the selected Pystra analysis method and its options
+(``FORMOptions`` or ``SimulationOptions``).  This keeps system topology separate from the probability
 transformation, following the same conceptual split used in structural
 reliability methods generally.
 

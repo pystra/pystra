@@ -27,19 +27,19 @@ class TestSensitivityAnalysis:
 
     def test_run_returns_result(self):
         model, ls = self._make_problem()
-        sa = ra.SensitivityAnalysis(ls, model)
+        sa = ra.SensitivityAnalysis(model, ls)
         result = sa.run()
         assert isinstance(result, ra.SensitivityResult)
 
     def test_result_keys_match_variables(self):
         model, ls = self._make_problem()
-        sa = ra.SensitivityAnalysis(ls, model)
+        sa = ra.SensitivityAnalysis(model, ls)
         result = sa.run()
         assert set(result.marginal) == {"R", "S"}
 
     def test_result_has_mean_and_std(self):
         model, ls = self._make_problem()
-        sa = ra.SensitivityAnalysis(ls, model)
+        sa = ra.SensitivityAnalysis(model, ls)
         result = sa.run()
         for name in ["R", "S"]:
             assert "mean" in result.marginal[name]
@@ -47,7 +47,7 @@ class TestSensitivityAnalysis:
 
     def test_sensitivity_values_are_finite(self):
         model, ls = self._make_problem()
-        sa = ra.SensitivityAnalysis(ls, model)
+        sa = ra.SensitivityAnalysis(model, ls)
         result = sa.run()
         for name in result.marginal:
             for param in ["mean", "std"]:
@@ -59,7 +59,7 @@ class TestSensitivityAnalysis:
         - Increasing S mean -> lower beta -> negative sensitivity
         """
         model, ls = self._make_problem()
-        sa = ra.SensitivityAnalysis(ls, model)
+        sa = ra.SensitivityAnalysis(model, ls)
         result = sa.run()
         assert result.marginal["R"]["mean"] > 0, "R mean sensitivity should be positive"
         assert result.marginal["S"]["mean"] < 0, "S mean sensitivity should be negative"
@@ -67,10 +67,10 @@ class TestSensitivityAnalysis:
     def test_different_delta_consistent(self):
         """Results should be consistent for different delta values."""
         model, ls = self._make_problem()
-        sa = ra.SensitivityAnalysis(ls, model)
+        sa = ra.SensitivityAnalysis(model, ls)
 
-        result1 = sa.run(delta=0.01)
-        result2 = sa.run(delta=0.005)
+        result1 = ra.SensitivityAnalysis(model, ls, delta=0.01).run()
+        result2 = ra.SensitivityAnalysis(model, ls, delta=0.005).run()
 
         for name in ["R", "S"]:
             for param in ["mean", "std"]:
@@ -89,7 +89,7 @@ class TestSensitivityAnalysis:
             return R - S
 
         ls = ra.model.LimitState(lsf)
-        sa = ra.SensitivityAnalysis(ls, model)
+        sa = ra.SensitivityAnalysis(model, ls)
         result = sa.run()
 
         assert result.marginal["R"]["mean"] > 0
@@ -101,7 +101,7 @@ class TestSensitivityAnalysis:
     def test_default_options(self):
         """SensitivityAnalysis should work without explicit options."""
         model, ls = self._make_problem()
-        sa = ra.SensitivityAnalysis(ls, model)
+        sa = ra.SensitivityAnalysis(model, ls)
         assert sa.options is not None
         result = sa.run()
         assert len(result.marginal) == 2
@@ -109,23 +109,10 @@ class TestSensitivityAnalysis:
     def test_custom_options(self):
         """SensitivityAnalysis should accept custom options."""
         model, ls = self._make_problem()
-        opts = ra.AnalysisOptions()
-        opts.set_print_output(False)
-        sa = ra.SensitivityAnalysis(ls, model, analysis_options=opts)
+        opts = ra.FORMOptions()
+        sa = ra.SensitivityAnalysis(model, ls, options=opts)
         result = sa.run()
         assert len(result.marginal) == 2
-
-    def test_run_form_alias(self):
-        """run_form() should be equivalent to run()."""
-        model, ls = self._make_problem()
-        sa = ra.SensitivityAnalysis(ls, model)
-        result_run = sa.run()
-        result_alias = sa.run_form()
-        for name in ["R", "S"]:
-            for param in ["mean", "std"]:
-                assert result_run.marginal[name][param] == pytest.approx(
-                    result_alias.marginal[name][param], rel=1e-10
-                )
 
 
 class TestClosedFormSensitivity:
@@ -153,8 +140,8 @@ class TestClosedFormSensitivity:
 
     def test_closed_form_returns_structure(self):
         model, ls = self._make_bourinet_example2()
-        sa = ra.SensitivityAnalysis(ls, model)
-        result = sa.run(numerical=False)
+        sa = ra.SensitivityAnalysis(model, ls)
+        result = ra.SensitivityAnalysis(model, ls, method="closed_form").run()
 
         assert result.approach == "closed_form"
         assert result.correlation is not None
@@ -164,10 +151,11 @@ class TestClosedFormSensitivity:
     def test_bourinet_example2_marginal_sensitivities(self):
         """Validate against Table 4 of Bourinet (2017)."""
         model, ls = self._make_bourinet_example2()
-        opts = ra.AnalysisOptions()
-        opts.set_print_output(False)
-        sa = ra.SensitivityAnalysis(ls, model, analysis_options=opts)
-        result = sa.run(numerical=False)
+        opts = ra.FORMOptions()
+        sa = ra.SensitivityAnalysis(model, ls, options=opts)
+        result = ra.SensitivityAnalysis(
+            model, ls, options=opts, method="closed_form"
+        ).run()
 
         m = result.marginal
 
@@ -180,10 +168,11 @@ class TestClosedFormSensitivity:
     def test_bourinet_example2_correlation_sensitivity(self):
         """Validate d_beta/d_rho against Eq. (31) of Bourinet (2017)."""
         model, ls = self._make_bourinet_example2()
-        opts = ra.AnalysisOptions()
-        opts.set_print_output(False)
-        sa = ra.SensitivityAnalysis(ls, model, analysis_options=opts)
-        result = sa.run(numerical=False)
+        opts = ra.FORMOptions()
+        sa = ra.SensitivityAnalysis(model, ls, options=opts)
+        result = ra.SensitivityAnalysis(
+            model, ls, options=opts, method="closed_form"
+        ).run()
 
         # d_beta/d_rho_12 = 2.4585 (from Eq. 31)
         assert result.correlation[1, 0] == pytest.approx(2.4585, abs=0.01)
@@ -200,10 +189,10 @@ class TestClosedFormSensitivity:
             return R - S
 
         ls = ra.LimitState(lsf)
-        sa = ra.SensitivityAnalysis(ls, model)
+        sa = ra.SensitivityAnalysis(model, ls)
 
-        fd = sa.run(numerical=True, delta=0.001)
-        cf = sa.run(numerical=False)
+        fd = ra.SensitivityAnalysis(model, ls, delta=0.001).run()
+        cf = ra.SensitivityAnalysis(model, ls, method="closed_form").run()
 
         for name in ["R", "S"]:
             for param in ["mean", "std"]:
@@ -222,11 +211,10 @@ class TestClosedFormSensitivity:
         reference values (test_bourinet_example2_*) for accuracy.
         """
         model, ls = self._make_bourinet_example2()
-        opts = ra.AnalysisOptions()
-        opts.set_print_output(False)
-        sa = ra.SensitivityAnalysis(ls, model, analysis_options=opts)
+        opts = ra.FORMOptions()
+        sa = ra.SensitivityAnalysis(model, ls, options=opts)
 
-        cf = sa.run(numerical=False)
+        cf = ra.SensitivityAnalysis(model, ls, options=opts, method="closed_form").run()
 
         for name in ["X1", "X2"]:
             for param in ["mean", "std"]:
@@ -365,15 +353,14 @@ class TestGEVSensitivity:
             return R - S
 
         ls = ra.LimitState(lsf)
-        opts = ra.AnalysisOptions()
-        opts.set_print_output(False)
+        opts = ra.FORMOptions()
         return model, ls, opts
 
     def test_fd_result_includes_shape(self):
         """FD result dict includes 'shape' key for GEV variable."""
         model, ls, opts = self._make_gev_problem()
-        sa = ra.SensitivityAnalysis(ls, model, analysis_options=opts)
-        fd = sa.run(numerical=True)
+        sa = ra.SensitivityAnalysis(model, ls, options=opts)
+        fd = ra.SensitivityAnalysis(model, ls, options=opts).run()
 
         assert "shape" in fd.marginal["S"], "GEV variable should have shape sensitivity"
         assert "shape" not in fd.marginal["R"], "Normal variable should not have shape"
@@ -382,8 +369,8 @@ class TestGEVSensitivity:
     def test_cf_result_includes_shape(self):
         """CF result dict includes 'shape' key for GEV variable."""
         model, ls, opts = self._make_gev_problem()
-        sa = ra.SensitivityAnalysis(ls, model, analysis_options=opts)
-        cf = sa.run(numerical=False)
+        sa = ra.SensitivityAnalysis(model, ls, options=opts)
+        cf = ra.SensitivityAnalysis(model, ls, options=opts, method="closed_form").run()
 
         assert "shape" in cf.marginal["S"]
         assert "shape" not in cf.marginal["R"]
@@ -397,8 +384,8 @@ class TestGEVSensitivity:
         large loads, so beta should decrease → ∂β/∂ξ < 0.
         """
         model, ls, opts = self._make_gev_problem()
-        sa = ra.SensitivityAnalysis(ls, model, analysis_options=opts)
-        cf = sa.run(numerical=False)
+        sa = ra.SensitivityAnalysis(model, ls, options=opts)
+        cf = ra.SensitivityAnalysis(model, ls, options=opts, method="closed_form").run()
 
         assert (
             cf.marginal["S"]["shape"] < 0
@@ -413,10 +400,10 @@ class TestGEVSensitivity:
         tighter tolerance for mean/std and a relaxed tolerance for shape.
         """
         model, ls, opts = self._make_gev_problem()
-        sa = ra.SensitivityAnalysis(ls, model, analysis_options=opts)
+        sa = ra.SensitivityAnalysis(model, ls, options=opts)
 
-        fd = sa.run(numerical=True, delta=0.001)
-        cf = sa.run(numerical=False)
+        fd = ra.SensitivityAnalysis(model, ls, options=opts, delta=0.001).run()
+        cf = ra.SensitivityAnalysis(model, ls, options=opts, method="closed_form").run()
 
         # Check mean/std parameters agree tightly
         for name in ["R", "S"]:
@@ -438,10 +425,10 @@ class TestGEVSensitivity:
     def test_summary_method(self):
         """summary() returns a DataFrame with correct structure."""
         model, ls, opts = self._make_gev_problem()
-        sa = ra.SensitivityAnalysis(ls, model, analysis_options=opts)
+        sa = ra.SensitivityAnalysis(model, ls, options=opts)
 
         # Test with FD result
-        fd = sa.run(numerical=True)
+        fd = ra.SensitivityAnalysis(model, ls, options=opts).run()
         df = sa.summary(fd)
         assert "Variable" in df.columns
         assert "Parameter" in df.columns
@@ -449,7 +436,7 @@ class TestGEVSensitivity:
         assert len(df) == 5
 
         # Test with CF result
-        cf = sa.run(numerical=False)
+        cf = ra.SensitivityAnalysis(model, ls, options=opts, method="closed_form").run()
         df_cf = sa.summary(cf)
         assert len(df_cf) == 5
 

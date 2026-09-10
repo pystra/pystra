@@ -219,7 +219,7 @@ def test_resampling_after_each_fit_separates_probability_and_selection():
     model.add_variable(ra.Normal("x", 0, 1))
     estimator, surrogate = RecordedEstimator(), ExactLinear()
     analysis = ActiveLearning(
-        stochastic_model=model,
+        model=model,
         limit_state=ra.LimitState(lambda x: 2 - x),
         surrogate=surrogate,
         estimator=estimator,
@@ -300,7 +300,7 @@ def test_active_kriging_subset_benchmarks(problem, seed):
     pytest.importorskip("sklearn")
     model, limit_state, reference = rare_problem(problem)
     analysis = ActiveLearning(
-        stochastic_model=model,
+        model=model,
         limit_state=limit_state,
         surrogate_kwargs={"n_restarts": 0, "noise": 1e-8},
         estimator=SubsetSimulationEstimator(),
@@ -367,11 +367,10 @@ def test_adaptive_subset_respects_dependent_physical_marginals(method):
             ra.GaussianCopula([[1, 0.4], [0.4, 1]]),
         )
     )
-    options = ra.AnalysisOptions()
-    options.set_transform(method)
+    options = ra.SimulationOptions(transform=method)
     analysis = ActiveLearning(
-        stochastic_model=model,
-        analysis_options=options,
+        model=model,
+        options=options,
         limit_state=ra.LimitState(lambda x, y: 3.3 - np.log(x * y)),
         surrogate="pce",
         surrogate_kwargs={"degree": 1},

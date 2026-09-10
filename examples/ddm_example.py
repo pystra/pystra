@@ -33,9 +33,7 @@ def run(diff_mode):
     limit_state = ra.LimitState(lsf)
 
     # Set some options (optional)
-    options = ra.AnalysisOptions()
-    options.set_print_output(False)
-    options.set_diff_mode(diff_mode)
+    options = ra.FORMOptions(differentiation=diff_mode)
 
     stochastic_model = ra.StochasticModel()
 
@@ -65,8 +63,8 @@ def run(diff_mode):
 
     # Set up FORM analysis
     form = ra.FORM(
-        analysis_options=options,
-        stochastic_model=stochastic_model,
+        options=options,
+        model=stochastic_model,
         limit_state=limit_state,
     )
     # Run it

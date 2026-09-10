@@ -15,7 +15,7 @@ def model():
 
 def test_limit_state_keeps_no_evaluation_state():
     limit_state = ra.LimitState(lambda R, S: R - S)
-    ra.FORM(stochastic_model=model(), limit_state=limit_state).run()
+    ra.FORM(model=model(), limit_state=limit_state).run()
     assert not any(hasattr(limit_state, name) for name in ("model", "options", "x"))
 
 
@@ -23,7 +23,7 @@ def test_finite_differences_leave_the_points_unchanged():
     limit_state = ra.LimitState(lambda R, S: R - S)
     x = np.array([[9.0], [4.0]])
     before = x.copy()
-    G, gradient = limit_state.evaluate_lsf(x, model(), ra.AnalysisOptions())
+    G, gradient = limit_state.evaluate_lsf(x, model(), differentiation="ffd")
     assert np.array_equal(x, before)
     assert float(np.ravel(G)[0]) == pytest.approx(5.0)
     assert gradient[:, 0] == pytest.approx([1.0, -1.0])
@@ -32,9 +32,9 @@ def test_finite_differences_leave_the_points_unchanged():
 def test_each_run_counts_its_own_evaluations():
     limit_state = ra.LimitState(lambda R, S: R - S)
     shared = model()
-    first = ra.FORM(stochastic_model=shared, limit_state=limit_state)
+    first = ra.FORM(model=shared, limit_state=limit_state)
     first.run()
-    second = ra.FORM(stochastic_model=shared, limit_state=limit_state)
+    second = ra.FORM(model=shared, limit_state=limit_state)
     second.run()
     assert first.get_no_function_calls() == second.get_no_function_calls() > 0
     assert shared.get_call_function() == 2 * first.get_no_function_calls()

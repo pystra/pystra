@@ -15,7 +15,7 @@ from pandas import DataFrame
 import numpy as np
 from scipy.optimize import fsolve, root_scalar
 
-from ..reliability.analysis import AnalysisOptions
+from ..options import FORMOptions
 from ..distributions import Constant, Distribution
 from ..reliability.form import FORM
 from ..loads import LoadCombination
@@ -51,12 +51,12 @@ def _run_form(cases, case_name, overrides=None, options=None):
         raise TypeError("cases must be LoadCombination")
     if cases.limit_state is None:
         raise ValueError("A limit_state is required for reliability evaluation")
-    if options is not None and not isinstance(options, AnalysisOptions):
-        raise TypeError("options must be AnalysisOptions")
+    if options is not None and not isinstance(options, FORMOptions):
+        raise TypeError("options must be FORMOptions")
     solver = FORM(
         cases.stochastic_model(case_name, overrides=overrides),
         LimitState(cases.limit_state),
-        deepcopy(options),
+        options=options,
     )
     result = solver.run()
     return solver, result
@@ -67,7 +67,7 @@ def analyze_case(
     case_name: Optional[str] = None,
     *,
     overrides: Optional[Mapping[str, Union[Distribution, Constant]]] = None,
-    options: Optional[AnalysisOptions] = None,
+    options: Optional[FORMOptions] = None,
 ) -> FORMResult:
     """Evaluate one explicit load case and return a FORM snapshot."""
     return _run_form(cases, case_name, overrides, options)[1]
@@ -234,7 +234,7 @@ def solve_designs(
     tolerance: float = 0.0001,
     max_evaluations: int = 100,
     bracket: Optional[Tuple[float, float]] = None,
-    options: Optional[AnalysisOptions] = None,
+    options: Optional[FORMOptions] = None,
 ) -> TargetDesigns:
     """Solve each case to a target and return status/residuals for every case.
 
@@ -649,7 +649,7 @@ def verify_designs(
     design_values: Union[float, Mapping[str, float], DesignValues],
     *,
     target_beta: Optional[float] = None,
-    options: Optional[AnalysisOptions] = None,
+    options: Optional[FORMOptions] = None,
 ) -> Tuple[DesignVerification, ...]:
     """Check a common design scale or an explicitly named set of case designs.
 

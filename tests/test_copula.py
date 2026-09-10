@@ -125,11 +125,10 @@ def test_generalized_t_nataf_and_form_exact_halfspace():
     np.testing.assert_allclose(u, np.linalg.solve(np.linalg.cholesky(R), x), atol=1e-10)
     np.testing.assert_allclose(tr.u_to_x(u), x, atol=1e-10)
     assert tr.standard_space == "student_t"
-    opts = ra.AnalysisOptions()
-    opts.set_transform("nataf")
+    opts = ra.FORMOptions(transform="nataf")
     form = ra.FORM(
-        stochastic_model=ra.StochasticModel(joint),
-        analysis_options=opts,
+        model=ra.StochasticModel(joint),
+        options=opts,
         limit_state=ra.LimitState(lambda X, Y: 3 - X - Y),
     )
     result = form.run()
@@ -143,16 +142,18 @@ def test_generalized_t_nataf_and_form_exact_halfspace():
     assert result.failure_probability == pytest.approx(t.sf(beta, 4), rel=2e-6)
     with pytest.raises(ValueError, match="normal space"):
         ra.StrongMaximumTest(form)
-    for cls in (ra.CrudeMonteCarlo, ra.SORM):
-        analysis = cls(
-            stochastic_model=form.model,
-            limit_state=form.limitstate,
-            analysis_options=opts,
-        )
+    for analysis in (
+        ra.CrudeMonteCarlo(
+            form.model, form.limitstate, options=ra.SimulationOptions(transform="nataf")
+        ),
+        ra.SORM(form.model, form.limitstate, options=ra.SORMOptions(form=opts)),
+    ):
         with pytest.raises(ValueError, match="normal space"):
             analysis.run()
     analysis = ra.SystemFORM(
-        ra.SeriesSystem([ra.Component("a", form.limitstate)]), form.model, opts
+        form.model,
+        ra.SeriesSystem([ra.Component("a", form.limitstate)]),
+        options=opts,
     )
     with pytest.raises(RuntimeError, match="normal space"):
         analysis.run()
@@ -175,12 +176,10 @@ def test_lebrun_dutfoy_frank_order_benchmark():
     cop = ra.FrankCopula(10)
     results = []
     for order in ([0, 1], [1, 0]):
-        opts = ra.AnalysisOptions()
-        opts.set_transform("rosenblatt")
-        opts.set_rosenblatt_order(order)
+        opts = ra.FORMOptions(transform="rosenblatt", rosenblatt_order=order)
         f = ra.FORM(
-            stochastic_model=exponential_model(cop),
-            analysis_options=opts,
+            model=exponential_model(cop),
+            options=opts,
             limit_state=ra.LimitState(lambda X1, X2: 8 * X1 + 2 * X2 - 1),
         )
         f.run()
@@ -202,13 +201,11 @@ def test_gaussian_order_preserves_form_probability():
         ("rosenblatt", [0, 1]),
         ("rosenblatt", [1, 0]),
     ]:
-        opts = ra.AnalysisOptions()
-        opts.set_transform(mode)
-        opts.set_rosenblatt_order(order)
+        opts = ra.FORMOptions(transform=mode, rosenblatt_order=order)
         f = ra.FORM(
-            stochastic_model=exponential_model(ra.GaussianCopula([[1, 0.5], [0.5, 1]])),
+            model=exponential_model(ra.GaussianCopula([[1, 0.5], [0.5, 1]])),
             limit_state=ra.LimitState(lambda X1, X2: 8 * X1 + 2 * X2 - 1),
-            analysis_options=opts,
+            options=opts,
         )
         f.run()
         results.append(f.get_failure())
@@ -295,16 +292,14 @@ def test_frank_upper_corner_and_boundary(theta):
 
 def test_frank_monte_carlo_integrates_original_event():
     m = exponential_model(ra.FrankCopula(10))
-    opts = ra.AnalysisOptions()
-    opts.set_samples(5000)
-    opts.target_cov = 0
+    opts = ra.SimulationOptions(n_samples=5000, target_cov=0)
     state = np.random.get_state()
     try:
         np.random.seed(20)
         mc = ra.CrudeMonteCarlo(
-            stochastic_model=m,
+            model=m,
             limit_state=ra.LimitState(lambda X1, X2: 8 * X1 + 2 * X2 - 1),
-            analysis_options=opts,
+            options=opts,
         )
         mc.run()
     finally:
@@ -318,7 +313,7 @@ def test_t_rosenblatt_supports_system_form_and_strong_maximum():
     system = ra.SeriesSystem(
         [ra.Component("a", lambda X: 3 - X), ra.Component("b", lambda X: 4 - X)]
     )
-    analysis = ra.SystemFORM(system, model)
+    analysis = ra.SystemFORM(model, system)
     analysis.run()
     assert analysis.get_failure() == pytest.approx(norm.sf(3), rel=1e-5)
     form = analysis.component_results["a"]
@@ -332,17 +327,22 @@ def test_numerical_sensitivity_preserves_spherical_t_options():
     model = ra.StochasticModel(
         ra.JointDistribution([ra.Normal("X", 0, 1)], ra.StudentTCopula([[1]], 4))
     )
-    options = ra.AnalysisOptions()
-    options.set_transform("nataf")
-    options.e1 = options.e2 = 1e-9
-    sensitivity = ra.SensitivityAnalysis(
-        stochastic_model=model,
-        limit_state=ra.LimitState(lambda X: 3 - X),
-        analysis_options=options,
+    options = ra.FORMOptions(
+        transform="nataf", limit_state_tolerance=1e-9, gradient_tolerance=1e-9
     )
-    result = sensitivity.run(numerical=True, delta=1e-5)
+    result = ra.SensitivityAnalysis(
+        model=model,
+        limit_state=ra.LimitState(lambda X: 3 - X),
+        options=options,
+        delta=1e-5,
+    ).run()
     beta = t.isf(norm.sf(3), 4)
     derivative = -norm.pdf(3) / t.pdf(beta, 4)
     assert result.marginal["X"]["mean"] == pytest.approx(derivative, rel=1e-4)
     with pytest.raises(ValueError, match="legacy physical Pearson"):
-        sensitivity.run(numerical=False)
+        ra.SensitivityAnalysis(
+            model=model,
+            limit_state=ra.LimitState(lambda X: 3 - X),
+            options=options,
+            method="closed_form",
+        ).run()

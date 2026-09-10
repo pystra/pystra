@@ -14,6 +14,7 @@ from scipy.special import betainc
 from .analysis import AnalysisObject
 from .form import FORM
 from ..model import LimitState
+from ..options import FORMOptions
 from ..results import StrongMaximumResult
 
 __all__ = ["StrongMaximumTest"]
@@ -25,12 +26,13 @@ class StrongMaximumTest(AnalysisObject):
     Parameters
     ----------
     form : FORM, optional
-        Successfully converged FORM analysis. Reuses its model and transform.
-        Alternatively supply all of stochastic_model, limit_state and
+        Successfully converged FORM analysis. Reuses its model, transform and
+        settings. Alternatively supply all of model, limit_state and
         design_point (in independent standard-normal coordinates).
-    stochastic_model, limit_state, design_point, analysis_options : optional
-        Explicit candidate inputs; cannot be combined with form. The candidate
-        must be on the limit-state boundary and the origin must be safe.
+    model, limit_state, design_point, options : optional
+        Explicit candidate inputs and FORMOptions; cannot be combined with
+        form. The candidate must be on the limit-state boundary and the
+        origin must be safe.
     importance_level : float, default 0.15
         Density ratio epsilon in (0, 1) defining the relevant search radius.
     accuracy_level : float, default 3
@@ -84,14 +86,16 @@ class StrongMaximumTest(AnalysisObject):
     reliability_sensitivity/strong_maximum_test.html
     """
 
+    _options_type = FORMOptions
+
     def __init__(
         self,
         form=None,
         *,
-        stochastic_model=None,
+        model=None,
         limit_state=None,
         design_point=None,
-        analysis_options=None,
+        options=None,
         importance_level=0.15,
         accuracy_level=3.0,
         confidence_level=None,
@@ -109,17 +113,17 @@ class StrongMaximumTest(AnalysisObject):
             if any(
                 arg is not None
                 for arg in (
-                    stochastic_model,
+                    model,
                     limit_state,
                     design_point,
-                    analysis_options,
+                    options,
                 )
             ):
                 raise ValueError(
                     "form cannot be combined with explicit candidate inputs"
                 )
-            stochastic_model, limit_state = form.model, form.limitstate
-            analysis_options = form.options
+            model, limit_state = form.model, form.limitstate
+            options = form.options
             design_point = form.get_design_point()
             if form.get_beta() <= 0:
                 raise ValueError("Strong Maximum Test requires a safe-origin candidate")
@@ -127,15 +131,11 @@ class StrongMaximumTest(AnalysisObject):
                 raise ValueError(
                     "Strong Maximum Test currently requires independent normal space; select Rosenblatt"
                 )
-        elif any(arg is None for arg in (stochastic_model, limit_state, design_point)):
+        elif any(arg is None for arg in (model, limit_state, design_point)):
             raise ValueError("Supply form or model, limit_state and design_point")
         # Independent evaluator state; do not overwrite the FORM limit state's
         # most recent x/gradient evaluation when running a diagnostic.
-        super().__init__(
-            stochastic_model=stochastic_model,
-            limit_state=LimitState(limit_state.expression),
-            analysis_options=copy(analysis_options),
-        )
+        super().__init__(model, LimitState(limit_state.expression), options)
         self.form = form
         if form is not None:
             self.transform = copy(form.transform)
@@ -220,9 +220,7 @@ class StrongMaximumTest(AnalysisObject):
         x = np.array([self.transform.u_to_x(point, marg) for point in u])
         if not np.all(np.isfinite(x)):
             raise ValueError("Nonfinite physical coordinates on test sphere")
-        values, _ = self.limitstate.evaluate_lsf(
-            x.T, self.model, self.options, "no", counter=self._count
-        )
+        values, _ = self._lsf(x.T)
         self.evaluation_count += len(u)
         values = np.asarray(values).reshape(-1)
         if values.shape != (len(u),) or not np.all(np.isfinite(values)):
@@ -241,7 +239,7 @@ class StrongMaximumTest(AnalysisObject):
         try:
             if self.form is None:
                 self.init_run()
-            block = self._positive_integer(self.options.get_block_size(), "block_size")
+            block = self._positive_integer(self.options.block_size, "block_size")
             _, checks = self._evaluate(
                 np.array([np.zeros(self.nrv), self.design_point])
             )
@@ -249,7 +247,7 @@ class StrongMaximumTest(AnalysisObject):
                 raise ValueError(
                     "Strong Maximum Test requires the origin to be strictly safe"
                 )
-            if abs(checks[1]) > self.options.get_e1() * abs(checks[0]):
+            if abs(checks[1]) > self.options.limit_state_tolerance * abs(checks[0]):
                 raise ValueError(
                     "Candidate design point is not on the limit-state boundary"
                 )
@@ -287,8 +285,6 @@ class StrongMaximumTest(AnalysisObject):
         except Exception:
             self.status = "failed"
             raise
-        if self.options.get_print_output():
-            self.show_results()
         return StrongMaximumResult(
             method="StrongMaximumTest",
             status="completed",
@@ -310,6 +306,7 @@ class StrongMaximumTest(AnalysisObject):
             points_x=self.x_points,
             limit_state_values=self.values,
             regions=self.masks,
+            options=self.options,
         )
 
     def get_points(self, region="far_failure", uspace=True):

@@ -16,7 +16,7 @@ Run and inspect FORM
    model.add_variable(ra.Normal("R", 10.0, 1.0))
    model.add_variable(ra.Normal("S", 5.0, 1.0))
    response = ra.LimitState(lambda R, S: R - S)
-   form = ra.FORM(stochastic_model=model, limit_state=response)
+   form = ra.FORM(model, response)
    result = form.run()
    assert result.converged, result.message
    assert result.failure_probability is not None
@@ -38,15 +38,15 @@ and transformation. The immutable ``FORMResult`` is a reporting record; the
 
 .. testcode:: form-sorm
 
-   sorm = ra.SORM(stochastic_model=model, limit_state=response, form=form)
-   sorm.run(fit_type="cf")
-   assert sorm.results_valid
-   probability = float(sorm.pf2_breitung)
+   sorm_result = ra.SORM(model, response, form=form).run()
+   assert sorm_result.converged
+   probability = sorm_result.failure_probability
    assert abs(probability - result.failure_probability) < 1e-8
 
-``fit_type="cf"`` uses curvature from the Hessian; ``"pf"`` fits boundary
-points. Read ``pf2_breitung`` for Breitung's probability and
-``pf2_breitung_m`` for the Hohenbichler–Rackwitz modification. Here the boundary
+``SORMOptions(fit="curve")``, the default, uses curvature from the Hessian;
+``fit="point"`` fits boundary points. ``sorm_result.approximations`` gives
+Breitung's probability (``"breitung"``, the estimate by default) and the
+Hohenbichler–Rackwitz modification (``"modified_breitung"``). Here the boundary
 is a plane, so FORM and SORM agree with the exact probability. For a curved
 boundary, inspect fitting diagnostics and compare with an independent estimate.
 

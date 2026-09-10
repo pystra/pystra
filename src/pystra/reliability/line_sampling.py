@@ -7,6 +7,7 @@ from scipy.stats import norm as scipy_norm
 
 from .analysis import AnalysisObject
 from .form import FORM
+from ..options import FORMOptions, SimulationOptions
 from ..results import FORMResult, SimulationResult
 
 __all__ = ["LineSampling"]
@@ -33,13 +34,15 @@ class LineSampling(AnalysisObject):
 
     Parameters
     ----------
-    stochastic_model : StochasticModel
+    model : StochasticModel
     limit_state : LimitState
-    analysis_options : AnalysisOptions
+    options : SimulationOptions, optional
+        ``n_samples`` is the number of lines.
     form : FORM, optional
-        A pre-computed FORM result.  If ``None``, FORM is run automatically
-        to obtain the important direction :math:`\boldsymbol{\alpha}` and
-        the initial guess for the root search.
+        A completed FORM analysis. If ``None``, :meth:`run` first runs FORM,
+        with this analysis's block size and transformation, to obtain the
+        important direction :math:`\boldsymbol{\alpha}` and the initial
+        guess for the root search.
 
     Attributes
     ----------
@@ -61,18 +64,15 @@ class LineSampling(AnalysisObject):
     applications. *Probabilistic Engineering Mechanics*, 19(4), 409–417.
     """
 
-    def __init__(
-        self,
-        analysis_options=None,
-        limit_state=None,
-        stochastic_model=None,
-        form=None,
-    ):
-        super().__init__(
-            analysis_options=analysis_options,
-            limit_state=limit_state,
-            stochastic_model=stochastic_model,
+    _options_type = SimulationOptions
+
+    def __init__(self, model, limit_state, *, options=None, form=None):
+        super().__init__(model, limit_state, options)
+        self.options._require_defaults(
+            "LineSampling", ("target_cov", "sampling_std", "bins")
         )
+        if form is not None and not isinstance(form, FORM):
+            raise TypeError("form must be a FORM analysis")
         self.form = form
         self.nrv = self.model.get_len_marginal_distributions()
         self.alpha = None
@@ -92,9 +92,13 @@ class LineSampling(AnalysisObject):
         # Obtain important direction from FORM
         if self.form is None:
             _form = FORM(
-                stochastic_model=self.model,
-                limit_state=self.limitstate,
-                analysis_options=self.options,
+                self.model,
+                self.limitstate,
+                options=FORMOptions(
+                    block_size=self.options.block_size,
+                    transform=self.options.transform,
+                    rosenblatt_order=self.options.rosenblatt_order,
+                ),
             )
             _form.run()
             self.form = _form
@@ -104,7 +108,7 @@ class LineSampling(AnalysisObject):
         beta_form = self.form.get_beta()
         self.alpha = alpha
 
-        N = self.options.get_samples()
+        N = self.options.n_samples
         n = self.nrv
 
         # Draw N samples in standard normal space
@@ -140,8 +144,6 @@ class LineSampling(AnalysisObject):
             self.beta = -np.inf
             self.cov = np.inf
 
-        if self.options.get_print_output():
-            self.show_results()
         return SimulationResult(
             method="LineSampling",
             status="completed",
@@ -152,6 +154,7 @@ class LineSampling(AnalysisObject):
             beta=float(self.beta),
             coefficient_of_variation=self.cov,
             n_samples=N,
+            options=self.options,
             diagnostics={
                 "form": FORMResult.from_analysis(self.form),
                 "direction": alpha,
@@ -166,9 +169,7 @@ class LineSampling(AnalysisObject):
         """Evaluate g(v + c * alpha) and return the scalar LSF value."""
         u_pt = v + c * alpha
         x_pt = self.transform.u_to_x(u_pt, marg)
-        G, _ = self.limitstate.evaluate_lsf(
-            x_pt.reshape(-1, 1), self.model, self.options, "no", counter=self._count
-        )
+        G, _ = self._lsf(x_pt.reshape(-1, 1))
         return float(G[0, 0])
 
     def _find_line_intersection(self, v, alpha, c_init, marg):

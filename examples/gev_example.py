@@ -29,10 +29,10 @@ model.add_variable(ra.Normal("X1", 500, 100))
 model.add_variable(X2)
 model.add_variable(ra.Constant("C", 50))
 
-form = ra.FORM(stochastic_model=model, limit_state=limit_state)
+form = ra.FORM(model=model, limit_state=limit_state)
 form.run()
 form.show_detailed_output()
 
-sorm = ra.SORM(stochastic_model=model, limit_state=limit_state, form=form)
+sorm = ra.SORM(model=model, limit_state=limit_state, form=form)
 sorm.run()
 sorm.show_detailed_output()

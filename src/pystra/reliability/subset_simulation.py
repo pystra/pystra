@@ -5,6 +5,7 @@ import numpy as np
 from scipy.stats import norm as scipy_norm
 
 from .analysis import AnalysisObject
+from ..options import SimulationOptions
 from ..results import SimulationResult
 
 __all__ = ["SubsetSimulation"]
@@ -30,9 +31,10 @@ class SubsetSimulation(AnalysisObject):
 
     Parameters
     ----------
-    stochastic_model : StochasticModel
+    model : StochasticModel
     limit_state : LimitState
-    analysis_options : AnalysisOptions
+    options : SimulationOptions, optional
+        ``n_samples`` is the number of samples per level.
     p0 : float, optional
         Target conditional failure probability per subset level (default 0.1).
     proposal_sigma : float, optional
@@ -57,8 +59,7 @@ class SubsetSimulation(AnalysisObject):
 
     Notes
     -----
-    The number of samples per level is taken from
-    ``analysis_options.get_samples()``.
+    The number of samples per level is ``options.n_samples``.
 
     References
     ----------
@@ -67,18 +68,12 @@ class SubsetSimulation(AnalysisObject):
     *Probabilistic Engineering Mechanics*, 16(4), 263–277.
     """
 
-    def __init__(
-        self,
-        analysis_options=None,
-        limit_state=None,
-        stochastic_model=None,
-        p0=0.1,
-        proposal_sigma=1.0,
-    ):
-        super().__init__(
-            analysis_options=analysis_options,
-            limit_state=limit_state,
-            stochastic_model=stochastic_model,
+    _options_type = SimulationOptions
+
+    def __init__(self, model, limit_state, *, options=None, p0=0.1, proposal_sigma=1.0):
+        super().__init__(model, limit_state, options)
+        self.options._require_defaults(
+            "SubsetSimulation", ("target_cov", "sampling_std", "bins")
         )
         if not (0.0 < p0 < 1.0):
             raise ValueError(f"p0 must be in (0, 1); got {p0}")
@@ -98,7 +93,7 @@ class SubsetSimulation(AnalysisObject):
 
         nrv = self.model.get_len_marginal_distributions()
         marg = self.model.get_marginal_distributions()
-        N = self.options.get_samples()
+        N = self.options.n_samples
         p0 = self.p0
 
         self.thresholds = []
@@ -184,8 +179,6 @@ class SubsetSimulation(AnalysisObject):
         delta_sq = sum((1.0 - p) / (N * p) for p in self.conditional_probs if p > 0.0)
         self.cov = float(np.sqrt(delta_sq)) if delta_sq > 0.0 else 0.0
 
-        if self.options.get_print_output():
-            self.show_results()
         return SimulationResult(
             method="SubsetSimulation",
             status="completed",
@@ -196,6 +189,7 @@ class SubsetSimulation(AnalysisObject):
             beta=self.beta,
             coefficient_of_variation=self.cov if self.Pf > 0 else np.inf,
             n_samples=N * self.n_levels,
+            options=self.options,
             diagnostics={
                 "thresholds": np.array(self.thresholds),
                 "conditional_probabilities": np.array(self.conditional_probs),
@@ -208,16 +202,14 @@ class SubsetSimulation(AnalysisObject):
         """Evaluate the LSF for every column of *u* (shape nrv × N)."""
         N = u.shape[1]
         G = np.empty(N)
-        block = self.options.get_block_size()
+        block = self.options.block_size
         for start in range(0, N, block):
             end = min(start + block, N)
             u_blk = u[:, start:end]
             x_blk = np.empty_like(u_blk)
             for i in range(end - start):
                 x_blk[:, i] = self.transform.u_to_x(u_blk[:, i], marg)
-            G_blk, _ = self.limitstate.evaluate_lsf(
-                x_blk, self.model, self.options, "no", counter=self._count
-            )
+            G_blk, _ = self._lsf(x_blk)
             G[start:end] = G_blk[0, :]
         return G
 
@@ -270,13 +262,7 @@ class SubsetSimulation(AnalysisObject):
 
                 # Accept the joint proposal if it stays in the conditional region
                 x_prop = self.transform.u_to_x(u_prop, marg)
-                G_prop, _ = self.limitstate.evaluate_lsf(
-                    x_prop.reshape(-1, 1),
-                    self.model,
-                    self.options,
-                    "no",
-                    counter=self._count,
-                )
+                G_prop, _ = self._lsf(x_prop.reshape(-1, 1))
                 g_prop = float(G_prop[0, 0])
 
                 if g_prop <= threshold:

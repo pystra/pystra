@@ -74,7 +74,7 @@ def main():
     limit_state = LimitState(example_limitstatefunction)
 
     # Set some options (optional)
-    options = AnalysisOptions()
+    options = FORMOptions()
     # options.printResults(False)
 
     stochastic_model = StochasticModel()
@@ -91,17 +91,17 @@ def main():
 
     # Performe FORM analysis
     Analysis = FORM(
-        analysis_options=options,
-        stochastic_model=stochastic_model,
+        options=options,
+        model=stochastic_model,
         limit_state=limit_state,
     )
     # Performe Distribution analysis
-    # Analysis = DistributionAnalysis(analysis_options=options, stochastic_model=stochastic_model, limit_state=limit_state)
+    # Analysis = DistributionAnalysis(options=options, model=stochastic_model, limit_state=limit_state)
     # Performe Crude Monte Carlo Simulation
-    # Analysis = CrudeMonteCarlo(analysis_options=options, stochastic_model=stochastic_model, limit_state=limit_state)
+    # Analysis = CrudeMonteCarlo(options=options, model=stochastic_model, limit_state=limit_state)
     #
     # Performe Importance Sampling
-    # Analysis = ImportanceSampling(analysis_options=options, stochastic_model=stochastic_model, limit_state=limit_state)
+    # Analysis = ImportanceSampling(options=options, model=stochastic_model, limit_state=limit_state)
     #
     # Some single results:
     # beta = Analysis.get_beta()

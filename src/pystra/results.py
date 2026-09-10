@@ -26,9 +26,11 @@ reliability index :math:`-\Phi^{-1}(p_f)`.
     A simulation used its whole sample budget before reaching its target
     coefficient of variation. The estimate is still reported.
 
-``n_limit_state_evaluations`` counts the limit-state evaluations made by
-``run()``. A FORM analysis that was supplied to another analysis, or run when
-that analysis was constructed, reports its own count in the nested FORM record.
+``n_limit_state_evaluations`` counts the limit-state evaluations made by the
+method itself. A nested FORM record (``form``, ``component_results`` or the
+``form`` diagnostic) reports that FORM analysis's own count; system FORM and
+sensitivity analysis, which consist of FORM runs, report their total.
+``options`` holds the frozen settings the analysis used.
 """
 
 from collections.abc import Mapping
@@ -245,6 +247,7 @@ class FORMResult(_ProbabilityResult):
             iterations=analysis.i or 0,
             limit_state_error=analysis.e1,
             direction_error=analysis.e2,
+            options=analysis.options,
         )
 
     def _rows(self):

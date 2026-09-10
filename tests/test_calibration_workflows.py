@@ -50,7 +50,7 @@ def test_form_result_survives_rerun_and_failed_result_has_no_estimate():
     analysis = ra.FORM(model, ra.LimitState(lambda R, S: R - S))
     first = analysis.run()
     assert first.beta == pytest.approx(5 / np.sqrt(2))
-    analysis.options.set_imax(1)
+    analysis.options = ra.FORMOptions(max_iterations=1)
     with pytest.warns(RuntimeWarning, match="did not converge"):
         failed = analysis.run()
     assert not failed.converged
@@ -121,8 +121,7 @@ def test_invalid_nominals_and_factors_are_rejected(value):
 
 
 def test_nonconverged_generic_cases_are_retained_and_not_plotted_as_envelopes():
-    options = ra.AnalysisOptions()
-    options.set_imax(1)
+    options = ra.FORMOptions(max_iterations=1)
     study = ra.calibration.CodeCalibration(
         live_load_ratios=[0.3, 0.7], dead_load_ratios=[0.5]
     )
@@ -247,8 +246,7 @@ def test_unmet_target_is_explicit_and_cannot_produce_factors(kwargs):
 
 def test_inner_failure_cannot_become_a_calibrated_design():
     inputs, target = problem()
-    options = ra.AnalysisOptions()
-    options.set_imax(1)
+    options = ra.FORMOptions(max_iterations=1)
     with pytest.warns(RuntimeWarning, match="did not converge"):
         result = ra.calibration.solve_designs(
             inputs, target_beta=target, options=options

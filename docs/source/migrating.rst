@@ -169,7 +169,7 @@ Top-level namespace
 
 ``import pystra`` gives the everyday modelling classes, distributions,
 dependence models, reliability methods, systems, load processes and result
-types, and the error classes: 68 names, listed in ``pystra.__all__``. Every module declares its own
+types, options and the error classes: 70 names, listed in ``pystra.__all__``. Every module declares its own
 ``__all__``, and nothing else leaks into the namespace. Specialised workflow
 tools are imported from their subpackage:
 
@@ -284,6 +284,95 @@ This example uses the implemented development API::
 The names ``stdv``, ``stochastic_model``, and the existing solver getters are
 transitional. Scientific acronyms such as FORM and LQI retain their
 conventional spelling in prose.
+
+Options and constructors
+------------------------
+
+``AnalysisOptions`` is removed. Each analysis takes one frozen settings object
+through its ``options`` keyword:
+
+.. list-table::
+   :header-rows: 1
+
+   * - Settings
+     - Used by
+   * - ``FORMOptions``
+     - ``FORM``, ``SystemFORM``, ``SensitivityAnalysis``, ``StrongMaximumTest``
+   * - ``SORMOptions``
+     - ``SORM``
+   * - ``SimulationOptions``
+     - ``CrudeMonteCarlo``, ``ImportanceSampling``, ``LineSampling``,
+       ``SubsetSimulation``, ``DistributionAnalysis``, ``ActiveLearning``
+
+Unknown fields are rejected, values are validated when the object is created,
+and the defaults are those of 1.x. Derive modified settings with
+:func:`dataclasses.replace`. A simulation method rejects a setting that it
+does not use, such as ``target_cov`` for line sampling.
+
+.. list-table:: Settings
+   :header-rows: 1
+
+   * - 1.x
+     - 2.0
+   * - ``set_imax(n)``
+     - ``FORMOptions(max_iterations=n)``
+   * - ``set_e1(e)``, ``set_e2(e)``
+     - ``limit_state_tolerance``, ``gradient_tolerance``
+   * - ``set_step_size(s)``
+     - ``step_size``
+   * - ``set_diff_mode("ddm")``
+     - ``differentiation="ddm"``
+   * - ``set_ffd_parameter(p)``
+     - ``ffd_parameter`` (FORM and SORM)
+   * - ``set_block_size(n)``
+     - ``block_size`` (FORM and simulation)
+   * - ``set_samples(n)``
+     - ``SimulationOptions(n_samples=n)``
+   * - ``target_cov``, ``stdv_sim``, ``set_bins(n)``
+     - ``target_cov``, ``sampling_std``, ``bins``
+   * - ``set_transform(t)``, ``set_rosenblatt_order(o)``
+     - ``transform``, ``rosenblatt_order``
+   * - ``set_print_output(flag)``
+     - Removed: analyses do not print; use ``result.summary()``
+   * - ``SORM.run(fit_type="pf")``
+     - ``SORMOptions(fit="point")``; ``fit_type="cf"`` is ``fit="curve"``
+
+``transf_type``, ``Ro_method``, ``flag_sens``, ``Recorded_u``, ``Recorded_x``,
+``ffdpara_thetag``, ``sim_point``, ``multi_proc`` and ``random_generator`` had
+no effect and are removed.
+
+Constructors take the model and limit state first, then keyword-only
+settings: ``FORM(model, limit_state, *, options=None)``.
+
+.. code-block:: python
+
+    # 1.x
+    options = ra.AnalysisOptions()
+    options.set_imax(50)
+    form = ra.FORM(stochastic_model=model, limit_state=limit_state,
+                   analysis_options=options)
+
+    # 2.0
+    form = ra.FORM(model, limit_state, options=ra.FORMOptions(max_iterations=50))
+
+``SensitivityAnalysis(model, limit_state, *, options=None, method="numerical",
+delta=0.01)`` takes the method and step that were ``run()`` arguments; use
+``method="closed_form"`` for ``run(numerical=False)``. ``SystemFORM(model,
+system, ...)`` takes the model first. Both reverse the 1.x argument order, and
+``run_form()`` is removed. The Monte Carlo classes no longer take
+``analysis_options`` first.
+
+SORM, importance sampling and line sampling no longer run FORM when
+constructed; ``run()`` does. Pass a completed analysis as ``form=`` to reuse its
+design point. SORM then uses that analysis's settings and rejects a
+non-default ``SORMOptions.form``. When importance or line sampling runs FORM
+itself, it uses the default FORM settings with its own block size and
+transformation; to use others, such as direct differentiation, run FORM first
+and pass it.
+
+``LimitState.evaluate_lsf(x, model, *, differentiation="no",
+ffd_parameter=1000, block_size=1000)`` takes explicit settings instead of an
+options object.
 
 Result records
 --------------

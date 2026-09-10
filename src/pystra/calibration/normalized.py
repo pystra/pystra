@@ -7,7 +7,7 @@ from pandas import DataFrame
 
 import numpy as np
 
-from ..reliability.analysis import AnalysisOptions
+from ..options import FORMOptions
 from ..dependence.copula import Copula
 from ..distributions import Constant, Distribution
 from ..reliability.form import FORM
@@ -269,7 +269,7 @@ class CodeCalibration:
         model: NormalizedReliabilityModel,
         factors: CodeFactors,
         *,
-        options: Optional[AnalysisOptions] = None,
+        options: Optional[FORMOptions] = None,
         target_beta: Optional[float] = None,
     ) -> CodeCalibrationResult:
         """Return an isolated study result, retaining nonconverged FORM cases.
@@ -282,9 +282,9 @@ class CodeCalibration:
             factors, CodeFactors
         ):
             raise TypeError("Expected NormalizedReliabilityModel and CodeFactors")
-        if options is not None and not isinstance(options, AnalysisOptions):
-            raise TypeError("options must be AnalysisOptions")
-        if options is not None and options.get_diff_mode() == "ddm":
+        if options is not None and not isinstance(options, FORMOptions):
+            raise TypeError("options must be FORMOptions")
+        if options is not None and options.differentiation == "ddm":
             raise ValueError(
                 "The normalized study currently requires finite-difference derivatives"
             )
@@ -315,7 +315,7 @@ class CodeCalibration:
                 analysis = FORM(
                     snapshot.stochastic_model(),
                     LimitState(limit_state),
-                    deepcopy(options),
+                    options=options,
                 )
                 result = analysis.run()
                 margin = (

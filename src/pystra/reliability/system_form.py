@@ -1,7 +1,5 @@
 """Component FORM approximation for series and parallel failure events."""
 
-from copy import copy
-
 import numpy as np
 from scipy.integrate import quad
 from scipy.stats import multivariate_normal, norm
@@ -10,6 +8,7 @@ from .analysis import AnalysisObject
 from .form import FORM
 from ..systems import Component, SeriesSystem, ParallelSystem, ditlevsen_bounds
 from ..errors import AnalysisError
+from ..options import FORMOptions
 from ..results import SystemFORMResult
 
 __all__ = ["SystemFORM"]
@@ -25,11 +24,11 @@ class SystemFORM(AnalysisObject):
 
     Parameters
     ----------
+    model : StochasticModel
+        Shared variables, constants and dependence model.
     system : SeriesSystem or ParallelSystem
         System failure event.
-    stochastic_model : StochasticModel
-        Shared variables, constants and dependence model.
-    analysis_options : AnalysisOptions, optional
+    options : FORMOptions, optional
         Component FORM settings. DDM gradients must use full model ordering.
     maxpts : int, optional
         Maximum integration points per multivariate normal CDF call.
@@ -59,21 +58,22 @@ class SystemFORM(AnalysisObject):
     vary between runs; tight tolerances do not certify rare-tail accuracy.
     """
 
+    _options_type = FORMOptions
+    _requires_limit_state = False
+
     def __init__(
         self,
+        model,
         system,
-        stochastic_model,
-        analysis_options=None,
         *,
+        options=None,
         maxpts=1000000,
         abseps=1e-10,
         releps=1e-5,
     ):
         if type(system) not in (SeriesSystem, ParallelSystem):
             raise TypeError("SystemFORM requires a series or parallel system")
-        super().__init__(
-            stochastic_model=stochastic_model, analysis_options=analysis_options
-        )
+        super().__init__(model, None, options)
         self.system = system
         leaves = []
 
@@ -212,15 +212,9 @@ class SystemFORM(AnalysisObject):
         Returns a :class:`SystemFORMResult`.
         """
         self._clear_results()
-        options = copy(self.options)
-        options.set_print_output(False)
         records = {}
         for component in self.components:
-            form = FORM(
-                stochastic_model=self.model,
-                limit_state=component.as_limit_state(),
-                analysis_options=options,
-            )
+            form = FORM(self.model, component.as_limit_state(), options=self.options)
             self.component_results[component.name] = form
             try:
                 records[component.name] = form.run()
@@ -302,8 +296,6 @@ class SystemFORM(AnalysisObject):
         self.Pf = float(np.clip(pf, 0, 1))
         self.beta = float(-norm.ppf(self.Pf))
         self.results_valid = True
-        if self.options.get_print_output():
-            self.show_results()
         return SystemFORMResult(
             method="SystemFORM",
             status="converged",
@@ -318,6 +310,7 @@ class SystemFORM(AnalysisObject):
             component_results=records,
             correlation=self.correlation,
             intersections=self.intersections,
+            options=self.options,
         )
 
     def get_failure(self):

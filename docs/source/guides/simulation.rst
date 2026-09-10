@@ -22,18 +22,14 @@ global random state. Record the seed and actual evaluation count in a study.
    model = ra.StochasticModel()
    model.add_variable(ra.Normal("R", 3.0, 1.0))
    model.add_variable(ra.Normal("S", 0.0, 1.0))
-   options = ra.AnalysisOptions()
-   options.set_samples(20_000)
-   options.target_cov = 0.05
+   options = ra.SimulationOptions(n_samples=20_000, target_cov=0.05)
    np.random.seed(2026)
    analysis = ra.CrudeMonteCarlo(
-       stochastic_model=model,
-       limit_state=ra.LimitState(lambda R, S: R - S),
-       analysis_options=options,
+       model, ra.LimitState(lambda R, S: R - S), options=options
    )
-   analysis.run()
-   assert analysis.results_valid
-   assert 0 < analysis.get_failure() < 1
+   result = analysis.run()
+   assert result.status in ("completed", "precision_not_met")
+   assert 0 < result.failure_probability < 1
 
 Check precision, not just probability
 -------------------------------------

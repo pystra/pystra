@@ -39,7 +39,6 @@ def simple_limit_state():
 
 @pytest.fixture
 def analysis_options():
-    """Default AnalysisOptions with output suppressed."""
-    opts = ra.AnalysisOptions()
-    opts.set_print_output(False)
+    """Default FORM settings."""
+    opts = ra.FORMOptions()
     return opts

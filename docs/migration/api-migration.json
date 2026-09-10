@@ -23,189 +23,296 @@
     },
     {
       "old": "pystra.analysis.AnalysisOptions",
-      "current": "pystra.reliability.analysis.AnalysisOptions",
+      "current": null,
       "kind": "class",
-      "status": "unchanged"
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions",
+        "pystra.options.SORMOptions",
+        "pystra.options.SimulationOptions"
+      ],
+      "notes": "Split into frozen settings for FORM, SORM and simulation."
     },
     {
       "old": "pystra.analysis.AnalysisOptions.__init__",
-      "current": "pystra.reliability.analysis.AnalysisOptions.__init__",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "removed",
+      "notes": "AnalysisOptions is replaced by the options classes."
     },
     {
       "old": "pystra.analysis.AnalysisOptions.getPrintOutput",
-      "current": "pystra.reliability.analysis.AnalysisOptions.get_print_output",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "removed",
+      "notes": "Analyses no longer print; each result has summary()."
     },
     {
       "old": "pystra.analysis.AnalysisOptions.getFlagSens",
-      "current": "pystra.reliability.analysis.AnalysisOptions.get_flag_sens",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "removed",
+      "notes": "Unused setting."
     },
     {
       "old": "pystra.analysis.AnalysisOptions.getMultiProc",
-      "current": "pystra.reliability.analysis.AnalysisOptions.get_multi_proc",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "removed",
+      "notes": "Unused setting."
     },
     {
       "old": "pystra.analysis.AnalysisOptions.getBlockSize",
-      "current": "pystra.reliability.analysis.AnalysisOptions.get_block_size",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions",
+        "pystra.options.SimulationOptions"
+      ],
+      "notes": "block_size in FORMOptions and SimulationOptions"
     },
     {
       "old": "pystra.analysis.AnalysisOptions.getImax",
-      "current": "pystra.reliability.analysis.AnalysisOptions.get_imax",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions"
+      ],
+      "notes": "FORMOptions.max_iterations"
     },
     {
       "old": "pystra.analysis.AnalysisOptions.getE1",
-      "current": "pystra.reliability.analysis.AnalysisOptions.get_e1",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions"
+      ],
+      "notes": "FORMOptions.limit_state_tolerance"
     },
     {
       "old": "pystra.analysis.AnalysisOptions.getE2",
-      "current": "pystra.reliability.analysis.AnalysisOptions.get_e2",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions"
+      ],
+      "notes": "FORMOptions.gradient_tolerance"
     },
     {
       "old": "pystra.analysis.AnalysisOptions.getStepSize",
-      "current": "pystra.reliability.analysis.AnalysisOptions.get_step_size",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions"
+      ],
+      "notes": "FORMOptions.step_size"
     },
     {
       "old": "pystra.analysis.AnalysisOptions.getDiffMode",
-      "current": "pystra.reliability.analysis.AnalysisOptions.get_diff_mode",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions"
+      ],
+      "notes": "FORMOptions.differentiation"
     },
     {
       "old": "pystra.analysis.AnalysisOptions.getffdpara",
-      "current": "pystra.reliability.analysis.AnalysisOptions.get_ffd_parameter",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions"
+      ],
+      "notes": "FORMOptions.ffd_parameter"
     },
     {
       "old": "pystra.analysis.AnalysisOptions.getSamples",
-      "current": "pystra.reliability.analysis.AnalysisOptions.get_samples",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.SimulationOptions"
+      ],
+      "notes": "SimulationOptions.n_samples"
     },
     {
       "old": "pystra.analysis.AnalysisOptions.getRandomGenerator",
-      "current": "pystra.reliability.analysis.AnalysisOptions.get_random_generator",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "removed",
+      "notes": "Unused setting; randomness is controlled by rng."
     },
     {
       "old": "pystra.analysis.AnalysisOptions.getSimulationPoint",
-      "current": "pystra.reliability.analysis.AnalysisOptions.get_simulation_point",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "removed",
+      "notes": "Unused setting."
     },
     {
       "old": "pystra.analysis.AnalysisOptions.getSimulationStdv",
-      "current": "pystra.reliability.analysis.AnalysisOptions.get_simulation_stdv",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.SimulationOptions"
+      ],
+      "notes": "SimulationOptions.sampling_std"
     },
     {
       "old": "pystra.analysis.AnalysisOptions.getSimulationCov",
-      "current": "pystra.reliability.analysis.AnalysisOptions.get_simulation_cov",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.SimulationOptions"
+      ],
+      "notes": "SimulationOptions.target_cov"
     },
     {
       "old": "pystra.analysis.AnalysisOptions.getTransform",
-      "current": "pystra.reliability.analysis.AnalysisOptions.get_transform",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions",
+        "pystra.options.SimulationOptions"
+      ],
+      "notes": "transform in FORMOptions and SimulationOptions"
     },
     {
       "old": "pystra.analysis.AnalysisOptions.setPrintOutput",
-      "current": "pystra.reliability.analysis.AnalysisOptions.set_print_output",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "removed",
+      "notes": "Analyses no longer print; each result has summary()."
     },
     {
       "old": "pystra.analysis.AnalysisOptions.setMultiProc",
-      "current": "pystra.reliability.analysis.AnalysisOptions.set_multi_proc",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "removed",
+      "notes": "Unused setting."
     },
     {
       "old": "pystra.analysis.AnalysisOptions.setBlockSize",
-      "current": "pystra.reliability.analysis.AnalysisOptions.set_block_size",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions",
+        "pystra.options.SimulationOptions"
+      ],
+      "notes": "block_size in FORMOptions and SimulationOptions"
     },
     {
       "old": "pystra.analysis.AnalysisOptions.setImax",
-      "current": "pystra.reliability.analysis.AnalysisOptions.set_imax",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions"
+      ],
+      "notes": "FORMOptions.max_iterations"
     },
     {
       "old": "pystra.analysis.AnalysisOptions.setE1",
-      "current": "pystra.reliability.analysis.AnalysisOptions.set_e1",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions"
+      ],
+      "notes": "FORMOptions.limit_state_tolerance"
     },
     {
       "old": "pystra.analysis.AnalysisOptions.setE2",
-      "current": "pystra.reliability.analysis.AnalysisOptions.set_e2",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions"
+      ],
+      "notes": "FORMOptions.gradient_tolerance"
     },
     {
       "old": "pystra.analysis.AnalysisOptions.setStepSize",
-      "current": "pystra.reliability.analysis.AnalysisOptions.set_step_size",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions"
+      ],
+      "notes": "FORMOptions.step_size"
     },
     {
       "old": "pystra.analysis.AnalysisOptions.setDiffMode",
-      "current": "pystra.reliability.analysis.AnalysisOptions.set_diff_mode",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions"
+      ],
+      "notes": "FORMOptions.differentiation"
     },
     {
       "old": "pystra.analysis.AnalysisOptions.setffdpara",
-      "current": "pystra.reliability.analysis.AnalysisOptions.set_ffd_parameter",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions"
+      ],
+      "notes": "FORMOptions.ffd_parameter"
     },
     {
       "old": "pystra.analysis.AnalysisOptions.setBins",
-      "current": "pystra.reliability.analysis.AnalysisOptions.set_bins",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.SimulationOptions"
+      ],
+      "notes": "SimulationOptions.bins"
     },
     {
       "old": "pystra.analysis.AnalysisOptions.setSamples",
-      "current": "pystra.reliability.analysis.AnalysisOptions.set_samples",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.SimulationOptions"
+      ],
+      "notes": "SimulationOptions.n_samples"
     },
     {
       "old": "pystra.analysis.AnalysisOptions.setTransform",
-      "current": "pystra.reliability.analysis.AnalysisOptions.set_transform",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions",
+        "pystra.options.SimulationOptions"
+      ],
+      "notes": "transform in FORMOptions and SimulationOptions"
     },
     {
       "old": "pystra.analysis.AnalysisOptions.setRosenblattOrder",
-      "current": "pystra.reliability.analysis.AnalysisOptions.set_rosenblatt_order",
+      "current": null,
       "kind": "callable",
-      "status": "renamed"
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions",
+        "pystra.options.SimulationOptions"
+      ],
+      "notes": "rosenblatt_order in FORMOptions and SimulationOptions"
     },
     {
       "old": "pystra.calibration.Calibration",
@@ -3533,9 +3640,13 @@
     },
     {
       "old": "pystra.sensitivity.SensitivityAnalysis.run_form",
-      "current": "pystra.reliability.sensitivity.SensitivityAnalysis.run_form",
+      "current": null,
       "kind": "callable",
-      "status": "unchanged"
+      "status": "replaced",
+      "replacements": [
+        "pystra.reliability.sensitivity.SensitivityAnalysis.run"
+      ],
+      "notes": "The method and delta are constructor arguments; run() takes none."
     },
     {
       "old": "pystra.sensitivity.SensitivityAnalysis.summary",

@@ -35,7 +35,7 @@
     "exports": "Public calibration records/functions remain available from pystra.calibration and pystra; Calibration has no alias.",
     "form_result": "Frozen snapshot. beta normal-equivalent, design_index signed reference-space distance. design_point_x, design_point_u and alpha are read-only arrays in variable_names order. Iteration exhaustion returns status=not_converged and None estimates with warning; invalid inputs/numerical execution errors raise.",
     "generic_grid": "Finite nonempty 1D ratios in [0,1]. beta fresh array (n_dead_load_ratios,n_live_load_ratios); failed points NaN and retained in cases. to_frame columns: live_load_ratio, dead_load_ratio, design_value, beta, failure_probability, converged, target_margin, message. Model copied; factors/nominals finite positive.",
-    "generic_dependence": "Default independent; explicit copula random-variable order resistance_error,resistance,load_error,dead_load,permanent_load,live_load, omitting constants. Per-run AnalysisOptions; DDM unsupported for built-in normalized equation.",
+    "generic_dependence": "Default independent; explicit copula random-variable order resistance_error,resistance,load_error,dead_load,permanent_load,live_load, omitting constants. Per-run FORMOptions; DDM unsupported for built-in normalized equation.",
     "specialist_solve": "root (fsolve or bracketed Brent) and alpha. Default beta tolerance=1e-4 and max_evaluations=100 FORM runs per case including final verification. Inner convergence, outer success and final residual required. Failures retained; factor derivation rejects them.",
     "specialist_derivation": "coeff/matrix require normal standard space and exactly one leading case per variable action. Explicit names align arrays. Separable resistance-scale equation verified at computed design; arbitrary coupled nonlinear decomposition unsupported. Matrix action coefficient uses its own leading-case inputs, preserving reference convention. Singular systems raise.",
     "factor_results": "Frozen numeric row tuples with case_names/resistance_names/load_names and leading_actions. to_frame(kind) copies. Selection per_case by default; resistance minimum, loads/combinations maximum are explicit. Governing ties retained. Design maximum must be explicitly chosen, then verified.",
@@ -59,7 +59,7 @@
     {
       "name": "pystra.calibration.factors.analyze_case",
       "kind": "callable",
-      "signature": "(cases: LoadCombination, case_name: Optional[str]=None, *, overrides: Optional[Mapping[str, Union[Distribution, Constant]]]=None, options: Optional[AnalysisOptions]=None)",
+      "signature": "(cases: LoadCombination, case_name: Optional[str]=None, *, overrides: Optional[Mapping[str, Union[Distribution, Constant]]]=None, options: Optional[FORMOptions]=None)",
       "decorators": [],
       "returns": "FORMResult"
     },
@@ -172,7 +172,7 @@
     {
       "name": "pystra.calibration.factors.solve_designs",
       "kind": "callable",
-      "signature": "(problem: FactorCalibrationProblem, *, target_beta: float, method: str='root', initial_value: Optional[float]=None, tolerance: float=0.0001, max_evaluations: int=100, bracket: Optional[Tuple[float, float]]=None, options: Optional[AnalysisOptions]=None)",
+      "signature": "(problem: FactorCalibrationProblem, *, target_beta: float, method: str='root', initial_value: Optional[float]=None, tolerance: float=0.0001, max_evaluations: int=100, bracket: Optional[Tuple[float, float]]=None, options: Optional[FORMOptions]=None)",
       "decorators": [],
       "returns": "TargetDesigns"
     },
@@ -268,7 +268,7 @@
     {
       "name": "pystra.calibration.factors.verify_designs",
       "kind": "callable",
-      "signature": "(problem: FactorCalibrationProblem, design_values: Union[float, Mapping[str, float], DesignValues], *, target_beta: Optional[float]=None, options: Optional[AnalysisOptions]=None)",
+      "signature": "(problem: FactorCalibrationProblem, design_values: Union[float, Mapping[str, float], DesignValues], *, target_beta: Optional[float]=None, options: Optional[FORMOptions]=None)",
       "decorators": [],
       "returns": "Tuple[DesignVerification, ...]"
     },
@@ -456,7 +456,7 @@
     {
       "name": "pystra.calibration.normalized.CodeCalibration.run",
       "kind": "callable",
-      "signature": "(self, model: NormalizedReliabilityModel, factors: CodeFactors, *, options: Optional[AnalysisOptions]=None, target_beta: Optional[float]=None)",
+      "signature": "(self, model: NormalizedReliabilityModel, factors: CodeFactors, *, options: Optional[FORMOptions]=None, target_beta: Optional[float]=None)",
       "decorators": [],
       "returns": "CodeCalibrationResult"
     },

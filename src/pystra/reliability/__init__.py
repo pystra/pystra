@@ -1,6 +1,6 @@
 """Reliability analysis methods: FORM, SORM, simulation, sensitivity and system FORM."""
 
-from .analysis import AnalysisObject, AnalysisOptions
+from .analysis import AnalysisObject
 from .form import FORM
 from .sorm import SORM
 from .monte_carlo import MonteCarlo, CrudeMonteCarlo, DistributionAnalysis
@@ -13,7 +13,6 @@ from .strong_maximum import StrongMaximumTest
 
 __all__ = [
     "AnalysisObject",
-    "AnalysisOptions",
     "FORM",
     "SORM",
     "MonteCarlo",

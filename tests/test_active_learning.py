@@ -158,7 +158,7 @@ def test_standard_benchmarks(problem, surrogate, learning, seed):
             "degree_early_stop": False,
         }
     analysis = ActiveLearning(
-        stochastic_model=model,
+        model=model,
         limit_state=limit_state,
         surrogate=surrogate,
         learning_function=learning,
@@ -216,7 +216,7 @@ def test_result_snapshot_seed_and_independent_estimation():
     model.add_variable(ra.Normal("x", 0, 1))
     surrogate = ExactLinear()
     analysis = ActiveLearning(
-        stochastic_model=model,
+        model=model,
         limit_state=ra.LimitState(lambda x: 2 - x),
         surrogate=surrogate,
         seed=12,
@@ -245,7 +245,7 @@ def test_budget_and_candidate_exhaustion_do_not_repeat_points():
     model.add_variable(ra.Normal("x", 0, 1))
     surrogate = Uncertain()
     analysis = ActiveLearning(
-        stochastic_model=model,
+        model=model,
         limit_state=ra.LimitState(lambda x: x),
         surrogate=surrogate,
         n_candidates=3,
@@ -293,12 +293,11 @@ def test_pce_correlated_lognormals_use_independent_normal_coordinates(method):
     model = ra.StochasticModel(
         ra.JointDistribution(marginals, ra.GaussianCopula(correlation))
     )
-    options = ra.AnalysisOptions()
-    options.set_transform(method)
+    options = ra.SimulationOptions(transform=method)
     # The log of a correlated lognormal product is exactly linear in u.
     analysis = ActiveLearning(
-        stochastic_model=model,
-        analysis_options=options,
+        model=model,
+        options=options,
         limit_state=ra.LimitState(lambda x, y: 2.6 - np.log(x * y)),
         surrogate="pce",
         surrogate_kwargs={"degree": 1},
@@ -319,11 +318,10 @@ def test_spherical_student_space_is_rejected():
             ra.StudentTCopula(np.eye(2), 4),
         )
     )
-    options = ra.AnalysisOptions()
-    options.set_transform("nataf")
+    options = ra.SimulationOptions(transform="nataf")
     analysis = ActiveLearning(
-        stochastic_model=model,
-        analysis_options=options,
+        model=model,
+        options=options,
         limit_state=ra.LimitState(lambda x, y: 3 - x - y),
         surrogate="pce",
     )
@@ -336,7 +334,7 @@ def test_final_sampling_precision_is_separate_from_learning():
     model = ra.StochasticModel()
     model.add_variable(ra.Normal("x", 0, 1))
     analysis = ActiveLearning(
-        stochastic_model=model,
+        model=model,
         limit_state=ra.LimitState(lambda x: 2 - x),
         surrogate=ExactLinear(),
         n_estimation=10,

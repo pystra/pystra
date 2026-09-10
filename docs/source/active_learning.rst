@@ -99,8 +99,8 @@ modules. For example, with a PySTRA ``model`` and ``limit_state``::
    )
 
    analysis = ActiveLearning(
-       stochastic_model=model,
-       limit_state=limit_state,
+       model,
+       limit_state,
        surrogate=KrigingSurrogate(seed=7),
        estimator=MonteCarloEstimator(n_samples=100_000),
        learning_function=UFunction(threshold=2),

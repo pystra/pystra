@@ -14,7 +14,7 @@ def model(dimension=2):
 
 def raw(function=lambda X0, **kwargs: 3 - X0, dimension=2, beta=3, **kwargs):
     return ra.StrongMaximumTest(
-        stochastic_model=model(dimension),
+        model=model(dimension),
         limit_state=ra.LimitState(function),
         design_point=[beta] + [0] * (dimension - 1),
         **kwargs,
@@ -85,7 +85,7 @@ def test_two_equal_modes_are_detected():
 
 def test_openturns_two_branch_event_detects_other_region():
     result = ra.StrongMaximumTest(
-        stochastic_model=model(),
+        model=model(),
         limit_state=ra.LimitState(lambda X0, X1: 10 - (X0 - 0.3) ** 2 + X1**2),
         design_point=[0.3 - np.sqrt(10), 0],
         importance_level=0.01,
@@ -101,12 +101,11 @@ def test_openturns_two_branch_event_detects_other_region():
 def test_post_form_reuses_correlated_transform_without_mutating_evaluator():
     m = model()
     m.set_correlation([[1, 0.6], [0.6, 1]])
-    opts = ra.AnalysisOptions()
-    opts.set_transform("svd")
+    opts = ra.FORMOptions(transform="svd")
     form = ra.FORM(
-        stochastic_model=m,
+        model=m,
         limit_state=ra.LimitState(lambda X0, X1: 3 - X1),
-        analysis_options=opts,
+        options=opts,
     )
     form.run()
     design = form.get_design_point().copy()
@@ -128,8 +127,7 @@ def test_post_form_reuses_correlated_transform_without_mutating_evaluator():
 def test_reproducible_local_rng_and_block_size():
     state = np.random.get_state()
     a = raw(point_number=120, seed=9)
-    b = raw(point_number=120, seed=9)
-    b.options.set_block_size(7)
+    b = raw(point_number=120, seed=9, options=ra.FORMOptions(block_size=7))
     a.run()
     b.run()
     np.testing.assert_allclose(a.u_points, b.u_points)
@@ -209,7 +207,7 @@ def test_bad_candidate_and_failed_rerun():
 
 def test_unrun_form_rejected():
     with pytest.raises(ValueError, match="converged"):
-        ra.StrongMaximumTest(ra.FORM())
+        ra.StrongMaximumTest(ra.FORM(model(), ra.LimitState(lambda X0, X1: 3 - X0)))
 
 
 def test_non_normal_post_form_evaluates_original_physical_function():
@@ -218,7 +216,8 @@ def test_non_normal_post_form_evaluates_original_physical_function():
     m.add_variable(ra.Normal("S", 0, 1))
     m.add_variable(ra.Constant("C", 3))
     form = ra.FORM(
-        stochastic_model=m, limit_state=ra.LimitState(lambda R, S, C: C - np.log(R))
+        model=m,
+        limit_state=ra.LimitState(lambda R, S, C: C - np.log(R)),
     )
     form.run()
     check = ra.StrongMaximumTest(form, point_number=100, seed=12)
@@ -240,12 +239,11 @@ def test_positive_scaling_preserves_diagnostic():
 
 
 def test_nonconverged_form_rejected():
-    options = ra.AnalysisOptions()
-    options.set_imax(1)
+    options = ra.FORMOptions(max_iterations=1)
     form = ra.FORM(
-        stochastic_model=model(),
+        model=model(),
         limit_state=ra.LimitState(lambda X0, X1: 3 - X0),
-        analysis_options=options,
+        options=options,
     )
     with pytest.warns(RuntimeWarning, match="did not converge"):
         form.run()

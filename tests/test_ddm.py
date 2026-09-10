@@ -30,8 +30,7 @@ def lsf(r, X1, X2, X3, X4, X5, X6):
 def setup(diff_mode):
     limit_state = ra.LimitState(lsf)
 
-    options = ra.AnalysisOptions()
-    options.set_diff_mode(diff_mode)
+    options = ra.FORMOptions(differentiation=diff_mode)
     stochastic_model = ra.StochasticModel()
 
     # Define random variables
@@ -64,16 +63,16 @@ def setup(diff_mode):
 def test_ddm_form():
     options, stochastic_model, limit_state = setup("ffd")
     form_ffd = ra.FORM(
-        analysis_options=options,
-        stochastic_model=stochastic_model,
+        options=options,
+        model=stochastic_model,
         limit_state=limit_state,
     )
     form_ffd.run()
 
     options, stochastic_model, limit_state = setup("ddm")
     form_ddm = ra.FORM(
-        analysis_options=options,
-        stochastic_model=stochastic_model,
+        options=options,
+        model=stochastic_model,
         limit_state=limit_state,
     )
     form_ddm.run()
@@ -88,8 +87,7 @@ def test_ddm_cmc():
     options, stochastic_model, limit_state = setup("ddm")
 
     Analysis = ra.CrudeMonteCarlo(
-        analysis_options=options,
-        stochastic_model=stochastic_model,
+        model=stochastic_model,
         limit_state=limit_state,
     )
     Analysis.run()
@@ -104,10 +102,13 @@ def test_ddm_is():
     """
     options, stochastic_model, limit_state = setup("ddm")
 
+    # Importance sampling samples about a FORM point; run FORM with DDM.
+    form = ra.FORM(stochastic_model, limit_state, options=options)
+    form.run()
     Analysis = ra.ImportanceSampling(
-        analysis_options=options,
-        stochastic_model=stochastic_model,
+        model=stochastic_model,
         limit_state=limit_state,
+        form=form,
     )
     Analysis.run()
 

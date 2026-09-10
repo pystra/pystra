@@ -15,9 +15,7 @@ def setup():
     Set up simulation
     """
     # Set some options (optional)
-    options = ra.AnalysisOptions()
-    options.set_print_output(False)
-    options.set_samples(1000)  # only relevant for Monte Carlo
+    options = ra.FORMOptions()
 
     # Set stochastic model
     stochastic_model = ra.model.StochasticModel()
@@ -46,8 +44,8 @@ def test_form():
     options, stochastic_model, limit_state = setup()
 
     Analysis = ra.FORM(
-        analysis_options=options,
-        stochastic_model=stochastic_model,
+        options=options,
+        model=stochastic_model,
         limit_state=limit_state,
     )
     Analysis.run()
@@ -63,11 +61,11 @@ def test_form_svd():
     Perform FORM analysis using SVD transform
     """
     options, stochastic_model, limit_state = setup()
-    options.set_transform("svd")
+    options = ra.FORMOptions(transform="svd")
 
     Analysis = ra.FORM(
-        analysis_options=options,
-        stochastic_model=stochastic_model,
+        options=options,
+        model=stochastic_model,
         limit_state=limit_state,
     )
     Analysis.run()
@@ -83,14 +81,11 @@ def test_sorm():
     options, stochastic_model, limit_state = setup()
 
     Analysis = ra.SORM(
-        analysis_options=options,
-        stochastic_model=stochastic_model,
+        options=ra.SORMOptions(form=options),
+        model=stochastic_model,
         limit_state=limit_state,
     )
     Analysis.run()
-
-    print(Analysis.betag_breitung)
-    print(Analysis.betag_breitung_m)
 
     # validate results
     assert pytest.approx(Analysis.betaHL, abs=1e-4) == 3.7347
@@ -108,11 +103,11 @@ def test_sorm_pointfit():
     options, stochastic_model, limit_state = setup()
 
     Analysis = ra.SORM(
-        analysis_options=options,
-        stochastic_model=stochastic_model,
+        model=stochastic_model,
         limit_state=limit_state,
+        options=ra.SORMOptions(fit="point", form=options),
     )
-    Analysis.run(fit_type="pf")
+    Analysis.run()
 
     # betaHL should match FORM
     assert pytest.approx(Analysis.betaHL, abs=1e-4) == 3.7347
@@ -135,8 +130,7 @@ def test_sorm_pointfit_linear():
     Point-fitting SORM on a linear LSF should give betag == betaHL,
     since a linear surface has zero curvature everywhere.
     """
-    options = ra.AnalysisOptions()
-    options.set_print_output(False)
+    options = ra.FORMOptions()
 
     model = ra.model.StochasticModel()
     model.add_variable(ra.Normal("R", 10, 2))
@@ -145,11 +139,11 @@ def test_sorm_pointfit_linear():
     limit_state = ra.model.LimitState(lambda R, S: R - S)
 
     Analysis = ra.SORM(
-        analysis_options=options,
-        stochastic_model=model,
+        model=model,
         limit_state=limit_state,
+        options=ra.SORMOptions(fit="point", form=options),
     )
-    Analysis.run(fit_type="pf")
+    Analysis.run()
 
     expected_beta = 5.0 / np.sqrt(5.0)
     assert pytest.approx(Analysis.betag_breitung, abs=1e-3) == expected_beta
@@ -164,19 +158,19 @@ def test_sorm_pointfit_with_form():
     options, stochastic_model, limit_state = setup()
 
     form = ra.FORM(
-        analysis_options=options,
-        stochastic_model=stochastic_model,
+        options=options,
+        model=stochastic_model,
         limit_state=limit_state,
     )
     form.run()
 
     Analysis = ra.SORM(
-        analysis_options=options,
-        stochastic_model=stochastic_model,
+        model=stochastic_model,
         limit_state=limit_state,
         form=form,
+        options=ra.SORMOptions(fit="point", form=options),
     )
-    Analysis.run(fit_type="pf")
+    Analysis.run()
 
     assert pytest.approx(Analysis.betaHL, abs=1e-4) == 3.7347
     assert Analysis.betag_breitung > 0
@@ -185,17 +179,10 @@ def test_sorm_pointfit_with_form():
 
 def test_sorm_invalid_fit_type():
     """
-    Invalid fit_type should raise ValueError.
+    An unknown fit is rejected when the options are created.
     """
-    options, stochastic_model, limit_state = setup()
-
-    Analysis = ra.SORM(
-        analysis_options=options,
-        stochastic_model=stochastic_model,
-        limit_state=limit_state,
-    )
-    with pytest.raises(ValueError, match="Unknown fit_type"):
-        Analysis.run(fit_type="invalid")
+    with pytest.raises(ValueError, match="fit must be one of"):
+        ra.SORMOptions(fit="invalid")
 
 
 def test_cmc():
@@ -205,8 +192,8 @@ def test_cmc():
     options, stochastic_model, limit_state = setup()
 
     Analysis = ra.CrudeMonteCarlo(
-        analysis_options=options,
-        stochastic_model=stochastic_model,
+        options=ra.SimulationOptions(n_samples=1000),
+        model=stochastic_model,
         limit_state=limit_state,
     )
     Analysis.run()
@@ -219,11 +206,8 @@ def test_cmc():
 
 def test_cmc_x_all_stores_physical_space(monkeypatch):
     """Issue #90: every stored block must match the physical model inputs."""
-    options = ra.AnalysisOptions()
-    options.set_print_output(False)
-    options.set_samples(100)
-    options.set_block_size(30)
-    options.target_cov = 0.0  # retain all four blocks, including the final ten
+    options = ra.SimulationOptions(n_samples=100, block_size=30, target_cov=0.0)
+    # retain all four blocks, including the final ten
 
     # The legacy Monte Carlo runner uses NumPy's global random interface.
     rng = np.random.default_rng(90)
@@ -239,8 +223,8 @@ def test_cmc_x_all_stores_physical_space(monkeypatch):
         return X1 - X2 - 100
 
     analysis = ra.CrudeMonteCarlo(
-        analysis_options=options,
-        stochastic_model=model,
+        options=options,
+        model=model,
         limit_state=ra.LimitState(limit_state),
     )
     analysis.run()
@@ -271,8 +255,8 @@ def test_mc_cov_zero_branch():
     options, stochastic_model, limit_state = setup()
 
     Analysis = ra.CrudeMonteCarlo(
-        analysis_options=options,
-        stochastic_model=stochastic_model,
+        options=ra.SimulationOptions(n_samples=1000),
+        model=stochastic_model,
         limit_state=limit_state,
     )
     # Initialise just enough internal state to call the method
@@ -299,8 +283,8 @@ def test_is():
     options, stochastic_model, limit_state = setup()
 
     Analysis = ra.ImportanceSampling(
-        analysis_options=options,
-        stochastic_model=stochastic_model,
+        options=ra.SimulationOptions(n_samples=1000),
+        model=stochastic_model,
         limit_state=limit_state,
     )
     Analysis.run()
@@ -317,14 +301,12 @@ def test_distribution_analysis():
     """
 
     options, stochastic_model, limit_state = setup()
-    options.print_output = False
-
     np.random.seed(42)
 
     # Perform Distribution analysis
     Analysis = ra.DistributionAnalysis(
-        analysis_options=options,
-        stochastic_model=stochastic_model,
+        options=ra.SimulationOptions(n_samples=1000),
+        model=stochastic_model,
         limit_state=limit_state,
     )
     Analysis.run()
@@ -339,8 +321,7 @@ def test_form_uncorrelated_normals():
     FORM for simple R - S problem with known analytical beta.
     beta = (mu_R - mu_S) / sqrt(sigma_R^2 + sigma_S^2)
     """
-    options = ra.AnalysisOptions()
-    options.set_print_output(False)
+    options = ra.FORMOptions()
 
     model = ra.model.StochasticModel()
     model.add_variable(ra.Normal("R", 10, 2))
@@ -349,8 +330,8 @@ def test_form_uncorrelated_normals():
     limit_state = ra.model.LimitState(lambda R, S: R - S)
 
     Analysis = ra.FORM(
-        analysis_options=options,
-        stochastic_model=model,
+        options=options,
+        model=model,
         limit_state=limit_state,
     )
     Analysis.run()
@@ -364,8 +345,7 @@ def test_form_with_gumbel():
     """
     FORM with Gumbel distribution.
     """
-    options = ra.AnalysisOptions()
-    options.set_print_output(False)
+    options = ra.FORMOptions()
 
     model = ra.model.StochasticModel()
     model.add_variable(ra.Normal("R", 20, 3))
@@ -374,8 +354,8 @@ def test_form_with_gumbel():
     limit_state = ra.model.LimitState(lambda R, S: R - S)
 
     Analysis = ra.FORM(
-        analysis_options=options,
-        stochastic_model=model,
+        options=options,
+        model=model,
         limit_state=limit_state,
     )
     Analysis.run()
@@ -389,8 +369,8 @@ def test_sorm_curvatures_match_independent_central_differences():
     """SORM's curvature fit agrees with a u-space Hessian that needs no Jacobian."""
     options, stochastic_model, limit_state = setup()
     sorm = ra.SORM(
-        analysis_options=options,
-        stochastic_model=stochastic_model,
+        options=ra.SORMOptions(form=options),
+        model=stochastic_model,
         limit_state=limit_state,
     )
     sorm.run()

@@ -193,10 +193,17 @@ def test_bootstrap_bounds_window_endpoints_and_composition():
     ):
         assert not rule.should_stop((step, bad))
     assert AllCriteria(criteria=(BetaBounds(), rule)).requires_bootstrap
+    model = ra.StochasticModel()
+    model.add_variable(ra.Normal("X", 0, 1))
+    limit_state = ra.LimitState(lambda X: 3 - X)
     with pytest.raises(TypeError, match="EnsembleSurrogate"):
-        ActiveLearning(surrogate="pc_kriging", learning_function="fbr")
+        ActiveLearning(
+            model, limit_state, surrogate="pc_kriging", learning_function="fbr"
+        )
     with pytest.raises(ValueError, match="fixed IID"):
         ActiveLearning(
+            model,
+            limit_state,
             surrogate="pce",
             learning_function="fbr",
             estimator=ImportanceSamplingEstimator(centers=[[3]]),
@@ -355,7 +362,7 @@ def problem(name):
 def test_active_importance_benchmarks(name, seed):
     model, function, reference, centers = problem(name)
     analysis = ActiveLearning(
-        stochastic_model=model,
+        model=model,
         limit_state=ra.LimitState(function),
         surrogate="kriging",
         surrogate_kwargs={"noise": 1e-8, "n_restarts": 0},
@@ -386,7 +393,7 @@ def test_active_importance_benchmarks(name, seed):
 def test_four_branch_pc_kriging(seed):
     model, function, reference, _ = problem("four_branch")
     analysis = ActiveLearning(
-        stochastic_model=model,
+        model=model,
         limit_state=ra.LimitState(function),
         surrogate="pc_kriging",
         surrogate_kwargs={"degree": (1, 2, 3)},
@@ -444,7 +451,7 @@ def test_fbr_lognormal_beam(seed):
         / np.sqrt(powers**2 @ variance)
     )
     analysis = ActiveLearning(
-        stochastic_model=model,
+        model=model,
         limit_state=ra.LimitState(function),
         surrogate="pce",
         surrogate_kwargs={"q_norm": 0.75, "max_interaction": 2},
@@ -514,7 +521,7 @@ def test_bootstrap_unanimity_cannot_certify_an_unobserved_failure_mode():
 def test_fbr_four_branch_reports_budget_exhaustion():
     model, function, _, _ = problem("four_branch")
     analysis = ActiveLearning(
-        stochastic_model=model,
+        model=model,
         limit_state=ra.LimitState(function),
         surrogate="pce",
         learning_function="fbr",

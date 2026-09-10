@@ -10,13 +10,11 @@ import pystra as ra
 def test_monte_carlo_probability_boundary(value, probability, beta):
     model = ra.StochasticModel()
     model.add_variable(ra.Normal("X", 0, 1))
-    options = ra.AnalysisOptions()
-    options.set_samples(100)
-    options.set_block_size(25)
+    options = ra.SimulationOptions(n_samples=100, block_size=25)
     analysis = ra.CrudeMonteCarlo(
-        stochastic_model=model,
+        model=model,
         limit_state=ra.LimitState(lambda X: value + 0 * X),
-        analysis_options=options,
+        options=options,
     )
     analysis.run()
 

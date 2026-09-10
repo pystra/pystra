@@ -6,13 +6,15 @@ from scipy.stats import norm
 
 import pystra as ra
 
+FITS = ["curve", "point"]
+
 
 @pytest.fixture
 def linear_problem():
     model = ra.StochasticModel()
     model.add_variable(ra.Normal("X", 0, 1))
     model.add_variable(ra.Normal("Y", 0, 1))
-    return model, ra.LimitState(lambda X, Y: 5 - X - Y), ra.AnalysisOptions()
+    return model, ra.LimitState(lambda X, Y: 5 - X - Y)
 
 
 def assert_invalid(analysis):
@@ -29,60 +31,66 @@ def assert_invalid(analysis):
             report()
 
 
-@pytest.mark.parametrize("fit_type", ["cf", "pf"])
-def test_sorm_rejects_automatically_run_nonconverged_form(linear_problem, fit_type):
-    model, limit_state, options = linear_problem
-    options.set_imax(1)
+@pytest.mark.parametrize("fit", FITS)
+def test_sorm_rejects_automatically_run_nonconverged_form(linear_problem, fit):
+    model, limit_state = linear_problem
+    options = ra.SORMOptions(fit=fit, form=ra.FORMOptions(max_iterations=1))
+    analysis = ra.SORM(model, limit_state, options=options)
     with pytest.warns(RuntimeWarning, match="FORM did not converge"):
-        analysis = ra.SORM(model, limit_state, options)
+        with pytest.raises(RuntimeError, match="successfully converged FORM"):
+            analysis.run()
 
     assert not analysis.form.converged
-    calls = model.get_call_function()
-    with pytest.raises(RuntimeError, match="successfully converged FORM"):
-        analysis.run(fit_type)
-
-    assert model.get_call_function() == calls
+    # Only FORM evaluated the limit state; SORM stopped before fitting.
+    assert model.get_call_function() == analysis.form.get_no_function_calls()
     assert_invalid(analysis)
 
 
-@pytest.mark.parametrize("fit_type", ["cf", "pf"])
+@pytest.mark.parametrize("fit", FITS)
 @pytest.mark.parametrize("run_form", [False, True])
-def test_sorm_rejects_supplied_invalid_form(linear_problem, fit_type, run_form):
-    model, limit_state, options = linear_problem
-    options.set_imax(1)
-    form = ra.FORM(model, limit_state, options)
+def test_sorm_rejects_supplied_invalid_form(linear_problem, fit, run_form):
+    model, limit_state = linear_problem
+    form = ra.FORM(model, limit_state, options=ra.FORMOptions(max_iterations=1))
     if run_form:
         with pytest.warns(RuntimeWarning, match="FORM did not converge"):
             form.run()
-    analysis = ra.SORM(model, limit_state, options, form=form)
+    analysis = ra.SORM(model, limit_state, options=ra.SORMOptions(fit=fit), form=form)
 
     with pytest.raises(RuntimeError, match="successfully converged FORM"):
-        analysis.run(fit_type)
+        analysis.run()
     assert_invalid(analysis)
 
 
-@pytest.mark.parametrize("fit_type", ["cf", "pf"])
-def test_sorm_failed_form_rerun_clears_results_and_can_recover(
-    linear_problem, fit_type
-):
-    model, limit_state, options = linear_problem
-    analysis = ra.SORM(model, limit_state, options)
-    analysis.run(fit_type)
+def test_supplied_form_keeps_its_own_settings(linear_problem):
+    model, limit_state = linear_problem
+    form = ra.FORM(model, limit_state)
+    options = ra.SORMOptions(form=ra.FORMOptions(max_iterations=5))
+    with pytest.raises(ValueError, match="supplied FORM analysis keeps its own"):
+        ra.SORM(model, limit_state, options=options, form=form)
+
+
+@pytest.mark.parametrize("fit", FITS)
+def test_sorm_failed_form_rerun_clears_results_and_can_recover(linear_problem, fit):
+    model, limit_state = linear_problem
+    form = ra.FORM(model, limit_state)
+    form.run()
+    analysis = ra.SORM(model, limit_state, options=ra.SORMOptions(fit=fit), form=form)
+    analysis.run()
     expected_beta = 5 / np.sqrt(2)
     expected_pf = norm.sf(expected_beta)
     assert analysis.results_valid
     assert analysis.pf2_breitung == pytest.approx(expected_pf, rel=1e-6)
 
-    options.set_imax(1)
+    form.options = ra.FORMOptions(max_iterations=1)
     with pytest.warns(RuntimeWarning, match="FORM did not converge"):
-        analysis.form.run()
+        form.run()
     with pytest.raises(RuntimeError, match="successfully converged FORM"):
-        analysis.run(fit_type)
+        analysis.run()
     assert_invalid(analysis)
 
-    options.set_imax(100)
-    analysis.form.run()
-    analysis.run(fit_type)
+    form.options = ra.FORMOptions()
+    form.run()
+    analysis.run()
     assert analysis.results_valid
     assert analysis.betag_breitung == pytest.approx(expected_beta, rel=1e-6)
     assert analysis.pf2_breitung == pytest.approx(expected_pf, rel=1e-6)
@@ -93,15 +101,14 @@ def test_sorm_failed_form_rerun_clears_results_and_can_recover(
 def test_direct_fitting_methods_check_form_and_preserve_reporting(
     linear_problem, method, capsys
 ):
-    model, limit_state, options = linear_problem
-    analysis = ra.SORM(model, limit_state, options)
-    options.set_print_output(True)
+    model, limit_state = linear_problem
+    analysis = ra.SORM(model, limit_state)
     getattr(analysis, method)()
     assert analysis.results_valid
+    analysis.show_results()
     assert "SECOND ORDER RELIABILITY METHOD" in capsys.readouterr().out
 
-    options.set_print_output(False)
-    options.set_imax(1)
+    analysis.form.options = ra.FORMOptions(max_iterations=1)
     with pytest.warns(RuntimeWarning, match="FORM did not converge"):
         analysis.form.run()
     with pytest.raises(RuntimeError, match="successfully converged FORM"):
@@ -109,19 +116,15 @@ def test_direct_fitting_methods_check_form_and_preserve_reporting(
     assert_invalid(analysis)
 
 
-def test_invalid_fit_type_invalidates_previous_results(linear_problem):
-    model, limit_state, options = linear_problem
-    analysis = ra.SORM(model, limit_state, options)
-    analysis.run()
-    with pytest.raises(ValueError, match="Unknown fit_type"):
-        analysis.run("invalid")
-    assert_invalid(analysis)
+def test_invalid_fit_is_rejected_by_the_options():
+    with pytest.raises(ValueError, match="fit must be one of"):
+        ra.SORMOptions(fit="invalid")
 
 
-@pytest.mark.parametrize("fit_type", ["cf", "pf"])
-def test_fitting_exception_does_not_leave_valid_results(linear_problem, fit_type):
-    model, limit_state, options = linear_problem
-    analysis = ra.SORM(model, limit_state, options)
+@pytest.mark.parametrize("fit", FITS)
+def test_fitting_exception_does_not_leave_valid_results(linear_problem, fit):
+    model, limit_state = linear_problem
+    analysis = ra.SORM(model, limit_state, options=ra.SORMOptions(fit=fit))
     analysis.run()
 
     def failed_evaluation(X, Y):
@@ -129,5 +132,5 @@ def test_fitting_exception_does_not_leave_valid_results(linear_problem, fit_type
 
     limit_state.set_expression(failed_evaluation)
     with pytest.raises(RuntimeError, match="External solver failed"):
-        analysis.run(fit_type)
+        analysis.run()
     assert_invalid(analysis)
