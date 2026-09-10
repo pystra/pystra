@@ -14,6 +14,7 @@ from scipy.special import betainc
 from .analysis import AnalysisObject
 from .form import FORM
 from ..model import LimitState
+from ..results import StrongMaximumResult
 
 __all__ = ["StrongMaximumTest"]
 
@@ -231,7 +232,10 @@ class StrongMaximumTest(AnalysisObject):
         return x, values
 
     def run(self):
-        """Evaluate the sphere and classify points by failure and vicinity."""
+        """Evaluate the sphere and classify points by failure and vicinity.
+
+        Returns a :class:`StrongMaximumResult`.
+        """
         self._clear_results()
         self.status = "running"
         try:
@@ -285,6 +289,28 @@ class StrongMaximumTest(AnalysisObject):
             raise
         if self.options.get_print_output():
             self.show_results()
+        return StrongMaximumResult(
+            method="StrongMaximumTest",
+            status="completed",
+            message=(
+                "Competing failure region detected"
+                if self.has_competing_points
+                else "No competing failure region detected; this is not a certificate"
+            ),
+            n_limit_state_evaluations=self.evaluation_count,
+            variable_names=tuple(self.model.get_variables()),
+            has_competing_points=self.has_competing_points,
+            design_point_u=self.design_point,
+            design_index=self.beta,
+            radius=self.radius,
+            point_number=self.point_number,
+            confidence_level=self.confidence_level,
+            cap_probability=self.cap_probability,
+            points_u=self.u_points,
+            points_x=self.x_points,
+            limit_state_values=self.values,
+            regions=self.masks,
+        )
 
     def get_points(self, region="far_failure", uspace=True):
         """Return selected points as rows; default is far failure in U-space."""

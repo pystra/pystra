@@ -94,6 +94,12 @@ from .reliability import (
 )
 from .results import (
     FORMResult,
+    SORMResult,
+    SimulationResult,
+    SystemFORMResult,
+    SensitivityResult,
+    StrongMaximumResult,
+    DistributionAnalysisResult,
 )
 from .systems import (
     Component,
@@ -167,6 +173,12 @@ __all__ = [
     "SystemFORM",
     "StrongMaximumTest",
     "FORMResult",
+    "SORMResult",
+    "SimulationResult",
+    "SystemFORMResult",
+    "SensitivityResult",
+    "StrongMaximumResult",
+    "DistributionAnalysisResult",
     "Component",
     "System",
     "SeriesSystem",

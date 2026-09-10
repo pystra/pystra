@@ -7,6 +7,7 @@ from scipy.stats import norm as scipy_norm
 
 from .analysis import AnalysisObject
 from .form import FORM
+from ..results import FORMResult, SimulationResult
 
 __all__ = ["LineSampling"]
 
@@ -82,7 +83,7 @@ class LineSampling(AnalysisObject):
         self._pf_contributions = None
 
     def run(self):
-        """Execute the Line Sampling analysis."""
+        """Run line sampling and return a :class:`SimulationResult`."""
         self.results_valid = True
         self.init_run()
 
@@ -141,6 +142,21 @@ class LineSampling(AnalysisObject):
 
         if self.options.get_print_output():
             self.show_results()
+        return SimulationResult(
+            method="LineSampling",
+            status="completed",
+            message="Sampling completed",
+            n_limit_state_evaluations=self._n_evaluations,
+            variable_names=tuple(self.model.get_variables()),
+            failure_probability=self.Pf,
+            beta=float(self.beta),
+            coefficient_of_variation=self.cov,
+            n_samples=N,
+            diagnostics={
+                "form": FORMResult.from_analysis(self.form),
+                "direction": alpha,
+            },
+        )
 
     # ------------------------------------------------------------------
     # Private helpers

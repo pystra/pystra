@@ -169,7 +169,7 @@ Top-level namespace
 
 ``import pystra`` gives the everyday modelling classes, distributions,
 dependence models, reliability methods, systems, load processes and result
-types, and the error classes: 62 names, listed in ``pystra.__all__``. Every module declares its own
+types, and the error classes: 68 names, listed in ``pystra.__all__``. Every module declares its own
 ``__all__``, and nothing else leaks into the namespace. Specialised workflow
 tools are imported from their subpackage:
 
@@ -285,26 +285,77 @@ The names ``stdv``, ``stochastic_model``, and the existing solver getters are
 transitional. Scientific acronyms such as FORM and LQI retain their
 conventional spelling in prose.
 
-FORM result snapshots
----------------------
+Result records
+--------------
 
-``FORM.run()`` now returns a ``FORMResult``. Its ``beta`` is the normal-equivalent
-reliability index; ``geometric_beta`` retains the signed distance in
-``standard_space``. These differ in Student-t standard space. A normal-space
-index remains finite even when its very small probability underflows to zero.
+Every analysis's ``run()`` now returns an immutable record from
+:mod:`pystra.results`: ``FORMResult``, ``SORMResult``, ``SimulationResult``,
+``SystemFORMResult``, ``SensitivityResult``, ``StrongMaximumResult`` or
+``DistributionAnalysisResult``. In 1.x only sensitivity analysis returned a
+value. A later run cannot change an earlier record. Every record has
+``method``, ``status``, ``message``, ``n_limit_state_evaluations`` and
+``variable_names``, the ``converged`` property and ``summary()``; estimates
+add ``failure_probability`` and ``beta``. See :doc:`guides/results`.
 
-``design_point`` (physical), ``standard_point``, and ``alpha`` are immutable
-one-dimensional tuples in ``variable_names`` order. A later solver run cannot
-change a previous result. Results include convergence, iteration count, and
-limit-state/direction errors. Iteration exhaustion returns ``converged=False``
-with unavailable probability, index, and point fields, and retains the existing
-warning. Invalid input and numerical execution errors still raise. This does
-not yet introduce a common failure policy for every algorithm.
+``FORMResult.beta`` is the normal-equivalent index, and ``design_index`` the
+signed distance of the design point in ``standard_space``. These differ in
+Student-t standard space. A normal-space index remains finite even when its
+very small probability underflows to zero. Iteration exhaustion returns a
+record with ``status="not_converged"`` and no probability, index or design
+point, and retains the existing warning. The design point and direction are
+read-only arrays in ``variable_names`` order. Records compare equal by value
+but, holding arrays, are not hashable.
 
-Existing FORM getters remain available during migration. In particular,
-``get_beta()`` still returns the geometric index; use ``result.beta`` when
-comparing probability-equivalent targets across reference spaces. Other
-algorithms have not yet migrated to this result contract.
+If you used the 2.0 development ``FORMResult``, its fields are renamed:
+
+.. list-table::
+   :header-rows: 1
+
+   * - Before
+     - Now
+   * - ``design_point``
+     - ``design_point_x``
+   * - ``standard_point``
+     - ``design_point_u``
+   * - ``geometric_beta``
+     - ``design_index``
+   * - ``converged`` field
+     - ``status`` field; ``converged`` is a property
+   * - tuples
+     - read-only NumPy arrays
+
+``SensitivityAnalysis.run()`` returns a ``SensitivityResult`` instead of a
+dictionary:
+
+.. code-block:: python
+
+    # 1.x
+    result = analysis.run(numerical=True)
+    result["R"]["mean"]
+    closed = analysis.run(numerical=False)
+    closed["marginal"]["R"]["mean"], closed["correlation"]
+
+    # 2.0
+    result = analysis.run(numerical=True)
+    result.marginal["R"]["mean"]
+    closed = analysis.run(numerical=False)
+    closed.marginal["R"]["mean"], closed.correlation
+
+``result.to_dataframe()`` gives the table that ``analysis.summary(result)``
+gave.
+
+Two outcomes are reported differently in the records. A simulation that
+observed no failures reports an infinite coefficient of variation, rather
+than crude Monte Carlo's placeholder of 1.0, and its status is
+``"precision_not_met"``. A SORM fit whose curvatures make Breitung's formula
+undefined printed a message and reported a probability and index of 0.0; its
+record now has status ``"not_converged"`` and no estimate. Likewise, an
+undefined modified Breitung probability is ``None``.
+
+Existing getters and analysis attributes remain available during migration.
+In particular, ``get_beta()`` still returns the design index; use
+``result.beta`` when comparing probability-equivalent targets across
+reference spaces.
 
 Code calibration using normalized reliability
 ---------------------------------------------

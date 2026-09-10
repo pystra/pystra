@@ -5,6 +5,7 @@ import numpy as np
 from scipy.stats import norm as scipy_norm
 
 from .analysis import AnalysisObject
+from ..results import SimulationResult
 
 __all__ = ["SubsetSimulation"]
 
@@ -91,7 +92,7 @@ class SubsetSimulation(AnalysisObject):
         self.n_levels = None
 
     def run(self):
-        """Execute the Subset Simulation analysis."""
+        """Run subset simulation and return a :class:`SimulationResult`."""
         self.results_valid = True
         self.init_run()
 
@@ -118,8 +119,7 @@ class SubsetSimulation(AnalysisObject):
             self.thresholds.append(0.0)
             self.conditional_probs.append(Pf)
             self.n_levels = 1
-            self._finalise(Pf, N)
-            return
+            return self._finalise(Pf, N)
 
         self.thresholds.append(y)
         p_lvl = float(np.sum(G <= y)) / N
@@ -163,14 +163,14 @@ class SubsetSimulation(AnalysisObject):
             level += 1
 
         self.n_levels = level + 1
-        self._finalise(Pf, N)
+        return self._finalise(Pf, N)
 
     # ------------------------------------------------------------------
     # Private helpers
     # ------------------------------------------------------------------
 
     def _finalise(self, Pf, N):
-        """Store results and compute the CoV estimate."""
+        """Store results, estimate the CoV and return the record."""
         self.Pf = float(Pf)
         if 0.0 < Pf < 1.0:
             self.beta = float(-scipy_norm.ppf(Pf))
@@ -186,6 +186,23 @@ class SubsetSimulation(AnalysisObject):
 
         if self.options.get_print_output():
             self.show_results()
+        return SimulationResult(
+            method="SubsetSimulation",
+            status="completed",
+            message="Sampling completed",
+            n_limit_state_evaluations=self._n_evaluations,
+            variable_names=tuple(self.model.get_variables()),
+            failure_probability=self.Pf,
+            beta=self.beta,
+            coefficient_of_variation=self.cov if self.Pf > 0 else np.inf,
+            n_samples=N * self.n_levels,
+            diagnostics={
+                "thresholds": np.array(self.thresholds),
+                "conditional_probabilities": np.array(self.conditional_probs),
+                "n_levels": self.n_levels,
+                "samples_per_level": N,
+            },
+        )
 
     def _eval_g_batch(self, u, marg):
         """Evaluate the LSF for every column of *u* (shape nrv × N)."""

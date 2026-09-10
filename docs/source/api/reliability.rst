@@ -25,8 +25,8 @@ Public entry points
      - Reach rare events through conditional samples.
    * - :class:`~pystra.reliability.system_form.SystemFORM`
      - Combine component tangent models in a shared space.
-   * - :class:`~pystra.results.FORMResult`
-     - Retain an immutable FORM result.
+   * - :mod:`pystra.results`
+     - Immutable records returned by every analysis's ``run()``.
 
 **Use it:** :doc:`/guides/methods` · :doc:`/notebooks/ex_intro` · :doc:`/theory/design_point_methods`
 

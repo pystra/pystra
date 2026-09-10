@@ -30,8 +30,13 @@ Added
 - Worked Rosenblatt-ordering tutorial reproducing Meinen and Steenbergen's
   (2025) system example, with transformation geometry, coordinate alignment,
   and original-event integration/simulation checks.
-- Immutable ``FORMResult`` snapshots, including convergence, normal-equivalent
-  beta, geometric beta and ordered physical/reference design points.
+- Every analysis's ``run()`` returns an immutable record: ``FORMResult``,
+  ``SORMResult``, ``SimulationResult``, ``SystemFORMResult``,
+  ``SensitivityResult``, ``StrongMaximumResult`` or
+  ``DistributionAnalysisResult``, with a common ``status``, evaluation count
+  and ``summary()``. FORM records include convergence diagnostics, the
+  normal-equivalent index, the design index and the design point in physical
+  and standard coordinates.
 - Explicit code factors, nominal values and isolated normalized-reliability study
   results, with separate plotting and optional copula dependence.
 - Executed copula/transformation and Strong Maximum Test tutorial notebooks,
@@ -114,7 +119,12 @@ Changed
   state or model cannot interfere. Each analysis counts its own evaluations:
   ``FORM.get_no_function_calls()`` reports the current run rather than the
   model's running total.
-- The top-level namespace is curated (62 names in ``pystra.__all__``) and every
+- ``SensitivityAnalysis.run()`` returns a ``SensitivityResult`` rather than a
+  dictionary; the derivatives are in ``marginal`` and ``correlation``.
+- In the result records, a SORM fit whose curvatures leave Breitung's formula
+  undefined has no estimate and status ``not_converged``, where 1.x reported
+  0.0; a simulation without failures has an infinite coefficient of variation.
+- The top-level namespace is curated (68 names in ``pystra.__all__``) and every
   module declares ``__all__``. Code-calibration and decision tools, new in 2.0,
   are imported from ``pystra.calibration`` and ``pystra.decision``;
   ``ActiveLearning`` is exported at the top level. Old names and module paths

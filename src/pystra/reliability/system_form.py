@@ -10,6 +10,7 @@ from .analysis import AnalysisObject
 from .form import FORM
 from ..systems import Component, SeriesSystem, ParallelSystem, ditlevsen_bounds
 from ..errors import AnalysisError
+from ..results import SystemFORMResult
 
 __all__ = ["SystemFORM"]
 
@@ -206,10 +207,14 @@ class SystemFORM(AnalysisObject):
         return value
 
     def run(self):
-        """Run each unique component once, then integrate the system event."""
+        """Run each unique component once, then integrate the system event.
+
+        Returns a :class:`SystemFORMResult`.
+        """
         self._clear_results()
         options = copy(self.options)
         options.set_print_output(False)
+        records = {}
         for component in self.components:
             form = FORM(
                 stochastic_model=self.model,
@@ -218,7 +223,7 @@ class SystemFORM(AnalysisObject):
             )
             self.component_results[component.name] = form
             try:
-                form.run()
+                records[component.name] = form.run()
                 if form.transform.standard_space != "normal":
                     raise ValueError(
                         "SystemFORM requires independent normal space; select Rosenblatt"
@@ -299,6 +304,21 @@ class SystemFORM(AnalysisObject):
         self.results_valid = True
         if self.options.get_print_output():
             self.show_results()
+        return SystemFORMResult(
+            method="SystemFORM",
+            status="converged",
+            message="Every component FORM analysis converged",
+            n_limit_state_evaluations=sum(
+                record.n_limit_state_evaluations for record in records.values()
+            ),
+            variable_names=tuple(self.model.get_variables()),
+            failure_probability=self.Pf,
+            beta=self.beta,
+            bounds=tuple(float(bound) for bound in self.bounds),
+            component_results=records,
+            correlation=self.correlation,
+            intersections=self.intersections,
+        )
 
     def get_failure(self):
         """Return the system FORM probability after a successful run."""

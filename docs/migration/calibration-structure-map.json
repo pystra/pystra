@@ -33,7 +33,7 @@
   },
   "contracts": {
     "exports": "Public calibration records/functions remain available from pystra.calibration and pystra; Calibration has no alias.",
-    "form_result": "Frozen snapshot. beta normal-equivalent, geometric_beta signed reference-space distance. Point/direction tuples in variable_names order. Iteration exhaustion returns converged=false and None estimates with warning; invalid inputs/numerical execution errors raise.",
+    "form_result": "Frozen snapshot. beta normal-equivalent, design_index signed reference-space distance. design_point_x, design_point_u and alpha are read-only arrays in variable_names order. Iteration exhaustion returns status=not_converged and None estimates with warning; invalid inputs/numerical execution errors raise.",
     "generic_grid": "Finite nonempty 1D ratios in [0,1]. beta fresh array (n_dead_load_ratios,n_live_load_ratios); failed points NaN and retained in cases. to_frame columns: live_load_ratio, dead_load_ratio, design_value, beta, failure_probability, converged, target_margin, message. Model copied; factors/nominals finite positive.",
     "generic_dependence": "Default independent; explicit copula random-variable order resistance_error,resistance,load_error,dead_load,permanent_load,live_load, omitting constants. Per-run AnalysisOptions; DDM unsupported for built-in normalized equation.",
     "specialist_solve": "root (fsolve or bracketed Brent) and alpha. Default beta tolerance=1e-4 and max_evaluations=100 FORM runs per case including final verification. Inner convergence, outer success and final residual required. Failures retained; factor derivation rejects them.",
@@ -643,23 +643,157 @@
       "returns": "FORMResult"
     },
     {
-      "name": "pystra.results.FORMResult",
+      "name": "pystra.results._ReadOnlyMapping",
+      "kind": "class",
+      "bases": [
+        "Mapping"
+      ],
+      "attributes": [
+        "_data"
+      ]
+    },
+    {
+      "name": "pystra.results._ReadOnlyMapping.__init__",
+      "kind": "callable",
+      "signature": "(self, data)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results._ReadOnlyMapping.__getitem__",
+      "kind": "callable",
+      "signature": "(self, key)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results._ReadOnlyMapping.__iter__",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results._ReadOnlyMapping.__len__",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results._ReadOnlyMapping.__repr__",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results._frozen",
+      "kind": "callable",
+      "signature": "(value)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results._same",
+      "kind": "callable",
+      "signature": "(a, b)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results._text",
+      "kind": "callable",
+      "signature": "(value)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results._Result",
       "kind": "class",
       "bases": [],
       "attributes": [
-        "alpha",
+        "_arrays",
+        "_read_only",
+        "message",
+        "method",
+        "n_limit_state_evaluations",
+        "options",
+        "status",
+        "variable_names"
+      ]
+    },
+    {
+      "name": "pystra.results._Result.__post_init__",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results._Result.__eq__",
+      "kind": "callable",
+      "signature": "(self, other)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results._Result.converged",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": "bool"
+    },
+    {
+      "name": "pystra.results._Result._rows",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results._Result.summary",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": "str"
+    },
+    {
+      "name": "pystra.results._ProbabilityResult",
+      "kind": "class",
+      "bases": [
+        "_Result"
+      ],
+      "attributes": [
         "beta",
-        "converged",
-        "design_point",
+        "failure_probability"
+      ]
+    },
+    {
+      "name": "pystra.results._ProbabilityResult._rows",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results.FORMResult",
+      "kind": "class",
+      "bases": [
+        "_ProbabilityResult"
+      ],
+      "attributes": [
+        "_arrays",
+        "alpha",
+        "design_index",
+        "design_point_u",
+        "design_point_x",
         "direction_error",
-        "failure_probability",
-        "geometric_beta",
         "iterations",
         "limit_state_error",
-        "message",
-        "standard_point",
-        "standard_space",
-        "variable_names"
+        "standard_space"
       ]
     },
     {
@@ -670,6 +804,172 @@
         "classmethod"
       ],
       "returns": "'FORMResult'"
+    },
+    {
+      "name": "pystra.results.FORMResult._rows",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results.FORMResult.to_dataframe",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results.SORMResult",
+      "kind": "class",
+      "bases": [
+        "_ProbabilityResult"
+      ],
+      "attributes": [
+        "_arrays",
+        "_read_only",
+        "approximations",
+        "curvatures",
+        "fit",
+        "form",
+        "formula"
+      ]
+    },
+    {
+      "name": "pystra.results.SORMResult._rows",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results.SimulationResult",
+      "kind": "class",
+      "bases": [
+        "_ProbabilityResult"
+      ],
+      "attributes": [
+        "_read_only",
+        "coefficient_of_variation",
+        "diagnostics",
+        "n_samples"
+      ]
+    },
+    {
+      "name": "pystra.results.SimulationResult._rows",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results.SystemFORMResult",
+      "kind": "class",
+      "bases": [
+        "_ProbabilityResult"
+      ],
+      "attributes": [
+        "_arrays",
+        "_read_only",
+        "bounds",
+        "component_results",
+        "correlation",
+        "intersections"
+      ]
+    },
+    {
+      "name": "pystra.results.SystemFORMResult._rows",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results.SensitivityResult",
+      "kind": "class",
+      "bases": [
+        "_ProbabilityResult"
+      ],
+      "attributes": [
+        "_arrays",
+        "_read_only",
+        "approach",
+        "correlation",
+        "delta",
+        "form",
+        "marginal"
+      ]
+    },
+    {
+      "name": "pystra.results.SensitivityResult._rows",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results.SensitivityResult.to_dataframe",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results.StrongMaximumResult",
+      "kind": "class",
+      "bases": [
+        "_Result"
+      ],
+      "attributes": [
+        "_arrays",
+        "_read_only",
+        "cap_probability",
+        "confidence_level",
+        "design_index",
+        "design_point_u",
+        "has_competing_points",
+        "limit_state_values",
+        "point_number",
+        "points_u",
+        "points_x",
+        "radius",
+        "regions"
+      ]
+    },
+    {
+      "name": "pystra.results.StrongMaximumResult.points",
+      "kind": "callable",
+      "signature": "(self, region='far_failure', space='u')",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results.StrongMaximumResult._rows",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results.DistributionAnalysisResult",
+      "kind": "class",
+      "bases": [
+        "_Result"
+      ],
+      "attributes": [
+        "_arrays",
+        "bins",
+        "limit_state_values",
+        "n_samples",
+        "samples_x"
+      ]
+    },
+    {
+      "name": "pystra.results.DistributionAnalysisResult._rows",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
     }
   ]
 }

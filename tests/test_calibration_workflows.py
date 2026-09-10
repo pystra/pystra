@@ -54,9 +54,9 @@ def test_form_result_survives_rerun_and_failed_result_has_no_estimate():
     with pytest.warns(RuntimeWarning, match="did not converge"):
         failed = analysis.run()
     assert not failed.converged
-    assert failed.beta is failed.failure_probability is failed.design_point is None
+    assert failed.beta is failed.failure_probability is failed.design_point_x is None
     assert first.beta == pytest.approx(5 / np.sqrt(2))
-    assert first.design_point == pytest.approx((7.5, 7.5))
+    assert first.design_point_x == pytest.approx((7.5, 7.5))
 
 
 def test_normalized_design_grid_matches_linear_normal_solution_and_endpoints():

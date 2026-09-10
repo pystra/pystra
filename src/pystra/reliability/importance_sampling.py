@@ -27,13 +27,15 @@ class ImportanceSampling(CrudeMonteCarlo):
             limit_state=limit_state,
             analysis_options=analysis_options,
         )
-        FormAnalysis.run()
+        form_result = FormAnalysis.run()
         u = FormAnalysis.get_design_point()
         u = np.transpose([u])
 
         super().__init__(analysis_options, limit_state, stochastic_model, u)
+        self._form_result = form_result
 
     def run(self):
+        """Run importance sampling and return a :class:`SimulationResult`."""
         self.results_valid = True
 
         self.init_run()
@@ -41,11 +43,15 @@ class ImportanceSampling(CrudeMonteCarlo):
         print_results = self.options.get_print_output()
         # regardless, turn off for CMC run
         self.options.set_print_output(False)
-        CrudeMonteCarlo.run(self)
+        result = CrudeMonteCarlo.run(self)
         # restore
         self.options.set_print_output(print_results)
         if self.options.get_print_output():
             self.show_results()
+        return result
+
+    def _diagnostics(self):
+        return {"form": self._form_result}
 
     def show_results(self):
         """Show results and plots"""

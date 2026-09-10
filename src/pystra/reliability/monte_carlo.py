@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from .analysis import AnalysisObject
 from ..distributions import StdNormal
 from ..dependence.correlation import compute_modified_correlation_matrix
+from ..results import DistributionAnalysisResult, SimulationResult
 
 __all__ = [
     "MonteCarlo",
@@ -267,6 +268,7 @@ class CrudeMonteCarlo(MonteCarlo):
         self.point = point
 
     def run(self):
+        """Run the simulation and return a :class:`SimulationResult`."""
         self.results_valid = True
 
         self.init_run()
@@ -349,6 +351,34 @@ class CrudeMonteCarlo(MonteCarlo):
         # Show Results
         if self.options.get_print_output():
             self.show_results()
+        return self._result()
+
+    def _diagnostics(self):
+        """Return method-specific entries for the result's diagnostics."""
+        return {}
+
+    def _result(self):
+        """Return the immutable record of the completed run."""
+        pf = float(self.Pf)
+        cov = float(self.cov_q_bar[self.k - 1]) if pf > 0 else np.inf
+        target = self.options.get_simulation_cov()
+        met = cov <= target
+        return SimulationResult(
+            method=type(self).__name__,
+            status="completed" if met else "precision_not_met",
+            message=(
+                f"Reached the target coefficient of variation, {target}"
+                if met
+                else f"Sample budget used before the target coefficient of variation, {target}"
+            ),
+            n_limit_state_evaluations=self._n_evaluations,
+            variable_names=tuple(self.model.get_variables()),
+            failure_probability=pf,
+            beta=float(self.beta),
+            coefficient_of_variation=cov,
+            n_samples=int(self.k),
+            diagnostics=self._diagnostics(),
+        )
 
     def initialize_variables(self):
         """Initialization of the simulation variables"""
@@ -441,6 +471,7 @@ class DistributionAnalysis(MonteCarlo):
         super().__init__(analysis_options, limit_state, stochastic_model)
 
     def run(self):
+        """Sample the model and return a :class:`DistributionAnalysisResult`."""
         self.results_valid = True
 
         self.init_run()
@@ -479,6 +510,17 @@ class DistributionAnalysis(MonteCarlo):
         # Show Results # Different
         if self.options.get_print_output():
             self.show_results()
+        return DistributionAnalysisResult(
+            method="DistributionAnalysis",
+            status="completed",
+            message="Sampling completed",
+            n_limit_state_evaluations=self._n_evaluations,
+            variable_names=tuple(self.model.get_variables()),
+            n_samples=int(self.k),
+            bins=int(self.bins),
+            samples_x=self.all_X.T,
+            limit_state_values=np.ravel(self.all_G),
+        )
 
     def initialize_variables(self):
         """Initialization of the simulation variables"""

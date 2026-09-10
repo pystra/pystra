@@ -32,8 +32,9 @@ class FORM(AnalysisObject):
 
     Independent standard-normal coordinates are the usual choice. Explicit
     spherical Student-t generalized Nataf instead uses a Student-t half-space
-    tail. ``get_beta()`` is the signed geometric distance;
-    ``get_equivalent_beta()`` and ``FORMResult.beta`` are normal-equivalent.
+    tail. ``get_beta()`` and ``FORMResult.design_index`` are the signed
+    geometric distance; ``get_equivalent_beta()`` and ``FORMResult.beta`` are
+    normal-equivalent.
 
     See :doc:`/guides/form_sorm` for usage and
     :doc:`/theory/design_point_methods` for the formulation and references.

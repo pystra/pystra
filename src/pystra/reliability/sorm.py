@@ -7,6 +7,7 @@ from .form import FORM
 from .analysis import AnalysisObject
 from scipy.stats import norm as normal
 from ..errors import AnalysisError
+from ..results import FORMResult, SORMResult
 
 __all__ = ["SORM"]
 
@@ -109,6 +110,7 @@ class SORM(AnalysisObject):
         self.betag_breitung = None
         self.pf2_breitung_m = None
         self.betag_breitung_m = None
+        self._undefined = set()
 
     def _prepare_run(self, fit_type):
         """Require a valid FORM design point before preparing either fit."""
@@ -130,6 +132,11 @@ class SORM(AnalysisObject):
             - ``'pf'`` — Point-fitting via Newton iteration on the failure
               surface.
 
+        Returns
+        -------
+        SORMResult
+            The immutable record of this run.
+
         Raises
         ------
         ValueError
@@ -138,9 +145,9 @@ class SORM(AnalysisObject):
             If the FORM analysis has not run or did not converge successfully.
         """
         if fit_type == "cf":
-            self.run_curvefit()
+            return self.run_curvefit()
         elif fit_type == "pf":
-            self.run_pointfit()
+            return self.run_pointfit()
         else:
             self._reset_results()
             raise ValueError(
@@ -149,7 +156,7 @@ class SORM(AnalysisObject):
             )
 
     def run_curvefit(self):
-        """Run curve-fitting; require a successfully converged FORM analysis."""
+        """Run curve fitting and return a :class:`SORMResult`; FORM must have converged."""
         self._prepare_run("cf")
         hess_G = self.compute_hessian()
         R1 = self.orthonormal_matrix()
@@ -163,6 +170,7 @@ class SORM(AnalysisObject):
         self.results_valid = True
         if self.options.get_print_output():
             self.show_results()
+        return self._result()
 
     def run_pointfit(self):
         """Run SORM analysis using point-fitting.
@@ -230,6 +238,35 @@ class SORM(AnalysisObject):
         self.results_valid = True
         if self.options.get_print_output():
             self.show_results()
+        return self._result()
+
+    def _result(self):
+        """Return the immutable record of the completed fit."""
+        approximations = {
+            "breitung": self.pf2_breitung,
+            "modified_breitung": self.pf2_breitung_m,
+        }
+        for name in self._undefined:
+            approximations[name] = None
+        estimate = approximations["breitung"]
+        return SORMResult(
+            method="SORM",
+            status="converged" if estimate is not None else "not_converged",
+            message=(
+                "Fitted"
+                if estimate is not None
+                else "Breitung's formula is undefined for the fitted curvatures"
+            ),
+            n_limit_state_evaluations=self._n_evaluations,
+            variable_names=tuple(self.model.get_variables()),
+            failure_probability=estimate,
+            beta=self.betag_breitung if estimate is not None else None,
+            form=FORMResult.from_analysis(self.form),
+            fit="curve" if self.fit_type == "cf" else "point",
+            curvatures=self.kappa if self.fit_type == "cf" else self.kappa_pf,
+            formula="breitung",
+            approximations=approximations,
+        )
 
     def _find_fitting_point(self, axis, sign, beta, k, R1, marg, max_iter=50, tol=1e-6):
         """Find a fitting point on the failure surface and return its curvature.
@@ -341,6 +378,7 @@ class SORM(AnalysisObject):
             self.betag_breitung = float(-normal.ppf(self.pf2_breitung))
         else:
             print("*** SORM Point-Fitting Breitung error, excessive curvatures")
+            self._undefined.add("breitung")
             self.pf2_breitung = 0.0
             self.betag_breitung = 0.0
 
@@ -369,6 +407,7 @@ class SORM(AnalysisObject):
             self.betag_breitung_m = float(-normal.ppf(self.pf2_breitung_m))
         else:
             print("*** SORM Point-Fitting Breitung Modified error")
+            self._undefined.add("modified_breitung")
             self.pf2_breitung_m = 0.0
             self.betag_breitung_m = 0.0
 
@@ -386,6 +425,7 @@ class SORM(AnalysisObject):
             self.betag_breitung = float(-normal.ppf(self.pf2_breitung))
         else:
             print("*** SORM Breitung error, excessive curavtures")
+            self._undefined.add("breitung")
             self.pf2_breitung = 0.0
             self.betag_breitung = 0.0
 
@@ -405,6 +445,7 @@ class SORM(AnalysisObject):
             self.betag_breitung_m = float(-normal.ppf(self.pf2_breitung_m))
         else:
             print("*** SORM Breitung Modified error")
+            self._undefined.add("modified_breitung")
             self.pf2_breitung_m = 0.0
             self.betag_breitung_m = 0.0
 

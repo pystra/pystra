@@ -20,7 +20,7 @@ Run and inspect FORM
    result = form.run()
    assert result.converged, result.message
    assert result.failure_probability is not None
-   design = dict(zip(result.variable_names, result.design_point))
+   design = dict(zip(result.variable_names, result.design_point_x))
    assert abs(design["R"] - design["S"]) < 1e-3
 
 Inspect convergence before reading the probability or design point. Check that

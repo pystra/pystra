@@ -66,13 +66,13 @@ def test_form_tangent_is_orthogonal_and_plotting_does_not_evaluate():
     tangent = ax.lines[0].get_xydata()
     alpha = np.asarray(result.alpha)
     np.testing.assert_allclose(
-        tangent @ alpha, np.dot(result.standard_point, alpha), atol=1e-14
+        tangent @ alpha, np.dot(result.design_point_u, alpha), atol=1e-14
     )
     assert analysis.model.get_call_function() == count
     with pytest.raises(ValueError, match="converged two-dimensional"):
-        ra.plotting.plot_form_geometry(replace(result, converged=False))
+        ra.plotting.plot_form_geometry(replace(result, status="not_converged"))
     with pytest.raises(ValueError, match="converged two-dimensional"):
-        ra.plotting.plot_form_geometry(replace(result, standard_point=(1, 2, 3)))
+        ra.plotting.plot_form_geometry(replace(result, design_point_u=(1, 2, 3)))
 
 
 def fitted_pce():

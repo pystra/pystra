@@ -21,6 +21,7 @@ Two methods are available, selected via the ``numerical`` flag of
 
 from .form import FORM
 from .analysis import AnalysisOptions
+from ..results import SensitivityResult
 from .._numerics.cholesky_sensitivity import (
     cholesky_with_derivative,
     inverse_cholesky_gradient,
@@ -85,60 +86,74 @@ class SensitivityAnalysis:
 
         Returns
         -------
-        dict
-            When ``numerical=True``:
-                ``{variable_name: {param: dβ/dθ, ...}}``.
-                The parameter keys come from each distribution's
-                :attr:`sensitivity_params` (typically ``"mean"`` and
-                ``"std"``, but may include ``"shape"`` etc.).
-
-            When ``numerical=False``:
-                ``{"marginal": {...}, "correlation": ndarray}``.
-
-                The ``"correlation"`` entry is a symmetric *n × n* array
-                where element *(i, j)* is :math:`\partial\beta /
-                \partial\rho_{ij}`.  Diagonal entries are zero.
+        SensitivityResult
+            ``marginal`` maps each variable name to the derivatives with
+            respect to its distribution parameters, keyed by the names in its
+            :attr:`sensitivity_params` (typically ``"mean"`` and ``"std"``,
+            and possibly ``"shape"``). The closed form also gives
+            ``correlation``, a symmetric *n × n* array whose element *(i, j)*
+            is :math:`\partial\beta / \partial\rho_{ij}`, with a zero diagonal.
         """
+        self._evaluations, self._converged = 0, True
         if numerical:
-            return self._numerical_sens(delta)
+            base, marginal = self._numerical_sens(delta)
+            correlation = None
         else:
-            return self._cf_sens()
+            base, marginal, correlation = self._cf_sens()
+        return SensitivityResult(
+            method="SensitivityAnalysis",
+            status="converged" if self._converged else "not_converged",
+            message=(
+                "Every FORM analysis converged"
+                if self._converged
+                else "A FORM analysis did not converge"
+            ),
+            n_limit_state_evaluations=self._evaluations,
+            variable_names=base.variable_names,
+            failure_probability=base.failure_probability,
+            beta=base.beta,
+            form=base,
+            approach="numerical" if numerical else "closed_form",
+            marginal={
+                name: {param: float(value) for param, value in params.items()}
+                for name, params in marginal.items()
+            },
+            correlation=correlation,
+            delta=delta if numerical else None,
+        )
+
+    def _form(self, model):
+        """Run FORM on *model*, recording its evaluations and convergence."""
+        form = FORM(
+            stochastic_model=model,
+            limit_state=self.limitstate,
+            analysis_options=self.options,
+        )
+        result = form.run()
+        self._evaluations += result.n_limit_state_evaluations
+        self._converged = self._converged and result.converged
+        return form, result
 
     def run_form(self, numerical=True, delta=0.01):
         """Alias for :meth:`run` (backwards compatibility)."""
         return self.run(numerical=numerical, delta=delta)
 
     def summary(self, result):
-        """Return a pandas DataFrame summarising sensitivity results.
+        """Return a pandas DataFrame of a result's marginal sensitivities.
 
-        Converts the nested dict returned by :meth:`run` into a tidy
-        DataFrame for convenient display in notebooks.
+        Equivalent to :meth:`SensitivityResult.to_dataframe`.
 
         Parameters
         ----------
-        result : dict
-            The result dict from :meth:`run` (either FD or CF format).
+        result : SensitivityResult
+            A result returned by :meth:`run`.
 
         Returns
         -------
         pandas.DataFrame
             Columns: ``Variable``, ``Parameter``, ``∂β/∂θ``.
         """
-        import pandas as pd
-
-        # Handle both FD result (flat) and CF result (nested with "marginal")
-        marginal = result.get("marginal", result)
-        rows = []
-        for var_name, params in marginal.items():
-            for param, value in params.items():
-                rows.append(
-                    {
-                        "Variable": var_name,
-                        "Parameter": param,
-                        "∂β/∂θ": value,
-                    }
-                )
-        return pd.DataFrame(rows)
+        return result.to_dataframe()
 
     # ------------------------------------------------------------------
     # Private: finite-difference sensitivities
@@ -162,12 +177,7 @@ class SensitivityAnalysis:
             sensitivities[name] = {p: 0.0 for p in dist.sensitivity_params}
 
         # Get the base result
-        form = FORM(
-            stochastic_model=self.model,
-            limit_state=self.limitstate,
-            analysis_options=self.options,
-        )
-        form.run()
+        form, base = self._form(self.model)
         beta0 = form.get_beta()
 
         for name in names:
@@ -186,16 +196,11 @@ class SensitivityAnalysis:
                 delta_actual = new_dist.sensitivity_params[param] - val
 
                 # Run FORM with perturbed model
-                form = FORM(
-                    stochastic_model=model1,
-                    limit_state=self.limitstate,
-                    analysis_options=self.options,
-                )
-                form.run()
+                form, _ = self._form(model1)
                 beta1 = form.get_beta()
                 sensitivities[name][param] = (beta1 - beta0) / delta_actual
 
-        return sensitivities
+        return base, sensitivities
 
     # ------------------------------------------------------------------
     # Private: closed-form (Bourinet 2017) sensitivities
@@ -222,12 +227,7 @@ class SensitivityAnalysis:
                 "Closed-form sensitivities assume legacy physical Pearson input; use numerical=True for explicit copulas"
             )
         # 1. Run FORM
-        form = FORM(
-            stochastic_model=self.model,
-            limit_state=self.limitstate,
-            analysis_options=self.options,
-        )
-        form.run()
+        form, base = self._form(self.model)
 
         # Extract converged quantities
         alpha = form.get_alpha()  # shape (nrv,)
@@ -320,7 +320,7 @@ class SensitivityAnalysis:
                 corr_sens[i, j] = dbeta
                 corr_sens[j, i] = dbeta
 
-        return {"marginal": marginal_sens, "correlation": corr_sens}
+        return base, marginal_sens, corr_sens
 
     # ------------------------------------------------------------------
     # Helpers

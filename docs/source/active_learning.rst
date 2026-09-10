@@ -234,7 +234,7 @@ use their candidate pools with an explicit alternative stopping policy.
 ``ImportanceSamplingEstimator`` accepts row-wise normal-coordinate proposal
 ``centers``, common spherical ``scale`` and a default 0.1 defensive fraction
 of the target normal distribution. Centres are fixed during a run. A converged
-FORM ``standard_point`` can supply one centre; known separated modes require
+FORM ``design_point_u`` can supply one centre; known separated modes require
 appropriate additional centres. The proposal cannot guarantee discovery of
 unknown modes. Learning adapts the surrogate, while both exploratory and final
 probabilities use ordinary likelihood weighting. Final sampling uses fresh draws.

@@ -73,6 +73,12 @@ TOP_LEVEL = {
     "ActiveLearning",
     "ActiveLearningResult",
     "FORMResult",
+    "SORMResult",
+    "SimulationResult",
+    "SystemFORMResult",
+    "SensitivityResult",
+    "StrongMaximumResult",
+    "DistributionAnalysisResult",
     # systems and loads
     "Component",
     "System",

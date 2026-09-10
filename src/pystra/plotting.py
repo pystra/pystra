@@ -231,7 +231,7 @@ def plot_form_geometry(
         Figure and axes. Nonconverged or higher-dimensional results are rejected;
         a projection would not preserve the displayed design-point geometry.
     """
-    point = np.asarray(result.standard_point, dtype=float).ravel()
+    point = np.asarray(result.design_point_u, dtype=float).ravel()
     alpha = np.asarray(result.alpha, dtype=float).ravel()
     if (
         not result.converged

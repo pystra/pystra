@@ -138,7 +138,7 @@ def test_generalized_t_nataf_and_form_exact_halfspace():
     assert form.get_failure() == pytest.approx(t.sf(beta, 4), rel=2e-6)
     assert form.get_equivalent_beta() == pytest.approx(-norm.ppf(form.get_failure()))
     assert result.standard_space == "student_t"
-    assert result.geometric_beta == pytest.approx(beta, rel=2e-6)
+    assert result.design_index == pytest.approx(beta, rel=2e-6)
     assert result.beta == pytest.approx(-norm.ppf(t.sf(beta, 4)), rel=2e-6)
     assert result.failure_probability == pytest.approx(t.sf(beta, 4), rel=2e-6)
     with pytest.raises(ValueError, match="normal space"):
@@ -343,6 +343,6 @@ def test_numerical_sensitivity_preserves_spherical_t_options():
     result = sensitivity.run(numerical=True, delta=1e-5)
     beta = t.isf(norm.sf(3), 4)
     derivative = -norm.pdf(3) / t.pdf(beta, 4)
-    assert result["X"]["mean"] == pytest.approx(derivative, rel=1e-4)
+    assert result.marginal["X"]["mean"] == pytest.approx(derivative, rel=1e-4)
     with pytest.raises(ValueError, match="legacy physical Pearson"):
         sensitivity.run(numerical=False)

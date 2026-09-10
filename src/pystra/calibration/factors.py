@@ -210,7 +210,9 @@ class TargetDesigns:
         roles = self._problem._cases.roles
         rows = []
         for d in self.designs:
-            point = dict(zip(d.reliability.variable_names, d.reliability.design_point))
+            point = dict(
+                zip(d.reliability.variable_names, d.reliability.design_point_x)
+            )
             rows.append([point[n] for n in roles.names] + [d.design_value])
         return pd.DataFrame(
             rows,
@@ -463,7 +465,7 @@ def derive_factors(solutions: TargetDesigns, *, method: str = "matrix") -> Facto
     points = np.array(
         [
             [
-                dict(zip(d.reliability.variable_names, d.reliability.design_point))[n]
+                dict(zip(d.reliability.variable_names, d.reliability.design_point_x))[n]
                 for n in names
             ]
             for d in solutions.designs

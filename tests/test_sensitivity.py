@@ -25,33 +25,33 @@ class TestSensitivityAnalysis:
         ls = ra.model.LimitState(lsf)
         return model, ls
 
-    def test_run_returns_dict(self):
+    def test_run_returns_result(self):
         model, ls = self._make_problem()
         sa = ra.SensitivityAnalysis(ls, model)
         result = sa.run()
-        assert isinstance(result, dict)
+        assert isinstance(result, ra.SensitivityResult)
 
     def test_result_keys_match_variables(self):
         model, ls = self._make_problem()
         sa = ra.SensitivityAnalysis(ls, model)
         result = sa.run()
-        assert set(result.keys()) == {"R", "S"}
+        assert set(result.marginal) == {"R", "S"}
 
     def test_result_has_mean_and_std(self):
         model, ls = self._make_problem()
         sa = ra.SensitivityAnalysis(ls, model)
         result = sa.run()
         for name in ["R", "S"]:
-            assert "mean" in result[name]
-            assert "std" in result[name]
+            assert "mean" in result.marginal[name]
+            assert "std" in result.marginal[name]
 
     def test_sensitivity_values_are_finite(self):
         model, ls = self._make_problem()
         sa = ra.SensitivityAnalysis(ls, model)
         result = sa.run()
-        for name in result:
+        for name in result.marginal:
             for param in ["mean", "std"]:
-                assert np.isfinite(result[name][param])
+                assert np.isfinite(result.marginal[name][param])
 
     def test_sensitivity_signs(self):
         """For g = R - S:
@@ -61,8 +61,8 @@ class TestSensitivityAnalysis:
         model, ls = self._make_problem()
         sa = ra.SensitivityAnalysis(ls, model)
         result = sa.run()
-        assert result["R"]["mean"] > 0, "R mean sensitivity should be positive"
-        assert result["S"]["mean"] < 0, "S mean sensitivity should be negative"
+        assert result.marginal["R"]["mean"] > 0, "R mean sensitivity should be positive"
+        assert result.marginal["S"]["mean"] < 0, "S mean sensitivity should be negative"
 
     def test_different_delta_consistent(self):
         """Results should be consistent for different delta values."""
@@ -75,7 +75,8 @@ class TestSensitivityAnalysis:
         for name in ["R", "S"]:
             for param in ["mean", "std"]:
                 assert (
-                    pytest.approx(result1[name][param], rel=0.1) == result2[name][param]
+                    pytest.approx(result1.marginal[name][param], rel=0.1)
+                    == result2.marginal[name][param]
                 )
 
     def test_with_lognormal(self):
@@ -91,11 +92,11 @@ class TestSensitivityAnalysis:
         sa = ra.SensitivityAnalysis(ls, model)
         result = sa.run()
 
-        assert result["R"]["mean"] > 0
-        assert result["S"]["mean"] < 0
-        for name in result:
+        assert result.marginal["R"]["mean"] > 0
+        assert result.marginal["S"]["mean"] < 0
+        for name in result.marginal:
             for param in ["mean", "std"]:
-                assert np.isfinite(result[name][param])
+                assert np.isfinite(result.marginal[name][param])
 
     def test_default_options(self):
         """SensitivityAnalysis should work without explicit options."""
@@ -103,7 +104,7 @@ class TestSensitivityAnalysis:
         sa = ra.SensitivityAnalysis(ls, model)
         assert sa.options is not None
         result = sa.run()
-        assert len(result) == 2
+        assert len(result.marginal) == 2
 
     def test_custom_options(self):
         """SensitivityAnalysis should accept custom options."""
@@ -112,7 +113,7 @@ class TestSensitivityAnalysis:
         opts.set_print_output(False)
         sa = ra.SensitivityAnalysis(ls, model, analysis_options=opts)
         result = sa.run()
-        assert len(result) == 2
+        assert len(result.marginal) == 2
 
     def test_run_form_alias(self):
         """run_form() should be equivalent to run()."""
@@ -122,8 +123,8 @@ class TestSensitivityAnalysis:
         result_alias = sa.run_form()
         for name in ["R", "S"]:
             for param in ["mean", "std"]:
-                assert result_run[name][param] == pytest.approx(
-                    result_alias[name][param], rel=1e-10
+                assert result_run.marginal[name][param] == pytest.approx(
+                    result_alias.marginal[name][param], rel=1e-10
                 )
 
 
@@ -155,10 +156,10 @@ class TestClosedFormSensitivity:
         sa = ra.SensitivityAnalysis(ls, model)
         result = sa.run(numerical=False)
 
-        assert "marginal" in result
-        assert "correlation" in result
-        assert set(result["marginal"].keys()) == {"X1", "X2"}
-        assert result["correlation"].shape == (2, 2)
+        assert result.approach == "closed_form"
+        assert result.correlation is not None
+        assert set(result.marginal.keys()) == {"X1", "X2"}
+        assert result.correlation.shape == (2, 2)
 
     def test_bourinet_example2_marginal_sensitivities(self):
         """Validate against Table 4 of Bourinet (2017)."""
@@ -168,7 +169,7 @@ class TestClosedFormSensitivity:
         sa = ra.SensitivityAnalysis(ls, model, analysis_options=opts)
         result = sa.run(numerical=False)
 
-        m = result["marginal"]
+        m = result.marginal
 
         # Reference values from Table 4 (analytical column)
         assert m["X1"]["mean"] == pytest.approx(0.5184, abs=0.005)
@@ -185,9 +186,9 @@ class TestClosedFormSensitivity:
         result = sa.run(numerical=False)
 
         # d_beta/d_rho_12 = 2.4585 (from Eq. 31)
-        assert result["correlation"][1, 0] == pytest.approx(2.4585, abs=0.01)
+        assert result.correlation[1, 0] == pytest.approx(2.4585, abs=0.01)
         # Symmetric
-        assert result["correlation"][0, 1] == result["correlation"][1, 0]
+        assert result.correlation[0, 1] == result.correlation[1, 0]
 
     def test_closed_form_vs_fd_uncorrelated_normals(self):
         """Closed-form and FD should agree for uncorrelated normals."""
@@ -206,8 +207,8 @@ class TestClosedFormSensitivity:
 
         for name in ["R", "S"]:
             for param in ["mean", "std"]:
-                assert cf["marginal"][name][param] == pytest.approx(
-                    fd[name][param], rel=0.02
+                assert cf.marginal[name][param] == pytest.approx(
+                    fd.marginal[name][param], rel=0.02
                 )
 
     def test_closed_form_vs_fd_correlated_lognormals(self):
@@ -229,11 +230,11 @@ class TestClosedFormSensitivity:
 
         for name in ["X1", "X2"]:
             for param in ["mean", "std"]:
-                assert np.isfinite(cf["marginal"][name][param])
+                assert np.isfinite(cf.marginal[name][param])
 
         # Sign checks: increasing X1 mean increases beta, increasing X2 mean decreases beta
-        assert cf["marginal"]["X1"]["mean"] > 0
-        assert cf["marginal"]["X2"]["mean"] < 0
+        assert cf.marginal["X1"]["mean"] > 0
+        assert cf.marginal["X2"]["mean"] < 0
 
 
 class TestSensitivityParams:
@@ -374,9 +375,9 @@ class TestGEVSensitivity:
         sa = ra.SensitivityAnalysis(ls, model, analysis_options=opts)
         fd = sa.run(numerical=True)
 
-        assert "shape" in fd["S"], "GEV variable should have shape sensitivity"
-        assert "shape" not in fd["R"], "Normal variable should not have shape"
-        assert np.isfinite(fd["S"]["shape"])
+        assert "shape" in fd.marginal["S"], "GEV variable should have shape sensitivity"
+        assert "shape" not in fd.marginal["R"], "Normal variable should not have shape"
+        assert np.isfinite(fd.marginal["S"]["shape"])
 
     def test_cf_result_includes_shape(self):
         """CF result dict includes 'shape' key for GEV variable."""
@@ -384,9 +385,9 @@ class TestGEVSensitivity:
         sa = ra.SensitivityAnalysis(ls, model, analysis_options=opts)
         cf = sa.run(numerical=False)
 
-        assert "shape" in cf["marginal"]["S"]
-        assert "shape" not in cf["marginal"]["R"]
-        assert np.isfinite(cf["marginal"]["S"]["shape"])
+        assert "shape" in cf.marginal["S"]
+        assert "shape" not in cf.marginal["R"]
+        assert np.isfinite(cf.marginal["S"]["shape"])
 
     def test_gev_shape_sensitivity_sign(self):
         """Increasing GEV shape (heavier tail) should decrease beta.
@@ -400,7 +401,7 @@ class TestGEVSensitivity:
         cf = sa.run(numerical=False)
 
         assert (
-            cf["marginal"]["S"]["shape"] < 0
+            cf.marginal["S"]["shape"] < 0
         ), "Heavier GEV tail should decrease reliability"
 
     def test_gev_cf_vs_fd_shape(self):
@@ -419,19 +420,19 @@ class TestGEVSensitivity:
 
         # Check mean/std parameters agree tightly
         for name in ["R", "S"]:
-            for param in fd[name]:
+            for param in fd.marginal[name]:
                 if param == "shape":
                     # Shape FD is inherently less accurate — check sign
                     # agreement and relaxed tolerance
-                    assert np.sign(cf["marginal"][name][param]) == np.sign(
-                        fd[name][param]
+                    assert np.sign(cf.marginal[name][param]) == np.sign(
+                        fd.marginal[name][param]
                     ), f"CF vs FD sign mismatch for {name}/{param}"
-                    assert cf["marginal"][name][param] == pytest.approx(
-                        fd[name][param], rel=0.15
+                    assert cf.marginal[name][param] == pytest.approx(
+                        fd.marginal[name][param], rel=0.15
                     ), f"CF vs FD mismatch for {name}/{param}"
                 else:
-                    assert cf["marginal"][name][param] == pytest.approx(
-                        fd[name][param], rel=0.05
+                    assert cf.marginal[name][param] == pytest.approx(
+                        fd.marginal[name][param], rel=0.05
                     ), f"CF vs FD mismatch for {name}/{param}"
 
     def test_summary_method(self):
