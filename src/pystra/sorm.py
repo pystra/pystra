@@ -3,12 +3,12 @@
 
 import numpy as np
 
-from .form import Form
+from .form import FORM
 from .analysis import AnalysisObject
 from scipy.stats import norm as normal
 
 
-class Sorm(AnalysisObject):
+class SORM(AnalysisObject):
     r"""Second Order Reliability Method (SORM).
 
     Approximates the failure surface in standard normal space using a
@@ -37,7 +37,7 @@ class Sorm(AnalysisObject):
         The limit state function.
     analysis_options : AnalysisOptions, optional
         Options controlling the analysis.
-    form : Form, optional
+    form : FORM, optional
         A pre-computed FORM result. If ``None``, FORM is run automatically.
         SORM requires a successfully converged FORM analysis before running.
 
@@ -84,7 +84,7 @@ class Sorm(AnalysisObject):
 
         # Has FORM already been run? If it exists it has, otherwise run it now
         if form is None:
-            self.form = Form(
+            self.form = FORM(
                 stochastic_model=self.model,
                 limit_state=self.limitstate,
                 analysis_options=self.options,

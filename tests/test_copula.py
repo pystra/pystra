@@ -127,7 +127,7 @@ def test_generalized_t_nataf_and_form_exact_halfspace():
     assert tr.standard_space == "student_t"
     opts = ra.AnalysisOptions()
     opts.set_transform("nataf")
-    form = ra.Form(
+    form = ra.FORM(
         stochastic_model=ra.StochasticModel(joint),
         analysis_options=opts,
         limit_state=ra.LimitState(lambda X, Y: 3 - X - Y),
@@ -143,7 +143,7 @@ def test_generalized_t_nataf_and_form_exact_halfspace():
     assert result.failure_probability == pytest.approx(t.sf(beta, 4), rel=2e-6)
     with pytest.raises(ValueError, match="normal space"):
         ra.StrongMaximumTest(form)
-    for cls in (ra.CrudeMonteCarlo, ra.Sorm):
+    for cls in (ra.CrudeMonteCarlo, ra.SORM):
         analysis = cls(
             stochastic_model=form.model,
             limit_state=form.limitstate,
@@ -178,7 +178,7 @@ def test_lebrun_dutfoy_frank_order_benchmark():
         opts = ra.AnalysisOptions()
         opts.set_transform("rosenblatt")
         opts.set_rosenblatt_order(order)
-        f = ra.Form(
+        f = ra.FORM(
             stochastic_model=exponential_model(cop),
             analysis_options=opts,
             limit_state=ra.LimitState(lambda X1, X2: 8 * X1 + 2 * X2 - 1),
@@ -205,7 +205,7 @@ def test_gaussian_order_preserves_form_probability():
         opts = ra.AnalysisOptions()
         opts.set_transform(mode)
         opts.set_rosenblatt_order(order)
-        f = ra.Form(
+        f = ra.FORM(
             stochastic_model=exponential_model(ra.GaussianCopula([[1, 0.5], [0.5, 1]])),
             limit_state=ra.LimitState(lambda X1, X2: 8 * X1 + 2 * X2 - 1),
             analysis_options=opts,

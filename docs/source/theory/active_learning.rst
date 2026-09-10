@@ -43,7 +43,7 @@ normalization and a small numerical nugget. Install the optional ``al`` extra.
 Optimizer convergence warnings remain visible; they concern hyperparameter
 fitting, separately from the reliability stopping status.
 
-``PceSurrogate`` uses normalized probabilists' Hermite polynomials, selecting
+``PCESurrogate`` uses normalized probabilists' Hermite polynomials, selecting
 sparse terms by hybrid least-angle regression [BlatmanSudret2011]_. The default
 candidate degrees are 1 through 5. ``degree`` and ``q_norm`` can each specify
 an increasing sequence: every candidate is fitted and the best corrected

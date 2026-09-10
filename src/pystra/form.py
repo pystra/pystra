@@ -5,13 +5,13 @@ import numpy as np
 import warnings
 from scipy.stats import norm as normal
 from .analysis import AnalysisObject
-from .results import FormResult
+from .results import FORMResult
 from .correlation import set_modified_correlation_matrix
 
-__all__ = ["Form"]
+__all__ = ["FORM"]
 
 
-class Form(AnalysisObject):
+class FORM(AnalysisObject):
     r"""Find a FORM design point and approximate the failure probability.
 
     Parameters
@@ -25,7 +25,7 @@ class Form(AnalysisObject):
 
     Notes
     -----
-    Call :meth:`run` to obtain an immutable :class:`~pystra.results.FormResult`.
+    Call :meth:`run` to obtain an immutable :class:`~pystra.results.FORMResult`.
     Check its ``converged`` flag before using its probability or design point.
     Numerical convergence does not establish the accuracy of the local
     boundary approximation or exclude competing failure regions.
@@ -33,7 +33,7 @@ class Form(AnalysisObject):
     Independent standard-normal coordinates are the usual choice. Explicit
     spherical Student-t generalized Nataf instead uses a Student-t half-space
     tail. ``get_beta()`` is the signed geometric distance;
-    ``get_equivalent_beta()`` and ``FormResult.beta`` are normal-equivalent.
+    ``get_equivalent_beta()`` and ``FORMResult.beta`` are normal-equivalent.
 
     See :doc:`/guides/form_sorm` for usage and
     :doc:`/theory/design_point_methods` for the formulation and references.
@@ -65,9 +65,9 @@ class Form(AnalysisObject):
         self.e1 = None
         self.e2 = None
 
-    def run(self) -> FormResult:
+    def run(self) -> FORMResult:
         """
-        Execute FORM and return an immutable :class:`FormResult` snapshot.
+        Execute FORM and return an immutable :class:`FORMResult` snapshot.
         """
         self.results_valid = False
         self.converged = False
@@ -176,7 +176,7 @@ class Form(AnalysisObject):
         # Show Results
         if self.options.get_print_output() and self.results_valid:
             self.show_results()
-        return FormResult.from_analysis(self)
+        return FORMResult.from_analysis(self)
 
     def compute_starting_point(self):
         """Compute starting point for the algorithm"""

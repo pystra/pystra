@@ -90,7 +90,7 @@ def main():
     )
 
     # Performe FORM analysis
-    Analysis = Form(
+    Analysis = FORM(
         analysis_options=options,
         stochastic_model=stochastic_model,
         limit_state=limit_state,

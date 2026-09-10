@@ -24,7 +24,7 @@ Quick start::
     model.add_variable(ra.Normal("R", 10, 1))
     model.add_variable(ra.Normal("S", 5, 1))
 
-    form = ra.Form(
+    form = ra.FORM(
         stochastic_model=model,
         limit_state=limit_state,
     )
@@ -45,7 +45,7 @@ from .model import *
 
 # Analysis
 from .analysis import *
-from .results import FormResult
+from .results import FORMResult
 from .form import *
 from .mc import *
 from .sorm import *

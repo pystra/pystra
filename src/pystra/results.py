@@ -5,11 +5,11 @@ from typing import Optional, Tuple
 
 import numpy as np
 
-__all__ = ["FormResult"]
+__all__ = ["FORMResult"]
 
 
 @dataclass(frozen=True)
-class FormResult:
+class FORMResult:
     """Snapshot returned by FORM.
 
     ``beta`` is normal-equivalent; ``geometric_beta`` is the signed distance
@@ -33,7 +33,7 @@ class FormResult:
     message: str
 
     @classmethod
-    def from_analysis(cls, analysis) -> "FormResult":
+    def from_analysis(cls, analysis) -> "FORMResult":
         """Copy a completed solver's numerical results and diagnostics."""
         valid = bool(analysis.converged and analysis.results_valid)
         standard_space = getattr(analysis.transform, "standard_space", "normal")

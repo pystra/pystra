@@ -79,7 +79,7 @@ class KrigingSurrogate(Surrogate):
 
 
 @dataclass(frozen=True)
-class PceCandidate:
+class PCECandidate:
     """A candidate degree/truncation and its final OLS error diagnostics."""
 
     degree: int
@@ -91,7 +91,7 @@ class PceCandidate:
 
 
 @dataclass(frozen=True)
-class PceFitResult:
+class PCEFitResult:
     """Immutable selected Hermite expansion and evaluated candidate scores.
 
     ``indices`` contains one power tuple per coefficient in normal-coordinate
@@ -118,7 +118,7 @@ class EnsembleSurrogate(Surrogate):
         """Return (n_points, n_replicates>=2) finite response predictions."""
 
 
-class PceSurrogate(EnsembleSurrogate):
+class PCESurrogate(EnsembleSurrogate):
     """Adaptive sparse Hermite PCE with bootstrap local prediction spread.
 
     Parameters
@@ -243,11 +243,11 @@ class PceSurrogate(EnsembleSurrogate):
                     if len(self.degree) * len(self.q_norm) == 1:
                         raise
                     candidates.append(
-                        PceCandidate(degree, q_norm, len(indices), 0, np.inf, np.inf)
+                        PCECandidate(degree, q_norm, len(indices), 0, np.inf, np.inf)
                     )
                     q_errors.append(np.inf)
                     continue
-                candidate = PceCandidate(
+                candidate = PCECandidate(
                     degree,
                     q_norm,
                     len(indices),
@@ -309,7 +309,7 @@ class PceSurrogate(EnsembleSurrogate):
         self._powers = indices
         self._ensemble = np.asarray(ensemble).T
         self._coefficients = coefficients
-        self.fit_result = PceFitResult(
+        self.fit_result = PCEFitResult(
             candidate.degree,
             candidate.q_norm,
             tuple(tuple(int(power) for power in row) for row in indices),

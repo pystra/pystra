@@ -93,7 +93,7 @@ def test_ls_with_precomputed_form():
     model, limit_state, options = simple_rs_model()
     options.set_samples(1000)
 
-    form = ra.Form(
+    form = ra.FORM(
         analysis_options=options,
         stochastic_model=model,
         limit_state=limit_state,

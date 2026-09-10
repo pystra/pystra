@@ -13,7 +13,7 @@ from pystra.active_learning import (
     AllCriteria,
     BetaBounds,
     BetaStability,
-    PceSurrogate,
+    PCESurrogate,
 )
 
 spec = importlib.util.spec_from_file_location(
@@ -106,12 +106,12 @@ def test_truss_reference_against_direct_simulation_and_published_mc():
 def test_truss_form_and_sorm_published_comparison():
     model = benchmarks.truss_model()
     state = ra.LimitState(benchmarks.truss_limit_state)
-    form = ra.Form(model, state)
+    form = ra.FORM(model, state)
     result = form.run()
     assert result.converged
     assert result.failure_probability == pytest.approx(0.76e-3, abs=0.005e-3)
     for fit_type in ("cf", "pf"):
-        sorm = ra.Sorm(model, state, form=form)
+        sorm = ra.SORM(model, state, form=form)
         sorm.run(fit_type)
         assert sorm.results_valid
         # Breitung accuracy against the probability reference.
@@ -138,7 +138,7 @@ def test_hat_quadrature_against_importance_sampling_and_exact_cubic():
         len(weighted)
     )
     training = rng.normal(size=(60, 2))
-    surrogate = PceSurrogate(degree=3, method="ols", seed=4)
+    surrogate = PCESurrogate(degree=3, method="ols", seed=4)
     surrogate.fit(training, benchmarks.hat_limit_state(*(training + 0.25).T))
     query = rng.uniform(-5, 5, size=(2000, 2))
     np.testing.assert_allclose(
@@ -162,7 +162,7 @@ def test_literature_active_pce(problem, seed):
     analysis = ActiveLearning(
         stochastic_model=model,
         limit_state=ra.LimitState(function),
-        surrogate=PceSurrogate(
+        surrogate=PCESurrogate(
             degree=(1, 2, 3, 4, 5),
             q_norm=0.75 if problem == "truss" else 1,
             max_interaction=2,

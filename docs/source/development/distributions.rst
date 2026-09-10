@@ -98,7 +98,7 @@ Verifying your distribution
        model.add_variable(MyDist("X", 100, 15, shape=0.2))
        model.add_variable(ra.Normal("Y", 50, 10))
        ls = ra.LimitState(lambda X, Y: X - Y)
-       f = ra.Form(stochastic_model=model, limit_state=ls)
+       f = ra.FORM(stochastic_model=model, limit_state=ls)
        f.run()
        f.show_detailed_output()
 

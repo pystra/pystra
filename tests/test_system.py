@@ -222,7 +222,7 @@ def test_system_limit_state_runs_form_analysis():
     options = ra.AnalysisOptions()
     options.set_print_output(False)
 
-    form = ra.Form(
+    form = ra.FORM(
         stochastic_model=model,
         limit_state=system.as_limit_state(),
         analysis_options=options,

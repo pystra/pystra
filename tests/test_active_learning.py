@@ -18,7 +18,7 @@ import pystra as ra
 from pystra.active_learning import (
     ActiveLearning,
     KrigingSurrogate,
-    PceSurrogate,
+    PCESurrogate,
     Surrogate,
     learning_eff,
     learning_u,
@@ -109,7 +109,7 @@ def test_pce_polynomial_exactness_local_spread_and_repeatability():
     rng = np.random.default_rng(13)
     points = rng.normal(size=(70, 2))
     values = 1 + points[:, 0] - 0.3 * points[:, 1] ** 2
-    surrogate = PceSurrogate(degree=2, method="ols", seed=4)
+    surrogate = PCESurrogate(degree=2, method="ols", seed=4)
     surrogate.fit(points, values)
     query = rng.normal(size=(40, 2))
     mean, std = surrogate.predict(query)
@@ -268,8 +268,8 @@ def test_missing_optional_dependency_does_not_break_core():
 import sys
 sys.modules['sklearn'] = None
 import pystra
-from pystra.active_learning import KrigingSurrogate, PceSurrogate
-PceSurrogate(method="ols")
+from pystra.active_learning import KrigingSurrogate, PCESurrogate
+PCESurrogate(method="ols")
 try:
     KrigingSurrogate()
 except ImportError as exc:

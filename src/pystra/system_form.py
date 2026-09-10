@@ -7,7 +7,7 @@ from scipy.integrate import quad
 from scipy.stats import multivariate_normal, norm
 
 from .analysis import AnalysisObject
-from .form import Form
+from .form import FORM
 from .system import Component, SeriesSystem, ParallelSystem, ditlevsen_bounds
 
 __all__ = ["SystemFORM"]
@@ -38,7 +38,7 @@ class SystemFORM(AnalysisObject):
     Attributes
     ----------
     component_results : dict
-        Component names mapped to completed Form objects (beta, alpha,
+        Component names mapped to completed FORM objects (beta, alpha,
         design points and convergence residuals).
     correlation : ndarray
         Correlation of linearized normal scores, alpha @ alpha.T. This is
@@ -210,7 +210,7 @@ class SystemFORM(AnalysisObject):
         options = copy(self.options)
         options.set_print_output(False)
         for component in self.components:
-            form = Form(
+            form = FORM(
                 stochastic_model=self.model,
                 limit_state=component.as_limit_state(),
                 analysis_options=options,

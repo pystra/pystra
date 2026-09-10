@@ -45,7 +45,7 @@ def test_form():
     """
     options, stochastic_model, limit_state = setup()
 
-    Analysis = ra.Form(
+    Analysis = ra.FORM(
         analysis_options=options,
         stochastic_model=stochastic_model,
         limit_state=limit_state,
@@ -65,7 +65,7 @@ def test_form_svd():
     options, stochastic_model, limit_state = setup()
     options.set_transform("svd")
 
-    Analysis = ra.Form(
+    Analysis = ra.FORM(
         analysis_options=options,
         stochastic_model=stochastic_model,
         limit_state=limit_state,
@@ -82,7 +82,7 @@ def test_sorm():
     """
     options, stochastic_model, limit_state = setup()
 
-    Analysis = ra.Sorm(
+    Analysis = ra.SORM(
         analysis_options=options,
         stochastic_model=stochastic_model,
         limit_state=limit_state,
@@ -104,7 +104,7 @@ def test_sorm_pointfit():
     """
     options, stochastic_model, limit_state = setup()
 
-    Analysis = ra.Sorm(
+    Analysis = ra.SORM(
         analysis_options=options,
         stochastic_model=stochastic_model,
         limit_state=limit_state,
@@ -141,7 +141,7 @@ def test_sorm_pointfit_linear():
 
     limit_state = ra.model.LimitState(lambda R, S: R - S)
 
-    Analysis = ra.Sorm(
+    Analysis = ra.SORM(
         analysis_options=options,
         stochastic_model=model,
         limit_state=limit_state,
@@ -156,18 +156,18 @@ def test_sorm_pointfit_linear():
 
 def test_sorm_pointfit_with_form():
     """
-    Pass a pre-computed Form result to SORM point-fitting.
+    Pass a pre-computed FORM result to SORM point-fitting.
     """
     options, stochastic_model, limit_state = setup()
 
-    form = ra.Form(
+    form = ra.FORM(
         analysis_options=options,
         stochastic_model=stochastic_model,
         limit_state=limit_state,
     )
     form.run()
 
-    Analysis = ra.Sorm(
+    Analysis = ra.SORM(
         analysis_options=options,
         stochastic_model=stochastic_model,
         limit_state=limit_state,
@@ -186,7 +186,7 @@ def test_sorm_invalid_fit_type():
     """
     options, stochastic_model, limit_state = setup()
 
-    Analysis = ra.Sorm(
+    Analysis = ra.SORM(
         analysis_options=options,
         stochastic_model=stochastic_model,
         limit_state=limit_state,
@@ -345,7 +345,7 @@ def test_form_uncorrelated_normals():
 
     limit_state = ra.model.LimitState(lambda R, S: R - S)
 
-    Analysis = ra.Form(
+    Analysis = ra.FORM(
         analysis_options=options,
         stochastic_model=model,
         limit_state=limit_state,
@@ -370,7 +370,7 @@ def test_form_with_gumbel():
 
     limit_state = ra.model.LimitState(lambda R, S: R - S)
 
-    Analysis = ra.Form(
+    Analysis = ra.FORM(
         analysis_options=options,
         stochastic_model=model,
         limit_state=limit_state,

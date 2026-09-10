@@ -8,7 +8,7 @@ coverage or endorsement by their authors.
 
 ## PC-Kriging
 
-`PcKrigingSurrogate` implements sequential PC-Kriging: select a sparse Hermite
+`PCKrigingSurrogate` implements sequential PC-Kriging: select a sparse Hermite
 trend using the existing adaptive PCE implementation, then re-estimate its
 coefficients by generalized least squares within a correlated residual model.
 The conditional prediction variance includes uncertainty in those trend
@@ -40,8 +40,8 @@ each failure region. They are not a guarantee of discovery on another model.
 
 ## Failed bootstrap replicates (FBR)
 
-`PceSurrogate.predict_replicates` returns actual bootstrap responses with
-consistent replicate columns across calls. `FbrLearning` minimizes
+`PCESurrogate.predict_replicates` returns actual bootstrap responses with
+consistent replicate columns across calls. `FBRLearning` minimizes
 `abs(B_safe - B_failure) / B`; zero response counts as failure. No Gaussian
 approximation to replicate votes is made. UQLab's RBDO helper returns the
 negative score for maximization; our minimization convention reverses its

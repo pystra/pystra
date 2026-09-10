@@ -10,9 +10,9 @@ import numpy as np
 from ..analysis import AnalysisOptions
 from ..copula import Copula
 from ..distributions import Constant, Distribution
-from ..form import Form
+from ..form import FORM
 from ..model import LimitState, StochasticModel
-from ..results import FormResult
+from ..results import FORMResult
 
 __all__ = [
     "CodeFactors",
@@ -152,7 +152,7 @@ class CodeDesignResult:
     live_load_ratio: float
     dead_load_ratio: float
     design_value: float
-    reliability: FormResult
+    reliability: FORMResult
     target_margin: Optional[float]
 
 
@@ -312,7 +312,7 @@ class CodeCalibration:
                         (1 - aq) * (ag * G + (1 - ag) * P) + aq * Q
                     )
 
-                analysis = Form(
+                analysis = FORM(
                     snapshot.stochastic_model(),
                     LimitState(limit_state),
                     deepcopy(options),

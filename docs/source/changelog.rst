@@ -30,7 +30,7 @@ Added
 - Worked Rosenblatt-ordering tutorial reproducing Meinen and Steenbergen's
   (2025) system example, with transformation geometry, coordinate alignment,
   and original-event integration/simulation checks.
-- Immutable ``FormResult`` snapshots, including convergence, normal-equivalent
+- Immutable ``FORMResult`` snapshots, including convergence, normal-equivalent
   beta, geometric beta and ordered physical/reference design points.
 - Explicit code factors, nominal values and isolated normalized-reliability study
   results, with separate plotting and optional copula dependence.

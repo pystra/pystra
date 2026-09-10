@@ -19,7 +19,7 @@ Two methods are available, selected via the ``numerical`` flag of
   number of variables is large.
 """
 
-from .form import Form
+from .form import FORM
 from .analysis import AnalysisOptions
 from .cholesky_sensitivity import cholesky_with_derivative, inverse_cholesky_gradient
 from .integration import zi_and_xi, drho_drho0, drho0_dtheta
@@ -159,7 +159,7 @@ class SensitivityAnalysis:
             sensitivities[name] = {p: 0.0 for p in dist.sensitivity_params}
 
         # Get the base result
-        form = Form(
+        form = FORM(
             stochastic_model=self.model,
             limit_state=self.limitstate,
             analysis_options=self.options,
@@ -183,7 +183,7 @@ class SensitivityAnalysis:
                 delta_actual = new_dist.sensitivity_params[param] - val
 
                 # Run FORM with perturbed model
-                form = Form(
+                form = FORM(
                     stochastic_model=model1,
                     limit_state=self.limitstate,
                     analysis_options=self.options,
@@ -219,7 +219,7 @@ class SensitivityAnalysis:
                 "Closed-form sensitivities assume legacy physical Pearson input; use numerical=True for explicit copulas"
             )
         # 1. Run FORM
-        form = Form(
+        form = FORM(
             stochastic_model=self.model,
             limit_state=self.limitstate,
             analysis_options=self.options,

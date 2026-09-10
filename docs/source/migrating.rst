@@ -78,42 +78,6 @@ Class renames scheduled in this release
      - Development branch now
      - 2.0 release
      - Reason
-   * - ``Form``
-     - ``Form``
-     - ``FORM``
-     - acronym: first order reliability method
-   * - ``Sorm``
-     - ``Sorm``
-     - ``SORM``
-     - acronym: second order reliability method
-   * - —
-     - ``FormResult``
-     - ``FORMResult``
-     - acronym: FORM
-   * - —
-     - ``PceSurrogate``
-     - ``PCESurrogate``
-     - acronym: polynomial chaos expansion
-   * - —
-     - ``PceCandidate``
-     - ``PCECandidate``
-     - acronym: polynomial chaos expansion
-   * - —
-     - ``PceFitResult``
-     - ``PCEFitResult``
-     - acronym: polynomial chaos expansion
-   * - —
-     - ``PcKrigingSurrogate``
-     - ``PCKrigingSurrogate``
-     - acronym: polynomial chaos Kriging
-   * - —
-     - ``PcKrigingFitResult``
-     - ``PCKrigingFitResult``
-     - acronym: polynomial chaos Kriging
-   * - —
-     - ``FbrLearning``
-     - ``FBRLearning``
-     - acronym: failed bootstrap replicates
    * - ``TypeIlargestValue``
      - ``Type1LargestValue``
      - ``Gumbel``
@@ -161,12 +125,22 @@ because their 2.0 names are not yet applied on this branch.
 
    * - 1.x
      - 2.0
+   * - ``Form``
+     - ``FORM``
+   * - ``Sorm``
+     - ``SORM``
    * - ``KofNSystem``
      - ``KOfNSystem``
    * - ``GenericModel``
      - ``NormalizedReliabilityModel``
    * - ``GenericCalibration``
      - ``CodeCalibration``
+
+Classes added during 2.0 development follow the same rule: ``FORMResult``,
+``PCESurrogate``, ``PCECandidate``, ``PCEFitResult``, ``PCKrigingSurrogate``,
+``PCKrigingFitResult`` and ``FBRLearning``. Earlier development snapshots
+spelled them in title case (``FormResult``, ``PceSurrogate`` and so on); those
+spellings were never released.
 
 .. list-table:: Representative changes
    :header-rows: 1
@@ -198,8 +172,8 @@ source and feature contributions. This does not imply that every class was
 available in a published 1.x release. Acronyms in
 CapWords retain their capitals, as recommended by
 `PEP 8 <https://peps.python.org/pep-0008/#descriptive-naming-styles>`_.
-The remaining title-cased acronym classes are being brought under the same rule
-in this release; see :ref:`planned-acronym-renames` above.
+``Form`` and ``Sorm`` became ``FORM`` and ``SORM`` under the same rule; the
+extreme-value classes follow in this release (see :ref:`planned-acronym-renames`).
 
 The :download:`naming map <../migration/naming-map.json>` records the
 reviewed spelling changes and retained class names. The :download:`definition manifest <../migration/api-migration.json>`
@@ -227,7 +201,7 @@ This example uses the implemented development API::
     model = ra.StochasticModel()
     model.add_variable(ra.Normal("R", mean=10, stdv=1))
     model.add_variable(ra.Normal("S", mean=5, stdv=1))
-    form = ra.Form(
+    form = ra.FORM(
         stochastic_model=model,
         limit_state=ra.LimitState(lambda R, S: R - S),
     )
@@ -241,7 +215,7 @@ conventional spelling in prose.
 FORM result snapshots
 ---------------------
 
-``Form.run()`` now returns a ``FormResult``. Its ``beta`` is the normal-equivalent
+``FORM.run()`` now returns a ``FORMResult``. Its ``beta`` is the normal-equivalent
 reliability index; ``geometric_beta`` retains the signed distance in
 ``standard_space``. These differ in Student-t standard space. A normal-space
 index remains finite even when its very small probability underflows to zero.
@@ -307,7 +281,7 @@ For example::
 This replaces ``add_model(...)``, ``analyse()`` and the study's mutable result
 cache. Each ``run(model, factors, *, options=None, target_beta=None)`` returns a
 new ``CodeCalibrationResult`` with the analyzed model snapshot, factors, designs,
-and a ``FormResult`` at every grid point. ``beta`` is a fresh array of shape
+and a ``FORMResult`` at every grid point. ``beta`` is a fresh array of shape
 ``(n_dead_load_ratios, n_live_load_ratios)``. Failed points are retained as NaN;
 their target margins are unavailable. ``to_frame()`` returns a reporting copy.
 ``plot_calibration`` accepts completed results and refuses to draw an envelope
@@ -458,7 +432,7 @@ Active learning: new in 2.0
 
 Active learning is a new 2.0 capability, developed from the ``al`` contribution
 and the literature-guided extensions. It remains unmerged in 1.x. Import from
-``pystra.active_learning``. ``PceSurrogate``, ``learning_u`` and
+``pystra.active_learning``. ``PCESurrogate``, ``learning_u`` and
 ``learning_eff`` follow the 2.0 naming conventions. Surrogates now consume
 independent normal coordinates, not physical points.
 
@@ -535,14 +509,14 @@ Additional active-learning contracts
 
 The public import path remains ``pystra.active_learning``. The new named
 surrogate is ``"pc_kriging"`` and the new named learning function is ``"fbr"``.
-``PcKrigingSurrogate`` and ``PcKrigingFitResult`` expose sequential PC-Kriging;
+``PCKrigingSurrogate`` and ``PCKrigingFitResult`` expose sequential PC-Kriging;
 ``ImportanceSamplingEstimator`` and ``ImportanceSamplingDiagnostics`` supply
 explicit weighted sampling. Both use independent normal coordinates.
 
 ``EnsembleSurrogate.predict_replicates`` and
 ``EnsembleLearningFunction.select_replicates`` extend the existing scalar
-contracts without changing U/EFF. ``PceSurrogate`` implements the ensemble
-interface. ``FbrLearning`` requires it; incompatible combinations fail before
+contracts without changing U/EFF. ``PCESurrogate`` implements the ensemble
+interface. ``FBRLearning`` requires it; incompatible combinations fail before
 true-model evaluation. Named FBR defaults to ``BootstrapBounds``; existing
 U/EFF defaults remain unchanged. Bootstrap probability stopping is restricted
 to fixed IID normal enrichment and rejected for adaptive weighted/conditional

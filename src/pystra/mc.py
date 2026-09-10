@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from .analysis import AnalysisObject
 from .distributions import StdNormal
 from .correlation import compute_modified_correlation_matrix
-from .form import Form
+from .form import FORM
 
 __all__ = [
     "MonteCarlo",
@@ -438,7 +438,7 @@ class ImportanceSampling(CrudeMonteCarlo):
     """
 
     def __init__(self, analysis_options=None, limit_state=None, stochastic_model=None):
-        FormAnalysis = Form(
+        FormAnalysis = FORM(
             stochastic_model=stochastic_model,
             limit_state=limit_state,
             analysis_options=analysis_options,

@@ -8,8 +8,8 @@ modelling assumptions is incomplete.
 FORM records
 ------------
 
-:meth:`pystra.form.Form.run` returns an immutable
-:class:`~pystra.results.FormResult`. Its values remain a snapshot if the solver
+:meth:`pystra.form.FORM.run` returns an immutable
+:class:`~pystra.results.FORMResult`. Its values remain a snapshot if the solver
 is subsequently rerun.
 
 .. list-table:: Fields to read first
@@ -43,7 +43,7 @@ Result interfaces differ by algorithm. SORM exposes named Breitung and modified
 Breitung result attributes after a valid run. Classical simulations expose
 ``get_failure()`` and ``get_beta()`` on the completed analysis. Use their API
 pages for the precise contract; do not assume every ``run()`` returns a
-``FormResult``. Retain the convergence and termination information of system,
+``FORMResult``. Retain the convergence and termination information of system,
 calibration and active-learning result records when exporting tables.
 
 Separate three sources of error

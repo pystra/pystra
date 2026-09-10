@@ -99,7 +99,7 @@ stochastic_model.add_variable(ra.Lognormal("E", 30e3, 3e3))
 stochastic_model.add_variable(ra.Normal("P", 25, 5))
 stochastic_model.add_variable(ra.Normal("x", 0, 1))
 stochastic_model.add_variable(ra.Uniform("w", 0.1, 0.02))
-form = ra.Form(
+form = ra.FORM(
     analysis_options=options,
     stochastic_model=stochastic_model,
     limit_state=limit_state,

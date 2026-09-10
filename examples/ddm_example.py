@@ -64,7 +64,7 @@ def run(diff_mode):
     )
 
     # Set up FORM analysis
-    form = ra.Form(
+    form = ra.FORM(
         analysis_options=options,
         stochastic_model=stochastic_model,
         limit_state=limit_state,

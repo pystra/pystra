@@ -15,9 +15,9 @@ Public entry points
      - Compose and run a surrogate-assisted analysis.
    * - :class:`~pystra.active_learning.surrogates.KrigingSurrogate`
      - Fit a Gaussian-process response model.
-   * - :class:`~pystra.active_learning.surrogates.PceSurrogate`
+   * - :class:`~pystra.active_learning.surrogates.PCESurrogate`
      - Fit dense or adaptive sparse Hermite polynomials.
-   * - :class:`~pystra.active_learning.pc_kriging.PcKrigingSurrogate`
+   * - :class:`~pystra.active_learning.pc_kriging.PCKrigingSurrogate`
      - Fit a polynomial trend with a Kriging residual.
    * - :class:`~pystra.active_learning.estimation.MonteCarloEstimator`
      - Estimate probability on a separate sample.

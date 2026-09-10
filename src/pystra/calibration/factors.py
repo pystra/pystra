@@ -17,10 +17,10 @@ from scipy.optimize import fsolve, root_scalar
 
 from ..analysis import AnalysisOptions
 from ..distributions import Constant, Distribution
-from ..form import Form
+from ..form import FORM
 from ..loadcomb import LoadCombination
 from ..model import LimitState
-from ..results import FormResult
+from ..results import FORMResult
 
 __all__ = [
     "FactorCalibrationProblem",
@@ -53,7 +53,7 @@ def _run_form(cases, case_name, overrides=None, options=None):
         raise ValueError("A limit_state is required for reliability evaluation")
     if options is not None and not isinstance(options, AnalysisOptions):
         raise TypeError("options must be AnalysisOptions")
-    solver = Form(
+    solver = FORM(
         cases.stochastic_model(case_name, overrides=overrides),
         LimitState(cases.limit_state),
         deepcopy(options),
@@ -68,7 +68,7 @@ def analyze_case(
     *,
     overrides: Optional[Mapping[str, Union[Distribution, Constant]]] = None,
     options: Optional[AnalysisOptions] = None,
-) -> FormResult:
+) -> FORMResult:
     """Evaluate one explicit load case and return a FORM snapshot."""
     return _run_form(cases, case_name, overrides, options)[1]
 
@@ -179,7 +179,7 @@ class CalibratedDesign:
     case_name: str
     design_value: float
     target_beta: float
-    reliability: Optional[FormResult]
+    reliability: Optional[FORMResult]
     residual: Optional[float]
     converged: bool
     evaluations: int
@@ -638,7 +638,7 @@ class DesignVerification:
 
     case_name: str
     design_value: float
-    reliability: FormResult
+    reliability: FORMResult
     target_margin: Optional[float]
 
 

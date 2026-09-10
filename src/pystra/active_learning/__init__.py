@@ -15,14 +15,14 @@ from .surrogates import (
     Surrogate,
     EnsembleSurrogate,
     KrigingSurrogate,
-    PceSurrogate,
-    PceFitResult,
-    PceCandidate,
+    PCESurrogate,
+    PCEFitResult,
+    PCECandidate,
 )
 from .learning import (
     LearningFunction,
     EnsembleLearningFunction,
-    FbrLearning,
+    FBRLearning,
     LearningDecision,
     UFunction,
     ExpectedFeasibility,
@@ -35,7 +35,7 @@ from .estimation import (
     EnrichmentEstimator,
     EnrichmentResult,
 )
-from .pc_kriging import PcKrigingSurrogate, PcKrigingFitResult
+from .pc_kriging import PCKrigingSurrogate, PCKrigingFitResult
 from .importance import ImportanceSamplingEstimator, ImportanceSamplingDiagnostics
 from .subset import SubsetSimulationEstimator, SubsetRun, SubsetLevel
 from .stopping import (
@@ -50,10 +50,10 @@ from .stopping import (
 __all__ = [
     "EnsembleSurrogate",
     "EnsembleLearningFunction",
-    "FbrLearning",
+    "FBRLearning",
     "BootstrapBounds",
-    "PcKrigingSurrogate",
-    "PcKrigingFitResult",
+    "PCKrigingSurrogate",
+    "PCKrigingFitResult",
     "ImportanceSamplingEstimator",
     "ImportanceSamplingDiagnostics",
     "ActiveLearning",
@@ -62,9 +62,9 @@ __all__ = [
     "ReliabilityEstimate",
     "Surrogate",
     "KrigingSurrogate",
-    "PceSurrogate",
-    "PceFitResult",
-    "PceCandidate",
+    "PCESurrogate",
+    "PCEFitResult",
+    "PCECandidate",
     "LearningFunction",
     "LearningDecision",
     "UFunction",

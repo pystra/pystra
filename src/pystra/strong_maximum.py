@@ -12,7 +12,7 @@ import numpy as np
 from scipy.special import betainc
 
 from .analysis import AnalysisObject
-from .form import Form
+from .form import FORM
 from .model import LimitState
 
 __all__ = ["StrongMaximumTest"]
@@ -23,7 +23,7 @@ class StrongMaximumTest(AnalysisObject):
 
     Parameters
     ----------
-    form : Form, optional
+    form : FORM, optional
         Successfully converged FORM analysis. Reuses its model and transform.
         Alternatively supply all of stochastic_model, limit_state and
         design_point (in independent standard-normal coordinates).
@@ -100,11 +100,11 @@ class StrongMaximumTest(AnalysisObject):
     ):
         if form is not None:
             if (
-                not isinstance(form, Form)
+                not isinstance(form, FORM)
                 or not form.results_valid
                 or not form.converged
             ):
-                raise ValueError("Supply a successfully converged Form analysis")
+                raise ValueError("Supply a successfully converged FORM analysis")
             if any(
                 arg is not None
                 for arg in (
@@ -128,7 +128,7 @@ class StrongMaximumTest(AnalysisObject):
                 )
         elif any(arg is None for arg in (stochastic_model, limit_state, design_point)):
             raise ValueError("Supply form or model, limit_state and design_point")
-        # Independent evaluator state; do not overwrite the Form limit state's
+        # Independent evaluator state; do not overwrite the FORM limit state's
         # most recent x/gradient evaluation when running a diagnostic.
         super().__init__(
             stochastic_model=stochastic_model,

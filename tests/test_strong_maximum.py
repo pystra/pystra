@@ -103,7 +103,7 @@ def test_post_form_reuses_correlated_transform_without_mutating_evaluator():
     m.set_correlation([[1, 0.6], [0.6, 1]])
     opts = ra.AnalysisOptions()
     opts.set_transform("svd")
-    form = ra.Form(
+    form = ra.FORM(
         stochastic_model=m,
         limit_state=ra.LimitState(lambda X0, X1: 3 - X1),
         analysis_options=opts,
@@ -209,7 +209,7 @@ def test_bad_candidate_and_failed_rerun():
 
 def test_unrun_form_rejected():
     with pytest.raises(ValueError, match="converged"):
-        ra.StrongMaximumTest(ra.Form())
+        ra.StrongMaximumTest(ra.FORM())
 
 
 def test_non_normal_post_form_evaluates_original_physical_function():
@@ -217,7 +217,7 @@ def test_non_normal_post_form_evaluates_original_physical_function():
     m.add_variable(ra.Lognormal("R", np.exp(0.5), np.sqrt((np.exp(1) - 1) * np.exp(1))))
     m.add_variable(ra.Normal("S", 0, 1))
     m.add_variable(ra.Constant("C", 3))
-    form = ra.Form(
+    form = ra.FORM(
         stochastic_model=m, limit_state=ra.LimitState(lambda R, S, C: C - np.log(R))
     )
     form.run()
@@ -242,7 +242,7 @@ def test_positive_scaling_preserves_diagnostic():
 def test_nonconverged_form_rejected():
     options = ra.AnalysisOptions()
     options.set_imax(1)
-    form = ra.Form(
+    form = ra.FORM(
         stochastic_model=model(),
         limit_state=ra.LimitState(lambda X0, X1: 3 - X0),
         analysis_options=options,

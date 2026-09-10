@@ -11,9 +11,9 @@ Public entry points
 
    * - Object
      - Purpose
-   * - :class:`~pystra.form.Form`
+   * - :class:`~pystra.form.FORM`
      - Find a design point and return convergence diagnostics.
-   * - :class:`~pystra.sorm.Sorm`
+   * - :class:`~pystra.sorm.SORM`
      - Fit local curvature around a converged FORM point.
    * - :class:`~pystra.mc.CrudeMonteCarlo`
      - Estimate the physical event by direct sampling.
@@ -25,7 +25,7 @@ Public entry points
      - Reach rare events through conditional samples.
    * - :class:`~pystra.system_form.SystemFORM`
      - Combine component tangent models in a shared space.
-   * - :class:`~pystra.results.FormResult`
+   * - :class:`~pystra.results.FORMResult`
      - Retain an immutable FORM result.
 
 **Use it:** :doc:`/guides/methods` · :doc:`/notebooks/ex_intro` · :doc:`/theory/design_point_methods`

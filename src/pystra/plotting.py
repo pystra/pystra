@@ -6,8 +6,8 @@ import numpy as np
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 
-from .active_learning import ActiveLearningResult, PceFitResult, Surrogate
-from .results import FormResult
+from .active_learning import ActiveLearningResult, PCEFitResult, Surrogate
+from .results import FORMResult
 from .strong_maximum import StrongMaximumTest
 
 __all__ = [
@@ -201,7 +201,7 @@ def plot_limit_state(
 
 
 def plot_form_geometry(
-    result: FormResult,
+    result: FORMResult,
     *,
     boundary: Optional[np.ndarray] = None,
     tangent_length: float = 4.0,
@@ -213,7 +213,7 @@ def plot_form_geometry(
 
     Parameters
     ----------
-    result : FormResult
+    result : FORMResult
         Converged snapshot with two reference coordinates.
     boundary : ndarray, shape (n, 2), optional
         Ordered boundary points already transformed into the result's reference
@@ -415,13 +415,13 @@ def plot_learning_history(
 
 
 def plot_pce_selection(
-    fit: PceFitResult, *, ax: Optional[Axes] = None
+    fit: PCEFitResult, *, ax: Optional[Axes] = None
 ) -> Tuple[Figure, Axes]:
     """Plot corrected LOO scores by candidate degree and q-norm.
 
     Parameters
     ----------
-    fit : PceFitResult
+    fit : PCEFitResult
         Fitted PCE diagnostics. Scores condition on selected supports; they are
         not reliability errors. Nonfinite candidates are omitted and counted
         on the figure. Exact zero scores use a symmetric-log axis.

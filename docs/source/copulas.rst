@@ -72,7 +72,7 @@ Choosing the transformation
    options = ra.AnalysisOptions()
    options.set_transform("rosenblatt")
    options.set_rosenblatt_order([1, 0])  # condition on S before R
-   form = ra.Form(
+   form = ra.FORM(
        stochastic_model=model,
        analysis_options=options,
        limit_state=ra.LimitState(lambda R, S, C: R - C*S),

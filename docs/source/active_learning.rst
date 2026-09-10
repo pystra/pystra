@@ -206,7 +206,7 @@ whose contribution to failure probability is negligible.
 PC-Kriging, bootstrap voting and active importance sampling
 -----------------------------------------------------------
 
-``PcKrigingSurrogate`` selects a sparse Hermite trend, fits its coefficients
+``PCKrigingSurrogate`` selects a sparse Hermite trend, fits its coefficients
 by GLS for each correlation candidate and retains the universal prediction
 variance, including trend uncertainty. Anisotropic Matérn 5/2 correlation is
 the default; Gaussian correlation and fixed length scales are explicit options.
@@ -214,9 +214,9 @@ Likelihood gradients are analytic and scaled per observation. Optimization
 failure invalidates the fit. This implements sequential PC-Kriging, not the
 optimal variant's search along every LAR support. It requires only NumPy/SciPy.
 
-``PceSurrogate.predict_replicates(points)`` exposes actual bootstrap responses,
+``PCESurrogate.predict_replicates(points)`` exposes actual bootstrap responses,
 shape ``(n_points, n_replicates)``, with consistent replicate columns between
-calls. ``FbrLearning`` minimizes absolute safe/failure vote imbalance divided
+calls. ``FBRLearning`` minimizes absolute safe/failure vote imbalance divided
 by the number of replicates; zero response counts as failure. It requires an
 ``EnsembleSurrogate``. ``EnsembleLearningFunction`` is the corresponding
 extension interface. Scalar U/EFF interfaces remain unchanged.

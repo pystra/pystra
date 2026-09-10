@@ -6,7 +6,7 @@ from scipy import optimize
 from scipy.stats import norm as scipy_norm
 
 from .analysis import AnalysisObject
-from .form import Form
+from .form import FORM
 
 
 class LineSampling(AnalysisObject):
@@ -33,7 +33,7 @@ class LineSampling(AnalysisObject):
     stochastic_model : StochasticModel
     limit_state : LimitState
     analysis_options : AnalysisOptions
-    form : Form, optional
+    form : FORM, optional
         A pre-computed FORM result.  If ``None``, FORM is run automatically
         to obtain the important direction :math:`\boldsymbol{\alpha}` and
         the initial guess for the root search.
@@ -88,7 +88,7 @@ class LineSampling(AnalysisObject):
 
         # Obtain important direction from FORM
         if self.form is None:
-            _form = Form(
+            _form = FORM(
                 stochastic_model=self.model,
                 limit_state=self.limitstate,
                 analysis_options=self.options,

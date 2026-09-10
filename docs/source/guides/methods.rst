@@ -12,10 +12,10 @@ approximation. Use an independent reference or a second method where feasible.
    * - Method
      - Useful starting point
      - What to check
-   * - :class:`~pystra.form.Form`
+   * - :class:`~pystra.form.FORM`
      - Smooth response with a dominant failure region; economical initial study.
      - Convergence, gradients, competing design points and local approximation error.
-   * - :class:`~pystra.sorm.Sorm`
+   * - :class:`~pystra.sorm.SORM`
      - Curvature near a converged FORM design point matters.
      - Curvature and fitting validity; additional failure regions remain a concern.
    * - :class:`~pystra.mc.CrudeMonteCarlo`

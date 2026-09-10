@@ -24,7 +24,7 @@ so those changes are explicit and reproducible.
        model = ra.StochasticModel()
        model.add_variable(ra.Normal("R", resistance_mean, 1.0))
        model.add_variable(ra.Normal("S", 5.0, 1.0))
-       return ra.Form(
+       return ra.FORM(
            stochastic_model=model,
            limit_state=ra.LimitState(lambda R, S: R - S),
        ).run()

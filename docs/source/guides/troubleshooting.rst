@@ -4,7 +4,7 @@ Troubleshooting reliability analyses
 FORM does not converge
 ----------------------
 
-Read ``FormResult.message``, ``iterations``, ``limit_state_error`` and
+Read ``FORMResult.message``, ``iterations``, ``limit_state_error`` and
 ``direction_error``. Check the limit-state sign, units and values near the trial
 point. Nonfinite values, a zero gradient or a discontinuity require attention
 to the response model or method choice. Verify analytical derivatives against

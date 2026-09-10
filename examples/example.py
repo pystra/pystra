@@ -40,7 +40,7 @@ def main():
     )
 
     # Perform FORM analysis
-    Analysis = ra.Form(
+    Analysis = ra.FORM(
         analysis_options=options,
         stochastic_model=stochastic_model,
         limit_state=limit_state,
@@ -50,7 +50,7 @@ def main():
     Analysis.show_detailed_output()
 
     # Perform SORM analysis, passing FORM result if it exists
-    sorm = ra.Sorm(
+    sorm = ra.SORM(
         analysis_options=options,
         stochastic_model=stochastic_model,
         limit_state=limit_state,

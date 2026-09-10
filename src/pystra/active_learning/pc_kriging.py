@@ -16,11 +16,11 @@ from scipy.spatial.distance import cdist
 
 from .._pce import _hermite_basis
 from ._validation import _positive_integer, _points, _training
-from .surrogates import PceSurrogate, PceFitResult, Surrogate
+from .surrogates import PCESurrogate, PCEFitResult, Surrogate
 
 
 @dataclass(frozen=True)
-class PcKrigingFitResult:
+class PCKrigingFitResult:
     """Snapshot conditional on the selected trend and fitted kernel.
 
     ``trend`` records the preliminary sparse PCE; ``coefficients`` are the
@@ -32,7 +32,7 @@ class PcKrigingFitResult:
     with additive constants omitted; it is not a reliability error metric.
     """
 
-    trend: PceFitResult
+    trend: PCEFitResult
     coefficients: tuple
     length_scale: tuple
     process_variance: float
@@ -40,7 +40,7 @@ class PcKrigingFitResult:
     objective: float
 
 
-class PcKrigingSurrogate(Surrogate):
+class PCKrigingSurrogate(Surrogate):
     """Sequential sparse PC-Kriging in independent normal coordinates.
 
     Parameters
@@ -92,7 +92,7 @@ class PcKrigingSurrogate(Surrogate):
         n_restarts: int = 0,
         seed: Optional[int] = None,
     ):
-        self._trend = PceSurrogate(
+        self._trend = PCESurrogate(
             degree=degree,
             q_norm=q_norm,
             max_interaction=max_interaction,
@@ -242,7 +242,7 @@ class PcKrigingSurrogate(Surrogate):
         self._coefficients = coefficients * scale
         self._alpha = solve_triangular(factor.T, residual) * scale
         self._variance = variance * scale**2
-        self.fit_result = PcKrigingFitResult(
+        self.fit_result = PCKrigingFitResult(
             self._trend.fit_result,
             tuple(float(value) for value in self._coefficients),
             tuple(float(value) for value in scales),

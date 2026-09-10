@@ -9,15 +9,15 @@ from scipy.stats import norm, qmc
 
 from ..analysis import AnalysisObject
 from ._validation import _positive_integer, _points, _training, _predictions
-from .surrogates import Surrogate, KrigingSurrogate, PceSurrogate, EnsembleSurrogate
-from .pc_kriging import PcKrigingSurrogate
+from .surrogates import Surrogate, KrigingSurrogate, PCESurrogate, EnsembleSurrogate
+from .pc_kriging import PCKrigingSurrogate
 from .learning import (
     LearningDecision,
     LearningFunction,
     UFunction,
     ExpectedFeasibility,
     EnsembleLearningFunction,
-    FbrLearning,
+    FBRLearning,
     _replicates,
 )
 from .estimation import (
@@ -128,7 +128,7 @@ class ActiveLearning(AnalysisObject):
                 raise ValueError(
                     "FBR uses bootstrap probability stopping, not learning_threshold"
                 )
-            learning_function = FbrLearning()
+            learning_function = FBRLearning()
         elif isinstance(learning_function, str) and learning_function in ("u", "eff"):
             policy = UFunction if learning_function == "u" else ExpectedFeasibility
             learning_function = (
@@ -151,7 +151,7 @@ class ActiveLearning(AnalysisObject):
         if stopping_criterion is None:
             policy = (
                 BootstrapBounds
-                if isinstance(learning_function, FbrLearning)
+                if isinstance(learning_function, FBRLearning)
                 else LearningThreshold
             )
             stopping_criterion = policy(
@@ -231,15 +231,15 @@ class ActiveLearning(AnalysisObject):
         if isinstance(surrogate, str):
             surrogate = {
                 "kriging": KrigingSurrogate,
-                "pce": PceSurrogate,
-                "pc_kriging": PcKrigingSurrogate,
+                "pce": PCESurrogate,
+                "pc_kriging": PCKrigingSurrogate,
             }[surrogate](**settings)
         initial = max(12, 2 * dimension)
         if isinstance(self.estimator, EnrichmentEstimator):
             initial = max(initial, 30, 5 * dimension)
-        if isinstance(surrogate, PcKrigingSurrogate):
+        if isinstance(surrogate, PCKrigingSurrogate):
             initial = max(30, 5 * dimension)
-        if isinstance(surrogate, PceSurrogate):
+        if isinstance(surrogate, PCESurrogate):
             if surrogate.method == "ols":
                 maximum_degree = max(surrogate.degree)
                 initial = max(

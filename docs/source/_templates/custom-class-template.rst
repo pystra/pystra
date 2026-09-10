@@ -7,30 +7,30 @@
 
 .. currentmodule:: {{ module }}
 
-{% if fullname == 'pystra.form.Form' %}
+{% if fullname == 'pystra.form.FORM' %}
 .. autoclass:: {{ objname }}
    :show-inheritance:
 
 Everyday operations
 -------------------
 
-.. automethod:: Form.run
+.. automethod:: FORM.run
 
-.. automethod:: Form.get_failure
+.. automethod:: FORM.get_failure
 
-.. automethod:: Form.get_beta
+.. automethod:: FORM.get_beta
 
-.. automethod:: Form.get_equivalent_beta
+.. automethod:: FORM.get_equivalent_beta
 
-.. automethod:: Form.get_design_point
+.. automethod:: FORM.get_design_point
 
-.. automethod:: Form.get_alpha
+.. automethod:: FORM.get_alpha
 
-.. automethod:: Form.get_no_function_calls
+.. automethod:: FORM.get_no_function_calls
 
-.. automethod:: Form.show_results
+.. automethod:: FORM.show_results
 
-.. automethod:: Form.show_detailed_output
+.. automethod:: FORM.show_detailed_output
 
 Algorithm extension methods
 ---------------------------
@@ -41,7 +41,7 @@ are performed in the intended order.
 
 {% for item in methods %}
 {% if not item.startswith("_") and item not in ['run', 'get_failure', 'get_beta', 'get_equivalent_beta', 'get_design_point', 'get_alpha', 'get_no_function_calls', 'show_results', 'show_detailed_output'] %}
-.. automethod:: Form.{{ item }}
+.. automethod:: FORM.{{ item }}
 
 {% endif %}
 {% endfor %}

@@ -161,7 +161,7 @@ customized options. ::
 To store the results from the analysis an object must be initialized: ::
 
   # Perform FORM analysis
-  Analysis = Form(analysis_options=options, stochastic_model=stochastic_model, limit_state=limit_state)
+  Analysis = FORM(analysis_options=options, stochastic_model=stochastic_model, limit_state=limit_state)
 
 Now the code can be compiled and the FORM analysis will be preformed. In this
 example we will get following results: ::
@@ -209,7 +209,7 @@ A Second-Order Reliability Method (SORM) can also be performed, passing in the
 results of a FORM analysis object if it exists, fo; efficiency (otherwise, SORM
 will perform a FORM analysis first): ::
 
-    sorm = Sorm(analysis_options=options,stochastic_model=stochastic_model, 
+    sorm = SORM(analysis_options=options,stochastic_model=stochastic_model, 
                 limit_state=limit_state, form=Analysis)
     sorm.run()
 

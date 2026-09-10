@@ -136,9 +136,9 @@ scores, not of the physical variables or binary failure indicators. All
 components retain the full model variable order. DDM functions must return
 gradients in that full order, including zeros for unused variables.
 
-``component_results`` retains the individual ``Form`` objects, including
+``component_results`` retains the individual ``FORM`` objects, including
 ``converged``, ``e1`` and ``e2`` diagnostics. A failed component analysis raises
-an error and leaves the system result invalid. Ordinary ``Form`` now warns
+an error and leaves the system result invalid. Ordinary ``FORM`` now warns
 when it exhausts its iterations, and marks ``results_valid`` false.
 
 Series probabilities are integrated as disjoint first-failure events, avoiding

@@ -47,7 +47,7 @@ def run_builtin():
         ra.CorrelationMatrix([[1.0, 0.3, 0.2], [0.3, 1.0, 0.2], [0.2, 0.2, 1.0]])
     )
 
-    sorm = ra.Sorm(
+    sorm = ra.SORM(
         stochastic_model=stochastic_model,
         limit_state=limit_state,
     )
@@ -80,7 +80,7 @@ def run_scipy():
         ra.CorrelationMatrix([[1.0, 0.3, 0.2], [0.3, 1.0, 0.2], [0.2, 0.2, 1.0]])
     )
 
-    sorm = ra.Sorm(
+    sorm = ra.SORM(
         stochastic_model=stochastic_model,
         limit_state=limit_state,
     )

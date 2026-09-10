@@ -27,7 +27,7 @@ After FORM
    model = ra.StochasticModel()
    model.add_variable(ra.Normal("X", 0.0, 1.0))
    model.add_variable(ra.Normal("Y", 0.0, 1.0))
-   form = ra.Form(
+   form = ra.FORM(
        stochastic_model=model,
        limit_state=ra.LimitState(lambda X, Y: 3.0 - X),
    )
@@ -43,7 +43,7 @@ After FORM
    print(check.confidence_level)
    print(check.get_points())  # far failure points, in U-space by default
 
-A converged ``Form`` supplies the model, transformation and design point.
+A converged ``FORM`` supplies the model, transformation and design point.
 The original limit-state function is evaluated without gradients. The test
 uses an independent evaluator and does not overwrite the FORM evaluator's
 last inputs. Keep the stochastic model and limit-state definition unchanged
@@ -163,7 +163,7 @@ when the geometry is uncertain.
 With system reliability
 -----------------------
 
-Run the check separately on the component ``Form`` objects retained by
+Run the check separately on the component ``FORM`` objects retained by
 ``SystemFORM``:
 
 .. code-block:: python

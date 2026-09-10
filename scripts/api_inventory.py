@@ -149,7 +149,7 @@ def check_migration(root):
         if d["name"].startswith(
             ("pystra.calibration.", "pystra.loadcomb.", "pystra.results.")
         )
-        or d["name"] == "pystra.form.Form.run"
+        or d["name"] == "pystra.form.FORM.run"
     ]
     if structure["definitions"] != expected:
         errors.append("Calibration structure inventory differs from current source")

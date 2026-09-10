@@ -17,19 +17,19 @@ from pystra.active_learning import (
     BetaStability,
     BootstrapBounds,
     EnsembleSurrogate,
-    FbrLearning,
+    FBRLearning,
     ImportanceSamplingEstimator,
     LearningStep,
     LearningThreshold,
-    PcKrigingSurrogate,
-    PceSurrogate,
+    PCKrigingSurrogate,
+    PCESurrogate,
 )
 
 
 def test_pc_kriging_against_executed_uqlab_prediction():
     data = json.loads((Path(__file__).parent / "data/uqlab_active.json").read_text())
     for case in data["cases"]:
-        surrogate = PcKrigingSurrogate(
+        surrogate = PCKrigingSurrogate(
             degree=case["degree"],
             correlation="gaussian",
             length_scale=case["length_scale"],
@@ -53,7 +53,7 @@ def test_pc_kriging_against_executed_uqlab_prediction():
         assert surrogate.fit_result.process_variance == pytest.approx(
             expected["process_variance"], rel=2e-8
         )
-    decision = FbrLearning().select_replicates(data["fbr"]["predictions"])
+    decision = FBRLearning().select_replicates(data["fbr"]["predictions"])
     assert decision.index == np.argmin(data["fbr"]["expected"])
     assert decision.score == min(data["fbr"]["expected"])
 
@@ -62,7 +62,7 @@ def test_pc_kriging_variance_against_augmented_system():
     rng = np.random.default_rng(88)
     points = rng.normal(size=(18, 2))
     values = 2 + points[:, 0] + 0.3 * np.sin(2 * points[:, 1])
-    surrogate = PcKrigingSurrogate(
+    surrogate = PCKrigingSurrogate(
         degree=1, length_scale=[0.7, 1.3], optimize=False, correlation="gaussian"
     )
     surrogate.fit(points, values)
@@ -103,7 +103,7 @@ def test_pc_kriging_exactness_scaling_and_fit_reset(monkeypatch):
     points = rng.normal(size=(40, 2))
     values = 3 + 2 * points[:, 0] + points[:, 1] ** 2
     query = rng.normal(size=(20, 2))
-    surrogate = PcKrigingSurrogate(degree=2)
+    surrogate = PCKrigingSurrogate(degree=2)
     surrogate.fit(points, values)
     mean, std = surrogate.predict(query)
     np.testing.assert_allclose(mean, 3 + 2 * query[:, 0] + query[:, 1] ** 2, atol=1e-11)
@@ -151,7 +151,7 @@ def test_pc_kriging_exactness_scaling_and_fit_reset(monkeypatch):
 )
 def test_pc_kriging_invalid_settings(settings):
     with pytest.raises(ValueError):
-        PcKrigingSurrogate(**settings)
+        PCKrigingSurrogate(**settings)
 
 
 def test_fbr_requires_replicates_and_handles_zero_and_equal_moments():
@@ -160,16 +160,16 @@ def test_fbr_requires_replicates_and_handles_zero_and_equal_moments():
     )
     np.testing.assert_allclose(ensemble.mean(axis=1), 0)
     np.testing.assert_allclose(ensemble.std(axis=1), np.sqrt(3))
-    assert FbrLearning().select_replicates(ensemble).index == 1
+    assert FBRLearning().select_replicates(ensemble).index == 1
     # Complementary votes must tie exactly, including an odd replicate count.
-    assert FbrLearning().select_replicates([[-1, 1, 1], [-1, -1, 1]]).index == 0
-    assert FbrLearning().select_replicates([[0, 0, 0, 0]]).threshold_satisfied
-    assert FbrLearning().select_replicates([[0, 0, 1, 1]]).score == 0
+    assert FBRLearning().select_replicates([[-1, 1, 1], [-1, -1, 1]]).index == 0
+    assert FBRLearning().select_replicates([[0, 0, 0, 0]]).threshold_satisfied
+    assert FBRLearning().select_replicates([[0, 0, 1, 1]]).score == 0
     with pytest.raises(TypeError, match="replicate"):
-        FbrLearning().select([0, 0], [1, 1])
+        FBRLearning().select([0, 0], [1, 1])
     for values in ([], [[1]], [[np.nan, 0]], [1, 2]):
         with pytest.raises(ValueError):
-            FbrLearning().select_replicates(values)
+            FBRLearning().select_replicates(values)
 
 
 def test_bootstrap_bounds_window_endpoints_and_composition():
@@ -206,7 +206,7 @@ def test_bootstrap_bounds_window_endpoints_and_composition():
 def test_bootstrap_predictions_are_consistent_across_batches():
     rng = np.random.default_rng(71)
     points = rng.normal(size=(35, 2))
-    surrogate = PceSurrogate(degree=2, seed=4)
+    surrogate = PCESurrogate(degree=2, seed=4)
     assert isinstance(surrogate, EnsembleSurrogate)
     with pytest.raises(RuntimeError):
         surrogate.predict_replicates(points)
@@ -475,7 +475,7 @@ def test_pc_kriging_likelihood_gradient(correlation):
     points = rng.normal(size=(20, 2))
     values = 2 + points[:, 0] + np.sin(2 * points[:, 1])
     basis = np.column_stack((np.ones(20), points))
-    surrogate = PcKrigingSurrogate(correlation=correlation)
+    surrogate = PCKrigingSurrogate(correlation=correlation)
     scales = np.array([-0.3, 0.2])
     _, gradient = surrogate._objective(scales, points, basis, values)
     numerical = approx_fprime(
@@ -490,7 +490,7 @@ def test_bootstrap_unanimity_cannot_certify_an_unobserved_failure_mode():
     x0, x1 = np.meshgrid(axis, axis)
     points = np.column_stack((x0.ravel(), x1.ravel()))
     response = np.minimum(3 - points[:, 0], 50 - 10 * points[:, 1] ** 2)
-    surrogate = PceSurrogate(degree=1, seed=7)
+    surrogate = PCESurrogate(degree=1, seed=7)
     surrogate.fit(points, response)
     query = np.random.default_rng(44).normal(size=(20000, 2))
     replicates = surrogate.predict_replicates(query)

@@ -24,7 +24,8 @@ def prose(text, classes, callables):
     text = substitute(text, callables)
     for old, new in classes.items():
         if old not in ("DDO", "LQI", "SWTP"):
-            text = re.sub(rf"\b{old}\b", new, text)
+            # Hyphenated compounds such as "Closed-Form" are prose, not names.
+            text = re.sub(rf"(?<!-)\b{old}\b(?!-)", new, text)
             continue
         # References and code-like expressions, preserving acronyms in prose.
         text = re.sub(rf"(?<=[.`~]){old}\b", new, text)

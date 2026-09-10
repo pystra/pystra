@@ -13,7 +13,7 @@ import pystra as ra
 from pystra.active_learning import (
     ActiveLearningResult,
     LearningStep,
-    PceSurrogate,
+    PCESurrogate,
     ReliabilityEstimate,
 )
 
@@ -28,7 +28,7 @@ def normal_form():
     model = ra.StochasticModel()
     model.add_variable(ra.Normal("R", 0, 1))
     model.add_variable(ra.Normal("S", 0, 1))
-    analysis = ra.Form(
+    analysis = ra.FORM(
         stochastic_model=model,
         limit_state=ra.LimitState(lambda R, S: 3 - R - 2 * S),
     )
@@ -77,7 +77,7 @@ def test_form_tangent_is_orthogonal_and_plotting_does_not_evaluate():
 
 def fitted_pce():
     points = np.random.default_rng(73).normal(size=(40, 2))
-    surrogate = PceSurrogate(degree=2, seed=42)
+    surrogate = PCESurrogate(degree=2, seed=42)
     surrogate.fit(points, 2 - points[:, 0] ** 2 + points[:, 1])
     return surrogate
 

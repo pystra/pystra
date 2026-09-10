@@ -134,7 +134,7 @@ class EnsembleLearningFunction(LearningFunction):
         """Select from finite (n_candidates, n_replicates) predictions."""
 
 
-class FbrLearning(EnsembleLearningFunction):
+class FBRLearning(EnsembleLearningFunction):
     """Minimum bootstrap classification agreement, ``abs(B_safe-B_failure)/B``.
 
     Marelli & Sudret (2018), Eq. (10), doi:10.1016/j.strusafe.2018.06.003.

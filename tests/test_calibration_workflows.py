@@ -47,7 +47,7 @@ def test_form_result_survives_rerun_and_failed_result_has_no_estimate():
     model = ra.StochasticModel()
     model.add_variable(ra.Normal("R", 10, 1))
     model.add_variable(ra.Normal("S", 5, 1))
-    analysis = ra.Form(model, ra.LimitState(lambda R, S: R - S))
+    analysis = ra.FORM(model, ra.LimitState(lambda R, S: R - S))
     first = analysis.run()
     assert first.beta == pytest.approx(5 / np.sqrt(2))
     analysis.options.set_imax(1)
@@ -267,7 +267,7 @@ def test_final_verification_is_included_in_target_solve_budget():
 def test_normal_form_result_keeps_finite_index_when_probability_underflows():
     model = ra.StochasticModel()
     model.add_variable(ra.Normal("X", 0, 1))
-    result = ra.Form(model, ra.LimitState(lambda X: 40 - X)).run()
+    result = ra.FORM(model, ra.LimitState(lambda X: 40 - X)).run()
     assert result.converged
     assert result.beta == pytest.approx(40)
     assert result.failure_probability == 0

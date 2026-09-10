@@ -16,7 +16,7 @@ Run and inspect FORM
    model.add_variable(ra.Normal("R", 10.0, 1.0))
    model.add_variable(ra.Normal("S", 5.0, 1.0))
    response = ra.LimitState(lambda R, S: R - S)
-   form = ra.Form(stochastic_model=model, limit_state=response)
+   form = ra.FORM(stochastic_model=model, limit_state=response)
    result = form.run()
    assert result.converged, result.message
    assert result.failure_probability is not None
@@ -32,13 +32,13 @@ not rule out other important failure regions. See :doc:`/strong_maximum` and
 Reuse the analysis in SORM
 --------------------------
 
-Pass the completed ``Form`` analysis to SORM so it can reuse the design point
-and transformation. The immutable ``FormResult`` is a reporting record; the
+Pass the completed ``FORM`` analysis to SORM so it can reuse the design point
+and transformation. The immutable ``FORMResult`` is a reporting record; the
 ``form=`` argument requires the analysis object.
 
 .. testcode:: form-sorm
 
-   sorm = ra.Sorm(stochastic_model=model, limit_state=response, form=form)
+   sorm = ra.SORM(stochastic_model=model, limit_state=response, form=form)
    sorm.run(fit_type="cf")
    assert sorm.results_valid
    probability = float(sorm.pf2_breitung)
