@@ -4,6 +4,7 @@
 import numpy as np
 
 from .distribution import Distribution
+from ..errors import ModelError
 
 __all__ = ["Maximum"]
 
@@ -23,11 +24,11 @@ class Maximum(Distribution):
 
     def __init__(self, name, parent, N, input_type=None, startpoint=None):
         if not isinstance(parent, Distribution):
-            raise Exception(
+            raise ModelError(
                 f"Maximum parent requires input of type {type(Distribution)}"
             )
         if N < 1.0:
-            raise Exception("Maximum exponent must be >= 1.0")
+            raise ModelError("Maximum exponent must be >= 1.0")
 
         self.parent = parent
         self.N = N

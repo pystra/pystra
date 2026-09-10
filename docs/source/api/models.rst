@@ -30,3 +30,4 @@ Module details
 
    pystra.model
    pystra.reliability.analysis
+   pystra.errors

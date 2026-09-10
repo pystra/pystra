@@ -6,6 +6,7 @@ from scipy import special as sp
 import scipy.optimize as opt
 
 from .distribution import Distribution
+from ..errors import ModelError
 
 __all__ = ["MaxParent"]
 
@@ -30,11 +31,11 @@ class MaxParent(Distribution):
 
     def __init__(self, name, max_dist, N, input_type=None, startpoint=None):
         if not isinstance(max_dist, Distribution):
-            raise Exception(
+            raise ModelError(
                 f"MaxParent distribution of maximum requires input of type {type(Distribution)}"
             )
         if N < 1.0:
-            raise Exception("MaxParent exponent must be >= 1.0")
+            raise ModelError("MaxParent exponent must be >= 1.0")
 
         self.max_dist = max_dist
         self.N = N

@@ -3,6 +3,7 @@
 import numpy as np
 from .distributions import Distribution, Constant
 from collections import OrderedDict
+from .errors import ModelError
 
 __all__ = ["StochasticModel", "LimitState"]
 
@@ -56,10 +57,10 @@ class StochasticModel:
         """
 
         if not (isinstance(obj, Distribution) or isinstance(obj, Constant)):
-            raise Exception("Input is not a Distribution or Constant object")
+            raise ModelError("Input is not a Distribution or Constant object")
 
         if obj.get_name() in self._names:
-            raise Exception(f'variable name "{obj.get_name()}" already exists')
+            raise ModelError(f'variable name "{obj.get_name()}" already exists')
         if isinstance(obj, Distribution) and self._copula is not None:
             raise ValueError("Add all random variables before setting the copula")
 

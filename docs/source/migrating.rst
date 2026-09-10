@@ -169,7 +169,7 @@ Top-level namespace
 
 ``import pystra`` gives the everyday modelling classes, distributions,
 dependence models, reliability methods, systems, load processes and result
-types: 59 names, listed in ``pystra.__all__``. Every module declares its own
+types, and the error classes: 62 names, listed in ``pystra.__all__``. Every module declares its own
 ``__all__``, and nothing else leaks into the namespace. Specialised workflow
 tools are imported from their subpackage:
 
@@ -203,6 +203,17 @@ where each one went:
 
 The messages are generated from the migration records by
 ``scripts/generate_signposts.py``. They will be removed in 3.0.
+
+.. _errors:
+
+Errors
+~~~~~~
+
+PySTRA raises its own exception types. An invalid model, distribution or input
+specification raises ``pystra.ModelError``, which is also a ``ValueError``; in 1.x
+these checks raised a bare ``Exception``. An analysis that cannot produce a valid
+result raises ``pystra.AnalysisError``, which is also a ``RuntimeError``. Both
+derive from ``pystra.PystraError``.
 
 .. list-table:: Representative changes
    :header-rows: 1

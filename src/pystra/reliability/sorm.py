@@ -6,6 +6,7 @@ import numpy as np
 from .form import FORM
 from .analysis import AnalysisObject
 from scipy.stats import norm as normal
+from ..errors import AnalysisError
 
 __all__ = ["SORM"]
 
@@ -113,7 +114,7 @@ class SORM(AnalysisObject):
         """Require a valid FORM design point before preparing either fit."""
         self._reset_results()
         if not self.form.results_valid or not self.form.converged:
-            raise RuntimeError("SORM requires a successfully converged FORM analysis")
+            raise AnalysisError("SORM requires a successfully converged FORM analysis")
         self.init_run()
         self.fit_type = fit_type
 
@@ -295,14 +296,14 @@ class SORM(AnalysisObject):
 
             # Newton update along the last axis (n-th direction)
             if abs(grad_rot[-1]) < 1e-12:
-                raise RuntimeError(
+                raise AnalysisError(
                     f"Point-fitting: near-zero gradient component along the "
                     f"n-th axis at axis={axis}, sign={sign}. The limit state "
                     f"surface may be tangent to the search direction."
                 )
             u_prime[-1] -= G_val / grad_rot[-1]
         else:
-            raise RuntimeError(
+            raise AnalysisError(
                 f"Point-fitting did not converge for axis={axis}, sign={sign} "
                 f"after {max_iter} iterations (|G| = {abs(G_val):.2e})."
             )

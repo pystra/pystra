@@ -14,6 +14,7 @@ import numpy as np
 
 from .distributions import Constant, Distribution, Maximum, MaxParent
 from .model import StochasticModel
+from .errors import ModelError
 
 __all__ = ["FBCProcess", "VariableRoles", "LoadCombination"]
 
@@ -65,11 +66,11 @@ class FBCProcess:
 
     def __init__(self, name, parent, basic_interval):
         if not isinstance(parent, Distribution):
-            raise Exception("FBCProcess parent must be a Pystra Distribution")
+            raise ModelError("FBCProcess parent must be a Pystra Distribution")
         if basic_interval <= 0:
-            raise Exception("FBCProcess basic_interval must be positive")
+            raise ModelError("FBCProcess basic_interval must be positive")
         if parent.get_name() != name:
-            raise Exception("FBCProcess name must match parent distribution name")
+            raise ModelError("FBCProcess name must match parent distribution name")
 
         self.name = name
         self.parent = parent
@@ -101,13 +102,13 @@ class FBCProcess:
             Process whose parent distribution is inferred from ``maximum``.
         """
         if maximum_duration <= 0:
-            raise Exception("FBCProcess maximum_duration must be positive")
+            raise ModelError("FBCProcess maximum_duration must be positive")
         if basic_interval <= 0:
-            raise Exception("FBCProcess basic_interval must be positive")
+            raise ModelError("FBCProcess basic_interval must be positive")
         if not isinstance(maximum, Distribution):
-            raise Exception("FBCProcess maximum must be a Pystra Distribution")
+            raise ModelError("FBCProcess maximum must be a Pystra Distribution")
         if maximum.get_name() != name:
-            raise Exception("FBCProcess name must match maximum distribution name")
+            raise ModelError("FBCProcess name must match maximum distribution name")
 
         n = max(1.0, maximum_duration / basic_interval)
         parent = MaxParent(name, maximum, N=n)
@@ -133,13 +134,13 @@ class FBCProcess:
             Number of basic intervals used in the maximum distribution.
         """
         if (duration is None) == (n is None):
-            raise Exception("Specify exactly one of duration or n")
+            raise ModelError("Specify exactly one of duration or n")
         if n is not None:
             if n < 1.0:
-                raise Exception("FBCProcess n must be >= 1.0")
+                raise ModelError("FBCProcess n must be >= 1.0")
             return n
         if duration <= 0:
-            raise Exception("FBCProcess duration must be positive")
+            raise ModelError("FBCProcess duration must be positive")
         return max(1.0, duration / self.basic_interval)
 
     def point_in_time(self):

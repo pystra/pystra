@@ -5,6 +5,7 @@ import numpy as np
 from scipy import special as sp
 import matplotlib.pyplot as plt
 from scipy.stats._distn_infrastructure import rv_frozen
+from ..errors import ModelError
 
 __all__ = ["StdNormal", "Constant", "Distribution"]
 
@@ -174,13 +175,13 @@ class Distribution:
             self.mean = self.dist_obj.mean()
             self.stdv = self.dist_obj.std()
         elif mean is None or stdv is None:
-            raise Exception("Mean and std dev must be defined in derived classes")
+            raise ModelError("Mean and std dev must be defined in derived classes")
         else:
             self.mean = mean
             self.stdv = stdv
 
-        if not np.isfinite(self.stdv):
-            raise Exception("Std. deviation must be a positive noninfinite number.")
+        if not np.isfinite(self.stdv) or self.stdv <= 0:
+            raise ModelError("Std. deviation must be a positive noninfinite number.")
 
     def get_name(self):
         return self.name
@@ -547,7 +548,7 @@ class Distribution:
             pdict["loc"] = loc
             self._update_moments()
         else:
-            raise Exception("Distribution is not a SciPy object")
+            raise ModelError("Distribution is not a SciPy object")
 
     def set_scale(self, scale=1):
         """Update the scale parameter of the underlying SciPy distribution.
@@ -571,4 +572,4 @@ class Distribution:
             pdict["scale"] = scale
             self._update_moments()
         else:
-            raise Exception("Distribution is not a SciPy object")
+            raise ModelError("Distribution is not a SciPy object")

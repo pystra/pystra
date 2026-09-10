@@ -18,6 +18,10 @@ MODULES = json.loads((ROOT / "docs/migration/module-map.json").read_text())["mod
 STUBS = [m for m in MODULES if m["released"] and m["old"].count(".") == 1]
 
 TOP_LEVEL = {
+    # errors
+    "PystraError",
+    "ModelError",
+    "AnalysisError",
     # models and distributions
     "StochasticModel",
     "LimitState",

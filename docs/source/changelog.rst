@@ -57,6 +57,8 @@ Added
 
 Fixed
 ~~~~~
+- Distributions reject a zero or negative standard deviation, as their error
+  message always said; previously only an infinite value was rejected.
 - Calibration now respects named case roles and design parameters, rejects
   failed target solves, and retains failed generic-study points without stale
   cached results. Factor assembly is independent of case/variable ordering.
@@ -98,7 +100,10 @@ Changed
   ``systems`` and low-level numerical helpers made private. Load processes and
   load combinations share ``pystra.loads``, and ``ImportanceSampling`` has its
   own module. See the migration guide for moved module paths.
-- The top-level namespace is curated (59 names in ``pystra.__all__``) and every
+- Invalid model and distribution input raises ``ModelError`` (a ``ValueError``)
+  instead of a bare ``Exception``; failed analyses raise ``AnalysisError`` (a
+  ``RuntimeError``). Both derive from ``PystraError``.
+- The top-level namespace is curated (62 names in ``pystra.__all__``) and every
   module declares ``__all__``. Code-calibration and decision tools, new in 2.0,
   are imported from ``pystra.calibration`` and ``pystra.decision``;
   ``ActiveLearning`` is exported at the top level. Old names and module paths

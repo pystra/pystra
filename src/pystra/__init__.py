@@ -34,6 +34,11 @@ Quick start::
 
 __version__ = "2.0.0.dev0"
 
+from .errors import (
+    PystraError,
+    ModelError,
+    AnalysisError,
+)
 from .distributions import (
     Distribution,
     StdNormal,
@@ -113,6 +118,9 @@ from . import calibration, decision, plotting
 from ._signposts import TOP_LEVEL as _SIGNPOSTS
 
 __all__ = [
+    "PystraError",
+    "ModelError",
+    "AnalysisError",
     "Distribution",
     "StdNormal",
     "Normal",

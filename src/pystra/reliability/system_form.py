@@ -9,6 +9,7 @@ from scipy.stats import multivariate_normal, norm
 from .analysis import AnalysisObject
 from .form import FORM
 from ..systems import Component, SeriesSystem, ParallelSystem, ditlevsen_bounds
+from ..errors import AnalysisError
 
 __all__ = ["SystemFORM"]
 
@@ -178,11 +179,11 @@ class SystemFORM(AnalysisObject):
                 limit=200,
             )
             if error > max(self.abseps / len(self.components), self.releps * value):
-                raise RuntimeError(
+                raise AnalysisError(
                     "Bivariate normal integration did not meet tolerance"
                 )
             if value == 0:
-                raise RuntimeError(
+                raise AnalysisError(
                     "Bivariate probability underflow or unresolved rare tail"
                 )
             return float(value)
@@ -197,9 +198,9 @@ class SystemFORM(AnalysisObject):
             )
         )
         if not np.isfinite(value) or not 0 <= value <= 1:
-            raise RuntimeError("Normal probability integration failed")
+            raise AnalysisError("Normal probability integration failed")
         if value == 0:
-            raise RuntimeError(
+            raise AnalysisError(
                 "Normal integration returned an unresolved zero probability"
             )
         return value
@@ -223,11 +224,11 @@ class SystemFORM(AnalysisObject):
                         "SystemFORM requires independent normal space; select Rosenblatt"
                     )
             except (ValueError, FloatingPointError) as error:
-                raise RuntimeError(
+                raise AnalysisError(
                     f"Component '{component.name}' FORM failed: {error}"
                 ) from error
             if not form.converged or not np.isfinite(form.get_beta()):
-                raise RuntimeError(
+                raise AnalysisError(
                     f"Component '{component.name}' FORM did not converge"
                 )
 
@@ -257,7 +258,7 @@ class SystemFORM(AnalysisObject):
                 lo = max(0.0, self.probabilities[i] + self.probabilities[j] - 1)
                 hi = min(self.probabilities[i], self.probabilities[j])
                 if value < lo - self.abseps or value > hi + self.abseps:
-                    raise RuntimeError("Pair probability violates marginal bounds")
+                    raise AnalysisError("Pair probability violates marginal bounds")
                 pairwise[i, j] = pairwise[j, i] = np.clip(value, lo, hi)
         self.intersections = pairwise
 
@@ -286,11 +287,11 @@ class SystemFORM(AnalysisObject):
         lo, hi = self.bounds
         tolerance = self.abseps + self.releps * max(lo, abs(pf))
         if not np.isfinite(pf) or pf < lo - tolerance or pf > hi + tolerance:
-            raise RuntimeError(
+            raise AnalysisError(
                 "System integration is inconsistent with probability bounds"
             )
         if pf == 0 and lo > 0:
-            raise RuntimeError(
+            raise AnalysisError(
                 "System probability underflow; increase integration accuracy"
             )
         self.Pf = float(np.clip(pf, 0, 1))

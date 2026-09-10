@@ -5,6 +5,7 @@ from scipy.stats._distn_infrastructure import rv_frozen
 from scipy.stats import rv_continuous
 
 from .distribution import Distribution
+from ..errors import ModelError
 
 __all__ = ["ScipyDist"]
 
@@ -22,11 +23,11 @@ class ScipyDist(Distribution):
 
     def __init__(self, name, dist_obj, startpoint=None):
         if not isinstance(dist_obj, rv_frozen):
-            raise Exception(
+            raise ModelError(
                 f"ScipyDist {name} requires a frozen Scipy distribution object"
             )
         if not isinstance(dist_obj.dist, rv_continuous):
-            raise Exception(f"ScipyDist {name} requires a continuous distribution")
+            raise ModelError(f"ScipyDist {name} requires a continuous distribution")
 
         super().__init__(
             name=name,

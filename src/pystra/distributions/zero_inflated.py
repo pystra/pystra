@@ -2,6 +2,7 @@
 
 import numpy as np
 from .distribution import Distribution
+from ..errors import ModelError
 
 __all__ = ["ZeroInflated"]
 
@@ -27,13 +28,13 @@ class ZeroInflated(Distribution):
 
     def __init__(self, name, dist, p, input_type=None, startpoint=None):
         if not isinstance(dist, Distribution):
-            raise Exception(
+            raise ModelError(
                 f"ZeroInflated distribution requires input of type {type(Distribution)}"
             )
         if p < 0.0:
-            raise Exception("ZeroInflated probability must be nonnegative")
+            raise ModelError("ZeroInflated probability must be nonnegative")
         if p >= 1.0:
-            raise Exception("ZeroInflated probability must be < 1.0")
+            raise ModelError("ZeroInflated probability must be < 1.0")
 
         self.dist = dist
         self.p = p
