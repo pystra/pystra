@@ -88,13 +88,13 @@ class TestConstant:
     def test_creation(self):
         c = Constant("c1", 5.0)
         assert c.get_name() == "c1"
-        assert c.get_value() == 5.0
+        assert c.value == 5.0
 
     def test_different_types(self):
         c = Constant("c2", 0)
-        assert c.get_value() == 0
+        assert c.value == 0
         c = Constant("c3", -3.14)
-        assert c.get_value() == -3.14
+        assert c.value == -3.14
 
 
 # ---------------------------------------------------------------------------
@@ -127,10 +127,10 @@ class TestDistributionCommon:
         assert np.isfinite(dist.mean)
 
     def test_stdv_positive(self, dist):
-        assert dist.stdv > 0
+        assert dist.std > 0
 
     def test_pdf_nonnegative(self, dist):
-        x_vals = np.linspace(dist.mean - 3 * dist.stdv, dist.mean + 3 * dist.stdv, 50)
+        x_vals = np.linspace(dist.mean - 3 * dist.std, dist.mean + 3 * dist.std, 50)
         pdf_vals = dist.pdf(x_vals)
         assert np.all(pdf_vals >= -1e-15)
 
@@ -170,7 +170,7 @@ class TestDistributionCommon:
         assert len(dist.get_name()) > 0
 
     def test_startpoint(self, dist):
-        assert np.isfinite(dist.get_start_point())
+        assert np.isfinite(dist.start_point)
 
     def test_repr(self, dist):
         r = repr(dist)
@@ -186,7 +186,7 @@ class TestBeta:
     def test_construction(self):
         d = Beta("B", 0.5, 0.1, a=0, b=1)
         assert pytest.approx(d.mean, abs=1e-2) == 0.5
-        assert pytest.approx(d.stdv, abs=1e-2) == 0.1
+        assert pytest.approx(d.std, abs=1e-2) == 0.1
 
     def test_ppf_cdf_roundtrip(self):
         d = Beta("B", 0.5, 0.1, a=0, b=1)
@@ -211,7 +211,7 @@ class TestWeibull:
     def test_construction(self):
         d = Weibull("W", 10, 3)
         assert pytest.approx(d.mean, abs=0.5) == 10
-        assert pytest.approx(d.stdv, abs=0.5) == 3
+        assert pytest.approx(d.std, abs=0.5) == 3
 
     def test_ppf_cdf_roundtrip(self):
         d = Weibull("W", 10, 3)
@@ -244,12 +244,12 @@ class TestFrechet:
     def test_construction(self):
         d = Frechet("T2L", 100, 10)
         assert np.isfinite(d.mean)
-        assert d.stdv > 0
+        assert d.std > 0
 
     def test_mean_stdv_roundtrip(self):
         d = Frechet("T2L", 100, 20)
         assert pytest.approx(d.mean, abs=0.5) == 100
-        assert pytest.approx(d.stdv, abs=0.5) == 20
+        assert pytest.approx(d.std, abs=0.5) == 20
 
     def test_ppf_cdf_roundtrip(self):
         d = Frechet("T2L", 100, 10)
@@ -274,7 +274,7 @@ class TestMaximum:
         parent = Normal("N", 10, 2)
         d = Maximum("Max", parent, N=10)
         assert np.isfinite(d.mean)
-        assert d.stdv > 0
+        assert d.std > 0
         assert d.dist_type == "Maximum"
 
     def test_cdf_is_parent_cdf_power_n(self):
@@ -317,7 +317,7 @@ class TestMaxParent:
         max_dist = Gumbel("G", 10, 2)
         d = MaxParent("MP", max_dist, N=5)
         assert np.isfinite(d.mean)
-        assert d.stdv > 0
+        assert d.std > 0
         assert d.dist_type == "MaxParent"
 
     def test_cdf_is_max_cdf_root_n(self):
@@ -345,7 +345,7 @@ class TestScipyDist:
         frozen = scipy_norm(loc=5, scale=2)
         d = ScipyDist("SN", frozen)
         assert pytest.approx(d.mean, abs=1e-6) == 5.0
-        assert pytest.approx(d.stdv, abs=1e-6) == 2.0
+        assert pytest.approx(d.std, abs=1e-6) == 2.0
         assert d.dist_type == "ScipyDist"
 
     def test_ppf_cdf_roundtrip(self):
@@ -377,7 +377,7 @@ class TestScipyDist:
         frozen = scipy_norm(loc=5, scale=2)
         d = ScipyDist("SN", frozen)
         d.set_scale(3)
-        assert pytest.approx(d.stdv, abs=1e-6) == 3.0
+        assert pytest.approx(d.std, abs=1e-6) == 3.0
 
 
 class TestZeroInflated:
@@ -391,7 +391,7 @@ class TestZeroInflated:
         base = Normal("N", 5, 1)
         d = ZeroInflated("ZN", base, p=0.5)
         expected_stdv = np.sqrt(0.5 * 1**2 + 0.5 * 0.5 * 5**2)
-        assert pytest.approx(d.stdv, abs=1e-3) == expected_stdv
+        assert pytest.approx(d.std, abs=1e-3) == expected_stdv
 
     def test_pdf_at_zero(self):
         base = Normal("N", 5, 1)
@@ -453,19 +453,19 @@ class TestNormal:
     def test_exact_mean_stdv(self):
         d = Normal("N", 10, 2)
         assert d.mean == 10
-        assert d.stdv == 2
+        assert d.std == 2
 
     def test_set_location(self):
         d = Normal("N", 10, 2)
         d.set_location(20)
         assert d.mean == 20
-        assert d.stdv == 2
+        assert d.std == 2
 
     def test_set_scale(self):
         d = Normal("N", 10, 2)
         d.set_scale(5)
         assert d.mean == 10
-        assert d.stdv == 5
+        assert d.std == 5
 
     def test_jacobian_shape(self):
         d = Normal("N", 10, 2)
@@ -483,16 +483,16 @@ class TestGumbel:
         """Native Gumbel params (mu, beta) should reproduce the same distribution."""
         g1 = Gumbel("X", 10, 2)
         # Recover native params: mu (location) and beta (scale)
-        scale = g1.stdv * np.sqrt(6) / np.pi
+        scale = g1.std * np.sqrt(6) / np.pi
         mu = g1.mean - 0.5772156649 * scale
         g2 = Gumbel("X", mu, scale, input_type="par")
         assert pytest.approx(g2.mean, abs=1e-6) == g1.mean
-        assert pytest.approx(g2.stdv, abs=1e-6) == g1.stdv
+        assert pytest.approx(g2.std, abs=1e-6) == g1.std
 
     def test_input_type_cdf_matches(self):
         """CDF should be identical regardless of input path."""
         g1 = Gumbel("X", 10, 2)
-        scale = g1.stdv * np.sqrt(6) / np.pi
+        scale = g1.std * np.sqrt(6) / np.pi
         mu = g1.mean - 0.5772156649 * scale
         g2 = Gumbel("X", mu, scale, input_type="par")
         for x in [5.0, 10.0, 15.0]:
@@ -503,7 +503,7 @@ class TestLognormal:
     def test_exact_mean_stdv(self):
         d = Lognormal("LN", 10, 2)
         assert pytest.approx(d.mean, abs=1e-6) == 10
-        assert pytest.approx(d.stdv, abs=1e-6) == 2
+        assert pytest.approx(d.std, abs=1e-6) == 2
 
     def test_set_location(self):
         d = Lognormal("LN", 10, 2)
@@ -513,4 +513,4 @@ class TestLognormal:
     def test_set_scale(self):
         d = Lognormal("LN", 10, 2)
         d.set_scale(5)
-        assert pytest.approx(d.stdv, abs=1e-6) == 5
+        assert pytest.approx(d.std, abs=1e-6) == 5

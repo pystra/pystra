@@ -14,18 +14,18 @@ class ShiftedExponential(Distribution):
     :Attributes:
         - name (str):         Name of the random variable\n
         - mean (float):       Mean or lamb\n
-        - stdv (float):       Standard deviation or x_zero\n
-        - input_type (any):   Change meaning of mean and stdv\n
-        - startpoint (float): Start point for seach\n
+        - std (float):       Standard deviation or x_zero\n
+        - input_type (any):   Change meaning of mean and std\n
+        - start_point (float): Start point for seach\n
     """
 
-    def __init__(self, name, mean, stdv, input_type=None, startpoint=None):
+    def __init__(self, name, mean, std, input_type=None, start_point=None):
         if input_type is None:
-            x_zero = mean - stdv
-            lamb = 1 / stdv
+            x_zero = mean - std
+            lamb = 1 / std
         else:
             lamb = mean
-            x_zero = stdv
+            x_zero = std
 
         # use scipy to do the heavy lifting
         self.dist_obj = expon(loc=x_zero, scale=1 / lamb)
@@ -33,7 +33,7 @@ class ShiftedExponential(Distribution):
         super().__init__(
             name=name,
             dist_obj=self.dist_obj,
-            startpoint=startpoint,
+            start_point=start_point,
         )
 
         self.dist_type = "ShiftedExponential"

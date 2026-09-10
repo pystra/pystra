@@ -112,6 +112,13 @@ class SensitivityAnalysis:
         self.delta = delta
         self.on_failure = _check_on_failure(on_failure)
 
+    def __repr__(self):
+        names = tuple(self.model.get_variables())
+        return (
+            f"SensitivityAnalysis(variables={names!r}, method={self.method!r}, "
+            f"options={self.options!r})"
+        )
+
     def run(self):
         r"""Run the sensitivity analysis.
 
@@ -200,10 +207,10 @@ class SensitivityAnalysis:
             dist = variables[name]
             for param, val in dist.sensitivity_params.items():
                 model1 = copy.deepcopy(self.model)
-                dist1 = model1.get_variable(name)
+                dist1 = model1.variable(name)
 
                 # Perturb and replace using _make_copy
-                h = delta * dist1.stdv
+                h = delta * dist1.std
                 new_dist = dist1._make_copy(**{param: val + h})
                 # Replace in both variables dict and _marg list
                 marg_idx = list(model1.variables.keys()).index(name)

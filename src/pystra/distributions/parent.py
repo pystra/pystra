@@ -22,14 +22,14 @@ class MaxParent(Distribution):
     :Attributes:
       - name (str):             Name of the random variable\n
       - mean (float):           Mean\n
-      - stdv (float):           Standard deviation\n
+      - std (float):           Standard deviation\n
       - maximum (Distribution): Distribution of maximum object
       - N (float):              Power to which distribution is raised
-      - input_type (any):       Change meaning of mean and stdv\n
-      - startpoint (float):     Start point for seach\n
+      - input_type (any):       Change meaning of mean and std\n
+      - start_point (float):     Start point for seach\n
     """
 
-    def __init__(self, name, max_dist, N, input_type=None, startpoint=None):
+    def __init__(self, name, max_dist, N, input_type=None, start_point=None):
         if not isinstance(max_dist, Distribution):
             raise ModelError(
                 f"MaxParent distribution of maximum requires input of type {type(Distribution)}"
@@ -44,8 +44,8 @@ class MaxParent(Distribution):
         super().__init__(
             name=name,
             mean=m,
-            stdv=s,
-            startpoint=startpoint,
+            std=s,
+            start_point=start_point,
         )
 
         self.dist_type = "MaxParent"
@@ -79,7 +79,7 @@ class MaxParent(Distribution):
         center = self.max_dist.mean
         if not np.isfinite(center):
             center = 0.0
-        step0 = self.max_dist.stdv
+        step0 = self.max_dist.std
         if not np.isfinite(step0) or step0 <= 0:
             step0 = 1.0
 
@@ -89,9 +89,7 @@ class MaxParent(Distribution):
         ):
             logcdf = self.max_dist.dist_obj.logcdf
         elif self.max_dist.dist_type == "Normal":
-            logcdf = lambda q: sp.log_ndtr(
-                (q - self.max_dist.mean) / self.max_dist.stdv
-            )
+            logcdf = lambda q: sp.log_ndtr((q - self.max_dist.mean) / self.max_dist.std)
         else:
 
             def logcdf(q):
@@ -163,16 +161,16 @@ class MaxParent(Distribution):
 
     def _get_stats(self):
         """
-        Since the closed form expression of mean and stdv for the distribution of the
+        Since the closed form expression of mean and std for the distribution of the
         parent from a maximum distribution is complex, and since we really only need
         them for default starting points, just estimate through simulation.
         """
         p = np.random.random(100)
         x = self.ppf(p)
         mean = x.mean()
-        stdv = x.std()
+        std = x.std()
 
-        return mean, stdv
+        return mean, std
 
     def set_location(self, loc=0):
         """
@@ -197,9 +195,9 @@ class MaxParent(Distribution):
 
     def _update_stats(self):
         """
-        Updates the mean and stdv estimates - used for sensitivity analysis
+        Updates the mean and std estimates - used for sensitivity analysis
         where the parent distribution params may change after instantiation
         """
         m, s = self._get_stats()
-        self.mean = m
-        self.stdv = s
+        self._mean = m
+        self._std = s

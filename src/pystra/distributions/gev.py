@@ -18,11 +18,11 @@ class GEV(Distribution):
     :Arguments:
         - name (str):       Name of the random variable\n
         - mean (float):     Mean\n
-        - stdv (float):     Standard deviation\n
+        - std (float):     Standard deviation\n
         - shape (float):    Shape parameter. shape < 0.0 is Weibull,
           shape > 0 is Frechet.\n
-        - input_type (any): Change meaning of mean and stdv\n
-        - startpoint (float): Start point for seach\n
+        - input_type (any): Change meaning of mean and std\n
+        - start_point (float): Start point for seach\n
 
     :Raises:
         - ValueError: If `shape` is greater than or equal to 0.5
@@ -35,7 +35,7 @@ class GEV(Distribution):
         - This distribution is to model maxima.
     """
 
-    def __init__(self, name, mean, stdv, shape, input_type=None, startpoint=None):
+    def __init__(self, name, mean, std, shape, input_type=None, start_point=None):
         if shape >= 0.5:
             raise ValueError("`shape` must be less than 0.5 for finite variance")
 
@@ -47,20 +47,20 @@ class GEV(Distribution):
 
         if input_type is None:
             if np.isclose(shape, 0):
-                scale = stdv * np.sqrt(6) / np.pi
+                scale = std * np.sqrt(6) / np.pi
                 loc = mean - scale * np.euler_gamma
             else:
-                scale = stdv * np.abs(shape) / np.sqrt(g2 - g1**2)
+                scale = std * np.abs(shape) / np.sqrt(g2 - g1**2)
                 loc = mean - scale / shape * (g1 - 1)
         else:
             loc = mean
-            scale = stdv
+            scale = std
             if np.isclose(shape, 0):
-                self.mean = loc + scale * np.euler_gamma
-                self.stdv = scale * np.pi / np.sqrt(6)
+                self._mean = loc + scale * np.euler_gamma
+                self._std = scale * np.pi / np.sqrt(6)
             else:
-                self.mean = loc + (g1 - 1) * scale / shape
-                self.stdv = np.sqrt((g2 - g1**2) * (scale / shape) ** 2)
+                self._mean = loc + (g1 - 1) * scale / shape
+                self._std = np.sqrt((g2 - g1**2) * (scale / shape) ** 2)
 
         # use scipy to do the heavy lifting
         self.dist_obj = genextreme(c=-shape, loc=loc, scale=scale)
@@ -68,7 +68,7 @@ class GEV(Distribution):
         super().__init__(
             name=name,
             dist_obj=self.dist_obj,
-            startpoint=startpoint,
+            start_point=start_point,
         )
 
         self.dist_type = "GEV"
@@ -81,7 +81,7 @@ class GEV(Distribution):
         parameter ξ controls tail behaviour: ξ < 0 is Weibull (bounded
         upper tail), ξ = 0 is Gumbel, ξ > 0 is Fréchet (heavy-tailed).
         """
-        return {"mean": self.mean, "std": self.stdv, "shape": self.shape}
+        return {"mean": self.mean, "std": self.std, "shape": self.shape}
 
 
 # ``GEVmax`` is kept as another name for ``GEV``: the one deliberate alias in
@@ -97,10 +97,10 @@ class GEVMin(Distribution):
     :Arguments:
         - name (str):       Name of the random variable\n
         - mean (float):     Mean\n
-        - stdv (float):     Standard deviation\n
+        - std (float):     Standard deviation\n
         - shape (float):       Shape parameter. shape < 0.0 is Weibull, shape > 0 is Frechet.\n
-        - input_type (any): Change meaning of mean and stdv\n
-        - startpoint (float): Start point for seach\n
+        - input_type (any): Change meaning of mean and std\n
+        - start_point (float): Start point for seach\n
 
     :Raises:
         - ValueError: If `shape` is greater than or equal to 0.5
@@ -111,7 +111,7 @@ class GEVMin(Distribution):
         - This distribution is to model minima.
     """
 
-    def __init__(self, name, mean, stdv, shape, input_type=None, startpoint=None):
+    def __init__(self, name, mean, std, shape, input_type=None, start_point=None):
         if shape >= 0.5:
             raise ValueError("`shape` must be less than 0.5 for finite variance")
 
@@ -122,25 +122,25 @@ class GEVMin(Distribution):
         g2 = gamma(1 - 2 * shape)
 
         if input_type is None:
-            # mean and stdv passed in
-            self.mean = mean
-            self.stdv = stdv
+            # mean and std passed in
+            self._mean = mean
+            self._std = std
             if np.isclose(shape, 0):
-                scale = self.stdv * np.sqrt(6) / np.pi
+                scale = self.std * np.sqrt(6) / np.pi
                 loc = self.mean - scale * np.euler_gamma
             else:
-                scale = self.stdv * np.abs(shape) / np.sqrt(g2 - g1**2)
+                scale = self.std * np.abs(shape) / np.sqrt(g2 - g1**2)
                 loc = self.mean - (scale / shape) * (g1 - 1)
         else:
             # loc and scale are actual GEV parameters
             loc = mean
-            scale = stdv
+            scale = std
             if np.isclose(shape, 0):
-                self.mean = loc + scale * np.euler_gamma
-                self.stdv = scale * np.pi / np.sqrt(6)
+                self._mean = loc + scale * np.euler_gamma
+                self._std = scale * np.pi / np.sqrt(6)
             else:
-                self.mean = loc + (g1 - 1) * scale / shape
-                self.stdv = np.sqrt((g2 - g1**2) * (scale / shape) ** 2)
+                self._mean = loc + (g1 - 1) * scale / shape
+                self._std = np.sqrt((g2 - g1**2) * (scale / shape) ** 2)
 
         # use scipy to do the heavy lifting; note reverse shape sign convention
         self.dist_obj = genextreme(c=-shape, loc=-loc, scale=scale)
@@ -149,19 +149,19 @@ class GEVMin(Distribution):
         # represents -X internally, so dist_obj.mean() gives the wrong
         # sign and would overwrite the correct values via _update_moments()
         _correct_mean = self.mean
-        _correct_stdv = self.stdv
+        _correct_stdv = self.std
 
         super().__init__(
             name=name,
             dist_obj=self.dist_obj,
-            startpoint=startpoint,
+            start_point=start_point,
         )
 
         # Restore correct moments (dist_obj models -X internally)
-        self.mean = _correct_mean
-        self.stdv = _correct_stdv
-        if startpoint is None:
-            self.startpoint = self.mean
+        self._mean = _correct_mean
+        self._std = _correct_stdv
+        if start_point is None:
+            self._start_point = self.mean
 
         self.dist_type = "GEVMin"
 
@@ -173,7 +173,7 @@ class GEVMin(Distribution):
         parameter ξ controls tail behaviour: ξ < 0 is Weibull (bounded
         lower tail), ξ = 0 is Gumbel, ξ > 0 is Fréchet (heavy-tailed).
         """
-        return {"mean": self.mean, "std": self.stdv, "shape": self.shape}
+        return {"mean": self.mean, "std": self.std, "shape": self.shape}
 
     def pdf(self, x):
         """

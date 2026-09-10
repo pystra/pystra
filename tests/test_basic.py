@@ -377,7 +377,7 @@ def test_sorm_curvatures_match_independent_central_differences():
     u0 = np.ravel(form._u)
     marg = stochastic_model.get_marginal_distributions()
     names = stochastic_model.get_variables()
-    constants = stochastic_model.get_constants()
+    constants = stochastic_model.constants
 
     def g(u):
         x = np.ravel(form.transform.u_to_x(u, marg))

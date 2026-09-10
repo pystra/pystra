@@ -139,6 +139,11 @@ Changed
   ``to_dataframe()`` replace the printed reports; the analyses' numerical state is
   private and ``limitstate`` is ``limit_state``. Crude Monte Carlo reports its
   convergence history in ``diagnostics["history"]``.
+- Distributions take ``std`` and ``start_point`` (for ``stdv`` and
+  ``startpoint``) and expose ``mean``, ``std`` and ``start_point`` as read-only
+  properties; ``Constant`` takes ``value``; ``StochasticModel.variable(name)``
+  and the read-only ``constants`` mapping replace ``get_variable()`` and
+  ``get_constants()``.
 - ``CorrelationMatrix`` is validated when created (square, finite, symmetric,
   unit diagonal, positive definite) and held read-only; ``set_correlation``
   validates arrays the same way. It gains ``cholesky()``, ``nataf(model)`` and

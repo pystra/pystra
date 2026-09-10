@@ -14,23 +14,23 @@ class Normal(Distribution):
     :Attributes:
       - name (str):         Name of the random variable\n
       - mean (float):       Mean\n
-      - stdv (float):       Standard deviation\n
-      - input_type (any):   Change meaning of mean and stdv\n
-      - startpoint (float): Start point for seach\n
+      - std (float):       Standard deviation\n
+      - input_type (any):   Change meaning of mean and std\n
+      - start_point (float): Start point for seach\n
 
     Note: while we could use SciPy norm distribution here, there is a
     substantial perfromance hit, so use local implementation.
     """
 
-    def __init__(self, name, mean, stdv, input_type=None, startpoint=None):
+    def __init__(self, name, mean, std, input_type=None, start_point=None):
         """
         Leave initialization to the base class
         """
         super().__init__(
             name=name,
             mean=mean,
-            stdv=stdv,
-            startpoint=startpoint,
+            std=std,
+            start_point=start_point,
         )
         self.dist_type = "Normal"
 
@@ -38,15 +38,15 @@ class Normal(Distribution):
         """
         probability density function
         """
-        z = (x - self.mean) / self.stdv
-        p = self.std_normal.pdf(z) / self.stdv
+        z = (x - self.mean) / self.std
+        p = self.std_normal.pdf(z) / self.std
         return p
 
     def cdf(self, x):
         """
         cumulative distribution function
         """
-        z = (x - self.mean) / self.stdv
+        z = (x - self.mean) / self.std
         p = self.std_normal.cdf(z)
         return p
 
@@ -55,7 +55,7 @@ class Normal(Distribution):
         inverse cumulative distribution function
         """
         z = self.std_normal.ppf(p)
-        x = self.stdv * z + self.mean
+        x = self.std * z + self.mean
         return x
 
     def sample(self, n=1000):
@@ -70,14 +70,14 @@ class Normal(Distribution):
         """
         Transformation from u to x
         """
-        x = u * self.stdv + self.mean
+        x = u * self.std + self.mean
         return x
 
     def x_to_u(self, x):
         """
         Transformation from x to u
         """
-        u = (x - self.mean) / self.stdv
+        u = (x - self.mean) / self.std
         return u
 
     def jacobian(self, u, x):
@@ -86,7 +86,7 @@ class Normal(Distribution):
         For the Normal distribution, the more usual general function can be
         specialized as follows.
         """
-        J = np.diag(np.repeat(1 / self.stdv, u.size))
+        J = np.diag(np.repeat(1 / self.std, u.size))
         return J
 
     def cdf_gradient(self, x):
@@ -99,10 +99,10 @@ class Normal(Distribution):
             \frac{\partial F}{\partial \sigma} = -\frac{x - \mu}{\sigma^2}\,
                 \varphi\!\left(\frac{x - \mu}{\sigma}\right)
         """
-        z = (x - self.mean) / self.stdv
+        z = (x - self.mean) / self.std
         phi_z = self.std_normal.pdf(z)
-        dF_dmu = -phi_z / self.stdv
-        dF_dsig = -phi_z * z / self.stdv
+        dF_dmu = -phi_z / self.std
+        dF_dsig = -phi_z * z / self.std
         return {"mean": dF_dmu, "std": dF_dsig}
 
     def set_location(self, loc=0):
@@ -110,11 +110,11 @@ class Normal(Distribution):
         Updating the distribution location parameter. For Normal, there is no need to
         update other properties as a result of this change.
         """
-        self.mean = loc
+        self._mean = loc
 
     def set_scale(self, scale=1):
         """
         Updating the distribution scale parameter. For Normal, there is no need to
         update other properties as a result of this change.
         """
-        self.stdv = scale
+        self._std = scale

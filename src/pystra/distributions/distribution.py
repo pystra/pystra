@@ -83,21 +83,25 @@ class Constant:
     name : str
         Name of the constant (must match a keyword argument of the limit
         state function).
-    val : float
+    value : float
         The fixed value.
     """
 
-    def __init__(self, name, val):
+    def __init__(self, name, value):
         self.name = name
-        self.val = val
+        self._value = value
 
     def get_name(self):
         """Return the constant name."""
         return self.name
 
-    def get_value(self):
-        """Return the constant value."""
-        return self.val
+    @property
+    def value(self):
+        """The fixed value."""
+        return self._value
+
+    def __repr__(self):
+        return f"Constant({self.name!r}, value={self._value!r})"
 
 
 class Distribution:
@@ -119,12 +123,12 @@ class Distribution:
         the limit state function.
     dist_obj : scipy.stats.rv_frozen, optional
         A frozen SciPy distribution.  When provided, ``mean`` and
-        ``stdv`` are computed from the distribution automatically.
+        ``std`` are computed from the distribution automatically.
     mean : float, optional
         Mean of the distribution (required if *dist_obj* is ``None``).
-    stdv : float, optional
+    std : float, optional
         Standard deviation (required if *dist_obj* is ``None``).
-    startpoint : float, optional
+    start_point : float, optional
         Starting point for iterative search algorithms (defaults to
         the mean).
 
@@ -132,24 +136,18 @@ class Distribution:
     ----------
     name : str
         Name of the random variable.
-    mean : float
-        Mean of the distribution.
-    stdv : float
-        Standard deviation of the distribution.
-    startpoint : float
-        Starting point for search algorithms.
     dist_type : str
         Human-readable label set by each subclass (e.g. ``"Normal"``).
     """
 
     std_normal = StdNormal()
 
-    def __init__(self, name="", dist_obj=None, mean=None, stdv=None, startpoint=None):
+    def __init__(self, name="", dist_obj=None, mean=None, std=None, start_point=None):
         self.name = name
         self.dist_type = "BaseCls"
 
         # Extra constructor keyword arguments needed to faithfully
-        # reconstruct this distribution beyond (name, mean, stdv).
+        # reconstruct this distribution beyond (name, mean, std).
         # Subclasses with additional parameters (e.g. shape for GEV,
         # bounds for Beta) should set this in their __init__ *before*
         # calling super().__init__().  These are passed through by
@@ -163,43 +161,48 @@ class Distribution:
         # are using the base class functionality
         self.dist_obj = dist_obj
 
-        self._update_moments(mean, stdv)
-        self.set_start_point(startpoint)
+        self._update_moments(mean, std)
+        self._set_start_point(start_point)
+
+    @property
+    def mean(self):
+        """Mean of the distribution."""
+        return self._mean
+
+    @property
+    def std(self):
+        """Standard deviation of the distribution."""
+        return self._std
+
+    @property
+    def start_point(self):
+        """Starting point of the design-point search; the mean by default."""
+        return self._start_point
 
     def __repr__(self):
-        string = self.name + ": " + self.dist_type + " distribution"
-        return string
+        return f"{type(self).__name__}({self.name!r}, mean={self.mean:.6g}, std={self.std:.6g})"
 
-    def _update_moments(self, mean=None, stdv=None):
+    def _update_moments(self, mean=None, std=None):
         if self.dist_obj is not None:
-            self.mean = self.dist_obj.mean()
-            self.stdv = self.dist_obj.std()
-        elif mean is None or stdv is None:
+            self._mean = self.dist_obj.mean()
+            self._std = self.dist_obj.std()
+        elif mean is None or std is None:
             raise ModelError("Mean and std dev must be defined in derived classes")
         else:
-            self.mean = mean
-            self.stdv = stdv
+            self._mean = mean
+            self._std = std
 
-        if not np.isfinite(self.stdv) or self.stdv <= 0:
+        if not np.isfinite(self.std) or self.std <= 0:
             raise ModelError("Std. deviation must be a positive noninfinite number.")
 
     def get_name(self):
         return self.name
 
-    def get_mean(self):
-        return self.mean
-
-    def get_stdv(self):
-        return self.stdv
-
-    def get_start_point(self):
-        return self.startpoint
-
-    def set_start_point(self, startpoint=None):
-        if startpoint is None:
-            self.startpoint = self.mean
+    def _set_start_point(self, start_point=None):
+        if start_point is None:
+            self._start_point = self.mean
         else:
-            self.startpoint = startpoint
+            self._start_point = start_point
 
     # The following can be overridden by derived classes to implement more
     # efficient calculations where desirable
@@ -388,13 +391,13 @@ class Distribution:
         dict
             ``{param_name: current_value}``
         """
-        return {"mean": self.mean, "std": self.stdv}
+        return {"mean": self.mean, "std": self.std}
 
     def _make_copy(self, **overrides):
         r"""Construct a copy of this distribution with perturbed parameters.
 
         Builds a fresh instance of the same type using the current
-        ``(mean, stdv)`` and any extra constructor keyword arguments
+        ``(mean, std)`` and any extra constructor keyword arguments
         stored in :attr:`_ctor_kwargs`.  The *overrides* dict replaces
         individual parameter values; its keys must match those of
         :attr:`sensitivity_params` or :attr:`_ctor_kwargs`.
@@ -415,14 +418,14 @@ class Distribution:
         TypeError
             If the subclass constructor does not accept the provided
             arguments (e.g. a composite distribution that cannot be
-            reconstructed from ``(name, mean, stdv)``).
+            reconstructed from ``(name, mean, std)``).
         """
-        params = {"mean": self.mean, "std": self.stdv}
+        params = {"mean": self.mean, "std": self.std}
         params.update(self._ctor_kwargs)
         params.update(overrides)
         mean = params.pop("mean")
-        stdv = params.pop("std")
-        return type(self)(self.name, mean, stdv, **params)
+        std = params.pop("std")
+        return type(self)(self.name, mean, std, **params)
 
     def _dmoments_dtheta(self, param):
         r"""Derivatives of mean and standard deviation w.r.t. a parameter.
@@ -457,7 +460,7 @@ class Distribution:
         d_minus = self._make_copy(**{param: val - h})
         return (
             (d_plus.mean - d_minus.mean) / (2 * h),
-            (d_plus.stdv - d_minus.stdv) / (2 * h),
+            (d_plus.std - d_minus.std) / (2 * h),
         )
 
     def cdf_gradient(self, x):
@@ -506,7 +509,7 @@ class Distribution:
             ) from e
         # Use a scalar test point for validation (x may be an array
         # when called from drho0_dtheta with quadrature grids)
-        x_test = float(self.mean + 0.5 * self.stdv)
+        x_test = float(self.mean + 0.5 * self.std)
         ref_cdf = float(self.cdf(x_test))
         test_cdf = float(test.cdf(x_test))
         if abs(test_cdf - ref_cdf) > 1e-6 * (1 + abs(ref_cdf)):
@@ -520,7 +523,7 @@ class Distribution:
 
         result = {}
         for param, val in self.sensitivity_params.items():
-            h = max(abs(val) * 1e-6, self.stdv * 1e-8)
+            h = max(abs(val) * 1e-6, self.std * 1e-8)
             d_plus = self._make_copy(**{param: val + h})
             d_minus = self._make_copy(**{param: val - h})
             result[param] = (d_plus.cdf(x) - d_minus.cdf(x)) / (2 * h)
@@ -529,7 +532,7 @@ class Distribution:
     def set_location(self, loc=0):
         """Update the location parameter of the underlying SciPy distribution.
 
-        After updating, ``mean`` and ``stdv`` are recomputed.  This is
+        After updating, ``mean`` and ``std`` are recomputed.  This is
         used by the sensitivity analysis to perturb distribution
         parameters.
 
@@ -553,7 +556,7 @@ class Distribution:
     def set_scale(self, scale=1):
         """Update the scale parameter of the underlying SciPy distribution.
 
-        After updating, ``mean`` and ``stdv`` are recomputed.  This is
+        After updating, ``mean`` and ``std`` are recomputed.  This is
         used by the sensitivity analysis to perturb distribution
         parameters.
 

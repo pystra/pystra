@@ -22,12 +22,12 @@ Extra constructor arguments (``_ctor_kwargs``)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If your distribution's constructor takes arguments beyond
-``(name, mean, stdv)`` — for instance bounds, shift, or shape
+``(name, mean, std)`` — for instance bounds, shift, or shape
 parameters — store them as attributes *and* populate ``_ctor_kwargs``
 **before** calling ``super().__init__()``::
 
     class MyDist(Distribution):
-        def __init__(self, name, mean, stdv, shape, epsilon=0):
+        def __init__(self, name, mean, std, shape, epsilon=0):
             self.shape = shape
             self.epsilon = epsilon
             self._ctor_kwargs = {"shape": shape, "epsilon": epsilon}
@@ -56,7 +56,7 @@ behaviour), override
     def sensitivity_params(self):
         return {
             "mean": self.mean,
-            "std": self.stdv,
+            "std": self.std,
             "shape": self.shape,
         }
 
@@ -78,11 +78,11 @@ with analytical expressions.  The Normal and Lognormal distributions
 do this::
 
     def cdf_gradient(self, x):
-        z = (x - self.mean) / self.stdv
+        z = (x - self.mean) / self.std
         phi_z = self.std_normal.pdf(z)
         return {
-            "mean": -phi_z / self.stdv,
-            "std": -(x - self.mean) * phi_z / self.stdv**2,
+            "mean": -phi_z / self.std,
+            "std": -(x - self.mean) * phi_z / self.std**2,
         }
 
 The returned dict must have the same keys as ``sensitivity_params``.

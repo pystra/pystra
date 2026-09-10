@@ -267,7 +267,7 @@ def solve_designs(
     snapshot = deepcopy(problem)
     start = _scalar(
         (
-            snapshot._cases.constants[snapshot.design_parameter].get_value()
+            snapshot._cases.constants[snapshot.design_parameter].value
             if initial_value is None
             else initial_value
         ),

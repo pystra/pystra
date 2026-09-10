@@ -46,7 +46,7 @@ def test_loadcombination_explicit_cases_builds_stochastic_model():
 
     assert list(case.keys()) == ["R", "G", "Q"]
     assert sm.get_names() == ["z", "R", "G", "Q"]
-    assert sm.get_constants()["z"] == 1.0
+    assert sm.constants["z"] == 1.0
     assert list(lc.case_names) == ["Q_leading"]
     assert len(lc.case_names) == 1
 
@@ -134,7 +134,7 @@ def test_from_maximum_round_trip_preserves_high_recurrence_maximum():
 
     recovered = process.maximum(duration=1.0)
 
-    assert recovered.stdv > 0.1
+    assert recovered.std > 0.1
     assert isinstance(recovered.ppf(0.5), float)
     for p in (0.1, 0.5, 0.9):
         assert pytest.approx(recovered.ppf(p), abs=1e-10) == Qmax.ppf(p)

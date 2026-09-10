@@ -15,26 +15,26 @@ class ShiftedLognormal(Lognormal):
     :Arguments:
       - name (str):         Name of the random variable
       - mean (float):       Mean
-      - stdv (float):       Standard deviation\n
+      - std (float):       Standard deviation\n
       - lower (float):      Lower bound of the distribution (i.e. the shift applied to the lognormal)\n
-      - input_type (any):   Change meaning of mean and stdv. Not implemented!\n
-      - startpoint (float): Start point for seach\n
+      - input_type (any):   Change meaning of mean and std. Not implemented!\n
+      - start_point (float): Start point for seach\n
 
     Note: Could use scipy to do the heavy lifting. However, there is a small
     performance hit, so for this common dist use bespoke implementation
     for the PDF, CDF.
     """
 
-    def __init__(self, name, mean, stdv, lower, input_type=None, startpoint=None):
+    def __init__(self, name, mean, std, lower, input_type=None, start_point=None):
         if input_type is not None:
             raise NotImplementedError("`input_type` not implemented")
 
         self._ctor_kwargs = {"lower": lower}
 
-        self.mean = mean
-        self.stdv = stdv
+        self._mean = mean
+        self._std = std
         self.lower = None
-        self._update_params(mean, stdv, lower)
+        self._update_params(mean, std, lower)
 
         self.dist_obj = lognorm(scale=np.exp(self.lamb), s=self.zeta, loc=self.lower)
 
@@ -42,14 +42,14 @@ class ShiftedLognormal(Lognormal):
             self,
             name=name,
             dist_obj=self.dist_obj,
-            startpoint=startpoint,
+            start_point=start_point,
         )
 
         self.dist_type = "ShiftedLognormal"
 
-    def _update_params(self, mean, stdv, lower=None):
+    def _update_params(self, mean, std, lower=None):
         lower = self.lower if lower is None else lower
-        super()._update_params(mean - lower, stdv)
+        super()._update_params(mean - lower, std)
         self.lower = lower
 
     def pdf(self, x):
@@ -84,5 +84,5 @@ class ShiftedLognormal(Lognormal):
         For Lognormal, even though we have a SciPy object, it's not being used in the
         functions above for performance, so we need to update params directly.
         """
-        self._update_params(self.mean, self.stdv, lower)
+        self._update_params(self.mean, self.std, lower)
         self.lower = lower

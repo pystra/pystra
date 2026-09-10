@@ -18,10 +18,10 @@ class ScipyDist(Distribution):
     :Attributes:
       - name (str):             Name of the random variable\n
       - dist_obj (Scipy dist):  The Scipy distribution object\n
-      - startpoint (float):     Start point for seach\n
+      - start_point (float):     Start point for seach\n
     """
 
-    def __init__(self, name, dist_obj, startpoint=None):
+    def __init__(self, name, dist_obj, start_point=None):
         if not isinstance(dist_obj, rv_frozen):
             raise ModelError(
                 f"ScipyDist {name} requires a frozen Scipy distribution object"
@@ -32,7 +32,7 @@ class ScipyDist(Distribution):
         super().__init__(
             name=name,
             dist_obj=dist_obj,
-            startpoint=startpoint,
+            start_point=start_point,
         )
 
         self.dist_type = "ScipyDist"

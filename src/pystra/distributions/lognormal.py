@@ -15,23 +15,23 @@ class Lognormal(Distribution):
     :Arguments:
       - name (str):         Name of the random variable
       - mean (float):       Mean or lamb
-      - stdv (float):       Standard deviation or zeta\n
-      - input_type (any):   Change meaning of mean and stdv\n
-      - startpoint (float): Start point for seach\n
+      - std (float):       Standard deviation or zeta\n
+      - input_type (any):   Change meaning of mean and std\n
+      - start_point (float): Start point for seach\n
 
     Note: Could use scipy to do the heavy lifting. However, there is a small
     performance hit, so for this common dist use bespoke implementation
     for the PDF, CDF.
     """
 
-    def __init__(self, name, mean, stdv, input_type=None, startpoint=None):
+    def __init__(self, name, mean, std, input_type=None, start_point=None):
         if input_type is None:
             # infer parameters from the moments
-            self._update_params(mean, stdv)
+            self._update_params(mean, std)
         else:
             # parameters directly passed in
             self.lamb = mean
-            self.zeta = stdv
+            self.zeta = std
 
         # Could use scipy to do the heavy lifting. However, there is a small
         # performance hit, so for this common dist use bespoke implementation
@@ -42,13 +42,13 @@ class Lognormal(Distribution):
         super().__init__(
             name=name,
             dist_obj=self.dist_obj,
-            startpoint=startpoint,
+            start_point=start_point,
         )
 
         self.dist_type = "Lognormal"
 
-    def _update_params(self, mean, stdv):
-        cov = stdv / mean
+    def _update_params(self, mean, std):
+        cov = std / mean
         self.zeta = (np.log(1 + cov**2)) ** 0.5
         self.lamb = np.log(mean) - 0.5 * self.zeta**2
 
@@ -102,7 +102,7 @@ class Lognormal(Distribution):
 
         where ``z = (ln x - λ) / ζ``.
         """
-        cov = self.stdv / self.mean
+        cov = self.std / self.mean
         cov2 = cov**2
         z = (np.log(x) - self.lamb) / self.zeta
         phi_z = self.std_normal.pdf(z)
@@ -134,8 +134,8 @@ class Lognormal(Distribution):
         functions above for performance, so we need to update pe.arams directly.
         """
 
-        self._update_params(loc, self.stdv)
-        self.mean = loc
+        self._update_params(loc, self.std)
+        self._mean = loc
 
     def set_scale(self, scale=1):
         """
@@ -144,4 +144,4 @@ class Lognormal(Distribution):
         functions above for performance, so we need to update params directly.
         """
         self._update_params(self.mean, scale)
-        self.stdv = scale
+        self._std = scale

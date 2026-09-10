@@ -14,18 +14,18 @@ class Uniform(Distribution):
     :Attributes:
       - name (str):   Name of the random variable\n
       - mean (float): Mean or a\n
-      - stdv (float): Standard deviation or b\n
-      - input_type (any): Change meaning of mean and stdv\n
-      - startpoint (float): Start point for seach\n
+      - std (float): Standard deviation or b\n
+      - input_type (any): Change meaning of mean and std\n
+      - start_point (float): Start point for seach\n
     """
 
-    def __init__(self, name, mean, stdv, input_type=None, startpoint=None):
+    def __init__(self, name, mean, std, input_type=None, start_point=None):
         if input_type is None:
-            a = mean - 3**0.5 * stdv
-            b = mean + 3**0.5 * stdv
+            a = mean - 3**0.5 * std
+            b = mean + 3**0.5 * std
         else:
             a = mean
-            b = stdv
+            b = std
 
         self.a = a
         self.b = b
@@ -36,7 +36,7 @@ class Uniform(Distribution):
         super().__init__(
             name=name,
             dist_obj=self.dist_obj,
-            startpoint=startpoint,
+            start_point=start_point,
         )
 
         self.dist_type = "Uniform"

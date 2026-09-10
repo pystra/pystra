@@ -14,21 +14,21 @@ class ChiSquare(Distribution):
     :Attributes:
       - name (str):   Name of the random variable\n
       - mean (float): Mean or nu\n
-      - stdv (float): Standard deviation\n
-      - input_type (any): Change meaning of mean and stdv\n
-      - startpoint (float): Start point for seach\n
+      - std (float): Standard deviation\n
+      - input_type (any): Change meaning of mean and std\n
+      - start_point (float): Start point for seach\n
     """
 
-    def __init__(self, name, mean, stdv=None, input_type=None, startpoint=None):
+    def __init__(self, name, mean, std=None, input_type=None, start_point=None):
         if input_type is None:
             lamb = 0.5
-            mean_test = lamb * stdv**2
+            mean_test = lamb * std**2
             if mean / mean_test < 0.95 or mean / mean_test > 1.05:
                 print(
                     "Error when using Chi-square distribution. "
-                    "Mean and stdv should be given such that mean = 0.5*stdv.**2\n"
+                    "Mean and std should be given such that mean = 0.5*std.**2\n"
                 )
-            nu = 2 * (mean**2) / (stdv**2)
+            nu = 2 * (mean**2) / (std**2)
         else:
             nu = mean
 
@@ -40,7 +40,7 @@ class ChiSquare(Distribution):
         super().__init__(
             name=name,
             dist_obj=self.dist_obj,
-            startpoint=startpoint,
+            start_point=start_point,
         )
 
         self.dist_type = "ChiSquare"

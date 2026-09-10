@@ -3,6 +3,7 @@
 import numpy as np
 from .distributions import Distribution, Constant
 from collections import OrderedDict
+from types import MappingProxyType
 from .errors import ModelError
 
 __all__ = ["StochasticModel", "LimitState"]
@@ -11,10 +12,9 @@ __all__ = ["StochasticModel", "LimitState"]
 class StochasticModel:
     """Stochastic model
 
-    Attributes can be accessed via properties or transitional getter methods::
-
-        model.constants          # preferred
-        model.get_constants()    # transitional, equivalent
+    Random variables and constants are added with :meth:`add_variable`.
+    ``model.variable(name)`` returns a random variable, and
+    ``model.constants`` is a read-only mapping of constant names to values.
     """
 
     def __init__(self, joint_distribution=None):
@@ -75,14 +75,21 @@ class StochasticModel:
             # update the default correlation matrix, in accordance with the number of variables
             self._correlation = np.eye(len(self._marg))
         elif isinstance(obj, Constant):
-            self._consts[obj.get_name()] = obj.get_value()
+            self._consts[obj.get_name()] = obj.value
 
     # ---- Properties (preferred access) ----
 
+    def __repr__(self):
+        items = [repr(d) for d in self._marg] + [
+            f"Constant({name!r}, value={value!r})"
+            for name, value in self._consts.items()
+        ]
+        return f"StochasticModel([{', '.join(items)}])"
+
     @property
     def constants(self):
-        """Dictionary of constant name → value pairs."""
-        return self._consts
+        """Read-only mapping of constant names to values."""
+        return MappingProxyType(self._consts)
 
     @property
     def names(self):
@@ -137,13 +144,11 @@ class StochasticModel:
 
     # ---- Transitional getter/setter methods pending the result/options redesign ----
 
-    def get_constants(self):
-        return self._consts
-
     def get_variables(self):
         return self.variables
 
-    def get_variable(self, name):
+    def variable(self, name):
+        """Return the random variable called *name*."""
         return self.variables[name]
 
     def get_names(self):
@@ -344,7 +349,7 @@ class LimitState:
         marg = model.get_marginal_distributions()
 
         for j in range(nrv):
-            allh[j] = marg[j].stdv / ffdpara
+            allh[j] = marg[j].std / ffdpara
             indx = list(range(j + 1, 1 + (1 + j + (nx - 1) * (1 + nrv)), (1 + nrv)))
             allx[j, indx] = x[j] + allh[j] * np.ones(nx)
 
@@ -386,7 +391,7 @@ class LimitState:
         """
         _, nc = np.shape(x)
         variables = model.get_variables()
-        constants = model.get_constants()
+        constants = model.constants
 
         inpdict = dict()
         for i, var in enumerate(variables):

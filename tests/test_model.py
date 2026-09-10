@@ -32,7 +32,7 @@ class TestStochasticModel:
     def test_add_constant(self):
         model = ra.model.StochasticModel()
         model.add_variable(Constant("c", 5.0))
-        assert model.get_constants() == {"c": 5.0}
+        assert model.constants == {"c": 5.0}
         assert len(model.get_variables()) == 0
 
     def test_add_mixed(self):
@@ -41,7 +41,7 @@ class TestStochasticModel:
         model.add_variable(Constant("c", 3.0))
         model.add_variable(Normal("X2", 5, 1))
         assert len(model.get_variables()) == 2
-        assert model.get_constants() == {"c": 3.0}
+        assert model.constants == {"c": 3.0}
         assert model.get_names() == ["X1", "c", "X2"]
 
     def test_duplicate_name_raises(self):
@@ -59,7 +59,7 @@ class TestStochasticModel:
         model = ra.model.StochasticModel()
         n = Normal("X1", 10, 2)
         model.add_variable(n)
-        assert model.get_variable("X1") is n
+        assert model.variable("X1") is n
 
     def test_get_marginal_distributions(self):
         model = ra.model.StochasticModel()
@@ -105,7 +105,7 @@ class TestStochasticModel:
         model.add_variable(Constant("c", 3.0))
         model.add_variable(Normal("X2", 5, 1))
 
-        assert model.constants is model.get_constants()
+        assert dict(model.constants) == {"c": 3.0}
         assert model.names is model.get_names()
         assert model.marginal_distributions is model.get_marginal_distributions()
         assert model.n_marg == model.get_len_marginal_distributions()

@@ -15,14 +15,14 @@ class Maximum(Distribution):
     :Attributes:
       - name (str):             Name of the random variable\n
       - mean (float):           Mean\n
-      - stdv (float):           Standard deviation\n
+      - std (float):           Standard deviation\n
       - parent (Distribution):  Parent distribution object
       - N (float):              Power to which distribution is raised
-      - input_type (any):       Change meaning of mean and stdv\n
-      - startpoint (float):     Start point for seach\n
+      - input_type (any):       Change meaning of mean and std\n
+      - start_point (float):     Start point for seach\n
     """
 
-    def __init__(self, name, parent, N, input_type=None, startpoint=None):
+    def __init__(self, name, parent, N, input_type=None, start_point=None):
         if not isinstance(parent, Distribution):
             raise ModelError(
                 f"Maximum parent requires input of type {type(Distribution)}"
@@ -37,8 +37,8 @@ class Maximum(Distribution):
         super().__init__(
             name=name,
             mean=m,
-            stdv=s,
-            startpoint=startpoint,
+            std=s,
+            start_point=start_point,
         )
 
         self.dist_type = "Maximum"
@@ -97,16 +97,16 @@ class Maximum(Distribution):
 
     def _get_stats(self):
         """
-        Since the closed form expression of mean and stdv for the distribution of the
+        Since the closed form expression of mean and std for the distribution of the
         maxima from a parent distribution is complex, and since we really only need
         them for default starting points, just estimate through simulation.
         """
         p = np.random.random(100)
         x = self.ppf(p)
         mean = x.mean()
-        stdv = x.std()
+        std = x.std()
 
-        return mean, stdv
+        return mean, std
 
     def set_location(self, loc=0):
         """
@@ -124,9 +124,9 @@ class Maximum(Distribution):
 
     def update_stats(self):
         """
-        Updates the mean and stdv estimates - used for sensitivity analysis
+        Updates the mean and std estimates - used for sensitivity analysis
         where the parent distribution params may change after instantiation
         """
         m, s = self._get_stats()
-        self.mean = m
-        self.stdv = s
+        self._mean = m
+        self._std = s

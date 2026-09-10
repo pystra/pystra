@@ -166,7 +166,7 @@ class FORM(AnalysisObject):
         x = np.array([])
         marg = self.model.get_marginal_distributions()
         for i in range(len(marg)):
-            x = np.append(x, marg[i].get_start_point())
+            x = np.append(x, marg[i].start_point)
         self._u = self.transform.x_to_u(x, marg)
 
     def _compute_transformation(self):

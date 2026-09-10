@@ -53,8 +53,8 @@ def rho_integral(rho0, margi, margj, Z1, Z2, X1, X2, WIP, detJ):
     )
     rho = np.sum(
         np.sum(
-            ((X1 - margi.mean) / margi.stdv)
-            * ((X2 - margj.mean) / margj.stdv)
+            ((X1 - margi.mean) / margi.std)
+            * ((X2 - margj.mean) / margj.std)
             * PHI2
             * detJ
             * WIP
@@ -190,7 +190,7 @@ def drho_drho0(rho0, margi, margj, Z1, Z2, X1, X2, WIP, detJ):
     PHI2 = _phi2(Z1, Z2, rho0)
     dPHI2 = _dphi2_drho0(Z1, Z2, rho0, PHI2)
 
-    H = ((X1 - margi.mean) / margi.stdv) * ((X2 - margj.mean) / margj.stdv)
+    H = ((X1 - margi.mean) / margi.std) * ((X2 - margj.mean) / margj.std)
     return np.sum(H * dPHI2 * detJ * WIP)
 
 
@@ -250,15 +250,15 @@ def drho0_dtheta(rho0, margi, margj, Z1, Z2, X1, X2, WIP, detJ, var_idx, param):
     """
     PHI2 = _phi2(Z1, Z2, rho0)
 
-    H_i = (X1 - margi.mean) / margi.stdv
-    H_j = (X2 - margj.mean) / margj.stdv
+    H_i = (X1 - margi.mean) / margi.std
+    H_j = (X2 - margj.mean) / margj.std
 
     if var_idx == 0:
         dist, X, H_this, H_other = margi, X1, H_i, H_j
     else:
         dist, X, H_this, H_other = margj, X2, H_j, H_i
 
-    sigma = dist.stdv
+    sigma = dist.std
 
     # ∂X/∂θ_k = -(∂F(X)/∂θ_k) / f(X)
     dF = dist.cdf_gradient(X)

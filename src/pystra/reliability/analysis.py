@@ -100,6 +100,10 @@ class AnalysisObject:
         self._results_valid = False
         self._n_evaluations = 0
 
+    def __repr__(self):
+        names = tuple(self.model.get_variables())
+        return f"{type(self).__name__}(variables={names!r}, options={self.options!r})"
+
     def _dependence(self):
         """Return the ``(transform, rosenblatt_order)`` settings for this run."""
         return self.options.transform, self.options.rosenblatt_order

@@ -261,19 +261,19 @@ class TestSensitivityParams:
     @pytest.mark.parametrize(
         "cls,kwargs",
         [
-            (Normal, {"mean": 10, "stdv": 2}),
-            (Lognormal, {"mean": 10, "stdv": 2}),
-            (Uniform, {"mean": 5, "stdv": 0.5}),
-            (Gamma, {"mean": 10, "stdv": 2}),
-            (GEV, {"mean": 100, "stdv": 20, "shape": 0.1}),
-            (GEVMin, {"mean": 100, "stdv": 20, "shape": 0.1}),
+            (Normal, {"mean": 10, "std": 2}),
+            (Lognormal, {"mean": 10, "std": 2}),
+            (Uniform, {"mean": 5, "std": 0.5}),
+            (Gamma, {"mean": 10, "std": 2}),
+            (GEV, {"mean": 100, "std": 20, "shape": 0.1}),
+            (GEVMin, {"mean": 100, "std": 20, "shape": 0.1}),
         ],
     )
     def test_make_copy_roundtrip(self, cls, kwargs):
         """_make_copy() with no overrides reproduces the original."""
         dist = cls("X", **kwargs)
         copy = dist._make_copy()
-        x_test = dist.mean + 0.5 * dist.stdv
+        x_test = dist.mean + 0.5 * dist.std
         assert copy.cdf(x_test) == pytest.approx(dist.cdf(x_test), abs=1e-8)
 
     def test_make_copy_beta_with_bounds(self):
@@ -295,7 +295,7 @@ class TestSensitivityParams:
         dist = Normal("X", 10, 2)
         perturbed = dist._make_copy(mean=10.1)
         assert perturbed.mean == pytest.approx(10.1)
-        assert perturbed.stdv == pytest.approx(2.0)
+        assert perturbed.std == pytest.approx(2.0)
 
     def test_make_copy_perturbed_shape(self):
         """_make_copy with perturbed shape for GEV works correctly."""

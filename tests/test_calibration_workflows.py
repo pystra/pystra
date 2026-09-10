@@ -223,7 +223,7 @@ def test_design_parameter_can_be_renamed_and_start_at_target(method):
         initial_value=solved.designs[0].design_value,
     )
     assert repeated.converged
-    assert renamed.constants["scale"].get_value() == 1
+    assert renamed.constants["scale"].value == 1
 
 
 @pytest.mark.parametrize(

@@ -467,6 +467,35 @@ record now has status ``"not_converged"`` and no estimate, and ``run()``
 raises it in an ``AnalysisError`` unless ``on_failure="return"``. Likewise, an
 undefined modified Breitung probability is ``None``.
 
+Models and distributions
+------------------------
+
+Distributions take ``std`` and ``start_point`` in place of ``stdv`` and
+``startpoint``, and ``mean``, ``std`` and ``start_point`` are read-only
+properties.
+
+.. list-table::
+   :header-rows: 1
+
+   * - 1.x
+     - 2.0
+   * - ``Normal("R", 10, stdv=1)``
+     - ``Normal("R", 10, std=1)``
+   * - ``dist.getMean()``, ``dist.getStdv()``, ``dist.stdv``
+     - ``dist.mean``, ``dist.std``
+   * - ``startpoint=...``, ``dist.getStartPoint()``
+     - ``start_point=...``, ``dist.start_point``
+   * - ``Constant(name, val=...)``, ``constant.getValue()``
+     - ``Constant(name, value=...)``, ``constant.value``
+   * - ``model.getVariable(name)``
+     - ``model.variable(name)``
+   * - ``model.getConstants()``
+     - ``model.constants``, a read-only mapping
+
+Distributions, constants and models print informatively, for example
+``Normal('R', mean=10, std=1)``. Construction from a distribution's native
+parameters still uses ``input_type`` in this release.
+
 Correlation matrices
 --------------------
 

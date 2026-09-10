@@ -19,14 +19,14 @@ class ZeroInflated(Distribution):
     :Attributes:
       - name (str):             Name of the random variable\n
       - mean (float):           Mean\n
-      - stdv (float):           Standard deviation\n
+      - std (float):           Standard deviation\n
       - dist (Distribution):    Distribution to zero-inflate
       - p (float):              Probability of zero
-      - input_type (any):       Change meaning of mean and stdv\n
-      - startpoint (float):     Start point for seach\n
+      - input_type (any):       Change meaning of mean and std\n
+      - start_point (float):     Start point for seach\n
     """
 
-    def __init__(self, name, dist, p, input_type=None, startpoint=None):
+    def __init__(self, name, dist, p, input_type=None, start_point=None):
         if not isinstance(dist, Distribution):
             raise ModelError(
                 f"ZeroInflated distribution requires input of type {type(Distribution)}"
@@ -45,8 +45,8 @@ class ZeroInflated(Distribution):
         super().__init__(
             name=name,
             mean=m,
-            stdv=s,
-            startpoint=startpoint,
+            std=s,
+            start_point=start_point,
         )
 
         self.dist_type = "ZeroInflated"
@@ -128,7 +128,7 @@ class ZeroInflated(Distribution):
 
     def _get_stats(self):
         """
-        Since the closed form expression of mean and stdv for the distribution of the
+        Since the closed form expression of mean and std for the distribution of the
         parent from a maximum distribution is complex, and since we really only need
         them for default starting points, just estimate through simulation.
 
@@ -138,9 +138,9 @@ class ZeroInflated(Distribution):
         """
 
         mean = self.q * self.dist.mean
-        stdv = np.sqrt(self.q * self.dist.stdv**2 + self.p * self.q * self.dist.mean**2)
+        std = np.sqrt(self.q * self.dist.std**2 + self.p * self.q * self.dist.mean**2)
 
-        return mean, stdv
+        return mean, std
 
     def set_location(self, loc=0):
         """
@@ -166,9 +166,9 @@ class ZeroInflated(Distribution):
 
     def _update_stats(self):
         """
-        Updates the mean and stdv estimates - used for sensitivity analysis
+        Updates the mean and std estimates - used for sensitivity analysis
         where the parent distribution params may change after instantiation
         """
         m, s = self._get_stats()
-        self.mean = m
-        self.stdv = s
+        self._mean = m
+        self._std = s

@@ -16,24 +16,24 @@ class Frechet(Distribution):
     :Attributes:
       - name (str):   Name of the random variable\n
       - mean (float): Mean or u_n\n
-      - stdv (float): Standard deviation or k\n
-      - input_type (any): Change meaning of mean and stdv\n
-      - startpoint (float): Start point for seach\n
+      - std (float): Standard deviation or k\n
+      - input_type (any): Change meaning of mean and std\n
+      - start_point (float): Start point for seach\n
     """
 
-    def __init__(self, name, mean, stdv, input_type=None, startpoint=None):
+    def __init__(self, name, mean, std, input_type=None, start_point=None):
         if input_type is None:
             parameter_guess = [2.000001]
             par = opt.fsolve(
                 self.frechet_parameter,
                 parameter_guess,
-                args=(mean, stdv),
+                args=(mean, std),
             )
             k = par[0]
             u_n = mean / (spec.gamma(1 - 1 / k))
         else:
             u_n = mean
-            k = stdv
+            k = std
 
         # Fréchet CDF: F(x) = exp(-(x/u_n)^{-k}), x > 0.
         # SciPy invweibull CDF: F(x) = exp(-((x-loc)/scale)^{-c}).
@@ -43,14 +43,14 @@ class Frechet(Distribution):
         super().__init__(
             name=name,
             dist_obj=self.dist_obj,
-            startpoint=startpoint,
+            start_point=start_point,
         )
 
         self.dist_type = "Frechet"
 
     def frechet_parameter(self, x, *args):
-        mean, stdv = args
+        mean, std = args
         f = (spec.gamma(1 - 2 / x) - (spec.gamma(1 - 1 / x)) ** 2) ** 0.5 - (
-            stdv / mean
+            std / mean
         ) * spec.gamma(1 - 1 / x)
         return f

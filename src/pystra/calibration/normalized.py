@@ -111,7 +111,7 @@ class NormalizedReliabilityModel:
             if not isinstance(value, (Distribution, Constant)):
                 raise TypeError(f"{name} must be a Distribution or Constant")
             if isinstance(value, Constant) and not np.all(
-                np.isfinite(np.asarray(value.get_value(), dtype=float))
+                np.isfinite(np.asarray(value.value, dtype=float))
             ):
                 raise ValueError(f"{name} must have a finite value")
             object.__setattr__(self, name, deepcopy(value))
