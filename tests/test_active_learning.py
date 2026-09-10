@@ -167,7 +167,7 @@ def test_standard_benchmarks(problem, surrogate, learning, seed):
         learning_threshold=3 if nonsmooth_pce else None,
         n_candidates=12_000,
         n_estimation=100_000,
-        seed=seed,
+        rng=seed,
         max_iterations=180,
     )
     result = analysis.run()
@@ -219,7 +219,7 @@ def test_result_snapshot_seed_and_independent_estimation():
         model=model,
         limit_state=ra.LimitState(lambda x: 2 - x),
         surrogate=surrogate,
-        seed=12,
+        rng=12,
     )
     state = np.random.get_state()
     result = analysis.run()
@@ -250,7 +250,7 @@ def test_budget_and_candidate_exhaustion_do_not_repeat_points():
         surrogate=surrogate,
         n_candidates=3,
         max_iterations=5,
-        seed=1,
+        rng=1,
     )
     with pytest.warns(RuntimeWarning, match="candidate_exhaustion"):
         result = analysis.run()
@@ -301,7 +301,7 @@ def test_pce_correlated_lognormals_use_independent_normal_coordinates(method):
         limit_state=ra.LimitState(lambda x, y: 2.6 - np.log(x * y)),
         surrogate="pce",
         surrogate_kwargs={"degree": 1},
-        seed=21,
+        rng=21,
     )
     result = analysis.run()
     assert result.converged
@@ -338,7 +338,7 @@ def test_final_sampling_precision_is_separate_from_learning():
         limit_state=ra.LimitState(lambda x: 2 - x),
         surrogate=ExactLinear(),
         n_estimation=10,
-        seed=1,
+        rng=1,
     )
     with pytest.warns(RuntimeWarning, match="sampling_precision"):
         result = analysis.run()

@@ -18,14 +18,23 @@ class ImportanceSampling(CrudeMonteCarlo):
     other methods can be performed. One commonly applied method is the
     Importance Sampling simulation method (IS).
 
-    :Attributes:
-      - analysis_option (AnalysisOption): Option for the structural analysis
-      - limit_state (LimitState): Information about the limit state
-      - stochastic_model (StochasticModel): Information about the model
+    Parameters
+    ----------
+    model : StochasticModel
+    limit_state : LimitState
+    options : SimulationOptions, optional
+    rng : int, numpy.random.Generator or None, optional
+        Random source; NumPy's global generator is not used. A seed recreates
+        the same stream on every run, a generator advances its own state, and
+        None draws fresh entropy.
+    form : FORM, optional
+        A completed FORM analysis whose design point centres the samples. If
+        None, :meth:`run` first runs FORM with this analysis's block size and
+        transformation.
     """
 
-    def __init__(self, model, limit_state, *, options=None, form=None):
-        super().__init__(model, limit_state, options=options)
+    def __init__(self, model, limit_state, *, options=None, form=None, rng=None):
+        super().__init__(model, limit_state, options=options, rng=rng)
         if form is not None and not isinstance(form, FORM):
             raise TypeError("form must be a FORM analysis")
         self.form = form

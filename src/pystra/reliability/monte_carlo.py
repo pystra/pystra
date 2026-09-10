@@ -3,7 +3,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from .analysis import AnalysisObject
+from .analysis import AnalysisObject, _check_rng, _generator
 from ..distributions import StdNormal
 from ..dependence.correlation import compute_modified_correlation_matrix
 from ..options import SimulationOptions
@@ -36,18 +36,24 @@ class MonteCarlo(AnalysisObject):
     of undesired configurations, respected to the total numbers of
     samples. [Lemaire2010]_
 
-    :Attributes:
-      - analysis_option (AnalysisOption): Option for the structural analysis
-      - limit_state (LimitState): Information about the limit state
-      - stochastic_model (StochasticModel): Information about the model
+    Parameters
+    ----------
+    model : StochasticModel
+    limit_state : LimitState
+    options : SimulationOptions, optional
+    rng : int, numpy.random.Generator or None, optional
+        Random source; NumPy's global generator is not used. A seed recreates
+        the same stream on every run, a generator advances its own state, and
+        None draws fresh entropy.
     """
 
     _options_type = SimulationOptions
     _unused_options = ("bins",)
 
-    def __init__(self, model, limit_state, *, options=None):
+    def __init__(self, model, limit_state, *, options=None, rng=None):
         super().__init__(model, limit_state, options)
         self.options._require_defaults(type(self).__name__, self._unused_options)
+        self.rng = _check_rng(rng)
 
         self.nrv = self.model.get_len_marginal_distributions()
         self.point = None
@@ -90,7 +96,8 @@ class MonteCarlo(AnalysisObject):
     def compute_random_numbers(self):
         """Compute random numbers"""
         self.u = np.dot(self.point, [np.ones(self.block_size)]) + np.dot(
-            self.cholesky_covariance, np.random.randn(self.nrv, self.block_size)
+            self.cholesky_covariance,
+            self._random.standard_normal((self.nrv, self.block_size)),
         )
 
     def compute_transformation(self):
@@ -244,15 +251,22 @@ class CrudeMonteCarlo(MonteCarlo):
     limited; therefore, a suitable amount of simulations :math:`n` are required
     to achieve an acceptable level of accuracy.
 
-    :Attributes:
-      - analysis_option (AnalysisOption): Option for the structural analysis
-      - limit_state (LimitState): Information about the limit state
-      - stochastic_model (StochasticModel): Information about the model
-      - point (vec): Design point for the simulation
+    Parameters
+    ----------
+    model : StochasticModel
+    limit_state : LimitState
+    options : SimulationOptions, optional
+    rng : int, numpy.random.Generator or None, optional
+        Random source; NumPy's global generator is not used. A seed recreates
+        the same stream on every run, a generator advances its own state, and
+        None draws fresh entropy.
+    point : ndarray, optional
+        Centre of the sampling density in standard coordinates; the origin
+        by default.
     """
 
-    def __init__(self, model, limit_state, *, options=None, point=None):
-        super().__init__(model, limit_state, options=options)
+    def __init__(self, model, limit_state, *, options=None, point=None, rng=None):
+        super().__init__(model, limit_state, options=options, rng=rng)
         self.point = point
 
     def run(self):
@@ -260,6 +274,7 @@ class CrudeMonteCarlo(MonteCarlo):
         self.results_valid = True
 
         self.init_run()
+        self._random = _generator(self.rng)
 
         # Set point for crude Monte Carlo / importance sampling
         self.set_point(self.point)
@@ -448,22 +463,28 @@ class DistributionAnalysis(MonteCarlo):
     numerical distribution analysis based on Monte Carlo simulation can be
     performed.
 
-    :Attributes:
-      - analysis_option (AnalysisOption): Option for the structural analysis
-      - limit_state (LimitState): Information about the limit state
-      - stochastic_model (StochasticModel): Information about the model
+    Parameters
+    ----------
+    model : StochasticModel
+    limit_state : LimitState
+    options : SimulationOptions, optional
+    rng : int, numpy.random.Generator or None, optional
+        Random source; NumPy's global generator is not used. A seed recreates
+        the same stream on every run, a generator advances its own state, and
+        None draws fresh entropy.
     """
 
     _unused_options = ("target_cov",)
 
-    def __init__(self, model, limit_state, *, options=None):
-        super().__init__(model, limit_state, options=options)
+    def __init__(self, model, limit_state, *, options=None, rng=None):
+        super().__init__(model, limit_state, options=options, rng=rng)
 
     def run(self):
         """Sample the model and return a :class:`DistributionAnalysisResult`."""
         self.results_valid = True
 
         self.init_run()
+        self._random = _generator(self.rng)
 
         # Set point for crude Monte Carlo / importance sampling
         self.set_point()

@@ -176,7 +176,7 @@ def test_literature_active_pce(problem, seed):
         stopping_criterion=AllCriteria(
             criteria=(BetaBounds(consecutive=2), BetaStability(consecutive=2))
         ),
-        seed=seed,
+        rng=seed,
     )
     result = analysis.run()
     assert result.converged, result.status

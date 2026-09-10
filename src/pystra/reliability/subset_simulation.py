@@ -4,7 +4,7 @@
 import numpy as np
 from scipy.stats import norm as scipy_norm
 
-from .analysis import AnalysisObject
+from .analysis import AnalysisObject, _check_rng, _generator
 from ..options import SimulationOptions
 from ..results import SimulationResult
 
@@ -40,6 +40,10 @@ class SubsetSimulation(AnalysisObject):
     proposal_sigma : float, optional
         Half-width of the uniform proposal kernel used in MMH, measured in
         standard-deviation units of the standard-normal space (default 1.0).
+    rng : int, numpy.random.Generator or None, optional
+        Random source; NumPy's global generator is not used. A seed recreates
+        the same stream on every run, a generator advances its own state, and
+        None draws fresh entropy.
 
     Attributes
     ----------
@@ -70,8 +74,11 @@ class SubsetSimulation(AnalysisObject):
 
     _options_type = SimulationOptions
 
-    def __init__(self, model, limit_state, *, options=None, p0=0.1, proposal_sigma=1.0):
+    def __init__(
+        self, model, limit_state, *, options=None, p0=0.1, proposal_sigma=1.0, rng=None
+    ):
         super().__init__(model, limit_state, options)
+        self.rng = _check_rng(rng)
         self.options._require_defaults(
             "SubsetSimulation", ("target_cov", "sampling_std", "bins")
         )
@@ -90,6 +97,7 @@ class SubsetSimulation(AnalysisObject):
         """Run subset simulation and return a :class:`SimulationResult`."""
         self.results_valid = True
         self.init_run()
+        self._random = _generator(self.rng)
 
         nrv = self.model.get_len_marginal_distributions()
         marg = self.model.get_marginal_distributions()
@@ -102,7 +110,7 @@ class SubsetSimulation(AnalysisObject):
         # ---------------------------------------------------------------
         # Level 0: direct Monte Carlo from the prior N(0, I)
         # ---------------------------------------------------------------
-        u = np.random.randn(nrv, N)
+        u = self._random.standard_normal((nrv, N))
         G = self._eval_g_batch(u, marg)
 
         # y_1 = p0-th quantile of G (the p0 fraction closest to failure G<0)
@@ -253,11 +261,11 @@ class SubsetSimulation(AnalysisObject):
                 # Component-wise Metropolis step with uniform proposal
                 u_prop = u_curr.copy()
                 for d in range(nrv):
-                    xi = u_curr[d] + sigma * np.random.uniform(-1.0, 1.0)
+                    xi = u_curr[d] + sigma * self._random.uniform(-1.0, 1.0)
                     # Accept with min(1, phi(xi)/phi(u_curr[d]))
                     # = min(1, exp(-0.5*(xi^2 - u_curr[d]^2)))
                     log_alpha = -0.5 * (xi**2 - u_curr[d] ** 2)
-                    if np.log(np.random.rand()) < log_alpha:
+                    if np.log(self._random.random()) < log_alpha:
                         u_prop[d] = xi
 
                 # Accept the joint proposal if it stays in the conditional region

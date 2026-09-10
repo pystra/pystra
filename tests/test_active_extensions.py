@@ -370,7 +370,7 @@ def test_active_importance_benchmarks(name, seed):
         stopping_criterion=AllCriteria(
             criteria=(BetaBounds(consecutive=2), BetaStability(consecutive=2))
         ),
-        seed=seed,
+        rng=seed,
     )
     pytest.importorskip("sklearn")
     result = analysis.run()
@@ -409,7 +409,7 @@ def test_four_branch_pc_kriging(seed):
         ),
         learning_threshold=3,
         max_iterations=200,
-        seed=seed,
+        rng=seed,
     )
     result = analysis.run()
     assert result.converged and result.n_evaluations < 251
@@ -458,7 +458,7 @@ def test_fbr_lognormal_beam(seed):
         learning_function="fbr",
         n_candidates=20000,
         n_estimation=100000,
-        seed=seed,
+        rng=seed,
     )
     result = analysis.run()
     assert result.converged and result.n_evaluations < 100
@@ -525,7 +525,7 @@ def test_fbr_four_branch_reports_budget_exhaustion():
         limit_state=ra.LimitState(function),
         surrogate="pce",
         learning_function="fbr",
-        seed=7,
+        rng=7,
         n_initial=30,
         max_iterations=3,
         stopping_criterion=BootstrapBounds(tolerance=0.001),

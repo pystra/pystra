@@ -60,7 +60,7 @@ def test_three_dimensional_cap_area():
 
 
 def test_linear_plane_has_no_competing_region_and_partitions_sample():
-    result = raw(point_number=1000, seed=17)
+    result = raw(point_number=1000, rng=17)
     result.run()
     assert result.status == "no_competing_region_detected"
     assert not result.has_competing_points
@@ -76,7 +76,7 @@ def test_linear_plane_has_no_competing_region_and_partitions_sample():
 
 
 def test_two_equal_modes_are_detected():
-    result = raw(lambda X0, **kwargs: 9 - X0**2, point_number=500, seed=3)
+    result = raw(lambda X0, **kwargs: 9 - X0**2, point_number=500, rng=3)
     result.run()
     assert result.has_competing_points
     assert np.all(result.get_points()[:, 0] < -3)
@@ -91,7 +91,7 @@ def test_openturns_two_branch_event_detects_other_region():
         importance_level=0.01,
         accuracy_level=2,
         confidence_level=0.999999,
-        seed=5,
+        rng=5,
     )
     result.run()
     assert result.has_competing_points
@@ -109,7 +109,7 @@ def test_post_form_reuses_correlated_transform_without_mutating_evaluator():
     )
     form.run()
     design = form.get_design_point().copy()
-    result = ra.StrongMaximumTest(form, point_number=200, seed=2)
+    result = ra.StrongMaximumTest(form, point_number=200, rng=2)
     result.run()
     assert not result.has_competing_points
     # The limit state keeps no evaluation state that the test could mutate.
@@ -126,8 +126,8 @@ def test_post_form_reuses_correlated_transform_without_mutating_evaluator():
 
 def test_reproducible_local_rng_and_block_size():
     state = np.random.get_state()
-    a = raw(point_number=120, seed=9)
-    b = raw(point_number=120, seed=9, options=ra.FORMOptions(block_size=7))
+    a = raw(point_number=120, rng=9)
+    b = raw(point_number=120, rng=9, options=ra.FORMOptions(block_size=7))
     a.run()
     b.run()
     np.testing.assert_allclose(a.u_points, b.u_points)
@@ -138,7 +138,7 @@ def test_reproducible_local_rng_and_block_size():
 
 
 def test_one_dimension():
-    result = raw(dimension=1, point_number=20, seed=2)
+    result = raw(dimension=1, point_number=20, rng=2)
     result.run()
     assert result.cap_probability == 0.5
     np.testing.assert_allclose(np.abs(result.u_points[:, 0]), result.radius)
@@ -147,7 +147,7 @@ def test_one_dimension():
 
 def test_bounded_island_illustrates_no_global_certificate():
     result = raw(
-        lambda X0, X1: (X0 - 3) ** 2 + X1**2 - 0.25, beta=2.5, point_number=100, seed=4
+        lambda X0, X1: (X0 - 3) ** 2 + X1**2 - 0.25, beta=2.5, point_number=100, rng=4
     )
     result.run()
     assert result.radius > 3.5
@@ -189,7 +189,7 @@ def test_budget_is_checked_before_model_evaluations():
 
 
 def test_bad_candidate_and_failed_rerun():
-    result = raw(point_number=10, seed=2)
+    result = raw(point_number=10, rng=2)
     result.run()
     result.limitstate.expression = lambda **kwargs: np.nan
     with pytest.raises(ValueError, match="Nonfinite"):
@@ -220,7 +220,7 @@ def test_non_normal_post_form_evaluates_original_physical_function():
         limit_state=ra.LimitState(lambda R, S, C: C - np.log(R)),
     )
     form.run()
-    check = ra.StrongMaximumTest(form, point_number=100, seed=12)
+    check = ra.StrongMaximumTest(form, point_number=100, rng=12)
     check.run()
     np.testing.assert_allclose(check.values, 3 - np.log(check.x_points[:, 0]))
     np.testing.assert_allclose(
@@ -230,8 +230,8 @@ def test_non_normal_post_form_evaluates_original_physical_function():
 
 
 def test_positive_scaling_preserves_diagnostic():
-    a = raw(lambda X0, **kw: 9 - X0**2, point_number=100, seed=7)
-    b = raw(lambda X0, **kw: 1e-5 * (9 - X0**2), point_number=100, seed=7)
+    a = raw(lambda X0, **kw: 9 - X0**2, point_number=100, rng=7)
+    b = raw(lambda X0, **kw: 1e-5 * (9 - X0**2), point_number=100, rng=7)
     a.run()
     b.run()
     for name in a.masks:

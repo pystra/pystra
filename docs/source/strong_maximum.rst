@@ -35,7 +35,7 @@ After FORM
 
    check = ra.StrongMaximumTest(
        form, importance_level=0.15, accuracy_level=3.0,
-       confidence_level=0.99, seed=2026,
+       confidence_level=0.99, rng=2026,
    )
    print(check.point_number)  # cost is available before run()
    check.run()
@@ -58,7 +58,7 @@ Alternatively, specify a point explicitly:
        model=model,
        limit_state=ra.LimitState(lambda X, Y: 9.0 - X**2),
        design_point=[3.0, 0.0],
-       point_number=500, seed=2026,
+       point_number=500, rng=2026,
    )
    check.run()
    print(check.status)  # competing_region_detected: also fails for X < -3
@@ -136,9 +136,10 @@ Cost and interpretation
 raises before allocating the sample or calling the model. It does not silently
 reduce the confidence. Each successful run also evaluates the origin and
 candidate, for ``point_number + 2`` sample-point evaluations in total. Samples
-are retained, so storage is proportional to ``point_number * nrv``. A seeded
-local NumPy generator makes fresh test instances reproducible without changing
-the global random stream; rerunning an instance advances its generator.
+are retained, so storage is proportional to ``point_number * nrv``. An integer
+``rng`` reproduces the same sphere sample on every run without changing the
+global random stream; a supplied ``numpy.random.Generator`` advances with each
+run.
 
 For :math:`\beta=3`, :math:`\varepsilon=0.15`, :math:`\tau=3` and 0.99 nominal
 confidence, the required counts are 111 in five dimensions, 1297 in ten and
@@ -171,7 +172,7 @@ Run the check separately on the component ``FORM`` objects retained by
    # system_form is an already-run ra.SystemFORM object
    checks = {}
    for name, component_form in system_form.component_results.items():
-       test = ra.StrongMaximumTest(component_form, point_number=1000, seed=2026)
+       test = ra.StrongMaximumTest(component_form, point_number=1000, rng=2026)
        test.run()
        checks[name] = test
 

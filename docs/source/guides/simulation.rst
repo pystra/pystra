@@ -9,10 +9,11 @@ in :doc:`/notebooks/ex_simulation`.
 Budget a direct Monte Carlo run
 -------------------------------
 
-``set_samples`` sets the maximum sample budget for crude Monte Carlo;
-``target_cov`` can terminate the run earlier when its precision criterion
-is met. For a reproducible illustration, these classical samplers use NumPy's
-global random state. Record the seed and actual evaluation count in a study.
+``SimulationOptions(n_samples=...)`` sets the maximum sample budget for crude
+Monte Carlo; ``target_cov`` can end the run earlier when its precision
+criterion is met. Pass ``rng`` a seed for a reproducible run; NumPy's global
+random state is neither used nor changed. Record the seed and actual
+evaluation count in a study.
 
 .. testcode:: simulation
 
@@ -23,9 +24,8 @@ global random state. Record the seed and actual evaluation count in a study.
    model.add_variable(ra.Normal("R", 3.0, 1.0))
    model.add_variable(ra.Normal("S", 0.0, 1.0))
    options = ra.SimulationOptions(n_samples=20_000, target_cov=0.05)
-   np.random.seed(2026)
    analysis = ra.CrudeMonteCarlo(
-       model, ra.LimitState(lambda R, S: R - S), options=options
+       model, ra.LimitState(lambda R, S: R - S), options=options, rng=2026
    )
    result = analysis.run()
    assert result.status in ("completed", "precision_not_met")

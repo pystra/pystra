@@ -153,7 +153,7 @@ def test_pce_selection_retains_zero_and_reports_unidentifiable_candidates():
 
 def test_strong_maximum_uses_completed_sample_without_new_draws():
     form, _ = normal_form()
-    analysis = ra.StrongMaximumTest(form, point_number=40, seed=71)
+    analysis = ra.StrongMaximumTest(form, point_number=40, rng=71)
     with pytest.raises(ValueError, match="completed two-dimensional"):
         ra.plotting.plot_strong_maximum(analysis)
     analysis.run()

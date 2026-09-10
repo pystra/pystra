@@ -224,7 +224,7 @@ def test_resampling_after_each_fit_separates_probability_and_selection():
         surrogate=surrogate,
         estimator=estimator,
         stopping_criterion=BetaStability(consecutive=2),
-        seed=7,
+        rng=7,
     )
     state = np.random.get_state()
     result = analysis.run()
@@ -310,7 +310,7 @@ def test_active_kriging_subset_benchmarks(problem, seed):
                 BetaStability(consecutive=2, target_cov=0.25),
             )
         ),
-        seed=seed,
+        rng=seed,
         max_iterations=200,
     )
     result = analysis.run()
@@ -376,7 +376,7 @@ def test_adaptive_subset_respects_dependent_physical_marginals(method):
         surrogate_kwargs={"degree": 1},
         estimator=SubsetSimulationEstimator(),
         target_cov=0.3,
-        seed=21,
+        rng=21,
     )
     result = analysis.run()
     assert result.converged

@@ -374,6 +374,31 @@ and pass it.
 ffd_parameter=1000, block_size=1000)`` takes explicit settings instead of an
 options object.
 
+Randomness
+----------
+
+Crude Monte Carlo, importance sampling, distribution analysis, line sampling
+and subset simulation drew from NumPy's global random state, so
+``np.random.seed`` controlled them. They now take ``rng``, as do
+``StrongMaximumTest`` and ``ActiveLearning``, where it replaces ``seed``:
+
+.. code-block:: python
+
+    # 1.x
+    np.random.seed(2026)
+    analysis = ra.CrudeMonteCarlo(...)
+
+    # 2.0
+    analysis = ra.CrudeMonteCarlo(model, limit_state, rng=2026)
+
+``rng`` accepts a seed, a ``numpy.random.Generator`` or ``None``. An integer
+seed recreates the same stream on every ``run()``; a generator advances its own
+state, so successive runs differ; ``None`` draws fresh entropy. The global
+random state is neither used nor changed. The streams differ from 1.x, so a
+seeded 1.x estimate is not reproduced exactly, but agrees within its sampling
+error. A ``StrongMaximumTest`` given an integer seed now repeats its sphere
+sample on each run instead of advancing.
+
 Result records
 --------------
 

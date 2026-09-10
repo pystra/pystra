@@ -129,6 +129,11 @@ Changed
   ``SensitivityAnalysis`` takes its method and step, and ``SystemFORM`` takes
   the model first. SORM, importance sampling and line sampling run FORM in
   ``run()``, not when constructed, and SORM's fit is an option.
+- The simulation methods take ``rng`` (a seed, a ``Generator`` or ``None``)
+  instead of using NumPy's global random state, and ``StrongMaximumTest`` and
+  ``ActiveLearning`` rename ``seed`` to ``rng``. An integer seed repeats its
+  stream on every run. Seeded simulation results differ from 1.x within
+  sampling error.
 - In the result records, a SORM fit whose curvatures leave Breitung's formula
   undefined has no estimate and status ``not_converged``, where 1.x reported
   0.0; a simulation without failures has an infinite coefficient of variation.

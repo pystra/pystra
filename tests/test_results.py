@@ -146,11 +146,11 @@ def test_sorm_keeps_breitung_when_only_the_modified_formula_is_undefined(capsys)
 
 
 def crude(samples, offset=3.0, target_cov=None, seed=11):
-    np.random.seed(seed)
     analysis = ra.CrudeMonteCarlo(
         options=options(samples, target_cov),
         limit_state=margin(offset),
         model=normal_model(),
+        rng=seed,
     )
     return analysis, analysis.run()
 
@@ -179,11 +179,12 @@ def test_simulation_without_failures_has_infinite_coefficient_of_variation():
 
 
 def test_importance_and_line_sampling_record_their_form_point():
-    np.random.seed(5)
+    rng = np.random.default_rng(5)
     importance = ra.ImportanceSampling(
         options=options(2000),
         limit_state=margin(),
         model=normal_model(),
+        rng=rng,
     )
     result = importance.run()
     assert result.method == "ImportanceSampling"
@@ -195,6 +196,7 @@ def test_importance_and_line_sampling_record_their_form_point():
         options=options(50),
         limit_state=margin(),
         model=normal_model(),
+        rng=rng,
     )
     result = lines.run()
     assert (result.method, result.status) == ("LineSampling", "completed")
@@ -206,11 +208,11 @@ def test_importance_and_line_sampling_record_their_form_point():
 
 
 def test_subset_simulation_records_its_levels():
-    np.random.seed(7)
     analysis = ra.SubsetSimulation(
         options=options(500),
         limit_state=margin(),
         model=normal_model(),
+        rng=7,
     )
     result = analysis.run()
     levels = result.diagnostics
@@ -233,11 +235,11 @@ def test_simulation_records_survive_pickling():
 
 
 def test_distribution_analysis_returns_its_samples():
-    np.random.seed(9)
     analysis = ra.DistributionAnalysis(
         options=options(300),
         limit_state=margin(),
         model=normal_model(),
+        rng=9,
     )
     result = analysis.run()
     assert isinstance(result, ra.DistributionAnalysisResult)
@@ -292,7 +294,7 @@ def test_sensitivity_result_holds_read_only_derivatives(numerical):
 
 def test_strong_maximum_result_is_a_diagnostic_record():
     analysis, _ = form()
-    test = ra.StrongMaximumTest(analysis, point_number=200, seed=3)
+    test = ra.StrongMaximumTest(analysis, point_number=200, rng=3)
     result = test.run()
     assert isinstance(result, ra.StrongMaximumResult) and result.status == "completed"
     assert (

@@ -50,7 +50,6 @@ def standard_3rv_model():
 
 def test_ls_simple_rs():
     """Line Sampling on R - S problem should give beta close to analytical."""
-    np.random.seed(42)
     model, limit_state, options = simple_rs_model()
     options = ra.SimulationOptions(n_samples=2000)
 
@@ -58,6 +57,7 @@ def test_ls_simple_rs():
         options=options,
         model=model,
         limit_state=limit_state,
+        rng=42,
     )
     analysis.run()
 
@@ -71,7 +71,6 @@ def test_ls_simple_rs():
 
 def test_ls_alpha_is_unit_vector():
     """After run(), alpha must be a unit vector."""
-    np.random.seed(0)
     model, limit_state, options = simple_rs_model()
     options = ra.SimulationOptions(n_samples=500)
 
@@ -79,6 +78,7 @@ def test_ls_alpha_is_unit_vector():
         options=options,
         model=model,
         limit_state=limit_state,
+        rng=0,
     )
     analysis.run()
 
@@ -87,7 +87,6 @@ def test_ls_alpha_is_unit_vector():
 
 def test_ls_with_precomputed_form():
     """Line Sampling accepts a pre-computed FORM result."""
-    np.random.seed(7)
     model, limit_state, options = simple_rs_model()
     options = ra.SimulationOptions(n_samples=1000)
 
@@ -102,6 +101,7 @@ def test_ls_with_precomputed_form():
         model=model,
         limit_state=limit_state,
         form=form,
+        rng=7,
     )
     analysis.run()
 
@@ -112,7 +112,6 @@ def test_ls_with_precomputed_form():
 
 def test_ls_standard_problem():
     """Line Sampling on the three-variable correlated problem."""
-    np.random.seed(13)
     model, limit_state, options = standard_3rv_model()
     options = ra.SimulationOptions(n_samples=1000)
 
@@ -120,6 +119,7 @@ def test_ls_standard_problem():
         options=options,
         model=model,
         limit_state=limit_state,
+        rng=13,
     )
     analysis.run()
 
@@ -130,7 +130,6 @@ def test_ls_standard_problem():
 
 def test_ls_pf_contributions_shape():
     """Internal pf_contributions array should have length N with values in [0,1]."""
-    np.random.seed(99)
     model, limit_state, options = simple_rs_model()
     N = 200
     options = ra.SimulationOptions(n_samples=N)
@@ -139,6 +138,7 @@ def test_ls_pf_contributions_shape():
         options=options,
         model=model,
         limit_state=limit_state,
+        rng=99,
     )
     analysis.run()
 
@@ -150,7 +150,6 @@ def test_ls_pf_contributions_shape():
 
 def test_ls_results_valid_flag():
     """results_valid should be True after run()."""
-    np.random.seed(1)
     model, limit_state, options = simple_rs_model()
     options = ra.SimulationOptions(n_samples=100)
 
@@ -158,6 +157,7 @@ def test_ls_results_valid_flag():
         options=options,
         model=model,
         limit_state=limit_state,
+        rng=1,
     )
     assert not analysis.results_valid
     analysis.run()
@@ -166,7 +166,6 @@ def test_ls_results_valid_flag():
 
 def test_ls_get_beta_get_failure_consistent():
     """get_beta() and get_failure() should be consistent with stored attributes."""
-    np.random.seed(5)
     model, limit_state, options = simple_rs_model()
     options = ra.SimulationOptions(n_samples=500)
 
@@ -174,6 +173,7 @@ def test_ls_get_beta_get_failure_consistent():
         options=options,
         model=model,
         limit_state=limit_state,
+        rng=5,
     )
     analysis.run()
 

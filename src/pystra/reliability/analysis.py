@@ -5,11 +5,30 @@ diagnostic analyses. Their settings are the frozen objects in
 :mod:`pystra.options`.
 """
 
+import numpy as np
+
 from ..model import StochasticModel, LimitState
 from ..dependence.transformation import Transformation
 from ..dependence.correlation import set_modified_correlation_matrix
 
 __all__ = ["AnalysisObject"]
+
+
+def _check_rng(rng):
+    """Reject an ``rng`` that cannot seed a NumPy generator."""
+    if not isinstance(rng, np.random.Generator):
+        np.random.default_rng(rng)
+    return rng
+
+
+def _generator(rng):
+    """Return the random generator for one run.
+
+    A ``numpy.random.Generator`` is used as given, so it advances its own
+    state; a seed or None makes a new generator, so an integer seed recreates
+    the same stream on every run.
+    """
+    return rng if isinstance(rng, np.random.Generator) else np.random.default_rng(rng)
 
 
 class AnalysisObject:

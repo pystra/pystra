@@ -50,7 +50,6 @@ def standard_3rv_model():
 
 def test_ss_simple_rs():
     """Subset Simulation on R - S problem should give beta close to analytical."""
-    np.random.seed(42)
     model, limit_state, options = simple_rs_model()
     options = ra.SimulationOptions(n_samples=1000)
 
@@ -59,6 +58,7 @@ def test_ss_simple_rs():
         model=model,
         limit_state=limit_state,
         p0=0.1,
+        rng=42,
     )
     analysis.run()
 
@@ -71,7 +71,6 @@ def test_ss_simple_rs():
 
 def test_ss_thresholds_decreasing():
     """Intermediate thresholds must be non-increasing, ending at 0."""
-    np.random.seed(5)
     model, limit_state, options = simple_rs_model()
     options = ra.SimulationOptions(n_samples=500)
 
@@ -79,6 +78,7 @@ def test_ss_thresholds_decreasing():
         options=options,
         model=model,
         limit_state=limit_state,
+        rng=5,
     )
     analysis.run()
 
@@ -91,7 +91,6 @@ def test_ss_thresholds_decreasing():
 
 def test_ss_n_levels_consistent():
     """n_levels must equal the number of thresholds and conditional_probs."""
-    np.random.seed(3)
     model, limit_state, options = simple_rs_model()
     options = ra.SimulationOptions(n_samples=500)
 
@@ -99,6 +98,7 @@ def test_ss_n_levels_consistent():
         options=options,
         model=model,
         limit_state=limit_state,
+        rng=3,
     )
     analysis.run()
 
@@ -108,7 +108,6 @@ def test_ss_n_levels_consistent():
 
 def test_ss_conditional_probs_valid():
     """Conditional probabilities at each level must lie in (0, 1]."""
-    np.random.seed(11)
     model, limit_state, options = simple_rs_model()
     options = ra.SimulationOptions(n_samples=500)
 
@@ -116,6 +115,7 @@ def test_ss_conditional_probs_valid():
         options=options,
         model=model,
         limit_state=limit_state,
+        rng=11,
     )
     analysis.run()
 
@@ -125,7 +125,6 @@ def test_ss_conditional_probs_valid():
 
 def test_ss_standard_problem():
     """Subset Simulation on the three-variable correlated problem."""
-    np.random.seed(77)
     model, limit_state, options = standard_3rv_model()
     options = ra.SimulationOptions(n_samples=1000)
 
@@ -134,6 +133,7 @@ def test_ss_standard_problem():
         model=model,
         limit_state=limit_state,
         p0=0.1,
+        rng=77,
     )
     analysis.run()
 
@@ -156,7 +156,6 @@ def test_ss_invalid_p0():
 
 def test_ss_product_of_cond_probs():
     """Pf must equal the product of the conditional probabilities."""
-    np.random.seed(21)
     model, limit_state, options = simple_rs_model()
     options = ra.SimulationOptions(n_samples=500)
 
@@ -164,6 +163,7 @@ def test_ss_product_of_cond_probs():
         options=options,
         model=model,
         limit_state=limit_state,
+        rng=21,
     )
     analysis.run()
 
@@ -173,7 +173,6 @@ def test_ss_product_of_cond_probs():
 
 def test_ss_results_valid_flag():
     """results_valid should be True after run()."""
-    np.random.seed(0)
     model, limit_state, options = simple_rs_model()
     options = ra.SimulationOptions(n_samples=200)
 
@@ -181,6 +180,7 @@ def test_ss_results_valid_flag():
         options=options,
         model=model,
         limit_state=limit_state,
+        rng=0,
     )
     assert not analysis.results_valid
     analysis.run()
@@ -189,7 +189,6 @@ def test_ss_results_valid_flag():
 
 def test_ss_get_beta_get_failure_consistent():
     """get_beta() and get_failure() should be consistent with stored attributes."""
-    np.random.seed(8)
     model, limit_state, options = simple_rs_model()
     options = ra.SimulationOptions(n_samples=300)
 
@@ -197,6 +196,7 @@ def test_ss_get_beta_get_failure_consistent():
         options=options,
         model=model,
         limit_state=limit_state,
+        rng=8,
     )
     analysis.run()
 
@@ -206,7 +206,6 @@ def test_ss_get_beta_get_failure_consistent():
 
 def test_ss_custom_proposal_sigma():
     """A non-default proposal_sigma should still give valid results."""
-    np.random.seed(17)
     model, limit_state, options = simple_rs_model()
     options = ra.SimulationOptions(n_samples=500)
 
@@ -215,6 +214,7 @@ def test_ss_custom_proposal_sigma():
         model=model,
         limit_state=limit_state,
         proposal_sigma=0.5,
+        rng=17,
     )
     analysis.run()
 

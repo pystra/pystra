@@ -32,7 +32,7 @@ def linear_analysis(**settings):
         model=model,
         limit_state=ra.LimitState(lambda x: 2 - x),
         surrogate=ExactLinear(),
-        seed=12,
+        rng=12,
         **settings,
     )
 
@@ -319,7 +319,7 @@ def test_combined_beta_policies_on_standard_benchmarks(problem, seed):
         ),
         n_candidates=12_000,
         max_iterations=180,
-        seed=seed,
+        rng=seed,
     )
     result = analysis.run()
     assert result.converged

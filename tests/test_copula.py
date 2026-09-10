@@ -295,11 +295,11 @@ def test_frank_monte_carlo_integrates_original_event():
     opts = ra.SimulationOptions(n_samples=5000, target_cov=0)
     state = np.random.get_state()
     try:
-        np.random.seed(20)
         mc = ra.CrudeMonteCarlo(
             model=m,
             limit_state=ra.LimitState(lambda X1, X2: 8 * X1 + 2 * X2 - 1),
             options=opts,
+            rng=20,
         )
         mc.run()
     finally:
@@ -318,7 +318,7 @@ def test_t_rosenblatt_supports_system_form_and_strong_maximum():
     assert analysis.get_failure() == pytest.approx(norm.sf(3), rel=1e-5)
     form = analysis.component_results["a"]
     assert form.transform.method == "rosenblatt"
-    check = ra.StrongMaximumTest(form, point_number=100, seed=3)
+    check = ra.StrongMaximumTest(form, point_number=100, rng=3)
     check.run()
     assert check.status == "no_competing_region_detected"
 

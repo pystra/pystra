@@ -11,7 +11,7 @@ import math
 import numpy as np
 from scipy.special import betainc
 
-from .analysis import AnalysisObject
+from .analysis import AnalysisObject, _check_rng, _generator
 from .form import FORM
 from ..model import LimitState
 from ..options import FORMOptions
@@ -42,8 +42,10 @@ class StrongMaximumTest(AnalysisObject):
         neither this nor point_number is supplied.
     point_number : int, optional
         Fixed number of sphere evaluations, exclusive with confidence_level.
-    seed : int or numpy.random.Generator, optional
-        Local random generator seed; does not use NumPy's global RNG.
+    rng : int, numpy.random.Generator or None, optional
+        Random source; NumPy's global generator is not used. A seed recreates
+        the same sphere sample on every run; a generator advances its own
+        state.
     max_points : int, default 1000000
         Hard budget checked before allocating or evaluating sphere samples.
         Oversized requests raise; they are never silently reduced.
@@ -100,7 +102,7 @@ class StrongMaximumTest(AnalysisObject):
         accuracy_level=3.0,
         confidence_level=None,
         point_number=None,
-        seed=None,
+        rng=None,
         max_points=1000000,
     ):
         if form is not None:
@@ -194,7 +196,7 @@ class StrongMaximumTest(AnalysisObject):
                 f"max_points={self.max_points}; adjust the budget or parameters"
             )
         self.confidence_level = float(-np.expm1(self.point_number * log_miss))
-        self.rng = np.random.default_rng(seed)
+        self.rng = _check_rng(rng)
         self._clear_results()
 
     @staticmethod
@@ -236,6 +238,7 @@ class StrongMaximumTest(AnalysisObject):
         """
         self._clear_results()
         self.status = "running"
+        random = _generator(self.rng)
         try:
             if self.form is None:
                 self.init_run()
@@ -256,11 +259,11 @@ class StrongMaximumTest(AnalysisObject):
             values = np.empty(self.point_number)
             for start in range(0, self.point_number, block):
                 stop = min(self.point_number, start + block)
-                directions = self.rng.standard_normal((stop - start, self.nrv))
+                directions = random.standard_normal((stop - start, self.nrv))
                 lengths = np.linalg.norm(directions, axis=1)
                 while np.any(lengths == 0):
                     zero = lengths == 0
-                    directions[zero] = self.rng.standard_normal(
+                    directions[zero] = random.standard_normal(
                         (np.count_nonzero(zero), self.nrv)
                     )
                     lengths = np.linalg.norm(directions, axis=1)

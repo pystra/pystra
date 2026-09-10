@@ -183,11 +183,11 @@ def test_original_cut_set_monte_carlo_shared_component():
     options = ra.SimulationOptions(n_samples=5000, target_cov=0)
     state = np.random.get_state()
     try:
-        np.random.seed(2026)
         mc = ra.CrudeMonteCarlo(
             model=model,
             limit_state=system.as_limit_state(),
             options=options,
+            rng=2026,
         )
         mc.run()
     finally:

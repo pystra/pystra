@@ -72,8 +72,7 @@ Original-system Monte Carlo
 
    # 100 000 samples is the maximum budget; the run may stop at the target CoV
    options = ra.SimulationOptions(n_samples=100_000)
-   np.random.seed(2026)
-   result = ra.CrudeMonteCarlo(model, limit_state, options=options).run()
+   result = ra.CrudeMonteCarlo(model, limit_state, options=options, rng=2026).run()
    print(result.failure_probability, result.coefficient_of_variation, result.n_samples)
 
 Monte Carlo evaluates the original nonlinear failure event, including mixed

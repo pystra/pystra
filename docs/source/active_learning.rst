@@ -109,7 +109,7 @@ modules. For example, with a PySTRA ``model`` and ``limit_state``::
            BetaBounds(consecutive=2),
            BetaStability(consecutive=2),
        )),
-       seed=7,
+       rng=7,
    )
    result = analysis.run()
 

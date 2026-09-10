@@ -5,7 +5,7 @@ import numpy as np
 from scipy import optimize
 from scipy.stats import norm as scipy_norm
 
-from .analysis import AnalysisObject
+from .analysis import AnalysisObject, _check_rng, _generator
 from .form import FORM
 from ..options import FORMOptions, SimulationOptions
 from ..results import FORMResult, SimulationResult
@@ -43,6 +43,10 @@ class LineSampling(AnalysisObject):
         with this analysis's block size and transformation, to obtain the
         important direction :math:`\boldsymbol{\alpha}` and the initial
         guess for the root search.
+    rng : int, numpy.random.Generator or None, optional
+        Random source; NumPy's global generator is not used. A seed recreates
+        the same stream on every run, a generator advances its own state, and
+        None draws fresh entropy.
 
     Attributes
     ----------
@@ -66,8 +70,9 @@ class LineSampling(AnalysisObject):
 
     _options_type = SimulationOptions
 
-    def __init__(self, model, limit_state, *, options=None, form=None):
+    def __init__(self, model, limit_state, *, options=None, form=None, rng=None):
         super().__init__(model, limit_state, options)
+        self.rng = _check_rng(rng)
         self.options._require_defaults(
             "LineSampling", ("target_cov", "sampling_std", "bins")
         )
@@ -112,7 +117,7 @@ class LineSampling(AnalysisObject):
         n = self.nrv
 
         # Draw N samples in standard normal space
-        u_samples = np.random.randn(n, N)  # (n, N)
+        u_samples = _generator(self.rng).standard_normal((n, N))
 
         # Project out the component along alpha to get perpendicular components
         # v_i = u_i - (u_i · alpha) * alpha

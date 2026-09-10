@@ -204,14 +204,10 @@ def test_cmc():
     assert Analysis.beta >= 0
 
 
-def test_cmc_x_all_stores_physical_space(monkeypatch):
+def test_cmc_x_all_stores_physical_space():
     """Issue #90: every stored block must match the physical model inputs."""
     options = ra.SimulationOptions(n_samples=100, block_size=30, target_cov=0.0)
     # retain all four blocks, including the final ten
-
-    # The legacy Monte Carlo runner uses NumPy's global random interface.
-    rng = np.random.default_rng(90)
-    monkeypatch.setattr(np.random, "randn", lambda *shape: rng.standard_normal(shape))
 
     model = ra.StochasticModel()
     model.add_variable(ra.Lognormal("X1", 100, 20))
@@ -226,6 +222,7 @@ def test_cmc_x_all_stores_physical_space(monkeypatch):
         options=options,
         model=model,
         limit_state=ra.LimitState(limit_state),
+        rng=90,
     )
     analysis.run()
 
@@ -301,19 +298,21 @@ def test_distribution_analysis():
     """
 
     options, stochastic_model, limit_state = setup()
-    np.random.seed(42)
 
     # Perform Distribution analysis
     Analysis = ra.DistributionAnalysis(
         options=ra.SimulationOptions(n_samples=1000),
         model=stochastic_model,
         limit_state=limit_state,
+        rng=42,
     )
     Analysis.run()
 
-    # validate results (fixed seed=42 gives deterministic output)
-    assert pytest.approx(Analysis.all_G.mean(), abs=1e-6) == 1.02840644
-    assert pytest.approx(Analysis.all_G.std(), abs=1e-6) == 0.15620518
+    # validate results statistically
+    # Agree with an independent 1000-sample estimate (mean 1.0284, standard
+    # deviation 0.1562) within about four combined standard errors.
+    assert pytest.approx(Analysis.all_G.mean(), abs=0.025) == 1.0284
+    assert pytest.approx(Analysis.all_G.std(), abs=0.02) == 0.1562
 
 
 def test_form_uncorrelated_normals():

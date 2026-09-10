@@ -7,7 +7,7 @@ import warnings
 import numpy as np
 from scipy.stats import norm, qmc
 
-from ..reliability.analysis import AnalysisObject
+from ..reliability.analysis import AnalysisObject, _check_rng, _generator
 from ..options import SimulationOptions
 from ._validation import _positive_integer, _points, _training, _predictions
 from .surrogates import Surrogate, KrigingSurrogate, PCESurrogate, EnsembleSurrogate
@@ -80,10 +80,12 @@ class ActiveLearning(AnalysisObject):
         from selection, for example AllCriteria with beta bounds/stability.
     surrogate_kwargs : mapping, optional
         Constructor settings for a named surrogate.
-    seed : int, optional
-        Repeatable run-owned LHS, candidates, final population and named
-        surrogate optimizer. Adaptive exploration reuses a separate seed
-        after each fit; final estimation is independent of that stream.
+    rng : int, numpy.random.Generator or None, optional
+        Random source of the run-owned LHS, candidates, final population and
+        named surrogate optimizer. A seed repeats them on every run; a
+        generator advances its own state. Adaptive exploration reuses a
+        separate seed after each fit; final estimation is independent of that
+        stream.
 
     Notes
     -----
@@ -113,7 +115,7 @@ class ActiveLearning(AnalysisObject):
         target_cov: Optional[float] = None,
         stopping_criterion: Optional[StoppingCriterion] = None,
         surrogate_kwargs: Optional[dict] = None,
-        seed: Optional[int] = None,
+        rng=None,
     ):
         super().__init__(model, limit_state, options)
         self.options._require_defaults(
@@ -196,7 +198,7 @@ class ActiveLearning(AnalysisObject):
         self.n_candidates = _positive_integer(n_candidates, "n_candidates")
         self.max_iterations = _positive_integer(max_iterations, "max_iterations", 0)
         self.surrogate_kwargs = dict(surrogate_kwargs or {})
-        self.seed = seed
+        self.rng = _check_rng(rng)
         self.result = None
         self.surrogate_model = None
 
@@ -231,7 +233,7 @@ class ActiveLearning(AnalysisObject):
         dimension = self.model.n_marg
         if dimension < 1:
             raise ValueError("Active learning requires at least one random variable")
-        rng = np.random.default_rng(self.seed)
+        rng = _generator(self.rng)
         settings = dict(self.surrogate_kwargs)
         settings.setdefault("seed", int(rng.integers(2**31 - 1)))
         surrogate = self.surrogate
