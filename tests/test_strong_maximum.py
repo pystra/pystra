@@ -243,6 +243,7 @@ def test_nonconverged_form_rejected():
         model=model(),
         limit_state=ra.LimitState(lambda X0, X1: 3 - X0),
         options=options,
+        on_failure="return",
     )
     with pytest.warns(RuntimeWarning, match="did not converge"):
         form.run()

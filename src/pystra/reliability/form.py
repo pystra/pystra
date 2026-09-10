@@ -4,7 +4,8 @@
 import numpy as np
 import warnings
 from scipy.stats import norm as normal
-from .analysis import AnalysisObject
+from .analysis import AnalysisObject, _check_on_failure
+from ..errors import AnalysisError
 from ..options import FORMOptions
 from ..results import FORMResult
 from ..dependence.correlation import set_modified_correlation_matrix
@@ -23,6 +24,9 @@ class FORM(AnalysisObject):
         Physical response, with negative values indicating failure.
     options : FORMOptions, optional
         Iteration, convergence, differentiation and transformation settings.
+    on_failure : {"raise", "return"}, default "raise"
+        On nonconvergence, raise :class:`~pystra.AnalysisError`, which carries
+        the unconverged record in ``.result``, or return that record with a warning.
 
     Notes
     -----
@@ -43,8 +47,9 @@ class FORM(AnalysisObject):
     supports_spherical_space = True
     _options_type = FORMOptions
 
-    def __init__(self, model, limit_state, *, options=None):
+    def __init__(self, model, limit_state, *, options=None, on_failure="raise"):
         super().__init__(model, limit_state, options)
+        self.on_failure = _check_on_failure(on_failure)
 
         self._i = None
         self._u = None
@@ -148,13 +153,13 @@ class FORM(AnalysisObject):
         # Compute failure probability
         self._compute_failure_probability()
         self._results_valid = self._converged
+        result = FORMResult.from_analysis(self)
         if not self._converged:
-            warnings.warn(
-                "FORM did not converge within the iteration limit", RuntimeWarning
-            )
-
-        # Show Results
-        return FORMResult.from_analysis(self)
+            message = "FORM did not converge within the iteration limit"
+            if self.on_failure == "raise":
+                raise AnalysisError(message, result)
+            warnings.warn(message, RuntimeWarning)
+        return result
 
     def _compute_starting_point(self):
         """Compute starting point for the algorithm"""

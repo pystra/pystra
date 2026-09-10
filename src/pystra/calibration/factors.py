@@ -57,6 +57,7 @@ def _run_form(cases, case_name, overrides=None, options=None):
         cases.stochastic_model(case_name, overrides=overrides),
         LimitState(cases.limit_state),
         options=options,
+        on_failure="return",
     )
     result = solver.run()
     return solver, result

@@ -47,7 +47,12 @@ def test_sorm_rejects_automatically_run_nonconverged_form(linear_problem, fit):
 @pytest.mark.parametrize("run_form", [False, True])
 def test_sorm_rejects_supplied_invalid_form(linear_problem, fit, run_form):
     model, limit_state = linear_problem
-    form = ra.FORM(model, limit_state, options=ra.FORMOptions(max_iterations=1))
+    form = ra.FORM(
+        model,
+        limit_state,
+        options=ra.FORMOptions(max_iterations=1),
+        on_failure="return",
+    )
     if run_form:
         with pytest.warns(RuntimeWarning, match="FORM did not converge"):
             form.run()
@@ -60,7 +65,7 @@ def test_sorm_rejects_supplied_invalid_form(linear_problem, fit, run_form):
 
 def test_supplied_form_keeps_its_own_settings(linear_problem):
     model, limit_state = linear_problem
-    form = ra.FORM(model, limit_state)
+    form = ra.FORM(model, limit_state, on_failure="return")
     options = ra.SORMOptions(form=ra.FORMOptions(max_iterations=5))
     with pytest.raises(ValueError, match="supplied FORM analysis keeps its own"):
         ra.SORM(model, limit_state, options=options, form=form)
@@ -69,7 +74,7 @@ def test_supplied_form_keeps_its_own_settings(linear_problem):
 @pytest.mark.parametrize("fit", FITS)
 def test_sorm_failed_form_rerun_clears_results_and_can_recover(linear_problem, fit):
     model, limit_state = linear_problem
-    form = ra.FORM(model, limit_state)
+    form = ra.FORM(model, limit_state, on_failure="return")
     form.run()
     analysis = ra.SORM(model, limit_state, options=ra.SORMOptions(fit=fit), form=form)
     analysis.run()

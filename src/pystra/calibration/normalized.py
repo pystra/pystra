@@ -316,6 +316,7 @@ class CodeCalibration:
                     snapshot.stochastic_model(),
                     LimitState(limit_state),
                     options=options,
+                    on_failure="return",
                 )
                 result = analysis.run()
                 margin = (

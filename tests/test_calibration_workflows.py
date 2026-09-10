@@ -47,7 +47,7 @@ def test_form_result_survives_rerun_and_failed_result_has_no_estimate():
     model = ra.StochasticModel()
     model.add_variable(ra.Normal("R", 10, 1))
     model.add_variable(ra.Normal("S", 5, 1))
-    analysis = ra.FORM(model, ra.LimitState(lambda R, S: R - S))
+    analysis = ra.FORM(model, ra.LimitState(lambda R, S: R - S), on_failure="return")
     first = analysis.run()
     assert first.beta == pytest.approx(5 / np.sqrt(2))
     analysis.options = ra.FORMOptions(max_iterations=1)

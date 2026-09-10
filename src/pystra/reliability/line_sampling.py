@@ -91,6 +91,7 @@ class LineSampling(AnalysisObject):
             _form = FORM(
                 self.model,
                 self.limit_state,
+                on_failure="return",
                 options=FORMOptions(
                     block_size=self.options.block_size,
                     transform=self.options.transform,

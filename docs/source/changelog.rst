@@ -139,6 +139,10 @@ Changed
   ``to_dataframe()`` replace the printed reports; the analyses' numerical state is
   private and ``limitstate`` is ``limit_state``. Crude Monte Carlo reports its
   convergence history in ``diagnostics["history"]``.
+- Nonconvergence raises ``AnalysisError`` carrying the unconverged record;
+  ``FORM``, ``SORM``, ``SystemFORM`` and ``SensitivityAnalysis`` take
+  ``on_failure="return"`` to return it instead, as code calibration does. In
+  1.x FORM warned and kept its last values.
 - In the result records, a SORM fit whose curvatures leave Breitung's formula
   undefined has no estimate and status ``not_converged``, where 1.x reported
   0.0; a simulation without failures has an infinite coefficient of variation.

@@ -19,7 +19,9 @@ reliability index :math:`-\Phi^{-1}(p_f)`.
     convergence criteria.
 ``"not_converged"``
     It did not, or SORM's formula is undefined at the fitted curvatures.
-    The estimate is unavailable or unreliable.
+    The estimate is unavailable or unreliable. Unless constructed with
+    ``on_failure="return"``, the analysis raises :class:`~pystra.AnalysisError`
+    carrying the record.
 ``"completed"``
     A simulation or diagnostic ran to completion.
 ``"precision_not_met"``
@@ -395,7 +397,14 @@ class SystemFORMResult(_ProbabilityResult):
     def _rows(self):
         return [
             *super()._rows(),
-            ("Bounds", f"[{_text(self.bounds[0])}, {_text(self.bounds[1])}]"),
+            (
+                "Bounds",
+                (
+                    "unavailable"
+                    if self.bounds is None
+                    else f"[{_text(self.bounds[0])}, {_text(self.bounds[1])}]"
+                ),
+            ),
             ("Components", len(self.component_results)),
         ]
 

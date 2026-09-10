@@ -41,7 +41,8 @@ and its vector fields are read-only arrays in ``variable_names`` order.
        convergence criteria.
    * - ``"not_converged"``
      - It did not, or SORM's formula is undefined at the fitted curvatures.
-       There is no FORM or SORM estimate.
+       There is no estimate. The analysis raises ``AnalysisError``, which
+       carries this record, unless constructed with ``on_failure="return"``.
    * - ``"completed"``
      - A simulation or diagnostic ran to completion.
    * - ``"precision_not_met"``

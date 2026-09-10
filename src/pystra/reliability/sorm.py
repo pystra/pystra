@@ -4,7 +4,7 @@
 import numpy as np
 
 from .form import FORM
-from .analysis import AnalysisObject
+from .analysis import AnalysisObject, _check_on_failure
 from scipy.stats import norm as normal
 from ..errors import AnalysisError, ModelError
 from ..options import FORMOptions, SORMOptions
@@ -46,6 +46,9 @@ class SORM(AnalysisObject):
         A completed, converged FORM analysis, whose design point,
         transformation and settings SORM reuses. If ``None``, :meth:`run`
         first runs FORM with ``options.form``.
+    on_failure : {"raise", "return"}, default "raise"
+        On nonconvergence, raise :class:`~pystra.AnalysisError`, which carries
+        the unconverged record in ``.result``, or return that record.
 
     Notes
     -----
@@ -55,11 +58,14 @@ class SORM(AnalysisObject):
 
     _options_type = SORMOptions
 
-    def __init__(self, model, limit_state, *, options=None, form=None):
+    def __init__(
+        self, model, limit_state, *, options=None, form=None, on_failure="raise"
+    ):
         if form is not None and not isinstance(form, FORM):
             raise TypeError("form must be a FORM analysis")
         self.form = form
         super().__init__(model, limit_state, options)
+        self.on_failure = _check_on_failure(on_failure)
         if form is not None and self.options.form != FORMOptions():
             raise ModelError(
                 "options.form applies only when SORM runs FORM; "
@@ -93,8 +99,14 @@ class SORM(AnalysisObject):
     def _prepare_run(self, fit_type):
         """Run FORM if needed and require a converged design point."""
         self._reset_results()
+        self._n_evaluations = 0
         if self.form is None:
-            form = FORM(self.model, self.limit_state, options=self.options.form)
+            form = FORM(
+                self.model,
+                self.limit_state,
+                options=self.options.form,
+                on_failure="return",
+            )
             form.run()
             self.form = form
         if not self.form._results_valid or not self.form._converged:
@@ -117,11 +129,41 @@ class SORM(AnalysisObject):
         Raises
         ------
         AnalysisError
-            If FORM did not converge, or a fitting point cannot be found.
+            If FORM did not converge, a fitting point cannot be found, or the
+            formula is undefined for the fitted curvatures, unless
+            ``on_failure="return"``.
         """
-        if self.options.fit == "curve":
-            return self._run_curvefit()
-        return self._run_pointfit()
+        try:
+            if self.options.fit == "curve":
+                result = self._run_curvefit()
+            else:
+                result = self._run_pointfit()
+        except AnalysisError as error:
+            result = self._failed_result(str(error))
+            if self.on_failure == "raise":
+                raise AnalysisError(str(error), result) from error
+            return result
+        if not result.converged and self.on_failure == "raise":
+            raise AnalysisError(result.message, result)
+        return result
+
+    def _failed_result(self, message):
+        """Return the record of a fit that could not be completed."""
+        return SORMResult(
+            method="SORM",
+            status="not_converged",
+            message=message,
+            n_limit_state_evaluations=self._n_evaluations,
+            variable_names=tuple(self.model.get_variables()),
+            failure_probability=None,
+            beta=None,
+            form=FORMResult.from_analysis(self.form),
+            fit=self.options.fit,
+            curvatures=None,
+            formula=self.options.formula,
+            options=self.options,
+            approximations={"breitung": None, "modified_breitung": None},
+        )
 
     def _run_curvefit(self):
         """Run curve fitting and return a :class:`SORMResult`; FORM must have converged."""

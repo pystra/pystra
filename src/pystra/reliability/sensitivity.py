@@ -20,7 +20,8 @@ Two methods are available, selected by the ``method`` argument of
 """
 
 from .form import FORM
-from ..errors import ModelError
+from ..errors import AnalysisError, ModelError
+from .analysis import _check_on_failure
 from ..model import LimitState, StochasticModel
 from ..options import FORMOptions
 from ..results import SensitivityResult
@@ -68,10 +69,20 @@ class SensitivityAnalysis:
     delta : float, default 0.01
         Relative perturbation of the numerical method; the closed form does
         not use it.
+    on_failure : {"raise", "return"}, default "raise"
+        If a FORM analysis does not converge, raise :class:`~pystra.AnalysisError`, which carries
+        the unconverged record in ``.result``, or return that record.
     """
 
     def __init__(
-        self, model, limit_state, *, options=None, method="numerical", delta=0.01
+        self,
+        model,
+        limit_state,
+        *,
+        options=None,
+        method="numerical",
+        delta=0.01,
+        on_failure="raise",
     ):
         if not isinstance(model, StochasticModel):
             raise TypeError("SensitivityAnalysis requires a StochasticModel")
@@ -99,6 +110,7 @@ class SensitivityAnalysis:
         self.options = options
         self.method = method
         self.delta = delta
+        self.on_failure = _check_on_failure(on_failure)
 
     def run(self):
         r"""Run the sensitivity analysis.
@@ -120,7 +132,8 @@ class SensitivityAnalysis:
             correlation = None
         else:
             base, marginal, correlation = self._cf_sens()
-        return SensitivityResult(
+        ok = self._converged
+        result = SensitivityResult(
             method="SensitivityAnalysis",
             status="converged" if self._converged else "not_converged",
             message=(
@@ -130,22 +143,29 @@ class SensitivityAnalysis:
             ),
             n_limit_state_evaluations=self._evaluations,
             variable_names=base.variable_names,
-            failure_probability=base.failure_probability,
-            beta=base.beta,
+            failure_probability=base.failure_probability if ok else None,
+            beta=base.beta if ok else None,
             form=base,
             approach=self.method,
-            marginal={
-                name: {param: float(value) for param, value in params.items()}
-                for name, params in marginal.items()
-            },
-            correlation=correlation,
+            marginal=(
+                {
+                    name: {param: float(value) for param, value in params.items()}
+                    for name, params in marginal.items()
+                }
+                if ok
+                else {}
+            ),
+            correlation=correlation if ok else None,
             delta=self.delta if numerical else None,
             options=self.options,
         )
+        if not ok and self.on_failure == "raise":
+            raise AnalysisError(result.message, result)
+        return result
 
     def _form(self, model):
         """Run FORM on *model*, recording its evaluations and convergence."""
-        form = FORM(model, self.limit_state, options=self.options)
+        form = FORM(model, self.limit_state, options=self.options, on_failure="return")
         result = form.run()
         self._evaluations += result.n_limit_state_evaluations
         self._converged = self._converged and result.converged

@@ -71,7 +71,10 @@ def test_results_compare_by_value_and_form_tabulates_by_variable():
 
 def test_unconverged_form_result_has_no_estimate_or_table():
     analysis = ra.FORM(
-        normal_model(), margin(), options=ra.FORMOptions(max_iterations=1)
+        normal_model(),
+        margin(),
+        options=ra.FORMOptions(max_iterations=1),
+        on_failure="return",
     )
     with pytest.warns(RuntimeWarning, match="did not converge"):
         result = analysis.run()
@@ -123,7 +126,9 @@ def curved_sorm(c):
     limit_state = ra.LimitState(lambda X1, X2: 3 - X2 - c * X1**2)
     analysis = ra.FORM(model=model, limit_state=limit_state)
     analysis.run()
-    return ra.SORM(model=model, limit_state=limit_state, form=analysis).run()
+    return ra.SORM(
+        model=model, limit_state=limit_state, form=analysis, on_failure="return"
+    ).run()
 
 
 def test_sorm_without_a_defined_breitung_estimate_is_not_converged(capsys):

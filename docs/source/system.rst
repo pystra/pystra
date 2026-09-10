@@ -132,8 +132,9 @@ gradients in that full order, including zeros for unused variables.
 
 The record's ``component_results`` holds each component's ``FORMResult``,
 including its convergence status and residuals. A failed component analysis
-raises an error and produces no system record. Ordinary ``FORM`` warns when it
-exhausts its iterations and returns an unconverged record.
+raises ``AnalysisError``, or with ``on_failure="return"`` gives a record without
+a system probability. Ordinary ``FORM`` likewise raises when it exhausts its
+iterations, or warns and returns its unconverged record.
 
 Series probabilities are integrated as disjoint first-failure events, avoiding
 subtraction of an almost-unit survival probability. Parallel probabilities

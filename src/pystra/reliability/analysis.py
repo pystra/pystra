@@ -7,11 +7,19 @@ diagnostic analyses. Their settings are the frozen objects in
 
 import numpy as np
 
+from ..errors import ModelError
 from ..model import StochasticModel, LimitState
 from ..dependence.transformation import Transformation
 from ..dependence.correlation import set_modified_correlation_matrix
 
 __all__ = ["AnalysisObject"]
+
+
+def _check_on_failure(on_failure):
+    """Reject an unknown failure policy."""
+    if on_failure not in ("raise", "return"):
+        raise ModelError("on_failure must be 'raise' or 'return'")
+    return on_failure
 
 
 def _check_rng(rng):

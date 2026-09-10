@@ -4,7 +4,7 @@ import numpy as np
 from scipy.integrate import quad
 from scipy.stats import multivariate_normal, norm
 
-from .analysis import AnalysisObject
+from .analysis import AnalysisObject, _check_on_failure
 from .form import FORM
 from ..systems import Component, SeriesSystem, ParallelSystem, ditlevsen_bounds
 from ..errors import AnalysisError
@@ -30,6 +30,9 @@ class SystemFORM(AnalysisObject):
         System failure event.
     options : FORMOptions, optional
         Component FORM settings. DDM gradients must use full model ordering.
+    on_failure : {"raise", "return"}, default "raise"
+        On a component's nonconvergence or a failed integration, raise :class:`~pystra.AnalysisError`, which carries
+        the unconverged record in ``.result``, or return that record.
     maxpts : int, optional
         Maximum integration points per multivariate normal CDF call.
     abseps, releps : float, optional
@@ -58,6 +61,7 @@ class SystemFORM(AnalysisObject):
         system,
         *,
         options=None,
+        on_failure="raise",
         maxpts=1000000,
         abseps=1e-10,
         releps=1e-5,
@@ -65,6 +69,7 @@ class SystemFORM(AnalysisObject):
         if type(system) not in (SeriesSystem, ParallelSystem):
             raise TypeError("SystemFORM requires a series or parallel system")
         super().__init__(model, None, options)
+        self.on_failure = _check_on_failure(on_failure)
         self.system = system
         leaves = []
 
@@ -202,10 +207,40 @@ class SystemFORM(AnalysisObject):
 
         Returns a :class:`SystemFORMResult`.
         """
-        self._clear_results()
         records = {}
+        try:
+            return self._run(records)
+        except AnalysisError as error:
+            result = SystemFORMResult(
+                method="SystemFORM",
+                status="not_converged",
+                message=str(error),
+                n_limit_state_evaluations=sum(
+                    record.n_limit_state_evaluations for record in records.values()
+                ),
+                variable_names=tuple(self.model.get_variables()),
+                failure_probability=None,
+                beta=None,
+                bounds=None,
+                component_results=records,
+                correlation=None,
+                intersections=None,
+                options=self.options,
+            )
+            if self.on_failure == "raise":
+                raise AnalysisError(str(error), result) from error
+            return result
+
+    def _run(self, records):
+        """Run the components into *records*, then integrate the system event."""
+        self._clear_results()
         for component in self.components:
-            form = FORM(self.model, component.as_limit_state(), options=self.options)
+            form = FORM(
+                self.model,
+                component.as_limit_state(),
+                options=self.options,
+                on_failure="return",
+            )
             self._component_results[component.name] = form
             try:
                 records[component.name] = form.run()

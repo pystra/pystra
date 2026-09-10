@@ -414,9 +414,9 @@ add ``failure_probability`` and ``beta``. See :doc:`guides/results`.
 ``FORMResult.beta`` is the normal-equivalent index, and ``design_index`` the
 signed distance of the design point in ``standard_space``. These differ in
 Student-t standard space. A normal-space index remains finite even when its
-very small probability underflows to zero. Iteration exhaustion returns a
-record with ``status="not_converged"`` and no probability, index or design
-point, and retains the existing warning. The design point and direction are
+very small probability underflows to zero. Iteration exhaustion raises
+``AnalysisError``, which carries the unconverged record, with no probability,
+index or design point, in ``.result``; see :ref:`failure-handling`. The design point and direction are
 read-only arrays in ``variable_names`` order. Records compare equal by value
 but, holding arrays, are not hashable.
 
@@ -463,8 +463,40 @@ observed no failures reports an infinite coefficient of variation, rather
 than crude Monte Carlo's placeholder of 1.0, and its status is
 ``"precision_not_met"``. A SORM fit whose curvatures make Breitung's formula
 undefined printed a message and reported a probability and index of 0.0; its
-record now has status ``"not_converged"`` and no estimate. Likewise, an
+record now has status ``"not_converged"`` and no estimate, and ``run()``
+raises it in an ``AnalysisError`` unless ``on_failure="return"``. Likewise, an
 undefined modified Breitung probability is ``None``.
+
+.. _failure-handling:
+
+Failure handling
+----------------
+
+In 1.x, FORM warned when it exhausted its iterations and kept its last,
+unconverged values. Nonconvergence now raises ``AnalysisError`` (a
+``RuntimeError`` and a ``PystraError``), which carries the unconverged record
+in ``.result``. ``FORM``, ``SORM``, ``SystemFORM`` and ``SensitivityAnalysis``
+take ``on_failure="return"`` to return that record instead, with status
+``"not_converged"`` and no probability, index or estimate; FORM also warns.
+Use it for batch studies:
+
+.. code-block:: python
+
+    try:
+        result = ra.FORM(model, limit_state).run()
+    except ra.AnalysisError as error:
+        print(error.result.limit_state_error)
+
+    result = ra.FORM(model, limit_state, on_failure="return").run()
+    if not result.converged:
+        ...
+
+SORM also fails when Breitung's formula is undefined for the fitted
+curvatures, and system FORM when a component does not converge or its
+integration fails. Code calibration returns its unconverged cases, as before.
+Simulations do not fail: they report an unmet precision target as
+``"precision_not_met"`` with their estimate. Importance and line sampling that
+run FORM themselves still sample about its last point, with its warning.
 
 Getters and printing
 --------------------
