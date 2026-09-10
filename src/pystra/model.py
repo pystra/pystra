@@ -159,9 +159,16 @@ class StochasticModel:
         self._marg = marg
 
     def set_correlation(self, obj):
-        if hasattr(obj, "get_matrix"):
-            obj = obj.get_matrix()
-        self._correlation = np.asarray(obj)
+        """Set the physical correlation matrix, replacing any copula.
+
+        Accepts a :class:`~pystra.CorrelationMatrix`, or an array that is
+        valid as one, and raises :class:`~pystra.ModelError` otherwise.
+        """
+        from .dependence.correlation import CorrelationMatrix
+
+        if not isinstance(obj, CorrelationMatrix):
+            obj = CorrelationMatrix(obj)
+        self._correlation = obj.matrix
         self._copula = None
         self._Ro = None
 

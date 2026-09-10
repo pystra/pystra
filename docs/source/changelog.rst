@@ -139,6 +139,10 @@ Changed
   ``to_dataframe()`` replace the printed reports; the analyses' numerical state is
   private and ``limitstate`` is ``limit_state``. Crude Monte Carlo reports its
   convergence history in ``diagnostics["history"]``.
+- ``CorrelationMatrix`` is validated when created (square, finite, symmetric,
+  unit diagonal, positive definite) and held read-only; ``set_correlation``
+  validates arrays the same way. It gains ``cholesky()``, ``nataf(model)`` and
+  ``nearest_positive_definite()``.
 - Nonconvergence raises ``AnalysisError`` carrying the unconverged record;
   ``FORM``, ``SORM``, ``SystemFORM`` and ``SensitivityAnalysis`` take
   ``on_failure="return"`` to return it instead, as code calibration does. In

@@ -467,6 +467,21 @@ record now has status ``"not_converged"`` and no estimate, and ``run()``
 raises it in an ``AnalysisError`` unless ``on_failure="return"``. Likewise, an
 undefined modified Breitung probability is ``None``.
 
+Correlation matrices
+--------------------
+
+``CorrelationMatrix`` is checked when it is created: it must be square, finite,
+symmetric, with a unit diagonal and positive definite, or ``ModelError`` is
+raised. ``set_correlation`` checks an array in the same way; in 1.x any array
+was accepted, and an invalid one failed later, if at all. The matrix is held as
+a read-only array, so element assignment is removed: build a new matrix. The
+unused attributes ``mu``, ``sigma`` and ``p1`` to ``p4`` are removed.
+
+``cholesky()`` returns the lower Cholesky factor; ``nataf(model)`` returns the
+standard-normal correlation that the Nataf transformation uses for the model's
+marginals; and ``CorrelationMatrix.nearest_positive_definite(matrix)`` repairs
+an estimate that is not positive definite, using Higham's (2002) method.
+
 .. _failure-handling:
 
 Failure handling

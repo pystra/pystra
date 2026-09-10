@@ -222,7 +222,7 @@ class TestLimitState:
 class TestCorrelationMatrix:
     def test_construction(self):
         C = CorrelationMatrix([[1.0, 0.5], [0.5, 1.0]])
-        assert C.get_matrix() == [[1.0, 0.5], [0.5, 1.0]]
+        np.testing.assert_array_equal(C.get_matrix(), [[1.0, 0.5], [0.5, 1.0]])
 
     def test_getitem(self):
         C = CorrelationMatrix([[1.0, 0.3], [0.3, 1.0]])
