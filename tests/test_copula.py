@@ -133,9 +133,9 @@ def test_generalized_t_nataf_and_form_exact_halfspace():
     )
     result = form.run()
     beta = 3 / np.sqrt(2 + 2 * 0.4)
-    assert form.get_beta() == pytest.approx(beta, rel=2e-6)
-    assert form.get_failure() == pytest.approx(t.sf(beta, 4), rel=2e-6)
-    assert form.get_equivalent_beta() == pytest.approx(-norm.ppf(form.get_failure()))
+    assert form._beta == pytest.approx(beta, rel=2e-6)
+    assert form._Pf == pytest.approx(t.sf(beta, 4), rel=2e-6)
+    assert form._get_equivalent_beta() == pytest.approx(-norm.ppf(form._Pf))
     assert result.standard_space == "student_t"
     assert result.design_index == pytest.approx(beta, rel=2e-6)
     assert result.beta == pytest.approx(-norm.ppf(t.sf(beta, 4)), rel=2e-6)
@@ -144,15 +144,17 @@ def test_generalized_t_nataf_and_form_exact_halfspace():
         ra.StrongMaximumTest(form)
     for analysis in (
         ra.CrudeMonteCarlo(
-            form.model, form.limitstate, options=ra.SimulationOptions(transform="nataf")
+            form.model,
+            form.limit_state,
+            options=ra.SimulationOptions(transform="nataf"),
         ),
-        ra.SORM(form.model, form.limitstate, options=ra.SORMOptions(form=opts)),
+        ra.SORM(form.model, form.limit_state, options=ra.SORMOptions(form=opts)),
     ):
         with pytest.raises(ValueError, match="normal space"):
             analysis.run()
     analysis = ra.SystemFORM(
         form.model,
-        ra.SeriesSystem([ra.Component("a", form.limitstate)]),
+        ra.SeriesSystem([ra.Component("a", form.limit_state)]),
         options=opts,
     )
     with pytest.raises(RuntimeError, match="normal space"):
@@ -183,7 +185,7 @@ def test_lebrun_dutfoy_frank_order_benchmark():
             limit_state=ra.LimitState(lambda X1, X2: 8 * X1 + 2 * X2 - 1),
         )
         f.run()
-        results.append(f.get_failure())
+        results.append(f._Pf)
     np.testing.assert_allclose(results, [0.107, 0.122], atol=0.00015)
     exact = quad(
         lambda x: np.exp(-x)
@@ -208,7 +210,7 @@ def test_gaussian_order_preserves_form_probability():
             options=opts,
         )
         f.run()
-        results.append(f.get_failure())
+        results.append(f._Pf)
     np.testing.assert_allclose(results, results[0], atol=1e-10)
 
 
@@ -305,7 +307,7 @@ def test_frank_monte_carlo_integrates_original_event():
     finally:
         np.random.set_state(state)
     assert mc.transform.standard_space == "normal"
-    assert abs(mc.get_failure() - 0.1038) < 5 * np.sqrt(0.1038 * (1 - 0.1038) / 5000)
+    assert abs(mc._Pf - 0.1038) < 5 * np.sqrt(0.1038 * (1 - 0.1038) / 5000)
 
 
 def test_t_rosenblatt_supports_system_form_and_strong_maximum():
@@ -315,12 +317,12 @@ def test_t_rosenblatt_supports_system_form_and_strong_maximum():
     )
     analysis = ra.SystemFORM(model, system)
     analysis.run()
-    assert analysis.get_failure() == pytest.approx(norm.sf(3), rel=1e-5)
-    form = analysis.component_results["a"]
+    assert analysis._Pf == pytest.approx(norm.sf(3), rel=1e-5)
+    form = analysis._component_results["a"]
     assert form.transform.method == "rosenblatt"
     check = ra.StrongMaximumTest(form, point_number=100, rng=3)
     check.run()
-    assert check.status == "no_competing_region_detected"
+    assert check._status == "no_competing_region_detected"
 
 
 def test_numerical_sensitivity_preserves_spherical_t_options():

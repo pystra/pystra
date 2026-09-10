@@ -99,8 +99,8 @@ Verifying your distribution
        model.add_variable(ra.Normal("Y", 50, 10))
        ls = ra.LimitState(lambda X, Y: X - Y)
        f = ra.FORM(model, ls)
-       f.run()
-       f.show_detailed_output()
+       f_result = f.run()
+       print(f_result.summary())
 
 2. **Round-trip reconstruction** — if you set ``_ctor_kwargs``,
    verify that ``_make_copy()`` with no overrides produces a

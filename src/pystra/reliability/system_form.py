@@ -36,22 +36,13 @@ class SystemFORM(AnalysisObject):
         Requested absolute and relative integration tolerances. These are
         numerical targets, not certified error bounds or FORM model errors.
 
-    Attributes
-    ----------
-    component_results : dict
-        Component names mapped to completed FORM objects (beta, alpha,
-        design points and convergence residuals).
-    correlation : ndarray
-        Correlation of linearized normal scores, alpha @ alpha.T. This is
-        neither the physical-variable nor binary-failure correlation matrix.
-    bounds : tuple
-        Ditlevsen bounds for a series system; marginal/Frechet bounds for a
-        parallel system. These bound the linearized event only.
-    intersections : ndarray
-        Pairwise failure probabilities of the component tangent planes.
-
     Notes
     -----
+    :meth:`run` returns a :class:`~pystra.results.SystemFORMResult` with each
+    component's FORM record, the correlation of the linearized normal scores
+    (neither the physical-variable nor the binary-failure correlation), the
+    bounds on the linearized event and the pairwise intersections.
+
     Exact up to integration error for affine limit states in standard normal
     space. Nonlinear components remain first-order approximations, and FORM
     can find a local rather than global design point. Normal integration may
@@ -101,11 +92,11 @@ class SystemFORM(AnalysisObject):
         self._clear_results()
 
     def _clear_results(self):
-        self.results_valid = False
-        self.component_results = {}
-        self.Pf = self.beta = self.bounds = None
-        self.betas = self.alphas = self.correlation = None
-        self.probabilities = self.intersections = None
+        self._results_valid = False
+        self._component_results = {}
+        self._Pf = self._beta = self._bounds = None
+        self._betas = self._alphas = self._correlation = None
+        self._probabilities = self._intersections = None
 
     def _cdf(self, upper, correlation):
         for i in range(len(upper)):
@@ -215,7 +206,7 @@ class SystemFORM(AnalysisObject):
         records = {}
         for component in self.components:
             form = FORM(self.model, component.as_limit_state(), options=self.options)
-            self.component_results[component.name] = form
+            self._component_results[component.name] = form
             try:
                 records[component.name] = form.run()
                 if form.transform.standard_space != "normal":
@@ -226,44 +217,48 @@ class SystemFORM(AnalysisObject):
                 raise AnalysisError(
                     f"Component '{component.name}' FORM failed: {error}"
                 ) from error
-            if not form.converged or not np.isfinite(form.get_beta()):
+            if not form._converged or not np.isfinite(form._beta):
                 raise AnalysisError(
                     f"Component '{component.name}' FORM did not converge"
                 )
 
-        self.betas = np.array([f.get_beta() for f in self.component_results.values()])
-        self.alphas = np.array([f.get_alpha() for f in self.component_results.values()])
-        self.correlation = np.clip(self.alphas @ self.alphas.T, -1, 1)
-        np.fill_diagonal(self.correlation, 1.0)
+        self._betas = np.array([f._beta for f in self._component_results.values()])
+        self._alphas = np.array([f._alpha[0] for f in self._component_results.values()])
+        self._correlation = np.clip(self._alphas @ self._alphas.T, -1, 1)
+        np.fill_diagonal(self._correlation, 1.0)
         # Recognize identical/opposing vectors at floating-point precision;
         # their dot product can otherwise be one ulp short of +/-1.
-        for i, alpha in enumerate(self.alphas):
+        for i, alpha in enumerate(self._alphas):
             for j in range(i):
                 for sign in (-1, 1):
                     if np.allclose(
                         alpha,
-                        sign * self.alphas[j],
+                        sign * self._alphas[j],
                         rtol=0,
                         atol=8 * np.finfo(float).eps,
                     ):
-                        self.correlation[i, j] = self.correlation[j, i] = sign
-        self.probabilities = norm.sf(self.betas)
+                        self._correlation[i, j] = self._correlation[j, i] = sign
+        self._probabilities = norm.sf(self._betas)
         n = len(self.components)
-        pairwise = np.diag(self.probabilities)
+        pairwise = np.diag(self._probabilities)
         for i in range(n):
             for j in range(i):
                 ids = [i, j]
-                value = self._cdf(-self.betas[ids], self.correlation[np.ix_(ids, ids)])
-                lo = max(0.0, self.probabilities[i] + self.probabilities[j] - 1)
-                hi = min(self.probabilities[i], self.probabilities[j])
+                value = self._cdf(
+                    -self._betas[ids], self._correlation[np.ix_(ids, ids)]
+                )
+                lo = max(0.0, self._probabilities[i] + self._probabilities[j] - 1)
+                hi = min(self._probabilities[i], self._probabilities[j])
                 if value < lo - self.abseps or value > hi + self.abseps:
                     raise AnalysisError("Pair probability violates marginal bounds")
                 pairwise[i, j] = pairwise[j, i] = np.clip(value, lo, hi)
-        self.intersections = pairwise
+        self._intersections = pairwise
 
         if isinstance(self.system, SeriesSystem):
-            order = np.argsort(-self.probabilities)
-            self.bounds = ditlevsen_bounds(self.probabilities, pairwise, ordering=order)
+            order = np.argsort(-self._probabilities)
+            self._bounds = ditlevsen_bounds(
+                self._probabilities, pairwise, ordering=order
+            )
             # Disjoint events: first failed component i, all previous safe.
             # Avoid catastrophic cancellation in 1 - P(all safe).
             pf = 0.0
@@ -271,19 +266,21 @@ class SystemFORM(AnalysisObject):
                 ids = order[: end + 1]
                 signs = np.ones(end + 1)
                 signs[-1] = -1
-                covariance = self.correlation[np.ix_(ids, ids)] * np.outer(signs, signs)
-                pf += self._cdf(self.betas[ids] * signs, covariance)
+                covariance = self._correlation[np.ix_(ids, ids)] * np.outer(
+                    signs, signs
+                )
+                pf += self._cdf(self._betas[ids] * signs, covariance)
         else:
-            self.bounds = (
+            self._bounds = (
                 float(
-                    self.probabilities[0]
+                    self._probabilities[0]
                     if n == 1
-                    else max(0, self.probabilities.sum() - n + 1)
+                    else max(0, self._probabilities.sum() - n + 1)
                 ),
-                float(self.probabilities.min()),
+                float(self._probabilities.min()),
             )
-            pf = self._cdf(-self.betas, self.correlation)
-        lo, hi = self.bounds
+            pf = self._cdf(-self._betas, self._correlation)
+        lo, hi = self._bounds
         tolerance = self.abseps + self.releps * max(lo, abs(pf))
         if not np.isfinite(pf) or pf < lo - tolerance or pf > hi + tolerance:
             raise AnalysisError(
@@ -293,9 +290,9 @@ class SystemFORM(AnalysisObject):
             raise AnalysisError(
                 "System probability underflow; increase integration accuracy"
             )
-        self.Pf = float(np.clip(pf, 0, 1))
-        self.beta = float(-norm.ppf(self.Pf))
-        self.results_valid = True
+        self._Pf = float(np.clip(pf, 0, 1))
+        self._beta = float(-norm.ppf(self._Pf))
+        self._results_valid = True
         return SystemFORMResult(
             method="SystemFORM",
             status="converged",
@@ -304,28 +301,11 @@ class SystemFORM(AnalysisObject):
                 record.n_limit_state_evaluations for record in records.values()
             ),
             variable_names=tuple(self.model.get_variables()),
-            failure_probability=self.Pf,
-            beta=self.beta,
-            bounds=tuple(float(bound) for bound in self.bounds),
+            failure_probability=self._Pf,
+            beta=self._beta,
+            bounds=tuple(float(bound) for bound in self._bounds),
             component_results=records,
-            correlation=self.correlation,
-            intersections=self.intersections,
+            correlation=self._correlation,
+            intersections=self._intersections,
             options=self.options,
         )
-
-    def get_failure(self):
-        """Return the system FORM probability after a successful run."""
-        if not self.results_valid:
-            raise ValueError("SystemFORM has no valid result")
-        return self.Pf
-
-    def get_beta(self):
-        """Return -Phi^-1(Pf), the equivalent system reliability index."""
-        self.get_failure()
-        return self.beta
-
-    def show_results(self):
-        """Print the approximation and bounds for its linearized event."""
-        print(f"System FORM Pf: {self.get_failure():.8g}")
-        print(f"Equivalent beta: {self.beta:.8g}")
-        print(f"Linearized-event bounds: {self.bounds}")

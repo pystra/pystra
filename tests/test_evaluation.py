@@ -36,5 +36,5 @@ def test_each_run_counts_its_own_evaluations():
     first.run()
     second = ra.FORM(model=shared, limit_state=limit_state)
     second.run()
-    assert first.get_no_function_calls() == second.get_no_function_calls() > 0
-    assert shared.get_call_function() == 2 * first.get_no_function_calls()
+    assert first._n_evaluations == second._n_evaluations > 0
+    assert shared.get_call_function() == 2 * first._n_evaluations

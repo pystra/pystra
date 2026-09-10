@@ -48,18 +48,10 @@ class LineSampling(AnalysisObject):
         the same stream on every run, a generator advances its own state, and
         None draws fresh entropy.
 
-    Attributes
-    ----------
-    Pf : float
-        Estimated probability of failure.
-    beta : float
-        Reliability index :math:`\beta = -\Phi^{-1}(p_f)`.
-    cov : float
-        Estimated coefficient of variation of :math:`\hat{p}_f`.
-    alpha : ndarray, shape (nrv,)
-        Important direction used in the analysis.
-    n_samples : int
-        Number of lines (samples) used.
+    Notes
+    -----
+    :meth:`run` returns a :class:`~pystra.results.SimulationResult`; its
+    diagnostics include the important ``direction``.
 
     References
     ----------
@@ -79,17 +71,17 @@ class LineSampling(AnalysisObject):
         if form is not None and not isinstance(form, FORM):
             raise TypeError("form must be a FORM analysis")
         self.form = form
-        self.nrv = self.model.get_len_marginal_distributions()
-        self.alpha = None
-        self.Pf = None
-        self.beta = None
-        self.cov = None
-        self.n_samples = None
+        self._nrv = self.model.get_len_marginal_distributions()
+        self._alpha = None
+        self._Pf = None
+        self._beta = None
+        self._cov = None
+        self._n_samples = None
         self._pf_contributions = None
 
     def run(self):
         """Run line sampling and return a :class:`SimulationResult`."""
-        self.results_valid = True
+        self._results_valid = True
         self.init_run()
 
         marg = self.model.get_marginal_distributions()
@@ -98,7 +90,7 @@ class LineSampling(AnalysisObject):
         if self.form is None:
             _form = FORM(
                 self.model,
-                self.limitstate,
+                self.limit_state,
                 options=FORMOptions(
                     block_size=self.options.block_size,
                     transform=self.options.transform,
@@ -109,12 +101,12 @@ class LineSampling(AnalysisObject):
             self.form = _form
 
         # alpha: unit vector pointing toward the failure region in u-space
-        alpha = self.form.get_alpha()  # shape (nrv,)
-        beta_form = self.form.get_beta()
-        self.alpha = alpha
+        alpha = self.form._alpha[0]  # shape (nrv,)
+        beta_form = self.form._beta
+        self._alpha = alpha
 
         N = self.options.n_samples
-        n = self.nrv
+        n = self._nrv
 
         # Draw N samples in standard normal space
         u_samples = _generator(self.rng).standard_normal((n, N))
@@ -136,18 +128,18 @@ class LineSampling(AnalysisObject):
         pf_contribs = scipy_norm.cdf(-c_values)
         self._pf_contributions = pf_contribs
 
-        self.Pf = float(np.mean(pf_contribs))
-        self.n_samples = N
+        self._Pf = float(np.mean(pf_contribs))
+        self._n_samples = N
 
-        if 0.0 < self.Pf < 1.0:
-            self.beta = float(-scipy_norm.ppf(self.Pf))
-            self.cov = float(np.std(pf_contribs) / (np.sqrt(N) * self.Pf))
-        elif self.Pf <= 0.0:
-            self.beta = np.inf
-            self.cov = np.inf
+        if 0.0 < self._Pf < 1.0:
+            self._beta = float(-scipy_norm.ppf(self._Pf))
+            self._cov = float(np.std(pf_contribs) / (np.sqrt(N) * self._Pf))
+        elif self._Pf <= 0.0:
+            self._beta = np.inf
+            self._cov = np.inf
         else:
-            self.beta = -np.inf
-            self.cov = np.inf
+            self._beta = -np.inf
+            self._cov = np.inf
 
         return SimulationResult(
             method="LineSampling",
@@ -155,9 +147,9 @@ class LineSampling(AnalysisObject):
             message="Sampling completed",
             n_limit_state_evaluations=self._n_evaluations,
             variable_names=tuple(self.model.get_variables()),
-            failure_probability=self.Pf,
-            beta=float(self.beta),
-            coefficient_of_variation=self.cov,
+            failure_probability=self._Pf,
+            beta=float(self._beta),
+            coefficient_of_variation=self._cov,
             n_samples=N,
             options=self.options,
             diagnostics={
@@ -233,29 +225,3 @@ class LineSampling(AnalysisObject):
     # ------------------------------------------------------------------
     # Public API
     # ------------------------------------------------------------------
-
-    def get_beta(self):
-        """Return the reliability index :math:`\\beta`."""
-        return self.beta
-
-    def get_failure(self):
-        """Return the probability of failure."""
-        return self.Pf
-
-    def show_results(self):
-        """Print a summary of Line Sampling results to the console."""
-        if not self.results_valid:
-            raise ValueError("Analysis not yet run")
-        n_hyph = self.N_HYPH
-        print("")
-        print("=" * n_hyph)
-        print("")
-        print(" RESULTS FROM RUNNING LINE SAMPLING")
-        print("")
-        print(f" Reliability index beta:        {self.beta:.6f}")
-        print(f" Failure probability:           {self.Pf:.6e}")
-        print(f" Coefficient of variation:      {self.cov:.4f}")
-        print(f" Number of lines (samples):     {self.n_samples}")
-        print("")
-        print("=" * n_hyph)
-        print("")

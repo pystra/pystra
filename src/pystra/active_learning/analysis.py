@@ -228,7 +228,7 @@ class ActiveLearning(AnalysisObject):
         """Run from fresh state and return an immutable convergence record."""
         self.result = None
         self.surrogate_model = None
-        self.results_valid = False
+        self._results_valid = False
         self.init_run()
         dimension = self.model.n_marg
         if dimension < 1:
@@ -403,7 +403,7 @@ class ActiveLearning(AnalysisObject):
             history=tuple(history),
         )
         self.surrogate_model = surrogate
-        self.results_valid = converged
+        self._results_valid = converged
         if not converged:
             warnings.warn(
                 f"Active learning did not converge: {status}",

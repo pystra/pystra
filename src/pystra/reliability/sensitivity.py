@@ -95,7 +95,7 @@ class SensitivityAnalysis:
         if method == "closed_form" and delta != 0.01:
             raise ModelError("The closed form does not use delta")
         self.model = model
-        self.limitstate = limit_state
+        self.limit_state = limit_state
         self.options = options
         self.method = method
         self.delta = delta
@@ -145,28 +145,11 @@ class SensitivityAnalysis:
 
     def _form(self, model):
         """Run FORM on *model*, recording its evaluations and convergence."""
-        form = FORM(model, self.limitstate, options=self.options)
+        form = FORM(model, self.limit_state, options=self.options)
         result = form.run()
         self._evaluations += result.n_limit_state_evaluations
         self._converged = self._converged and result.converged
         return form, result
-
-    def summary(self, result):
-        """Return a pandas DataFrame of a result's marginal sensitivities.
-
-        Equivalent to :meth:`SensitivityResult.to_dataframe`.
-
-        Parameters
-        ----------
-        result : SensitivityResult
-            A result returned by :meth:`run`.
-
-        Returns
-        -------
-        pandas.DataFrame
-            Columns: ``Variable``, ``Parameter``, ``∂β/∂θ``.
-        """
-        return result.to_dataframe()
 
     # ------------------------------------------------------------------
     # Private: finite-difference sensitivities
@@ -191,7 +174,7 @@ class SensitivityAnalysis:
 
         # Get the base result
         form, base = self._form(self.model)
-        beta0 = form.get_beta()
+        beta0 = form._beta
 
         for name in names:
             dist = variables[name]
@@ -210,7 +193,7 @@ class SensitivityAnalysis:
 
                 # Run FORM with perturbed model
                 form, _ = self._form(model1)
-                beta1 = form.get_beta()
+                beta1 = form._beta
                 sensitivities[name][param] = (beta1 - beta0) / delta_actual
 
         return base, sensitivities
@@ -243,9 +226,9 @@ class SensitivityAnalysis:
         form, base = self._form(self.model)
 
         # Extract converged quantities
-        alpha = form.get_alpha()  # shape (nrv,)
-        u_star = form.get_design_point()  # shape (nrv,)
-        x_star = form.get_design_point(uspace=False)  # shape (nrv,)
+        alpha = form._alpha[0]  # shape (nrv,)
+        u_star = form._u  # shape (nrv,)
+        x_star = form._design_point_x()  # shape (nrv,)
 
         marg = self.model.get_marginal_distributions()
         nrv = len(marg)

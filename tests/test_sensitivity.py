@@ -429,7 +429,7 @@ class TestGEVSensitivity:
 
         # Test with FD result
         fd = ra.SensitivityAnalysis(model, ls, options=opts).run()
-        df = sa.summary(fd)
+        df = fd.to_dataframe()
         assert "Variable" in df.columns
         assert "Parameter" in df.columns
         # R has 2 params (mean, std), S has 3 (mean, std, shape) → 5 rows
@@ -437,7 +437,7 @@ class TestGEVSensitivity:
 
         # Test with CF result
         cf = ra.SensitivityAnalysis(model, ls, options=opts, method="closed_form").run()
-        df_cf = sa.summary(cf)
+        df_cf = cf.to_dataframe()
         assert len(df_cf) == 5
 
 

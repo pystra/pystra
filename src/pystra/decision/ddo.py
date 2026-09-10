@@ -1716,9 +1716,9 @@ def _coerce_analysis_result(result: Any) -> Mapping[str, float]:
             else result.get("failure_probability", result.get("failure"))
         )
         beta = result.get("beta", result.get("reliability_index"))
-    elif hasattr(result, "get_failure") or hasattr(result, "get_beta"):
-        pf = result.get_failure() if hasattr(result, "get_failure") else None
-        beta = result.get_beta() if hasattr(result, "get_beta") else None
+    elif hasattr(result, "failure_probability") or hasattr(result, "beta"):
+        pf = getattr(result, "failure_probability", None)
+        beta = getattr(result, "beta", None)
     elif isinstance(result, Sequence) and not isinstance(result, (str, bytes)):
         pf = result[0] if len(result) > 0 else None
         beta = result[1] if len(result) > 1 else None

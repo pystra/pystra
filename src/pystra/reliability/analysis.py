@@ -59,7 +59,6 @@ class AnalysisObject:
         ``True`` after a successful ``run()``.
     """
 
-    N_HYPH = 58  # Width of console separator lines in show_results()
     _options_type = None
     _requires_limit_state = True
 
@@ -82,7 +81,7 @@ class AnalysisObject:
                 f"{name} takes {self._options_type.__name__}, not {type(options).__name__}"
             )
         self.model = model
-        self.limitstate = limit_state
+        self.limit_state = limit_state
         self.options = options
 
         transform, _ = self._dependence()
@@ -90,7 +89,7 @@ class AnalysisObject:
             transform_type=None if transform in ("nataf", "rosenblatt") else transform
         )
 
-        self.results_valid = False
+        self._results_valid = False
         self._n_evaluations = 0
 
     def _dependence(self):
@@ -118,7 +117,7 @@ class AnalysisObject:
                 differentiation=settings.differentiation,
                 ffd_parameter=settings.ffd_parameter,
             )
-        return self.limitstate.evaluate_lsf(x, self.model, **kwargs)
+        return self.limit_state.evaluate_lsf(x, self.model, **kwargs)
 
     def init_run(self):
         """Initialise the model's isoprobabilistic transformation.
@@ -153,7 +152,7 @@ class AnalysisObject:
             if self.transform.standard_space != "normal" and not getattr(
                 self, "supports_spherical_space", False
             ):
-                self.results_valid = False
+                self._results_valid = False
                 raise ValueError(
                     "This analysis requires independent normal space; select Rosenblatt for this copula"
                 )

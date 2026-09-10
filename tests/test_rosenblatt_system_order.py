@@ -52,10 +52,10 @@ def test_meinen_identical_events_preserve_identity_but_frank_depends_on_order(
     canonical = _system(copula, [0, 1])
     reverse = _system(copula, [1, 0])
     for analysis in (canonical, reverse):
-        assert analysis.results_valid
-        assert analysis.correlation[0, 1] == 1
-        assert analysis.Pf == pytest.approx(analysis.probabilities[0], abs=1e-12)
-    actual = [canonical.Pf, reverse.Pf]
+        assert analysis._results_valid
+        assert analysis._correlation[0, 1] == 1
+        assert analysis._Pf == pytest.approx(analysis._probabilities[0], abs=1e-12)
+    actual = [canonical._Pf, reverse._Pf]
     np.testing.assert_allclose(actual, published_probabilities, atol=5e-4, rtol=0)
     if isinstance(copula, ra.GaussianCopula):
         assert actual[0] == pytest.approx(actual[1], abs=1e-10)
@@ -81,9 +81,9 @@ def test_meinen_identical_events_preserve_identity_but_frank_depends_on_order(
 
     # A deliberate anti-example: original variable labels do not make two
     # different conditional-normal coordinate systems interchangeable.
-    rho = float(canonical.alphas[0] @ reverse.alphas[0])
+    rho = float(canonical._alphas[0] @ reverse._alphas[0])
     assert rho < 0.9
-    b1, b2 = canonical.betas[0], reverse.betas[0]
+    b1, b2 = canonical._betas[0], reverse._betas[0]
     intersection = quad(
         lambda u: norm.pdf(u) * norm.cdf((-b2 - rho * u) / np.sqrt(1 - rho * rho)),
         -np.inf,
@@ -109,8 +109,8 @@ def test_common_gaussian_coordinates_preserve_distinct_system_events():
         )
     ]
     for result in runs[1:]:
-        np.testing.assert_allclose(result.betas, runs[0].betas, atol=2e-6, rtol=0)
+        np.testing.assert_allclose(result._betas, runs[0]._betas, atol=2e-6, rtol=0)
         np.testing.assert_allclose(
-            result.correlation, runs[0].correlation, atol=2e-6, rtol=0
+            result._correlation, runs[0]._correlation, atol=2e-6, rtol=0
         )
-        assert result.Pf == pytest.approx(runs[0].Pf, abs=2e-6)
+        assert result._Pf == pytest.approx(runs[0]._Pf, abs=2e-6)

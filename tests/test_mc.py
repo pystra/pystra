@@ -18,6 +18,6 @@ def test_monte_carlo_probability_boundary(value, probability, beta):
     )
     analysis.run()
 
-    assert analysis.k == 100
-    assert analysis.get_failure() == probability
-    assert analysis.get_beta() == beta
+    assert analysis._k == 100
+    assert analysis._Pf == probability
+    assert analysis._beta == beta

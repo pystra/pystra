@@ -16,35 +16,6 @@ Everyday operations
 
 .. automethod:: FORM.run
 
-.. automethod:: FORM.get_failure
-
-.. automethod:: FORM.get_beta
-
-.. automethod:: FORM.get_equivalent_beta
-
-.. automethod:: FORM.get_design_point
-
-.. automethod:: FORM.get_alpha
-
-.. automethod:: FORM.get_no_function_calls
-
-.. automethod:: FORM.show_results
-
-.. automethod:: FORM.show_detailed_output
-
-Algorithm extension methods
----------------------------
-
-These stages support implementation and extension of the design-point search.
-Use ``run()`` for an ordinary analysis so initialization and convergence checks
-are performed in the intended order.
-
-{% for item in methods %}
-{% if not item.startswith("_") and item not in ['run', 'get_failure', 'get_beta', 'get_equivalent_beta', 'get_design_point', 'get_alpha', 'get_no_function_calls', 'show_results', 'show_detailed_output'] %}
-.. automethod:: FORM.{{ item }}
-
-{% endif %}
-{% endfor %}
 {% else %}
 .. autoclass:: {{ objname }}
    :members:

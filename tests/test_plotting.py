@@ -156,16 +156,16 @@ def test_strong_maximum_uses_completed_sample_without_new_draws():
     analysis = ra.StrongMaximumTest(form, point_number=40, rng=71)
     with pytest.raises(ValueError, match="completed two-dimensional"):
         ra.plotting.plot_strong_maximum(analysis)
-    analysis.run()
-    points = analysis.u_points.copy()
-    count = analysis.evaluation_count
-    _, ax = ra.plotting.plot_strong_maximum(analysis)
+    result = analysis.run()
+    points = result.points_u.copy()
+    count = analysis._evaluation_count
+    _, ax = ra.plotting.plot_strong_maximum(result)
     plotted = np.concatenate(
         [collection.get_offsets() for collection in ax.collections[:4]]
     )
     np.testing.assert_allclose(np.sort(plotted, axis=0), np.sort(points, axis=0))
-    np.testing.assert_array_equal(analysis.u_points, points)
-    assert analysis.evaluation_count == count
+    np.testing.assert_array_equal(result.points_u, points)
+    assert analysis._evaluation_count == count
 
 
 @pytest.mark.parametrize(

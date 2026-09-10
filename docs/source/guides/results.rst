@@ -72,9 +72,7 @@ FORM records
 
 ``to_dataframe()`` tabulates the design point and ``alpha`` by variable. An
 unconverged record has no probability, reliability index or design point.
-The analysis object's ``get_beta()`` returns the design index, whereas
-``get_equivalent_beta()`` and the record's ``beta`` are normal-equivalent.
-This distinction matters for explicit spherical Student-t transformations;
+The record's ``beta`` is normal-equivalent. This distinction matters for explicit spherical Student-t transformations;
 see :doc:`/theory/notation`.
 
 Other records

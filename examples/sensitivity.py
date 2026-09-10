@@ -37,8 +37,9 @@ model.add_variable(ra.Lognormal("S", 1, 1))
 model.set_correlation(ra.CorrelationMatrix([[1.0, 0.5], [0.5, 1.0]]))
 
 form = ra.FORM(model=model, limit_state=limit_state)
-form.show_detailed_output()
+form_result = form.run()
+print(form_result.summary())
 
 sens = ra.SensitivityAnalysis(model=model, limit_state=limit_state)
 results = sens.run()
-print(results)
+print(results.to_dataframe())

@@ -230,10 +230,10 @@ def test_result_snapshot_seed_and_independent_estimation():
     assert np.array_equal(state[1], np.random.get_state()[1])
     with pytest.raises(FrozenInstanceError):
         result.converged = False
-    analysis.limitstate = ra.LimitState(lambda x: np.full_like(x, np.nan))
+    analysis.limit_state = ra.LimitState(lambda x: np.full_like(x, np.nan))
     with pytest.raises(ValueError):
         analysis.run()
-    assert analysis.result is None and not analysis.results_valid
+    assert analysis.result is None and not analysis._results_valid
 
 
 def test_budget_and_candidate_exhaustion_do_not_repeat_points():
@@ -254,7 +254,7 @@ def test_budget_and_candidate_exhaustion_do_not_repeat_points():
     )
     with pytest.warns(RuntimeWarning, match="candidate_exhaustion"):
         result = analysis.run()
-    assert not result.converged and not analysis.results_valid
+    assert not result.converged and not analysis._results_valid
     assert np.isinf(result.sampling_cov)
     assert result.sampling_interval[1] > 0
     assert len(np.unique(surrogate.designs[-1], axis=0)) == 15

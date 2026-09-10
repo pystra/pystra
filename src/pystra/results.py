@@ -221,13 +221,13 @@ class FORMResult(_ProbabilityResult):
     @classmethod
     def from_analysis(cls, analysis) -> "FORMResult":
         """Copy a completed solver's numerical results and diagnostics."""
-        valid = bool(analysis.converged and analysis.results_valid)
+        valid = bool(analysis._converged and analysis._results_valid)
         standard_space = getattr(analysis.transform, "standard_space", "normal")
         if valid:
             beta = (
-                float(analysis.beta)
+                float(analysis._beta)
                 if standard_space == "normal"
-                else analysis.get_equivalent_beta()
+                else analysis._get_equivalent_beta()
             )
         return cls(
             method="FORM",
@@ -235,18 +235,16 @@ class FORMResult(_ProbabilityResult):
             message="Converged" if valid else "FORM iteration limit reached",
             n_limit_state_evaluations=analysis._n_evaluations,
             variable_names=tuple(analysis.model.get_variables()),
-            failure_probability=float(analysis.Pf) if valid else None,
+            failure_probability=float(analysis._Pf) if valid else None,
             beta=beta if valid else None,
-            design_index=float(analysis.beta) if valid else None,
-            design_point_x=(
-                np.ravel(analysis.get_design_point(False)) if valid else None
-            ),
-            design_point_u=np.ravel(analysis.u) if valid else None,
-            alpha=np.ravel(analysis.alpha) if valid else None,
+            design_index=float(analysis._beta) if valid else None,
+            design_point_x=(np.ravel(analysis._design_point_x()) if valid else None),
+            design_point_u=np.ravel(analysis._u) if valid else None,
+            alpha=np.ravel(analysis._alpha) if valid else None,
             standard_space=standard_space,
-            iterations=analysis.i or 0,
-            limit_state_error=analysis.e1,
-            direction_error=analysis.e2,
+            iterations=analysis._i or 0,
+            limit_state_error=analysis._e1,
+            direction_error=analysis._e2,
             options=analysis.options,
         )
 
@@ -346,8 +344,11 @@ class SimulationResult(_ProbabilityResult):
         lines for line sampling, and the total over all levels for subset
         simulation.
     diagnostics : Mapping
-        Method-specific details. Importance and line sampling give ``form``,
-        the FORM record they sample about; line sampling adds ``direction``.
+        Method-specific details. Crude Monte Carlo and importance sampling
+        give ``history``: ``n_samples``, ``failure_probability`` and
+        ``coefficient_of_variation`` after each block. Importance and line
+        sampling give ``form``, the FORM record they sample about; line
+        sampling adds ``direction``.
         Subset simulation gives ``thresholds``, ``conditional_probabilities``,
         ``n_levels`` and ``samples_per_level``.
     """

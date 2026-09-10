@@ -38,19 +38,17 @@ def test_form_result_copies_the_solution_into_read_only_arrays():
         True,
     )
     assert result.beta == result.design_index == pytest.approx(5 / np.sqrt(2))
-    assert result.failure_probability == analysis.get_failure()
-    np.testing.assert_array_equal(
-        result.design_point_x, analysis.get_design_point(uspace=False)
-    )
-    np.testing.assert_array_equal(result.design_point_u, analysis.get_design_point())
-    np.testing.assert_array_equal(result.alpha, analysis.get_alpha())
+    assert result.failure_probability == analysis._Pf
+    np.testing.assert_array_equal(result.design_point_x, analysis._design_point_x())
+    np.testing.assert_array_equal(result.design_point_u, analysis._u)
+    np.testing.assert_array_equal(result.alpha, analysis._alpha[0])
     assert result.variable_names == ("R", "S")
-    assert result.n_limit_state_evaluations == analysis.get_no_function_calls() > 0
+    assert result.n_limit_state_evaluations == analysis._n_evaluations > 0
     for vector in (result.design_point_x, result.design_point_u, result.alpha):
         assert not vector.flags.writeable
         with pytest.raises(ValueError):
             vector[0] = 0.0
-    analysis.u[0] = 99.0
+    analysis._u[0] = 99.0
     assert result.design_point_u[0] != 99.0
     with pytest.raises(dataclasses.FrozenInstanceError):
         result.beta = 0.0
@@ -106,11 +104,11 @@ def test_sorm_result_reports_breitung_and_each_approximation(fit, fit_type, shap
     assert isinstance(result, ra.SORMResult) and result.status == "converged"
     assert (result.fit, result.formula) == (fit, "breitung")
     assert result.failure_probability == result.approximations["breitung"]
-    assert result.failure_probability == sorm.pf2_breitung
-    assert result.beta == sorm.betag_breitung
-    assert result.approximations["modified_breitung"] == sorm.pf2_breitung_m
+    assert result.failure_probability == sorm._pf2_breitung
+    assert result.beta == sorm._betag_breitung
+    assert result.approximations["modified_breitung"] == sorm._pf2_breitung_m
     assert result.form == form_result
-    expected = sorm.kappa if fit == "curve" else sorm.kappa_pf
+    expected = sorm._kappa if fit == "curve" else sorm._kappa_pf
     np.testing.assert_array_equal(result.curvatures, expected)
     assert result.curvatures.shape == shape
     assert result.n_limit_state_evaluations > 0
@@ -160,9 +158,11 @@ def test_crude_monte_carlo_result_reports_precision_against_its_target():
     assert (
         isinstance(result, ra.SimulationResult) and result.method == "CrudeMonteCarlo"
     )
-    assert result.failure_probability == analysis.get_failure() > 0
-    assert result.beta == analysis.get_beta()
-    assert result.coefficient_of_variation == analysis.cov_q_bar[analysis.k - 1] > 0.05
+    assert result.failure_probability == analysis._Pf > 0
+    assert result.beta == analysis._beta
+    assert (
+        result.coefficient_of_variation == analysis._cov_q_bar[analysis._k - 1] > 0.05
+    )
     assert result.n_samples == result.n_limit_state_evaluations == 2000
     assert result.status == "precision_not_met" and not result.converged
     assert result.failure_probability is not None
@@ -200,9 +200,9 @@ def test_importance_and_line_sampling_record_their_form_point():
     )
     result = lines.run()
     assert (result.method, result.status) == ("LineSampling", "completed")
-    assert result.failure_probability == lines.Pf
-    assert result.coefficient_of_variation == lines.cov and result.n_samples == 50
-    np.testing.assert_array_equal(result.diagnostics["direction"], lines.alpha)
+    assert result.failure_probability == lines._Pf
+    assert result.coefficient_of_variation == lines._cov and result.n_samples == 50
+    np.testing.assert_array_equal(result.diagnostics["direction"], lines._alpha)
     assert not result.diagnostics["direction"].flags.writeable
     assert result.diagnostics["form"].converged
 
@@ -217,12 +217,12 @@ def test_subset_simulation_records_its_levels():
     result = analysis.run()
     levels = result.diagnostics
     assert (result.method, result.status) == ("SubsetSimulation", "completed")
-    assert levels["n_levels"] == analysis.n_levels > 1
+    assert levels["n_levels"] == analysis._n_levels > 1
     assert levels["samples_per_level"] == 500
-    assert result.n_samples == 500 * analysis.n_levels
-    np.testing.assert_array_equal(levels["thresholds"], analysis.thresholds)
+    assert result.n_samples == 500 * analysis._n_levels
+    np.testing.assert_array_equal(levels["thresholds"], analysis._thresholds)
     np.testing.assert_array_equal(
-        levels["conditional_probabilities"], analysis.conditional_probs
+        levels["conditional_probabilities"], analysis._conditional_probs
     )
     assert result.failure_probability == pytest.approx(
         np.prod(levels["conditional_probabilities"])
@@ -263,12 +263,12 @@ def test_system_form_result_holds_each_component_record():
     analysis = ra.SystemFORM(model, system)
     result = analysis.run()
     assert isinstance(result, ra.SystemFORMResult) and result.status == "converged"
-    assert result.failure_probability == analysis.get_failure()
+    assert result.failure_probability == analysis._Pf
     assert list(result.component_results) == ["x", "y"]
     assert all(isinstance(r, ra.FORMResult) for r in result.component_results.values())
     lower, upper = result.bounds
     assert lower <= result.failure_probability <= upper
-    np.testing.assert_array_equal(result.correlation, analysis.correlation)
+    np.testing.assert_array_equal(result.correlation, analysis._correlation)
     assert not result.correlation.flags.writeable
     assert result.n_limit_state_evaluations == sum(
         r.n_limit_state_evaluations for r in result.component_results.values()
@@ -302,11 +302,11 @@ def test_strong_maximum_result_is_a_diagnostic_record():
     )
     assert result.point_number == 200 and result.points_u.shape == (200, 2)
     np.testing.assert_array_equal(
-        result.points("near_failure"), test.get_points("near_failure")
+        result.points("near_failure"), test._u_points[test._masks["near_failure"]]
     )
     np.testing.assert_array_equal(
-        result.points("far_safe", space="x"), test.get_points("far_safe", uspace=False)
+        result.points("far_safe", space="x"), test._x_points[test._masks["far_safe"]]
     )
-    assert result.n_limit_state_evaluations == test.evaluation_count == 202
+    assert result.n_limit_state_evaluations == test._evaluation_count == 202
     assert not hasattr(result, "failure_probability")
     assert "Strong" in result.summary() or "StrongMaximumTest" in result.summary()

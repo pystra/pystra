@@ -63,10 +63,10 @@ def test_ss_simple_rs():
     analysis.run()
 
     analytical_beta = 5.0 / np.sqrt(5.0)  # ≈ 2.2361
-    assert analysis.beta > 0
-    assert pytest.approx(analysis.beta, abs=0.5) == analytical_beta
-    assert 0.0 < analysis.Pf < 1.0
-    assert analysis.cov >= 0.0
+    assert analysis._beta > 0
+    assert pytest.approx(analysis._beta, abs=0.5) == analytical_beta
+    assert 0.0 < analysis._Pf < 1.0
+    assert analysis._cov >= 0.0
 
 
 def test_ss_thresholds_decreasing():
@@ -82,7 +82,7 @@ def test_ss_thresholds_decreasing():
     )
     analysis.run()
 
-    thresholds = analysis.thresholds
+    thresholds = analysis._thresholds
     assert len(thresholds) >= 1
     assert thresholds[-1] == 0.0
     for i in range(1, len(thresholds)):
@@ -102,8 +102,8 @@ def test_ss_n_levels_consistent():
     )
     analysis.run()
 
-    assert analysis.n_levels == len(analysis.thresholds)
-    assert analysis.n_levels == len(analysis.conditional_probs)
+    assert analysis._n_levels == len(analysis._thresholds)
+    assert analysis._n_levels == len(analysis._conditional_probs)
 
 
 def test_ss_conditional_probs_valid():
@@ -119,7 +119,7 @@ def test_ss_conditional_probs_valid():
     )
     analysis.run()
 
-    for p in analysis.conditional_probs:
+    for p in analysis._conditional_probs:
         assert 0.0 < p <= 1.0
 
 
@@ -138,8 +138,8 @@ def test_ss_standard_problem():
     analysis.run()
 
     # FORM beta ≈ 3.7347; SS should be in a reasonable neighbourhood
-    assert analysis.beta > 0
-    assert pytest.approx(analysis.beta, abs=0.7) == 3.7347
+    assert analysis._beta > 0
+    assert pytest.approx(analysis._beta, abs=0.7) == 3.7347
 
 
 def test_ss_invalid_p0():
@@ -167,8 +167,8 @@ def test_ss_product_of_cond_probs():
     )
     analysis.run()
 
-    expected = float(np.prod(analysis.conditional_probs))
-    assert pytest.approx(analysis.Pf, rel=1e-12) == expected
+    expected = float(np.prod(analysis._conditional_probs))
+    assert pytest.approx(analysis._Pf, rel=1e-12) == expected
 
 
 def test_ss_results_valid_flag():
@@ -182,9 +182,9 @@ def test_ss_results_valid_flag():
         limit_state=limit_state,
         rng=0,
     )
-    assert not analysis.results_valid
+    assert not analysis._results_valid
     analysis.run()
-    assert analysis.results_valid
+    assert analysis._results_valid
 
 
 def test_ss_get_beta_get_failure_consistent():
@@ -200,8 +200,8 @@ def test_ss_get_beta_get_failure_consistent():
     )
     analysis.run()
 
-    assert analysis.get_beta() == analysis.beta
-    assert analysis.get_failure() == analysis.Pf
+    assert analysis._beta == analysis._beta
+    assert analysis._Pf == analysis._Pf
 
 
 def test_ss_custom_proposal_sigma():
@@ -218,5 +218,5 @@ def test_ss_custom_proposal_sigma():
     )
     analysis.run()
 
-    assert analysis.beta > 0
-    assert 0.0 < analysis.Pf < 1.0
+    assert analysis._beta > 0
+    assert 0.0 < analysis._Pf < 1.0

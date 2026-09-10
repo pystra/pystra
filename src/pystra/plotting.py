@@ -7,8 +7,7 @@ from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 
 from .active_learning import ActiveLearningResult, PCEFitResult, Surrogate
-from .results import FORMResult
-from .reliability.strong_maximum import StrongMaximumTest
+from .results import FORMResult, StrongMaximumResult
 
 __all__ = [
     "plot_limit_state",
@@ -476,17 +475,17 @@ def plot_pce_selection(
 
 
 def plot_strong_maximum(
-    analysis: StrongMaximumTest, *, ax: Optional[Axes] = None
+    result: StrongMaximumResult, *, ax: Optional[Axes] = None
 ) -> Tuple[Figure, Axes]:
     """Plot two-dimensional Strong Maximum Test sample groups in normal space.
 
     Parameters
     ----------
-    analysis : StrongMaximumTest
-        Successfully completed two-dimensional diagnostic. Its stored points,
-        candidate and test sphere are drawn without evaluations or RNG draws.
-        The status is shown; no competing region detected is not a certificate
-        of FORM accuracy. Higher-dimensional projections are rejected.
+    result : StrongMaximumResult
+        Record of a completed two-dimensional test. Its stored points,
+        candidate and test sphere are drawn without evaluations or random
+        draws. Finding no competing region is not a certificate of FORM
+        accuracy. Higher-dimensional projections are rejected.
     ax : matplotlib.axes.Axes, optional
         Existing axes.
 
@@ -497,8 +496,10 @@ def plot_strong_maximum(
     """
     from matplotlib.patches import Circle
 
-    if not analysis.results_valid or analysis.nrv != 2:
-        raise ValueError("A completed two-dimensional Strong Maximum Test is required")
+    if not isinstance(result, StrongMaximumResult) or len(result.variable_names) != 2:
+        raise ValueError(
+            "A completed two-dimensional Strong Maximum Test result is required"
+        )
     fig, ax = _axes(ax)
     colors = {
         "near_failure": "tab:blue",
@@ -513,7 +514,7 @@ def plot_strong_maximum(
         "far_safe": "+",
     }
     for group, color in colors.items():
-        points = analysis.get_points(group)
+        points = result.points(group)
         ax.scatter(
             *points.T,
             s=12,
@@ -521,16 +522,18 @@ def plot_strong_maximum(
             marker=markers[group],
             label=f"{group.replace('_', ' ')} ({len(points)})",
         )
-    ax.add_patch(
-        Circle((0, 0), analysis.radius, fill=False, linestyle=":", color="grey")
-    )
+    ax.add_patch(Circle((0, 0), result.radius, fill=False, linestyle=":", color="grey"))
     ax.scatter(
-        *analysis.design_point, marker="*", s=150, color="black", label="Candidate"
+        *result.design_point_u, marker="*", s=150, color="black", label="Candidate"
     )
     ax.set(
         xlabel="$u_1$",
         ylabel="$u_2$",
-        title=analysis.status.replace("_", " "),
+        title=(
+            "competing region detected"
+            if result.has_competing_points
+            else "no competing region detected"
+        ),
         aspect="equal",
     )
     ax.legend()

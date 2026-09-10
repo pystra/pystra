@@ -227,8 +227,8 @@ def test_system_limit_state_runs_form_analysis():
     )
     form.run()
 
-    assert np.isfinite(form.get_beta())
-    assert np.all(form.get_failure() > 0.0)
+    assert np.isfinite(form._beta)
+    assert np.all(form._Pf > 0.0)
 
 
 def test_component_values_and_failure_masks():

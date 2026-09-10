@@ -38,17 +38,17 @@ After FORM
        confidence_level=0.99, rng=2026,
    )
    print(check.point_number)  # cost is available before run()
-   check.run()
-   print(check.status)       # no_competing_region_detected for this plane
+   check_result = check.run()
+   print(check_result.has_competing_points)  # False for this plane
    print(check.confidence_level)
-   print(check.get_points())  # far failure points, in U-space by default
+   print(check_result.points())  # far failure points, in U-space by default
 
 A converged ``FORM`` supplies the model, transformation and design point.
 The original limit-state function is evaluated without gradients. The test
 uses an independent evaluator and does not overwrite the FORM evaluator's
 last inputs. Keep the stochastic model and limit-state definition unchanged
 between FORM and the check. Function evaluation accounting remains cumulative
-on the shared model; ``check.evaluation_count`` counts this diagnostic only.
+on the shared model; ``check_result.n_limit_state_evaluations`` counts this diagnostic only.
 
 Alternatively, specify a point explicitly:
 
@@ -60,18 +60,18 @@ Alternatively, specify a point explicitly:
        design_point=[3.0, 0.0],
        point_number=500, rng=2026,
    )
-   check.run()
-   print(check.status)  # competing_region_detected: also fails for X < -3
-   competing_u = check.get_points("far_failure")
-   competing_x = check.get_points("far_failure", uspace=False)
-   competing_g = check.get_values("far_failure")
+   check_result = check.run()
+   print(check_result.has_competing_points)  # True: also fails for X < -3
+   competing_u = check_result.points("far_failure")
+   competing_x = check_result.points("far_failure", space="x")
+   competing_g = check_result.limit_state_values[check_result.regions["far_failure"]]
 
 The explicit point must be a finite vector in the model's independent
 standard-normal coordinates. ``options`` (``FORMOptions``) selects its transformation
 and, for Rosenblatt, conditioning order. For a non-Gaussian copula, use
 :ref:`Rosenblatt <chap_copulas>`; spherical Student-t Nataf space is rejected.
 The test verifies a strictly safe origin and a boundary
-residual no greater than ``get_e1() * abs(g(origin))``. It rejects candidates
+residual no greater than ``options.limit_state_tolerance * abs(g(origin))``. It rejects candidates
 near the origin and nonconverged FORM inputs. It does not independently solve
 the constrained design-point problem for an explicit candidate.
 
@@ -164,17 +164,24 @@ when the geometry is uncertain.
 With system reliability
 -----------------------
 
-Run the check separately on the component ``FORM`` objects retained by
-``SystemFORM``:
+Run the check separately at each component's design point, supplying the
+component limit state and its FORM design point explicitly:
 
 .. code-block:: python
 
-   # system_form is an already-run ra.SystemFORM object
+   # system_form is a ra.SystemFORM analysis and system_result its run() record
    checks = {}
-   for name, component_form in system_form.component_results.items():
-       test = ra.StrongMaximumTest(component_form, point_number=1000, rng=2026)
-       test.run()
-       checks[name] = test
+   for component in system_form.components:
+       record = system_result.component_results[component.name]
+       test = ra.StrongMaximumTest(
+           model=system_form.model,
+           limit_state=component.as_limit_state(),
+           design_point=record.design_point_u,
+           options=system_form.options,
+           point_number=1000,
+           rng=2026,
+       )
+       checks[component.name] = test.run()
 
 This tests whether a component may have additional important regions beyond
 its one tangent plane. It does not validate the whole system probability.

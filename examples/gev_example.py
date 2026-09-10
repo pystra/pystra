@@ -30,9 +30,9 @@ model.add_variable(X2)
 model.add_variable(ra.Constant("C", 50))
 
 form = ra.FORM(model=model, limit_state=limit_state)
-form.run()
-form.show_detailed_output()
+form_result = form.run()
+print(form_result.summary())
 
 sorm = ra.SORM(model=model, limit_state=limit_state, form=form)
-sorm.run()
-sorm.show_detailed_output()
+sorm_result = sorm.run()
+print(sorm_result.summary())

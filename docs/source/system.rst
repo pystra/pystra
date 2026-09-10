@@ -100,15 +100,15 @@ Component-based system FORM
        ra.Component("b", lambda Y: 3.0 - Y),
    ]
    analysis = ra.SystemFORM(model, ra.SeriesSystem(components))
-   analysis.run()
-   print(analysis.get_failure())  # approximately 0.002697974
-   print(analysis.get_beta())     # equivalent system index
-   print(analysis.bounds)        # Ditlevsen bounds on the linearized event
-   print(analysis.correlation)   # correlations of normal scores
-   print(analysis.component_results["a"].get_design_point())
+   analysis_result = analysis.run()
+   print(analysis_result.failure_probability)  # approximately 0.002697974
+   print(analysis_result.beta)     # equivalent system index
+   print(analysis_result.bounds)        # Ditlevsen bounds on the linearized event
+   print(analysis_result.correlation)   # correlations of normal scores
+   print(analysis_result.component_results["a"].design_point_u)
 
    p = norm.sf(3.0)
-   assert abs(analysis.get_failure() - (2*p - p*p)) < 1e-10
+   assert abs(analysis_result.failure_probability - (2*p - p*p)) < 1e-10
 
 Use ``ParallelSystem(components)`` for joint failure; the exact result in this
 example is ``p*p``. Homogeneous nesting is flattened and shared component
@@ -130,10 +130,10 @@ scores, not of the physical variables or binary failure indicators. All
 components retain the full model variable order. DDM functions must return
 gradients in that full order, including zeros for unused variables.
 
-``component_results`` retains the individual ``FORM`` objects, including
-``converged``, ``e1`` and ``e2`` diagnostics. A failed component analysis raises
-an error and leaves the system result invalid. Ordinary ``FORM`` now warns
-when it exhausts its iterations, and marks ``results_valid`` false.
+The record's ``component_results`` holds each component's ``FORMResult``,
+including its convergence status and residuals. A failed component analysis
+raises an error and produces no system record. Ordinary ``FORM`` warns when it
+exhausts its iterations and returns an unconverged record.
 
 Series probabilities are integrated as disjoint first-failure events, avoiding
 subtraction of an almost-unit survival probability. Parallel probabilities

@@ -51,9 +51,9 @@ def test_form():
     Analysis.run()
 
     # validate results
-    assert pytest.approx(Analysis.beta, abs=1e-4) == 3.7347
-    assert np.isscalar(Analysis.beta)
-    assert np.isscalar(Analysis.Pf)
+    assert pytest.approx(Analysis._beta, abs=1e-4) == 3.7347
+    assert np.isscalar(Analysis._beta)
+    assert np.isscalar(Analysis._Pf)
 
 
 def test_form_svd():
@@ -71,7 +71,7 @@ def test_form_svd():
     Analysis.run()
 
     # validate results
-    assert pytest.approx(Analysis.beta, abs=1e-4) == 3.7347
+    assert pytest.approx(Analysis._beta, abs=1e-4) == 3.7347
 
 
 def test_sorm():
@@ -88,12 +88,12 @@ def test_sorm():
     Analysis.run()
 
     # validate results
-    assert pytest.approx(Analysis.betaHL, abs=1e-4) == 3.7347
+    assert pytest.approx(Analysis._betaHL, abs=1e-4) == 3.7347
     # An independent u-space central-difference calculation gives 3.85389. The
     # earlier reference, 3.8537, came from code that transformed SORM gradients
     # at points shifted by the finite-difference step.
-    assert pytest.approx(Analysis.betag_breitung, abs=1e-4) == 3.8539
-    assert pytest.approx(Analysis.betag_breitung_m, abs=2e-4) == 3.8582
+    assert pytest.approx(Analysis._betag_breitung, abs=1e-4) == 3.8539
+    assert pytest.approx(Analysis._betag_breitung_m, abs=2e-4) == 3.8582
 
 
 def test_sorm_pointfit():
@@ -110,19 +110,19 @@ def test_sorm_pointfit():
     Analysis.run()
 
     # betaHL should match FORM
-    assert pytest.approx(Analysis.betaHL, abs=1e-4) == 3.7347
+    assert pytest.approx(Analysis._betaHL, abs=1e-4) == 3.7347
 
     # Point-fitting gives similar but not identical results to curve-fitting
-    assert pytest.approx(Analysis.betag_breitung, abs=5e-2) == 3.79
-    assert pytest.approx(Analysis.betag_breitung_m, abs=5e-2) == 3.79
+    assert pytest.approx(Analysis._betag_breitung, abs=5e-2) == 3.79
+    assert pytest.approx(Analysis._betag_breitung_m, abs=5e-2) == 3.79
 
     # Asymmetric curvatures should be populated
-    assert Analysis.kappa_pf is not None
-    assert Analysis.kappa_pf.shape == (2, 2)  # 2 sides x (nrv-1) axes
-    assert Analysis.fit_type == "pf"
+    assert Analysis._kappa_pf is not None
+    assert Analysis._kappa_pf.shape == (2, 2)  # 2 sides x (nrv-1) axes
+    assert Analysis._fit_type == "pf"
 
     # Average curvatures stored in kappa for compatibility
-    assert len(Analysis.kappa) == 2
+    assert len(Analysis._kappa) == 2
 
 
 def test_sorm_pointfit_linear():
@@ -146,9 +146,9 @@ def test_sorm_pointfit_linear():
     Analysis.run()
 
     expected_beta = 5.0 / np.sqrt(5.0)
-    assert pytest.approx(Analysis.betag_breitung, abs=1e-3) == expected_beta
+    assert pytest.approx(Analysis._betag_breitung, abs=1e-3) == expected_beta
     # Curvatures should be effectively zero
-    assert np.allclose(Analysis.kappa_pf, 0, atol=1e-6)
+    assert np.allclose(Analysis._kappa_pf, 0, atol=1e-6)
 
 
 def test_sorm_pointfit_with_form():
@@ -172,9 +172,9 @@ def test_sorm_pointfit_with_form():
     )
     Analysis.run()
 
-    assert pytest.approx(Analysis.betaHL, abs=1e-4) == 3.7347
-    assert Analysis.betag_breitung > 0
-    assert Analysis.kappa_pf is not None
+    assert pytest.approx(Analysis._betaHL, abs=1e-4) == 3.7347
+    assert Analysis._betag_breitung > 0
+    assert Analysis._kappa_pf is not None
 
 
 def test_sorm_invalid_fit_type():
@@ -199,9 +199,9 @@ def test_cmc():
     Analysis.run()
 
     # validate results
-    assert Analysis.x.shape[-1] == 1000
+    assert Analysis._x.shape[-1] == 1000
     # beta should be non-negative
-    assert Analysis.beta >= 0
+    assert Analysis._beta >= 0
 
 
 def test_cmc_x_all_stores_physical_space():
@@ -235,8 +235,8 @@ def test_cmc_x_all_stores_physical_space():
     # x_all is block-major: X1 then X2 within each block. Compare the actual
     # evaluated inputs, rather than inferring coordinates from sample means.
     expected = np.concatenate([block.ravel() for block in evaluated_blocks])
-    np.testing.assert_array_equal(analysis.x_all, expected)
-    assert analysis.x_all.shape == (200,)
+    np.testing.assert_array_equal(analysis._x_all, expected)
+    assert analysis._x_all.shape == (200,)
     physical = np.concatenate(evaluated_blocks, axis=1)
     assert np.all(physical[0] > 0)
     assert np.all(physical[1] >= 10 - np.sqrt(3) * 5)
@@ -258,19 +258,19 @@ def test_mc_cov_zero_branch():
     )
     # Initialise just enough internal state to call the method
     samples = 10
-    Analysis.block_size = samples
-    Analysis.q_bar = np.empty(samples)
-    Analysis.cov_q_bar = np.empty(samples)
+    Analysis._block_size = samples
+    Analysis._q_bar = np.empty(samples)
+    Analysis._cov_q_bar = np.empty(samples)
 
     # Force the zero-CoV branch: sum_q > 0 but all q values identical
     # so variance is exactly zero → cov_q_bar == 0
-    Analysis.k = 5
-    Analysis.sum_q = 5.0
-    Analysis.sum_q2 = 5.0  # same as sum_q → variance = 0
+    Analysis._k = 5
+    Analysis._sum_q = 5.0
+    Analysis._sum_q2 = 5.0  # same as sum_q → variance = 0
 
-    Analysis.compute_coefficient_of_variation()
+    Analysis._compute_coefficient_of_variation()
     # Should reach cov_q_bar = 1.0 without AttributeError
-    assert Analysis.cov_q_bar[4] == 1.0
+    assert Analysis._cov_q_bar[4] == 1.0
 
 
 def test_is():
@@ -287,9 +287,9 @@ def test_is():
     Analysis.run()
 
     # validate results
-    assert Analysis.x.shape[-1] == 1000
+    assert Analysis._x.shape[-1] == 1000
     # beta should be positive for importance sampling
-    assert Analysis.beta > 0
+    assert Analysis._beta > 0
 
 
 def test_distribution_analysis():
@@ -311,8 +311,8 @@ def test_distribution_analysis():
     # validate results statistically
     # Agree with an independent 1000-sample estimate (mean 1.0284, standard
     # deviation 0.1562) within about four combined standard errors.
-    assert pytest.approx(Analysis.all_G.mean(), abs=0.025) == 1.0284
-    assert pytest.approx(Analysis.all_G.std(), abs=0.02) == 0.1562
+    assert pytest.approx(Analysis._all_G.mean(), abs=0.025) == 1.0284
+    assert pytest.approx(Analysis._all_G.std(), abs=0.02) == 0.1562
 
 
 def test_form_uncorrelated_normals():
@@ -337,7 +337,7 @@ def test_form_uncorrelated_normals():
 
     # Analytical: beta = (10 - 5) / sqrt(4 + 1) = 5 / sqrt(5) ≈ 2.2361
     expected_beta = 5.0 / np.sqrt(5.0)
-    assert pytest.approx(Analysis.beta, abs=1e-3) == expected_beta
+    assert pytest.approx(Analysis._beta, abs=1e-3) == expected_beta
 
 
 def test_form_with_gumbel():
@@ -360,8 +360,8 @@ def test_form_with_gumbel():
     Analysis.run()
 
     # beta should be positive and reasonable
-    assert Analysis.beta > 0
-    assert Analysis.beta < 10
+    assert Analysis._beta > 0
+    assert Analysis._beta < 10
 
 
 def test_sorm_curvatures_match_independent_central_differences():
@@ -374,7 +374,7 @@ def test_sorm_curvatures_match_independent_central_differences():
     )
     sorm.run()
     form = sorm.form
-    u0 = np.ravel(form.get_design_point())
+    u0 = np.ravel(form._u)
     marg = stochastic_model.get_marginal_distributions()
     names = stochastic_model.get_variables()
     constants = stochastic_model.get_constants()
@@ -405,4 +405,4 @@ def test_sorm_curvatures_match_independent_central_differences():
     basis = np.linalg.qr(np.column_stack([u0 / np.linalg.norm(u0), eye]))[0][:, 1:n]
     kappa = np.linalg.eigvalsh(basis.T @ hess @ basis) / np.linalg.norm(grad)
     # The earlier gradient transformation at shifted points was off by 7.5e-4.
-    assert np.sort(np.ravel(sorm.kappa)) == pytest.approx(np.sort(kappa), abs=3e-4)
+    assert np.sort(np.ravel(sorm._kappa)) == pytest.approx(np.sort(kappa), abs=3e-4)

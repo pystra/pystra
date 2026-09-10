@@ -50,7 +50,7 @@ class ImportanceSampling(CrudeMonteCarlo):
         if self.form is None:
             form = FORM(
                 self.model,
-                self.limitstate,
+                self.limit_state,
                 options=FORMOptions(
                     block_size=self.options.block_size,
                     transform=self.options.transform,
@@ -60,30 +60,13 @@ class ImportanceSampling(CrudeMonteCarlo):
             self._form_result = form.run()
             self.form = form
         elif self._form_result is None:
-            if not self.form.results_valid:
+            if not self.form._results_valid:
                 raise AnalysisError(
                     "ImportanceSampling requires a completed FORM analysis"
                 )
             self._form_result = FORMResult.from_analysis(self.form)
-        self.point = np.transpose([self.form.get_design_point()])
+        self.point = np.transpose([self.form._u])
         return CrudeMonteCarlo.run(self)
 
     def _diagnostics(self):
-        return {"form": self._form_result}
-
-    def show_results(self):
-        """Show results and plots"""
-        if not self.results_valid:
-            raise ValueError("Analysis not yet run")
-        print("")
-        print("==================================================")
-        print("")
-        print(" RESULTS FROM RUNNING IMPORTANCE SAMPLING")
-        print("")
-        print(" Reliability index beta:       ", self.beta)
-        print(" Failure probability:          ", self.Pf)
-        print(" Coefficient of variation of Pf", self.cov_q_bar[self.k - 1])
-        print(" Number of simulations:        ", self.k)
-        print("")
-        print("==================================================")
-        print("")
+        return {**super()._diagnostics(), "form": self._form_result}

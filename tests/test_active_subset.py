@@ -240,7 +240,7 @@ def test_resampling_after_each_fit_separates_probability_and_selection():
     analysis.max_iterations = 3
     with pytest.warns(RuntimeWarning, match="max_iterations"):
         unfinished = analysis.run()
-    assert not unfinished.converged and not analysis.results_valid
+    assert not unfinished.converged and not analysis._results_valid
     assert all(not step.estimation_converged for step in unfinished.history)
     assert not BetaBounds().should_stop(unfinished.history)
     estimator.incomplete = False
@@ -258,7 +258,7 @@ def test_resampling_after_each_fit_separates_probability_and_selection():
     with pytest.warns(RuntimeWarning, match="estimation_failed"):
         final_failure = analysis.run()
     assert final_failure.status == "estimation_failed"
-    assert not final_failure.converged and not analysis.results_valid
+    assert not final_failure.converged and not analysis._results_valid
     assert result.converged
 
 

@@ -74,8 +74,8 @@ Choosing the transformation
    form = ra.FORM(
        model, ra.LimitState(lambda R, S, C: R - C*S), options=options
    )
-   form.run()
-   print(form.get_beta(), form.get_failure())
+   form_result = form.run()
+   print(form_result.design_index, form_result.failure_probability)
 
 Rosenblatt uses sequential conditional CDFs followed by the normal quantile
 function. Its standard coordinates are independent standard normals for
@@ -129,8 +129,8 @@ The univariate scale is one; when ``df > 2``, covariance is
    P_{f,\mathrm{FORM}} = T_\nu(-\beta),
 
 where :math:`\beta` is the signed geometric distance in this spherical
-space. ``form.get_beta()`` returns this distance, while
-``form.get_equivalent_beta()`` returns :math:`-\Phi^{-1}(P_f)` for comparison
+space. ``form_result.design_index`` is this distance, while
+``form_result.beta`` is :math:`-\Phi^{-1}(P_f)` for comparison
 with conventional normal reliability indices.
 
 SORM, system FORM, simulation methods and the Strong Maximum Test currently

@@ -134,6 +134,11 @@ Changed
   ``ActiveLearning`` rename ``seed`` to ``rng``. An integer seed repeats its
   stream on every run. Seeded simulation results differ from 1.x within
   sampling error.
+- The analysis getters (``get_beta()``, ``get_failure()`` and so on) and printing
+  methods are removed in favour of the result records, whose ``summary()`` and
+  ``to_dataframe()`` replace the printed reports; the analyses' numerical state is
+  private and ``limitstate`` is ``limit_state``. Crude Monte Carlo reports its
+  convergence history in ``diagnostics["history"]``.
 - In the result records, a SORM fit whose curvatures leave Breitung's formula
   undefined has no estimate and status ``not_converged``, where 1.x reported
   0.0; a simulation without failures has an infinite coefficient of variation.

@@ -196,7 +196,7 @@ def test_custom_estimator_owns_uncertainty_and_selection_owns_enrichment():
     analysis.estimator.estimate = broken
     with pytest.raises(RuntimeError, match="estimator failed"):
         analysis.run()
-    assert analysis.result is None and not analysis.results_valid
+    assert analysis.result is None and not analysis._results_valid
     assert analysis.surrogate_model is None
 
 

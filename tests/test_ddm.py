@@ -77,7 +77,7 @@ def test_ddm_form():
     )
     form_ddm.run()
 
-    assert pytest.approx(form_ffd.beta, abs=1e-5) == form_ddm.beta
+    assert pytest.approx(form_ffd._beta, abs=1e-5) == form_ddm._beta
 
 
 def test_ddm_cmc():
@@ -93,7 +93,7 @@ def test_ddm_cmc():
     Analysis.run()
 
     # validate results
-    assert Analysis.x.shape[-1] == 1000
+    assert Analysis._x.shape[-1] == 1000
 
 
 def test_ddm_is():
@@ -113,4 +113,4 @@ def test_ddm_is():
     Analysis.run()
 
     # validate results
-    assert Analysis.x.shape[-1] == 1000
+    assert Analysis._x.shape[-1] == 1000

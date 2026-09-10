@@ -114,13 +114,13 @@ def test_truss_form_and_sorm_published_comparison():
         fit = {"cf": "curve", "pf": "point"}[fit_type]
         sorm = ra.SORM(model, state, form=form, options=ra.SORMOptions(fit=fit))
         sorm.run()
-        assert sorm.results_valid
+        assert sorm._results_valid
         # Breitung accuracy against the probability reference.
-        assert sorm.pf2_breitung == pytest.approx(1.53e-3, rel=0.06)
+        assert sorm._pf2_breitung == pytest.approx(1.53e-3, rel=0.06)
         if fit_type == "cf":
             # Modified Breitung matches Table 3 at its printed precision;
             # the paper does not identify which SORM formula it used.
-            assert sorm.pf2_breitung_m == pytest.approx(1.63e-3, abs=0.005e-3)
+            assert sorm._pf2_breitung_m == pytest.approx(1.63e-3, abs=0.005e-3)
 
 
 def test_hat_quadrature_against_importance_sampling_and_exact_cubic():

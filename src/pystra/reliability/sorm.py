@@ -49,31 +49,8 @@ class SORM(AnalysisObject):
 
     Notes
     -----
-    Result attributes are ``None`` before analysis and are cleared when a new
-    run begins. ``results_valid`` becomes ``True`` only after fitting completes.
-
-    Attributes
-    ----------
-    betaHL : float or ndarray
-        Hasofer-Lind reliability index (from FORM).
-    kappa : ndarray
-        Principal curvatures. For curve-fitting, a 1-D array of length
-        ``nrv - 1``. For point-fitting, the sorted average of the positive
-        and negative curvatures.
-    kappa_pf : ndarray or None
-        Asymmetric curvatures from point-fitting, shape ``(2, nrv - 1)``
-        with rows ``[kappa_minus, kappa_plus]``. ``None`` for curve-fitting.
-    fit_type : str or None
-        The fitting method used: ``'cf'``, ``'pf'``, or ``None`` if not
-        yet run.
-    pf2_breitung : float or ndarray
-        Failure probability from the Breitung approximation.
-    betag_breitung : float or ndarray
-        Generalised reliability index from the Breitung approximation.
-    pf2_breitung_m : float or ndarray
-        Failure probability from the modified Breitung (Hohenbichler-Rackwitz).
-    betag_breitung_m : float or ndarray
-        Generalised reliability index from the modified Breitung.
+    :meth:`run` returns a :class:`~pystra.results.SORMResult` with the
+    curvatures and each formula's probability.
     """
 
     _options_type = SORMOptions
@@ -92,15 +69,15 @@ class SORM(AnalysisObject):
 
     def _reset_results(self):
         """Invalidate previous SORM output before attempting another run."""
-        self.results_valid = False
-        self.betaHL = None
-        self.kappa = None
-        self.kappa_pf = None
-        self.fit_type = None
-        self.pf2_breitung = None
-        self.betag_breitung = None
-        self.pf2_breitung_m = None
-        self.betag_breitung_m = None
+        self._results_valid = False
+        self._betaHL = None
+        self._kappa = None
+        self._kappa_pf = None
+        self._fit_type = None
+        self._pf2_breitung = None
+        self._betag_breitung = None
+        self._pf2_breitung_m = None
+        self._betag_breitung_m = None
         self._undefined = set()
 
     def _form_options(self):
@@ -117,13 +94,13 @@ class SORM(AnalysisObject):
         """Run FORM if needed and require a converged design point."""
         self._reset_results()
         if self.form is None:
-            form = FORM(self.model, self.limitstate, options=self.options.form)
+            form = FORM(self.model, self.limit_state, options=self.options.form)
             form.run()
             self.form = form
-        if not self.form.results_valid or not self.form.converged:
+        if not self.form._results_valid or not self.form._converged:
             raise AnalysisError("SORM requires a successfully converged FORM analysis")
         self.init_run()
-        self.fit_type = fit_type
+        self._fit_type = fit_type
 
     def run(self):
         """Run SORM with the fit in ``options.fit``.
@@ -143,25 +120,25 @@ class SORM(AnalysisObject):
             If FORM did not converge, or a fitting point cannot be found.
         """
         if self.options.fit == "curve":
-            return self.run_curvefit()
-        return self.run_pointfit()
+            return self._run_curvefit()
+        return self._run_pointfit()
 
-    def run_curvefit(self):
+    def _run_curvefit(self):
         """Run curve fitting and return a :class:`SORMResult`; FORM must have converged."""
         self._prepare_run("cf")
-        hess_G = self.compute_hessian()
-        R1 = self.orthonormal_matrix()
-        A = R1 @ hess_G @ R1.T / np.linalg.norm(self.form.gradient)
+        hess_G = self._compute_hessian()
+        R1 = self._orthonormal_matrix()
+        A = R1 @ hess_G @ R1.T / np.linalg.norm(self.form._gradient)
         kappa, _ = np.linalg.eig(A[:-1, :-1])
         kappa = np.real_if_close(kappa, tol=1e7)
-        self.betaHL = self.form.beta
-        self.kappa = np.sort(kappa)
-        self.pf_breitung(self.betaHL, self.kappa)
-        self.pf_breitung_m(self.betaHL, self.kappa)
-        self.results_valid = True
+        self._betaHL = self.form._beta
+        self._kappa = np.sort(kappa)
+        self._pf_breitung(self._betaHL, self._kappa)
+        self._pf_breitung_m(self._betaHL, self._kappa)
+        self._results_valid = True
         return self._result()
 
-    def run_pointfit(self):
+    def _run_pointfit(self):
         """Run SORM analysis using point-fitting.
 
         Finds fitting points on the limit state surface on both the positive
@@ -194,9 +171,9 @@ class SORM(AnalysisObject):
             or a fitting point cannot be found.
         """
         self._prepare_run("pf")
-        beta = self.form.get_beta()
-        nrv = self.form.alpha.shape[1]
-        R1 = self.orthonormal_matrix()
+        beta = self.form._beta
+        nrv = self.form._alpha.shape[1]
+        R1 = self._orthonormal_matrix()
         marg = self.model.get_marginal_distributions()
 
         # Step coefficient controlling trial point distance from design point
@@ -216,22 +193,22 @@ class SORM(AnalysisObject):
             kappa_plus[i] = self._find_fitting_point(i, +1, beta, k, R1, marg)
 
         # Store results
-        self.betaHL = self.form.beta
-        self.kappa_pf = np.vstack([kappa_minus, kappa_plus])
-        self.kappa = np.sort(0.5 * (kappa_minus + kappa_plus))
+        self._betaHL = self.form._beta
+        self._kappa_pf = np.vstack([kappa_minus, kappa_plus])
+        self._kappa = np.sort(0.5 * (kappa_minus + kappa_plus))
 
         # Compute failure probabilities
         self._pf_breitung_pf(beta, kappa_minus, kappa_plus)
         self._pf_breitung_m_pf(beta, kappa_minus, kappa_plus)
 
-        self.results_valid = True
+        self._results_valid = True
         return self._result()
 
     def _result(self):
         """Return the immutable record of the completed fit."""
         approximations = {
-            "breitung": self.pf2_breitung,
-            "modified_breitung": self.pf2_breitung_m,
+            "breitung": self._pf2_breitung,
+            "modified_breitung": self._pf2_breitung_m,
         }
         for name in self._undefined:
             approximations[name] = None
@@ -249,8 +226,8 @@ class SORM(AnalysisObject):
             failure_probability=estimate,
             beta=float(-normal.ppf(estimate)) if estimate is not None else None,
             form=FORMResult.from_analysis(self.form),
-            fit="curve" if self.fit_type == "cf" else "point",
-            curvatures=self.kappa if self.fit_type == "cf" else self.kappa_pf,
+            fit="curve" if self._fit_type == "cf" else "point",
+            curvatures=self._kappa if self._fit_type == "cf" else self._kappa_pf,
             formula=self.options.formula,
             options=self.options,
             approximations=approximations,
@@ -309,7 +286,7 @@ class SORM(AnalysisObject):
             x_col = x[:, np.newaxis] if x.ndim == 1 else x
 
             # Evaluate LSF and gradient in u-space
-            G, grad = self.evaluate_lsf(x_col, calc_gradient=True)
+            G, grad = self._evaluate_lsf(x_col, calc_gradient=True)
             G_val = np.squeeze(G)
             grad_u = np.squeeze(grad)
 
@@ -359,15 +336,15 @@ class SORM(AnalysisObject):
         is_invalid = np.any(terms_plus <= 0) or np.any(terms_minus <= 0)
 
         if not is_invalid:
-            self.pf2_breitung = float(
+            self._pf2_breitung = float(
                 normal.cdf(-beta)
                 * np.prod(0.5 * (terms_plus ** (-0.5) + terms_minus ** (-0.5)))
             )
-            self.betag_breitung = float(-normal.ppf(self.pf2_breitung))
+            self._betag_breitung = float(-normal.ppf(self._pf2_breitung))
         else:
             self._undefined.add("breitung")
-            self.pf2_breitung = 0.0
-            self.betag_breitung = 0.0
+            self._pf2_breitung = 0.0
+            self._betag_breitung = 0.0
 
     def _pf_breitung_m_pf(self, beta, kappa_minus, kappa_plus):
         """Hohenbichler-Rackwitz modified Breitung for asymmetric curvatures.
@@ -387,17 +364,17 @@ class SORM(AnalysisObject):
         is_invalid = np.any(terms_plus <= 0) or np.any(terms_minus <= 0)
 
         if not is_invalid:
-            self.pf2_breitung_m = float(
+            self._pf2_breitung_m = float(
                 normal.cdf(-beta)
                 * np.prod(0.5 * (terms_plus ** (-0.5) + terms_minus ** (-0.5)))
             )
-            self.betag_breitung_m = float(-normal.ppf(self.pf2_breitung_m))
+            self._betag_breitung_m = float(-normal.ppf(self._pf2_breitung_m))
         else:
             self._undefined.add("modified_breitung")
-            self.pf2_breitung_m = 0.0
-            self.betag_breitung_m = 0.0
+            self._pf2_breitung_m = 0.0
+            self._betag_breitung_m = 0.0
 
-    def pf_breitung(self, beta, kappa):
+    def _pf_breitung(self, beta, kappa):
         """
         Calculates the probability of failure and generalized reliability
         index using [Breitung1984]_ formula. This formula is good for higher
@@ -405,16 +382,16 @@ class SORM(AnalysisObject):
         """
         is_invalid = np.any(kappa < -1 / beta)
         if not is_invalid:
-            self.pf2_breitung = float(
+            self._pf2_breitung = float(
                 normal.cdf(-beta) * np.prod((1 + beta * kappa) ** (-0.5))
             )
-            self.betag_breitung = float(-normal.ppf(self.pf2_breitung))
+            self._betag_breitung = float(-normal.ppf(self._pf2_breitung))
         else:
             self._undefined.add("breitung")
-            self.pf2_breitung = 0.0
-            self.betag_breitung = 0.0
+            self._pf2_breitung = 0.0
+            self._betag_breitung = 0.0
 
-    def pf_breitung_m(self, beta, kappa):
+    def _pf_breitung_m(self, beta, kappa):
         """
         Calculates the probability of failure and generalized reliability
         index using Brietung's formula ([Breitung1984]_) as modified by Hohenbichler and
@@ -424,102 +401,16 @@ class SORM(AnalysisObject):
         k = normal.pdf(beta) / normal.cdf(-beta)
         is_invalid = np.any(kappa < -1 / k)
         if not is_invalid:
-            self.pf2_breitung_m = float(
+            self._pf2_breitung_m = float(
                 normal.cdf(-beta) * np.prod((1 + k * kappa) ** (-0.5))
             )
-            self.betag_breitung_m = float(-normal.ppf(self.pf2_breitung_m))
+            self._betag_breitung_m = float(-normal.ppf(self._pf2_breitung_m))
         else:
             self._undefined.add("modified_breitung")
-            self.pf2_breitung_m = 0.0
-            self.betag_breitung_m = 0.0
+            self._pf2_breitung_m = 0.0
+            self._betag_breitung_m = 0.0
 
-    def show_results(self):
-        """Print a compact summary of the SORM results."""
-        if not self.results_valid:
-            raise ValueError("Analysis not yet run")
-        n_hyphen = self.N_HYPH
-        fit_label = " (Point-Fitting)" if self.fit_type == "pf" else ""
-        print("")
-        print("=" * n_hyphen)
-        print("")
-        print(f"RESULTS FROM RUNNING SECOND ORDER RELIABILITY METHOD{fit_label}")
-        print("")
-        print("Generalized reliability index: ", self.betag_breitung)
-        print("Probability of failure:        ", self.pf2_breitung)
-        print("")
-        if self.fit_type == "pf" and self.kappa_pf is not None:
-            for i in range(self.kappa_pf.shape[1]):
-                print(
-                    f"Curvature {i+1}:  kappa- = {self.kappa_pf[0, i]:+.6f}"
-                    f"  kappa+ = {self.kappa_pf[1, i]:+.6f}"
-                )
-        else:
-            for i, k in enumerate(self.kappa):
-                print(f"Curvature {i+1}: {k}")
-        print("=" * n_hyphen)
-        print("")
-
-    def show_detailed_output(self):
-        """Print detailed FORM/SORM comparison to the console."""
-        if not self.results_valid:
-            raise ValueError("Analysis not yet run")
-        names = self.model.get_variables().keys()
-        consts = self.model.get_constants()
-        u_star = self.form.get_design_point()
-        x_star = self.form.get_design_point(uspace=False)
-        alpha = self.form.get_alpha()
-        betaHL = self.form.get_beta()
-        pfFORM = self.form.get_failure()
-
-        fit_label = " (Point-Fitting)" if self.fit_type == "pf" else ""
-        n_hyphen = self.N_HYPH
-        print("")
-        print("=" * n_hyphen)
-        print(f"FORM/SORM{fit_label}")
-        print("=" * n_hyphen)
-        print("{:15s} \t\t {:1.10e}".format("Pf FORM", pfFORM))
-        print("{:15s} \t\t {:1.10e}".format("Pf SORM Breitung", self.pf2_breitung))
-        print("{:15s} \t {:1.10e}".format("Pf SORM Breitung HR", self.pf2_breitung_m))
-        print("{:15s} \t\t {:2.10f}".format("Beta_HL", betaHL))
-        print("{:15s} \t\t {:2.10f}".format("Beta_G Breitung", self.betag_breitung))
-        print(
-            "{:15s} \t\t {:2.10f}".format("Beta_G Breitung HR", self.betag_breitung_m)
-        )
-        print(
-            "{:15s} \t\t {:d}".format(
-                "Model Evaluations", self.form._n_evaluations + self._n_evaluations
-            )
-        )
-
-        print("-" * n_hyphen)
-        if self.fit_type == "pf" and self.kappa_pf is not None:
-            for i in range(self.kappa_pf.shape[1]):
-                print(
-                    f"Curvature {i+1}:  kappa- = {self.kappa_pf[0, i]:+.6f}"
-                    f"  kappa+ = {self.kappa_pf[1, i]:+.6f}"
-                )
-        else:
-            for i, k in enumerate(self.kappa):
-                print(f"Curvature {i+1}: {k}")
-
-        print("-" * n_hyphen)
-        print(
-            "{:10s} \t {:>9s} \t {:>12s} \t {:>9s}".format(
-                "Variable", "U_star", "X_star", "alpha"
-            )
-        )
-        for i, name in enumerate(names):
-            print(
-                "{:10s} \t {: 5.6f} \t {:12.6f} \t {:+5.6f}".format(
-                    name, u_star[i], x_star[i], alpha[i]
-                )
-            )
-        for name, val in consts.items():
-            print(f"{name:10s} \t {'---':>9s} \t {val:12.6f} \t {'---':>9s}")
-        print("=" * n_hyphen)
-        print("")
-
-    def compute_hessian(self, diff_type=None):
+    def _compute_hessian(self, diff_type=None):
         """
         Computes the matrix of second derivatives using forward finite
         difference, using the evaluation of the gradient already done
@@ -530,19 +421,19 @@ class SORM(AnalysisObject):
         """
 
         h = 1 / self.options.ffd_parameter
-        nrv = self.form.alpha.shape[1]
+        nrv = self.form._alpha.shape[1]
         hess_G = np.zeros((nrv, nrv))
 
         if diff_type is None:
             # Differentiation based on the gradients
-            x0 = self.form.get_design_point(uspace=False)
-            _, grad_g0 = self.evaluate_lsf(x0[:, np.newaxis], calc_gradient=True)
-            u0 = self.form.get_design_point()
+            x0 = self.form._design_point_x()
+            _, grad_g0 = self._evaluate_lsf(x0[:, np.newaxis], calc_gradient=True)
+            u0 = self.form._u
             for i in range(nrv):
                 u1 = np.copy(u0)
                 u1[i] += h
                 x1 = self.transform.u_to_x(u1, self.model.get_marginal_distributions())
-                _, grad_g1 = self.evaluate_lsf(x1[:, np.newaxis], calc_gradient=True)
+                _, grad_g1 = self._evaluate_lsf(x1[:, np.newaxis], calc_gradient=True)
                 hess_G[:, i] = ((grad_g1 - grad_g0) / h).reshape(nrv)
 
         else:
@@ -550,7 +441,7 @@ class SORM(AnalysisObject):
             # It would be good if u_to_x could take an nvr x nx matrix and
             # return the corresponding x-matrix. This would make it easier to
             # add more numerical differentiation schemes.
-            u0 = self.form.get_design_point()
+            u0 = self.form._u
 
             all_x_plus = np.zeros((nrv, nrv))
             all_x_minus = np.zeros((nrv, nrv))
@@ -581,12 +472,12 @@ class SORM(AnalysisObject):
 
             # Assemble all x-space vecs, solve for G, then separate
             all_x = np.concatenate((all_x_plus, all_x_minus, all_x_both), axis=1)
-            all_G, _ = self.evaluate_lsf(all_x, calc_gradient=False)
+            all_G, _ = self._evaluate_lsf(all_x, calc_gradient=False)
             all_G = all_G.squeeze()
             all_G_plus = all_G[:nrv]
             all_G_minus = all_G[nrv : 2 * nrv]
             all_G_both = all_G[2 * nrv : :]
-            G = self.form.G
+            G = self.form._G
 
             # Now use finite differences to estimate hessian
             for i in range(nrv):
@@ -604,7 +495,7 @@ class SORM(AnalysisObject):
 
         return hess_G
 
-    def evaluate_lsf(self, x, calc_gradient=False, u_space=True):
+    def _evaluate_lsf(self, x, calc_gradient=False, u_space=True):
         """
         For use in computing the Hessian without altering the FORM object.
         Considers the coord transform so the limit state function is evaluated
@@ -631,13 +522,13 @@ class SORM(AnalysisObject):
 
         return G, grad
 
-    def orthonormal_matrix(self):
+    def _orthonormal_matrix(self):
         """
         Computes the rotation matrix of the standard normal coordinate
         space where the design point is located at Beta along the last
         axis.
         """
-        alpha = self.form.alpha.squeeze()
+        alpha = self.form._alpha.squeeze()
         nrv = len(alpha)
         # Assemble A per theory
         A = np.eye(nrv).copy()
@@ -646,13 +537,13 @@ class SORM(AnalysisObject):
         # vector in the first column
         A = np.rot90(A, k=3)
         # Orthoganalize
-        Q = self.gram_schmidt(A)
+        Q = self._gram_schmidt(A)
         # And undo this rotation with a final 90 dgree rotation as order of
         # the column vector entries is not relevant
         R1 = np.rot90(Q)
         return R1
 
-    def gram_schmidt(self, A):
+    def _gram_schmidt(self, A):
         """
         Creates an orthonormal matrix using the modified Gram-Schmidt process.
         Note that QR decomposition doesn't work for this application; while

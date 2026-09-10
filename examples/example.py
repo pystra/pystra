@@ -45,9 +45,9 @@ def main():
         model=stochastic_model,
         limit_state=limit_state,
     )
-    Analysis.run()
+    Analysis_result = Analysis.run()
     # More detailed output
-    Analysis.show_detailed_output()
+    print(Analysis_result.summary())
 
     # Perform SORM analysis, passing FORM result if it exists
     sorm = ra.SORM(
@@ -55,9 +55,9 @@ def main():
         limit_state=limit_state,
         form=Analysis,
     )
-    sorm.run()
+    sorm_result = sorm.run()
     # Detailed output
-    sorm.show_detailed_output()
+    print(sorm_result.summary())
 
     # Perform Distribution analysis
     Analysis = ra.DistributionAnalysis(
@@ -65,7 +65,7 @@ def main():
         model=stochastic_model,
         limit_state=limit_state,
     )
-    Analysis.run()
+    Analysis_result = Analysis.run()
 
     # Perform Crude Monte Carlo Simulation
     Analysis = ra.CrudeMonteCarlo(
@@ -73,7 +73,7 @@ def main():
         model=stochastic_model,
         limit_state=limit_state,
     )
-    Analysis.run()
+    Analysis_result = Analysis.run()
 
     # Perform Importance Sampling
     Analysis = ra.ImportanceSampling(
@@ -81,11 +81,11 @@ def main():
         model=stochastic_model,
         limit_state=limit_state,
     )
-    Analysis.run()
+    Analysis_result = Analysis.run()
 
     # Some single results:
-    beta = Analysis.get_beta()
-    pf = Analysis.get_failure()
+    beta = Analysis_result.beta
+    pf = Analysis_result.failure_probability
 
     print(f"Beta is {beta}, corresponding to a failure probability of {pf}")
 

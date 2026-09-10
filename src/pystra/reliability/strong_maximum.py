@@ -56,19 +56,10 @@ class StrongMaximumTest(AnalysisObject):
         Actual sample count and achieved nominal cap-detection probability.
     delta_epsilon, radius, cap_probability, vicinity_cosine : float
         Geometry and probability of hitting a reference detection cap.
-    u_points, x_points : ndarray, shape (point_number, nrv)
-        The same sphere sample in standard and physical coordinates.
-    values : ndarray, shape (point_number,)
-        Original limit-state values; failure means strictly less than zero.
-    masks : dict
-        Boolean masks: far_failure, near_failure, far_safe, near_safe.
-    has_competing_points : bool or None
-        Whether far_failure contains points; None until a successful run.
-    status : str
-        not_run, running, failed, competing_region_detected, or
-        no_competing_region_detected. The last status is not a certificate.
-    evaluation_count : int
-        Evaluated sample points, including two candidate/origin checks.
+
+    :meth:`run` returns a :class:`~pystra.results.StrongMaximumResult` with the
+    sphere points, their limit-state values and region masks, and whether a
+    competing region was found. Finding none is not a certificate.
 
     Notes
     -----
@@ -108,8 +99,8 @@ class StrongMaximumTest(AnalysisObject):
         if form is not None:
             if (
                 not isinstance(form, FORM)
-                or not form.results_valid
-                or not form.converged
+                or not form._results_valid
+                or not form._converged
             ):
                 raise ValueError("Supply a successfully converged FORM analysis")
             if any(
@@ -124,10 +115,10 @@ class StrongMaximumTest(AnalysisObject):
                 raise ValueError(
                     "form cannot be combined with explicit candidate inputs"
                 )
-            model, limit_state = form.model, form.limitstate
+            model, limit_state = form.model, form.limit_state
             options = form.options
-            design_point = form.get_design_point()
-            if form.get_beta() <= 0:
+            design_point = form._u
+            if form._beta <= 0:
                 raise ValueError("Strong Maximum Test requires a safe-origin candidate")
             if form.transform.standard_space != "normal":
                 raise ValueError(
@@ -142,13 +133,13 @@ class StrongMaximumTest(AnalysisObject):
         if form is not None:
             self.transform = copy(form.transform)
         self.design_point = np.asarray(design_point, dtype=float).copy()
-        self.nrv = self.model.get_len_marginal_distributions()
-        if self.design_point.shape != (self.nrv,) or not np.all(
+        self._nrv = self.model.get_len_marginal_distributions()
+        if self.design_point.shape != (self._nrv,) or not np.all(
             np.isfinite(self.design_point)
         ):
             raise ValueError("design_point must be a finite vector in full model order")
-        self.beta = float(np.linalg.norm(self.design_point))
-        if not np.isfinite(self.beta) or self.beta <= np.sqrt(np.finfo(float).eps):
+        self._beta = float(np.linalg.norm(self.design_point))
+        if not np.isfinite(self._beta) or self._beta <= np.sqrt(np.finfo(float).eps):
             raise ValueError(
                 "Design point is too close to the origin or has invalid norm"
             )
@@ -168,17 +159,17 @@ class StrongMaximumTest(AnalysisObject):
         ):
             raise ValueError("confidence_level must be finite and in (0, 1)")
 
-        relevant_radius = np.hypot(self.beta, np.sqrt(-2 * np.log(importance_level)))
-        increment = (-2 * np.log(importance_level)) / (relevant_radius + self.beta)
-        self.delta_epsilon = increment / self.beta
-        self.radius = self.beta + accuracy_level * increment
-        self.vicinity_cosine = self.beta / self.radius
+        relevant_radius = np.hypot(self._beta, np.sqrt(-2 * np.log(importance_level)))
+        increment = (-2 * np.log(importance_level)) / (relevant_radius + self._beta)
+        self.delta_epsilon = increment / self._beta
+        self.radius = self._beta + accuracy_level * increment
+        self.vicinity_cosine = self._beta / self.radius
         cosine = relevant_radius / self.radius
         sin_squared = (1 - cosine) * (1 + cosine)
         self.cap_probability = float(
             0.5
-            if self.nrv == 1
-            else 0.5 * betainc((self.nrv - 1) / 2, 0.5, sin_squared)
+            if self._nrv == 1
+            else 0.5 * betainc((self._nrv - 1) / 2, 0.5, sin_squared)
         )
         if not np.isfinite(self.radius) or not 0 < self.cap_probability <= 0.5:
             raise ValueError(
@@ -210,12 +201,12 @@ class StrongMaximumTest(AnalysisObject):
         return int(value)
 
     def _clear_results(self):
-        self.results_valid = False
-        self.status = "not_run"
-        self.has_competing_points = None
-        self.u_points = self.x_points = self.values = None
-        self.masks = {}
-        self.evaluation_count = 0
+        self._results_valid = False
+        self._status = "not_run"
+        self._has_competing_points = None
+        self._u_points = self._x_points = self._values = None
+        self._masks = {}
+        self._evaluation_count = 0
 
     def _evaluate(self, u):
         marg = self.model.get_marginal_distributions()
@@ -223,7 +214,7 @@ class StrongMaximumTest(AnalysisObject):
         if not np.all(np.isfinite(x)):
             raise ValueError("Nonfinite physical coordinates on test sphere")
         values, _ = self._lsf(x.T)
-        self.evaluation_count += len(u)
+        self._evaluation_count += len(u)
         values = np.asarray(values).reshape(-1)
         if values.shape != (len(u),) or not np.all(np.isfinite(values)):
             raise ValueError(
@@ -237,14 +228,14 @@ class StrongMaximumTest(AnalysisObject):
         Returns a :class:`StrongMaximumResult`.
         """
         self._clear_results()
-        self.status = "running"
+        self._status = "running"
         random = _generator(self.rng)
         try:
             if self.form is None:
                 self.init_run()
             block = self._positive_integer(self.options.block_size, "block_size")
             _, checks = self._evaluate(
-                np.array([np.zeros(self.nrv), self.design_point])
+                np.array([np.zeros(self._nrv), self.design_point])
             )
             if checks[0] <= 0:
                 raise ValueError(
@@ -254,81 +245,60 @@ class StrongMaximumTest(AnalysisObject):
                 raise ValueError(
                     "Candidate design point is not on the limit-state boundary"
                 )
-            u = np.empty((self.point_number, self.nrv))
+            u = np.empty((self.point_number, self._nrv))
             x = np.empty_like(u)
             values = np.empty(self.point_number)
             for start in range(0, self.point_number, block):
                 stop = min(self.point_number, start + block)
-                directions = random.standard_normal((stop - start, self.nrv))
+                directions = random.standard_normal((stop - start, self._nrv))
                 lengths = np.linalg.norm(directions, axis=1)
                 while np.any(lengths == 0):
                     zero = lengths == 0
                     directions[zero] = random.standard_normal(
-                        (np.count_nonzero(zero), self.nrv)
+                        (np.count_nonzero(zero), self._nrv)
                     )
                     lengths = np.linalg.norm(directions, axis=1)
                 u[start:stop] = self.radius * directions / lengths[:, None]
                 x[start:stop], values[start:stop] = self._evaluate(u[start:stop])
-            near = u @ (self.design_point / self.beta) > self.beta
+            near = u @ (self.design_point / self._beta) > self._beta
             failure = values < 0
-            self.u_points, self.x_points, self.values = u, x, values
-            self.masks = dict(
+            self._u_points, self._x_points, self._values = u, x, values
+            self._masks = dict(
                 far_failure=~near & failure,
                 near_failure=near & failure,
                 far_safe=~near & ~failure,
                 near_safe=near & ~failure,
             )
-            self.has_competing_points = bool(np.any(self.masks["far_failure"]))
-            self.status = (
+            self._has_competing_points = bool(np.any(self._masks["far_failure"]))
+            self._status = (
                 "competing_region_detected"
-                if self.has_competing_points
+                if self._has_competing_points
                 else "no_competing_region_detected"
             )
-            self.results_valid = True
+            self._results_valid = True
         except Exception:
-            self.status = "failed"
+            self._status = "failed"
             raise
         return StrongMaximumResult(
             method="StrongMaximumTest",
             status="completed",
             message=(
                 "Competing failure region detected"
-                if self.has_competing_points
+                if self._has_competing_points
                 else "No competing failure region detected; this is not a certificate"
             ),
-            n_limit_state_evaluations=self.evaluation_count,
+            n_limit_state_evaluations=self._evaluation_count,
             variable_names=tuple(self.model.get_variables()),
-            has_competing_points=self.has_competing_points,
+            has_competing_points=self._has_competing_points,
             design_point_u=self.design_point,
-            design_index=self.beta,
+            design_index=self._beta,
             radius=self.radius,
             point_number=self.point_number,
             confidence_level=self.confidence_level,
             cap_probability=self.cap_probability,
-            points_u=self.u_points,
-            points_x=self.x_points,
-            limit_state_values=self.values,
-            regions=self.masks,
+            points_u=self._u_points,
+            points_x=self._x_points,
+            limit_state_values=self._values,
+            regions=self._masks,
             options=self.options,
         )
-
-    def get_points(self, region="far_failure", uspace=True):
-        """Return selected points as rows; default is far failure in U-space."""
-        if not self.results_valid:
-            raise ValueError("Strong Maximum Test has no valid result")
-        return (self.u_points if uspace else self.x_points)[self.masks[region]]
-
-    def get_values(self, region="far_failure"):
-        """Return original limit-state values for the selected point group."""
-        if not self.results_valid:
-            raise ValueError("Strong Maximum Test has no valid result")
-        return self.values[self.masks[region]]
-
-    def show_results(self):
-        """Print the diagnostic outcome and its nominal sampling confidence."""
-        self.get_points()
-        print(f"Strong Maximum Test: {self.status}")
-        print(
-            f"Sphere points: {self.point_number}; nominal confidence: {self.confidence_level:.6g}"
-        )
-        print({name: int(mask.sum()) for name, mask in self.masks.items()})

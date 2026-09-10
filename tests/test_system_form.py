@@ -24,10 +24,10 @@ def test_independent_exact(kind, beta):
     analysis.run()
     p = norm.sf(beta)
     exact = 2 * p - p * p if kind is ra.SeriesSystem else p * p
-    assert analysis.get_failure() == pytest.approx(exact, rel=1e-6, abs=0)
-    assert analysis.get_beta() == pytest.approx(-norm.ppf(exact), rel=1e-6)
-    np.testing.assert_allclose(analysis.correlation, np.eye(2), atol=1e-12)
-    assert all(f.converged for f in analysis.component_results.values())
+    assert analysis._Pf == pytest.approx(exact, rel=1e-6, abs=0)
+    assert analysis._beta == pytest.approx(-norm.ppf(exact), rel=1e-6)
+    np.testing.assert_allclose(analysis._correlation, np.eye(2), atol=1e-12)
+    assert all(f._converged for f in analysis._component_results.values())
 
 
 @pytest.mark.parametrize("kind", [ra.SeriesSystem, ra.ParallelSystem])
@@ -39,8 +39,8 @@ def test_correlated_orthant(kind, rho):
     analysis.run()
     joint = 0.25 + np.arcsin(rho) / (2 * np.pi)
     exact = 1 - joint if kind is ra.SeriesSystem else joint
-    assert analysis.get_failure() == pytest.approx(exact, abs=2e-7)
-    assert analysis.correlation[0, 1] == pytest.approx(rho)
+    assert analysis._Pf == pytest.approx(exact, abs=2e-7)
+    assert analysis._correlation[0, 1] == pytest.approx(rho)
 
 
 @pytest.mark.parametrize("kind", [ra.SeriesSystem, ra.ParallelSystem])
@@ -58,7 +58,7 @@ def test_singular_component_directions(kind, opposing):
         exact = 2 * norm.sf(3) if kind is ra.SeriesSystem else 0
     else:
         exact = norm.sf(3) if kind is ra.SeriesSystem else norm.sf(4)
-    assert analysis.get_failure() == pytest.approx(exact, abs=1e-12)
+    assert analysis._Pf == pytest.approx(exact, abs=1e-12)
 
 
 def test_shared_components_nested_and_rescaling():
@@ -77,9 +77,9 @@ def test_shared_components_nested_and_rescaling():
         ),
     )
     scaled.run()
-    assert len(baseline.component_results) == 2
-    assert baseline.get_failure() == pytest.approx(scaled.get_failure(), rel=1e-5)
-    assert baseline.correlation[0, 1] == pytest.approx(1 / np.sqrt(2))
+    assert len(baseline._component_results) == 2
+    assert baseline._Pf == pytest.approx(scaled._Pf, rel=1e-5)
+    assert baseline._correlation[0, 1] == pytest.approx(1 / np.sqrt(2))
 
 
 def test_single_component_and_full_order_ddm():
@@ -95,7 +95,7 @@ def test_single_component_and_full_order_ddm():
         options=options,
     )
     analysis.run()
-    assert analysis.get_failure() == pytest.approx(norm.sf(3))
+    assert analysis._Pf == pytest.approx(norm.sf(3))
 
 
 def test_nonconvergence_invalidates_system_and_rerun():
@@ -106,9 +106,8 @@ def test_nonconvergence_invalidates_system_and_rerun():
     with pytest.warns(RuntimeWarning, match="did not converge"):
         with pytest.raises(RuntimeError, match="Component 'a'.*did not converge"):
             analysis.run()
-    assert not analysis.results_valid
-    with pytest.raises(ValueError, match="no valid result"):
-        analysis.get_failure()
+    assert not analysis._results_valid
+    assert analysis._Pf is None
 
 
 def test_zero_gradient_rejected():
@@ -118,7 +117,7 @@ def test_zero_gradient_rejected():
     )
     with pytest.raises(RuntimeError, match="nonzero finite gradient"):
         analysis.run()
-    assert not analysis.results_valid
+    assert not analysis._results_valid
 
 
 def test_mixed_topology_rejected():
@@ -158,7 +157,7 @@ def test_four_branch_against_nonlinear_reference():
     analysis.run()
     # Tangent planes give |U1|>3 or |U2|>3 after an orthogonal rotation.
     p = norm.sf(3)
-    assert analysis.get_failure() == pytest.approx(4 * p - 4 * p * p, rel=2e-4)
+    assert analysis._Pf == pytest.approx(4 * p - 4 * p * p, rel=2e-4)
     reference = (
         2 * p + quad(lambda v: norm.pdf(v) * 2 * norm.sf(3 + 0.2 * v * v), -3, 3)[0]
     )
@@ -168,7 +167,7 @@ def test_four_branch_against_nonlinear_reference():
     se = np.sqrt(reference * (1 - reference) / len(x))
     assert abs(estimate - reference) < 5 * se
     # This nonlinear benchmark has genuine FORM model error.
-    assert 1.1 < analysis.get_failure() / reference < 1.3
+    assert 1.1 < analysis._Pf / reference < 1.3
 
 
 def test_original_cut_set_monte_carlo_shared_component():
@@ -194,8 +193,8 @@ def test_original_cut_set_monte_carlo_shared_component():
         np.random.set_state(state)
     p = norm.sf(1)
     exact = 2 * p * p - p**3
-    assert abs(mc.get_failure() - exact) < 5 * np.sqrt(exact * (1 - exact) / mc.k)
-    assert mc.cov_q_bar[mc.k - 1] > 0
+    assert abs(mc._Pf - exact) < 5 * np.sqrt(exact * (1 - exact) / mc._k)
+    assert mc._cov_q_bar[mc._k - 1] > 0
 
 
 def test_nataf_factorisation_invariance_with_constants():
@@ -214,9 +213,9 @@ def test_nataf_factorisation_invariance_with_constants():
         analysis.run()
         results.append(analysis)
     np.testing.assert_allclose(
-        results[0].correlation, results[1].correlation, atol=1e-10
+        results[0]._correlation, results[1]._correlation, atol=1e-10
     )
-    assert results[0].get_failure() == pytest.approx(results[1].get_failure(), rel=1e-7)
+    assert results[0]._Pf == pytest.approx(results[1]._Pf, rel=1e-7)
 
 
 def test_unresolved_multivariate_zero_is_not_reported_as_safe(monkeypatch):
@@ -236,7 +235,7 @@ def test_unresolved_multivariate_zero_is_not_reported_as_safe(monkeypatch):
     analysis = ra.SystemFORM(model, system)
     with pytest.raises(RuntimeError, match="unresolved zero"):
         analysis.run()
-    assert not analysis.results_valid
+    assert not analysis._results_valid
 
 
 def test_single_rare_parallel_bounds_are_exact():
@@ -245,7 +244,7 @@ def test_single_rare_parallel_bounds_are_exact():
         ra.ParallelSystem([ra.Component("a", lambda X: 8 - X)]),
     )
     result.run()
-    assert result.bounds == (result.get_failure(), result.get_failure())
+    assert result._bounds == (result._Pf, result._Pf)
 
 
 @pytest.mark.parametrize(
@@ -265,7 +264,7 @@ def test_three_correlated_normal_orthant(kind, exact):
     result = ra.SystemFORM(model, system)
     result.run()
     # Trivariate zero-threshold orthant: 1/8 + sum(asin(rho_ij))/(4*pi).
-    assert result.get_failure() == pytest.approx(exact, abs=2e-6)
+    assert result._Pf == pytest.approx(exact, abs=2e-6)
 
 
 def test_three_identical_directions():
@@ -278,4 +277,4 @@ def test_three_identical_directions():
     )
     result = ra.SystemFORM(model2(), system)
     result.run()
-    assert result.get_failure() == pytest.approx(norm.sf(4), rel=1e-8, abs=0)
+    assert result._Pf == pytest.approx(norm.sf(4), rel=1e-8, abs=0)

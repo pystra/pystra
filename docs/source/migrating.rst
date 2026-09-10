@@ -466,10 +466,58 @@ undefined printed a message and reported a probability and index of 0.0; its
 record now has status ``"not_converged"`` and no estimate. Likewise, an
 undefined modified Breitung probability is ``None``.
 
-Existing getters and analysis attributes remain available during migration.
-In particular, ``get_beta()`` still returns the design index; use
-``result.beta`` when comparing probability-equivalent targets across
-reference spaces.
+Getters and printing
+--------------------
+
+The analysis getters and printing methods are removed; read the record that
+``run()`` returns. The analyses' remaining numerical state (``beta``, ``Pf``,
+``u``, ``kappa``, ``cov_q_bar`` and so on) is private, and ``limitstate`` is
+renamed ``limit_state``.
+
+.. list-table::
+   :header-rows: 1
+
+   * - 1.x
+     - 2.0
+   * - ``get_failure()``
+     - ``result.failure_probability``
+   * - ``get_beta()``
+     - ``result.beta``; FORM's geometric index is ``result.design_index``
+   * - ``get_equivalent_beta()``
+     - ``result.beta``
+   * - ``get_design_point()``, ``get_design_point(False)``
+     - ``result.design_point_u``, ``result.design_point_x``
+   * - ``get_alpha()``
+     - ``result.alpha``, in ``result.variable_names`` order
+   * - ``get_no_function_calls()``
+     - ``result.n_limit_state_evaluations``
+   * - ``show_results()``, ``show_detailed_output()``
+     - ``print(result.summary())``, ``result.to_dataframe()``
+   * - SORM ``pf2_breitung``, ``pf2_breitung_m``
+     - ``result.approximations["breitung"]``, ``["modified_breitung"]``
+   * - SORM ``kappa``, ``kappa_pf``, ``betaHL``
+     - ``result.curvatures``, ``result.form.design_index``
+   * - Monte Carlo ``cov_q_bar``, ``k``
+     - ``result.coefficient_of_variation``, ``result.n_samples``, and
+       ``result.diagnostics["history"]``
+   * - Subset simulation ``thresholds``, ``conditional_probs``, ``n_levels``
+     - ``result.diagnostics["thresholds"]`` and so on
+   * - Strong Maximum Test ``status``, ``get_points()``, ``get_values()``
+     - ``result.has_competing_points``, ``result.points(region, space)``,
+       ``result.limit_state_values[result.regions[region]]``
+   * - ``results_valid``
+     - ``result.status``
+   * - ``SensitivityAnalysis.summary(result)``
+     - ``result.to_dataframe()``
+
+FORM's getters returned the geometric index; in normal space it equals
+``result.beta``, and in Student-t space use ``result.design_index``.
+``plot_strong_maximum`` takes the Strong Maximum Test's record. The
+distribution analysis's samples are ``result.samples_x`` and
+``result.limit_state_values``; crude Monte Carlo no longer exposes its stored
+samples. To test a system component's design point, pass the component limit
+state and ``result.component_results[name].design_point_u`` to
+``StrongMaximumTest`` explicitly.
 
 Code calibration using normalized reliability
 ---------------------------------------------

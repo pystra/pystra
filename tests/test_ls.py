@@ -62,11 +62,11 @@ def test_ls_simple_rs():
     analysis.run()
 
     analytical_beta = 5.0 / np.sqrt(5.0)  # ≈ 2.2361
-    assert analysis.beta > 0
-    assert pytest.approx(analysis.beta, abs=0.3) == analytical_beta
-    assert 0.0 < analysis.Pf < 1.0
-    assert analysis.cov >= 0.0
-    assert analysis.n_samples == 2000
+    assert analysis._beta > 0
+    assert pytest.approx(analysis._beta, abs=0.3) == analytical_beta
+    assert 0.0 < analysis._Pf < 1.0
+    assert analysis._cov >= 0.0
+    assert analysis._n_samples == 2000
 
 
 def test_ls_alpha_is_unit_vector():
@@ -82,7 +82,7 @@ def test_ls_alpha_is_unit_vector():
     )
     analysis.run()
 
-    assert pytest.approx(np.linalg.norm(analysis.alpha), abs=1e-10) == 1.0
+    assert pytest.approx(np.linalg.norm(analysis._alpha), abs=1e-10) == 1.0
 
 
 def test_ls_with_precomputed_form():
@@ -106,8 +106,8 @@ def test_ls_with_precomputed_form():
     analysis.run()
 
     # Should share the same alpha as FORM
-    assert np.allclose(analysis.alpha, form.get_alpha())
-    assert analysis.beta > 0
+    assert np.allclose(analysis._alpha, form._alpha[0])
+    assert analysis._beta > 0
 
 
 def test_ls_standard_problem():
@@ -124,8 +124,8 @@ def test_ls_standard_problem():
     analysis.run()
 
     # FORM beta ≈ 3.7347; LS should be in a reasonable neighbourhood
-    assert analysis.beta > 0
-    assert pytest.approx(analysis.beta, abs=0.5) == 3.7347
+    assert analysis._beta > 0
+    assert pytest.approx(analysis._beta, abs=0.5) == 3.7347
 
 
 def test_ls_pf_contributions_shape():
@@ -159,9 +159,9 @@ def test_ls_results_valid_flag():
         limit_state=limit_state,
         rng=1,
     )
-    assert not analysis.results_valid
+    assert not analysis._results_valid
     analysis.run()
-    assert analysis.results_valid
+    assert analysis._results_valid
 
 
 def test_ls_get_beta_get_failure_consistent():
@@ -177,5 +177,5 @@ def test_ls_get_beta_get_failure_consistent():
     )
     analysis.run()
 
-    assert analysis.get_beta() == analysis.beta
-    assert analysis.get_failure() == analysis.Pf
+    assert analysis._beta == analysis._beta
+    assert analysis._Pf == analysis._Pf

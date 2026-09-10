@@ -191,7 +191,7 @@ where :math:`h=H'`. Spherical symmetry makes every unit projection have CDF
    P_{f,\mathrm{FORM}}=H(-\beta).
 
 For Student-t, Pystra uses :math:`T_\nu(-\beta)`, while
-``get_equivalent_beta()`` reports :math:`-\Phi^{-1}(P_f)`.
+``FORMResult.beta`` reports :math:`-\Phi^{-1}(P_f)`.
 SORM, system FORM, simulation methods and the current Strong Maximum Test
 require independent normal coordinates and reject spherical Student-t Nataf
 space. A normal Rosenblatt mapping supports these analyses with the same

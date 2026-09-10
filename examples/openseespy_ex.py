@@ -103,5 +103,5 @@ form = ra.FORM(
     model=stochastic_model,
     limit_state=limit_state,
 )
-form.run()
-form.show_detailed_output()
+form_result = form.run()
+print(form_result.summary())

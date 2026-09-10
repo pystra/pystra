@@ -95,6 +95,7 @@ def main():
         model=stochastic_model,
         limit_state=limit_state,
     )
+    result = Analysis.run()
     # Performe Distribution analysis
     # Analysis = DistributionAnalysis(options=options, model=stochastic_model, limit_state=limit_state)
     # Performe Crude Monte Carlo Simulation
@@ -104,18 +105,18 @@ def main():
     # Analysis = ImportanceSampling(options=options, model=stochastic_model, limit_state=limit_state)
     #
     # Some single results:
-    # beta = Analysis.get_beta()
-    # failure = Analysis.get_failure()
+    # beta = result.design_index
+    # failure = result.failure_probability
     #    run_time = time.time() - start_time
     #    print str(datetime.timedelta(seconds=run_time))
 
-    return Analysis
+    return result
 
 
 # This is the standard boilerplate that calls the main() function.
 if __name__ == "__main__":
     time_ = time.time()
     # time.t
-    Analysis = main()
+    result = main()
     print("Done in %s seconds" % (time.time() - time_))
-    print(Analysis.x)
+    print(result.design_point_x)

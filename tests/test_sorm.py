@@ -18,17 +18,14 @@ def linear_problem():
 
 
 def assert_invalid(analysis):
-    assert not analysis.results_valid
-    assert analysis.betaHL is None
-    assert analysis.kappa is None
-    assert analysis.kappa_pf is None
-    assert analysis.pf2_breitung is None
-    assert analysis.betag_breitung is None
-    assert analysis.pf2_breitung_m is None
-    assert analysis.betag_breitung_m is None
-    for report in (analysis.show_results, analysis.show_detailed_output):
-        with pytest.raises(ValueError, match="Analysis not yet run"):
-            report()
+    assert not analysis._results_valid
+    assert analysis._betaHL is None
+    assert analysis._kappa is None
+    assert analysis._kappa_pf is None
+    assert analysis._pf2_breitung is None
+    assert analysis._betag_breitung is None
+    assert analysis._pf2_breitung_m is None
+    assert analysis._betag_breitung_m is None
 
 
 @pytest.mark.parametrize("fit", FITS)
@@ -40,9 +37,9 @@ def test_sorm_rejects_automatically_run_nonconverged_form(linear_problem, fit):
         with pytest.raises(RuntimeError, match="successfully converged FORM"):
             analysis.run()
 
-    assert not analysis.form.converged
+    assert not analysis.form._converged
     # Only FORM evaluated the limit state; SORM stopped before fitting.
-    assert model.get_call_function() == analysis.form.get_no_function_calls()
+    assert model.get_call_function() == analysis.form._n_evaluations
     assert_invalid(analysis)
 
 
@@ -78,8 +75,8 @@ def test_sorm_failed_form_rerun_clears_results_and_can_recover(linear_problem, f
     analysis.run()
     expected_beta = 5 / np.sqrt(2)
     expected_pf = norm.sf(expected_beta)
-    assert analysis.results_valid
-    assert analysis.pf2_breitung == pytest.approx(expected_pf, rel=1e-6)
+    assert analysis._results_valid
+    assert analysis._pf2_breitung == pytest.approx(expected_pf, rel=1e-6)
 
     form.options = ra.FORMOptions(max_iterations=1)
     with pytest.warns(RuntimeWarning, match="FORM did not converge"):
@@ -91,22 +88,21 @@ def test_sorm_failed_form_rerun_clears_results_and_can_recover(linear_problem, f
     form.options = ra.FORMOptions()
     form.run()
     analysis.run()
-    assert analysis.results_valid
-    assert analysis.betag_breitung == pytest.approx(expected_beta, rel=1e-6)
-    assert analysis.pf2_breitung == pytest.approx(expected_pf, rel=1e-6)
-    assert analysis.pf2_breitung_m == pytest.approx(expected_pf, rel=1e-6)
+    assert analysis._results_valid
+    assert analysis._betag_breitung == pytest.approx(expected_beta, rel=1e-6)
+    assert analysis._pf2_breitung == pytest.approx(expected_pf, rel=1e-6)
+    assert analysis._pf2_breitung_m == pytest.approx(expected_pf, rel=1e-6)
 
 
-@pytest.mark.parametrize("method", ["run_curvefit", "run_pointfit"])
+@pytest.mark.parametrize("method", ["_run_curvefit", "_run_pointfit"])
 def test_direct_fitting_methods_check_form_and_preserve_reporting(
     linear_problem, method, capsys
 ):
     model, limit_state = linear_problem
     analysis = ra.SORM(model, limit_state)
-    getattr(analysis, method)()
-    assert analysis.results_valid
-    analysis.show_results()
-    assert "SECOND ORDER RELIABILITY METHOD" in capsys.readouterr().out
+    record = getattr(analysis, method)()
+    assert analysis._results_valid
+    assert record.summary().startswith("SORM result")
 
     analysis.form.options = ra.FORMOptions(max_iterations=1)
     with pytest.warns(RuntimeWarning, match="FORM did not converge"):

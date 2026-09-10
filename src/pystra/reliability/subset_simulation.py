@@ -45,25 +45,11 @@ class SubsetSimulation(AnalysisObject):
         the same stream on every run, a generator advances its own state, and
         None draws fresh entropy.
 
-    Attributes
-    ----------
-    Pf : float
-        Estimated probability of failure.
-    beta : float
-        Reliability index :math:`\beta = -\Phi^{-1}(p_f)`.
-    cov : float
-        Estimated coefficient of variation of :math:`\hat{p}_f` (ignoring
-        Markov-chain correlations; a lower bound on the true CoV).
-    thresholds : list of float
-        Intermediate thresholds :math:`y_1, \ldots, y_m` used at each level.
-    conditional_probs : list of float
-        Conditional failure probability estimate at each level.
-    n_levels : int
-        Total number of subset levels (including level 0).
-
     Notes
     -----
-    The number of samples per level is ``options.n_samples``.
+    The number of samples per level is ``options.n_samples``. :meth:`run`
+    returns a :class:`~pystra.results.SimulationResult`; its diagnostics
+    include the thresholds and conditional probabilities.
 
     References
     ----------
@@ -86,16 +72,16 @@ class SubsetSimulation(AnalysisObject):
             raise ValueError(f"p0 must be in (0, 1); got {p0}")
         self.p0 = p0
         self.proposal_sigma = proposal_sigma
-        self.Pf = None
-        self.beta = None
-        self.cov = None
-        self.thresholds = []
-        self.conditional_probs = []
-        self.n_levels = None
+        self._Pf = None
+        self._beta = None
+        self._cov = None
+        self._thresholds = []
+        self._conditional_probs = []
+        self._n_levels = None
 
     def run(self):
         """Run subset simulation and return a :class:`SimulationResult`."""
-        self.results_valid = True
+        self._results_valid = True
         self.init_run()
         self._random = _generator(self.rng)
 
@@ -104,8 +90,8 @@ class SubsetSimulation(AnalysisObject):
         N = self.options.n_samples
         p0 = self.p0
 
-        self.thresholds = []
-        self.conditional_probs = []
+        self._thresholds = []
+        self._conditional_probs = []
 
         # ---------------------------------------------------------------
         # Level 0: direct Monte Carlo from the prior N(0, I)
@@ -119,14 +105,14 @@ class SubsetSimulation(AnalysisObject):
         if y <= 0.0:
             # Threshold already at or below failure: level-0 MC suffices
             Pf = float(np.sum(G <= 0.0)) / N
-            self.thresholds.append(0.0)
-            self.conditional_probs.append(Pf)
-            self.n_levels = 1
+            self._thresholds.append(0.0)
+            self._conditional_probs.append(Pf)
+            self._n_levels = 1
             return self._finalise(Pf, N)
 
-        self.thresholds.append(y)
+        self._thresholds.append(y)
         p_lvl = float(np.sum(G <= y)) / N
-        self.conditional_probs.append(p_lvl)
+        self._conditional_probs.append(p_lvl)
         Pf = p_lvl
 
         # Seeds: samples that satisfy the first intermediate event G <= y_1
@@ -147,15 +133,15 @@ class SubsetSimulation(AnalysisObject):
                 # Last level: count actual failures (G <= 0)
                 p_last = float(np.sum(G_new <= 0.0)) / N
                 Pf = Pf * p_last
-                self.thresholds.append(0.0)
-                self.conditional_probs.append(p_last)
+                self._thresholds.append(0.0)
+                self._conditional_probs.append(p_last)
                 break
 
             # Intermediate level
             p_lvl = float(np.sum(G_new <= y_new)) / N
             Pf = Pf * p_lvl
-            self.thresholds.append(y_new)
-            self.conditional_probs.append(p_lvl)
+            self._thresholds.append(y_new)
+            self._conditional_probs.append(p_lvl)
 
             # New seeds for the next level
             seed_mask = G_new <= y_new
@@ -165,7 +151,7 @@ class SubsetSimulation(AnalysisObject):
             y = y_new
             level += 1
 
-        self.n_levels = level + 1
+        self._n_levels = level + 1
         return self._finalise(Pf, N)
 
     # ------------------------------------------------------------------
@@ -174,18 +160,18 @@ class SubsetSimulation(AnalysisObject):
 
     def _finalise(self, Pf, N):
         """Store results, estimate the CoV and return the record."""
-        self.Pf = float(Pf)
+        self._Pf = float(Pf)
         if 0.0 < Pf < 1.0:
-            self.beta = float(-scipy_norm.ppf(Pf))
+            self._beta = float(-scipy_norm.ppf(Pf))
         elif Pf <= 0.0:
-            self.beta = np.inf
+            self._beta = np.inf
         else:
-            self.beta = -np.inf
+            self._beta = -np.inf
 
         # CoV lower bound (γ_j = 0, i.e. ignoring Markov-chain correlations)
         # δ²(Pf) ≈ Σ_j (1 - p_j) / (N * p_j)
-        delta_sq = sum((1.0 - p) / (N * p) for p in self.conditional_probs if p > 0.0)
-        self.cov = float(np.sqrt(delta_sq)) if delta_sq > 0.0 else 0.0
+        delta_sq = sum((1.0 - p) / (N * p) for p in self._conditional_probs if p > 0.0)
+        self._cov = float(np.sqrt(delta_sq)) if delta_sq > 0.0 else 0.0
 
         return SimulationResult(
             method="SubsetSimulation",
@@ -193,15 +179,15 @@ class SubsetSimulation(AnalysisObject):
             message="Sampling completed",
             n_limit_state_evaluations=self._n_evaluations,
             variable_names=tuple(self.model.get_variables()),
-            failure_probability=self.Pf,
-            beta=self.beta,
-            coefficient_of_variation=self.cov if self.Pf > 0 else np.inf,
-            n_samples=N * self.n_levels,
+            failure_probability=self._Pf,
+            beta=self._beta,
+            coefficient_of_variation=self._cov if self._Pf > 0 else np.inf,
+            n_samples=N * self._n_levels,
             options=self.options,
             diagnostics={
-                "thresholds": np.array(self.thresholds),
-                "conditional_probabilities": np.array(self.conditional_probs),
-                "n_levels": self.n_levels,
+                "thresholds": np.array(self._thresholds),
+                "conditional_probabilities": np.array(self._conditional_probs),
+                "n_levels": self._n_levels,
                 "samples_per_level": N,
             },
         )
@@ -286,33 +272,3 @@ class SubsetSimulation(AnalysisObject):
     # ------------------------------------------------------------------
     # Public API
     # ------------------------------------------------------------------
-
-    def get_beta(self):
-        """Return the reliability index :math:`\\beta`."""
-        return self.beta
-
-    def get_failure(self):
-        """Return the probability of failure."""
-        return self.Pf
-
-    def show_results(self):
-        """Print a summary of Subset Simulation results to the console."""
-        if not self.results_valid:
-            raise ValueError("Analysis not yet run")
-        n_hyph = self.N_HYPH
-        print("")
-        print("=" * n_hyph)
-        print("")
-        print(" RESULTS FROM RUNNING SUBSET SIMULATION")
-        print("")
-        print(f" Reliability index beta:        {self.beta:.6f}")
-        print(f" Failure probability:           {self.Pf:.6e}")
-        print(f" Coefficient of variation:      {self.cov:.4f}")
-        print(f" Number of subset levels:       {self.n_levels}")
-        print("")
-        print(" Intermediate results:")
-        for j, (y, p) in enumerate(zip(self.thresholds, self.conditional_probs)):
-            print(f"   Level {j+1}: threshold = {y:.4f},  p_j = {p:.4f}")
-        print("")
-        print("=" * n_hyph)
-        print("")

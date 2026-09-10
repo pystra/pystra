@@ -62,25 +62,25 @@ def test_three_dimensional_cap_area():
 def test_linear_plane_has_no_competing_region_and_partitions_sample():
     result = raw(point_number=1000, rng=17)
     result.run()
-    assert result.status == "no_competing_region_detected"
-    assert not result.has_competing_points
-    assert result.get_points().shape == (0, 2)
-    assert result.get_values().shape == (0,)
-    assert result.masks["near_failure"].sum() > 0
-    assert result.masks["far_safe"].sum() > 0
-    assert not result.masks["near_safe"].any()
-    np.testing.assert_array_equal(sum(result.masks.values()), np.ones(1000))
-    np.testing.assert_allclose(np.linalg.norm(result.u_points, axis=1), result.radius)
-    np.testing.assert_allclose(result.x_points, result.u_points, atol=1e-12)
-    assert result.evaluation_count == 1002
+    assert result._status == "no_competing_region_detected"
+    assert not result._has_competing_points
+    assert result._u_points[result._masks["far_failure"]].shape == (0, 2)
+    assert result._values[result._masks["far_failure"]].shape == (0,)
+    assert result._masks["near_failure"].sum() > 0
+    assert result._masks["far_safe"].sum() > 0
+    assert not result._masks["near_safe"].any()
+    np.testing.assert_array_equal(sum(result._masks.values()), np.ones(1000))
+    np.testing.assert_allclose(np.linalg.norm(result._u_points, axis=1), result.radius)
+    np.testing.assert_allclose(result._x_points, result._u_points, atol=1e-12)
+    assert result._evaluation_count == 1002
 
 
 def test_two_equal_modes_are_detected():
     result = raw(lambda X0, **kwargs: 9 - X0**2, point_number=500, rng=3)
     result.run()
-    assert result.has_competing_points
-    assert np.all(result.get_points()[:, 0] < -3)
-    assert np.all(result.get_values() < 0)
+    assert result._has_competing_points
+    assert np.all(result._u_points[result._masks["far_failure"]][:, 0] < -3)
+    assert np.all(result._values[result._masks["far_failure"]] < 0)
 
 
 def test_openturns_two_branch_event_detects_other_region():
@@ -94,8 +94,8 @@ def test_openturns_two_branch_event_detects_other_region():
         rng=5,
     )
     result.run()
-    assert result.has_competing_points
-    assert np.all(result.get_points()[:, 0] > 0)
+    assert result._has_competing_points
+    assert np.all(result._u_points[result._masks["far_failure"]][:, 0] > 0)
 
 
 def test_post_form_reuses_correlated_transform_without_mutating_evaluator():
@@ -108,20 +108,20 @@ def test_post_form_reuses_correlated_transform_without_mutating_evaluator():
         options=opts,
     )
     form.run()
-    design = form.get_design_point().copy()
+    design = form._u.copy()
     result = ra.StrongMaximumTest(form, point_number=200, rng=2)
     result.run()
-    assert not result.has_competing_points
+    assert not result._has_competing_points
     # The limit state keeps no evaluation state that the test could mutate.
-    assert not hasattr(form.limitstate, "x")
-    np.testing.assert_array_equal(form.get_design_point(), design)
+    assert not hasattr(form.limit_state, "x")
+    np.testing.assert_array_equal(form._u, design)
     recovered = np.array(
         [
             form.transform.x_to_u(x, m.get_marginal_distributions())
-            for x in result.x_points
+            for x in result._x_points
         ]
     )
-    np.testing.assert_allclose(recovered, result.u_points, atol=1e-12)
+    np.testing.assert_allclose(recovered, result._u_points, atol=1e-12)
 
 
 def test_reproducible_local_rng_and_block_size():
@@ -130,7 +130,7 @@ def test_reproducible_local_rng_and_block_size():
     b = raw(point_number=120, rng=9, options=ra.FORMOptions(block_size=7))
     a.run()
     b.run()
-    np.testing.assert_allclose(a.u_points, b.u_points)
+    np.testing.assert_allclose(a._u_points, b._u_points)
     after = np.random.get_state()
     assert state[0] == after[0]
     np.testing.assert_array_equal(state[1], after[1])
@@ -141,8 +141,8 @@ def test_one_dimension():
     result = raw(dimension=1, point_number=20, rng=2)
     result.run()
     assert result.cap_probability == 0.5
-    np.testing.assert_allclose(np.abs(result.u_points[:, 0]), result.radius)
-    assert not result.has_competing_points
+    np.testing.assert_allclose(np.abs(result._u_points[:, 0]), result.radius)
+    assert not result._has_competing_points
 
 
 def test_bounded_island_illustrates_no_global_certificate():
@@ -151,8 +151,8 @@ def test_bounded_island_illustrates_no_global_certificate():
     )
     result.run()
     assert result.radius > 3.5
-    assert result.status == "no_competing_region_detected"
-    assert not result.masks["near_failure"].any()
+    assert result._status == "no_competing_region_detected"
+    assert not result._masks["near_failure"].any()
 
 
 @pytest.mark.parametrize(
@@ -191,14 +191,13 @@ def test_budget_is_checked_before_model_evaluations():
 def test_bad_candidate_and_failed_rerun():
     result = raw(point_number=10, rng=2)
     result.run()
-    result.limitstate.expression = lambda **kwargs: np.nan
+    result.limit_state.expression = lambda **kwargs: np.nan
     with pytest.raises(ValueError, match="Nonfinite"):
         result.run()
-    assert not result.results_valid
-    assert result.status == "failed"
-    assert result.has_competing_points is None
-    with pytest.raises(ValueError, match="no valid result"):
-        result.get_points()
+    assert not result._results_valid
+    assert result._status == "failed"
+    assert result._has_competing_points is None
+    assert result._u_points is None and result._masks == {}
     with pytest.raises(ValueError, match="boundary"):
         raw(beta=2).run()
     with pytest.raises(ValueError, match="strictly safe"):
@@ -222,11 +221,11 @@ def test_non_normal_post_form_evaluates_original_physical_function():
     form.run()
     check = ra.StrongMaximumTest(form, point_number=100, rng=12)
     check.run()
-    np.testing.assert_allclose(check.values, 3 - np.log(check.x_points[:, 0]))
+    np.testing.assert_allclose(check._values, 3 - np.log(check._x_points[:, 0]))
     np.testing.assert_allclose(
-        check.x_points[:, 0], np.exp(check.u_points[:, 0]), rtol=1e-9
+        check._x_points[:, 0], np.exp(check._u_points[:, 0]), rtol=1e-9
     )
-    assert not check.has_competing_points
+    assert not check._has_competing_points
 
 
 def test_positive_scaling_preserves_diagnostic():
@@ -234,8 +233,8 @@ def test_positive_scaling_preserves_diagnostic():
     b = raw(lambda X0, **kw: 1e-5 * (9 - X0**2), point_number=100, rng=7)
     a.run()
     b.run()
-    for name in a.masks:
-        np.testing.assert_array_equal(a.masks[name], b.masks[name])
+    for name in a._masks:
+        np.testing.assert_array_equal(a._masks[name], b._masks[name])
 
 
 def test_nonconverged_form_rejected():
