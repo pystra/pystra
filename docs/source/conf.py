@@ -82,10 +82,7 @@ source_suffix = {".rst": "restructuredtext", ".md": "restructuredtext"}
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = [
     # Legacy files superseded by current notebooks/content
-    "notebooks/intro.rst",
-    "notebooks/ex_code_calibration.ipynb",
     "notebooks/ex_openseespy.ipynb",
-    "notebooks/example_global_calibration.ipynb",
 ]
 
 
