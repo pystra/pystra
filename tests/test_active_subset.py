@@ -233,7 +233,10 @@ def test_resampling_after_each_fit_separates_probability_and_selection():
     np.testing.assert_array_equal(estimator.draws[0], estimator.draws[1])
     assert not np.array_equal(estimator.draws[0], estimator.draws[-1])
     assert all(step.failure_probability == 0.02 for step in result.history)
-    assert len(np.unique(surrogate.designs[-1], axis=0)) == result.n_evaluations
+    assert (
+        len(np.unique(surrogate.designs[-1], axis=0))
+        == result.n_limit_state_evaluations
+    )
     np.testing.assert_array_equal(np.random.get_state()[1], state[1])
     assert result == analysis.run()
     estimator.incomplete = True
@@ -315,7 +318,7 @@ def test_active_kriging_subset_benchmarks(problem, seed):
     )
     result = analysis.run()
     assert result.converged
-    assert result.n_evaluations < 250
+    assert result.n_limit_state_evaluations < 250
     assert (
         abs(result.failure_probability - reference)
         < 4 * reference * result.sampling_cov + 0.05 * reference

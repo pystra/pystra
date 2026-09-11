@@ -188,8 +188,8 @@ when surrogate stopping had otherwise succeeded.
 A separate exploration seed is restarted after each fit, providing common
 random numbers for convergence comparisons. The final estimate starts fresh
 replications on the frozen surrogate **mean**, independently of enrichment.
-Each ``SubsetRun`` records levels, acceptance rates, probability and a
-within-chain CoV approximation. ``result.estimate.sampling_cov`` uses the
+Each ``SubsetRun`` records levels, acceptance rates, probability, the number
+of surrogate samples (``n_samples``) and a within-chain CoV approximation. ``result.estimate.sampling_cov`` uses the
 larger standard error from independent full-run replication and the aggregate
 within-chain approximation. Replication reflects variation from chain ancestry
 and adaptive levels that an IID calculation omits. This is still an estimated

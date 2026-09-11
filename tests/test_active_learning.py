@@ -172,7 +172,7 @@ def test_standard_benchmarks(problem, surrogate, learning, seed):
     )
     result = analysis.run()
     assert result.converged, result
-    assert result.n_evaluations < 250
+    assert result.n_limit_state_evaluations < 250
     # 4 binomial standard errors plus a separate 5% surrogate error allowance.
     sampling_error = 4 * np.sqrt(reference * (1 - reference) / result.n_estimation)
     assert (
@@ -224,7 +224,7 @@ def test_result_snapshot_seed_and_independent_estimation():
     state = np.random.get_state()
     result = analysis.run()
     assert result.converged
-    assert result.n_evaluations == 12
+    assert result.n_limit_state_evaluations == 12
     assert result == analysis.run()
     assert result is not analysis.result
     assert np.array_equal(state[1], np.random.get_state()[1])

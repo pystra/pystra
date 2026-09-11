@@ -375,7 +375,7 @@ def test_active_importance_benchmarks(name, seed):
     pytest.importorskip("sklearn")
     result = analysis.run()
     assert result.converged, result.status
-    assert result.n_evaluations < 160
+    assert result.n_limit_state_evaluations < 160
     assert (
         abs(result.failure_probability - reference)
         < 4 * reference * result.sampling_cov + 0.05 * reference
@@ -412,7 +412,7 @@ def test_four_branch_pc_kriging(seed):
         rng=seed,
     )
     result = analysis.run()
-    assert result.converged and result.n_evaluations < 251
+    assert result.converged and result.n_limit_state_evaluations < 251
     assert (
         abs(result.failure_probability - reference)
         < 4 * np.sqrt(reference * (1 - reference) / result.n_estimation)
@@ -461,7 +461,7 @@ def test_fbr_lognormal_beam(seed):
         rng=seed,
     )
     result = analysis.run()
-    assert result.converged and result.n_evaluations < 100
+    assert result.converged and result.n_limit_state_evaluations < 100
     assert all(step.bootstrap_probability_band is not None for step in result.history)
     assert (
         abs(result.failure_probability - reference)

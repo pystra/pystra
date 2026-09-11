@@ -25,7 +25,8 @@ and its vector fields are read-only arrays in ``variable_names`` order.
        Diagnostic records (Strong Maximum Test, distribution analysis) have
        neither.
    * - ``n_limit_state_evaluations``
-     - Limit-state evaluations made by this run.
+     - Limit-state evaluations made by this run. Active-learning results and
+       their ``history`` steps count true-model calls under the same name.
    * - ``method``, ``variable_names``
      - The analysis, and the order of the vector fields.
 

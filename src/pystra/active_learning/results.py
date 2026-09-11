@@ -97,7 +97,7 @@ class LearningStep:
 
     failure_probability: float
     learning_score: float
-    n_evaluations: int
+    n_limit_state_evaluations: int
     probability_band: tuple
     beta_band: tuple
     learning_satisfied: bool
@@ -133,7 +133,7 @@ class ActiveLearningResult:
     estimate: ReliabilityEstimate
     converged: bool
     status: str
-    n_evaluations: int
+    n_limit_state_evaluations: int
     history: tuple
 
     @property

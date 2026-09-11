@@ -354,7 +354,7 @@ class ActiveLearning(AnalysisObject):
                 LearningStep(
                     failure_probability=probability,
                     learning_score=decision.score,
-                    n_evaluations=len(design),
+                    n_limit_state_evaluations=len(design),
                     probability_band=(lower, upper),
                     beta_band=(float(-norm.ppf(upper)), float(-norm.ppf(lower))),
                     learning_satisfied=decision.threshold_satisfied,
@@ -399,7 +399,7 @@ class ActiveLearning(AnalysisObject):
             estimate=estimate,
             converged=converged,
             status=status,
-            n_evaluations=len(design),
+            n_limit_state_evaluations=len(design),
             history=tuple(history),
         )
         self.surrogate_model = surrogate

@@ -41,7 +41,7 @@ def step(beta=3.0, band=(2.99, 3.01), satisfied=True):
     return LearningStep(
         failure_probability=float(norm.sf(beta)),
         learning_score=2.5,
-        n_evaluations=20,
+        n_limit_state_evaluations=20,
         probability_band=(float(norm.sf(band[1])), float(norm.sf(band[0]))),
         beta_band=band,
         learning_satisfied=satisfied,
@@ -119,7 +119,7 @@ def test_combined_stopping_refits_then_starts_fresh_on_rerun():
     result = analysis.run()
     assert result.converged
     assert len(result.history) == 3
-    assert result.n_evaluations == 14
+    assert result.n_limit_state_evaluations == 14
     assert result == analysis.run()
     with pytest.raises(FrozenInstanceError):
         result.history[0].probability_band = (0, 1)
@@ -186,7 +186,7 @@ def test_custom_estimator_owns_uncertainty_and_selection_owns_enrichment():
     assert result.sampling_interval is None
     assert result.estimate.sampling_dependence == "dependent"
     assert all(item.learning_score == 42 for item in result.history)
-    assert result.n_evaluations == 14
+    assert result.n_limit_state_evaluations == 14
     analysis.estimator.cov = 0.05
     assert analysis.run().converged
 
@@ -323,7 +323,7 @@ def test_combined_beta_policies_on_standard_benchmarks(problem, seed):
     )
     result = analysis.run()
     assert result.converged
-    assert result.n_evaluations < 250
+    assert result.n_limit_state_evaluations < 250
     sampling_error = 4 * np.sqrt(reference * (1 - reference) / result.n_estimation)
     assert (
         abs(result.failure_probability - reference) < sampling_error + 0.05 * reference

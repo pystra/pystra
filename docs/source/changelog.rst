@@ -34,7 +34,8 @@ Added
   ``SORMResult``, ``SimulationResult``, ``SystemFORMResult``,
   ``SensitivityResult``, ``StrongMaximumResult`` or
   ``DistributionAnalysisResult``, with a common ``status``, evaluation count
-  and ``summary()``. FORM records include convergence diagnostics, the
+  (``n_limit_state_evaluations``, shared by ``ActiveLearningResult``) and
+  ``summary()``. FORM records include convergence diagnostics, the
   normal-equivalent index, the design index and the design point in physical
   and standard coordinates.
 - Explicit code factors, nominal values and isolated normalized-reliability study

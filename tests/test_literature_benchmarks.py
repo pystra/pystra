@@ -180,7 +180,7 @@ def test_literature_active_pce(problem, seed):
     )
     result = analysis.run()
     assert result.converged, result.status
-    assert result.n_evaluations < 240
+    assert result.n_limit_state_evaluations < 240
     assert (
         abs(result.failure_probability - reference)
         < 4 * np.sqrt(reference * (1 - reference) / result.n_estimation)

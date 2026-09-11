@@ -800,7 +800,9 @@ independent normal coordinates, not physical points.
 
 ``ActiveLearning.run()`` returns an immutable ``ActiveLearningResult`` with
 ``failure_probability``, ``beta``, conditional sampling diagnostics and explicit
-convergence status. Settings are keyword-only; use lowercase ``u`` or ``eff``
+convergence status. Its ``n_limit_state_evaluations`` counts true-model calls,
+the name every result record uses; ``SubsetRun.n_samples`` counts surrogate
+samples. Settings are keyword-only; use lowercase ``u`` or ``eff``
 for the named learning functions. Stopping policies are explicit components.
 
 The four components are now ``Surrogate``, ``LearningFunction``,

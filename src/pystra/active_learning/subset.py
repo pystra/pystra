@@ -53,7 +53,7 @@ class SubsetRun:
     failure_probability: float
     probability_band: tuple
     sampling_cov: float
-    n_evaluations: int
+    n_samples: int
     levels: tuple
     converged: bool
     status: str
@@ -246,7 +246,7 @@ class SubsetSimulationEstimator(EnrichmentEstimator):
                     failure_probability=float(prefix * probability),
                     probability_band=(lower, upper),
                     sampling_cov=float(np.sqrt(sum(variance_terms))),
-                    n_evaluations=evaluations,
+                    n_samples=evaluations,
                     levels=tuple(levels),
                     converged=bool(complete),
                     status=(
@@ -317,7 +317,7 @@ class SubsetSimulationEstimator(EnrichmentEstimator):
             sampling_cov=float(cov),
             sampling_interval=None,
             confidence_level=None,
-            n_samples=sum(run.n_evaluations for run in runs),
+            n_samples=sum(run.n_samples for run in runs),
             method="subset_simulation",
             sampling_dependence=(
                 "dependent"

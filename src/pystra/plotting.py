@@ -367,7 +367,7 @@ def plot_learning_history(
         not np.isfinite(reference_probability) or not 0 <= reference_probability <= 1
     ):
         raise ValueError("reference_probability must be finite and in [0, 1]")
-    calls = np.array([step.n_evaluations for step in result.history])
+    calls = np.array([step.n_limit_state_evaluations for step in result.history])
     probabilities = np.array([step.failure_probability for step in result.history])
     ranges = None
     if band is not None:
