@@ -22,11 +22,10 @@ class ZeroInflated(Distribution):
       - std (float):           Standard deviation\n
       - dist (Distribution):    Distribution to zero-inflate
       - p (float):              Probability of zero
-      - input_type (any):       Change meaning of mean and std\n
       - start_point (float):     Start point for seach\n
     """
 
-    def __init__(self, name, dist, p, input_type=None, start_point=None):
+    def __init__(self, name, dist, p, *, start_point=None):
         if not isinstance(dist, Distribution):
             raise ModelError(
                 f"ZeroInflated distribution requires input of type {type(Distribution)}"

@@ -147,6 +147,11 @@ Changed
   properties; ``Constant`` takes ``value``; ``StochasticModel.variable(name)``
   and the read-only ``constants`` mapping replace ``get_variable()`` and
   ``get_constants()``.
+- Distributions take native parameters as keyword arguments of the same
+  constructor in place of ``input_type``, for example
+  ``Gumbel("Q", loc=8.9, scale=1.56)`` or ``Weibull("W", scale=10, shape=2.5)``.
+  The bounds of ``Weibull`` and ``Beta`` are the keywords ``lower`` and
+  ``upper``, and ``start_point`` is keyword-only.
 - ``CorrelationMatrix`` is validated when created (square, finite, symmetric,
   unit diagonal, positive definite) and held read-only; ``set_correlation``
   validates arrays the same way. It gains ``cholesky()``, ``nataf(model)`` and

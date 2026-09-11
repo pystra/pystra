@@ -3,7 +3,7 @@
 
 from scipy.stats import gamma
 
-from .distribution import Distribution
+from .distribution import Distribution, _uses_native_parameters
 
 __all__ = ["Gamma"]
 
@@ -13,19 +13,22 @@ class Gamma(Distribution):
 
     :Attributes:
       - name (str):         Name of the random variable\n
-      - mean (float):       Mean or beta\n
-      - std (float):       Standard deviation or k\n
-      - input_type (any):   Change meaning of mean and std\n
+      - mean (float):       Mean\n
+      - std (float):       Standard deviation\n
+      - rate (float): Rate, the inverse of the scale, given instead of mean and std\n
+      - shape (float): Shape, given instead of mean and std\n
       - start_point (float): Start point for seach\n
     """
 
-    def __init__(self, name, mean, std, input_type=None, start_point=None):
-        if input_type is None:
+    def __init__(
+        self, name, mean=None, std=None, *, rate=None, shape=None, start_point=None
+    ):
+        if _uses_native_parameters(self, mean, std, rate=rate, shape=shape):
+            beta = rate
+            alpha = shape
+        else:
             beta = mean / (std**2)
             alpha = mean**2 / (std**2)
-        else:
-            beta = mean
-            alpha = std
 
         # use scipy to do the heavy lifting
         self.dist_obj = gamma(a=alpha, scale=1 / beta)

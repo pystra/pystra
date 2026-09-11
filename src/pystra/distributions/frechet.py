@@ -5,7 +5,7 @@ import numpy as np
 from scipy.stats import invweibull as frechet
 import scipy.optimize as opt
 import scipy.special as spec
-from .distribution import Distribution
+from .distribution import Distribution, _uses_native_parameters
 
 __all__ = ["Frechet"]
 
@@ -15,14 +15,17 @@ class Frechet(Distribution):
 
     :Attributes:
       - name (str):   Name of the random variable\n
-      - mean (float): Mean or u_n\n
-      - std (float): Standard deviation or k\n
-      - input_type (any): Change meaning of mean and std\n
+      - mean (float): Mean\n
+      - std (float): Standard deviation\n
+      - scale (float): Scale, given instead of mean and std\n
+      - shape (float): Shape, given instead of mean and std\n
       - start_point (float): Start point for seach\n
     """
 
-    def __init__(self, name, mean, std, input_type=None, start_point=None):
-        if input_type is None:
+    def __init__(
+        self, name, mean=None, std=None, *, scale=None, shape=None, start_point=None
+    ):
+        if not _uses_native_parameters(self, mean, std, scale=scale, shape=shape):
             parameter_guess = [2.000001]
             par = opt.fsolve(
                 self.frechet_parameter,
@@ -32,8 +35,8 @@ class Frechet(Distribution):
             k = par[0]
             u_n = mean / (spec.gamma(1 - 1 / k))
         else:
-            u_n = mean
-            k = std
+            u_n = scale
+            k = shape
 
         # Fréchet CDF: F(x) = exp(-(x/u_n)^{-k}), x > 0.
         # SciPy invweibull CDF: F(x) = exp(-((x-loc)/scale)^{-c}).

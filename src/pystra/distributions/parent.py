@@ -25,11 +25,10 @@ class MaxParent(Distribution):
       - std (float):           Standard deviation\n
       - maximum (Distribution): Distribution of maximum object
       - N (float):              Power to which distribution is raised
-      - input_type (any):       Change meaning of mean and std\n
       - start_point (float):     Start point for seach\n
     """
 
-    def __init__(self, name, max_dist, N, input_type=None, start_point=None):
+    def __init__(self, name, max_dist, N, *, start_point=None):
         if not isinstance(max_dist, Distribution):
             raise ModelError(
                 f"MaxParent distribution of maximum requires input of type {type(Distribution)}"

@@ -27,21 +27,35 @@ parameters — store them as attributes *and* populate ``_ctor_kwargs``
 **before** calling ``super().__init__()``::
 
     class MyDist(Distribution):
-        def __init__(self, name, mean, std, shape, epsilon=0):
+        def __init__(self, name, mean, std, shape, *, lower=0, start_point=None):
             self.shape = shape
-            self.epsilon = epsilon
-            self._ctor_kwargs = {"shape": shape, "epsilon": epsilon}
+            self.lower = lower
+            self._ctor_kwargs = {"shape": shape, "lower": lower}
 
             # Build scipy distribution object ...
             self.dist_obj = ...
 
-            super().__init__(name=name, dist_obj=self.dist_obj)
+            super().__init__(
+                name=name, dist_obj=self.dist_obj, start_point=start_point
+            )
 
 The base-class method
 :meth:`~pystra.distributions.distribution.Distribution._make_copy`
 uses ``_ctor_kwargs`` to reconstruct the distribution when parameters
 are perturbed during sensitivity analysis.  Without it, reconstruction
 fails or silently produces wrong results.
+
+Native parameters
+~~~~~~~~~~~~~~~~~
+
+Constructors take the mean and standard deviation positionally. If the
+distribution also has native parameters, accept them as keyword-only
+arguments named as in SciPy, and let
+``_uses_native_parameters(self, mean, std, loc=loc, scale=scale)`` decide which
+set was given. It returns ``True`` for a complete native set and raises
+``TypeError`` for a mixture or an incomplete set. ``_make_copy`` rebuilds a
+distribution from its moments and ``_ctor_kwargs``, so a distribution built from
+native parameters is copied through its moments.
 
 Declaring sensitivity parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -62,7 +76,7 @@ behaviour), override
 
 **Important distinction:** parameters in ``_ctor_kwargs`` but *not* in
 ``sensitivity_params`` are held fixed during sensitivity analysis.
-For example, the Beta distribution stores its bounds ``a`` and ``b``
+For example, the Beta distribution stores its bounds ``lower`` and ``upper``
 in ``_ctor_kwargs`` (so ``_make_copy`` can reconstruct it) but does
 not add them to ``sensitivity_params`` (bounds are treated as fixed
 constants, not sensitivity parameters).

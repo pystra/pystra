@@ -2,6 +2,7 @@ import numpy as np
 from scipy.stats import genextreme
 from scipy.special import gamma
 from pystra.distributions import Distribution
+from .distribution import _uses_native_parameters
 
 __all__ = ["GEV", "GEVmax", "GEVMin"]
 
@@ -21,7 +22,8 @@ class GEV(Distribution):
         - std (float):     Standard deviation\n
         - shape (float):    Shape parameter. shape < 0.0 is Weibull,
           shape > 0 is Frechet.\n
-        - input_type (any): Change meaning of mean and std\n
+        - loc (float): Location, given instead of mean and std\n
+        - scale (float): Scale, given instead of mean and std\n
         - start_point (float): Start point for seach\n
 
     :Raises:
@@ -35,7 +37,19 @@ class GEV(Distribution):
         - This distribution is to model maxima.
     """
 
-    def __init__(self, name, mean, std, shape, input_type=None, start_point=None):
+    def __init__(
+        self,
+        name,
+        mean=None,
+        std=None,
+        shape=None,
+        *,
+        loc=None,
+        scale=None,
+        start_point=None,
+    ):
+        if shape is None:
+            raise TypeError(f"{type(self).__name__} needs shape")
         if shape >= 0.5:
             raise ValueError("`shape` must be less than 0.5 for finite variance")
 
@@ -45,7 +59,7 @@ class GEV(Distribution):
         g1 = gamma(1 - shape)
         g2 = gamma(1 - 2 * shape)
 
-        if input_type is None:
+        if not _uses_native_parameters(self, mean, std, loc=loc, scale=scale):
             if np.isclose(shape, 0):
                 scale = std * np.sqrt(6) / np.pi
                 loc = mean - scale * np.euler_gamma
@@ -53,8 +67,6 @@ class GEV(Distribution):
                 scale = std * np.abs(shape) / np.sqrt(g2 - g1**2)
                 loc = mean - scale / shape * (g1 - 1)
         else:
-            loc = mean
-            scale = std
             if np.isclose(shape, 0):
                 self._mean = loc + scale * np.euler_gamma
                 self._std = scale * np.pi / np.sqrt(6)
@@ -99,7 +111,8 @@ class GEVMin(Distribution):
         - mean (float):     Mean\n
         - std (float):     Standard deviation\n
         - shape (float):       Shape parameter. shape < 0.0 is Weibull, shape > 0 is Frechet.\n
-        - input_type (any): Change meaning of mean and std\n
+        - loc (float): Location, given instead of mean and std\n
+        - scale (float): Scale, given instead of mean and std\n
         - start_point (float): Start point for seach\n
 
     :Raises:
@@ -111,7 +124,19 @@ class GEVMin(Distribution):
         - This distribution is to model minima.
     """
 
-    def __init__(self, name, mean, std, shape, input_type=None, start_point=None):
+    def __init__(
+        self,
+        name,
+        mean=None,
+        std=None,
+        shape=None,
+        *,
+        loc=None,
+        scale=None,
+        start_point=None,
+    ):
+        if shape is None:
+            raise TypeError(f"{type(self).__name__} needs shape")
         if shape >= 0.5:
             raise ValueError("`shape` must be less than 0.5 for finite variance")
 
@@ -121,7 +146,7 @@ class GEVMin(Distribution):
         g1 = gamma(1 - shape)
         g2 = gamma(1 - 2 * shape)
 
-        if input_type is None:
+        if not _uses_native_parameters(self, mean, std, loc=loc, scale=scale):
             # mean and std passed in
             self._mean = mean
             self._std = std
@@ -133,8 +158,6 @@ class GEVMin(Distribution):
                 loc = self.mean - (scale / shape) * (g1 - 1)
         else:
             # loc and scale are actual GEV parameters
-            loc = mean
-            scale = std
             if np.isclose(shape, 0):
                 self._mean = loc + scale * np.euler_gamma
                 self._std = scale * np.pi / np.sqrt(6)

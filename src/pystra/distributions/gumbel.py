@@ -4,7 +4,7 @@
 import numpy as np
 from scipy.stats import gumbel_l, gumbel_r as gumbel
 
-from .distribution import Distribution
+from .distribution import Distribution, _uses_native_parameters
 
 __all__ = ["Gumbel", "GumbelMin"]
 
@@ -14,19 +14,21 @@ class Gumbel(Distribution):
 
     :Attributes:
         - name (str):     Name of the random variable\n
-        - mean (float): Mean or mu\n
-        - std (float): Standard deviation or beta\n
-        - input_type (any): Change meaning of mean and std\n
+        - mean (float): Mean\n
+        - std (float): Standard deviation\n
+        - loc (float): Location, given instead of mean and std\n
+        - scale (float): Scale, given instead of mean and std\n
         - start_point (float): Start point for seach\n
     """
 
-    def __init__(self, name, mean, std, input_type=None, start_point=None):
-        if input_type is None:
+    def __init__(
+        self, name, mean=None, std=None, *, loc=None, scale=None, start_point=None
+    ):
+        if _uses_native_parameters(self, mean, std, loc=loc, scale=scale):
+            mu = loc
+        else:
             mu = mean - 0.5772156649 * std * np.sqrt(6) / np.pi
             scale = std * np.sqrt(6) / np.pi
-        else:
-            mu = mean
-            scale = std
 
         # use scipy to do the heavy lifting
         self.dist_obj = gumbel(loc=mu, scale=scale)
@@ -45,22 +47,25 @@ class GumbelMin(Distribution):
 
     :Attributes:
       - name (str):   Name of the random variable\n
-      - mean (float): Mean or mu\n
-      - std (float): Standard deviation or beta\n
-      - input_type (any): Change meaning of mean and std\n
+      - mean (float): Mean\n
+      - std (float): Standard deviation\n
+      - loc (float): Location, given instead of mean and std\n
+      - scale (float): Scale, given instead of mean and std\n
       - start_point (float): Start point for seach\n
     """
 
-    def __init__(self, name, mean, std, input_type=None, start_point=None):
-        if input_type is None:
+    def __init__(
+        self, name, mean=None, std=None, *, loc=None, scale=None, start_point=None
+    ):
+        if _uses_native_parameters(self, mean, std, loc=loc, scale=scale):
+            mu = loc
+        else:
             beta = np.pi / (std * np.sqrt(6))
             mu = mean + (0.5772156649 * std * np.sqrt(6)) / np.pi
-        else:
-            mu = mean
-            beta = std
+            scale = 1 / beta
 
         # use scipy to do the heavy lifting
-        self.dist_obj = gumbel_l(loc=mu, scale=1 / beta)
+        self.dist_obj = gumbel_l(loc=mu, scale=scale)
 
         super().__init__(
             name=name,

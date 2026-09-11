@@ -4,7 +4,7 @@
 import numpy as np
 from scipy.stats import beta
 import scipy.optimize as opt
-from .distribution import Distribution
+from .distribution import Distribution, _uses_native_parameters
 
 __all__ = ["Beta"]
 
@@ -14,22 +14,34 @@ class Beta(Distribution):
 
     :Attributes:
       - name (str):   Name of the random variable\n
-      - mean (float): Mean or q\n
-      - std (float): Standard deviation or r\n
-      - a (float):    Lower boundary\n
-      - b (float):    Uper boundary\n
-      - input_type (any): Change meaning of mean and std\n
+      - mean (float): Mean\n
+      - std (float): Standard deviation\n
+      - lower (float): Lower bound\n
+      - upper (float): Upper bound\n
+      - q (float): First shape parameter, given instead of mean and std\n
+      - r (float): Second shape parameter, given instead of mean and std\n
       - start_point (float): Start point for seach\n
     """
 
-    def __init__(self, name, mean, std, a=0, b=1, input_type=None, start_point=None):
-        self.a = a
-        self.b = b
-        self._ctor_kwargs = {"a": a, "b": b}
+    def __init__(
+        self,
+        name,
+        mean=None,
+        std=None,
+        *,
+        q=None,
+        r=None,
+        lower=0,
+        upper=1,
+        start_point=None,
+    ):
+        self.lower = lower
+        self.upper = upper
+        self._ctor_kwargs = {"lower": lower, "upper": upper}
+        a = lower
+        b = upper
 
-        if input_type is None:
-            a = a
-            b = b
+        if not _uses_native_parameters(self, mean, std, q=q, r=r):
             parameter_guess = 1
             par = opt.fmin(
                 self.beta_parameter,
@@ -39,11 +51,6 @@ class Beta(Distribution):
             )
             q = par[0]
             r = q * (b - a) * (mean - a) ** (-1) - q
-        else:
-            q = mean
-            r = std
-            a = a
-            b = b
 
         # Use scipy for heavy lifting
         self.dist_obj = beta(q, r, loc=a, scale=b - a)

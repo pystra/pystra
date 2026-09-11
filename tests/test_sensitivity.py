@@ -252,11 +252,11 @@ class TestSensitivityParams:
 
     def test_beta_no_extra_sensitivity_params(self):
         """Beta bounds are in _ctor_kwargs but NOT in sensitivity_params."""
-        dist = Beta("X", 0.5, 0.1, a=0, b=1)
+        dist = Beta("X", 0.5, 0.1, lower=0, upper=1)
         sp = dist.sensitivity_params
         assert set(sp.keys()) == {"mean", "std"}
-        assert "a" not in sp
-        assert "b" not in sp
+        assert "lower" not in sp
+        assert "upper" not in sp
 
     @pytest.mark.parametrize(
         "cls,kwargs",
@@ -278,14 +278,14 @@ class TestSensitivityParams:
 
     def test_make_copy_beta_with_bounds(self):
         """Beta with non-default bounds reconstructs faithfully."""
-        dist = Beta("X", 5, 1, a=3, b=10)
+        dist = Beta("X", 5, 1, lower=3, upper=10)
         copy = dist._make_copy()
         x_test = 5.5
         assert copy.cdf(x_test) == pytest.approx(dist.cdf(x_test), abs=1e-8)
 
-    def test_make_copy_weibull_with_epsilon(self):
-        """Weibull with non-zero epsilon reconstructs faithfully."""
-        dist = Weibull("X", 10, 3, epsilon=2)
+    def test_make_copy_weibull_with_lower_bound(self):
+        """Weibull with a non-zero lower bound reconstructs faithfully."""
+        dist = Weibull("X", 10, 3, lower=2)
         copy = dist._make_copy()
         x_test = 9.0
         assert copy.cdf(x_test) == pytest.approx(dist.cdf(x_test), abs=1e-8)

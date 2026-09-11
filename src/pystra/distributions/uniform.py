@@ -3,7 +3,7 @@
 
 from scipy.stats import uniform
 
-from .distribution import Distribution
+from .distribution import Distribution, _uses_native_parameters
 
 __all__ = ["Uniform"]
 
@@ -13,19 +13,22 @@ class Uniform(Distribution):
 
     :Attributes:
       - name (str):   Name of the random variable\n
-      - mean (float): Mean or a\n
-      - std (float): Standard deviation or b\n
-      - input_type (any): Change meaning of mean and std\n
+      - mean (float): Mean\n
+      - std (float): Standard deviation\n
+      - lower (float): Lower bound, given instead of mean and std\n
+      - upper (float): Upper bound, given instead of mean and std\n
       - start_point (float): Start point for seach\n
     """
 
-    def __init__(self, name, mean, std, input_type=None, start_point=None):
-        if input_type is None:
+    def __init__(
+        self, name, mean=None, std=None, *, lower=None, upper=None, start_point=None
+    ):
+        if _uses_native_parameters(self, mean, std, lower=lower, upper=upper):
+            a = lower
+            b = upper
+        else:
             a = mean - 3**0.5 * std
             b = mean + 3**0.5 * std
-        else:
-            a = mean
-            b = std
 
         self.a = a
         self.b = b

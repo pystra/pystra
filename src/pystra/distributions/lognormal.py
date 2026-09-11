@@ -4,7 +4,7 @@
 import numpy as np
 import math
 from scipy.stats import lognorm
-from .distribution import Distribution
+from .distribution import Distribution, _uses_native_parameters
 
 __all__ = ["Lognormal"]
 
@@ -14,9 +14,10 @@ class Lognormal(Distribution):
 
     :Arguments:
       - name (str):         Name of the random variable
-      - mean (float):       Mean or lamb
-      - std (float):       Standard deviation or zeta\n
-      - input_type (any):   Change meaning of mean and std\n
+      - mean (float):       Mean
+      - std (float):       Standard deviation\n
+      - log_mean (float): Mean of ln(X), given instead of mean and std\n
+      - log_std (float): Standard deviation of ln(X), given instead of mean and std\n
       - start_point (float): Start point for seach\n
 
     Note: Could use scipy to do the heavy lifting. However, there is a small
@@ -24,14 +25,22 @@ class Lognormal(Distribution):
     for the PDF, CDF.
     """
 
-    def __init__(self, name, mean, std, input_type=None, start_point=None):
-        if input_type is None:
+    def __init__(
+        self,
+        name,
+        mean=None,
+        std=None,
+        *,
+        log_mean=None,
+        log_std=None,
+        start_point=None,
+    ):
+        if _uses_native_parameters(self, mean, std, log_mean=log_mean, log_std=log_std):
+            self.lamb = log_mean
+            self.zeta = log_std
+        else:
             # infer parameters from the moments
             self._update_params(mean, std)
-        else:
-            # parameters directly passed in
-            self.lamb = mean
-            self.zeta = std
 
         # Could use scipy to do the heavy lifting. However, there is a small
         # performance hit, so for this common dist use bespoke implementation

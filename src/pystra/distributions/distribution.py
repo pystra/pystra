@@ -71,6 +71,26 @@ class StdNormal:
         return u
 
 
+def _uses_native_parameters(distribution, mean, std, **native):
+    """Whether a constructor received native parameters instead of moments.
+
+    A distribution takes either its mean and standard deviation or every one
+    of its native parameters, never a mixture of the two.
+    """
+    kind = type(distribution).__name__
+    names = " and ".join(native)
+    given = [name for name, value in native.items() if value is not None]
+    if not given:
+        if mean is None or std is None:
+            raise TypeError(f"{kind} needs mean and std, or {names}")
+        return False
+    if mean is not None or std is not None:
+        raise TypeError(f"{kind} takes mean and std, or {names}, not both")
+    if len(given) < len(native):
+        raise TypeError(f"{kind} needs mean and std, or {names}")
+    return True
+
+
 class Constant:
     """A deterministic (non-random) variable in the limit state function.
 

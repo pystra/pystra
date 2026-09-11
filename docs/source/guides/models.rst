@@ -9,8 +9,10 @@ Name inputs explicitly
 ----------------------
 
 Variable and constant names must match the limit-state function's arguments.
-Most PySTRA marginal constructors take the physical mean and standard deviation;
-:class:`~pystra.distributions.scipy_dist.ScipyDist` instead wraps an already
+Most PySTRA marginal constructors take the physical mean and standard deviation,
+or instead their native parameters as keywords, such as
+``Gumbel("Q", loc=8.9, scale=1.56)``.
+:class:`~pystra.distributions.scipy_dist.ScipyDist` wraps an already
 parameterised SciPy distribution. Check the relevant distribution's signature.
 
 .. testcode:: model

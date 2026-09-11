@@ -17,7 +17,6 @@ class ShiftedLognormal(Lognormal):
       - mean (float):       Mean
       - std (float):       Standard deviation\n
       - lower (float):      Lower bound of the distribution (i.e. the shift applied to the lognormal)\n
-      - input_type (any):   Change meaning of mean and std. Not implemented!\n
       - start_point (float): Start point for seach\n
 
     Note: Could use scipy to do the heavy lifting. However, there is a small
@@ -25,10 +24,7 @@ class ShiftedLognormal(Lognormal):
     for the PDF, CDF.
     """
 
-    def __init__(self, name, mean, std, lower, input_type=None, start_point=None):
-        if input_type is not None:
-            raise NotImplementedError("`input_type` not implemented")
-
+    def __init__(self, name, mean, std, lower, *, start_point=None):
         self._ctor_kwargs = {"lower": lower}
 
         self._mean = mean

@@ -493,8 +493,49 @@ properties.
      - ``model.constants``, a read-only mapping
 
 Distributions, constants and models print informatively, for example
-``Normal('R', mean=10, std=1)``. Construction from a distribution's native
-parameters still uses ``input_type`` in this release.
+``Normal('R', mean=10, std=1)``.
+
+Native parameters are keyword arguments of the same constructor, replacing
+``input_type``: give either the mean and standard deviation or every native
+parameter. The names follow SciPy. ``GumbelMin`` takes its scale where
+``input_type`` took the inverse, and the ``Weibull`` scale is measured from the
+lower bound where ``input_type`` took the characteristic value :math:`u_1`. The
+bounds of ``Weibull`` and ``Beta`` are the keywords ``lower`` and ``upper``, and
+``start_point`` is keyword-only for every distribution.
+
+.. list-table:: Native parameters, with 2.0 class names
+   :header-rows: 1
+
+   * - 1.x
+     - 2.0
+   * - ``Gumbel("Q", mu, scale, input_type=True)``
+     - ``Gumbel("Q", loc=mu, scale=scale)``
+   * - ``GumbelMin("R", mu, beta, input_type=True)``
+     - ``GumbelMin("R", loc=mu, scale=1 / beta)``
+   * - ``GEV("X", loc, scale, shape, input_type=True)``, also ``GEVMin``
+     - ``GEV("X", shape=shape, loc=loc, scale=scale)``
+   * - ``Frechet("X", u_n, k, input_type=True)``
+     - ``Frechet("X", scale=u_n, shape=k)``
+   * - ``Lognormal("R", lamb, zeta, input_type=True)``
+     - ``Lognormal("R", log_mean=lamb, log_std=zeta)``
+   * - ``Uniform("X", a, b, input_type=True)``
+     - ``Uniform("X", lower=a, upper=b)``
+   * - ``Weibull("W", u_1, k, epsilon, input_type=True)``
+     - ``Weibull("W", scale=u_1 - epsilon, shape=k, lower=epsilon)``
+   * - ``Weibull("W", mean, std, epsilon)``
+     - ``Weibull("W", mean, std, lower=epsilon)``
+   * - ``Beta("B", q, r, a, b, input_type=True)``
+     - ``Beta("B", q=q, r=r, lower=a, upper=b)``
+   * - ``Beta("B", mean, std, a, b)``
+     - ``Beta("B", mean, std, lower=a, upper=b)``
+   * - ``Gamma("G", beta, alpha, input_type=True)``
+     - ``Gamma("G", rate=beta, shape=alpha)``
+   * - ``ShiftedExponential("E", lamb, x_zero, input_type=True)``
+     - ``ShiftedExponential("E", rate=lamb, shift=x_zero)``
+   * - ``ShiftedRayleigh("X", a, x_zero, input_type=True)``
+     - ``ShiftedRayleigh("X", scale=a, shift=x_zero)``
+   * - ``ChiSquare("C", nu, input_type=True)``
+     - ``ChiSquare("C", df=nu)``
 
 Correlation matrices
 --------------------

@@ -15,14 +15,13 @@ class Normal(Distribution):
       - name (str):         Name of the random variable\n
       - mean (float):       Mean\n
       - std (float):       Standard deviation\n
-      - input_type (any):   Change meaning of mean and std\n
       - start_point (float): Start point for seach\n
 
     Note: while we could use SciPy norm distribution here, there is a
     substantial perfromance hit, so use local implementation.
     """
 
-    def __init__(self, name, mean, std, input_type=None, start_point=None):
+    def __init__(self, name, mean, std, *, start_point=None):
         """
         Leave initialization to the base class
         """

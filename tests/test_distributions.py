@@ -184,23 +184,23 @@ class TestDistributionCommon:
 
 class TestBeta:
     def test_construction(self):
-        d = Beta("B", 0.5, 0.1, a=0, b=1)
+        d = Beta("B", 0.5, 0.1, lower=0, upper=1)
         assert pytest.approx(d.mean, abs=1e-2) == 0.5
         assert pytest.approx(d.std, abs=1e-2) == 0.1
 
     def test_ppf_cdf_roundtrip(self):
-        d = Beta("B", 0.5, 0.1, a=0, b=1)
+        d = Beta("B", 0.5, 0.1, lower=0, upper=1)
         for p in [0.1, 0.5, 0.9]:
             x = d.ppf(p)
             assert pytest.approx(d.cdf(x), abs=1e-4) == p
 
     def test_cdf_bounds(self):
-        d = Beta("B", 0.5, 0.1, a=0, b=1)
+        d = Beta("B", 0.5, 0.1, lower=0, upper=1)
         assert d.cdf(0.0) < 0.01
         assert d.cdf(1.0) > 0.99
 
     def test_transform_roundtrip(self):
-        d = Beta("B", 0.5, 0.1, a=0, b=1)
+        d = Beta("B", 0.5, 0.1, lower=0, upper=1)
         for u in [-1.0, 0.0, 1.0]:
             x = d.u_to_x(u)
             u_back = d.x_to_u(x)
@@ -479,22 +479,22 @@ class TestNormal:
 class TestGumbel:
     """Regression tests for Gumbel distribution (issue #67)."""
 
-    def test_input_type_roundtrip(self):
+    def test_native_parameters_roundtrip(self):
         """Native Gumbel params (mu, beta) should reproduce the same distribution."""
         g1 = Gumbel("X", 10, 2)
         # Recover native params: mu (location) and beta (scale)
         scale = g1.std * np.sqrt(6) / np.pi
         mu = g1.mean - 0.5772156649 * scale
-        g2 = Gumbel("X", mu, scale, input_type="par")
+        g2 = Gumbel("X", loc=mu, scale=scale)
         assert pytest.approx(g2.mean, abs=1e-6) == g1.mean
         assert pytest.approx(g2.std, abs=1e-6) == g1.std
 
-    def test_input_type_cdf_matches(self):
+    def test_native_parameters_cdf_matches(self):
         """CDF should be identical regardless of input path."""
         g1 = Gumbel("X", 10, 2)
         scale = g1.std * np.sqrt(6) / np.pi
         mu = g1.mean - 0.5772156649 * scale
-        g2 = Gumbel("X", mu, scale, input_type="par")
+        g2 = Gumbel("X", loc=mu, scale=scale)
         for x in [5.0, 10.0, 15.0]:
             assert pytest.approx(g2.cdf(x), abs=1e-10) == g1.cdf(x)
 
