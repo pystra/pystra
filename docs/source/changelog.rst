@@ -30,6 +30,8 @@ Added
 - Worked Rosenblatt-ordering tutorial reproducing Meinen and Steenbergen's
   (2025) system example, with transformation geometry, coordinate alignment,
   and original-event integration/simulation checks.
+- OpenSeesPy tutorial: a portal frame analysed by an external finite-element
+  solver, with FORM and SORM checked by direct simulation of the frame.
 - Every analysis's ``run()`` returns an immutable record: ``FORMResult``,
   ``SORMResult``, ``SimulationResult``, ``SystemFORMResult``,
   ``SensitivityResult``, ``StrongMaximumResult`` or

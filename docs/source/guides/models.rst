@@ -32,6 +32,8 @@ Here ``R`` and ``S`` use the same force unit. A negative limit state means
 failure. Write elementwise NumPy expressions so the function also accepts
 batches of input values; avoid Python ``if`` statements on arrays. The
 :doc:`/notebooks/ex_ddm` example explains the analytical-gradient return contract.
+A limit state can also wrap an external solver and evaluate one point at a
+time; see :doc:`/notebooks/ex_openseespy`.
 
 Specify dependence before choosing a transformation
 ---------------------------------------------------

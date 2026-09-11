@@ -80,10 +80,7 @@ source_suffix = {".rst": "restructuredtext", ".md": "restructuredtext"}
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = [
-    # Legacy files superseded by current notebooks/content
-    "notebooks/ex_openseespy.ipynb",
-]
+exclude_patterns = []
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -223,6 +220,6 @@ nbsphinx_prolog = r"""
 
    :download:`Download notebook <{{ notebook }}>` · :download:`Download runnable bundle <../_generated/notebooks/{{ notebook[:-6] }}.zip>`
 
-   {% if details.dependencies == 'al' %}**Dependencies:** PySTRA with the optional ``al`` extra.{% else %}**Dependencies:** PySTRA core.{% endif %}
+   {% if details.dependencies == 'al' %}**Dependencies:** PySTRA with the optional ``al`` extra.{% else %}**Dependencies:** PySTRA core{% if details.packages %} and ``{{ details.packages | join('``, ``') }}``{% endif %}.{% endif %}
    {% if details.support_files %}**Helper files:** {{ details.support_files | join(', ') }} (included in the bundle).{% endif %}
 """

@@ -28,6 +28,9 @@ def _prepare_notebooks(app, env, docnames):
         details = notebook["metadata"]["pystra"]
         dependencies = details["dependencies"]
         helpers = details["support_files"]
+        packages = details.get("packages", [])
+        if not all(re.fullmatch(r"[A-Za-z0-9._-]+", name) for name in packages):
+            raise ValueError(f"Invalid package name in {path}: {packages}")
         if dependencies not in {"core", "al"}:
             raise ValueError(f"Unknown dependency group in {path}: {dependencies}")
         files = {
@@ -44,12 +47,13 @@ def _prepare_notebooks(app, env, docnames):
             "Install the matching development branch in your Python environment:\n\n"
             f'  python -m pip install "pystra{extra} @ '
             'git+https://github.com/pystra/pystra.git@v2.0"\n'
-            "  python -m pip install jupyterlab\n\n"
+            f"  python -m pip install {' '.join(['jupyterlab', *packages])}\n\n"
             "The branch changes during development; record the installed commit for\n"
             "a reproducible study. Extract this entire bundle to one directory,\n"
             "launch JupyterLab there, select that environment's Python kernel,\n"
             f"open {path.name}, and run all cells from the top.\n\n"
-            f"Optional dependencies: {dependencies}. Included helpers: "
+            f"Optional dependencies: {', '.join([dependencies, *packages])}. "
+            "Included helpers: "
             f"{', '.join(helpers) or 'none'}.\n"
             "Source: https://github.com/pystra/pystra/tree/v2.0/docs/source/notebooks\n"
             "Method sources and benchmark assumptions are cited in the notebook.\n"

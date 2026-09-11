@@ -1,107 +1,64 @@
-import openseespy.opensees as ops
-import opsvis as opsv
-import pystra as ra
-import matplotlib.pyplot as plt
+"""Reliability of a portal frame analysed with OpenSeesPy.
+
+The executed version, with a check by direct simulation, is the
+docs/source/notebooks/ex_openseespy.ipynb tutorial.
+"""
+
 import numpy as np
+import openseespy.opensees as ops
+import pystra as ra
 
 
-def single_run(E=30e3, P=25.0, w=0.1, x=0.0):
+def build_frame(E, P, w, x):
+    """Create the portal frame in OpenSees' global model (kip, inch)."""
     ops.wipe()
     ops.model("basic", "-ndm", 2, "-ndf", 3)
-
-    ops.node(1, x, 0)
-    ops.node(2, 0, 144)
-    ops.node(3, 240, 144)
-    ops.node(4, 240, 0)
-
+    ops.node(1, x, 0.0)  # left base, misplaced by x
+    ops.node(2, 0.0, 144.0)
+    ops.node(3, 240.0, 144.0)
+    ops.node(4, 240.0, 0.0)
     ops.fix(1, 1, 1, 1)
     ops.fix(4, 1, 1, 1)
+    ops.section("Elastic", 1, E, 25.0, 1500.0)  # girder
+    ops.section("Elastic", 2, E, 29.0, 2000.0)  # columns
+    ops.geomTransf("Linear", 1)
+    ops.beamIntegration("Lobatto", 1, 1, 3)
+    ops.beamIntegration("Lobatto", 2, 2, 3)
+    ops.element("forceBeamColumn", 1, 1, 2, 1, 2)  # left column
+    ops.element("forceBeamColumn", 2, 2, 3, 1, 1)  # girder
+    ops.element("forceBeamColumn", 3, 3, 4, 1, 2)  # right column
+    ops.timeSeries("Constant", 1)
+    ops.pattern("Plain", 1, 1)
+    ops.load(2, P, 0.0, 0.0)
+    ops.eleLoad("-ele", 2, "-type", "beamUniform", -w)
 
-    Ag = 25.0
-    Ig = 1500.0
-    Ac = 29.0
-    Ic = 2000.0
 
-    gsecTag = 1
-    ops.section("Elastic", gsecTag, E, Ag, Ig)
-
-    csecTag = 2
-    ops.section("Elastic", csecTag, E, Ac, Ic)
-
-    transfTag = 1
-    ops.geomTransf("Linear", transfTag)
-
-    N = 3
-
-    gbiTag = 1
-    ops.beamIntegration("Lobatto", gbiTag, gsecTag, N)
-    cbiTag = 2
-    ops.beamIntegration("Lobatto", cbiTag, csecTag, N)
-
-    leftColTag = 1
-    ops.element("forceBeamColumn", leftColTag, 1, 2, transfTag, cbiTag)
-    girderTag = 2
-    ops.element("forceBeamColumn", girderTag, 2, 3, transfTag, gbiTag)
-    rightColTag = 3
-    ops.element("forceBeamColumn", rightColTag, 3, 4, transfTag, cbiTag)
-
-    tsTag = 1
-    ops.timeSeries("Constant", tsTag)
-
-    patternTag = 1
-    ops.pattern("Plain", patternTag, tsTag)
-
-    ops.load(2, P, 0, 0)
-    ops.eleLoad("-ele", girderTag, "-type", "beamUniform", -w)
-
-    # define these to avoid warnings
+def frame_sway(E, P, w, x):
+    """Lateral displacement at the top of the left column (in)."""
+    build_frame(E, P, w, x)
     ops.constraints("Transformation")
     ops.numberer("RCM")
     ops.system("BandGeneral")
-    ops.test("NormDispIncr", 1.0e-6, 6, 2)
+    ops.test("NormDispIncr", 1.0e-6, 6)
     ops.algorithm("Linear")
-    ops.integrator("LoadControl", 1)
+    ops.integrator("LoadControl", 1.0)
     ops.analysis("Static")
-    ops.analyze(1)
-
-    return 0.15 - ops.nodeDisp(2, 1)
-
-
-def plot_ops_model_results():
-    opsv.plot_model()
-    opsv.plot_loads_2d(sfac=5)
-    opsv.plot_defo()
-    sfacN, sfacV, sfacM = 2, 2, 5.0e-2
-    opsv.section_force_diagram_2d("N", sfacN)
-    plt.title("Axial force distribution")
-    opsv.section_force_diagram_2d("T", sfacV)
-    plt.title("Shear force distribution")
-    opsv.section_force_diagram_2d("M", sfacM)
-    plt.title("Bending moment distribution")
-    plt.show()
+    if ops.analyze(1) != 0:
+        raise RuntimeError("OpenSees analysis failed")
+    return ops.nodeDisp(2, 1)
 
 
-def lsf(E, P, w, x):
-    n = len(E)
-    g = np.zeros((n, 1))
-
-    for i in range(n):
-        g[i] = single_run(E[i], P[i], w[i], x[i])
-
-    return g.T
+def sway_limit_state(E, P, w, x):
+    return np.array([0.15 - frame_sway(*point) for point in np.broadcast(E, P, w, x)])
 
 
-limit_state = ra.LimitState(lsf)
-options = ra.FORMOptions()
-stochastic_model = ra.StochasticModel()
-stochastic_model.add_variable(ra.Lognormal("E", 30e3, 3e3))
-stochastic_model.add_variable(ra.Normal("P", 25, 5))
-stochastic_model.add_variable(ra.Normal("x", 0, 1))
-stochastic_model.add_variable(ra.Uniform("w", 0.1, 0.02))
-form = ra.FORM(
-    options=options,
-    model=stochastic_model,
-    limit_state=limit_state,
-)
-form_result = form.run()
-print(form_result.summary())
+model = ra.StochasticModel()
+model.add_variable(ra.Lognormal("E", 30e3, 3e3))
+model.add_variable(ra.Normal("P", 25.0, 5.0))
+model.add_variable(ra.Normal("w", 0.1, 0.02))
+model.add_variable(ra.Normal("x", 0.0, 1.0))
+limit_state = ra.LimitState(sway_limit_state)
+
+form = ra.FORM(model, limit_state)
+print(form.run().summary())
+print(ra.SORM(model, limit_state, form=form).run().summary())
