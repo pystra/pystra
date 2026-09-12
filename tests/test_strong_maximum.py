@@ -192,7 +192,7 @@ def test_bad_candidate_and_failed_rerun():
     result = raw(point_number=10, rng=2)
     result.run()
     result.limit_state.expression = lambda **kwargs: np.nan
-    with pytest.raises(ValueError, match="Nonfinite"):
+    with pytest.raises(ra.AnalysisError, match="Nonfinite"):
         result.run()
     assert not result._results_valid
     assert result._status == "failed"

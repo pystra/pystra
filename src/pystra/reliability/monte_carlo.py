@@ -238,7 +238,8 @@ class CrudeMonteCarlo(MonteCarlo):
 
     def run(self):
         """Run the simulation and return a :class:`SimulationResult`."""
-        self._results_valid = True
+        self._results_valid = False
+        self._Pf = self._beta = None
 
         self.init_run()
         self._random = _generator(self.rng)
@@ -321,7 +322,9 @@ class CrudeMonteCarlo(MonteCarlo):
         self._compute_beta()
 
         # Show Results
-        return self._result()
+        result = self._result()
+        self._results_valid = True
+        return result
 
     def _diagnostics(self):
         """Return the convergence history for the result's diagnostics."""
@@ -341,14 +344,18 @@ class CrudeMonteCarlo(MonteCarlo):
         pf = float(self._Pf)
         cov = float(self._cov_q_bar[self._k - 1]) if pf > 0 else np.inf
         target = self.options.target_cov
-        met = cov <= target
+        met = target == 0 or cov <= target
         return SimulationResult(
             method=type(self).__name__,
             status="completed" if met else "precision_not_met",
             message=(
-                f"Reached the target coefficient of variation, {target}"
-                if met
-                else f"Sample budget used before the target coefficient of variation, {target}"
+                "Requested sample budget completed"
+                if target == 0
+                else (
+                    f"Reached the target coefficient of variation, {target}"
+                    if met
+                    else f"Sample budget used before the target coefficient of variation, {target}"
+                )
             ),
             n_limit_state_evaluations=self._n_evaluations,
             variable_names=tuple(self.model.get_variables()),

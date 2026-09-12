@@ -14,6 +14,13 @@ def model2(rho=0):
     return model
 
 
+def model3():
+    model = ra.StochasticModel()
+    for name in ("X", "Y", "Z"):
+        model.add_variable(ra.Normal(name, 0, 1))
+    return model
+
+
 @pytest.mark.parametrize("kind", [ra.SeriesSystem, ra.ParallelSystem])
 @pytest.mark.parametrize("beta", [2.0, 3.0, 8.0])
 def test_independent_exact(kind, beta):
@@ -171,8 +178,7 @@ def test_four_branch_against_nonlinear_reference():
 
 
 def test_original_cut_set_monte_carlo_shared_component():
-    model = model2()
-    model.add_variable(ra.Normal("Z", 0, 1))
+    model = model3()
     components = {
         "a": ra.Component("a", lambda X: 1 - X),
         "b": ra.Component("b", lambda Y: 1 - Y),
@@ -219,8 +225,7 @@ def test_nataf_factorisation_invariance_with_constants():
 
 
 def test_unresolved_multivariate_zero_is_not_reported_as_safe(monkeypatch):
-    model = model2(0.3)
-    model.add_variable(ra.Normal("Z", 0, 1))
+    model = model3()
     model.set_correlation([[1, 0.3, 0.3], [0.3, 1, 0.3], [0.3, 0.3, 1]])
     system = ra.ParallelSystem(
         [
@@ -251,8 +256,7 @@ def test_single_rare_parallel_bounds_are_exact():
     "kind,exact", [(ra.SeriesSystem, 0.75), (ra.ParallelSystem, 0.25)]
 )
 def test_three_correlated_normal_orthant(kind, exact):
-    model = model2()
-    model.add_variable(ra.Normal("Z", 0, 1))
+    model = model3()
     model.set_correlation([[1, 0.5, 0.5], [0.5, 1, 0.5], [0.5, 0.5, 1]])
     system = kind(
         [

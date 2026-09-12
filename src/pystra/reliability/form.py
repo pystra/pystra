@@ -5,6 +5,7 @@ import numpy as np
 import warnings
 from scipy.stats import norm as normal
 from .analysis import AnalysisObject, _check_on_failure
+from ._form_reuse import _problem_state
 from ..errors import AnalysisError
 from ..options import FORMOptions
 from ..results import FORMResult
@@ -153,6 +154,9 @@ class FORM(AnalysisObject):
         # Compute failure probability
         self._compute_failure_probability()
         self._results_valid = self._converged
+        self._run_expression = self.limit_state.expression
+        self._run_options = self.options
+        self._run_model_state = _problem_state(self.model)
         result = FORMResult.from_analysis(self)
         if not self._converged:
             message = "FORM did not converge within the iteration limit"

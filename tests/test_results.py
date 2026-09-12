@@ -101,7 +101,10 @@ def test_sorm_result_reports_breitung_and_each_approximation(fit, fit_type, shap
     first = ra.FORM(model=model, limit_state=margin())
     form_result = first.run()
     sorm = ra.SORM(
-        model=model, limit_state=margin(), form=first, options=ra.SORMOptions(fit=fit)
+        model=model,
+        limit_state=first.limit_state,
+        form=first,
+        options=ra.SORMOptions(fit=fit),
     )
     result = sorm.run()
     assert isinstance(result, ra.SORMResult) and result.status == "converged"

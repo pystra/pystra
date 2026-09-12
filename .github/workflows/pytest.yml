@@ -67,7 +67,7 @@ jobs:
       - name: Check naming and formatting
         run: |
           python scripts/api_inventory.py --check-names --check-migration
-          python -m black --check --target-version py39 src tests examples scripts docs/source/conf.py docs/source/_ext docs/source/notebooks/literature_benchmarks.py
+          python -m black --check src tests examples scripts docs/source/conf.py docs/source/_ext docs/source/notebooks/literature_benchmarks.py
       - name: Execute maintained tutorials
         run: python scripts/execute_notebooks.py --output-dir docs/source/notebooks
       - name: Build documentation

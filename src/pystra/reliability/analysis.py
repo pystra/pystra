@@ -140,6 +140,7 @@ class AnalysisObject:
         """
 
         self._n_evaluations = 0
+        self._nrv = self.model.n_marg
         copula = self.model.get_copula()
         selected, order = self._dependence()
         if copula is not None or selected in ("nataf", "rosenblatt"):

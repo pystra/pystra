@@ -4,7 +4,7 @@ import numpy as np
 from .distributions import Distribution, Constant
 from collections import OrderedDict
 from types import MappingProxyType
-from .errors import ModelError
+from .errors import ModelError, AnalysisError
 
 __all__ = ["StochasticModel", "LimitState"]
 
@@ -26,6 +26,7 @@ class StochasticModel:
         self._names = []
         self._marg = []
         self._correlation = None
+        self._correlation_explicit = False
         self._Ro = None
         self._call_function = 0
         self._consts = {}
@@ -51,9 +52,10 @@ class StochasticModel:
 
         Raises
         ------
-        Exception
+        ModelError
             If *obj* is not a Distribution or Constant, or if a
-            variable with the same name already exists.
+            variable with the same name already exists. Add all random
+            variables before explicitly setting correlation or a copula.
         """
 
         if not (isinstance(obj, Distribution) or isinstance(obj, Constant)):
@@ -63,6 +65,8 @@ class StochasticModel:
             raise ModelError(f'variable name "{obj.get_name()}" already exists')
         if isinstance(obj, Distribution) and self._copula is not None:
             raise ValueError("Add all random variables before setting the copula")
+        if isinstance(obj, Distribution) and self._correlation_explicit:
+            raise ModelError("Add all random variables before setting correlation")
 
         # append the variable name
         self._names.append(obj.get_name())
@@ -173,7 +177,10 @@ class StochasticModel:
 
         if not isinstance(obj, CorrelationMatrix):
             obj = CorrelationMatrix(obj)
+        if obj.matrix.shape != (self.n_marg, self.n_marg):
+            raise ModelError("Correlation dimensions must match the random variables")
         self._correlation = obj.matrix
+        self._correlation_explicit = True
         self._copula = None
         self._Ro = None
 
@@ -309,16 +316,37 @@ class LimitState:
         grad_G : ndarray
             Gradient matrix, shape ``(nrv, nx)``.  Zero when no
             gradient is computed.
+
+        Raises
+        ------
+        ModelError
+            Points or returned values/gradients have incompatible dimensions.
+        AnalysisError
+            Physical points, limit-state values or gradients are nonfinite,
+            or the external evaluator raises. The evaluator exception is
+            retained as the cause; no probability estimate is produced.
         """
         if differentiation not in ("no", "ffd", "ddm"):
             raise ValueError("differentiation must be 'no', 'ffd' or 'ddm'")
-        x = np.asarray(x)
+        x = np.asarray(x, dtype=float)
+        if x.ndim != 2 or x.shape[0] != stochastic_model.n_marg:
+            raise ModelError(
+                "Evaluation points must have shape (n_variables, n_points)"
+            )
+        if not np.all(np.isfinite(x)):
+            raise AnalysisError(
+                "Limit-state evaluation requires finite physical points"
+            )
         if differentiation == "no":
             G, grad_G, calls = self._values(x, stochastic_model, block_size)
         elif differentiation == "ddm":
             G, grad_G, calls = self._ddm(x, stochastic_model)
         else:
             G, grad_G, calls = self._ffd(x, stochastic_model, block_size, ffd_parameter)
+        if not np.all(np.isfinite(grad_G)):
+            raise AnalysisError(
+                "Limit-state differentiation produced a nonfinite gradient"
+            )
         stochastic_model.add_call_function(calls)
         if counter is not None:
             counter(calls)
@@ -342,8 +370,7 @@ class LimitState:
         """Limit-state values and forward finite-difference gradients."""
         nrv, nx = x.shape
         grad_G = np.zeros((nrv, nx))
-        allx = np.zeros((nrv, nx * (1 + nrv)))
-        allx[:] = x
+        allx = np.repeat(x, 1 + nrv, axis=1)
         allh = np.zeros(nrv)
 
         marg = model.get_marginal_distributions()
@@ -378,7 +405,9 @@ class LimitState:
         G = np.zeros((1, nx))
         grad_G = np.zeros((nrv, nx))
         for k in range(nx):
-            G[k], grad_G[:, k : k + 1] = self._call(x[:, k : k + 1], model, ddm=True)
+            values, gradient = self._call(x[:, k : k + 1], model, ddm=True)
+            G[:, k] = values
+            grad_G[:, k] = gradient.reshape(nrv)
         return G, grad_G, nx
 
     def _call(self, x, model, ddm=False):
@@ -398,7 +427,13 @@ class LimitState:
             inpdict[var] = x[i]
         for c, val in constants.items():
             inpdict[c] = val * np.ones(nc)
-        Gvals = self.expression(**inpdict)
+        context = f"{nc} point(s), first point {x[:, 0].tolist()}"
+        try:
+            Gvals = self.expression(**inpdict)
+        except Exception as error:
+            raise AnalysisError(
+                f"Limit-state evaluation failed at {context}: {error}"
+            ) from error
         try:
             if ddm:
                 G, gradient = Gvals
@@ -413,4 +448,23 @@ class LimitState:
                 "Limit state function return must match differentiation mode"
             )
 
+        G = np.asarray(G, dtype=float)
+        if G.ndim == 0:
+            G = np.full(nc, G.item())
+        elif G.shape == (1, nc):
+            G = G[0]
+        elif G.shape != (nc,):
+            raise ModelError(
+                f"Limit-state values must have shape ({nc},), got {G.shape}"
+            )
+        if not np.all(np.isfinite(G)):
+            raise AnalysisError(f"Nonfinite limit-state values at {context}")
+        if ddm:
+            gradient = np.asarray(gradient, dtype=float)
+            if gradient.shape not in ((len(variables),), (len(variables), 1)):
+                raise ModelError(
+                    "DDM gradient must contain one derivative per random variable"
+                )
+            if not np.all(np.isfinite(gradient)):
+                raise AnalysisError(f"Nonfinite limit-state gradient at {context}")
         return G, gradient

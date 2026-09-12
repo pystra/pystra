@@ -15,6 +15,11 @@ criterion is met. Pass ``rng`` a seed for a reproducible run; NumPy's global
 random state is neither used nor changed. Record the seed and actual
 evaluation count in a study.
 
+Set ``target_cov=0`` to use the whole sample budget. A successful fixed-budget
+run reports ``status="completed"`` and retains its measured ``cov``; completion
+alone does not establish adequate precision. Invalid limit-state evaluations
+raise :class:`~pystra.errors.AnalysisError` before a probability is reported.
+
 .. testcode:: simulation
 
    import numpy as np

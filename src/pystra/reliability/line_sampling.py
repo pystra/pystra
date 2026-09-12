@@ -7,7 +7,9 @@ from scipy.stats import norm as scipy_norm
 
 from .analysis import AnalysisObject, _check_rng, _generator
 from .form import FORM
+from ._form_reuse import _check_form, _check_coordinates
 from ..options import FORMOptions, SimulationOptions
+from ..errors import AnalysisError
 from ..results import FORMResult, SimulationResult
 
 __all__ = ["LineSampling"]
@@ -71,6 +73,7 @@ class LineSampling(AnalysisObject):
         if form is not None and not isinstance(form, FORM):
             raise TypeError("form must be a FORM analysis")
         self.form = form
+        self._supplied_form = form
         self._nrv = self.model.get_len_marginal_distributions()
         self._alpha = None
         self._Pf = None
@@ -81,13 +84,15 @@ class LineSampling(AnalysisObject):
 
     def run(self):
         """Run line sampling and return a :class:`SimulationResult`."""
-        self._results_valid = True
+        self._results_valid = False
+        self._Pf = self._beta = self._cov = None
         self.init_run()
 
         marg = self.model.get_marginal_distributions()
+        self._nrv = len(marg)
 
         # Obtain important direction from FORM
-        if self.form is None:
+        if self._supplied_form is None:
             _form = FORM(
                 self.model,
                 self.limit_state,
@@ -100,6 +105,10 @@ class LineSampling(AnalysisObject):
             )
             _form.run()
             self.form = _form
+        else:
+            self.form = self._supplied_form
+        _check_form(self.form, self.model, self.limit_state)
+        _check_coordinates(self.form, self.transform)
 
         # alpha: unit vector pointing toward the failure region in u-space
         alpha = self.form._alpha[0]  # shape (nrv,)
@@ -120,9 +129,12 @@ class LineSampling(AnalysisObject):
         # For each line, find c_i such that g(v_i + c_i * alpha) = 0
         c_values = np.empty(N)
         for i in range(N):
-            c_values[i] = self._find_line_intersection(
-                u_perp[:, i], alpha, beta_form, marg
-            )
+            try:
+                c_values[i] = self._find_line_intersection(
+                    u_perp[:, i], alpha, beta_form, marg
+                )
+            except AnalysisError as error:
+                raise AnalysisError(f"Line {i + 1}: {error}") from error
 
         # Probability contributions Phi(-c_i): probability that a point on
         # line i (drawn from N(0,1) along alpha) lies in the failure region.
@@ -142,7 +154,7 @@ class LineSampling(AnalysisObject):
             self._beta = -np.inf
             self._cov = np.inf
 
-        return SimulationResult(
+        result = SimulationResult(
             method="LineSampling",
             status="completed",
             message="Sampling completed",
@@ -158,6 +170,8 @@ class LineSampling(AnalysisObject):
                 "direction": alpha,
             },
         )
+        self._results_valid = True
+        return result
 
     # ------------------------------------------------------------------
     # Private helpers
@@ -183,17 +197,12 @@ class LineSampling(AnalysisObject):
 
         g_scan = np.empty(len(c_scan))
         for j, cj in enumerate(c_scan):
-            try:
-                g_scan[j] = self._eval_g_at_c(cj, v, alpha, marg)
-            except Exception:
-                g_scan[j] = np.nan
+            g_scan[j] = self._eval_g_at_c(cj, v, alpha, marg)
 
         # Collect all sign-change intervals, preferring safe→failure crossings
         bracket_lo, bracket_hi = None, None
         for j in range(len(c_scan) - 1):
             g1, g2 = g_scan[j], g_scan[j + 1]
-            if np.isnan(g1) or np.isnan(g2):
-                continue
             if g1 * g2 <= 0:
                 if g1 > 0 >= g2:
                     # Safe→failure crossing: this is the physically relevant one
@@ -205,8 +214,7 @@ class LineSampling(AnalysisObject):
 
         if bracket_lo is None:
             # No sign change found
-            valid = g_scan[~np.isnan(g_scan)]
-            if len(valid) > 0 and valid[0] < 0:
+            if np.all(g_scan < 0):
                 return float(c_scan[0])  # entirely in failure region → Phi(-c)≈1
             return float(c_scan[-1])  # entirely in safe region → Phi(-c)≈0
 
@@ -218,8 +226,10 @@ class LineSampling(AnalysisObject):
                 xtol=1e-6,
                 maxiter=50,
             )
-        except Exception:
-            c_root = 0.5 * (bracket_lo + bracket_hi)
+        except Exception as error:
+            raise AnalysisError(
+                f"Line intersection did not converge: {error}"
+            ) from error
 
         return float(c_root)
 

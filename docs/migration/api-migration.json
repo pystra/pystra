@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "baseline_revision": "69dd5f0625bbf36822c7d7db3f0685d3da299367",
-  "scope": "All baseline definitions through the v2 calibration structural replacement and first FORM result contract. Null current names mark removal/replacement, not an automatic rename. Replacement operations can require rewritten inputs. See calibration-structure-map.json for implemented signatures and fields. Remaining algorithm results/options/parameters are pending; private inventory entries are not supported public APIs.",
+  "scope": "All baseline definitions through the v2 naming and module migration, calibration replacement, and stage-4 options/results/error contracts. Null current names mark removal/replacement, not an automatic rename. Replacement operations can require rewritten inputs. See calibration-structure-map.json for calibration signatures and fields, and the migration guide for the September 2026 runtime hardening. Private inventory entries are not supported public APIs.",
   "definitions": [
     {
       "old": "pystra.analysis.AnalysisObject",
@@ -2165,7 +2165,8 @@
       "old": "pystra.distributions.maximum.Maximum",
       "current": "pystra.distributions.maximum.Maximum",
       "kind": "class",
-      "status": "unchanged"
+      "status": "unchanged",
+      "notes": "Moments use deterministic adaptive quantile integration at absolute/relative tolerance 1e-8 in standardized units, replacing 100 global random draws."
     },
     {
       "old": "pystra.distributions.maximum.Maximum.__init__",
@@ -2311,7 +2312,8 @@
       "old": "pystra.distributions.parent.MaxParent",
       "current": "pystra.distributions.parent.MaxParent",
       "kind": "class",
-      "status": "unchanged"
+      "status": "unchanged",
+      "notes": "Moments use deterministic adaptive quantile integration at absolute/relative tolerance 1e-8 in standardized units; normal lower-tail inversion operates in log probability."
     },
     {
       "old": "pystra.distributions.parent.MaxParent.__init__",
@@ -3393,7 +3395,8 @@
       "old": "pystra.mc.CrudeMonteCarlo.run",
       "current": "pystra.reliability.monte_carlo.CrudeMonteCarlo.run",
       "kind": "callable",
-      "status": "unchanged"
+      "status": "unchanged",
+      "notes": "Invalid evaluations stop sampling. target_cov=0 denotes fixed-budget completion; measured uncertainty is retained."
     },
     {
       "old": "pystra.mc.CrudeMonteCarlo.initializeVariables",
@@ -3505,7 +3508,8 @@
       "old": "pystra.model.StochasticModel.addVariable",
       "current": "pystra.model.StochasticModel.add_variable",
       "kind": "callable",
-      "status": "renamed"
+      "status": "renamed",
+      "notes": "Adding marginals after explicit correlation or copula specification is rejected without changing the model; constants remain allowed."
     },
     {
       "old": "pystra.model.StochasticModel.constants",
@@ -3629,7 +3633,8 @@
       "old": "pystra.model.StochasticModel.setCorrelation",
       "current": "pystra.model.StochasticModel.set_correlation",
       "kind": "callable",
-      "status": "renamed"
+      "status": "renamed",
+      "notes": "Correlation dimensions must match the existing random variables; invalid input leaves dependence unchanged."
     },
     {
       "old": "pystra.model.StochasticModel.getCorrelation",
@@ -3707,7 +3712,8 @@
       "old": "pystra.model.LimitState.evaluate_lsf",
       "current": "pystra.model.LimitState.evaluate_lsf",
       "kind": "callable",
-      "status": "unchanged"
+      "status": "unchanged",
+      "notes": "Nonfinite points, values and gradients or external evaluator exceptions raise AnalysisError. Malformed output shapes raise ModelError. Column-oriented FFD and DDM batches preserve point order."
     },
     {
       "old": "pystra.model.LimitState.evaluate_nogradient",
@@ -3845,7 +3851,8 @@
       "old": "pystra.sorm.Sorm.run",
       "current": "pystra.reliability.sorm.SORM.run",
       "kind": "callable",
-      "status": "renamed"
+      "status": "renamed",
+      "notes": "Internally generated FORM is refreshed each run. Supplied FORM requires the same model/expression and unchanged parameter/options state. Axis-aligned reference directions are supported."
     },
     {
       "old": "pystra.sorm.Sorm.run_curvefit",

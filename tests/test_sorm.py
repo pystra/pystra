@@ -109,11 +109,11 @@ def test_direct_fitting_methods_check_form_and_preserve_reporting(
     assert analysis._results_valid
     assert record.summary().startswith("SORM result")
 
-    analysis.form.options = ra.FORMOptions(max_iterations=1)
+    # Internally generated FORM is refreshed from SORM's settings on every run.
+    analysis.options = ra.SORMOptions(form=ra.FORMOptions(max_iterations=1))
     with pytest.warns(RuntimeWarning, match="FORM did not converge"):
-        analysis.form.run()
-    with pytest.raises(RuntimeError, match="successfully converged FORM"):
-        getattr(analysis, method)()
+        with pytest.raises(RuntimeError, match="successfully converged FORM"):
+            getattr(analysis, method)()
     assert_invalid(analysis)
 
 

@@ -6,6 +6,7 @@ from scipy import special as sp
 import scipy.optimize as opt
 
 from .distribution import Distribution
+from ._moments import _quantile_moments
 from ..errors import ModelError
 
 __all__ = ["MaxParent"]
@@ -18,6 +19,10 @@ class MaxParent(Distribution):
     For example, given an annual maximum distribution of imposed load, find
     the parent distribution of imposed load, if the load is applied 6 times
     per year.
+
+    Moments are computed by deterministic quantile integration, with absolute
+    and relative tolerances of 1e-8 in standardized units. Nonfinite quantiles
+    or unmet integration tolerance raise :class:`~pystra.ModelError`.
 
     :Attributes:
       - name (str):             Name of the random variable\n
@@ -33,7 +38,7 @@ class MaxParent(Distribution):
             raise ModelError(
                 f"MaxParent distribution of maximum requires input of type {type(Distribution)}"
             )
-        if N < 1.0:
+        if not np.isfinite(N) or N < 1.0:
             raise ModelError("MaxParent exponent must be >= 1.0")
 
         self.max_dist = max_dist
@@ -104,6 +109,9 @@ class MaxParent(Distribution):
                 continue
 
             target_log_cdf = self.N * np.log(p_val)
+            if self.max_dist.dist_type == "Normal":
+                x[index] = center + step0 * sp.ndtri_exp(target_log_cdf)
+                continue
             if log_tiny <= target_log_cdf <= log_one:
                 x[index] = self.max_dist.ppf(np.exp(target_log_cdf))
                 continue
@@ -159,17 +167,10 @@ class MaxParent(Distribution):
         return J
 
     def _get_stats(self):
-        """
-        Since the closed form expression of mean and std for the distribution of the
-        parent from a maximum distribution is complex, and since we really only need
-        them for default starting points, just estimate through simulation.
-        """
-        p = np.random.random(100)
-        x = self.ppf(p)
-        mean = x.mean()
-        std = x.std()
-
-        return mean, std
+        """Compute moments deterministically with quantile integration."""
+        if self.N == 1:
+            return self.max_dist.mean, self.max_dist.std
+        return _quantile_moments(self, self.max_dist.mean, self.max_dist.std)
 
     def set_location(self, loc=0):
         """

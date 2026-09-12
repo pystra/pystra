@@ -2,9 +2,9 @@ Migrating from 1.x to 2.0
 =========================
 
 This page describes the API currently implemented on the ``v2.0`` development
-branch (``2.0.0.dev0``). Naming, the calibration replacement, and the first
-FORM result contract are implemented. Remaining algorithm results, options,
-and parameter changes are described in the
+branch (|release|). Naming, module organization, the calibration replacement,
+result records, frozen options and native distribution parameters are
+implemented. Remaining engineering-workflow and release work is described in the
 :download:`migration plan <../v2.0-migration-plan.md>`.
 
 The outstanding feature PRs remain unmerged in 1.x and are reserved for 2.0.
@@ -28,7 +28,7 @@ public name, and they are applied uniformly rather than case by case:
      - Example
    * - Functions, methods, parameters, attributes, modules
      - ``snake_case``
-     - ``model.add_variable``, ``options.set_imax``
+     - ``model.add_variable``, ``result.failure_probability``
    * - Classes
      - ``CapWords``, with acronyms fully capitalised
      - ``SystemFORM``, ``DDOCriterion``, ``LQI``
@@ -226,15 +226,15 @@ derive from ``pystra.PystraError``.
    * - ``model.setCorrelation(matrix)``
      - ``model.set_correlation(matrix)``
    * - ``options.setImax(100)``
-     - ``options.set_imax(100)``
+     - ``FORMOptions(max_iterations=100)``
    * - ``form.getBeta()``
-     - ``form.get_beta()``
+     - ``result.beta``
    * - ``form.getFailure()``
-     - ``form.get_failure()``
+     - ``result.failure_probability``
    * - ``form.getDesignPoint(False)``
-     - ``form.get_design_point(False)``
+     - ``result.design_point_x``
    * - ``form.showResults()``
-     - ``form.show_results()``
+     - ``print(result.summary())``
    * - ``distribution.dF_dtheta(x)``
      - ``distribution.cdf_gradient(x)``
 
@@ -267,23 +267,26 @@ objects no longer shadow the ``beta``, ``gamma``, ``gumbel``, ``uniform``, and
 Current example
 ---------------
 
-This example uses the implemented development API::
+This example uses the current API and is executed by the documentation checks.
+
+.. testcode:: migration-current
 
     import pystra as ra
 
     model = ra.StochasticModel()
-    model.add_variable(ra.Normal("R", mean=10, stdv=1))
-    model.add_variable(ra.Normal("S", mean=5, stdv=1))
+    model.add_variable(ra.Normal("R", mean=10, std=1))
+    model.add_variable(ra.Normal("S", mean=5, std=1))
+    limit_state = ra.LimitState(lambda R, S: R - S)
     form = ra.FORM(
-        stochastic_model=model,
-        limit_state=ra.LimitState(lambda R, S: R - S),
+        model=model,
+        limit_state=limit_state,
     )
     result = form.run()
-    print(result.beta, result.converged)
+    print(f"beta = {result.beta:.4f}; converged = {result.converged}")
 
-The names ``stdv``, ``stochastic_model``, and the existing solver getters are
-transitional. Scientific acronyms such as FORM and LQI retain their
-conventional spelling in prose.
+.. testoutput:: migration-current
+
+    beta = 3.5355; converged = True
 
 Options and constructors
 ------------------------
@@ -312,7 +315,7 @@ does not use, such as ``target_cov`` for line sampling.
 .. list-table:: Settings
    :header-rows: 1
 
-   * - 1.x
+   * - Earlier API (including intermediate development spellings)
      - 2.0
    * - ``set_imax(n)``
      - ``FORMOptions(max_iterations=n)``
@@ -346,13 +349,16 @@ settings: ``FORM(model, limit_state, *, options=None)``.
 
 .. code-block:: python
 
-    # 1.x
+    # Earlier development API (removed)
     options = ra.AnalysisOptions()
     options.set_imax(50)
     form = ra.FORM(stochastic_model=model, limit_state=limit_state,
                    analysis_options=options)
 
-    # 2.0
+The equivalent current constructor is checked with the example above:
+
+.. testcode:: migration-current
+
     form = ra.FORM(model, limit_state, options=ra.FORMOptions(max_iterations=50))
 
 ``SensitivityAnalysis(model, limit_state, *, options=None, method="numerical",
@@ -369,6 +375,15 @@ non-default ``SORMOptions.form``. When importance or line sampling runs FORM
 itself, it uses the default FORM settings with its own block size and
 transformation; to use others, such as direct differentiation, run FORM first
 and pass it.
+
+An internally generated FORM analysis is recomputed on every run. A supplied
+FORM must have converged for the same model and limit-state expression, with
+unchanged distribution parameters, dependence and FORM options. Rerun FORM
+after changing those inputs. Importance and line sampling must also use the
+same reference transformation and conditioning order as the supplied FORM.
+Unknown custom distribution state causes FORM to be recomputed before reuse.
+Changes inside an external solver, a callable closure or other external data
+cannot be detected automatically: rerun FORM after those changes too.
 
 ``LimitState.evaluate_lsf(x, model, *, differentiation="no",
 ffd_parameter=1000, block_size=1000)`` takes explicit settings instead of an
@@ -398,6 +413,15 @@ random state is neither used nor changed. The streams differ from 1.x, so a
 seeded 1.x estimate is not reproduced exactly, but agrees within its sampling
 error. A ``StrongMaximumTest`` given an integer seed now repeats its sphere
 sample on each run instead of advancing.
+
+``Maximum`` and ``MaxParent`` now compute their moments deterministically by
+adaptive quantile integration. They no longer consume 100 global random draws
+on construction. Both standardized moment integrals use absolute and relative
+tolerances of ``1e-8``; a nonfinite quantile or unmet integration tolerance
+raises ``ModelError``. Moment values and default start points can therefore
+change from the old random estimates. Normal CDF and quantile calculations now
+retain lower-tail probabilities that the former error-function subtraction
+rounded to zero.
 
 Result records
 --------------
@@ -449,10 +473,13 @@ dictionary:
     closed = analysis.run(numerical=False)
     closed["marginal"]["R"]["mean"], closed["correlation"]
 
-    # 2.0
-    result = analysis.run(numerical=True)
+The current constructors select the differentiation method:
+
+.. testcode:: migration-current
+
+    result = ra.SensitivityAnalysis(model, limit_state, method="numerical").run()
     result.marginal["R"]["mean"]
-    closed = analysis.run(numerical=False)
+    closed = ra.SensitivityAnalysis(model, limit_state, method="closed_form").run()
     closed.marginal["R"]["mean"], closed.correlation
 
 ``result.to_dataframe()`` gives the table that ``analysis.summary(result)``
@@ -461,7 +488,10 @@ gave.
 Two outcomes are reported differently in the records. A simulation that
 observed no failures reports an infinite coefficient of variation, rather
 than crude Monte Carlo's placeholder of 1.0, and its status is
-``"precision_not_met"``. A SORM fit whose curvatures make Breitung's formula
+``"precision_not_met"`` when a positive precision target was requested.
+``target_cov=0`` instead requests a fixed budget and reports ``"completed"``
+when that budget is used, retaining the measured coefficient of variation.
+A SORM fit whose curvatures make Breitung's formula
 undefined printed a message and reported a probability and index of 0.0; its
 record now has status ``"not_converged"`` and no estimate, and ``run()``
 raises it in an ``AnalysisError`` unless ``on_failure="return"``. Likewise, an
@@ -547,6 +577,12 @@ was accepted, and an invalid one failed later, if at all. The matrix is held as
 a read-only array, so element assignment is removed: build a new matrix. The
 unused attributes ``mu``, ``sigma`` and ``p1`` to ``p4`` are removed.
 
+Set all random variables before setting explicit correlation or a copula.
+Adding another marginal afterwards raises an error and leaves the model
+unchanged, rather than replacing its dependence with an identity matrix.
+Constants can still be added. The matrix dimensions must match the existing
+random variables when ``set_correlation`` is called.
+
 ``cholesky()`` returns the lower Cholesky factor; ``nataf(model)`` returns the
 standard-normal correlation that the Nataf transformation uses for the model's
 marginals; and ``CorrelationMatrix.nearest_positive_definite(matrix)`` repairs
@@ -570,7 +606,10 @@ Use it for batch studies:
     try:
         result = ra.FORM(model, limit_state).run()
     except ra.AnalysisError as error:
-        print(error.result.limit_state_error)
+        if error.result is not None:
+            print(error.result.limit_state_error)
+        else:
+            print(error)
 
     result = ra.FORM(model, limit_state, on_failure="return").run()
     if not result.converged:
@@ -579,9 +618,14 @@ Use it for batch studies:
 SORM also fails when Breitung's formula is undefined for the fitted
 curvatures, and system FORM when a component does not converge or its
 integration fails. Code calibration returns its unconverged cases, as before.
-Simulations do not fail: they report an unmet precision target as
-``"precision_not_met"`` with their estimate. Importance and line sampling that
-run FORM themselves still sample about its last point, with its warning.
+Valid simulations report an unmet positive precision target as
+``"precision_not_met"`` with their estimate. Invalid limit-state values or
+external-solver exceptions raise ``AnalysisError``; the originating exception
+is retained as its cause. An evaluation error may have no result record;
+SORM can wrap it in a failed record under ``on_failure="return"``. Importance and line sampling
+require a converged FORM prerequisite. Line sampling raises when evaluation
+or root refinement fails, with the affected line identified; failed evaluations
+are never treated as safe samples or replaced with a bracket midpoint.
 
 Getters and printing
 --------------------

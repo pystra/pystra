@@ -5,6 +5,7 @@ import numpy as np
 
 from .form import FORM
 from .analysis import AnalysisObject, _check_on_failure
+from ._form_reuse import _check_form, _check_coordinates
 from scipy.stats import norm as normal
 from ..errors import AnalysisError, ModelError
 from ..options import FORMOptions, SORMOptions
@@ -64,6 +65,7 @@ class SORM(AnalysisObject):
         if form is not None and not isinstance(form, FORM):
             raise TypeError("form must be a FORM analysis")
         self.form = form
+        self._supplied_form = form
         super().__init__(model, limit_state, options)
         self.on_failure = _check_on_failure(on_failure)
         if form is not None and self.options.form != FORMOptions():
@@ -87,7 +89,11 @@ class SORM(AnalysisObject):
         self._undefined = set()
 
     def _form_options(self):
-        return self.options.form if self.form is None else self.form.options
+        return (
+            self.options.form
+            if self._supplied_form is None
+            else self._supplied_form.options
+        )
 
     def _dependence(self):
         options = self._form_options()
@@ -100,18 +106,20 @@ class SORM(AnalysisObject):
         """Run FORM if needed and require a converged design point."""
         self._reset_results()
         self._n_evaluations = 0
-        if self.form is None:
+        if self._supplied_form is None:
             form = FORM(
                 self.model,
                 self.limit_state,
                 options=self.options.form,
                 on_failure="return",
             )
-            form.run()
             self.form = form
-        if not self.form._results_valid or not self.form._converged:
-            raise AnalysisError("SORM requires a successfully converged FORM analysis")
+            form.run()
+        else:
+            self.form = self._supplied_form
+        _check_form(self.form, self.model, self.limit_state)
         self.init_run()
+        _check_coordinates(self.form, self.transform)
         self._fit_type = fit_type
 
     def run(self):
@@ -570,15 +578,18 @@ class SORM(AnalysisObject):
         space where the design point is located at Beta along the last
         axis.
         """
-        alpha = self.form._alpha.squeeze()
+        alpha = self.form._alpha.ravel()
         nrv = len(alpha)
-        # Assemble A per theory
-        A = np.eye(nrv).copy()
-        A[-1, :] = alpha
-        # Now rotate 270 degrees anticlockwise as MGS expects the reference
-        # vector in the first column
-        A = np.rot90(A, k=3)
-        # Orthoganalize
+        # Preserve the established tangent axes away from degeneracy. If
+        # alpha is orthogonal to the last coordinate, omit its largest
+        # component's axis instead, so the seed vectors remain independent.
+        pivot = nrv - 1
+        if abs(alpha[pivot]) <= np.sqrt(np.finfo(float).eps):
+            pivot = int(np.argmax(np.abs(alpha)))
+        axes = np.eye(nrv)
+        A = np.column_stack(
+            [alpha, *[axes[i] for i in reversed(range(nrv)) if i != pivot]]
+        )
         Q = self._gram_schmidt(A)
         # And undo this rotation with a final 90 dgree rotation as order of
         # the column vector entries is not relevant

@@ -3,7 +3,7 @@
 import numpy as np
 
 from .form import FORM
-from ..errors import AnalysisError
+from ._form_reuse import _check_form, _check_coordinates
 from ..options import FORMOptions
 from ..results import FORMResult
 from .monte_carlo import CrudeMonteCarlo
@@ -38,6 +38,7 @@ class ImportanceSampling(CrudeMonteCarlo):
         if form is not None and not isinstance(form, FORM):
             raise TypeError("form must be a FORM analysis")
         self.form = form
+        self._supplied_form = form
         self._form_result = None
 
     def run(self):
@@ -47,7 +48,9 @@ class ImportanceSampling(CrudeMonteCarlo):
         analysis was supplied, FORM is run first with this analysis's block
         size and transformation.
         """
-        if self.form is None:
+        self._results_valid = False
+        self._Pf = self._beta = None
+        if self._supplied_form is None:
             form = FORM(
                 self.model,
                 self.limit_state,
@@ -60,14 +63,17 @@ class ImportanceSampling(CrudeMonteCarlo):
             )
             self._form_result = form.run()
             self.form = form
-        elif self._form_result is None:
-            if not self.form._results_valid:
-                raise AnalysisError(
-                    "ImportanceSampling requires a completed FORM analysis"
-                )
-            self._form_result = FORMResult.from_analysis(self.form)
+        else:
+            self.form = self._supplied_form
+        _check_form(self.form, self.model, self.limit_state)
+        self._form_result = FORMResult.from_analysis(self.form)
         self.point = np.transpose([self.form._u])
         return CrudeMonteCarlo.run(self)
+
+    def _set_point(self, point=None):
+        # Monte Carlo prepares its transform before setting the sample centre.
+        _check_coordinates(self.form, self.transform)
+        super()._set_point(point)
 
     def _diagnostics(self):
         return {**super()._diagnostics(), "form": self._form_result}

@@ -4,13 +4,18 @@
 import numpy as np
 
 from .distribution import Distribution
+from ._moments import _quantile_moments
 from ..errors import ModelError
 
 __all__ = ["Maximum"]
 
 
 class Maximum(Distribution):
-    """Distribution of maximima from the passed in parent distribution
+    """Distribution of maxima from the passed in parent distribution.
+
+    Moments are computed by deterministic quantile integration, with absolute
+    and relative tolerances of 1e-8 in standardized units. Nonfinite quantiles
+    or unmet integration tolerance raise :class:`~pystra.ModelError`.
 
     :Attributes:
       - name (str):             Name of the random variable\n
@@ -26,7 +31,7 @@ class Maximum(Distribution):
             raise ModelError(
                 f"Maximum parent requires input of type {type(Distribution)}"
             )
-        if N < 1.0:
+        if not np.isfinite(N) or N < 1.0:
             raise ModelError("Maximum exponent must be >= 1.0")
 
         self.parent = parent
@@ -95,17 +100,10 @@ class Maximum(Distribution):
         return J
 
     def _get_stats(self):
-        """
-        Since the closed form expression of mean and std for the distribution of the
-        maxima from a parent distribution is complex, and since we really only need
-        them for default starting points, just estimate through simulation.
-        """
-        p = np.random.random(100)
-        x = self.ppf(p)
-        mean = x.mean()
-        std = x.std()
-
-        return mean, std
+        """Compute moments deterministically with quantile integration."""
+        if self.N == 1:
+            return self.parent.mean, self.parent.std
+        return _quantile_moments(self, self.parent.mean, self.parent.std)
 
     def set_location(self, loc=0):
         """

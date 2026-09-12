@@ -55,7 +55,7 @@ def quadrature_rule(n, wfun=None, alpha=None, beta=None):
         bp = np.zeros(n)
         wf = bp
         iter = 2
-        m = np.fix((n + 1) * 2 ** (-1))
+        m = np.trunc((n + 1) * 2 ** (-1))
         e1 = n * (n + 1)
         mm = int(4 * m - 1)
         vec = np.arange(3, mm + 1, 4)

@@ -231,7 +231,7 @@ def test_result_snapshot_seed_and_independent_estimation():
     with pytest.raises(FrozenInstanceError):
         result.converged = False
     analysis.limit_state = ra.LimitState(lambda x: np.full_like(x, np.nan))
-    with pytest.raises(ValueError):
+    with pytest.raises(ra.AnalysisError, match="Nonfinite limit-state values"):
         analysis.run()
     assert analysis.result is None and not analysis._results_valid
 

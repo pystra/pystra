@@ -50,7 +50,7 @@ class StdNormal:
         float or ndarray
             Probability value(s) in [0, 1].
         """
-        p = 0.5 + sp.erf(u / np.sqrt(2)) / 2
+        p = sp.ndtr(u)
         return p
 
     @staticmethod
@@ -67,7 +67,7 @@ class StdNormal:
         float or ndarray
             Quantile(s) in standard normal space.
         """
-        u = sp.erfinv(2 * p - 1) * np.sqrt(2)
+        u = sp.ndtri(p)
         return u
 
 
