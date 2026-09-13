@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import pystra as ra
-import numpy as np
 import timeit
+
+import numpy as np
+
+import pystra as ra
 
 
 def lsf(r, X1, X2, X3, X4, X5, X6):

@@ -20,10 +20,12 @@ Called as: `$python timing.py` results in output like:
 
 """
 
-import pystra as ra
+import timeit
+
 from scipy.stats import norm, lognorm, uniform
 import numpy as np
-import timeit
+
+import pystra as ra
 
 
 def lsf(r, X1, X2, X3):

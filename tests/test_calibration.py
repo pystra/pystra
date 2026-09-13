@@ -7,9 +7,10 @@ Created on Fri Nov  4 16:40:01 2022
 """
 
 import pytest
-import pystra as ra
 import numpy as np
 import pandas as pd
+
+import pystra as ra
 
 
 def lsf(z, R, G, Q1, Q2, cg, c1, c2):

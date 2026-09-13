@@ -2,9 +2,9 @@
 
 import pytest
 import numpy as np
+
 import pystra as ra
 from pystra.distributions import Normal, Lognormal
-from pystra.distributions.distribution import Distribution
 from pystra.distributions.gev import GEV, GEVMin
 from pystra.distributions.beta import Beta
 from pystra.distributions.weibull import Weibull

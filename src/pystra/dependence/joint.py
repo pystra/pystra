@@ -6,7 +6,7 @@ import numpy as np
 from numpy.typing import ArrayLike
 from scipy.stats import norm, t
 
-from .copula import Copula, GaussianCopula, StudentTCopula, _order
+from .copula import Copula, StudentTCopula, _order
 from ..distributions import Distribution, ZeroInflated
 
 __all__ = ["JointDistribution", "CopulaTransformation"]

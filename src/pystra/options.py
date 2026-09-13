@@ -13,7 +13,7 @@ does not use, rather than silently ignoring it.
 """
 
 import math
-from dataclasses import dataclass, field, fields
+from dataclasses import dataclass, field
 from numbers import Integral, Real
 from typing import Optional, Tuple
 

@@ -7,9 +7,9 @@ evaluate the double integral that relates ``rho_0`` to the physical
 correlation using 2-D Gauss-Legendre quadrature.
 """
 
-from .quadrature import quadrature_rule
-
 import numpy as np
+
+from .quadrature import quadrature_rule
 
 
 def rho_integral(rho0, margi, margj, Z1, Z2, X1, X2, WIP, detJ):

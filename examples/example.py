@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import pystra as ra
-import numpy as np
 
 
 def example_limitstatefunction(r, X1, X2, X3):

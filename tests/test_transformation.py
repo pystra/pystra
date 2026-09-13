@@ -2,8 +2,9 @@
 
 import pytest
 import numpy as np
+
 from pystra.dependence.transformation import Transformation
-from pystra.distributions import Normal, Lognormal, Uniform
+from pystra.distributions import Normal, Lognormal
 
 
 class TestTransformationInit:

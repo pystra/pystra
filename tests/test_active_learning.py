@@ -14,10 +14,10 @@ import numpy as np
 import pytest
 from scipy.integrate import quad
 from scipy.stats import norm
+
 import pystra as ra
 from pystra.active_learning import (
     ActiveLearning,
-    KrigingSurrogate,
     PCESurrogate,
     Surrogate,
     learning_eff,

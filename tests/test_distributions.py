@@ -6,11 +6,11 @@ from types import ModuleType
 import pytest
 import numpy as np
 from scipy.stats import norm as scipy_norm
+
 import pystra as ra
 from pystra.distributions import (
     StdNormal,
     Constant,
-    Distribution,
     Normal,
     Lognormal,
     Uniform,

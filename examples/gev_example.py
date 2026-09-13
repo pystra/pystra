@@ -6,9 +6,9 @@ Created on Wed Oct  6 22:50:35 2021
 @author: ccaprani
 """
 
-import pystra as ra
-
 from scipy.stats import genextreme as gev
+
+import pystra as ra
 
 
 def lsf(X1, X2, C):
