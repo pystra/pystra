@@ -18,7 +18,13 @@ class JointDistribution:
     Samples have rows of observations and columns in marginal order. The
     copula is a distribution specification, independent of the transformation
     later chosen for reliability analysis. Constants belong in StochasticModel.
-    """
+
+    Parameters
+    ----------
+    marginals : sequence of Distribution
+        Continuous marginals with unique names; their order defines the columns.
+    copula : Copula
+        Dependence specification with dimension equal to the marginal count."""
 
     def __init__(self, marginals, copula):
         self.marginals = tuple(marginals)
@@ -43,11 +49,41 @@ class JointDistribution:
         return x
 
     def cdf(self, points, **kwargs):
+        """Evaluate the physical joint cumulative distribution.
+
+        Parameters
+        ----------
+        points : array_like, shape (dimension,) or (n_points, dimension)
+            Physical coordinates in marginal order, without NaN values.
+        **kwargs
+            Integration controls forwarded to the copula's CDF.
+
+        Returns
+        -------
+        float or ndarray, shape (n_points,)
+            Cumulative probability at one point or at each row of points."""
         x = self._points(points)
         p = np.stack([m.cdf(x[..., i]) for i, m in enumerate(self.marginals)], axis=-1)
         return self.copula.cdf(p, **kwargs)
 
     def logpdf(self, points):
+        """Evaluate log joint density in physical coordinates.
+
+        Parameters
+        ----------
+        points : array_like, shape (dimension,) or (n_points, dimension)
+            Physical coordinates in marginal order, without NaN values.
+
+        Returns
+        -------
+        float or ndarray, shape (n_points,)
+            Log density at each point. A zero marginal density gives negative infinity.
+
+        Raises
+        ------
+        ValueError
+            If nonzero marginal densities are nonfinite or negative, or the copula
+            cannot evaluate the transformed probabilities."""
         x = self._points(points)
 
         def one(row):
@@ -64,16 +100,44 @@ class JointDistribution:
         return one(x) if x.ndim == 1 else np.array([one(row) for row in x])
 
     def pdf(self, points):
+        """Return physical joint density with the shape of :meth:`logpdf`."""
         return np.exp(self.logpdf(points))
 
     def rvs(self, size=1, seed=None):
+        """Draw physical observations with this joint law.
+
+        Parameters
+        ----------
+        size : int, default 1
+            Nonnegative number of observations.
+        seed : int, sequence of int, SeedSequence, BitGenerator, Generator, optional
+            NumPy random-generator input, passed to :meth:`Copula.rvs`.
+
+        Returns
+        -------
+        ndarray, shape (size, dimension)
+            Physical samples, with columns in marginal order."""
         p = self.copula.rvs(size, seed)
         return np.column_stack([m.ppf(p[:, i]) for i, m in enumerate(self.marginals)])
 
     def make_transformation(
         self, method="rosenblatt", order=None, factorization="cholesky"
     ):
-        """Build a normal Rosenblatt or spherical generalized Nataf mapping."""
+        """Build a normal Rosenblatt or spherical generalized Nataf mapping.
+
+        Parameters
+        ----------
+        method : {"rosenblatt", "nataf"}, default "rosenblatt"
+            Nataf requires an elliptical copula and retains its latent family.
+        order : sequence of int, optional
+            Rosenblatt conditioning permutation, in original variable indices.
+        factorization : {"cholesky", "svd"}, default "cholesky"
+            Matrix factor for Nataf. Rosenblatt requires ``"cholesky"``.
+
+        Returns
+        -------
+        CopulaTransformation
+            A mapping for this joint law and the selected reference coordinates."""
         return CopulaTransformation(self, method, order, factorization)
 
 
@@ -91,7 +155,18 @@ class CopulaTransformation:
     conditional normal innovation. factorization='svd' is supported for Nataf.
     Jacobians are analytic for elliptical copulas, and use central differences
     of the inverse map in normal space for other copulas.
-    """
+
+    Parameters
+    ----------
+    joint_distribution : JointDistribution
+        Physical joint law to transform.
+    method : {"rosenblatt", "nataf"}, default "rosenblatt"
+        Rosenblatt produces independent normals; Nataf retains the elliptical
+        copula's latent family.
+    order : sequence of int, optional
+        Conditioning permutation for Rosenblatt; outputs retain original positions.
+    factorization : {"cholesky", "svd"}, default "cholesky"
+        Nataf matrix factor. Rosenblatt requires ``"cholesky"``."""
 
     def __init__(
         self,
@@ -171,6 +246,20 @@ class CopulaTransformation:
         )
 
     def x_to_u(self, x, marg=None):
+        """Map one physical point to this transformation's reference space.
+
+        Parameters
+        ----------
+        x : array_like, shape (dimension,) or (dimension, 1)
+            Finite physical point in original marginal order.
+        marg : sequence of Distribution, optional
+            Compatibility argument; the joint distribution supplies the marginals.
+
+        Returns
+        -------
+        ndarray, shape (dimension,)
+            Reference coordinates in original variable positions. The reference
+            law is identified by ``standard_space``."""
         x = self._vector(x)
         if not self.copula.elliptical:
             p = np.array([m.cdf(x[i]) for i, m in enumerate(self.marginals)])
@@ -192,6 +281,19 @@ class CopulaTransformation:
         return self._vector(result)
 
     def u_to_x(self, u, marg=None):
+        """Map one reference point to physical marginal coordinates.
+
+        Parameters
+        ----------
+        u : array_like, shape (dimension,) or (dimension, 1)
+            Finite reference point in original variable positions.
+        marg : sequence of Distribution, optional
+            Compatibility argument; the joint distribution supplies the marginals.
+
+        Returns
+        -------
+        ndarray, shape (dimension,)
+            Physical point in original marginal order."""
         u = self._vector(u)
         if not self.copula.elliptical:
             p = self.copula.inverse_rosenblatt(norm.cdf(u), self.order)

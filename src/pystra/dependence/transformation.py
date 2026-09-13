@@ -11,8 +11,7 @@ __all__ = ["Transformation"]
 
 
 class Transformation:
-    """
-    Nataf isoprobabilistic transformation between physical space (x) and
+    """Nataf isoprobabilistic transformation between physical space (x) and
     standard normal space (u).
 
     The transformation relies on a square-root factorization of the modified
@@ -32,14 +31,16 @@ class Transformation:
     the explicit inverse of a triangular factor; instead it works with the
     orthogonal eigenstructure of Ro.  It is recommended when Ro is
     near-singular or poorly conditioned.
-    """
+
+    Parameters
+    ----------
+    transform_type : {"cholesky", "svd"}, optional
+        Matrix factorization, defaulting to Cholesky. Call :meth:`compute`
+        with the modified normal correlation before transforming a point."""
 
     standard_space = "normal"
 
     def __init__(self, transform_type=None):
-        """
-        Initialization of the Transformation class
-        """
         self.transform_types = ["cholesky", "svd"]
 
         self.transform_type = transform_type
@@ -54,14 +55,19 @@ class Transformation:
         self.inv_T = None
 
     def x_to_u(self, x, marg):
-        """
-        Transformation from x (physical) to u (standard normal) space.
+        """Map a physical point to independent standard normal coordinates.
 
-        Callers (e.g. FORM, SORM) may pass x as a 1-D array or as a column
-        vector of shape (nrv, 1).  Flattening to 1-D with ``ravel()`` ensures
-        that ``x[i]`` yields a scalar, which is what the marginal ``x_to_u``
-        methods expect.
-        """
+        Parameters
+        ----------
+        x : array_like, shape (dimension,) or (dimension, 1)
+            Physical point, flattened to one dimension before marginal transforms.
+        marg : sequence of Distribution
+            Marginals in model variable order, matching the computed correlation.
+
+        Returns
+        -------
+        ndarray, shape (dimension,)
+            Independent normal coordinates in the same variable order."""
         nrv = len(marg)
         x = np.asarray(x).ravel()
         u = np.zeros(nrv)
@@ -72,12 +78,19 @@ class Transformation:
         return u
 
     def u_to_x(self, u, marg):
-        """
-        Transformation from u (standard normal) to x (physical) space.
+        """Map an independent normal point to physical coordinates.
 
-        As with ``x_to_u``, the input is flattened to 1-D so that element
-        indexing always produces a scalar for the marginal ``u_to_x`` calls.
-        """
+        Parameters
+        ----------
+        u : array_like, shape (dimension,) or (dimension, 1)
+            Reference point, flattened to one dimension before transformation.
+        marg : sequence of Distribution
+            Marginals in model variable order, matching the computed correlation.
+
+        Returns
+        -------
+        ndarray, shape (dimension,)
+            Physical coordinates in marginal order."""
         nrv = len(marg)
         u = np.asarray(u).ravel()
         z = np.dot(self.inv_T, u)
@@ -138,9 +151,17 @@ class Transformation:
         return np.linalg.inv(self.jacobian_u_wrt_x(u, x, marg))
 
     def compute(self, Ro):
-        """
-        Compute the Isoprobabilistic Transformation using the chosen method
-        """
+        """Compute and store the selected correlation factors.
+
+        Parameters
+        ----------
+        Ro : array_like, shape (dimension, dimension)
+            Symmetric positive-definite modified normal correlation matrix.
+
+        Raises
+        ------
+        numpy.linalg.LinAlgError
+            If factorization or inversion fails."""
         if self.transform_type == self.transform_types[0]:
             self._compute_cholesky(Ro)
         elif self.transform_type == self.transform_types[1]:

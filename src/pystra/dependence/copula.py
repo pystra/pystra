@@ -60,10 +60,39 @@ class Copula:
     elliptical = False
 
     def pdf(self, probabilities):
+        """Evaluate the copula density at interior uniform coordinates.
+
+        Parameters
+        ----------
+        probabilities : array_like, shape (dimension,) or (n_points, dimension)
+            Marginal probabilities strictly between zero and one, in original order.
+
+        Returns
+        -------
+        float or ndarray, shape (n_points,)
+            Density for one point or one value per row of points.
+
+        Raises
+        ------
+        ValueError
+            If the coordinates have an invalid shape or lie outside the interior."""
         return np.exp(self.logpdf(probabilities))
 
     def rvs(self, size=1, seed=None):
-        """Sample rows using a local NumPy random generator."""
+        """Sample rows using a local NumPy random generator.
+
+        Parameters
+        ----------
+        size : int, default 1
+            Nonnegative number of observations.
+        seed : int, sequence of int, SeedSequence, BitGenerator, Generator, optional
+            Input to ``numpy.random.default_rng``. A supplied generator is reused
+            and advances; other seeds construct a local generator.
+
+        Returns
+        -------
+        ndarray, shape (size, dimension)
+            Uniform marginal coordinates with this copula's dependence."""
         rng = np.random.default_rng(seed)
         # Exclude representable endpoints for inverse conditional transforms.
         q = rng.uniform(
@@ -79,7 +108,11 @@ class GaussianCopula(Copula):
 
     R is not generally the physical Pearson correlation of the marginals.
     A finite, symmetric, positive-definite matrix with unit diagonal is required.
-    """
+
+    Parameters
+    ----------
+    correlation : array_like, shape (dimension, dimension)
+        Latent normal correlation, copied and validated at construction."""
 
     elliptical = True
 
@@ -117,13 +150,38 @@ class GaussianCopula(Copula):
 
     @classmethod
     def from_kendall_tau(cls, tau, **kwargs):
-        """Construct from rank correlations, validating the resulting shape."""
+        """Construct from rank correlations, validating the resulting shape.
+
+        Parameters
+        ----------
+        tau : array_like, shape (dimension, dimension)
+            Finite Kendall rank correlations in [-1, 1]. The transformed latent
+            matrix must be symmetric positive definite with a unit diagonal.
+        **kwargs
+            Additional subclass constructor arguments, such as ``df`` for
+            :class:`StudentTCopula`.
+
+        Returns
+        -------
+        GaussianCopula
+            An instance of the class on which this method was called."""
         tau = np.asarray(tau, dtype=float)
         if not np.all(np.isfinite(tau)) or np.any(np.abs(tau) > 1):
             raise ValueError("Kendall tau must be finite and in [-1, 1]")
         return cls(np.sin(np.pi * tau / 2), **kwargs)
 
     def logpdf(self, probabilities):
+        """Evaluate log density at interior uniform coordinates.
+
+        Parameters
+        ----------
+        probabilities : array_like, shape (dimension,) or (n_points, dimension)
+            Marginal probabilities strictly between zero and one, in original order.
+
+        Returns
+        -------
+        float or ndarray, shape (n_points,)
+            Log density for one point or one value per row of points."""
         p = _points(probabilities, self.dimension, interior=True)
         z = norm.ppf(p)
         return multivariate_normal.logpdf(z, cov=self._correlation) - np.sum(
@@ -131,7 +189,19 @@ class GaussianCopula(Copula):
         )
 
     def cdf(self, probabilities, **kwargs):
-        """Evaluate the copula CDF; kwargs control SciPy integration."""
+        """Evaluate the copula CDF, including unit-cube boundaries.
+
+        Parameters
+        ----------
+        probabilities : array_like, shape (dimension,) or (n_points, dimension)
+            Marginal probabilities in [0, 1], in original order.
+        **kwargs
+            Keyword arguments forwarded to SciPy's multivariate CDF integration.
+
+        Returns
+        -------
+        float or ndarray, shape (n_points,)
+            Cumulative probability for one point or one value per row of points."""
         p = _points(probabilities, self.dimension)
 
         def one(row):
@@ -153,6 +223,25 @@ class GaussianCopula(Copula):
         return one(p) if p.ndim == 1 else np.array([one(row) for row in p])
 
     def rosenblatt(self, probabilities, order=None):
+        """Map dependent uniforms to independent conditional uniforms.
+
+        Parameters
+        ----------
+        probabilities : array_like, shape (dimension,) or (n_points, dimension)
+            Interior uniform marginal coordinates in original order.
+        order : sequence of int, optional
+            Conditioning permutation; the default is original marginal order.
+
+        Returns
+        -------
+        ndarray
+            Conditional uniforms with the input shape. Column ``order[k]`` holds
+            the k-th conditional innovation, so original column labels are retained.
+
+        Raises
+        ------
+        ValueError
+            If coordinates, conditioning order or computed probabilities are invalid."""
         p = _points(probabilities, self.dimension, interior=True)
         ids = _order(order, self.dimension)
         L = np.linalg.cholesky(self._correlation[np.ix_(ids, ids)])
@@ -162,6 +251,19 @@ class GaussianCopula(Copula):
         return _points(result, self.dimension, interior=True)
 
     def inverse_rosenblatt(self, probabilities, order=None):
+        """Map independent conditional uniforms to dependent marginals.
+
+        Parameters
+        ----------
+        probabilities : array_like, shape (dimension,) or (n_points, dimension)
+            Interior independent uniforms in original column positions.
+        order : sequence of int, optional
+            Conditioning permutation used by :meth:`rosenblatt`.
+
+        Returns
+        -------
+        ndarray
+            Dependent uniform marginal coordinates, with the input shape and order."""
         q = _points(probabilities, self.dimension, interior=True)
         ids = _order(order, self.dimension)
         L = np.linalg.cholesky(self._correlation[np.ix_(ids, ids)])
@@ -171,7 +273,12 @@ class GaussianCopula(Copula):
 
 
 class IndependentCopula(GaussianCopula):
-    """Product copula of the specified dimension."""
+    """Product copula of the specified dimension.
+
+    Parameters
+    ----------
+    dimension : int
+        Positive number of independent uniform coordinates."""
 
     def __init__(self, dimension):
         dimension = _sample_size(dimension)
@@ -197,7 +304,13 @@ class StudentTCopula(GaussianCopula):
     The shape is not a physical Pearson correlation matrix. df need not exceed
     two, since arbitrary physical marginals can have finite moments regardless
     of the latent t representative's moments.
-    """
+
+    Parameters
+    ----------
+    correlation : array_like, shape (dimension, dimension)
+        Finite symmetric positive-definite latent shape with unit diagonal.
+    df : float
+        Finite positive degrees of freedom of the latent Student-t law."""
 
     def __init__(self, correlation, df):
         super().__init__(correlation)
@@ -267,7 +380,12 @@ class FrankCopula(Copula):
 
     This initial implementation supports finite ``abs(theta) <= 30`` to keep the
     exponential conditional formulas resolved in double precision.
-    """
+
+    Parameters
+    ----------
+    theta : float
+        Finite bivariate Frank dependence parameter, including zero for
+        independence. The implementation requires ``abs(theta) <= 30``."""
 
     dimension = 2
 
@@ -277,6 +395,10 @@ class FrankCopula(Copula):
         self.theta = float(theta)
 
     def cdf(self, probabilities):
+        """Return the bivariate CDF on the closed unit square.
+
+        ``probabilities`` has shape ``(2,)`` or ``(n_points, 2)``. Return a scalar
+        or one probability per row; coordinates must be finite and in [0, 1]."""
         p = _points(probabilities, 2)
         if self.theta == 0:
             return np.prod(p, axis=-1)
@@ -300,6 +422,10 @@ class FrankCopula(Copula):
         return np.expm1(-self.theta) + a[..., 0] * a[..., 1]
 
     def logpdf(self, probabilities):
+        """Return log density in the interior of the unit square.
+
+        ``probabilities`` has shape ``(2,)`` or ``(n_points, 2)`` with coordinates
+        strictly between zero and one. Return one log density per point."""
         p = _points(probabilities, 2, interior=True)
         if self.theta == 0:
             return np.zeros(p.shape[:-1])
@@ -313,6 +439,11 @@ class FrankCopula(Copula):
         )
 
     def rosenblatt(self, probabilities, order=None):
+        """Map dependent uniforms to independent conditional uniforms.
+
+        ``probabilities`` has shape ``(2,)`` or ``(n_points, 2)`` and lies strictly
+        inside the unit square. ``order`` is ``[0, 1]`` by default or ``[1, 0]``.
+        The result retains the input shape and original coordinate positions."""
         p = _points(probabilities, 2, interior=True)
         i, j = _order(order, 2)
         result = p.copy()
@@ -323,6 +454,10 @@ class FrankCopula(Copula):
         return _points(result, 2, interior=True)
 
     def inverse_rosenblatt(self, probabilities, order=None):
+        """Invert the conditional uniform map for the same conditioning order.
+
+        The input, output and ordering contracts match :meth:`rosenblatt`;
+        input uniforms are independent and output marginals have Frank dependence."""
         q = _points(probabilities, 2, interior=True)
         i, j = _order(order, 2)
         result = q.copy()
