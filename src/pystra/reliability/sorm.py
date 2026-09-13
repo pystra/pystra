@@ -197,8 +197,8 @@ class SORM(_FORMReuse, AnalysisObject):
         Finds fitting points on the limit state surface on both the positive
         and negative sides of each principal axis in the rotated standard
         normal space.  Curvatures are computed from the positions of these
-        points, producing asymmetric curvatures that are stored in
-        :attr:`kappa_pf`.
+        points, producing asymmetric curvatures returned in
+        :attr:`SORMResult.curvatures`.
 
         The generalized Breitung formula for asymmetric curvatures is:
 
@@ -215,11 +215,11 @@ class SORM(_FORMReuse, AnalysisObject):
 
         See Also
         --------
-        run_curvefit : Alternative SORM approach using Hessian eigenvalues.
+        SORMOptions : Select the Hessian-based alternative with ``fit="curve"``.
 
         Raises
         ------
-        RuntimeError
+        AnalysisError
             If the FORM analysis has not run or did not converge successfully,
             or a fitting point cannot be found.
         """
@@ -326,8 +326,9 @@ class SORM(_FORMReuse, AnalysisObject):
 
         Raises
         ------
-        RuntimeError
-            If Newton iteration does not converge within *max_iter* steps.
+        AnalysisError
+            If the search gradient vanishes or Newton iteration does not
+            converge within *max_iter* steps.
         """
         nrv = R1.shape[0]
 
