@@ -1,6 +1,5 @@
-**********
 References
-**********
+==========
 
 .. [LebrunDutfoy2009a] Lebrun, R. and Dutfoy, A. (2009). "A generalization of the Nataf transformation to distributions with elliptical copula". Probabilistic Engineering Mechanics, 24, 172–178. `doi:10.1016/j.probengmech.2008.05.001 <https://doi.org/10.1016/j.probengmech.2008.05.001>`_.
 

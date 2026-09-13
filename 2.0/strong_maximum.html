@@ -53,7 +53,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Active-learning methods and literature" href="active_learning.html" />
-    <link rel="prev" title="System Reliability" href="system.html" />
+    <link rel="prev" title="System reliability" href="system.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.0.0a1" />
@@ -485,8 +485,8 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Dependence and advanced methods</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="copulas.html">Copulas and Isoprobabilistic Transformations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="system.html">System Reliability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copulas.html">Copulas and isoprobabilistic transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="system.html">System reliability</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Strong Maximum Test</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="active_learning.html">Active-learning methods and literature</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="literature-benchmarks.html">Literature benchmark definitions and provenance</a></li>
@@ -567,7 +567,7 @@ design point. It is an optional diagnostic: it does not change the FORM
 probability, find replacement design points, or certify global optimality.</p>
 <p>The method follows Dutfoy and Lebrun <a class="reference internal" href="references.html#dutfoylebrun2006" id="id1"><span>[DutfoyLebrun2006]</span></a>, as described in the
 <a class="reference external" href="https://openturns.github.io/openturns/latest/theory/reliability_sensitivity/strong_maximum_test.html">OpenTURNS theory documentation</a>.
-Pystra implements the independent standard-normal case using NumPy and SciPy;
+PySTRA implements the independent standard normal case using NumPy and SciPy;
 OpenTURNS is not a runtime dependency.</p>
 <section id="after-form">
 <h2>After FORM<a class="headerlink" href="#after-form" title="Link to this heading">#</a></h2>
@@ -615,7 +615,7 @@ on the shared model; <code class="docutils literal notranslate"><span class="pre
 </pre></div>
 </div>
 <p>The explicit point must be a finite vector in the model’s independent
-standard-normal coordinates. <code class="docutils literal notranslate"><span class="pre">options</span></code> (<code class="docutils literal notranslate"><span class="pre">FORMOptions</span></code>) selects its transformation
+standard normal coordinates. <code class="docutils literal notranslate"><span class="pre">options</span></code> (<code class="docutils literal notranslate"><span class="pre">FORMOptions</span></code>) selects its transformation
 and, for Rosenblatt, conditioning order. For a non-Gaussian copula, use
 <a class="reference internal" href="copulas.html#chap-copulas"><span class="std std-ref">Rosenblatt</span></a>; spherical Student-t Nataf space is rejected.
 The test verifies a strictly safe origin and a boundary
@@ -640,7 +640,7 @@ nearly equal square roots.</p>
 <p>Independent Gaussian vectors are normalized onto this sphere. Each sampled
 point is transformed back to physical variables and evaluated in batches.
 A point is classified as near the candidate when
-<span class="math notranslate nohighlight">\(u^T(u^*/\beta)&gt;\beta\)</span>. Failure uses Pystra’s strict <span class="math notranslate nohighlight">\(g&lt;0\)</span>
+<span class="math notranslate nohighlight">\(u^T(u^*/\beta)&gt;\beta\)</span>. Failure uses PySTRA’s strict <span class="math notranslate nohighlight">\(g&lt;0\)</span>
 convention. The four masks are <code class="docutils literal notranslate"><span class="pre">near_failure</span></code>, <code class="docutils literal notranslate"><span class="pre">far_failure</span></code>, <code class="docutils literal notranslate"><span class="pre">near_safe</span></code>
 and <code class="docutils literal notranslate"><span class="pre">far_safe</span></code>. Points have shape <code class="docutils literal notranslate"><span class="pre">(point_number,</span> <span class="pre">nrv)</span></code> and values have
 shape <code class="docutils literal notranslate"><span class="pre">(point_number,)</span></code>. Both U and X coordinates are retained explicitly.</p>
@@ -652,17 +652,17 @@ is the normalized spherical cap area</p>
 \[p_{\rm cap}=\frac12 I_{\sin^2\theta}\left(\frac{d-1}{2},\frac12\right).\]</div>
 <p>For one variable the sphere consists of two points and
 <span class="math notranslate nohighlight">\(p_{\rm cap}=1/2\)</span>. Independent samples miss a fixed cap with probability
-<span class="math notranslate nohighlight">\((1-p_{\rm cap})^N\)</span>. For requested nominal confidence <span class="math notranslate nohighlight">\(c\)</span>, Pystra
+<span class="math notranslate nohighlight">\((1-p_{\rm cap})^N\)</span>. For requested nominal confidence <span class="math notranslate nohighlight">\(c\)</span>, PySTRA
 therefore chooses</p>
 <div class="math notranslate nohighlight">
 \[N=\left\lceil\frac{\log(1-c)}{\log(1-p_{\rm cap})}\right\rceil.\]</div>
 <p><code class="docutils literal notranslate"><span class="pre">confidence_level</span></code> reports <span class="math notranslate nohighlight">\(1-(1-p_{\rm cap})^N\)</span> for the actual count.
 Specify either <code class="docutils literal notranslate"><span class="pre">confidence_level</span></code> or <code class="docutils literal notranslate"><span class="pre">point_number</span></code>; omitting both selects
-0.99. Pystra rounds the required count upward. The reviewed OpenTURNS
+0.99. PySTRA rounds the required count upward. The reviewed OpenTURNS
 implementation rounds to nearest, which can fall below the requested nominal
 confidence. For its two-dimensional reference with
 <span class="math notranslate nohighlight">\(\beta=\sqrt{10}-0.3\)</span>, <span class="math notranslate nohighlight">\(\varepsilon=0.01\)</span>, <span class="math notranslate nohighlight">\(\tau=2\)</span> and
-<span class="math notranslate nohighlight">\(c=0.999999\)</span>, Pystra uses 55 sphere points instead of 54. The radius and
+<span class="math notranslate nohighlight">\(c=0.999999\)</span>, PySTRA uses 55 sphere points instead of 54. The radius and
 vicinity geometry match the published reference.</p>
 </section>
 <section id="cost-and-interpretation">
@@ -681,7 +681,7 @@ confidence, the required counts are 111 in five dimensions, 1297 in ten and
 structural model.</p>
 <p><code class="docutils literal notranslate"><span class="pre">competing_region_detected</span></code> means at least one far failure point was found.
 Those points are useful starting locations for further design-point searches
-or for planning multiple-centre importance sampling. They are not themselves
+or for planning multiple-center importance sampling. They are not themselves
 optimized design points. Their raw limit-state magnitudes cannot quantify
 importance: multiplying a limit state by a positive constant preserves the
 event while changing those magnitudes.</p>
@@ -716,7 +716,7 @@ component limit state and its FORM design point explicitly:</p>
 its one tangent plane. It does not validate the whole system probability.
 Multiple component modes are already intentional in system FORM; applying a
 single-candidate check to the combined system event will naturally flag them.
-Pystra does not run these additional evaluations automatically.</p>
+PySTRA does not run these additional evaluations automatically.</p>
 <p><strong>Continue:</strong> <a class="reference internal" href="notebooks/ex_strong_maximum.html"><span class="doc">Checking a FORM design point</span></a> · <a class="reference internal" href="api/reliability.html"><span class="doc">Reliability algorithms and results</span></a> · <a class="reference internal" href="theory/design_point_methods.html"><span class="doc">FORM, SORM and design-point diagnostics</span></a></p>
 </section>
 </section>
@@ -737,7 +737,7 @@ Pystra does not run these additional evaluations automatically.</p>
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">System Reliability</p>
+        <p class="prev-next-title">System reliability</p>
       </div>
     </a>
     <a class="right-next"

@@ -4,7 +4,14 @@ Design decisions and target reliability
 .. automodule:: pystra.decision.ddo
     :no-members:
 
-The object API below is the recommended entry point.
+The object API below remains available from ``pystra.decision`` and
+``pystra.decision.ddo``. Implementation responsibilities are separated into
+``swtp``, ``targets``, ``risk``, ``objectives``, ``criteria``, ``studies`` and
+``plotting`` modules; ``ddo`` composes the studies, objectives and criteria.
+
+``DesignStudy.run()`` returns a structured snapshot. Its table adapter retains
+failed alternatives and diagnostics; ``DDO`` excludes those alternatives from
+selection.
 
 .. currentmodule:: pystra.decision.ddo
 

@@ -671,7 +671,6 @@
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="pystra.calibration.html">pystra.calibration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="pystra.calibration.factors.html">pystra.calibration.factors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.analyze_case.html">pystra.calibration.factors.analyze_case</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.derive_factors.html">pystra.calibration.factors.derive_factors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.design_with_factors.html">pystra.calibration.factors.design_with_factors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.select_factors.html">pystra.calibration.factors.select_factors</a></li>
@@ -699,6 +698,22 @@
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.plotting.plot_calibration.html">pystra.calibration.plotting.plot_calibration</a></li>
 </ul>
 </details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.assessment.html">pystra.assessment</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.analyze_case.html">pystra.assessment.analyze_case</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.assess_cases.html">pystra.assessment.assess_cases</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.evaluate_reliability.html">pystra.assessment.evaluate_reliability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.AssessmentCase.html">pystra.assessment.AssessmentCase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.AssessmentResult.html">pystra.assessment.AssessmentResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.CaseResult.html">pystra.assessment.CaseResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityEstimate.html">pystra.assessment.ReliabilityEstimate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityEvaluator.html">pystra.assessment.ReliabilityEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityResult.html">pystra.assessment.ReliabilityResult</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.reporting.html">pystra.reporting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.reporting.reliability_row.html">pystra.reporting.reliability_row</a></li>
 </ul>
 </details></li>
 </ul>
@@ -890,22 +905,48 @@
 <p><strong>Use it:</strong> <a class="reference internal" href="../guides/assessment.html"><span class="doc">User guide</span></a> · <a class="reference internal" href="../notebooks/ex_design_decision_optimization.html"><span class="doc">Worked example</span></a> · <a class="reference internal" href="../theory/decisions.html"><span class="doc">Theory</span></a></p>
 <dl class="py class">
 <dt class="sig sig-object py" id="pystra.decision.ddo.DesignStudy">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">DesignStudy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analysis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/decision/ddo.html#DesignStudy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.decision.ddo.DesignStudy" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">DesignStudy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analysis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/decision/studies.html#DesignStudy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.decision.ddo.DesignStudy" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Evaluate reliability results over a one-dimensional design range.</p>
+<p>Evaluate a reliability callback over a one-dimensional design range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>variable</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Design-variable name for output tables; must not shadow result columns.</p></li>
+<li><p><strong>values</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</span>) – Design alternatives, copied to a tuple so repeated runs retain the grid.</p></li>
+<li><p><strong>analysis</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</span>) – Called once for each value. May return a reliability record, an analytic
+probability, a (pf, beta) pair, or a mapping with pf and/or beta. Records
+retain status and diagnostics. AnalysisError becomes a failed alternative;
+invalid specifications and programming errors still raise.</p></li>
+</ul>
+</dd>
+</dl>
 <p class="rubric">Methods</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pystra.decision.ddo.DesignStudy.evaluate" title="pystra.decision.ddo.DesignStudy.evaluate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate</span></code></a></p></td>
-<td><p>Run the analysis callback for each design value.</p></td>
+<td><p>Run the callback and return estimates with explicit status columns.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.decision.ddo.DesignStudy.run" title="pystra.decision.ddo.DesignStudy.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a></p></td>
+<td><p>Return design/result snapshots for all alternatives, including failures.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <dl class="py method">
+<dt class="sig sig-object py" id="pystra.decision.ddo.DesignStudy.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/decision/studies.html#DesignStudy.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.decision.ddo.DesignStudy.run" title="Link to this definition">#</a></dt>
+<dd><p>Return design/result snapshots for all alternatives, including failures.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignStudyResult</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pystra.decision.ddo.DesignStudy.evaluate">
-<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_analysis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/decision/ddo.html#DesignStudy.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.decision.ddo.DesignStudy.evaluate" title="Link to this definition">#</a></dt>
-<dd><p>Run the analysis callback for each design value.</p>
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_analysis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/decision/studies.html#DesignStudy.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.decision.ddo.DesignStudy.evaluate" title="Link to this definition">#</a></dt>
+<dd><p>Run the callback and return estimates with explicit status columns.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span></p>
@@ -965,6 +1006,7 @@
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.decision.ddo.DesignStudy"><code class="docutils literal notranslate"><span class="pre">DesignStudy</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.decision.ddo.DesignStudy.run"><code class="docutils literal notranslate"><span class="pre">DesignStudy.run()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.decision.ddo.DesignStudy.evaluate"><code class="docutils literal notranslate"><span class="pre">DesignStudy.evaluate()</span></code></a></li>
 </ul>
 </li>

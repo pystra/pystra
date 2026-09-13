@@ -2,7 +2,7 @@ Working at high reliability
 ===========================
 
 Structural target reliability indices depend on the reference period and the
-consequence class, and optimisation, assessment and rare-event studies can reach
+consequence class, and optimization, assessment and rare-event studies can reach
 much larger indices. The probabilities involved are then tiny, and ordinary
 floating-point formulas fail before the reliability method does. The standard
 normal CDF rounds to exactly one above :math:`u \approx 8.3`, so the usual
@@ -19,7 +19,7 @@ What stays accurate
    :widths: 25 75
 
    * - Component
-     - Behaviour at small probabilities
+     - Behavior at small probabilities
    * - Marginal transformations
      - In an unbounded tail, accurate to floating-point tolerance while the
        tail probability is a normal double, down to about
@@ -150,7 +150,7 @@ the probability, so the index remains finite. It is then the quantity to report:
    0.0 40.0
 
 Probabilities this small rarely matter for a structure directly. But
-intermediate designs in optimisation and sensitivity studies can reach them, and
+intermediate designs in optimization and sensitivity studies can reach them, and
 a finite index keeps those studies well defined. Crude Monte Carlo with no
 observed failures also reports a zero probability, with an infinite index and
 uncertainty. That zero is a lack of information, not an underflow; see

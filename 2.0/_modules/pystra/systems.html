@@ -514,7 +514,7 @@
 <span class="sd">for simulation. The separate SystemFORM class estimates series and parallel</span>
 <span class="sd">probabilities from component tangent planes.</span>
 
-<span class="sd">The sign convention is the standard Pystra convention: positive values are</span>
+<span class="sd">The sign convention is the standard PySTRA convention: positive values are</span>
 <span class="sd">safe, and negative values indicate failure.  A series system fails when any</span>
 <span class="sd">child fails, so its equivalent limit-state value is the minimum child value.</span>
 <span class="sd">A parallel system fails when all children fail, so its equivalent</span>
@@ -587,7 +587,7 @@
 <div class="viewcode-block" id="Component.as_limit_state">
 <a class="viewcode-back" href="../../gen/pystra.systems.Component.html#pystra.systems.Component.as_limit_state">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">as_limit_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Return this component as a Pystra :class:`LimitState`."""</span>
+<span class="w">        </span><span class="sd">"""Return this component as a PySTRA :class:`LimitState`."""</span>
 
         <span class="c1"># Keep tuple returns intact for direct differentiation. User-supplied</span>
         <span class="c1"># gradients must follow the complete stochastic model variable order.</span>
@@ -599,9 +599,9 @@
 <div class="viewcode-block" id="Component.get_limit_state">
 <a class="viewcode-back" href="../../gen/pystra.systems.Component.html#pystra.systems.Component.get_limit_state">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_limit_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Return this component as a Pystra :class:`LimitState`.</span>
+<span class="w">        </span><span class="sd">"""Return this component as a PySTRA :class:`LimitState`.</span>
 
-<span class="sd">        This legacy-style alias mirrors the existing Pystra getter naming.</span>
+<span class="sd">        This legacy-style alias mirrors the existing PySTRA getter naming.</span>
 <span class="sd">        """</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_limit_state</span><span class="p">()</span></div>
@@ -687,7 +687,7 @@
 <div class="viewcode-block" id="System.as_limit_state">
 <a class="viewcode-back" href="../../gen/pystra.systems.System.html#pystra.systems.System.as_limit_state">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">as_limit_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Return the composed system as a Pystra :class:`LimitState`."""</span>
+<span class="w">        </span><span class="sd">"""Return the composed system as a PySTRA :class:`LimitState`."""</span>
 
         <span class="k">return</span> <span class="n">LimitState</span><span class="p">(</span><span class="k">lambda</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
 
@@ -695,9 +695,9 @@
 <div class="viewcode-block" id="System.get_limit_state">
 <a class="viewcode-back" href="../../gen/pystra.systems.System.html#pystra.systems.System.get_limit_state">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_limit_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Return the composed system as a Pystra :class:`LimitState`.</span>
+<span class="w">        </span><span class="sd">"""Return the composed system as a PySTRA :class:`LimitState`.</span>
 
-<span class="sd">        This legacy-style alias mirrors the existing Pystra getter naming.</span>
+<span class="sd">        This legacy-style alias mirrors the existing PySTRA getter naming.</span>
 <span class="sd">        """</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_limit_state</span><span class="p">()</span></div>

@@ -483,8 +483,8 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Dependence and advanced methods</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../copulas.html">Copulas and Isoprobabilistic Transformations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../system.html">System Reliability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../copulas.html">Copulas and isoprobabilistic transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../system.html">System reliability</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../strong_maximum.html">Strong Maximum Test</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../active_learning.html">Active-learning methods and literature</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../literature-benchmarks.html">Literature benchmark definitions and provenance</a></li>
@@ -586,6 +586,21 @@ an average index. <a class="reference internal" href="../gen/pystra.calibration.
 records and can show the applicable design ranges. The tutorial’s annotated
 ranges are illustrative assumptions, not prescribed domains for a bridge code.</p>
 </section>
+<section id="use-another-reliability-method">
+<h2>Use another reliability method<a class="headerlink" href="#use-another-reliability-method" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">CodeCalibration.run</span></code>, <code class="docutils literal notranslate"><span class="pre">solve_designs</span></code> and <code class="docutils literal notranslate"><span class="pre">verify_designs</span></code> accept
+<code class="docutils literal notranslate"><span class="pre">evaluator=</span></code> and evaluator-specific <code class="docutils literal notranslate"><span class="pre">options=</span></code>. The default is FORM.
+The evaluator receives an isolated model and limit state, and returns either
+an analysis with <code class="docutils literal notranslate"><span class="pre">run()</span></code> or a reliability result. See the runnable analytic
+adapter in <a class="reference internal" href="assessment.html"><span class="doc">Comparing structural assessment scenarios</span></a> for the callback and result contract. The same
+adapter convention is used by <code class="docutils literal notranslate"><span class="pre">pystra.assessment.analyze_case</span></code>; the existing
+<code class="docutils literal notranslate"><span class="pre">pystra.calibration.analyze_case</span></code> import remains available.</p>
+<p>Every grid point or load case is retained. Tables include <code class="docutils literal notranslate"><span class="pre">method</span></code>,
+<code class="docutils literal notranslate"><span class="pre">status</span></code>, <code class="docutils literal notranslate"><span class="pre">converged</span></code> and <code class="docutils literal notranslate"><span class="pre">message</span></code>. Failed or under-resolved estimates
+are NaN in summary tables, with the original record available on each case;
+failed cases have no target margin. <code class="docutils literal notranslate"><span class="pre">AnalysisError</span></code> becomes a failed case,
+while invalid inputs and programming errors still raise.</p>
+</section>
 <section id="derive-and-verify-partial-factors">
 <h2>Derive and verify partial factors<a class="headerlink" href="#derive-and-verify-partial-factors" title="Link to this heading">#</a></h2>
 <p>When factors are to be derived from selected design points, use the explicit
@@ -597,6 +612,22 @@ calibration, with its own derivation and verification examples in
 actual distributions used in that analysis. Verify final factors on the
 representative load combinations and design population, and report unsuccessful
 analyses alongside the reliability range.</p>
+<p>Root target solving and verification need a normal-equivalent reliability
+estimate. Alpha projection additionally needs a finite, named physical design
+point and direction in independent normal space, plus the analysis’s matching
+<code class="docutils literal notranslate"><span class="pre">transform.u_to_x</span></code> and <code class="docutils literal notranslate"><span class="pre">model</span></code>. Coefficient and matrix factor derivation
+require physical design points in normal space. These operations reject an
+estimate-only adapter clearly; they do not infer a FORM design point from a
+probability estimate. Use <code class="docutils literal notranslate"><span class="pre">solutions.reliability_frame()</span></code> to inspect every
+target solve, including inner reliability status, outer solve status and
+residual. <code class="docutils literal notranslate"><span class="pre">solutions.to_frame()</span></code> remains the successful design-point table.</p>
+<p>The load-case constructor takes <code class="docutils literal notranslate"><span class="pre">cases=</span></code> with explicit <code class="docutils literal notranslate"><span class="pre">VariableRoles</span></code> and
+<code class="docutils literal notranslate"><span class="pre">leading_actions</span></code> where factor methods need them. Case names come from that
+mapping; there is no separate label list or legacy dictionary constructor.
+Roles and the limit-state callable are read-only after validation. Construct
+a new case specification to change them, or use isolated named overrides when
+evaluating a design. Factor selection still requires a separate reliability
+verification of the resulting designs; extrema alone do not certify a target.</p>
 <p><strong>Continue:</strong> <a class="reference internal" href="../api/calibration.html"><span class="doc">Code calibration and load combinations</span></a> · <a class="reference internal" href="../theory/code_calibration.html"><span class="doc">Code calibration using normalized reliability</span></a> ·
 <a class="reference internal" href="../notebooks/ex_target_reliability.html"><span class="doc">Calibrating target-reliability tables</span></a></p>
 </section>
@@ -651,6 +682,7 @@ analyses alongside the reliability range.</p>
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#specify-the-model-and-candidate-factors">Specify the model and candidate factors</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#assess-a-design-population">Assess a design population</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#use-another-reliability-method">Use another reliability method</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#derive-and-verify-partial-factors">Derive and verify partial factors</a></li>
 </ul>
   </nav></div>

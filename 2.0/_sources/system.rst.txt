@@ -1,23 +1,22 @@
 .. _chap_system:
 
-******************
-System Reliability
-******************
+System reliability
+==================
 
-Pystra separates the system failure event from its probability calculation.
+PySTRA separates the system failure event from its probability calculation.
 The ``pystra.systems`` topology classes compose component limit states for
 simulation. ``SystemFORM`` estimates series and parallel probabilities from
-separate component FORM analyses in one shared standard-normal space.
+separate component FORM analyses in one shared standard normal space.
 
 Do not use ordinary FORM or SORM on the combined min/max function as a general
 system reliability method. One tangent plane can miss other failure regions,
 and ties can give misleading or zero finite-difference gradients.
 
-The sign convention is the usual Pystra convention: positive values are safe
+The sign convention is the usual PySTRA convention: positive values are safe
 and negative values indicate failure.
 
-Series and Parallel Systems
-===========================
+Series and parallel systems
+---------------------------
 
 A series system fails when any child component or subsystem fails.  Its
 equivalent limit-state value is therefore
@@ -39,7 +38,7 @@ system benchmarks such as the :ref:`four-branch series example
 <ref-schueremans-2005>`.
 
 Original-system Monte Carlo
-===========================
+---------------------------
 
 .. code-block:: python
 
@@ -86,7 +85,7 @@ model variables are filtered at the component boundary, which keeps small
 component functions reusable inside larger systems.
 
 Component-based system FORM
-===========================
+---------------------------
 
 .. code-block:: python
 
@@ -112,12 +111,12 @@ Component-based system FORM
 
 Use ``ParallelSystem(components)`` for joint failure; the exact result in this
 example is ``p*p``. Homogeneous nesting is flattened and shared component
-objects are analysed once. Component names must be unique. Mixed topology,
+objects are analyzed once. Component names must be unique. Mixed topology,
 k-of-n and cut/tie-set inputs are currently rejected by ``SystemFORM``; use
 original-system simulation for these events.
 
 For each component, FORM finds a tangent failure half-space in the same
-independent standard-normal coordinates:
+independent standard normal coordinates:
 
 .. math::
 
@@ -153,15 +152,15 @@ design point; convergence alone does not establish global accuracy. The optional
 for competing regions on an enlarged sphere.
 
 The method is exact up to integration error for affine limit states in
-standard-normal space. For nonlinear components, compare with original-system
+standard normal space. For nonlinear components, compare with original-system
 simulation. The four-branch notebook illustrates the difference between the
 first-order approximation and the nonlinear event probability.
 
-Event Topologies
-================
+Event topologies
+----------------
 
 Structural systems are often specified as event logic once the engineer has
-identified the relevant component limit states.  Pystra provides three small
+identified the relevant component limit states.  PySTRA provides three small
 helpers for that layer:
 
 ``KOfNSystem``
@@ -209,8 +208,8 @@ measure. Existing line sampling assumes one failure tail per line, and existing
 importance sampling uses one FORM design point. Neither should be assumed to
 cover arbitrary system failure regions.
 
-Ditlevsen Bounds
-================
+Ditlevsen bounds
+----------------
 
 When component event probabilities and pairwise intersection probabilities are
 available, :func:`pystra.ditlevsen_bounds` computes :ref:`Ditlevsen's
@@ -235,12 +234,12 @@ test suite includes :ref:`Mainçon's identical 100-element series benchmark
 <ref-maincon-2000>`, where the Ditlevsen
 upper bound is approximately ``6.216e-2``.
 
-Scope and Transformations
-=========================
+Scope and transformations
+-------------------------
 
 The system module composes limit-state functions in the original physical
 variables.  The isoprobabilistic transformation to standard space remains the
-responsibility of the selected Pystra analysis method and its options
+responsibility of the selected PySTRA analysis method and its options
 (``FORMOptions`` or ``SimulationOptions``).  This keeps system topology separate from the probability
 transformation, following the same conceptual split used in structural
 reliability methods generally.
@@ -258,11 +257,11 @@ Automatic failure-path enumeration,
 load redistribution and importance sampling around multiple design points
 remain future extensions.
 
-Validation Benchmarks
-=====================
+Validation benchmarks
+---------------------
 
-The current validation suite checks exact Boolean behaviour for series,
-parallel, k-of-n, cut-set, and tie-set systems; integration with Pystra's
+The current validation suite checks exact Boolean behavior for series,
+parallel, k-of-n, cut-set, and tie-set systems; integration with PySTRA's
 ``LimitState`` evaluation; independent and correlated linear system
 probabilities; identical and opposing component directions; positive rescaling;
 shared components; failed FORM diagnostics; and Ditlevsen input validation.

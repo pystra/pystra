@@ -671,7 +671,6 @@
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="pystra.calibration.html">pystra.calibration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="pystra.calibration.factors.html">pystra.calibration.factors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.analyze_case.html">pystra.calibration.factors.analyze_case</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.derive_factors.html">pystra.calibration.factors.derive_factors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.design_with_factors.html">pystra.calibration.factors.design_with_factors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.select_factors.html">pystra.calibration.factors.select_factors</a></li>
@@ -699,6 +698,22 @@
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.plotting.plot_calibration.html">pystra.calibration.plotting.plot_calibration</a></li>
 </ul>
 </details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.assessment.html">pystra.assessment</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.analyze_case.html">pystra.assessment.analyze_case</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.assess_cases.html">pystra.assessment.assess_cases</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.evaluate_reliability.html">pystra.assessment.evaluate_reliability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.AssessmentCase.html">pystra.assessment.AssessmentCase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.AssessmentResult.html">pystra.assessment.AssessmentResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.CaseResult.html">pystra.assessment.CaseResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityEstimate.html">pystra.assessment.ReliabilityEstimate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityEvaluator.html">pystra.assessment.ReliabilityEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityResult.html">pystra.assessment.ReliabilityResult</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.reporting.html">pystra.reporting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.reporting.reliability_row.html">pystra.reporting.reliability_row</a></li>
 </ul>
 </details></li>
 </ul>
@@ -895,12 +910,12 @@
 <dt class="sig sig-object py" id="pystra.reliability.sorm.SORM">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">SORM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_state</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">form</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_failure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/reliability/sorm.html#SORM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.reliability.sorm.SORM" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_FORMReuse</span></code>, <a class="reference internal" href="pystra.reliability.analysis.AnalysisObject.html#pystra.reliability.analysis.AnalysisObject" title="pystra.reliability.analysis.AnalysisObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisObject</span></code></a></p>
-<p>Second Order Reliability Method (SORM).</p>
+<p>Second-order reliability method (SORM).</p>
 <p>Approximates the failure surface in standard normal space using a
 quadratic surface, improving on the linear FORM approximation. Two
 approaches are available:</p>
 <p><strong>Curve-fitting</strong> (<code class="docutils literal notranslate"><span class="pre">fit=&quot;curve&quot;</span></code>, default): computes the Hessian of
-the limit state function at the design point, extracts principal
+the limit-state function at the design point, extracts principal
 curvatures as eigenvalues, and applies the Breitung formula.</p>
 <p><strong>Point-fitting</strong> (<code class="docutils literal notranslate"><span class="pre">fit=&quot;point&quot;</span></code>): locates fitting points directly
 on the failure surface on both sides of each principal axis using Newton
@@ -909,12 +924,12 @@ asymmetric curvatures (different on the positive and negative sides of
 each axis).</p>
 <p>Both methods report the Breitung <a class="reference internal" href="../references.html#breitung1984" id="id1"><span>[Breitung1984]</span></a> and the
 Hohenbichler-Rackwitz <a class="reference internal" href="../references.html#hohenbichler1988" id="id2"><span>[Hohenbichler1988]</span></a> failure probabilities and
-generalised reliability indices.</p>
+generalized reliability indices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>model</strong> (<a class="reference internal" href="pystra.model.StochasticModel.html#pystra.model.StochasticModel" title="pystra.model.StochasticModel"><em>StochasticModel</em></a>) – The stochastic model with random variables and correlations.</p></li>
-<li><p><strong>limit_state</strong> (<a class="reference internal" href="pystra.model.LimitState.html#pystra.model.LimitState" title="pystra.model.LimitState"><em>LimitState</em></a>) – The limit state function.</p></li>
+<li><p><strong>limit_state</strong> (<a class="reference internal" href="pystra.model.LimitState.html#pystra.model.LimitState" title="pystra.model.LimitState"><em>LimitState</em></a>) – The limit-state function.</p></li>
 <li><p><strong>options</strong> (<a class="reference internal" href="pystra.options.SORMOptions.html#pystra.options.SORMOptions" title="pystra.options.SORMOptions"><em>SORMOptions</em></a><em>, </em><em>optional</em>) – The fit, the reported formula and the Hessian step.</p></li>
 <li><p><strong>form</strong> (<a class="reference internal" href="pystra.reliability.form.FORM.html#pystra.reliability.form.FORM" title="pystra.reliability.form.FORM"><em>FORM</em></a><em>, </em><em>optional</em>) – A completed, converged FORM analysis, whose design point,
 transformation and settings SORM reuses. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, <a class="reference internal" href="#pystra.reliability.sorm.SORM.run" title="pystra.reliability.sorm.SORM.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a>
@@ -931,7 +946,7 @@ curvatures and each formula’s probability.</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pystra.reliability.sorm.SORM.init_run" title="pystra.reliability.sorm.SORM.init_run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_run</span></code></a></p></td>
-<td><p>Initialise the model's isoprobabilistic transformation.</p></td>
+<td><p>Initialize the model's isoprobabilistic transformation.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pystra.reliability.sorm.SORM.run" title="pystra.reliability.sorm.SORM.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a></p></td>
 <td><p>Run SORM with the fit in <code class="docutils literal notranslate"><span class="pre">options.fit</span></code>.</p></td>
@@ -970,7 +985,7 @@ iteration. FORM is run first if no FORM analysis was supplied.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pystra.reliability.sorm.SORM.init_run">
 <span class="sig-name descname"><span class="pre">init_run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.reliability.sorm.SORM.init_run" title="Link to this definition">#</a></dt>
-<dd><p>Initialise the model’s isoprobabilistic transformation.</p>
+<dd><p>Initialize the model’s isoprobabilistic transformation.</p>
 <p>Uses the explicit copula or calibrates the legacy Gaussian Nataf
 correlation. Must be called at the start of every
 <code class="docutils literal notranslate"><span class="pre">run()</span></code> method in subclasses.</p>

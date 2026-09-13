@@ -671,7 +671,6 @@
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="pystra.calibration.html">pystra.calibration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="pystra.calibration.factors.html">pystra.calibration.factors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.analyze_case.html">pystra.calibration.factors.analyze_case</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.derive_factors.html">pystra.calibration.factors.derive_factors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.design_with_factors.html">pystra.calibration.factors.design_with_factors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.select_factors.html">pystra.calibration.factors.select_factors</a></li>
@@ -699,6 +698,22 @@
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.plotting.plot_calibration.html">pystra.calibration.plotting.plot_calibration</a></li>
 </ul>
 </details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.assessment.html">pystra.assessment</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.analyze_case.html">pystra.assessment.analyze_case</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.assess_cases.html">pystra.assessment.assess_cases</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.evaluate_reliability.html">pystra.assessment.evaluate_reliability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.AssessmentCase.html">pystra.assessment.AssessmentCase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.AssessmentResult.html">pystra.assessment.AssessmentResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.CaseResult.html">pystra.assessment.CaseResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityEstimate.html">pystra.assessment.ReliabilityEstimate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityEvaluator.html">pystra.assessment.ReliabilityEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityResult.html">pystra.assessment.ReliabilityResult</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.reporting.html">pystra.reporting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.reporting.reliability_row.html">pystra.reporting.reliability_row</a></li>
 </ul>
 </details></li>
 </ul>
@@ -897,8 +912,8 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Nataf isoprobabilistic transformation between physical space (x) and
 standard normal space (u).</p>
-<p>The transformation relies on a square-root factorisation of the modified
-correlation matrix Ro, such that Ro = inv_T &#64; inv_T^T.  Two factorisations
+<p>The transformation relies on a square-root factorization of the modified
+correlation matrix Ro, such that Ro = inv_T &#64; inv_T^T.  Two factorizations
 are available:</p>
 <ul class="simple">
 <li><p><strong>Cholesky</strong> (default): Ro = L &#64; L^T where L is lower-triangular.</p></li>
@@ -909,7 +924,7 @@ the symmetric positive-definite matrix Ro.</p></li>
 transformation. Corresponding physical design points, beta and probability
 agree for the same optimum, up to numerical solver error. A fixed numerical
 u vector generally maps to different physical points under the two factors.</p>
-<p>The SVD factorisation is generally more robust because it avoids computing
+<p>The SVD factorization is generally more robust because it avoids computing
 the explicit inverse of a triangular factor; instead it works with the
 orthogonal eigenstructure of Ro.  It is recommended when Ro is
 near-singular or poorly conditioned.</p>

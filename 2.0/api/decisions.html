@@ -51,7 +51,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pystra.decision.ddo.SWTP" href="../gen/pystra.decision.ddo.SWTP.html" />
-    <link rel="prev" title="pystra.calibration.plotting.plot_calibration" href="../gen/pystra.calibration.plotting.plot_calibration.html" />
+    <link rel="prev" title="pystra.reporting.reliability_row" href="../gen/pystra.reporting.reliability_row.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.0.0a1" />
@@ -671,7 +671,6 @@
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../gen/pystra.calibration.html">pystra.calibration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../gen/pystra.calibration.factors.html">pystra.calibration.factors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../gen/pystra.calibration.factors.analyze_case.html">pystra.calibration.factors.analyze_case</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../gen/pystra.calibration.factors.derive_factors.html">pystra.calibration.factors.derive_factors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../gen/pystra.calibration.factors.design_with_factors.html">pystra.calibration.factors.design_with_factors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../gen/pystra.calibration.factors.select_factors.html">pystra.calibration.factors.select_factors</a></li>
@@ -699,6 +698,22 @@
 <li class="toctree-l4"><a class="reference internal" href="../gen/pystra.calibration.plotting.plot_calibration.html">pystra.calibration.plotting.plot_calibration</a></li>
 </ul>
 </details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../gen/pystra.assessment.html">pystra.assessment</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gen/pystra.assessment.analyze_case.html">pystra.assessment.analyze_case</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gen/pystra.assessment.assess_cases.html">pystra.assessment.assess_cases</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gen/pystra.assessment.evaluate_reliability.html">pystra.assessment.evaluate_reliability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gen/pystra.assessment.AssessmentCase.html">pystra.assessment.AssessmentCase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gen/pystra.assessment.AssessmentResult.html">pystra.assessment.AssessmentResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gen/pystra.assessment.CaseResult.html">pystra.assessment.CaseResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gen/pystra.assessment.ReliabilityEstimate.html">pystra.assessment.ReliabilityEstimate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gen/pystra.assessment.ReliabilityEvaluator.html">pystra.assessment.ReliabilityEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gen/pystra.assessment.ReliabilityResult.html">pystra.assessment.ReliabilityResult</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../gen/pystra.reporting.html">pystra.reporting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gen/pystra.reporting.reliability_row.html">pystra.reporting.reliability_row</a></li>
 </ul>
 </details></li>
 </ul>
@@ -884,15 +899,14 @@
                   
   <section id="module-pystra.decision.ddo">
 <span id="design-decisions-and-target-reliability"></span><h1>Design decisions and target reliability<a class="headerlink" href="#module-pystra.decision.ddo" title="Link to this heading">#</a></h1>
-<p>Design decision optimization and societal risk acceptance.</p>
-<p>The objects in this module sit above the reliability methods.  They do not
-change how FORM, SORM, or simulation analyses are run; instead
-<a class="reference internal" href="../gen/pystra.decision.ddo.DDO.html#pystra.decision.ddo.DDO" title="pystra.decision.ddo.DDO"><code class="xref py py-class docutils literal notranslate"><span class="pre">DDO</span></code></a> evaluates an objective subject to a selected acceptability
-criterion.  The initial implementation
-provides the <a class="reference internal" href="../gen/pystra.decision.ddo.LQI.html#pystra.decision.ddo.LQI" title="pystra.decision.ddo.LQI"><code class="xref py py-class docutils literal notranslate"><span class="pre">LQI</span></code></a> criterion for minimum acceptable life-safety levels
-using the life quality index (LQI) and societal willingness-to-pay (SWTP)
-values.</p>
-<p>The object API below is the recommended entry point.</p>
+<p>Design decision orchestration and established decision imports.</p>
+<p>The object API below remains available from <code class="docutils literal notranslate"><span class="pre">pystra.decision</span></code> and
+<code class="docutils literal notranslate"><span class="pre">pystra.decision.ddo</span></code>. Implementation responsibilities are separated into
+<code class="docutils literal notranslate"><span class="pre">swtp</span></code>, <code class="docutils literal notranslate"><span class="pre">targets</span></code>, <code class="docutils literal notranslate"><span class="pre">risk</span></code>, <code class="docutils literal notranslate"><span class="pre">objectives</span></code>, <code class="docutils literal notranslate"><span class="pre">criteria</span></code>, <code class="docutils literal notranslate"><span class="pre">studies</span></code> and
+<code class="docutils literal notranslate"><span class="pre">plotting</span></code> modules; <code class="docutils literal notranslate"><span class="pre">ddo</span></code> composes the studies, objectives and criteria.</p>
+<p><code class="docutils literal notranslate"><span class="pre">DesignStudy.run()</span></code> returns a structured snapshot. Its table adapter retains
+failed alternatives and diagnostics; <code class="docutils literal notranslate"><span class="pre">DDO</span></code> excludes those alternatives from
+selection.</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="../gen/pystra.decision.ddo.SWTP.html#pystra.decision.ddo.SWTP" title="pystra.decision.ddo.SWTP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SWTP</span></code></a></p></td>
@@ -911,7 +925,7 @@ values.</p>
 <td><p>Cost-benefit objective for a reliability design study.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="../gen/pystra.decision.ddo.DesignStudy.html#pystra.decision.ddo.DesignStudy" title="pystra.decision.ddo.DesignStudy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DesignStudy</span></code></a></p></td>
-<td><p>Evaluate reliability results over a one-dimensional design range.</p></td>
+<td><p>Evaluate a reliability callback over a one-dimensional design range.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="../gen/pystra.decision.ddo.RiskStudy.html#pystra.decision.ddo.RiskStudy" title="pystra.decision.ddo.RiskStudy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RiskStudy</span></code></a></p></td>
 <td><p>Evaluate a risk model over design alternatives.</p></td>
@@ -1028,12 +1042,12 @@ equations, but the object API above is preferred.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../gen/pystra.calibration.plotting.plot_calibration.html"
+       href="../gen/pystra.reporting.reliability_row.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">pystra.calibration.plotting.plot_calibration</p>
+        <p class="prev-next-title">pystra.reporting.reliability_row</p>
       </div>
     </a>
     <a class="right-next"

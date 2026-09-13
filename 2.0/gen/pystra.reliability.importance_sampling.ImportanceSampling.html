@@ -671,7 +671,6 @@
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="pystra.calibration.html">pystra.calibration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="pystra.calibration.factors.html">pystra.calibration.factors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.analyze_case.html">pystra.calibration.factors.analyze_case</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.derive_factors.html">pystra.calibration.factors.derive_factors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.design_with_factors.html">pystra.calibration.factors.design_with_factors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.select_factors.html">pystra.calibration.factors.select_factors</a></li>
@@ -699,6 +698,22 @@
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.plotting.plot_calibration.html">pystra.calibration.plotting.plot_calibration</a></li>
 </ul>
 </details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.assessment.html">pystra.assessment</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.analyze_case.html">pystra.assessment.analyze_case</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.assess_cases.html">pystra.assessment.assess_cases</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.evaluate_reliability.html">pystra.assessment.evaluate_reliability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.AssessmentCase.html">pystra.assessment.AssessmentCase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.AssessmentResult.html">pystra.assessment.AssessmentResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.CaseResult.html">pystra.assessment.CaseResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityEstimate.html">pystra.assessment.ReliabilityEstimate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityEvaluator.html">pystra.assessment.ReliabilityEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityResult.html">pystra.assessment.ReliabilityResult</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.reporting.html">pystra.reporting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.reporting.reliability_row.html">pystra.reporting.reliability_row</a></li>
 </ul>
 </details></li>
 </ul>
@@ -908,7 +923,7 @@ Importance Sampling simulation method (IS).</p>
 <li><p><strong>rng</strong> (<em>int</em><em>, </em><em>numpy.random.Generator</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Random source; NumPy’s global generator is not used. A seed recreates
 the same stream on every run, a generator advances its own state, and
 None draws fresh entropy.</p></li>
-<li><p><strong>form</strong> (<a class="reference internal" href="pystra.reliability.form.FORM.html#pystra.reliability.form.FORM" title="pystra.reliability.form.FORM"><em>FORM</em></a><em>, </em><em>optional</em>) – A completed FORM analysis whose design point centres the samples. If
+<li><p><strong>form</strong> (<a class="reference internal" href="pystra.reliability.form.FORM.html#pystra.reliability.form.FORM" title="pystra.reliability.form.FORM"><em>FORM</em></a><em>, </em><em>optional</em>) – A completed FORM analysis whose design point centers the samples. If
 None, <a class="reference internal" href="#pystra.reliability.importance_sampling.ImportanceSampling.run" title="pystra.reliability.importance_sampling.ImportanceSampling.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a> first runs FORM with this analysis’s block size and
 transformation.</p></li>
 </ul>
@@ -918,7 +933,7 @@ transformation.</p></li>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pystra.reliability.importance_sampling.ImportanceSampling.init_run" title="pystra.reliability.importance_sampling.ImportanceSampling.init_run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_run</span></code></a></p></td>
-<td><p>Initialise the model's isoprobabilistic transformation.</p></td>
+<td><p>Initialize the model's isoprobabilistic transformation.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pystra.reliability.importance_sampling.ImportanceSampling.run" title="pystra.reliability.importance_sampling.ImportanceSampling.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a></p></td>
 <td><p>Run importance sampling and return a <code class="xref py py-class docutils literal notranslate"><span class="pre">SimulationResult</span></code>.</p></td>
@@ -936,7 +951,7 @@ transformation.</p></li>
 <dt class="sig sig-object py" id="pystra.reliability.importance_sampling.ImportanceSampling.run">
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/reliability/importance_sampling.html#ImportanceSampling.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.reliability.importance_sampling.ImportanceSampling.run" title="Link to this definition">#</a></dt>
 <dd><p>Run importance sampling and return a <code class="xref py py-class docutils literal notranslate"><span class="pre">SimulationResult</span></code>.</p>
-<p>Samples are centred on the FORM design point. If no completed FORM
+<p>Samples are centered on the FORM design point. If no completed FORM
 analysis was supplied, FORM is run first with this analysis’s block
 size and transformation.</p>
 </dd></dl>
@@ -944,7 +959,7 @@ size and transformation.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pystra.reliability.importance_sampling.ImportanceSampling.init_run">
 <span class="sig-name descname"><span class="pre">init_run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.reliability.importance_sampling.ImportanceSampling.init_run" title="Link to this definition">#</a></dt>
-<dd><p>Initialise the model’s isoprobabilistic transformation.</p>
+<dd><p>Initialize the model’s isoprobabilistic transformation.</p>
 <p>Uses the explicit copula or calibrates the legacy Gaussian Nataf
 correlation. Must be called at the start of every
 <code class="docutils literal notranslate"><span class="pre">run()</span></code> method in subclasses.</p>

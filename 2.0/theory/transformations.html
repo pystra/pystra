@@ -549,7 +549,7 @@
 <h1>Probability transformations and copulas<a class="headerlink" href="#probability-transformations-and-copulas" title="Link to this heading">#</a></h1>
 <section id="probability-transformation">
 <h2>Probability transformation<a class="headerlink" href="#probability-transformation" title="Link to this heading">#</a></h2>
-<p>Classical FORM uses independent standard-normal coordinates. A probability
+<p>Classical FORM uses independent standard normal coordinates. A probability
 transformation maps the joint law of the physical variables into that space.
 Generalized Nataf also permits spherical non-normal standard spaces, provided
 the reliability calculation uses the corresponding probability law.</p>
@@ -557,15 +557,14 @@ the reliability calculation uses the corresponding probability law.</p>
 <h3>Transformation of dependent random variables using Nataf approach<a class="headerlink" href="#transformation-of-dependent-random-variables-using-nataf-approach" title="Link to this heading">#</a></h3>
 <p>One method to handle this is using the Nataf joint distribution model, if the
 marginal cdfs are known. <a class="reference internal" href="../references.html#baker2010" id="id1"><span>[Baker2010]</span></a> The correlated random variables
-<span class="math notranslate nohighlight">\({\bf X} = ( X_1 , \dots , X_n )\)</span> with the correlation matrix <span class="math notranslate nohighlight">\(\bf
-R\)</span> can be transformed by</p>
+<span class="math notranslate nohighlight">\(\mathbf{X} = ( X_1 , \dots , X_n )\)</span> with the correlation matrix <span class="math notranslate nohighlight">\(\mathbf{R}\)</span> can be transformed by</p>
 <div class="math notranslate nohighlight" id="equation-eq-2-82">
 <span class="eqno">(1)<a class="headerlink" href="#equation-eq-2-82" title="Link to this equation">#</a></span>\[        y_i=\Phi^{-1}\left(F_{X_{i}}(x_i)\right) \qquad i = 1,\dots,n\]</div>
-<p>into normally distributed random variables <span class="math notranslate nohighlight">\(\bf Y\)</span> with zero means and
-unit variance, but still correlated with <span class="math notranslate nohighlight">\({\bf R}_0\)</span> . Nataf’s
-distribution for <span class="math notranslate nohighlight">\(\bf X\)</span> is obtained by assuming that <span class="math notranslate nohighlight">\(\bf Y\)</span> is
+<p>into normally distributed random variables <span class="math notranslate nohighlight">\(\mathbf{Y}\)</span> with zero means and
+unit variance, but still correlated with <span class="math notranslate nohighlight">\(\mathbf{R}_0\)</span> . Nataf’s
+distribution for <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> is obtained by assuming that <span class="math notranslate nohighlight">\(\mathbf{Y}\)</span> is
 jointly normal. <a class="reference internal" href="../references.html#liu1986" id="id2"><span>[Liu1986]</span></a></p>
-<p>The correlation coefficients for <span class="math notranslate nohighlight">\(\bf X\)</span> and <span class="math notranslate nohighlight">\(\bf Y\)</span> are related by</p>
+<p>The correlation coefficients for <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{Y}\)</span> are related by</p>
 <div class="math notranslate nohighlight" id="equation-eq-2-83">
 <span class="eqno">(2)<a class="headerlink" href="#equation-eq-2-83" title="Link to this equation">#</a></span>\[        \rho_{X_i,X_j} =
         \int\limits_{-\infty}^{\infty}\int\limits_{-\infty}^{\infty}
@@ -574,28 +573,27 @@ jointly normal. <a class="reference internal" href="../references.html#liu1986" 
         \frac{1}{2\pi \sqrt{1-\rho_{Y_i,Y_j}^2}}
         \exp\left(-\frac{y_i^2-2\rho_{Y_i,Y_j}y_iy_j+y_j^2}{2(1-\rho_{Y_i,Y_j}^2)}\right) d y_i d y_j\]</div>
 <p>Once this is done, the transformation from the correlated normal random
-variables <span class="math notranslate nohighlight">\(\bf Y\)</span> to uncorrelated normal random variables <span class="math notranslate nohighlight">\(\bf Z\)</span>
+variables <span class="math notranslate nohighlight">\(\mathbf{Y}\)</span> to uncorrelated normal random variables <span class="math notranslate nohighlight">\(\mathbf{Z}\)</span>
 is addressed. Hence, the transformation is</p>
 <div class="math notranslate nohighlight" id="equation-eq-2-84">
-<span class="eqno">(3)<a class="headerlink" href="#equation-eq-2-84" title="Link to this equation">#</a></span>\[        {\bf z}={\bf L}_0^{-1}{\bf y} \quad \Leftrightarrow \quad {\bf y} =
-        {\bf L}_0{\bf z}\]</div>
+<span class="eqno">(3)<a class="headerlink" href="#equation-eq-2-84" title="Link to this equation">#</a></span>\[        \mathbf{z}=\mathbf{L}_0^{-1}\mathbf{y} \quad \Leftrightarrow \quad \mathbf{y} =
+        \mathbf{L}_0\mathbf{z}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf{L}_0\mathbf{L}_0^T=\mathbf{R}_0\)</span> is the
-Cholesky factorisation of the correlation matrix of <span class="math notranslate nohighlight">\(\bf Y\)</span>. The Jacobian matrix, denoted by <span class="math notranslate nohighlight">\(\bf J\)</span>,
+Cholesky factorization of the correlation matrix of <span class="math notranslate nohighlight">\(\mathbf{Y}\)</span>. The Jacobian matrix, denoted by <span class="math notranslate nohighlight">\(\mathbf{J}\)</span>,
 for the transformation is given by</p>
 <div class="math notranslate nohighlight" id="equation-eq-2-85">
-<span class="eqno">(4)<a class="headerlink" href="#equation-eq-2-85" title="Link to this equation">#</a></span>\[        {\bf J}_{ZX} = \frac{\partial {\bf z}}{\partial {\bf x}} = {\bf
-        L}_0^{-1}\text{diag} \left(\frac{f_{X_i}(x_i)}{\varphi(y_i)}\right)\]</div>
+<span class="eqno">(4)<a class="headerlink" href="#equation-eq-2-85" title="Link to this equation">#</a></span>\[        \mathbf{J}_{ZX} = \frac{\partial \mathbf{z}}{\partial \mathbf{x}} = \mathbf{L}_0^{-1}\text{diag} \left(\frac{f_{X_i}(x_i)}{\varphi(y_i)}\right)\]</div>
 <p>This approach is useful when the marginal distribution for the random
-variables <span class="math notranslate nohighlight">\(\bf X\)</span> is known and the knowledge about the variables
+variables <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> is known and the knowledge about the variables
 dependence is limited to correlation coefficients. <a class="reference internal" href="../references.html#baker2010" id="id3"><span>[Baker2010]</span></a>
 <a class="reference internal" href="../references.html#derkiureghian2006" id="id4"><span>[DerKiureghian2006]</span></a></p>
 </section>
 <section id="transformation-of-dependent-random-variables-using-rosenblatt-approach">
 <h3>Transformation of dependent random variables using Rosenblatt approach<a class="headerlink" href="#transformation-of-dependent-random-variables-using-rosenblatt-approach" title="Link to this heading">#</a></h3>
 <p>An alternative to the Nataf approach is to consider the joint pdf of
-<span class="math notranslate nohighlight">\(\bf X\)</span> as a product of conditional pdfs.</p>
+<span class="math notranslate nohighlight">\(\mathbf{X}\)</span> as a product of conditional pdfs.</p>
 <div class="math notranslate nohighlight" id="equation-eq-2-86">
-<span class="eqno">(5)<a class="headerlink" href="#equation-eq-2-86" title="Link to this equation">#</a></span>\[        f_{{\bf X}}({\bf x}) = f_{X_1}(x_1) f_{X_2|X_1}(x_2|x_1) \dots
+<span class="eqno">(5)<a class="headerlink" href="#equation-eq-2-86" title="Link to this equation">#</a></span>\[        f_{\mathbf{X}}(\mathbf{x}) = f_{X_1}(x_1) f_{X_2|X_1}(x_2|x_1) \dots
         f_{X_n|X_1,\dots,X_{n-1}}(x_n|x_1,\dots,x_{n-1})\]</div>
 <p>As a result of the sequential conditioning in the pdf, the conditional cdfs
 are given for <span class="math notranslate nohighlight">\(i \in [1,n]\)</span></p>
@@ -603,9 +601,9 @@ are given for <span class="math notranslate nohighlight">\(i \in [1,n]\)</span><
 <span class="eqno">(6)<a class="headerlink" href="#equation-eq-2-87" title="Link to this equation">#</a></span>\[        F_{X_i|X_1,\dots,X_{i-1}}(x_i|x_1,\dots,x_{i-1}) =
         \int_{-\infty}^{x_i}
         f_{X_i|X_1,\dots,X_{i-1}}(x_i|x_1,\dots,x_{i-1}) d x_i\]</div>
-<p>These conditional distributions for the random variables <span class="math notranslate nohighlight">\(\bf X\)</span> can be
+<p>These conditional distributions for the random variables <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> can be
 transformed into standard normal marginal distributions for the variables
-<span class="math notranslate nohighlight">\(\bf Z\)</span>, using the so called Rosenblatt transformation
+<span class="math notranslate nohighlight">\(\mathbf{Z}\)</span>, using the so called Rosenblatt transformation
 <a class="reference internal" href="../references.html#rosenblatt1952" id="id5"><span>[Rosenblatt1952]</span></a>, suggested by Hohenbichler and Rackwitz (1981).</p>
 <div class="math notranslate nohighlight" id="equation-eq-2-88">
 <span class="eqno">(7)<a class="headerlink" href="#equation-eq-2-88" title="Link to this equation">#</a></span>\[\begin{split}        \begin{split}
@@ -618,7 +616,7 @@ transformed into standard normal marginal distributions for the variables
 <p>The Jacobian of this transformation is a lower triangular matrix having the
 elements [Baker2010]</p>
 <div class="math notranslate nohighlight" id="equation-eq-2-89">
-<span class="eqno">(8)<a class="headerlink" href="#equation-eq-2-89" title="Link to this equation">#</a></span>\[\begin{split}        \left[{\bf J}_{ZX}\right]_{i,j} = \frac{\partial z_i}{\partial x_j} =
+<span class="eqno">(8)<a class="headerlink" href="#equation-eq-2-89" title="Link to this equation">#</a></span>\[\begin{split}        \left[\mathbf{J}_{ZX}\right]_{i,j} = \frac{\partial z_i}{\partial x_j} =
         \begin{cases}\displaystyle
         \frac{1}{\varphi(z_i)}\frac{\partial}{\partial x_j}
         F_{X_i|X_1,\dots,X_{i-1}}(x_i|x_1,\dots,x_{i-1}) &amp; i \geq j\\
@@ -639,11 +637,11 @@ transformations may be useful, for example Nataf transformation.
 f_{\mathbf X}(\mathbf x)=c(F_1(x_1),\ldots,F_n(x_n))\prod_i f_i(x_i).\]</div>
 <p>The copula and marginals define the joint law before a transformation is
 chosen. Physical Pearson correlations alone do not determine that law.
-Pystra’s legacy Pearson interface assumes a Gaussian copula and calibrates
+PySTRA’s legacy Pearson interface assumes a Gaussian copula and calibrates
 its latent correlation using <a class="reference internal" href="#equation-eq-2-83">(2)</a>. An explicit <code class="docutils literal notranslate"><span class="pre">GaussianCopula</span></code>
 already specifies the latent correlation, so that calibration is bypassed.
 Changing to Student-t or Frank changes the dependence law, rather than just
-changing a numerical factorisation.</p>
+changing a numerical factorization.</p>
 <p>For Gaussian and Student-t copulas, the pairwise Kendall rank correlations
 and latent unit-diagonal shape entries satisfy</p>
 <div class="math notranslate nohighlight">
@@ -651,12 +649,12 @@ and latent unit-diagonal shape entries satisfy</p>
 <p>The resulting full shape matrix must be positive definite. Arbitrary
 physical marginals can be used with the same copula. See
 <a class="reference internal" href="../notebooks/ex_copulas.html"><span class="doc">Dependence and probability transformations</span></a> for sampling and density examples, and
-<a class="reference internal" href="../copulas.html#chap-copulas"><span class="std std-ref">Copulas and Isoprobabilistic Transformations</span></a> for the supported specification interface.</p>
+<a class="reference internal" href="../copulas.html#chap-copulas"><span class="std std-ref">Copulas and isoprobabilistic transformations</span></a> for the supported specification interface.</p>
 </section>
 <section id="generalized-nataf-for-elliptical-copulas">
 <h3>Generalized Nataf for elliptical copulas<a class="headerlink" href="#generalized-nataf-for-elliptical-copulas" title="Link to this heading">#</a></h3>
 <p>Following <a class="reference internal" href="../references.html#lebrundutfoy2009a" id="id7"><span>[LebrunDutfoy2009a]</span></a>, let <span class="math notranslate nohighlight">\(H\)</span> be the univariate CDF of a
-centred elliptical representative with unit-diagonal shape matrix
+centered elliptical representative with unit-diagonal shape matrix
 <span class="math notranslate nohighlight">\(R=LL^T\)</span>. Generalized Nataf is</p>
 <div class="math notranslate nohighlight">
 \[w_i=H^{-1}(F_i(x_i)),\qquad \mathbf v=L^{-1}\mathbf w,
@@ -675,7 +673,7 @@ The Nataf Jacobian is</p>
 <span class="math notranslate nohighlight">\(\beta\)</span> has probability</p>
 <div class="math notranslate nohighlight">
 \[P_{f,\mathrm{FORM}}=H(-\beta).\]</div>
-<p>For Student-t, Pystra uses <span class="math notranslate nohighlight">\(T_\nu(-\beta)\)</span>, while
+<p>For Student-t, PySTRA uses <span class="math notranslate nohighlight">\(T_\nu(-\beta)\)</span>, while
 <code class="docutils literal notranslate"><span class="pre">FORMResult.beta</span></code> reports <span class="math notranslate nohighlight">\(-\Phi^{-1}(P_f)\)</span>.
 SORM, system FORM, simulation methods and the current Strong Maximum Test
 require independent normal coordinates and reject spherical Student-t Nataf
@@ -691,7 +689,7 @@ Student-t copula.</p>
     (p_{\pi_k}\mid p_{\pi_1},\ldots,p_{\pi_{k-1}}),\qquad
 u_{\pi_k}=\Phi^{-1}(q_{\pi_k}).\]</div>
 <p>The <span class="math notranslate nohighlight">\(q_i\)</span> are independent uniforms and the <span class="math notranslate nohighlight">\(u_i\)</span> are independent
-standard normals. Pystra keeps coordinate arrays in original marginal order;
+standard normals. PySTRA keeps coordinate arrays in original marginal order;
 <code class="docutils literal notranslate"><span class="pre">u[order[k]]</span></code> denotes the k-th conditional innovation.</p>
 <p>For a Student-t copula, reorder the latent vector and shape first, and write
 <span class="math notranslate nohighlight">\(\mathbf z=L^{-1}\mathbf w\)</span>. With one-based conditional index <span class="math notranslate nohighlight">\(k\)</span>,</p>
@@ -731,7 +729,7 @@ to one above <span class="math notranslate nohighlight">\(u \approx 8.3\)</span>
 upper end of the support, which is infinite for most load models. Line
 sampling and importance sampling at high reliability visit such points
 routinely, and FORM does so when the design point lies beyond them.</p>
-<p>Pystra evaluates each tail on the side where its probability is small. With
+<p>PySTRA evaluates each tail on the side where its probability is small. With
 the survival function <span class="math notranslate nohighlight">\(\bar F_X = 1 - F_X\)</span>,</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}x = \begin{cases}
@@ -746,7 +744,7 @@ u = \begin{cases}
 <p>Up to <span class="math notranslate nohighlight">\(u = 3\)</span> the complement <span class="math notranslate nohighlight">\(1 - \Phi(u)\)</span> keeps its relative
 precision to about <span class="math notranslate nohighlight">\(10^{-13}\)</span>. Both forms stay exact while the tail
 probability is a normal double, down to about <span class="math notranslate nohighlight">\(2.2 \times 10^{-308}\)</span> at
-<span class="math notranslate nohighlight">\(|u| \approx 37.52\)</span>. Pystra switches there to inverting the logarithm
+<span class="math notranslate nohighlight">\(|u| \approx 37.52\)</span>. PySTRA switches there to inverting the logarithm
 <span class="math notranslate nohighlight">\(\log \Phi(u)\)</span>, before subnormal probabilities lose precision; they
 remain representable to <span class="math notranslate nohighlight">\(|u| \approx 38.5\)</span>, although a CDF
 implementation may underflow earlier. The logarithm is inverted in closed form
@@ -762,7 +760,7 @@ probability <span class="math notranslate nohighlight">\(q\)</span> corresponds 
 equals <span class="math notranslate nohighlight">\(q/N\)</span> to double precision once <span class="math notranslate nohighlight">\(q &lt; 10^{-200}\)</span>.</p>
 <p>Numerical inverse CDFs can fail silently far into a tail: SciPy’s beta
 quantile stalls near <span class="math notranslate nohighlight">\(4 \times 10^{-50}\)</span> for probabilities below about
-<span class="math notranslate nohighlight">\(10^{-100}\)</span>. Pystra checks every quantile whose tail probability is
+<span class="math notranslate nohighlight">\(10^{-100}\)</span>. PySTRA checks every quantile whose tail probability is
 below <span class="math notranslate nohighlight">\(10^{-8}\)</span> against the log-CDF and solves again where it misses.
 Jacobians <span class="math notranslate nohighlight">\(f_X(x)/\varphi(u)\)</span> are formed from log densities where
 either density underflows.</p>
@@ -771,7 +769,7 @@ bound than one unit in the last place, so a bounded tail loses resolution
 before its probability does. The conditional distributions of non-elliptical
 copulas, such as Frank, are still evaluated in probability space.
 <a class="reference internal" href="../guides/high_reliability.html"><span class="doc">Working at high reliability</span></a> shows these properties in use.</p>
-<p><strong>Use this method:</strong> <a class="reference internal" href="../copulas.html"><span class="doc">Copulas and Isoprobabilistic Transformations</span></a> · <a class="reference internal" href="../notebooks/ex_copulas.html"><span class="doc">Dependence and probability transformations</span></a> · <a class="reference internal" href="../api/probability.html"><span class="doc">Distributions and dependence</span></a></p>
+<p><strong>Use this method:</strong> <a class="reference internal" href="../copulas.html"><span class="doc">Copulas and isoprobabilistic transformations</span></a> · <a class="reference internal" href="../notebooks/ex_copulas.html"><span class="doc">Dependence and probability transformations</span></a> · <a class="reference internal" href="../api/probability.html"><span class="doc">Distributions and dependence</span></a></p>
 <p>For coordinate conventions, see <a class="reference internal" href="notation.html"><span class="doc">Notation and probability spaces</span></a>.</p>
 </section>
 </section>

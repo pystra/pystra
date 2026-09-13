@@ -1,0 +1,1020 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pystra.assessment &#8212; PySTRA 2.0.0a1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=a54fd074" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/documentation_options.js?v=944fa962"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=ccd31ad0"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pystra/assessment';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.0a1" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">These pages document PySTRA 2.0, which is in development. The stable 1.x documentation is at <a href="https://pystra.github.io/pystra/">pystra.github.io/pystra</a>.</div>
+</aside>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 2.0.0a1 documentation - Home"/>
+    <img src="../../_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 2.0.0a1 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item"><a class="version-status" href="../../install.html" aria-label="Documentation version 2.0.0a1: installation instructions">2.0.0a1 · development</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api.html">
+    API reference
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../references.html">
+    References
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../references.html">
+    References
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">pystra.assessment</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for pystra.assessment</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Isolated case evaluation for assessment, calibration and design studies."""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Protocol</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataFrame</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.distributions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Constant</span><span class="p">,</span> <span class="n">Distribution</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.loads</span><span class="w"> </span><span class="kn">import</span> <span class="n">LoadCombination</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LimitState</span><span class="p">,</span> <span class="n">StochasticModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.options</span><span class="w"> </span><span class="kn">import</span> <span class="n">FORMOptions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.reliability.form</span><span class="w"> </span><span class="kn">import</span> <span class="n">FORM</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.reporting</span><span class="w"> </span><span class="kn">import</span> <span class="n">_probabilities</span><span class="p">,</span> <span class="n">reliability_row</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.results</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">FORMResult</span><span class="p">,</span>
+    <span class="n">SORMResult</span><span class="p">,</span>
+    <span class="n">SimulationResult</span><span class="p">,</span>
+    <span class="n">SystemFORMResult</span><span class="p">,</span>
+    <span class="n">SensitivityResult</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"ReliabilityResult"</span><span class="p">,</span>
+    <span class="s2">"ReliabilityEvaluator"</span><span class="p">,</span>
+    <span class="s2">"ReliabilityEstimate"</span><span class="p">,</span>
+    <span class="s2">"AssessmentCase"</span><span class="p">,</span>
+    <span class="s2">"CaseResult"</span><span class="p">,</span>
+    <span class="s2">"AssessmentResult"</span><span class="p">,</span>
+    <span class="s2">"evaluate_reliability"</span><span class="p">,</span>
+    <span class="s2">"analyze_case"</span><span class="p">,</span>
+    <span class="s2">"assess_cases"</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="ReliabilityResult">
+<a class="viewcode-back" href="../../gen/pystra.assessment.ReliabilityResult.html#pystra.assessment.ReliabilityResult">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ReliabilityResult</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Minimum result contract for a reliability study.</span>
+
+<span class="sd">    Probability and beta refer to the same failure event and reference period;</span>
+<span class="sd">    beta is normal-equivalent. A failed analysis may retain an estimate, but</span>
+<span class="sd">    study calculations use it only when ``converged`` is true. A design point</span>
+<span class="sd">    is a separate capability and is not implied by this protocol.</span>
+<span class="sd">    """</span>
+
+    <span class="n">failure_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">method</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">status</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">converged</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span> <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="ReliabilityEvaluator">
+<a class="viewcode-back" href="../../gen/pystra.assessment.ReliabilityEvaluator.html#pystra.assessment.ReliabilityEvaluator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ReliabilityEvaluator</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Callback receiving isolated inputs and returning a result or analysis.</span>
+
+<span class="sd">    The call is ``evaluator(model, limit_state, options=options)``. A method</span>
+<span class="sd">    constructor such as ``CrudeMonteCarlo`` may be supplied directly; its</span>
+<span class="sd">    ``run()`` is called once. An external-solver adapter may instead return a</span>
+<span class="sd">    ``ReliabilityEstimate`` or another record meeting ``ReliabilityResult``.</span>
+<span class="sd">    The callback owns its random state and any external resources.</span>
+<span class="sd">    """</span>
+
+<div class="viewcode-block" id="ReliabilityEvaluator.__call__">
+<a class="viewcode-back" href="../../gen/pystra.assessment.ReliabilityEvaluator.html#pystra.assessment.ReliabilityEvaluator.__call__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span></div>
+
+        <span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">StochasticModel</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">:</span> <span class="n">LimitState</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span> <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="ReliabilityEstimate">
+<a class="viewcode-back" href="../../gen/pystra.assessment.ReliabilityEstimate.html#pystra.assessment.ReliabilityEstimate">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ReliabilityEstimate</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Small result record for an external or analytic reliability evaluator.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    method : str</span>
+<span class="sd">        Evaluator name recorded in study tables.</span>
+<span class="sd">    failure_probability, beta : float or None, optional</span>
+<span class="sd">        Dimensionless probability and normal-equivalent index. A successful</span>
+<span class="sd">        result requires at least one; the other is derived. Supply both to</span>
+<span class="sd">        preserve a finite tail index when probability underflows to zero.</span>
+<span class="sd">    status : str, default "completed"</span>
+<span class="sd">        ``converged`` or ``completed`` indicates success. ``not_converged``</span>
+<span class="sd">        and ``precision_not_met`` retain failed or under-resolved estimates.</span>
+<span class="sd">    message : str, default ""</span>
+<span class="sd">        Solver termination or precision diagnostics.</span>
+<span class="sd">    """</span>
+
+    <span class="n">method</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">failure_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">status</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"completed"</span>
+    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"method must be a nonempty name"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="s2">"converged"</span><span class="p">,</span>
+            <span class="s2">"completed"</span><span class="p">,</span>
+            <span class="s2">"not_converged"</span><span class="p">,</span>
+            <span class="s2">"precision_not_met"</span><span class="p">,</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Unknown reliability status"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">converged</span>
+            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">failure_probability</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">):</span>
+            <span class="n">pf</span><span class="p">,</span> <span class="n">beta</span> <span class="o">=</span> <span class="n">_probabilities</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">failure_probability</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">)</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"failure_probability"</span><span class="p">,</span> <span class="n">pf</span><span class="p">)</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"beta"</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">converged</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Whether the evaluator met its termination criteria."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"converged"</span><span class="p">,</span> <span class="s2">"completed"</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_snapshot_result</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Retain immutable built-in records; isolate external mutable results."""</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span>
+        <span class="n">ReliabilityEstimate</span><span class="p">,</span>
+        <span class="n">FORMResult</span><span class="p">,</span>
+        <span class="n">SORMResult</span><span class="p">,</span>
+        <span class="n">SimulationResult</span><span class="p">,</span>
+        <span class="n">SystemFORMResult</span><span class="p">,</span>
+        <span class="n">SensitivityResult</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">return</span> <span class="n">result</span>
+    <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_evaluate</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">:</span> <span class="n">StochasticModel</span><span class="p">,</span>
+    <span class="n">limit_state</span><span class="p">:</span> <span class="n">LimitState</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">options</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">evaluator</span><span class="p">:</span> <span class="n">ReliabilityEvaluator</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">ReliabilityResult</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Run once and retain the analysis only for design-point projection."""</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">StochasticModel</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+        <span class="n">limit_state</span><span class="p">,</span> <span class="n">LimitState</span>
+    <span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"Expected StochasticModel and LimitState"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">evaluator</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">FORMOptions</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"options must be FORMOptions for the default evaluator"</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">evaluator</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"evaluator must be callable"</span><span class="p">)</span>
+    <span class="n">analysis</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">model</span><span class="p">),</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">limit_state</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">evaluator</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">candidate</span> <span class="o">=</span> <span class="n">FORM</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">options</span><span class="p">),</span> <span class="n">on_failure</span><span class="o">=</span><span class="s2">"return"</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">candidate</span> <span class="o">=</span> <span class="n">evaluator</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">options</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">candidate</span><span class="p">,</span> <span class="s2">"run"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)):</span>
+            <span class="n">analysis</span> <span class="o">=</span> <span class="n">candidate</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">candidate</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">candidate</span>
+    <span class="k">except</span> <span class="n">AnalysisError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">error</span><span class="o">.</span><span class="n">result</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">ReliabilityEstimate</span><span class="p">(</span>
+                <span class="n">method</span><span class="o">=</span><span class="p">(</span>
+                    <span class="nb">getattr</span><span class="p">(</span><span class="n">evaluator</span><span class="p">,</span> <span class="s2">"__name__"</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">evaluator</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">evaluator</span>
+                    <span class="k">else</span> <span class="s2">"FORM"</span>
+                <span class="p">),</span>
+                <span class="n">status</span><span class="o">=</span><span class="s2">"not_converged"</span><span class="p">,</span>
+                <span class="n">message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s2">"converged"</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"AnalysisError must carry a failed result"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
+    <span class="n">required</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">"failure_probability"</span><span class="p">,</span>
+        <span class="s2">"beta"</span><span class="p">,</span>
+        <span class="s2">"converged"</span><span class="p">,</span>
+        <span class="s2">"status"</span><span class="p">,</span>
+        <span class="s2">"message"</span><span class="p">,</span>
+        <span class="s2">"method"</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">required</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="s2">"evaluator must return an analysis or a ReliabilityResult record"</span>
+        <span class="p">)</span>
+    <span class="n">reliability_row</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># Validate before any study consumes the estimate.</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">converged</span> <span class="ow">and</span> <span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">beta</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">result</span><span class="o">.</span><span class="n">failure_probability</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="s2">"A successful ReliabilityResult must provide both beta and failure_probability; use ReliabilityEstimate to derive either"</span>
+        <span class="p">)</span>
+    <span class="c1"># Built-in results already own their data; copy external mutable records too.</span>
+    <span class="k">return</span> <span class="n">analysis</span><span class="p">,</span> <span class="n">_snapshot_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="evaluate_reliability">
+<a class="viewcode-back" href="../../gen/pystra.assessment.evaluate_reliability.html#pystra.assessment.evaluate_reliability">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">evaluate_reliability</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">:</span> <span class="n">StochasticModel</span><span class="p">,</span>
+    <span class="n">limit_state</span><span class="p">:</span> <span class="n">LimitState</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">options</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">evaluator</span><span class="p">:</span> <span class="n">ReliabilityEvaluator</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ReliabilityResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Evaluate isolated inputs, defaulting to FORM, and return a snapshot.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model, limit_state : StochasticModel, LimitState</span>
+<span class="sd">        Probability model and failure event. Inputs are copied before evaluation.</span>
+<span class="sd">    options : object, optional</span>
+<span class="sd">        Settings passed to the evaluator; FORMOptions for the default FORM.</span>
+<span class="sd">    evaluator : ReliabilityEvaluator, optional</span>
+<span class="sd">        Method constructor or callback. Its result follows ReliabilityResult.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ReliabilityResult</span>
+<span class="sd">        Success or failure record, including diagnostics. AnalysisError is</span>
+<span class="sd">        recorded; invalid specifications and programming errors still raise.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">_evaluate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span> <span class="n">evaluator</span><span class="o">=</span><span class="n">evaluator</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="analyze_case">
+<a class="viewcode-back" href="../../gen/pystra.assessment.analyze_case.html#pystra.assessment.analyze_case">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">analyze_case</span><span class="p">(</span>
+    <span class="n">cases</span><span class="p">:</span> <span class="n">LoadCombination</span><span class="p">,</span>
+    <span class="n">case_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">overrides</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Distribution</span> <span class="o">|</span> <span class="n">Constant</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">options</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">evaluator</span><span class="p">:</span> <span class="n">ReliabilityEvaluator</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ReliabilityResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Evaluate a named load case with isolated overrides and return its record.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cases : LoadCombination</span>
+<span class="sd">        Explicit probabilistic cases with a limit-state callable.</span>
+<span class="sd">    case_name : str, optional</span>
+<span class="sd">        Case name; defaults to the first case.</span>
+<span class="sd">    overrides : mapping, optional</span>
+<span class="sd">        Named replacement distributions/constants; unknown names are rejected.</span>
+<span class="sd">    options, evaluator : optional</span>
+<span class="sd">        Settings and callback as in :func:`evaluate_reliability`; default FORM.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ReliabilityResult</span>
+<span class="sd">        Snapshot retaining success or failure status and diagnostics.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cases</span><span class="p">,</span> <span class="n">LoadCombination</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"cases must be LoadCombination"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cases</span><span class="o">.</span><span class="n">limit_state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"A limit_state is required for reliability evaluation"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">evaluate_reliability</span><span class="p">(</span>
+        <span class="n">cases</span><span class="o">.</span><span class="n">stochastic_model</span><span class="p">(</span><span class="n">case_name</span><span class="p">,</span> <span class="n">overrides</span><span class="o">=</span><span class="n">overrides</span><span class="p">),</span>
+        <span class="n">LimitState</span><span class="p">(</span><span class="n">cases</span><span class="o">.</span><span class="n">limit_state</span><span class="p">),</span>
+        <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
+        <span class="n">evaluator</span><span class="o">=</span><span class="n">evaluator</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="AssessmentCase">
+<a class="viewcode-back" href="../../gen/pystra.assessment.AssessmentCase.html#pystra.assessment.AssessmentCase">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AssessmentCase</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Named physical scenario and its engineering assumptions.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Unique label within an assessment.</span>
+<span class="sd">    model, limit_state : StochasticModel, LimitState</span>
+<span class="sd">        Inputs for this scenario, copied on construction and access.</span>
+<span class="sd">    metadata : mapping, optional</span>
+<span class="sd">        Engineering provenance, for example units, reference period, dependence,</span>
+<span class="sd">        target source and model-error assumptions. Copied without interpretation;</span>
+<span class="sd">        assessment never assumes temporal independence or converts periods.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">StochasticModel</span><span class="p">,</span>
+        <span class="n">limit_state</span><span class="p">:</span> <span class="n">LimitState</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Case name must be a nonempty string"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">StochasticModel</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">limit_state</span><span class="p">,</span> <span class="n">LimitState</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"Expected StochasticModel and LimitState"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_limit_state</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">limit_state</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">metadata</span> <span class="ow">or</span> <span class="p">{}))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Scenario label."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StochasticModel</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Independent copy of the scenario probability model."""</span>
+        <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">limit_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LimitState</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Independent copy of the failure-event specification."""</span>
+        <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_limit_state</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Copy of the engineering assumptions and provenance."""</span>
+        <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="CaseResult">
+<a class="viewcode-back" href="../../gen/pystra.assessment.CaseResult.html#pystra.assessment.CaseResult">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CaseResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Scenario, reliability snapshot and normal-equivalent target margin."""</span>
+
+    <span class="n">case</span><span class="p">:</span> <span class="n">AssessmentCase</span>
+    <span class="n">reliability</span><span class="p">:</span> <span class="n">ReliabilityResult</span>
+    <span class="n">target_margin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="AssessmentResult">
+<a class="viewcode-back" href="../../gen/pystra.assessment.AssessmentResult.html#pystra.assessment.AssessmentResult">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AssessmentResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Ordered case records, including every unsuccessful analysis."""</span>
+
+    <span class="n">cases</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">CaseResult</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+    <span class="n">target_beta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">converged</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Whether every case met its method's termination criteria."""</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">case</span><span class="o">.</span><span class="n">reliability</span><span class="o">.</span><span class="n">converged</span> <span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cases</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AssessmentResult.to_frame">
+<a class="viewcode-back" href="../../gen/pystra.assessment.AssessmentResult.html#pystra.assessment.AssessmentResult.to_frame">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a fresh table of estimates, status, margins and assumptions."""</span>
+        <span class="k">return</span> <span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">"case_name"</span><span class="p">:</span> <span class="n">case</span><span class="o">.</span><span class="n">case</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">reliability_row</span><span class="p">(</span><span class="n">case</span><span class="o">.</span><span class="n">reliability</span><span class="p">),</span>
+                    <span class="s2">"target_margin"</span><span class="p">:</span> <span class="n">case</span><span class="o">.</span><span class="n">target_margin</span><span class="p">,</span>
+                    <span class="s2">"metadata"</span><span class="p">:</span> <span class="n">case</span><span class="o">.</span><span class="n">case</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span>
+                <span class="p">}</span>
+                <span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cases</span>
+            <span class="p">]</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="assess_cases">
+<a class="viewcode-back" href="../../gen/pystra.assessment.assess_cases.html#pystra.assessment.assess_cases">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">assess_cases</span><span class="p">(</span>
+    <span class="n">cases</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">AssessmentCase</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">target_beta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">options</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">evaluator</span><span class="p">:</span> <span class="n">ReliabilityEvaluator</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AssessmentResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Compare named scenarios without imposing a load-combination schema.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cases : sequence of AssessmentCase</span>
+<span class="sd">        Nonempty scenarios with unique names, evaluated in supplied order.</span>
+<span class="sd">    target_beta : float, optional</span>
+<span class="sd">        Finite normal-equivalent target for the same event/reference period.</span>
+<span class="sd">    options, evaluator : optional</span>
+<span class="sd">        Settings and callback as in :func:`evaluate_reliability`; default FORM.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    AssessmentResult</span>
+<span class="sd">        Input snapshots, method records and beta-minus-target margins. Failed</span>
+<span class="sd">        analyses remain in the result and have no target margin.</span>
+<span class="sd">    """</span>
+    <span class="n">cases</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">cases</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">cases</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">case</span><span class="p">,</span> <span class="n">AssessmentCase</span><span class="p">)</span> <span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">cases</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Provide a nonempty sequence of AssessmentCase objects"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">({</span><span class="n">case</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">cases</span><span class="p">})</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cases</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Assessment case names must be unique"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">target_beta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">target_beta</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">target_beta</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">target_beta</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"target_beta must be finite"</span><span class="p">)</span>
+    <span class="n">records</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">cases</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">evaluate_reliability</span><span class="p">(</span>
+            <span class="k">case</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">case</span><span class="o">.</span><span class="n">limit_state</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span> <span class="n">evaluator</span><span class="o">=</span><span class="n">evaluator</span>
+        <span class="p">)</span>
+        <span class="n">margin</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">beta</span> <span class="o">-</span> <span class="n">target_beta</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">converged</span> <span class="ow">and</span> <span class="n">target_beta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="n">records</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">CaseResult</span><span class="p">(</span><span class="n">case</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">margin</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">AssessmentResult</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">records</span><span class="p">),</span> <span class="n">target_beta</span><span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2021-2026, The PySTRA Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><nav aria-label="Project links" class="project-links">
+  <a href="../../migrating.html">Migration</a>
+  <a href="../../citing.html">Cite PySTRA</a>
+  <a href="../../developer.html">Contributing</a>
+  <a href="https://pystra.github.io/pystra/">Stable 1.x documentation</a>
+</nav></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

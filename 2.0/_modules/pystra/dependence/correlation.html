@@ -513,7 +513,7 @@
 
 <span class="sd">The Nataf model transforms correlated non-normal random variables into</span>
 <span class="sd">correlated standard-normal variables.  When the marginal distributions</span>
-<span class="sd">are non-normal, the correlation matrix in standard-normal space (the</span>
+<span class="sd">are non-normal, the correlation matrix in standard normal space (the</span>
 <span class="sd">*modified* correlation matrix ``Ro``) differs from the physical-space</span>
 <span class="sd">correlation matrix ``R``.  This module provides the numerical</span>
 <span class="sd">procedure that finds ``Ro`` from ``R`` and the marginal distributions.</span>
@@ -740,7 +740,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    ndarray</span>
 <span class="sd">        The symmetric modified correlation matrix ``Ro`` of shape</span>
-<span class="sd">        ``(n, n)`` in standard-normal space.</span>
+<span class="sd">        ``(n, n)`` in standard normal space.</span>
 <span class="sd">    """</span>
     <span class="n">copula</span> <span class="o">=</span> <span class="n">stochastic_model</span><span class="o">.</span><span class="n">get_copula</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">copula</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -815,16 +815,16 @@
 <div class="viewcode-block" id="absolute_integral_value">
 <a class="viewcode-back" href="../../../gen/pystra.dependence.correlation.absolute_integral_value.html#pystra.dependence.correlation.absolute_integral_value">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">absolute_integral_value</span><span class="p">(</span><span class="n">rho0</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">"""Objective function for the Nataf correlation optimisation.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Objective function for the Nataf correlation optimization.</span>
 
-<span class="sd">    Returns ``|rho_target - rho_integral(rho0)|``, which is minimised</span>
+<span class="sd">    Returns ``|rho_target - rho_integral(rho0)|``, which is minimized</span>
 <span class="sd">    by ``scipy.optimize.fmin`` to find the modified correlation</span>
-<span class="sd">    coefficient ``rho0`` in standard-normal space.</span>
+<span class="sd">    coefficient ``rho0`` in standard normal space.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    rho0 : float</span>
-<span class="sd">        Trial correlation in standard-normal space.</span>
+<span class="sd">        Trial correlation in standard normal space.</span>
 <span class="sd">    *args : tuple</span>
 <span class="sd">        ``(rho_target, margi, margj, Z1, Z2, X1, X2, WIP, detJ)`` —</span>
 <span class="sd">        the target physical-space correlation and the pre-computed</span>

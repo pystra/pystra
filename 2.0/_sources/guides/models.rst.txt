@@ -13,7 +13,7 @@ Most PySTRA marginal constructors take the physical mean and standard deviation,
 or instead their native parameters as keywords, such as
 ``Gumbel("Q", loc=8.9, scale=1.56)``.
 :class:`~pystra.distributions.scipy_dist.ScipyDist` wraps an already
-parameterised SciPy distribution. Check the relevant distribution's signature.
+parameterized SciPy distribution. Check the relevant distribution's signature.
 Every distribution also provides tail functions (``sf``, ``isf``, ``logcdf`` and
 ``logsf``) that keep very small probabilities accurate. A custom distribution
 should provide them too; see :doc:`high_reliability`.

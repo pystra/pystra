@@ -1,0 +1,1019 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pystra.decision.swtp &#8212; PySTRA 2.0.0a1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=a54fd074" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../../_static/documentation_options.js?v=944fa962"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=ccd31ad0"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pystra/decision/swtp';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.0a1" />
+  
+    
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">These pages document PySTRA 2.0, which is in development. The stable 1.x documentation is at <a href="https://pystra.github.io/pystra/">pystra.github.io/pystra</a>.</div>
+</aside>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 2.0.0a1 documentation - Home"/>
+    <img src="../../../_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 2.0.0a1 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item"><a class="version-status" href="../../../install.html" aria-label="Documentation version 2.0.0a1: installation instructions">2.0.0a1 · development</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api.html">
+    API reference
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../references.html">
+    References
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../references.html">
+    References
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">pystra.decision.swtp</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for pystra.decision.swtp</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Societal willingness to pay and the source/index records behind it."""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">asdict</span><span class="p">,</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"SWTP_COUNTRY_SOURCE"</span><span class="p">,</span>
+    <span class="s2">"SWTP_TARGET_SOURCE"</span><span class="p">,</span>
+    <span class="s2">"SWTP_INDEX_SOURCE"</span><span class="p">,</span>
+    <span class="s2">"SWTP_INDEX_INDICATOR"</span><span class="p">,</span>
+    <span class="s2">"SWTPIndexRecord"</span><span class="p">,</span>
+    <span class="s2">"SWTPRecord"</span><span class="p">,</span>
+    <span class="s2">"SWTP_COUNTRY_VALUES"</span><span class="p">,</span>
+    <span class="s2">"SWTP_GDP_PPP_INDEX_2024"</span><span class="p">,</span>
+    <span class="s2">"SWTP_ALIASES"</span><span class="p">,</span>
+    <span class="s2">"get_swtp_index_record"</span><span class="p">,</span>
+    <span class="s2">"get_swtp_record"</span><span class="p">,</span>
+    <span class="s2">"index_swtp_record"</span><span class="p">,</span>
+    <span class="s2">"get_swtp"</span><span class="p">,</span>
+    <span class="s2">"swtp_table"</span><span class="p">,</span>
+    <span class="s2">"SWTP"</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="n">SWTP_COUNTRY_SOURCE</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">"Rackwitz, JCSS LQI philosophy background document, Table 7. "</span>
+    <span class="s2">"Values are G_delta_lbar in 10^6 PPPUS$."</span>
+<span class="p">)</span>
+
+
+<span class="n">SWTP_TARGET_SOURCE</span> <span class="o">=</span> <span class="s2">"Fischer, Barnardo, and Faber (2012), LQI Symposium, Table 3."</span>
+
+
+<span class="n">SWTP_INDEX_SOURCE</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">"World Bank World Development Indicators, NY.GDP.PCAP.PP.CD, "</span>
+    <span class="s2">"GDP per capita, PPP (current international $). API last updated "</span>
+    <span class="s2">"2026-04-08; values checked 2026-06-23."</span>
+<span class="p">)</span>
+
+
+<span class="n">SWTP_INDEX_INDICATOR</span> <span class="o">=</span> <span class="s2">"NY.GDP.PCAP.PP.CD"</span>
+
+
+<div class="viewcode-block" id="SWTPIndexRecord">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.SWTPIndexRecord.html#pystra.decision.ddo.SWTPIndexRecord">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SWTPIndexRecord</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Index data used to update an anchored SWTP value.</span>
+
+<span class="sd">    The built-in index records use GDP per capita in current international</span>
+<span class="sd">    PPP dollars as a practical update of the LQI income term ``g``.</span>
+<span class="sd">    """</span>
+
+    <span class="n">code</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">base_year</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">target_year</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">base_index</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">target_index</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">factor</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">indicator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">SWTP_INDEX_INDICATOR</span>
+    <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">SWTP_INDEX_SOURCE</span></div>
+
+
+
+<div class="viewcode-block" id="SWTPRecord">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.SWTPRecord.html#pystra.decision.ddo.SWTPRecord">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SWTPRecord</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Country-level societal willingness-to-pay value.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    code : str</span>
+<span class="sd">        ISO-style country code.  The United Kingdom is stored as ``GB``;</span>
+<span class="sd">        ``UK`` is accepted as an alias by :func:`get_swtp_record`.</span>
+<span class="sd">    country : str</span>
+<span class="sd">        Country name used in the source table.</span>
+<span class="sd">    value_per_life : float</span>
+<span class="sd">        Societal willingness to pay per statistical life, expressed in</span>
+<span class="sd">        ``currency`` units.</span>
+<span class="sd">    currency : str</span>
+<span class="sd">        Currency basis for the value.</span>
+<span class="sd">    price_year : int</span>
+<span class="sd">        Price year of the source value.</span>
+<span class="sd">    source : str</span>
+<span class="sd">        Literature source for the value.</span>
+<span class="sd">    notes : str</span>
+<span class="sd">        Short note describing how the source value was obtained.</span>
+<span class="sd">    """</span>
+
+    <span class="n">code</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">country</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">value_per_life</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">currency</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"PPPUSD"</span>
+    <span class="n">price_year</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1999</span>
+    <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">SWTP_COUNTRY_SOURCE</span>
+    <span class="n">notes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">"Constant additive mortality-change value at all ages from "</span>
+        <span class="s2">"predictive cohort tables."</span>
+    <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">value_million</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the SWTP value in millions of ``currency`` units."""</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_per_life</span> <span class="o">/</span> <span class="mf">1_000_000.0</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_record</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">country</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value_million</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SWTPRecord</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">SWTPRecord</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">code</span><span class="p">,</span> <span class="n">country</span><span class="o">=</span><span class="n">country</span><span class="p">,</span> <span class="n">value_per_life</span><span class="o">=</span><span class="n">value_million</span> <span class="o">*</span> <span class="mf">1e6</span><span class="p">)</span>
+
+
+<span class="n">SWTP_COUNTRY_VALUES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"CA"</span><span class="p">:</span> <span class="n">_record</span><span class="p">(</span><span class="s2">"CA"</span><span class="p">,</span> <span class="s2">"Canada"</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">),</span>
+    <span class="s2">"US"</span><span class="p">:</span> <span class="n">_record</span><span class="p">(</span><span class="s2">"US"</span><span class="p">,</span> <span class="s2">"USA"</span><span class="p">,</span> <span class="mf">2.1</span><span class="p">),</span>
+    <span class="s2">"AT"</span><span class="p">:</span> <span class="n">_record</span><span class="p">(</span><span class="s2">"AT"</span><span class="p">,</span> <span class="s2">"Austria"</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">),</span>
+    <span class="s2">"BE"</span><span class="p">:</span> <span class="n">_record</span><span class="p">(</span><span class="s2">"BE"</span><span class="p">,</span> <span class="s2">"Belgium"</span><span class="p">,</span> <span class="mf">2.4</span><span class="p">),</span>
+    <span class="s2">"CZ"</span><span class="p">:</span> <span class="n">_record</span><span class="p">(</span><span class="s2">"CZ"</span><span class="p">,</span> <span class="s2">"Czech Republic"</span><span class="p">,</span> <span class="mf">0.54</span><span class="p">),</span>
+    <span class="s2">"DK"</span><span class="p">:</span> <span class="n">_record</span><span class="p">(</span><span class="s2">"DK"</span><span class="p">,</span> <span class="s2">"Denmark"</span><span class="p">,</span> <span class="mf">1.7</span><span class="p">),</span>
+    <span class="s2">"FI"</span><span class="p">:</span> <span class="n">_record</span><span class="p">(</span><span class="s2">"FI"</span><span class="p">,</span> <span class="s2">"Finland"</span><span class="p">,</span> <span class="mf">1.3</span><span class="p">),</span>
+    <span class="s2">"FR"</span><span class="p">:</span> <span class="n">_record</span><span class="p">(</span><span class="s2">"FR"</span><span class="p">,</span> <span class="s2">"France"</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">),</span>
+    <span class="s2">"DE"</span><span class="p">:</span> <span class="n">_record</span><span class="p">(</span><span class="s2">"DE"</span><span class="p">,</span> <span class="s2">"Germany"</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">),</span>
+    <span class="s2">"IT"</span><span class="p">:</span> <span class="n">_record</span><span class="p">(</span><span class="s2">"IT"</span><span class="p">,</span> <span class="s2">"Italy"</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">),</span>
+    <span class="s2">"NL"</span><span class="p">:</span> <span class="n">_record</span><span class="p">(</span><span class="s2">"NL"</span><span class="p">,</span> <span class="s2">"Netherlands"</span><span class="p">,</span> <span class="mf">2.8</span><span class="p">),</span>
+    <span class="s2">"NO"</span><span class="p">:</span> <span class="n">_record</span><span class="p">(</span><span class="s2">"NO"</span><span class="p">,</span> <span class="s2">"Norway"</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">),</span>
+    <span class="s2">"ES"</span><span class="p">:</span> <span class="n">_record</span><span class="p">(</span><span class="s2">"ES"</span><span class="p">,</span> <span class="s2">"Spain"</span><span class="p">,</span> <span class="mf">1.3</span><span class="p">),</span>
+    <span class="s2">"SE"</span><span class="p">:</span> <span class="n">_record</span><span class="p">(</span><span class="s2">"SE"</span><span class="p">,</span> <span class="s2">"Sweden"</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">),</span>
+    <span class="s2">"CH"</span><span class="p">:</span> <span class="n">_record</span><span class="p">(</span><span class="s2">"CH"</span><span class="p">,</span> <span class="s2">"Switzerland"</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">),</span>
+    <span class="s2">"GB"</span><span class="p">:</span> <span class="n">_record</span><span class="p">(</span><span class="s2">"GB"</span><span class="p">,</span> <span class="s2">"United Kingdom"</span><span class="p">,</span> <span class="mf">1.7</span><span class="p">),</span>
+    <span class="s2">"JP"</span><span class="p">:</span> <span class="n">_record</span><span class="p">(</span><span class="s2">"JP"</span><span class="p">,</span> <span class="s2">"Japan"</span><span class="p">,</span> <span class="mf">1.3</span><span class="p">),</span>
+    <span class="s2">"NZ"</span><span class="p">:</span> <span class="n">_record</span><span class="p">(</span><span class="s2">"NZ"</span><span class="p">,</span> <span class="s2">"New Zealand"</span><span class="p">,</span> <span class="mf">1.3</span><span class="p">),</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_index</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">base_index</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">target_index</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SWTPIndexRecord</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">SWTPIndexRecord</span><span class="p">(</span>
+        <span class="n">code</span><span class="o">=</span><span class="n">code</span><span class="p">,</span>
+        <span class="n">base_year</span><span class="o">=</span><span class="mi">1999</span><span class="p">,</span>
+        <span class="n">target_year</span><span class="o">=</span><span class="mi">2024</span><span class="p">,</span>
+        <span class="n">base_index</span><span class="o">=</span><span class="n">base_index</span><span class="p">,</span>
+        <span class="n">target_index</span><span class="o">=</span><span class="n">target_index</span><span class="p">,</span>
+        <span class="n">factor</span><span class="o">=</span><span class="n">target_index</span> <span class="o">/</span> <span class="n">base_index</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="n">SWTP_GDP_PPP_INDEX_2024</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"CA"</span><span class="p">:</span> <span class="n">_index</span><span class="p">(</span><span class="s2">"CA"</span><span class="p">,</span> <span class="mf">27841.35</span><span class="p">,</span> <span class="mf">64610.38</span><span class="p">),</span>
+    <span class="s2">"US"</span><span class="p">:</span> <span class="n">_index</span><span class="p">(</span><span class="s2">"US"</span><span class="p">,</span> <span class="mf">34515.38</span><span class="p">,</span> <span class="mf">85809.90</span><span class="p">),</span>
+    <span class="s2">"AT"</span><span class="p">:</span> <span class="n">_index</span><span class="p">(</span><span class="s2">"AT"</span><span class="p">,</span> <span class="mf">27500.08</span><span class="p">,</span> <span class="mf">73911.44</span><span class="p">),</span>
+    <span class="s2">"BE"</span><span class="p">:</span> <span class="n">_index</span><span class="p">(</span><span class="s2">"BE"</span><span class="p">,</span> <span class="mf">25440.84</span><span class="p">,</span> <span class="mf">73514.48</span><span class="p">),</span>
+    <span class="s2">"CZ"</span><span class="p">:</span> <span class="n">_index</span><span class="p">(</span><span class="s2">"CZ"</span><span class="p">,</span> <span class="mf">15493.98</span><span class="p">,</span> <span class="mf">57285.42</span><span class="p">),</span>
+    <span class="s2">"DK"</span><span class="p">:</span> <span class="n">_index</span><span class="p">(</span><span class="s2">"DK"</span><span class="p">,</span> <span class="mf">26642.22</span><span class="p">,</span> <span class="mf">81878.23</span><span class="p">),</span>
+    <span class="s2">"FI"</span><span class="p">:</span> <span class="n">_index</span><span class="p">(</span><span class="s2">"FI"</span><span class="p">,</span> <span class="mf">24761.82</span><span class="p">,</span> <span class="mf">65378.38</span><span class="p">),</span>
+    <span class="s2">"FR"</span><span class="p">:</span> <span class="n">_index</span><span class="p">(</span><span class="s2">"FR"</span><span class="p">,</span> <span class="mf">24203.88</span><span class="p">,</span> <span class="mf">62556.92</span><span class="p">),</span>
+    <span class="s2">"DE"</span><span class="p">:</span> <span class="n">_index</span><span class="p">(</span><span class="s2">"DE"</span><span class="p">,</span> <span class="mf">26517.93</span><span class="p">,</span> <span class="mf">73551.93</span><span class="p">),</span>
+    <span class="s2">"IT"</span><span class="p">:</span> <span class="n">_index</span><span class="p">(</span><span class="s2">"IT"</span><span class="p">,</span> <span class="mf">25654.68</span><span class="p">,</span> <span class="mf">62014.27</span><span class="p">),</span>
+    <span class="s2">"NL"</span><span class="p">:</span> <span class="n">_index</span><span class="p">(</span><span class="s2">"NL"</span><span class="p">,</span> <span class="mf">29316.26</span><span class="p">,</span> <span class="mf">86173.63</span><span class="p">),</span>
+    <span class="s2">"NO"</span><span class="p">:</span> <span class="n">_index</span><span class="p">(</span><span class="s2">"NO"</span><span class="p">,</span> <span class="mf">30573.73</span><span class="p">,</span> <span class="mf">102037.53</span><span class="p">),</span>
+    <span class="s2">"ES"</span><span class="p">:</span> <span class="n">_index</span><span class="p">(</span><span class="s2">"ES"</span><span class="p">,</span> <span class="mf">19938.18</span><span class="p">,</span> <span class="mf">57965.29</span><span class="p">),</span>
+    <span class="s2">"SE"</span><span class="p">:</span> <span class="n">_index</span><span class="p">(</span><span class="s2">"SE"</span><span class="p">,</span> <span class="mf">27496.44</span><span class="p">,</span> <span class="mf">71844.91</span><span class="p">),</span>
+    <span class="s2">"CH"</span><span class="p">:</span> <span class="n">_index</span><span class="p">(</span><span class="s2">"CH"</span><span class="p">,</span> <span class="mf">34742.63</span><span class="p">,</span> <span class="mf">96497.69</span><span class="p">),</span>
+    <span class="s2">"GB"</span><span class="p">:</span> <span class="n">_index</span><span class="p">(</span><span class="s2">"GB"</span><span class="p">,</span> <span class="mf">24493.50</span><span class="p">,</span> <span class="mf">62009.49</span><span class="p">),</span>
+    <span class="s2">"JP"</span><span class="p">:</span> <span class="n">_index</span><span class="p">(</span><span class="s2">"JP"</span><span class="p">,</span> <span class="mf">25735.97</span><span class="p">,</span> <span class="mf">52039.17</span><span class="p">),</span>
+    <span class="s2">"NZ"</span><span class="p">:</span> <span class="n">_index</span><span class="p">(</span><span class="s2">"NZ"</span><span class="p">,</span> <span class="mf">20579.37</span><span class="p">,</span> <span class="mf">55551.14</span><span class="p">),</span>
+<span class="p">}</span>
+
+
+<span class="n">SWTP_ALIASES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"UK"</span><span class="p">:</span> <span class="s2">"GB"</span><span class="p">,</span>
+    <span class="s2">"UNITED KINGDOM"</span><span class="p">:</span> <span class="s2">"GB"</span><span class="p">,</span>
+    <span class="s2">"U.K."</span><span class="p">:</span> <span class="s2">"GB"</span><span class="p">,</span>
+    <span class="s2">"USA"</span><span class="p">:</span> <span class="s2">"US"</span><span class="p">,</span>
+    <span class="s2">"UNITED STATES"</span><span class="p">:</span> <span class="s2">"US"</span><span class="p">,</span>
+    <span class="s2">"CZECH REP."</span><span class="p">:</span> <span class="s2">"CZ"</span><span class="p">,</span>
+    <span class="s2">"CZECH REPUBLIC"</span><span class="p">:</span> <span class="s2">"CZ"</span><span class="p">,</span>
+    <span class="s2">"N. ZEALAND"</span><span class="p">:</span> <span class="s2">"NZ"</span><span class="p">,</span>
+    <span class="s2">"NEW ZEALAND"</span><span class="p">:</span> <span class="s2">"NZ"</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_normalise_country_code</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">code</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">SWTP_ALIASES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_index_table</span><span class="p">(</span><span class="n">index_table</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SWTPIndexRecord</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">SWTP_GDP_PPP_INDEX_2024</span> <span class="k">if</span> <span class="n">index_table</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">index_table</span>
+
+
+<div class="viewcode-block" id="get_swtp_index_record">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.get_swtp_index_record.html#pystra.decision.ddo.get_swtp_index_record">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_swtp_index_record</span><span class="p">(</span>
+    <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index_table</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SWTPIndexRecord</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SWTPIndexRecord</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Return the SWTP index record for a country code."""</span>
+
+    <span class="n">key</span> <span class="o">=</span> <span class="n">_normalise_country_code</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">table</span> <span class="o">=</span> <span class="n">_index_table</span><span class="p">(</span><span class="n">index_table</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">table</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="n">available</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">table</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Unknown SWTP index country code </span><span class="si">{</span><span class="n">code</span><span class="si">!r}</span><span class="s2">. Available: </span><span class="si">{</span><span class="n">available</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span></div>
+
+
+
+<div class="viewcode-block" id="get_swtp_record">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.get_swtp_record.html#pystra.decision.ddo.get_swtp_record">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_swtp_record</span><span class="p">(</span>
+    <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">indexed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">index_table</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SWTPIndexRecord</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SWTPRecord</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Return a country-level SWTP record.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    code : str</span>
+<span class="sd">        Country code or supported country-name alias.</span>
+<span class="sd">    indexed : bool</span>
+<span class="sd">        Must be supplied explicitly.  ``False`` returns the 1999 Rackwitz</span>
+<span class="sd">        anchor; ``True`` returns the value indexed with the built-in World Bank</span>
+<span class="sd">        GDP per capita PPP factors.  There is no default so the anchor is never</span>
+<span class="sd">        returned silently.</span>
+<span class="sd">    index_table : mapping, optional</span>
+<span class="sd">        Alternate country-code mapping of :class:`SWTPIndexRecord` objects.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    SWTPRecord</span>
+<span class="sd">        Source-backed SWTP value.</span>
+<span class="sd">    """</span>
+
+    <span class="k">if</span> <span class="n">_require_explicit_indexed</span><span class="p">(</span><span class="n">indexed</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">index_swtp_record</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">index_table</span><span class="o">=</span><span class="n">index_table</span><span class="p">)</span>
+
+    <span class="n">key</span> <span class="o">=</span> <span class="n">_normalise_country_code</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">SWTP_COUNTRY_VALUES</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="n">available</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">SWTP_COUNTRY_VALUES</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Unknown SWTP country code </span><span class="si">{</span><span class="n">code</span><span class="si">!r}</span><span class="s2">. Available: </span><span class="si">{</span><span class="n">available</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span></div>
+
+
+
+<div class="viewcode-block" id="index_swtp_record">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.index_swtp_record.html#pystra.decision.ddo.index_swtp_record">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">index_swtp_record</span><span class="p">(</span>
+    <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index_table</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SWTPIndexRecord</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SWTPRecord</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Return a Rackwitz SWTP record indexed to a newer target year."""</span>
+
+    <span class="n">base</span> <span class="o">=</span> <span class="n">get_swtp_record</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">indexed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">get_swtp_index_record</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">index_table</span><span class="o">=</span><span class="n">index_table</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">SWTPRecord</span><span class="p">(</span>
+        <span class="n">code</span><span class="o">=</span><span class="n">base</span><span class="o">.</span><span class="n">code</span><span class="p">,</span>
+        <span class="n">country</span><span class="o">=</span><span class="n">base</span><span class="o">.</span><span class="n">country</span><span class="p">,</span>
+        <span class="n">value_per_life</span><span class="o">=</span><span class="n">base</span><span class="o">.</span><span class="n">value_per_life</span> <span class="o">*</span> <span class="n">index</span><span class="o">.</span><span class="n">factor</span><span class="p">,</span>
+        <span class="n">currency</span><span class="o">=</span><span class="s2">"current international PPPUSD"</span><span class="p">,</span>
+        <span class="n">price_year</span><span class="o">=</span><span class="n">index</span><span class="o">.</span><span class="n">target_year</span><span class="p">,</span>
+        <span class="n">source</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">base</span><span class="o">.</span><span class="n">source</span><span class="si">}</span><span class="s2">; indexed using </span><span class="si">{</span><span class="n">index</span><span class="o">.</span><span class="n">source</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="n">notes</span><span class="o">=</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Anchored to </span><span class="si">{</span><span class="n">base</span><span class="o">.</span><span class="n">price_year</span><span class="si">}</span><span class="s2"> Rackwitz value and indexed by "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">index</span><span class="o">.</span><span class="n">indicator</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="n">index</span><span class="o">.</span><span class="n">base_year</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">index</span><span class="o">.</span><span class="n">target_year</span><span class="si">}</span><span class="s2">; "</span>
+            <span class="sa">f</span><span class="s2">"factor=</span><span class="si">{</span><span class="n">index</span><span class="o">.</span><span class="n">factor</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">."</span>
+        <span class="p">),</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_swtp">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.get_swtp.html#pystra.decision.ddo.get_swtp">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_swtp</span><span class="p">(</span>
+    <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">indexed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">index_table</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SWTPIndexRecord</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Return the SWTP value per statistical life for a country code.</span>
+
+<span class="sd">    ``indexed`` must be supplied explicitly (``False`` for the 1999 anchor,</span>
+<span class="sd">    ``True`` for the indexed value); the anchor is never returned silently.</span>
+<span class="sd">    """</span>
+
+    <span class="k">return</span> <span class="n">get_swtp_record</span><span class="p">(</span>
+        <span class="n">code</span><span class="p">,</span> <span class="n">indexed</span><span class="o">=</span><span class="n">indexed</span><span class="p">,</span> <span class="n">index_table</span><span class="o">=</span><span class="n">index_table</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">value_per_life</span></div>
+
+
+
+<div class="viewcode-block" id="swtp_table">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.swtp_table.html#pystra.decision.ddo.swtp_table">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">swtp_table</span><span class="p">(</span>
+    <span class="n">indexed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">index_table</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SWTPIndexRecord</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Return the built-in country SWTP table as a dataframe.</span>
+
+<span class="sd">    ``indexed`` must be supplied explicitly (``False`` for the 1999 Rackwitz</span>
+<span class="sd">    anchor table, ``True`` for the indexed current-PPP view); the anchor table</span>
+<span class="sd">    is never returned silently.</span>
+<span class="sd">    """</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_require_explicit_indexed</span><span class="p">(</span><span class="n">indexed</span><span class="p">):</span>
+        <span class="n">records</span> <span class="o">=</span> <span class="p">[</span><span class="n">asdict</span><span class="p">(</span><span class="n">record</span><span class="p">)</span> <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">SWTP_COUNTRY_VALUES</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">records</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">"code"</span><span class="p">)</span>
+
+    <span class="n">records</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">code</span><span class="p">,</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">SWTP_COUNTRY_VALUES</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">get_swtp_index_record</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">index_table</span><span class="o">=</span><span class="n">index_table</span><span class="p">)</span>
+        <span class="n">record</span> <span class="o">=</span> <span class="n">asdict</span><span class="p">(</span><span class="n">index_swtp_record</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">index_table</span><span class="o">=</span><span class="n">index_table</span><span class="p">))</span>
+        <span class="n">record</span><span class="p">[</span><span class="s2">"anchor_value_per_life"</span><span class="p">]</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">value_per_life</span>
+        <span class="n">record</span><span class="p">[</span><span class="s2">"anchor_price_year"</span><span class="p">]</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">price_year</span>
+        <span class="n">record</span><span class="p">[</span><span class="s2">"index_factor"</span><span class="p">]</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">factor</span>
+        <span class="n">record</span><span class="p">[</span><span class="s2">"index_base_value"</span><span class="p">]</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">base_index</span>
+        <span class="n">record</span><span class="p">[</span><span class="s2">"index_target_value"</span><span class="p">]</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">target_index</span>
+        <span class="n">record</span><span class="p">[</span><span class="s2">"index_indicator"</span><span class="p">]</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">indicator</span>
+        <span class="n">records</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">records</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">"code"</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="SWTP">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.SWTP.html#pystra.decision.ddo.SWTP">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SWTP</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Societal willingness to pay per statistical life."""</span>
+
+    <span class="n">value_per_life</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">currency</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"PPPUSD"</span>
+    <span class="n">price_year</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_per_life</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"SWTP value_per_life must be positive"</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SWTP.from_country">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.SWTP.html#pystra.decision.ddo.SWTP.from_country">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_country</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">indexed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"SWTP"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create an SWTP value from the built-in country table.</span>
+
+<span class="sd">        ``indexed`` must be supplied explicitly.  Use ``indexed=False`` for</span>
+<span class="sd">        the Rackwitz 1999 anchor and ``indexed=True`` for the built-in indexed</span>
+<span class="sd">        current-PPP view.</span>
+<span class="sd">        """</span>
+
+        <span class="n">record</span> <span class="o">=</span> <span class="n">get_swtp_record</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">indexed</span><span class="o">=</span><span class="n">_require_explicit_indexed</span><span class="p">(</span><span class="n">indexed</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">value_per_life</span><span class="o">=</span><span class="n">record</span><span class="o">.</span><span class="n">value_per_life</span><span class="p">,</span>
+            <span class="n">currency</span><span class="o">=</span><span class="n">record</span><span class="o">.</span><span class="n">currency</span><span class="p">,</span>
+            <span class="n">price_year</span><span class="o">=</span><span class="n">record</span><span class="o">.</span><span class="n">price_year</span><span class="p">,</span>
+            <span class="n">source</span><span class="o">=</span><span class="n">record</span><span class="o">.</span><span class="n">source</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SWTP.from_lqi">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.SWTP.html#pystra.decision.ddo.SWTP.from_lqi">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_lqi</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">gross_domestic_product_per_capita</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">work_leisure_parameter</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">demographic_constant</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">currency</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"currency units"</span><span class="p">,</span>
+        <span class="n">price_year</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">"LQI relation SWTP = g / q * G"</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"SWTP"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create an SWTP value from the LQI relation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        gross_domestic_product_per_capita : float</span>
+<span class="sd">            Gross domestic product per person, denoted ``g`` in the LQI</span>
+<span class="sd">            literature.</span>
+<span class="sd">        work_leisure_parameter : float</span>
+<span class="sd">            The dimensionless LQI work--leisure (income-elasticity) parameter</span>
+<span class="sd">            ``q``, typically about 0.1--0.2 (e.g. 0.175 in Schubert and Faber,</span>
+<span class="sd">            2009).  This is *not* an annual mortality rate.</span>
+<span class="sd">        demographic_constant : float</span>
+<span class="sd">            Demographic life-time constant multiplying ``g / q``.</span>
+<span class="sd">        currency : str, optional</span>
+<span class="sd">            Currency of ``gross_domestic_product_per_capita``.</span>
+<span class="sd">        price_year : int, optional</span>
+<span class="sd">            Price year for the resulting value.</span>
+<span class="sd">        source : str, optional</span>
+<span class="sd">            Source note carried with the value.</span>
+<span class="sd">        """</span>
+
+        <span class="k">if</span> <span class="n">work_leisure_parameter</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"work_leisure_parameter must be positive"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">demographic_constant</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"demographic_constant must be positive"</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">gross_domestic_product_per_capita</span>
+            <span class="o">/</span> <span class="n">work_leisure_parameter</span>
+            <span class="o">*</span> <span class="n">demographic_constant</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">value_per_life</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+            <span class="n">currency</span><span class="o">=</span><span class="n">currency</span><span class="p">,</span>
+            <span class="n">price_year</span><span class="o">=</span><span class="n">price_year</span><span class="p">,</span>
+            <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SWTP.for_lives">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.SWTP.html#pystra.decision.ddo.SWTP.for_lives">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">for_lives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expected_fatalities</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the SWTP-equivalent consequence for expected fatalities."""</span>
+
+        <span class="k">if</span> <span class="n">expected_fatalities</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"expected_fatalities must be non-negative"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_per_life</span> <span class="o">*</span> <span class="n">expected_fatalities</span></div>
+</div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_swtp_value</span><span class="p">(</span><span class="n">swtp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">SWTP</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">swtp</span><span class="o">.</span><span class="n">value_per_life</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">swtp</span><span class="p">,</span> <span class="n">SWTP</span><span class="p">)</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="n">swtp</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_require_explicit_indexed</span><span class="p">(</span><span class="n">indexed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">indexed</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"indexed=True or indexed=False must be supplied explicitly"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">indexed</span><span class="p">)</span>
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2021-2026, The PySTRA Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><nav aria-label="Project links" class="project-links">
+  <a href="../../../migrating.html">Migration</a>
+  <a href="../../../citing.html">Cite PySTRA</a>
+  <a href="../../../developer.html">Contributing</a>
+  <a href="https://pystra.github.io/pystra/">Stable 1.x documentation</a>
+</nav></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

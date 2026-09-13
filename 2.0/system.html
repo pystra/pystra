@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>System Reliability &#8212; PySTRA 2.0.0a1 documentation</title>
+    <title>System reliability &#8212; PySTRA 2.0.0a1 documentation</title>
   
   
   
@@ -53,7 +53,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Strong Maximum Test" href="strong_maximum.html" />
-    <link rel="prev" title="Copulas and Isoprobabilistic Transformations" href="copulas.html" />
+    <link rel="prev" title="Copulas and isoprobabilistic transformations" href="copulas.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.0.0a1" />
@@ -485,8 +485,8 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Dependence and advanced methods</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="copulas.html">Copulas and Isoprobabilistic Transformations</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">System Reliability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copulas.html">Copulas and isoprobabilistic transformations</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">System reliability</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strong_maximum.html">Strong Maximum Test</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="active_learning.html">Active-learning methods and literature</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="literature-benchmarks.html">Literature benchmark definitions and provenance</a></li>
@@ -541,7 +541,7 @@
     
     <li class="breadcrumb-item"><a href="user_guide.html" class="nav-link">User guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">System Reliability</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">System reliability</span></li>
   </ul>
 </nav>
 </div>
@@ -559,18 +559,18 @@
                 <article class="bd-article">
                   
   <section id="system-reliability">
-<span id="chap-system"></span><h1>System Reliability<a class="headerlink" href="#system-reliability" title="Link to this heading">#</a></h1>
-<p>Pystra separates the system failure event from its probability calculation.
+<span id="chap-system"></span><h1>System reliability<a class="headerlink" href="#system-reliability" title="Link to this heading">#</a></h1>
+<p>PySTRA separates the system failure event from its probability calculation.
 The <code class="docutils literal notranslate"><span class="pre">pystra.systems</span></code> topology classes compose component limit states for
 simulation. <code class="docutils literal notranslate"><span class="pre">SystemFORM</span></code> estimates series and parallel probabilities from
-separate component FORM analyses in one shared standard-normal space.</p>
+separate component FORM analyses in one shared standard normal space.</p>
 <p>Do not use ordinary FORM or SORM on the combined min/max function as a general
 system reliability method. One tangent plane can miss other failure regions,
 and ties can give misleading or zero finite-difference gradients.</p>
-<p>The sign convention is the usual Pystra convention: positive values are safe
+<p>The sign convention is the usual PySTRA convention: positive values are safe
 and negative values indicate failure.</p>
 <section id="series-and-parallel-systems">
-<h2>Series and Parallel Systems<a class="headerlink" href="#series-and-parallel-systems" title="Link to this heading">#</a></h2>
+<h2>Series and parallel systems<a class="headerlink" href="#series-and-parallel-systems" title="Link to this heading">#</a></h2>
 <p>A series system fails when any child component or subsystem fails.  Its
 equivalent limit-state value is therefore</p>
 <div class="math notranslate nohighlight">
@@ -652,11 +652,11 @@ component functions reusable inside larger systems.</p>
 </div>
 <p>Use <code class="docutils literal notranslate"><span class="pre">ParallelSystem(components)</span></code> for joint failure; the exact result in this
 example is <code class="docutils literal notranslate"><span class="pre">p*p</span></code>. Homogeneous nesting is flattened and shared component
-objects are analysed once. Component names must be unique. Mixed topology,
+objects are analyzed once. Component names must be unique. Mixed topology,
 k-of-n and cut/tie-set inputs are currently rejected by <code class="docutils literal notranslate"><span class="pre">SystemFORM</span></code>; use
 original-system simulation for these events.</p>
 <p>For each component, FORM finds a tangent failure half-space in the same
-independent standard-normal coordinates:</p>
+independent standard normal coordinates:</p>
 <div class="math notranslate nohighlight">
 \[F_i \approx \{\alpha_i^T U &gt; \beta_i\},
 \qquad R_{ij}=\alpha_i^T\alpha_j.\]</div>
@@ -685,14 +685,14 @@ design point; convergence alone does not establish global accuracy. The optional
 <a class="reference internal" href="strong_maximum.html#chap-strong-maximum"><span class="std std-ref">Strong Maximum Test</span></a> can check each component
 for competing regions on an enlarged sphere.</p>
 <p>The method is exact up to integration error for affine limit states in
-standard-normal space. For nonlinear components, compare with original-system
+standard normal space. For nonlinear components, compare with original-system
 simulation. The four-branch notebook illustrates the difference between the
 first-order approximation and the nonlinear event probability.</p>
 </section>
 <section id="event-topologies">
-<h2>Event Topologies<a class="headerlink" href="#event-topologies" title="Link to this heading">#</a></h2>
+<h2>Event topologies<a class="headerlink" href="#event-topologies" title="Link to this heading">#</a></h2>
 <p>Structural systems are often specified as event logic once the engineer has
-identified the relevant component limit states.  Pystra provides three small
+identified the relevant component limit states.  PySTRA provides three small
 helpers for that layer:</p>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">KOfNSystem</span></code></dt><dd><p>fails when at least <code class="docutils literal notranslate"><span class="pre">k</span></code> children fail.  <code class="docutils literal notranslate"><span class="pre">KOfNSystem(children,</span> <span class="pre">k=1)</span></code> has
@@ -734,7 +734,7 @@ importance sampling uses one FORM design point. Neither should be assumed to
 cover arbitrary system failure regions.</p>
 </section>
 <section id="ditlevsen-bounds">
-<h2>Ditlevsen Bounds<a class="headerlink" href="#ditlevsen-bounds" title="Link to this heading">#</a></h2>
+<h2>Ditlevsen bounds<a class="headerlink" href="#ditlevsen-bounds" title="Link to this heading">#</a></h2>
 <p>When component event probabilities and pairwise intersection probabilities are
 available, <code class="xref py py-func docutils literal notranslate"><span class="pre">pystra.ditlevsen_bounds()</span></code> computes <a class="reference internal" href="references.html#ref-ditlevsen-1979"><span class="std std-ref">Ditlevsen’s
 second-order bounds</span></a> for a union of failure
@@ -756,10 +756,10 @@ test suite includes <a class="reference internal" href="references.html#ref-main
 upper bound is approximately <code class="docutils literal notranslate"><span class="pre">6.216e-2</span></code>.</p>
 </section>
 <section id="scope-and-transformations">
-<h2>Scope and Transformations<a class="headerlink" href="#scope-and-transformations" title="Link to this heading">#</a></h2>
+<h2>Scope and transformations<a class="headerlink" href="#scope-and-transformations" title="Link to this heading">#</a></h2>
 <p>The system module composes limit-state functions in the original physical
 variables.  The isoprobabilistic transformation to standard space remains the
-responsibility of the selected Pystra analysis method and its options
+responsibility of the selected PySTRA analysis method and its options
 (<code class="docutils literal notranslate"><span class="pre">FORMOptions</span></code> or <code class="docutils literal notranslate"><span class="pre">SimulationOptions</span></code>).  This keeps system topology separate from the probability
 transformation, following the same conceptual split used in structural
 reliability methods generally.</p>
@@ -776,9 +776,9 @@ load redistribution and importance sampling around multiple design points
 remain future extensions.</p>
 </section>
 <section id="validation-benchmarks">
-<h2>Validation Benchmarks<a class="headerlink" href="#validation-benchmarks" title="Link to this heading">#</a></h2>
-<p>The current validation suite checks exact Boolean behaviour for series,
-parallel, k-of-n, cut-set, and tie-set systems; integration with Pystra’s
+<h2>Validation benchmarks<a class="headerlink" href="#validation-benchmarks" title="Link to this heading">#</a></h2>
+<p>The current validation suite checks exact Boolean behavior for series,
+parallel, k-of-n, cut-set, and tie-set systems; integration with PySTRA’s
 <code class="docutils literal notranslate"><span class="pre">LimitState</span></code> evaluation; independent and correlated linear system
 probabilities; identical and opposing component directions; positive rescaling;
 shared components; failed FORM diagnostics; and Ditlevsen input validation.
@@ -814,7 +814,7 @@ related equivalent planes comparisons.</p></li>
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Copulas and Isoprobabilistic Transformations</p>
+        <p class="prev-next-title">Copulas and isoprobabilistic transformations</p>
       </div>
     </a>
     <a class="right-next"
@@ -845,13 +845,13 @@ related equivalent planes comparisons.</p></li>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#series-and-parallel-systems">Series and Parallel Systems</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#series-and-parallel-systems">Series and parallel systems</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#original-system-monte-carlo">Original-system Monte Carlo</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#component-based-system-form">Component-based system FORM</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#event-topologies">Event Topologies</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ditlevsen-bounds">Ditlevsen Bounds</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scope-and-transformations">Scope and Transformations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#validation-benchmarks">Validation Benchmarks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#event-topologies">Event topologies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ditlevsen-bounds">Ditlevsen bounds</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scope-and-transformations">Scope and transformations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#validation-benchmarks">Validation benchmarks</a></li>
 </ul>
   </nav></div>
 

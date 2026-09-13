@@ -9,13 +9,13 @@
     "\n",
     "Use the Strong Maximum Test to look for competing failure regions and examine what the diagnostic can miss.\n",
     "\n",
-    "**Before you start:** FORM and standard-normal design-point geometry.\n",
+    "**Before you start:** FORM and standard normal design-point geometry.\n",
     "\n",
     "## Problem and approach\n",
     "\n",
-    "FORM convergence does not establish that its design point represents every important failure region. The strong maximum test samples an enlarged sphere in independent standard-normal space and reports failure points outside the candidate's vicinity.\n",
+    "FORM convergence does not establish that its design point represents every important failure region. The strong maximum test samples an enlarged sphere in independent standard normal space and reports failure points outside the candidate's vicinity.\n",
     "\n",
-    "This tutorial checks a single half-space, detects a second failure region, visualizes the four point groups, and constructs a bounded region that the sphere misses. See the [theory](../theory.rst#theory-strong-maximum), [API guide](../strong_maximum.rst), and [OpenTURNS formulation](https://openturns.github.io/openturns/latest/theory/reliability_sensitivity/strong_maximum_test.html).\n",
+    "This tutorial checks a single half-space, detects a second failure region, visualizes the four point groups, and constructs a bounded region that the sphere misses. See the [theory](../theory.rst#theory-strong-maximum), [User guide](../strong_maximum.rst), and [OpenTURNS formulation](https://openturns.github.io/openturns/latest/theory/reliability_sensitivity/strong_maximum_test.html).\n",
     "\n",
     "The test is a diagnostic, not a failure-probability estimator or a certificate of global optimality."
    ]
@@ -26,10 +26,10 @@
    "id": "8ea096d4",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2026-09-13T07:49:50.080377Z",
-     "iopub.status.busy": "2026-09-13T07:49:50.080274Z",
-     "iopub.status.idle": "2026-09-13T07:49:50.731847Z",
-     "shell.execute_reply": "2026-09-13T07:49:50.731369Z"
+     "iopub.execute_input": "2026-09-13T08:14:36.473030Z",
+     "iopub.status.busy": "2026-09-13T08:14:36.472864Z",
+     "iopub.status.idle": "2026-09-13T08:14:37.683449Z",
+     "shell.execute_reply": "2026-09-13T08:14:37.682709Z"
     }
    },
    "outputs": [],
@@ -60,10 +60,10 @@
    "id": "1a7c4491",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2026-09-13T07:49:50.733122Z",
-     "iopub.status.busy": "2026-09-13T07:49:50.732958Z",
-     "iopub.status.idle": "2026-09-13T07:49:50.740035Z",
-     "shell.execute_reply": "2026-09-13T07:49:50.739674Z"
+     "iopub.execute_input": "2026-09-13T08:14:37.685928Z",
+     "iopub.status.busy": "2026-09-13T08:14:37.685613Z",
+     "iopub.status.idle": "2026-09-13T08:14:37.697598Z",
+     "shell.execute_reply": "2026-09-13T08:14:37.696788Z"
     }
    },
    "outputs": [
@@ -123,10 +123,10 @@
    "id": "198aa4ca",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2026-09-13T07:49:50.741095Z",
-     "iopub.status.busy": "2026-09-13T07:49:50.740989Z",
-     "iopub.status.idle": "2026-09-13T07:49:50.746503Z",
-     "shell.execute_reply": "2026-09-13T07:49:50.746085Z"
+     "iopub.execute_input": "2026-09-13T08:14:37.699225Z",
+     "iopub.status.busy": "2026-09-13T08:14:37.699039Z",
+     "iopub.status.idle": "2026-09-13T08:14:37.709158Z",
+     "shell.execute_reply": "2026-09-13T08:14:37.708441Z"
     }
    },
    "outputs": [
@@ -187,10 +187,10 @@
    "id": "0dc4e86e",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2026-09-13T07:49:50.747407Z",
-     "iopub.status.busy": "2026-09-13T07:49:50.747292Z",
-     "iopub.status.idle": "2026-09-13T07:49:50.856918Z",
-     "shell.execute_reply": "2026-09-13T07:49:50.856579Z"
+     "iopub.execute_input": "2026-09-13T08:14:37.710812Z",
+     "iopub.status.busy": "2026-09-13T08:14:37.710638Z",
+     "iopub.status.idle": "2026-09-13T08:14:37.926397Z",
+     "shell.execute_reply": "2026-09-13T08:14:37.925505Z"
     },
     "pystra": {
      "figure_alts": [
@@ -259,10 +259,10 @@
    "id": "ede645c7",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2026-09-13T07:49:50.857969Z",
-     "iopub.status.busy": "2026-09-13T07:49:50.857856Z",
-     "iopub.status.idle": "2026-09-13T07:49:50.863736Z",
-     "shell.execute_reply": "2026-09-13T07:49:50.863393Z"
+     "iopub.execute_input": "2026-09-13T08:14:37.928054Z",
+     "iopub.status.busy": "2026-09-13T08:14:37.927869Z",
+     "iopub.status.idle": "2026-09-13T08:14:37.938410Z",
+     "shell.execute_reply": "2026-09-13T08:14:37.937686Z"
     }
    },
    "outputs": [
@@ -373,7 +373,7 @@
    "source": [
     "## A bounded failure island the sphere cannot detect\n",
     "\n",
-    "Add a small circular failure island centred at $(-2,0)$ with radius 0.2:\n",
+    "Add a small circular failure island centered at $(-2,0)$ with radius 0.2:\n",
     "\n",
     "$$g(u)=\\min\\{3-u_1,(u_1+2)^2+u_2^2-0.2^2\\}.$$\n",
     "\n",
@@ -386,10 +386,10 @@
    "id": "4befe257",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2026-09-13T07:49:50.864716Z",
-     "iopub.status.busy": "2026-09-13T07:49:50.864613Z",
-     "iopub.status.idle": "2026-09-13T07:49:50.922753Z",
-     "shell.execute_reply": "2026-09-13T07:49:50.922435Z"
+     "iopub.execute_input": "2026-09-13T08:14:37.940072Z",
+     "iopub.status.busy": "2026-09-13T08:14:37.939894Z",
+     "iopub.status.idle": "2026-09-13T08:14:38.055549Z",
+     "shell.execute_reply": "2026-09-13T08:14:38.054882Z"
     },
     "pystra": {
      "figure_alts": [
@@ -476,10 +476,10 @@
    "id": "dc4a4143",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2026-09-13T07:49:50.923670Z",
-     "iopub.status.busy": "2026-09-13T07:49:50.923566Z",
-     "iopub.status.idle": "2026-09-13T07:49:50.931160Z",
-     "shell.execute_reply": "2026-09-13T07:49:50.930793Z"
+     "iopub.execute_input": "2026-09-13T08:14:38.057580Z",
+     "iopub.status.busy": "2026-09-13T08:14:38.057404Z",
+     "iopub.status.idle": "2026-09-13T08:14:38.072374Z",
+     "shell.execute_reply": "2026-09-13T08:14:38.071627Z"
     }
    },
    "outputs": [

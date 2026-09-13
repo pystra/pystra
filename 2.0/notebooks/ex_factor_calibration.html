@@ -858,8 +858,8 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Q1_max 3.0477172739193117 4.306471480121069 0.006471480121069462
-Q2_max 3.0477172739193117 4.30000560315918 5.603159180189721e-06
+Q1_max 3.0477172739193206 4.306471480121075 0.006471480121074791
+Q2_max 3.0477172739193206 4.300005603159196 5.603159196176932e-06
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -889,15 +889,22 @@ Q2_max 3.0477172739193117 4.30000560315918 5.603159180189721e-06
     <span class="p">(</span><span class="s2">"root"</span><span class="p">,</span> <span class="s2">"matrix"</span><span class="p">),</span>
     <span class="p">(</span><span class="s2">"alpha"</span><span class="p">,</span> <span class="s2">"matrix"</span><span class="p">),</span>
 <span class="p">]:</span>
-    <span class="n">solved</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">calibration</span><span class="o">.</span><span class="n">solve_designs</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">target_beta</span><span class="o">=</span><span class="n">target_beta</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">design_method</span><span class="p">)</span>
+    <span class="n">solved</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">calibration</span><span class="o">.</span><span class="n">solve_designs</span><span class="p">(</span>
+        <span class="n">problem</span><span class="p">,</span> <span class="n">target_beta</span><span class="o">=</span><span class="n">target_beta</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">design_method</span>
+    <span class="p">)</span>
     <span class="k">assert</span> <span class="n">solved</span><span class="o">.</span><span class="n">converged</span>
     <span class="n">estimated</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">calibration</span><span class="o">.</span><span class="n">derive_factors</span><span class="p">(</span><span class="n">solved</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">factor_method</span><span class="p">)</span>
     <span class="n">selected</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">calibration</span><span class="o">.</span><span class="n">select_factors</span><span class="p">(</span>
         <span class="n">estimated</span><span class="p">,</span> <span class="n">resistance</span><span class="o">=</span><span class="s2">"minimum"</span><span class="p">,</span> <span class="n">loads</span><span class="o">=</span><span class="s2">"maximum"</span><span class="p">,</span> <span class="n">combinations</span><span class="o">=</span><span class="s2">"maximum"</span>
     <span class="p">)</span>
     <span class="n">design</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">calibration</span><span class="o">.</span><span class="n">design_with_factors</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">selected</span><span class="p">)</span>
-    <span class="n">verified</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">calibration</span><span class="o">.</span><span class="n">verify_designs</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">design</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="n">target_beta</span><span class="o">=</span><span class="n">target_beta</span><span class="p">)</span>
+    <span class="n">verified</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">calibration</span><span class="o">.</span><span class="n">verify_designs</span><span class="p">(</span>
+        <span class="n">problem</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">design</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="n">target_beta</span><span class="o">=</span><span class="n">target_beta</span>
+    <span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">design_method</span><span class="p">,</span> <span class="n">factor_method</span><span class="p">,</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">reliability</span><span class="o">.</span><span class="n">beta</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">verified</span><span class="p">])</span>
+    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">reliability</span><span class="o">.</span><span class="n">converged</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">verified</span><span class="p">),</span> <span class="p">[</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">reliability</span><span class="o">.</span><span class="n">message</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">verified</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span><span class="o">.</span><span class="n">reliability</span><span class="o">.</span><span class="n">converged</span>
+    <span class="p">]</span>
 <br/></pre></div>
 </div>
 </div>
@@ -906,9 +913,9 @@ Q2_max 3.0477172739193117 4.30000560315918 5.603159180189721e-06
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-root coeff [4.306471480121069, 4.30000560315918]
-root matrix [4.3064711133200655, 4.30000523595273]
-alpha matrix [4.30646064767464, 4.29999475873901]
+root coeff [4.306471480121075, 4.300005603159196]
+root matrix [4.306471113320074, 4.300005235952749]
+alpha matrix [4.306460647674517, 4.299994758738886]
 </pre></div></div>
 </div>
 </section>
@@ -953,6 +960,8 @@ alpha matrix [4.30646064767464, 4.29999475873901]
 <span class="n">checks</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">calibration</span><span class="o">.</span><span class="n">verify_designs</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">designs</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="n">target_beta</span><span class="o">=</span><span class="mf">3.7</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">check</span> <span class="ow">in</span> <span class="n">checks</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">check</span><span class="o">.</span><span class="n">case_name</span><span class="p">,</span> <span class="n">check</span><span class="o">.</span><span class="n">reliability</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span> <span class="n">check</span><span class="o">.</span><span class="n">target_margin</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">check</span><span class="o">.</span><span class="n">reliability</span><span class="o">.</span><span class="n">converged</span> <span class="k">for</span> <span class="n">check</span> <span class="ow">in</span> <span class="n">checks</span><span class="p">)</span>
 <br/></pre></div>
 </div>
 </div>
@@ -961,14 +970,15 @@ alpha matrix [4.30646064767464, 4.29999475873901]
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Q1_max 3.7039102295177426 0.003910229517742447
-Q2_max 4.28712854669924 0.5871285466992395
+Q1_max 3.7039102295176907 0.003910229517690489
+Q2_max 4.287128546699189 0.5871285466991889
 </pre></div></div>
 </div>
 </section>
 <section id="Interpretation">
 <h2>Interpretation<a class="headerlink" href="#Interpretation" title="Link to this heading">#</a></h2>
 <p>Factor derivation and factor selection are distinct steps. Verify a common code-conforming design against every representative case after selecting factors; meeting the target in the original solved cases alone is insufficient.</p>
+<p>Keep unsuccessful target solves visible with <code class="docutils literal notranslate"><span class="pre">solutions.reliability_frame()</span></code>. Factor derivation needs normal-space design points; an estimate-only evaluator can serve root solving and verification. Always verify the designs produced by the selected factors.</p>
 <p><strong>Continue:</strong> <a class="reference internal" href="../guides/calibration.html"><span class="doc">User guide</span></a> · <a class="reference internal" href="../api/calibration.html"><span class="doc">API reference</span></a> · <a class="reference internal" href="../theory/code_calibration.html"><span class="doc">Theory</span></a></p>
 </section>
 </section>

@@ -22,7 +22,7 @@ Public entry points
    * - :class:`~pystra.active_learning.estimation.MonteCarloEstimator`
      - Estimate probability on a separate sample.
    * - :class:`~pystra.active_learning.importance.ImportanceSamplingEstimator`
-     - Use explicit Gaussian-mixture proposal centres.
+     - Use explicit Gaussian-mixture proposal centers.
    * - :class:`~pystra.active_learning.subset.SubsetSimulationEstimator`
      - Use replicated conditional sampling.
    * - :class:`~pystra.active_learning.stopping.BetaBounds`

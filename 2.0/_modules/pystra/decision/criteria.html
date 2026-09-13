@@ -1,0 +1,1090 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pystra.decision.criteria &#8212; PySTRA 2.0.0a1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=a54fd074" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../../_static/documentation_options.js?v=944fa962"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=ccd31ad0"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pystra/decision/criteria';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.0a1" />
+  
+    
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">These pages document PySTRA 2.0, which is in development. The stable 1.x documentation is at <a href="https://pystra.github.io/pystra/">pystra.github.io/pystra</a>.</div>
+</aside>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 2.0.0a1 documentation - Home"/>
+    <img src="../../../_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 2.0.0a1 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item"><a class="version-status" href="../../../install.html" aria-label="Documentation version 2.0.0a1: installation instructions">2.0.0a1 · development</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api.html">
+    API reference
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../references.html">
+    References
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../references.html">
+    References
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">pystra.decision.criteria</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for pystra.decision.criteria</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Life-safety acceptability criteria for decision studies."""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">brentq</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.risk</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">FatalityConsequence</span><span class="p">,</span>
+    <span class="n">RiskResult</span><span class="p">,</span>
+    <span class="n">jcss_lqi_risk_cost</span><span class="p">,</span>
+    <span class="n">jcss_lqi_risk_cost_from_result</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.swtp</span><span class="w"> </span><span class="kn">import</span> <span class="n">SWTP</span><span class="p">,</span> <span class="n">_require_explicit_indexed</span><span class="p">,</span> <span class="n">_swtp_value</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.targets</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TargetReliability</span><span class="p">,</span>
+    <span class="n">derive_lqi_target</span><span class="p">,</span>
+    <span class="n">lqi_k1</span><span class="p">,</span>
+    <span class="n">lqi_target_reliability</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"jcss_lqi_acceptability_margin"</span><span class="p">,</span>
+    <span class="s2">"finite_difference_derivative"</span><span class="p">,</span>
+    <span class="s2">"jcss_lqi_acceptability"</span><span class="p">,</span>
+    <span class="s2">"jcss_lqi_is_acceptable"</span><span class="p">,</span>
+    <span class="s2">"DDOCriterion"</span><span class="p">,</span>
+    <span class="s2">"LQI"</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="jcss_lqi_acceptability_margin">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.jcss_lqi_acceptability_margin.html#pystra.decision.ddo.jcss_lqi_acceptability_margin">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">jcss_lqi_acceptability_margin</span><span class="p">(</span>
+    <span class="n">safety_cost_derivative</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">failure_rate_derivative</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">swtp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">SWTP</span><span class="p">,</span>
+    <span class="n">expected_fatalities_given_failure</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Return the JCSS marginal LQI acceptability margin.</span>
+
+<span class="sd">    For a design parameter that increases safety, the JCSS condition is</span>
+<span class="sd">    ``dC/dp &gt;= -G_x k N_F dh/dp``.  The returned margin is therefore</span>
+<span class="sd">    ``dC/dp + G_x k N_F dh/dp``; non-negative values satisfy the criterion.</span>
+<span class="sd">    """</span>
+
+    <span class="n">value_per_life</span> <span class="o">=</span> <span class="n">_swtp_value</span><span class="p">(</span><span class="n">swtp</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">value_per_life</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"swtp must be positive"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">expected_fatalities_given_failure</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"expected_fatalities_given_failure must be non-negative"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span>
+        <span class="n">safety_cost_derivative</span>
+        <span class="o">+</span> <span class="n">value_per_life</span> <span class="o">*</span> <span class="n">expected_fatalities_given_failure</span> <span class="o">*</span> <span class="n">failure_rate_derivative</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="finite_difference_derivative">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.finite_difference_derivative.html#pystra.decision.ddo.finite_difference_derivative">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">finite_difference_derivative</span><span class="p">(</span>
+    <span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="n">design</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">step</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Return a central finite-difference derivative for a scalar design."""</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">design</span><span class="p">)</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="mf">1e-6</span><span class="p">)</span> <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="n">step</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">h</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"step must be positive"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">((</span><span class="n">function</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">h</span><span class="p">)</span> <span class="o">-</span> <span class="n">function</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">h</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">h</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="jcss_lqi_acceptability">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.jcss_lqi_acceptability.html#pystra.decision.ddo.jcss_lqi_acceptability">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">jcss_lqi_acceptability</span><span class="p">(</span>
+    <span class="n">safety_cost</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="n">failure_rate</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="n">design</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">swtp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">SWTP</span><span class="p">,</span>
+    <span class="n">expected_fatalities_given_failure</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">step</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Return the finite-difference JCSS LQI acceptability margin."""</span>
+
+    <span class="n">dcost</span> <span class="o">=</span> <span class="n">finite_difference_derivative</span><span class="p">(</span><span class="n">safety_cost</span><span class="p">,</span> <span class="n">design</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">)</span>
+    <span class="n">drate</span> <span class="o">=</span> <span class="n">finite_difference_derivative</span><span class="p">(</span><span class="n">failure_rate</span><span class="p">,</span> <span class="n">design</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">jcss_lqi_acceptability_margin</span><span class="p">(</span>
+        <span class="n">dcost</span><span class="p">,</span> <span class="n">drate</span><span class="p">,</span> <span class="n">swtp</span><span class="p">,</span> <span class="n">expected_fatalities_given_failure</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="jcss_lqi_is_acceptable">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.jcss_lqi_is_acceptable.html#pystra.decision.ddo.jcss_lqi_is_acceptable">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">jcss_lqi_is_acceptable</span><span class="p">(</span>
+    <span class="n">safety_cost</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="n">failure_rate</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="n">design</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">swtp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">SWTP</span><span class="p">,</span>
+    <span class="n">expected_fatalities_given_failure</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">step</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Return ``True`` when the JCSS marginal LQI condition is satisfied."""</span>
+
+    <span class="n">margin</span> <span class="o">=</span> <span class="n">jcss_lqi_acceptability</span><span class="p">(</span>
+        <span class="n">safety_cost</span><span class="p">,</span>
+        <span class="n">failure_rate</span><span class="p">,</span>
+        <span class="n">design</span><span class="p">,</span>
+        <span class="n">swtp</span><span class="p">,</span>
+        <span class="n">expected_fatalities_given_failure</span><span class="p">,</span>
+        <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">margin</span> <span class="o">&gt;=</span> <span class="mf">0.0</span></div>
+
+
+
+<div class="viewcode-block" id="DDOCriterion">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.DDOCriterion.html#pystra.decision.ddo.DDOCriterion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DDOCriterion</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Base interface for DDO acceptability criteria."""</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">"criterion"</span>
+    <span class="n">feasibility_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="DDOCriterion.evaluate">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.DDOCriterion.html#pystra.decision.ddo.DDOCriterion.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return decision results with criterion-specific columns."""</span>
+
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="DDOCriterion.feasible">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.DDOCriterion.html#pystra.decision.ddo.DDOCriterion.feasible">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">feasible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a boolean feasibility mask for evaluated results."""</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">feasibility_column</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> does not define feasibility"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">feasibility_column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Feasibility column </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">feasibility_column</span><span class="si">!r}</span><span class="s2"> is missing"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">feasibility_column</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_lqi_consequence</span><span class="p">(</span>
+    <span class="n">expected_fatalities_given_failure</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">consequence</span><span class="p">:</span> <span class="n">FatalityConsequence</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FatalityConsequence</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">consequence</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">expected_fatalities_given_failure</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"Specify either expected_fatalities_given_failure or consequence, not both"</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">consequence</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">consequence</span>
+    <span class="k">if</span> <span class="n">expected_fatalities_given_failure</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"LQI construction requires expected_fatalities_given_failure or consequence"</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">FatalityConsequence</span><span class="p">(</span><span class="n">people_exposed</span><span class="o">=</span><span class="n">expected_fatalities_given_failure</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="LQI">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.LQI.html#pystra.decision.ddo.LQI">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LQI</span><span class="p">(</span><span class="n">DDOCriterion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Minimum acceptable life-safety criterion using LQI/SWTP.</span>
+
+<span class="sd">    The criterion adds consequence valuation and LQI acceptability columns to</span>
+<span class="sd">    the reliability and objective results produced by :class:`DDO`.  It does</span>
+<span class="sd">    not select the economic optimum by itself.</span>
+<span class="sd">    """</span>
+
+    <span class="n">swtp</span><span class="p">:</span> <span class="n">SWTP</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">consequence</span><span class="p">:</span> <span class="n">FatalityConsequence</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">target</span><span class="p">:</span> <span class="n">TargetReliability</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">"lqi"</span>
+    <span class="n">feasibility_column</span> <span class="o">=</span> <span class="s2">"lqi_acceptable"</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_as_swtp</span><span class="p">(</span><span class="n">swtp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">SWTP</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SWTP</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">swtp</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">swtp</span><span class="p">,</span> <span class="n">SWTP</span><span class="p">)</span> <span class="k">else</span> <span class="n">SWTP</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">swtp</span><span class="p">))</span>
+
+<div class="viewcode-block" id="LQI.lookup_target">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.LQI.html#pystra.decision.ddo.LQI.lookup_target">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">lookup_target</span><span class="p">(</span><span class="n">k1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">variability</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"medium"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TargetReliability</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the rounded source-table LQI target for ``k1``."""</span>
+
+        <span class="k">return</span> <span class="n">lqi_target_reliability</span><span class="p">(</span><span class="n">k1</span><span class="p">,</span> <span class="n">variability</span><span class="o">=</span><span class="n">variability</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LQI.derive_target">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.LQI.html#pystra.decision.ddo.LQI.derive_target">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">derive_target</span><span class="p">(</span>
+        <span class="n">k1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">resistance_cov</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">,</span>
+        <span class="n">load_cov</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">,</span>
+        <span class="n">bounds</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">),</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TargetReliability</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate an LQI target from the marginal optimization condition."""</span>
+
+        <span class="k">return</span> <span class="n">derive_lqi_target</span><span class="p">(</span>
+            <span class="n">k1</span><span class="p">,</span>
+            <span class="n">resistance_cov</span><span class="o">=</span><span class="n">resistance_cov</span><span class="p">,</span>
+            <span class="n">load_cov</span><span class="o">=</span><span class="n">load_cov</span><span class="p">,</span>
+            <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LQI.from_swtp">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.LQI.html#pystra.decision.ddo.LQI.from_swtp">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_swtp</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">swtp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">SWTP</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">expected_fatalities_given_failure</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">consequence</span><span class="p">:</span> <span class="n">FatalityConsequence</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">marginal_safety_cost</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">variability</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"medium"</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"LQI"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create an LQI criterion from an SWTP value.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        swtp : float or SWTP</span>
+<span class="sd">            Societal willingness to pay per statistical life.</span>
+<span class="sd">        expected_fatalities_given_failure : float, optional</span>
+<span class="sd">            Expected fatalities conditional on failure.</span>
+<span class="sd">        consequence : FatalityConsequence, optional</span>
+<span class="sd">            Consequence model.  Use this instead of</span>
+<span class="sd">            ``expected_fatalities_given_failure`` when exposure and fatality</span>
+<span class="sd">            probability should remain explicit.</span>
+<span class="sd">        marginal_safety_cost : float</span>
+<span class="sd">            Marginal annual safety cost used in the LQI target-reliability</span>
+<span class="sd">            table.</span>
+<span class="sd">        variability : {"low", "medium", "high"}, optional</span>
+<span class="sd">            Variability class for the LQI target-reliability table.</span>
+<span class="sd">        """</span>
+
+        <span class="n">swtp_value</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_as_swtp</span><span class="p">(</span><span class="n">swtp</span><span class="p">)</span>
+        <span class="n">consequence</span> <span class="o">=</span> <span class="n">_lqi_consequence</span><span class="p">(</span><span class="n">expected_fatalities_given_failure</span><span class="p">,</span> <span class="n">consequence</span><span class="p">)</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">lqi_target_reliability</span><span class="p">(</span>
+            <span class="n">lqi_k1</span><span class="p">(</span>
+                <span class="n">safety_cost_rate</span><span class="o">=</span><span class="n">marginal_safety_cost</span><span class="p">,</span>
+                <span class="n">swtp</span><span class="o">=</span><span class="n">swtp_value</span><span class="p">,</span>
+                <span class="n">expected_fatalities_given_failure</span><span class="o">=</span><span class="p">(</span>
+                    <span class="n">consequence</span><span class="o">.</span><span class="n">expected_fatalities_given_failure</span>
+                <span class="p">),</span>
+            <span class="p">),</span>
+            <span class="n">variability</span><span class="o">=</span><span class="n">variability</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">swtp</span><span class="o">=</span><span class="n">swtp_value</span><span class="p">,</span> <span class="n">consequence</span><span class="o">=</span><span class="n">consequence</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LQI.from_country">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.LQI.html#pystra.decision.ddo.LQI.from_country">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_country</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">expected_fatalities_given_failure</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">consequence</span><span class="p">:</span> <span class="n">FatalityConsequence</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">marginal_safety_cost</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">indexed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">variability</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"medium"</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"LQI"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create an LQI criterion from a built-in country SWTP value."""</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_swtp</span><span class="p">(</span>
+            <span class="n">SWTP</span><span class="o">.</span><span class="n">from_country</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">indexed</span><span class="o">=</span><span class="n">_require_explicit_indexed</span><span class="p">(</span><span class="n">indexed</span><span class="p">)),</span>
+            <span class="n">expected_fatalities_given_failure</span><span class="o">=</span><span class="n">expected_fatalities_given_failure</span><span class="p">,</span>
+            <span class="n">consequence</span><span class="o">=</span><span class="n">consequence</span><span class="p">,</span>
+            <span class="n">marginal_safety_cost</span><span class="o">=</span><span class="n">marginal_safety_cost</span><span class="p">,</span>
+            <span class="n">variability</span><span class="o">=</span><span class="n">variability</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LQI.from_lqi">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.LQI.html#pystra.decision.ddo.LQI.from_lqi">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_lqi</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">gross_domestic_product_per_capita</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">work_leisure_parameter</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">demographic_constant</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">expected_fatalities_given_failure</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">consequence</span><span class="p">:</span> <span class="n">FatalityConsequence</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">marginal_safety_cost</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">variability</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"medium"</span><span class="p">,</span>
+        <span class="n">currency</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"currency units"</span><span class="p">,</span>
+        <span class="n">price_year</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">"LQI relation SWTP = g / q * G"</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"LQI"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create an LQI criterion from the LQI SWTP relation.</span>
+
+<span class="sd">        ``work_leisure_parameter`` is the dimensionless LQI parameter ``q``</span>
+<span class="sd">        (~0.1--0.2), not an annual mortality rate.</span>
+<span class="sd">        """</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_swtp</span><span class="p">(</span>
+            <span class="n">SWTP</span><span class="o">.</span><span class="n">from_lqi</span><span class="p">(</span>
+                <span class="n">gross_domestic_product_per_capita</span><span class="o">=</span><span class="n">gross_domestic_product_per_capita</span><span class="p">,</span>
+                <span class="n">work_leisure_parameter</span><span class="o">=</span><span class="n">work_leisure_parameter</span><span class="p">,</span>
+                <span class="n">demographic_constant</span><span class="o">=</span><span class="n">demographic_constant</span><span class="p">,</span>
+                <span class="n">currency</span><span class="o">=</span><span class="n">currency</span><span class="p">,</span>
+                <span class="n">price_year</span><span class="o">=</span><span class="n">price_year</span><span class="p">,</span>
+                <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">expected_fatalities_given_failure</span><span class="o">=</span><span class="n">expected_fatalities_given_failure</span><span class="p">,</span>
+            <span class="n">consequence</span><span class="o">=</span><span class="n">consequence</span><span class="p">,</span>
+            <span class="n">marginal_safety_cost</span><span class="o">=</span><span class="n">marginal_safety_cost</span><span class="p">,</span>
+            <span class="n">variability</span><span class="o">=</span><span class="n">variability</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">expected_fatalities_given_failure</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return expected fatalities conditional on failure when available."""</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">consequence</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">consequence</span><span class="o">.</span><span class="n">expected_fatalities_given_failure</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">k1</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the LQI safety cost ratio when a target is available."""</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">k1</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_swtp_and_expected_fatalities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">SWTP</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">swtp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"LQI criterion requires an SWTP value"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">consequence</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"LQI criterion requires a consequence model"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">swtp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">consequence</span><span class="o">.</span><span class="n">expected_fatalities_given_failure</span>
+
+<div class="viewcode-block" id="LQI.risk_cost">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.LQI.html#pystra.decision.ddo.LQI.risk_cost">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">risk_cost</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">safety_cost</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">failure_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Return the JCSS LQI life-safety risk-cost term."""</span>
+
+        <span class="n">swtp</span><span class="p">,</span> <span class="n">expected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swtp_and_expected_fatalities</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">jcss_lqi_risk_cost</span><span class="p">(</span><span class="n">safety_cost</span><span class="p">,</span> <span class="n">failure_rate</span><span class="p">,</span> <span class="n">swtp</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LQI.risk_cost_from_result">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.LQI.html#pystra.decision.ddo.LQI.risk_cost_from_result">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">risk_cost_from_result</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">safety_cost</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">risk</span><span class="p">:</span> <span class="n">RiskResult</span><span class="p">,</span>
+        <span class="n">include_economic_loss</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return LQI risk cost from an aggregated risk result."""</span>
+
+        <span class="n">swtp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swtp_and_expected_fatalities</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">jcss_lqi_risk_cost_from_result</span><span class="p">(</span>
+            <span class="n">safety_cost</span><span class="p">,</span>
+            <span class="n">risk</span><span class="p">,</span>
+            <span class="n">swtp</span><span class="p">,</span>
+            <span class="n">include_economic_loss</span><span class="o">=</span><span class="n">include_economic_loss</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LQI.acceptability_margin">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.LQI.html#pystra.decision.ddo.LQI.acceptability_margin">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">acceptability_margin</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">safety_cost_derivative</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">failure_rate_derivative</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the JCSS marginal LQI acceptability margin."""</span>
+
+        <span class="n">swtp</span><span class="p">,</span> <span class="n">expected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swtp_and_expected_fatalities</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">jcss_lqi_acceptability_margin</span><span class="p">(</span>
+            <span class="n">safety_cost_derivative</span><span class="p">,</span>
+            <span class="n">failure_rate_derivative</span><span class="p">,</span>
+            <span class="n">swtp</span><span class="p">,</span>
+            <span class="n">expected</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LQI.acceptability_margin_at">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.LQI.html#pystra.decision.ddo.LQI.acceptability_margin_at">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">acceptability_margin_at</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">safety_cost</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">float</span><span class="p">],</span>
+        <span class="n">failure_rate</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">float</span><span class="p">],</span>
+        <span class="n">design</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">step</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the finite-difference LQI acceptability margin at a design.</span>
+
+<span class="sd">        This is :meth:`acceptability_margin` evaluated from cost and failure-rate</span>
+<span class="sd">        callables, differentiating each by central finite differences.</span>
+<span class="sd">        """</span>
+
+        <span class="n">dcost</span> <span class="o">=</span> <span class="n">finite_difference_derivative</span><span class="p">(</span><span class="n">safety_cost</span><span class="p">,</span> <span class="n">design</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">)</span>
+        <span class="n">drate</span> <span class="o">=</span> <span class="n">finite_difference_derivative</span><span class="p">(</span><span class="n">failure_rate</span><span class="p">,</span> <span class="n">design</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">acceptability_margin</span><span class="p">(</span><span class="n">dcost</span><span class="p">,</span> <span class="n">drate</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LQI.acceptability_boundary">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.LQI.html#pystra.decision.ddo.LQI.acceptability_boundary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">acceptability_boundary</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">safety_cost</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">float</span><span class="p">],</span>
+        <span class="n">failure_rate</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">float</span><span class="p">],</span>
+        <span class="n">bounds</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+        <span class="n">step</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the design where the LQI acceptability margin changes sign.</span>
+
+<span class="sd">        The marginal acceptability margin ``dC/dp + SWTP * N_F * dh/dp`` is</span>
+<span class="sd">        negative where society would still pay to reduce risk and non-negative</span>
+<span class="sd">        once the marginal cost of safety meets or exceeds the SWTP-valued risk</span>
+<span class="sd">        reduction.  The boundary is the design at which the margin is zero: the</span>
+<span class="sd">        minimum design the LQI criterion accepts (the marginal acceptability</span>
+<span class="sd">        boundary), which is a minimum safety requirement, not the economic</span>
+<span class="sd">        optimum.  Root finding uses Brent's method over ``bounds`` and requires</span>
+<span class="sd">        the margin to change sign across the interval.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        safety_cost : callable</span>
+<span class="sd">            Safety or construction cost as a function of the design value.</span>
+<span class="sd">        failure_rate : callable</span>
+<span class="sd">            Annual failure probability or rate as a function of the design.</span>
+<span class="sd">        bounds : tuple of float</span>
+<span class="sd">            Increasing ``(lower, upper)`` search interval bracketing the</span>
+<span class="sd">            boundary.</span>
+<span class="sd">        step : float, optional</span>
+<span class="sd">            Finite-difference step for the marginal derivatives.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Design value at which the marginal LQI margin is zero.</span>
+<span class="sd">        """</span>
+
+        <span class="n">lower</span><span class="p">,</span> <span class="n">upper</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">bounds</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">lower</span> <span class="o">&gt;=</span> <span class="n">upper</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"bounds must be an increasing (lower, upper) pair"</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">margin</span><span class="p">(</span><span class="n">design</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">acceptability_margin_at</span><span class="p">(</span>
+                <span class="n">safety_cost</span><span class="p">,</span> <span class="n">failure_rate</span><span class="p">,</span> <span class="n">design</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span>
+            <span class="p">)</span>
+
+        <span class="n">lower_margin</span> <span class="o">=</span> <span class="n">margin</span><span class="p">(</span><span class="n">lower</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">lower_margin</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">lower</span>
+        <span class="n">upper_margin</span> <span class="o">=</span> <span class="n">margin</span><span class="p">(</span><span class="n">upper</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">upper_margin</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">upper</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">lower_margin</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="n">upper_margin</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">"marginal LQI margin does not change sign over bounds; "</span>
+                <span class="s2">"no acceptability boundary in the given interval"</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">brentq</span><span class="p">(</span><span class="n">margin</span><span class="p">,</span> <span class="n">lower</span><span class="p">,</span> <span class="n">upper</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="LQI.evaluate">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.LQI.html#pystra.decision.ddo.LQI.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return decision results with LQI/SWTP columns."""</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">swtp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">consequence</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">expected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">consequence</span><span class="o">.</span><span class="n">expected_fatalities_given_failure</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">"expected_fatalities_given_failure"</span><span class="p">]</span> <span class="o">=</span> <span class="n">expected</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">"swtp_consequence"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">swtp</span><span class="o">.</span><span class="n">for_lives</span><span class="p">(</span><span class="n">expected</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">"target_pf"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">pf</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">"target_beta"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">beta</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">"lqi_acceptable"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"pf"</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">pf</span>
+            <span class="c1"># Screening slack: positive when pf is below the target.  Distinct</span>
+            <span class="c1"># from the marginal-cost acceptability margin (acceptability_margin).</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">"screening_margin"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">pf</span> <span class="o">-</span> <span class="n">df</span><span class="p">[</span><span class="s2">"pf"</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">df</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2021-2026, The PySTRA Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><nav aria-label="Project links" class="project-links">
+  <a href="../../../migrating.html">Migration</a>
+  <a href="../../../citing.html">Cite PySTRA</a>
+  <a href="../../../developer.html">Contributing</a>
+  <a href="https://pystra.github.io/pystra/">Stable 1.x documentation</a>
+</nav></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

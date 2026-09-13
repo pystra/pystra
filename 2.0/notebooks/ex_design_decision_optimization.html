@@ -626,8 +626,7 @@
         <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
         <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">form_result</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s2">"pf"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">form_result</span><span class="o">.</span><span class="n">failure_probability</span><span class="p">)[</span><span class="mi">0</span><span class="p">]),</span> <span class="s2">"beta"</span><span class="p">:</span> <span class="n">form_result</span><span class="o">.</span><span class="n">design_index</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">form</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <br/></pre></div>
 </div>
 </div>
@@ -669,6 +668,10 @@
       <th>As</th>
       <th>pf</th>
       <th>beta</th>
+      <th>converged</th>
+      <th>status</th>
+      <th>message</th>
+      <th>method</th>
     </tr>
   </thead>
   <tbody>
@@ -677,48 +680,80 @@
       <td>70.0</td>
       <td>0.000570</td>
       <td>3.253631</td>
+      <td>True</td>
+      <td>converged</td>
+      <td>Converged</td>
+      <td>FORM</td>
     </tr>
     <tr>
       <th>1</th>
       <td>75.0</td>
       <td>0.000203</td>
       <td>3.535666</td>
+      <td>True</td>
+      <td>converged</td>
+      <td>Converged</td>
+      <td>FORM</td>
     </tr>
     <tr>
       <th>2</th>
       <td>80.0</td>
       <td>0.000073</td>
       <td>3.798064</td>
+      <td>True</td>
+      <td>converged</td>
+      <td>Converged</td>
+      <td>FORM</td>
     </tr>
     <tr>
       <th>3</th>
       <td>85.1</td>
       <td>0.000026</td>
       <td>4.048903</td>
+      <td>True</td>
+      <td>converged</td>
+      <td>Converged</td>
+      <td>FORM</td>
     </tr>
     <tr>
       <th>4</th>
       <td>90.0</td>
       <td>0.000009</td>
       <td>4.276350</td>
+      <td>True</td>
+      <td>converged</td>
+      <td>Converged</td>
+      <td>FORM</td>
     </tr>
     <tr>
       <th>5</th>
       <td>93.0</td>
       <td>0.000005</td>
       <td>4.409851</td>
+      <td>True</td>
+      <td>converged</td>
+      <td>Converged</td>
+      <td>FORM</td>
     </tr>
     <tr>
       <th>6</th>
       <td>95.0</td>
       <td>0.000003</td>
       <td>4.496640</td>
+      <td>True</td>
+      <td>converged</td>
+      <td>Converged</td>
+      <td>FORM</td>
     </tr>
     <tr>
       <th>7</th>
       <td>100.0</td>
       <td>0.000001</td>
       <td>4.706519</td>
+      <td>True</td>
+      <td>converged</td>
+      <td>Converged</td>
+      <td>FORM</td>
     </tr>
   </tbody>
 </table>
@@ -1191,6 +1226,7 @@ Text(0.5, 1.0, &#39;Economic objective and LQI target&#39;)
 
 <span class="n">jcss_designs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">70.0</span><span class="p">,</span> <span class="mf">100.0</span><span class="p">,</span> <span class="mi">61</span><span class="p">)</span>
 <span class="n">jcss_curve</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">decision</span><span class="o">.</span><span class="n">DesignStudy</span><span class="p">(</span><span class="s2">"As"</span><span class="p">,</span> <span class="n">jcss_designs</span><span class="p">,</span> <span class="n">run_reliability</span><span class="p">)</span><span class="o">.</span><span class="n">evaluate</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">jcss_curve</span><span class="p">[</span><span class="s2">"converged"</span><span class="p">]</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span> <span class="s2">"Inspect failed FORM cases before interpolating"</span>
 <span class="n">jcss_pf</span> <span class="o">=</span> <span class="n">PchipInterpolator</span><span class="p">(</span><span class="n">jcss_curve</span><span class="p">[</span><span class="s2">"As"</span><span class="p">],</span> <span class="n">jcss_curve</span><span class="p">[</span><span class="s2">"pf"</span><span class="p">])</span>
 <br/></pre></div>
 </div>
@@ -1421,7 +1457,7 @@ Text(0.5, 1.01, &#39;Schubert and Faber JCSS steel-bar example&#39;)
 </section>
 <section id="Interpretation">
 <h2>Interpretation<a class="headerlink" href="#Interpretation" title="Link to this heading">#</a></h2>
-<p>Economic optimization, target-table screening and a marginal LQI acceptance boundary answer different decision questions. Retain their assumptions and compare the labelled design points before selecting an intervention.</p>
+<p>Economic optimization, target-table screening and a marginal LQI acceptance boundary answer different decision questions. Retain their assumptions and compare the labeled design points before selecting an intervention.</p>
 </section>
 <section id="From-one-decision-to-a-code-jurisdiction-table">
 <h2>From one decision to a code-jurisdiction table<a class="headerlink" href="#From-one-decision-to-a-code-jurisdiction-table" title="Link to this heading">#</a></h2>
@@ -1434,6 +1470,7 @@ Text(0.5, 1.01, &#39;Schubert and Faber JCSS steel-bar example&#39;)
 <section id="Building-blocks-to-reuse">
 <h2>Building blocks to reuse<a class="headerlink" href="#Building-blocks-to-reuse" title="Link to this heading">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">DesignStudy</span></code> evaluates a design grid, <code class="docutils literal notranslate"><span class="pre">CostBenefitModel</span></code> defines the objective, <code class="docutils literal notranslate"><span class="pre">LQI</span></code> supplies a criterion and <code class="docutils literal notranslate"><span class="pre">DDO</span></code> compares the resulting decisions. <code class="docutils literal notranslate"><span class="pre">LQI.acceptability_boundary</span></code> locates the marginal boundary. The <a class="reference internal" href="ex_target_reliability.html"><span class="doc">target-table tutorial</span></a> extends the workflow using <code class="docutils literal notranslate"><span class="pre">RackwitzTargetModel</span></code> and <code class="docutils literal notranslate"><span class="pre">TargetReliability</span></code>.</p>
+<p>Decision tables retain <code class="docutils literal notranslate"><span class="pre">converged</span></code>, <code class="docutils literal notranslate"><span class="pre">status</span></code>, <code class="docutils literal notranslate"><span class="pre">message</span></code> and <code class="docutils literal notranslate"><span class="pre">method</span></code> for each reliability evaluation. Failed alternatives remain visible and cannot be selected as economic or feasible optima. <code class="docutils literal notranslate"><span class="pre">DesignStudy.run()</span></code> provides the original result snapshots; <code class="docutils literal notranslate"><span class="pre">evaluate()</span></code> provides their table. A failed rerun clears the previous DDO table.</p>
 <p><strong>Continue:</strong> <a class="reference internal" href="../guides/assessment.html"><span class="doc">User guide</span></a> · <a class="reference internal" href="../api/decisions.html"><span class="doc">API reference</span></a> · <a class="reference internal" href="../theory/decisions.html"><span class="doc">Theory</span></a></p>
 </section>
 </section>

@@ -518,18 +518,22 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">replace</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">types</span><span class="w"> </span><span class="kn">import</span> <span class="n">MappingProxyType</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Union</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataFrame</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataFrame</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">fsolve</span><span class="p">,</span> <span class="n">root_scalar</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">..options</span><span class="w"> </span><span class="kn">import</span> <span class="n">FORMOptions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..assessment</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ReliabilityEvaluator</span><span class="p">,</span>
+    <span class="n">ReliabilityResult</span><span class="p">,</span>
+    <span class="n">_evaluate</span><span class="p">,</span>
+    <span class="n">analyze_case</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..distributions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Constant</span><span class="p">,</span> <span class="n">Distribution</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..reliability.form</span><span class="w"> </span><span class="kn">import</span> <span class="n">FORM</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..loads</span><span class="w"> </span><span class="kn">import</span> <span class="n">LoadCombination</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LimitState</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..results</span><span class="w"> </span><span class="kn">import</span> <span class="n">FORMResult</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..reporting</span><span class="w"> </span><span class="kn">import</span> <span class="n">reliability_row</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">"FactorCalibrationProblem"</span><span class="p">,</span>
@@ -555,35 +559,41 @@
     <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_run_form</span><span class="p">(</span><span class="n">cases</span><span class="p">,</span> <span class="n">case_name</span><span class="p">,</span> <span class="n">overrides</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cases</span><span class="p">,</span> <span class="n">LoadCombination</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"cases must be LoadCombination"</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">cases</span><span class="o">.</span><span class="n">limit_state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"A limit_state is required for reliability evaluation"</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">FORMOptions</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"options must be FORMOptions"</span><span class="p">)</span>
-    <span class="n">solver</span> <span class="o">=</span> <span class="n">FORM</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_evaluate_case</span><span class="p">(</span><span class="n">cases</span><span class="p">,</span> <span class="n">case_name</span><span class="p">,</span> <span class="n">overrides</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">evaluator</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_evaluate</span><span class="p">(</span>
         <span class="n">cases</span><span class="o">.</span><span class="n">stochastic_model</span><span class="p">(</span><span class="n">case_name</span><span class="p">,</span> <span class="n">overrides</span><span class="o">=</span><span class="n">overrides</span><span class="p">),</span>
         <span class="n">LimitState</span><span class="p">(</span><span class="n">cases</span><span class="o">.</span><span class="n">limit_state</span><span class="p">),</span>
         <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
-        <span class="n">on_failure</span><span class="o">=</span><span class="s2">"return"</span><span class="p">,</span>
+        <span class="n">evaluator</span><span class="o">=</span><span class="n">evaluator</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">solver</span><span class="p">,</span> <span class="n">result</span>
 
 
-<div class="viewcode-block" id="analyze_case">
-<a class="viewcode-back" href="../../../gen/pystra.calibration.factors.analyze_case.html#pystra.calibration.factors.analyze_case">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">analyze_case</span><span class="p">(</span>
-    <span class="n">cases</span><span class="p">:</span> <span class="n">LoadCombination</span><span class="p">,</span>
-    <span class="n">case_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">overrides</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">Distribution</span><span class="p">,</span> <span class="n">Constant</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">FORMOptions</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FORMResult</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Evaluate one explicit load case and return a FORM snapshot."""</span>
-    <span class="k">return</span> <span class="n">_run_form</span><span class="p">(</span><span class="n">cases</span><span class="p">,</span> <span class="n">case_name</span><span class="p">,</span> <span class="n">overrides</span><span class="p">,</span> <span class="n">options</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span></div>
-
+<span class="k">def</span><span class="w"> </span><span class="nf">_require_design_point</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Declare the stronger capability needed by specialist factor methods."""</span>
+    <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">converged</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"A converged design-point result is required"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s2">"standard_space"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">"normal"</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Design-point factor methods require normal standard space"</span><span class="p">)</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s2">"variable_names"</span><span class="p">,</span> <span class="p">())</span>
+    <span class="n">point</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s2">"design_point_x"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">names</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">names</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="ow">or</span> <span class="n">point</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"A named physical design point is required for factor derivation"</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">point</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">),)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">point</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"The physical design point must be finite in variable_names order"</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">alpha</span><span class="p">:</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s2">"alpha"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">direction</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">),)</span>
+            <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">direction</span><span class="p">))</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">"Alpha projection requires a finite normal-space direction"</span>
+            <span class="p">)</span>
 
 
 <div class="viewcode-block" id="FactorCalibrationProblem">
@@ -700,7 +710,7 @@
     <span class="n">case_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">design_value</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">target_beta</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">reliability</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">FORMResult</span><span class="p">]</span>
+    <span class="n">reliability</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ReliabilityResult</span><span class="p">]</span>
     <span class="n">residual</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
     <span class="n">converged</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">evaluations</span><span class="p">:</span> <span class="nb">int</span>
@@ -734,6 +744,8 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">converged</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Not all target designs converged"</span><span class="p">)</span>
         <span class="n">roles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_problem</span><span class="o">.</span><span class="n">_cases</span><span class="o">.</span><span class="n">roles</span>
+        <span class="k">for</span> <span class="n">design</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">designs</span><span class="p">:</span>
+            <span class="n">_require_design_point</span><span class="p">(</span><span class="n">design</span><span class="o">.</span><span class="n">reliability</span><span class="p">)</span>
         <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">designs</span><span class="p">:</span>
             <span class="n">point</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
@@ -745,6 +757,38 @@
             <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">case_name</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">designs</span><span class="p">],</span>
             <span class="n">columns</span><span class="o">=</span><span class="n">roles</span><span class="o">.</span><span class="n">names</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_problem</span><span class="o">.</span><span class="n">design_parameter</span><span class="p">,),</span>
         <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TargetDesigns.reliability_frame">
+<a class="viewcode-back" href="../../../gen/pystra.calibration.factors.TargetDesigns.html#pystra.calibration.factors.TargetDesigns.reliability_frame">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reliability_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return every target solve with its design, residual and diagnostics."""</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">design</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">designs</span><span class="p">:</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">reliability_row</span><span class="p">(</span><span class="n">design</span><span class="o">.</span><span class="n">reliability</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">design</span><span class="o">.</span><span class="n">reliability</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="k">else</span> <span class="p">{</span>
+                    <span class="s2">"beta"</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+                    <span class="s2">"failure_probability"</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+                    <span class="s2">"converged"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                    <span class="s2">"status"</span><span class="p">:</span> <span class="s2">"not_converged"</span><span class="p">,</span>
+                    <span class="s2">"message"</span><span class="p">:</span> <span class="n">design</span><span class="o">.</span><span class="n">message</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+            <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">"case_name"</span><span class="p">:</span> <span class="n">design</span><span class="o">.</span><span class="n">case_name</span><span class="p">,</span>
+                    <span class="s2">"design_value"</span><span class="p">:</span> <span class="n">design</span><span class="o">.</span><span class="n">design_value</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">row</span><span class="p">,</span>
+                    <span class="s2">"target_beta"</span><span class="p">:</span> <span class="n">design</span><span class="o">.</span><span class="n">target_beta</span><span class="p">,</span>
+                    <span class="s2">"residual"</span><span class="p">:</span> <span class="n">design</span><span class="o">.</span><span class="n">residual</span><span class="p">,</span>
+                    <span class="s2">"solve_converged"</span><span class="p">:</span> <span class="n">design</span><span class="o">.</span><span class="n">converged</span><span class="p">,</span>
+                    <span class="s2">"solve_message"</span><span class="p">:</span> <span class="n">design</span><span class="o">.</span><span class="n">message</span><span class="p">,</span>
+                    <span class="s2">"evaluations"</span><span class="p">:</span> <span class="n">design</span><span class="o">.</span><span class="n">evaluations</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span></div>
 </div>
 
 
@@ -764,15 +808,47 @@
     <span class="n">tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0001</span><span class="p">,</span>
     <span class="n">max_evaluations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
     <span class="n">bracket</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">FORMOptions</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">options</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">evaluator</span><span class="p">:</span> <span class="n">ReliabilityEvaluator</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TargetDesigns</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Solve each case to a target and return status/residuals for every case.</span>
+<span class="w">    </span><span class="sd">"""Solve each case to a target and retain status and residuals.</span>
 
-<span class="sd">    ``root`` uses fsolve with full diagnostics, or bracketed Brent solving when</span>
-<span class="sd">    a bracket is supplied. ``alpha`` preserves the normal-space projection</span>
-<span class="sd">    method. Both require converged inner FORM results and a final beta residual</span>
-<span class="sd">    within ``tolerance``. ``max_evaluations`` limits FORM runs per case,</span>
-<span class="sd">    including the final verification. No unsuccessful solve is silently accepted.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    problem : FactorCalibrationProblem</span>
+<span class="sd">        Explicit cases, roles, nominal values and design parameter; copied.</span>
+<span class="sd">    target_beta : float</span>
+<span class="sd">        Finite normal-equivalent target for the same event/reference period.</span>
+<span class="sd">    method : {"root", "alpha"}, default "root"</span>
+<span class="sd">        Root solving or normal-space design-point projection.</span>
+<span class="sd">    initial_value : float, optional</span>
+<span class="sd">        Starting design parameter; defaults to the problem's common constant.</span>
+<span class="sd">    tolerance : float, default 0.0001</span>
+<span class="sd">        Positive root-solver tolerance and maximum accepted beta residual.</span>
+<span class="sd">    max_evaluations : int, default 100</span>
+<span class="sd">        Reliability evaluation budget per case, including final verification.</span>
+<span class="sd">    bracket : tuple of float, optional</span>
+<span class="sd">        Increasing two-endpoint bracket for Brent root solving. Without it,</span>
+<span class="sd">        the root method uses fsolve with full diagnostics.</span>
+<span class="sd">    options : object, optional</span>
+<span class="sd">        Evaluator-specific settings; FORMOptions for the default FORM.</span>
+<span class="sd">    evaluator : ReliabilityEvaluator, optional</span>
+<span class="sd">        Method constructor or result callback, default FORM. Root solving</span>
+<span class="sd">        requires normal-equivalent estimates. Alpha projection additionally</span>
+<span class="sd">        requires a named normal-space design point/direction and an analysis</span>
+<span class="sd">        exposing its matching transform.u_to_x and model.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    TargetDesigns</span>
+<span class="sd">        Every case, its design parameter, reliability record, target residual</span>
+<span class="sd">        and solve status. Inner convergence, outer success and the final</span>
+<span class="sd">        residual tolerance are all required. No unsuccessful solve is accepted.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        Invalid solve settings or missing design-point/projection capabilities.</span>
 <span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">FactorCalibrationProblem</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"Expected FactorCalibrationProblem"</span><span class="p">)</span>
@@ -812,17 +888,21 @@
         <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="n">candidate</span><span class="p">):</span>
             <span class="k">nonlocal</span> <span class="n">evaluations</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">solver</span><span class="p">,</span> <span class="n">value</span>
             <span class="k">if</span> <span class="n">evaluations</span> <span class="o">&gt;=</span> <span class="n">max_evaluations</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">_InnerFailure</span><span class="p">(</span><span class="s2">"FORM evaluation budget exhausted"</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">_InnerFailure</span><span class="p">(</span><span class="s2">"Reliability evaluation budget exhausted"</span><span class="p">)</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">_scalar</span><span class="p">(</span><span class="n">candidate</span><span class="p">,</span> <span class="s2">"design value"</span><span class="p">)</span>
             <span class="n">evaluations</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="n">solver</span><span class="p">,</span> <span class="n">result</span> <span class="o">=</span> <span class="n">_run_form</span><span class="p">(</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">solver</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">solver</span><span class="p">,</span> <span class="n">result</span> <span class="o">=</span> <span class="n">_evaluate_case</span><span class="p">(</span>
                 <span class="n">snapshot</span><span class="o">.</span><span class="n">_cases</span><span class="p">,</span>
                 <span class="n">case_name</span><span class="p">,</span>
                 <span class="p">{</span><span class="n">snapshot</span><span class="o">.</span><span class="n">design_parameter</span><span class="p">:</span> <span class="n">Constant</span><span class="p">(</span><span class="n">snapshot</span><span class="o">.</span><span class="n">design_parameter</span><span class="p">,</span> <span class="n">value</span><span class="p">)},</span>
                 <span class="n">options</span><span class="p">,</span>
+                <span class="n">evaluator</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">converged</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">_InnerFailure</span><span class="p">(</span><span class="s2">"Inner FORM did not converge"</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">_InnerFailure</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"Inner </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">method</span><span class="si">}</span><span class="s2"> did not converge: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span>
+                <span class="p">)</span>
             <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">beta</span> <span class="o">-</span> <span class="n">target</span>
 
         <span class="n">successful</span> <span class="o">=</span> <span class="kc">False</span>
@@ -857,9 +937,18 @@
                 <span class="n">residual</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">candidate</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">residual</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">standard_space</span> <span class="o">!=</span> <span class="s2">"normal"</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Alpha projection requires normal standard space"</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_evaluations</span><span class="p">):</span>
+                    <span class="n">_require_design_point</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="p">(</span>
+                        <span class="n">solver</span> <span class="ow">is</span> <span class="kc">None</span>
+                        <span class="ow">or</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span>
+                            <span class="nb">getattr</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="s2">"transform"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="s2">"u_to_x"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                        <span class="p">)</span>
+                        <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="s2">"model"</span><span class="p">)</span>
+                    <span class="p">):</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">"Alpha projection requires an analysis with its u-to-x transformation"</span>
+                        <span class="p">)</span>
                     <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">residual</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">tolerance</span><span class="p">:</span>
                         <span class="n">successful</span> <span class="o">=</span> <span class="kc">True</span>
                         <span class="k">break</span>
@@ -1004,6 +1093,10 @@
             <span class="s2">"Factor derivation needs exactly one leading case per variable action"</span>
         <span class="p">)</span>
     <span class="n">names</span> <span class="o">=</span> <span class="n">roles</span><span class="o">.</span><span class="n">names</span>
+    <span class="k">for</span> <span class="n">design</span> <span class="ow">in</span> <span class="n">solutions</span><span class="o">.</span><span class="n">designs</span><span class="p">:</span>
+        <span class="n">_require_design_point</span><span class="p">(</span><span class="n">design</span><span class="o">.</span><span class="n">reliability</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">design</span><span class="o">.</span><span class="n">reliability</span><span class="o">.</span><span class="n">variable_names</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">set</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Design-point names must match the factor problem roles"</span><span class="p">)</span>
     <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
         <span class="p">[</span>
             <span class="p">[</span>
@@ -1013,10 +1106,6 @@
             <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">solutions</span><span class="o">.</span><span class="n">designs</span>
         <span class="p">]</span>
     <span class="p">)</span>
-    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">reliability</span><span class="o">.</span><span class="n">standard_space</span> <span class="o">!=</span> <span class="s2">"normal"</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">solutions</span><span class="o">.</span><span class="n">designs</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">"Design-point factor derivation requires normal standard space"</span>
-        <span class="p">)</span>
     <span class="n">nominals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">problem</span><span class="o">.</span><span class="n">nominal_values</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">])</span>
     <span class="n">normalized</span> <span class="o">=</span> <span class="n">points</span> <span class="o">/</span> <span class="n">nominals</span>
     <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">roles</span><span class="o">.</span><span class="n">variable</span><span class="p">:</span>
@@ -1194,7 +1283,7 @@
 
     <span class="n">case_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">design_value</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">reliability</span><span class="p">:</span> <span class="n">FORMResult</span>
+    <span class="n">reliability</span><span class="p">:</span> <span class="n">ReliabilityResult</span>
     <span class="n">target_margin</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span></div>
 
 
@@ -1206,12 +1295,31 @@
     <span class="n">design_values</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">DesignValues</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">target_beta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">FORMOptions</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">options</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">evaluator</span><span class="p">:</span> <span class="n">ReliabilityEvaluator</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DesignVerification</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""Check a common design scale or an explicitly named set of case designs.</span>
+<span class="w">    </span><span class="sd">"""Check a common design scale or an explicitly named set of designs.</span>
 
-<span class="sd">    To check the governing common design, supply ``max(designs.values)``</span>
-<span class="sd">    explicitly. Every case is returned, including nonconverged analyses.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    problem : FactorCalibrationProblem</span>
+<span class="sd">        Cases and the common resistance-scale design parameter.</span>
+<span class="sd">    design_values : float, mapping or DesignValues</span>
+<span class="sd">        Common scale or exactly one scale per case. To verify the governing</span>
+<span class="sd">        common design, supply max(designs.values) explicitly.</span>
+<span class="sd">    target_beta : float, optional</span>
+<span class="sd">        Finite normal-equivalent target for the same event/reference period.</span>
+<span class="sd">    options : object, optional</span>
+<span class="sd">        Evaluator-specific settings; FORMOptions for the default FORM.</span>
+<span class="sd">    evaluator : ReliabilityEvaluator, optional</span>
+<span class="sd">        Method constructor or result callback as in</span>
+<span class="sd">        pystra.assessment.evaluate_reliability; defaults to FORM.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple of DesignVerification</span>
+<span class="sd">        Achieved reliability and optional beta-minus-target margin for every</span>
+<span class="sd">        supplied case, including failed analyses. Failed cases have no margin.</span>
 <span class="sd">    """</span>
     <span class="n">names</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">_cases</span><span class="o">.</span><span class="n">case_names</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">design_values</span><span class="p">,</span> <span class="n">DesignValues</span><span class="p">):</span>
@@ -1232,6 +1340,7 @@
                 <span class="n">problem</span><span class="o">.</span><span class="n">design_parameter</span><span class="p">:</span> <span class="n">Constant</span><span class="p">(</span><span class="n">problem</span><span class="o">.</span><span class="n">design_parameter</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
             <span class="p">},</span>
             <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
+            <span class="n">evaluator</span><span class="o">=</span><span class="n">evaluator</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">margin</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">result</span><span class="o">.</span><span class="n">beta</span> <span class="o">-</span> <span class="n">target</span> <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">converged</span> <span class="ow">and</span> <span class="n">target</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>

@@ -671,7 +671,6 @@
 </details></li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="pystra.calibration.html">pystra.calibration</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3 has-children"><a class="reference internal" href="pystra.calibration.factors.html">pystra.calibration.factors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.analyze_case.html">pystra.calibration.factors.analyze_case</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.derive_factors.html">pystra.calibration.factors.derive_factors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.design_with_factors.html">pystra.calibration.factors.design_with_factors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.select_factors.html">pystra.calibration.factors.select_factors</a></li>
@@ -699,6 +698,22 @@
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.plotting.plot_calibration.html">pystra.calibration.plotting.plot_calibration</a></li>
 </ul>
 </details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.assessment.html">pystra.assessment</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.analyze_case.html">pystra.assessment.analyze_case</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.assess_cases.html">pystra.assessment.assess_cases</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.evaluate_reliability.html">pystra.assessment.evaluate_reliability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.AssessmentCase.html">pystra.assessment.AssessmentCase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.AssessmentResult.html">pystra.assessment.AssessmentResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.CaseResult.html">pystra.assessment.CaseResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityEstimate.html">pystra.assessment.ReliabilityEstimate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityEvaluator.html">pystra.assessment.ReliabilityEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityResult.html">pystra.assessment.ReliabilityResult</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.reporting.html">pystra.reporting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.reporting.reliability_row.html">pystra.reporting.reliability_row</a></li>
 </ul>
 </details></li>
 </ul>
@@ -918,7 +933,7 @@ candidates. Automated factor fitting is deliberately a separate operation.</p>
 <td><p>Solve the normalized factored code equation for resistance scale z.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pystra.calibration.normalized.CodeCalibration.run" title="pystra.calibration.normalized.CodeCalibration.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a></p></td>
-<td><p>Return an isolated study result, retaining nonconverged FORM cases.</p></td>
+<td><p>Evaluate candidate factors, retaining every failed grid point.</p></td>
 </tr>
 </tbody>
 </table>
@@ -936,16 +951,33 @@ candidates. Automated factor fitting is deliberately a separate operation.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pystra.calibration.normalized.CodeCalibration.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factors</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/calibration/normalized.html#CodeCalibration.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.calibration.normalized.CodeCalibration.run" title="Link to this definition">#</a></dt>
-<dd><p>Return an isolated study result, retaining nonconverged FORM cases.</p>
-<p>Invalid inputs or errors in the limit-state evaluation raise normally;
-iteration-limit failures are represented by unsuccessful FormResults.
-<code class="docutils literal notranslate"><span class="pre">beta</span></code> and target margins are normal-equivalent, including for t space.</p>
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factors</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evaluator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/calibration/normalized.html#CodeCalibration.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.calibration.normalized.CodeCalibration.run" title="Link to this definition">#</a></dt>
+<dd><p>Evaluate candidate factors, retaining every failed grid point.</p>
 <dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="pystra.calibration.normalized.NormalizedReliabilityModel.html#pystra.calibration.normalized.NormalizedReliabilityModel" title="pystra.calibration.normalized.NormalizedReliabilityModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">NormalizedReliabilityModel</span></code></a></span>) – Probability inputs, nominal values and dependence, copied per run.</p></li>
+<li><p><strong>factors</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="pystra.calibration.normalized.CodeFactors.html#pystra.calibration.normalized.CodeFactors" title="pystra.calibration.normalized.CodeFactors"><code class="xref py py-class docutils literal notranslate"><span class="pre">CodeFactors</span></code></a></span>) – Candidate dimensionless factors in the normalized design equation.</p></li>
+<li><p><strong>options</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></span>) – Evaluator settings; FORMOptions for the default method. DDM is not
+supported by the built-in normalized limit-state equation.</p></li>
+<li><p><strong>evaluator</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="pystra.assessment.ReliabilityEvaluator.html#pystra.assessment.ReliabilityEvaluator" title="pystra.assessment.ReliabilityEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReliabilityEvaluator</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Method constructor or result callback; defaults to FORM. A design
+point is not required. See pystra.assessment.evaluate_reliability.</p></li>
+<li><p><strong>target_beta</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]</span>) – Finite normal-equivalent index for the same event/reference period.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Input snapshot and every design/result, ordered by dead-load ratio
+then live-load ratio. Failed table estimates and target margins are
+unavailable; original method records retain their diagnostics.</p>
+</dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="pystra.calibration.normalized.CodeCalibrationResult.html#pystra.calibration.normalized.CodeCalibrationResult" title="pystra.calibration.normalized.CodeCalibrationResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">CodeCalibrationResult</span></code></a></span></p>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>AnalysisError and nonconvergence are recorded. Invalid specifications
+and programming errors still raise. Beta and target margins are
+normal-equivalent, including for Student-t standard space.</p>
 </dd></dl>
 
 </dd></dl>

@@ -602,7 +602,7 @@
 </div>
 </section>
 <section id="Define-the-limit-state-function">
-<h3>Define the limit state function<a class="headerlink" href="#Define-the-limit-state-function" title="Link to this heading">#</a></h3>
+<h3>Define the limit-state function<a class="headerlink" href="#Define-the-limit-state-function" title="Link to this heading">#</a></h3>
 <p>The LSF supplied to <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> can be any valid <em>PySTRA</em> LSF. Here the deterministic coefficient <code class="docutils literal notranslate"><span class="pre">cg</span></code> is kept as an explicit input.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
@@ -757,8 +757,8 @@ Q2_leading [&#39;R&#39;, &#39;G&#39;, &#39;Q1&#39;, &#39;Q2&#39;]
 </pre></div></div>
 </div>
 </section>
-<section id="Analyse-load-cases">
-<h3>Analyse load cases<a class="headerlink" href="#Analyse-load-cases" title="Link to this heading">#</a></h3>
+<section id="Analyze-load-cases">
+<h3>Analyze load cases<a class="headerlink" href="#Analyze-load-cases" title="Link to this heading">#</a></h3>
 <p>Run FORM for each named case.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
@@ -785,7 +785,7 @@ Q2_leading [&#39;R&#39;, &#39;G&#39;, &#39;Q1&#39;, &#39;Q2&#39;]
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-FORMResult(method=&#39;FORM&#39;, status=&#39;converged&#39;, message=&#39;Converged&#39;, n_limit_state_evaluations=49, variable_names=(&#39;R&#39;, &#39;G&#39;, &#39;Q1&#39;, &#39;Q2&#39;), failure_probability=0.01962433765718801, beta=2.0615701820848518, design_index=2.0615701820848518, design_point_x=array([1.89631498, 1.01896362, 1.46169878, 1.59685254]), design_point_u=array([-1.92655353, -0.67334457,  0.18963623, -0.22160392]), alpha=array([-0.93450278, -0.32663091,  0.09199301, -0.10748991]), standard_space=&#39;normal&#39;, iterations=5, limit_state_error=4.372472456345675e-09, direction_error=3.344382828997521e-05)
+FORMResult(method=&#39;FORM&#39;, status=&#39;converged&#39;, message=&#39;Converged&#39;, n_limit_state_evaluations=49, variable_names=(&#39;R&#39;, &#39;G&#39;, &#39;Q1&#39;, &#39;Q2&#39;), failure_probability=0.019624337657188073, beta=2.0615701820848504, design_index=2.0615701820848504, design_point_x=array([1.89631498, 1.01896362, 1.46169878, 1.59685254]), design_point_u=array([-1.92655353, -0.67334457,  0.18963623, -0.22160392]), alpha=array([-0.93450278, -0.32663091,  0.09199301, -0.10748991]), standard_space=&#39;normal&#39;, iterations=5, limit_state_error=4.372472456345675e-09, direction_error=3.3443829846631554e-05)
 </pre></div></div>
 </div>
 </section>
@@ -796,7 +796,10 @@ FORMResult(method=&#39;FORM&#39;, status=&#39;converged&#39;, message=&#39;Conve
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">form</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: β = </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">beta</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">converged</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: β = </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">beta</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">status</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <br/></pre></div>
 </div>
 </div>
@@ -861,16 +864,21 @@ Q2_leading:
   Q2: Maximum, FBC intervals = 360.00
 </pre></div></div>
 </div>
-<p>The generated Turkstra cases can be analysed in exactly the same way as the manually specified cases.</p>
+<p>The generated Turkstra cases can be analyzed in exactly the same way as the manually specified cases.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">turkstra_form</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">turkstra_lc</span><span class="o">.</span><span class="n">case_names</span><span class="p">:</span>
-    <span class="n">turkstra_form</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">calibration</span><span class="o">.</span><span class="n">analyze_case</span><span class="p">(</span><span class="n">turkstra_lc</span><span class="p">,</span> <span class="n">case_name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
+    <span class="n">turkstra_form</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">calibration</span><span class="o">.</span><span class="n">analyze_case</span><span class="p">(</span>
+        <span class="n">turkstra_lc</span><span class="p">,</span> <span class="n">case_name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span>
+    <span class="p">)</span>
 <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">turkstra_form</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: β = </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">beta</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">converged</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: β = </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">beta</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">status</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <br/></pre></div>
 </div>
 </div>
@@ -891,7 +899,7 @@ Q2_leading: β = 2.15
 <li><p><strong>Zero-Inflated</strong> distributions allow for a probability of non-occurrence of a load.</p></li>
 <li><p><strong>Maximum</strong> distributions give the distribution of maxima of a supplied parent or point-in-time distribution.</p></li>
 <li><p><strong>MaxParent</strong> distributions infer a parent distribution from a supplied maximum.</p></li>
-<li><p><strong>FBCProcess</strong> wraps <code class="docutils literal notranslate"><span class="pre">Maximum</span></code> and <code class="docutils literal notranslate"><span class="pre">MaxParent</span></code> for Ferry-Borges-Castanheta rectangular-wave process modelling.</p></li>
+<li><p><strong>FBCProcess</strong> wraps <code class="docutils literal notranslate"><span class="pre">Maximum</span></code> and <code class="docutils literal notranslate"><span class="pre">MaxParent</span></code> for Ferry-Borges-Castanheta rectangular-wave process modeling.</p></li>
 <li><p><strong>LoadCombination.turkstra</strong> uses FBC process distributions to generate leading-action combination cases according to Turkstra’s rule.</p></li>
 </ul>
 <span class="target" id="Zero-Inflated-Distribution"></span><section id="Zero-inflated-distribution">
@@ -1010,6 +1018,7 @@ Q2_leading: β = 2.15
 <section id="Interpretation">
 <h2>Interpretation<a class="headerlink" href="#Interpretation" title="Link to this heading">#</a></h2>
 <p>Choose load processes and reference periods before constructing leading and companion cases. A companion distribution represents an interval of the same physical process; it does not redefine that process’s occurrence rate.</p>
+<p>The explicit case mapping is the source of case labels. <code class="docutils literal notranslate"><span class="pre">VariableRoles</span></code> and <code class="docutils literal notranslate"><span class="pre">leading_actions</span></code> carry the factor-method metadata; the validated roles and limit-state callable are read-only. Evaluate candidate designs with isolated named overrides, or construct a new specification when those assumptions change.</p>
 <p><strong>Continue:</strong> <a class="reference internal" href="../guides/calibration.html"><span class="doc">User guide</span></a> · <a class="reference internal" href="../api/calibration.html"><span class="doc">API reference</span></a> · <a class="reference internal" href="../theory/load_combinations.html"><span class="doc">Theory</span></a></p>
 </section>
 </section>
@@ -1063,14 +1072,14 @@ Q2_leading: β = 2.15
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Example">Example</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Setup">Setup</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-the-limit-state-function">Define the limit state function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-the-limit-state-function">Define the limit-state function</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-the-load-and-resistance-distributions">Define the load and resistance distributions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Specify-explicit-load-combination-cases">Specify explicit load-combination cases</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Specify-user-defined-correlation-(optional)">Specify user-defined correlation (optional)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Specify-user-defined-analysis-options-(optional)">Specify user-defined analysis options (optional)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Instantiate-LoadCombination">Instantiate <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Inspect-the-generated-stochastic-models">Inspect the generated stochastic models</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Analyse-load-cases">Analyse load cases</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Analyze-load-cases">Analyze load cases</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#Detailed-output-for-one-load-case">Detailed output for one load case</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#Display-reliability-per-load-combination">Display reliability per load combination</a></li>
 </ul>

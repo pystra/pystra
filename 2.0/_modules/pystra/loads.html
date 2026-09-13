@@ -540,11 +540,11 @@
 
 <span class="sd">    This class is intentionally a small distribution factory.  It does not</span>
 <span class="sd">    run a reliability analysis and does not create load combinations by</span>
-<span class="sd">    itself.  It only returns ordinary Pystra distribution objects that can be</span>
+<span class="sd">    itself.  It only returns ordinary PySTRA distribution objects that can be</span>
 <span class="sd">    added to a :class:`~pystra.model.StochasticModel` or used in</span>
 <span class="sd">    :class:`~pystra.loads.LoadCombination` cases.</span>
 
-<span class="sd">    Load combinations are a separate modelling choice.  For example,</span>
+<span class="sd">    Load combinations are a separate modeling choice.  For example,</span>
 <span class="sd">    :meth:`pystra.loads.LoadCombination.turkstra` uses FBC process objects</span>
 <span class="sd">    to generate leading-action cases according to Turkstra's rule.</span>
 
@@ -777,7 +777,7 @@
 <span class="sd">    leading_actions : mapping, optional</span>
 <span class="sd">        Case names mapped to tuples of leading variable-action names.</span>
 <span class="sd">    correlation : pandas.DataFrame, optional</span>
-<span class="sd">        Physical Pearson correlations labelled by random-variable names.</span>
+<span class="sd">        Physical Pearson correlations labeled by random-variable names.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -801,7 +801,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Case names must be nonempty strings"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">limit_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">limit_state</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"limit_state must be callable"</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">limit_state</span> <span class="o">=</span> <span class="n">limit_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_limit_state</span> <span class="o">=</span> <span class="n">limit_state</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cases</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">_variables</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">cases</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_constants</span> <span class="o">=</span> <span class="n">_variables</span><span class="p">(</span><span class="n">constants</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Constant</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_constants</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
@@ -811,7 +811,7 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Case variables duplicate common constants"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">roles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">roles</span><span class="p">,</span> <span class="n">VariableRoles</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"roles must be VariableRoles"</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">roles</span> <span class="o">=</span> <span class="n">roles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_roles</span> <span class="o">=</span> <span class="n">roles</span>
         <span class="k">if</span> <span class="n">roles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cases</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="n">random_names</span> <span class="o">=</span> <span class="p">{</span>
@@ -844,6 +844,16 @@
         <span class="c1"># Validate all case-dependent correlation subsets before a study starts.</span>
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">case_names</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">stochastic_model</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">limit_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Failure-event callable supplied with the case specification."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limit_state</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">roles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">VariableRoles</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Validated, immutable resistance/other/action metadata."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roles</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">case_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>

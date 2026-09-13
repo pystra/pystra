@@ -1,0 +1,887 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pystra.decision.risk &#8212; PySTRA 2.0.0a1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=a54fd074" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../../_static/documentation_options.js?v=944fa962"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=ccd31ad0"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pystra/decision/risk';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.0a1" />
+  
+    
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">These pages document PySTRA 2.0, which is in development. The stable 1.x documentation is at <a href="https://pystra.github.io/pystra/">pystra.github.io/pystra</a>.</div>
+</aside>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 2.0.0a1 documentation - Home"/>
+    <img src="../../../_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 2.0.0a1 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item"><a class="version-status" href="../../../install.html" aria-label="Documentation version 2.0.0a1: installation instructions">2.0.0a1 · development</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api.html">
+    API reference
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../references.html">
+    References
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../references.html">
+    References
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">pystra.decision.risk</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for pystra.decision.risk</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Scenario consequences and annual risk quantities."""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Mapping</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.swtp</span><span class="w"> </span><span class="kn">import</span> <span class="n">SWTP</span><span class="p">,</span> <span class="n">_swtp_value</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.targets</span><span class="w"> </span><span class="kn">import</span> <span class="n">_as_scalar_or_array</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"FatalityConsequence"</span><span class="p">,</span>
+    <span class="s2">"RiskResult"</span><span class="p">,</span>
+    <span class="s2">"ScenarioRiskModel"</span><span class="p">,</span>
+    <span class="s2">"jcss_lqi_risk_cost"</span><span class="p">,</span>
+    <span class="s2">"jcss_lqi_risk_cost_from_result"</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="FatalityConsequence">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.FatalityConsequence.html#pystra.decision.ddo.FatalityConsequence">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FatalityConsequence</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Expected fatalities conditional on structural failure."""</span>
+
+    <span class="n">people_exposed</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">probability_death_given_failure</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">people_exposed</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"people_exposed must be non-negative"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">probability_death_given_failure</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"probability_death_given_failure must be in [0, 1]"</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">expected_fatalities_given_failure</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return expected fatalities conditional on failure."""</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">people_exposed</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">probability_death_given_failure</span></div>
+
+
+
+<div class="viewcode-block" id="RiskResult">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.RiskResult.html#pystra.decision.ddo.RiskResult">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RiskResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Expected annual risk quantities for a component or scenario model.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    annual_failure_rate : float</span>
+<span class="sd">        Annual probability or rate of the represented failure event.  For</span>
+<span class="sd">        scenario studies this may be the sum of joint failure-state rates.</span>
+<span class="sd">    expected_fatalities : float</span>
+<span class="sd">        Expected fatalities per year.</span>
+<span class="sd">    expected_economic_loss : float</span>
+<span class="sd">        Expected economic loss per year, excluding SWTP life-safety valuation.</span>
+<span class="sd">    scenarios : pandas.DataFrame, optional</span>
+<span class="sd">        Scenario table used to derive the expected values.  This is useful for</span>
+<span class="sd">        joint failure states and nonlinear consequence models.</span>
+<span class="sd">    metadata : mapping, optional</span>
+<span class="sd">        User-supplied context such as model name, design point, or units.</span>
+<span class="sd">    """</span>
+
+    <span class="n">annual_failure_rate</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">expected_fatalities</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">expected_economic_loss</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">scenarios</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">metadata</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">annual_failure_rate</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"annual_failure_rate must be non-negative"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_fatalities</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"expected_fatalities must be non-negative"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_economic_loss</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"expected_economic_loss must be non-negative"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"metadata"</span><span class="p">,</span> <span class="p">{})</span>
+
+<div class="viewcode-block" id="RiskResult.from_scenarios">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.RiskResult.html#pystra.decision.ddo.RiskResult.from_scenarios">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_scenarios</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">scenarios</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="n">weight_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"probability"</span><span class="p">,</span>
+        <span class="n">fatalities_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"fatalities"</span><span class="p">,</span>
+        <span class="n">economic_loss_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"economic_loss"</span><span class="p">,</span>
+        <span class="n">failure_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"RiskResult"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Aggregate a scenario table into annual risk quantities.</span>
+
+<span class="sd">        The scenario weights may be annual probabilities or annual rates.  No</span>
+<span class="sd">        independence assumptions are made, so rows may represent joint</span>
+<span class="sd">        failure states produced by an upstream reliability model.</span>
+<span class="sd">        If ``failure_col`` is omitted, every row is treated as a failure/loss</span>
+<span class="sd">        scenario for the purpose of ``annual_failure_rate``.</span>
+<span class="sd">        """</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">scenarios</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="p">(</span><span class="n">weight_col</span><span class="p">,</span> <span class="n">fatalities_col</span><span class="p">,</span> <span class="n">economic_loss_col</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Scenario table is missing column </span><span class="si">{</span><span class="n">column</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">failure_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">failure_col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Scenario table is missing column </span><span class="si">{</span><span class="n">failure_col</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">weight_col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">fatalities</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">fatalities_col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">economic_loss</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">economic_loss_col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">weights</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"scenario weights must be non-negative"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">fatalities</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"scenario fatalities must be non-negative"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">economic_loss</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"scenario economic losses must be non-negative"</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">failure_col</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">annual_failure_rate</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">weights</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">annual_failure_rate</span> <span class="o">=</span> <span class="nb">float</span><span class="p">((</span><span class="n">weights</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="n">failure_col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+
+        <span class="n">df</span><span class="p">[</span><span class="s2">"expected_fatalities_contribution"</span><span class="p">]</span> <span class="o">=</span> <span class="n">weights</span> <span class="o">*</span> <span class="n">fatalities</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">"expected_economic_loss_contribution"</span><span class="p">]</span> <span class="o">=</span> <span class="n">weights</span> <span class="o">*</span> <span class="n">economic_loss</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">annual_failure_rate</span><span class="o">=</span><span class="n">annual_failure_rate</span><span class="p">,</span>
+            <span class="n">expected_fatalities</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"expected_fatalities_contribution"</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()),</span>
+            <span class="n">expected_economic_loss</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span>
+                <span class="n">df</span><span class="p">[</span><span class="s2">"expected_economic_loss_contribution"</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="p">),</span>
+            <span class="n">scenarios</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">beta</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the generalized reliability index when rate is probability-like."""</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">annual_failure_rate</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="s2">"inf"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">annual_failure_rate</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annual_failure_rate</span><span class="p">))</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="RiskResult.get_failure">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.RiskResult.html#pystra.decision.ddo.RiskResult.get_failure">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_failure</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return ``annual_failure_rate`` for reliability-result compatibility."""</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">annual_failure_rate</span></div>
+
+
+<div class="viewcode-block" id="RiskResult.get_beta">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.RiskResult.html#pystra.decision.ddo.RiskResult.get_beta">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_beta</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return ``beta`` for reliability-result compatibility."""</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span></div>
+
+
+<div class="viewcode-block" id="RiskResult.life_safety_cost">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.RiskResult.html#pystra.decision.ddo.RiskResult.life_safety_cost">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">life_safety_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">swtp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">SWTP</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return SWTP-valued expected annual life-safety cost."""</span>
+
+        <span class="k">return</span> <span class="n">_swtp_value</span><span class="p">(</span><span class="n">swtp</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_fatalities</span></div>
+
+
+<div class="viewcode-block" id="RiskResult.total_risk_cost">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.RiskResult.html#pystra.decision.ddo.RiskResult.total_risk_cost">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">total_risk_cost</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">swtp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">SWTP</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">include_life_safety</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return expected annual economic plus optional life-safety risk cost."""</span>
+
+        <span class="n">total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_economic_loss</span>
+        <span class="k">if</span> <span class="n">include_life_safety</span> <span class="ow">and</span> <span class="n">swtp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">total</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">life_safety_cost</span><span class="p">(</span><span class="n">swtp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">total</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RiskResult.to_dict">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.RiskResult.html#pystra.decision.ddo.RiskResult.to_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return scalar risk quantities as a dictionary."""</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"annual_failure_rate"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">annual_failure_rate</span><span class="p">,</span>
+            <span class="s2">"beta"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span>
+            <span class="s2">"expected_fatalities"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_fatalities</span><span class="p">,</span>
+            <span class="s2">"expected_economic_loss"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_economic_loss</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="ow">or</span> <span class="p">{})</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ScenarioRiskModel">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.ScenarioRiskModel.html#pystra.decision.ddo.ScenarioRiskModel">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ScenarioRiskModel</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Scenario-table risk model for aggregated risk studies.</span>
+
+<span class="sd">    ``scenarios`` may be a dataframe-like object or a callable returning one.</span>
+<span class="sd">    Callable scenarios are evaluated with the design value when supplied.</span>
+<span class="sd">    """</span>
+
+    <span class="n">scenarios</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="n">weight_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"probability"</span>
+    <span class="n">fatalities_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"fatalities"</span>
+    <span class="n">economic_loss_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"economic_loss"</span>
+    <span class="n">failure_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">metadata</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="ScenarioRiskModel.evaluate">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.ScenarioRiskModel.html#pystra.decision.ddo.ScenarioRiskModel.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">design</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RiskResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Evaluate the scenario model and return a :class:`RiskResult`."""</span>
+
+        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scenarios</span><span class="p">):</span>
+            <span class="n">scenario_data</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">scenarios</span><span class="p">(</span><span class="n">design</span><span class="p">)</span> <span class="k">if</span> <span class="n">design</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenarios</span><span class="p">()</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">scenario_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenarios</span>
+
+        <span class="n">metadata</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="ow">or</span> <span class="p">{})</span>
+        <span class="k">if</span> <span class="n">design</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">metadata</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"design"</span><span class="p">,</span> <span class="n">design</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">RiskResult</span><span class="o">.</span><span class="n">from_scenarios</span><span class="p">(</span>
+            <span class="n">scenario_data</span><span class="p">,</span>
+            <span class="n">weight_col</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">weight_col</span><span class="p">,</span>
+            <span class="n">fatalities_col</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fatalities_col</span><span class="p">,</span>
+            <span class="n">economic_loss_col</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">economic_loss_col</span><span class="p">,</span>
+            <span class="n">failure_col</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">failure_col</span><span class="p">,</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="jcss_lqi_risk_cost">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.jcss_lqi_risk_cost.html#pystra.decision.ddo.jcss_lqi_risk_cost">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">jcss_lqi_risk_cost</span><span class="p">(</span>
+    <span class="n">safety_cost</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">failure_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">swtp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">SWTP</span><span class="p">,</span>
+    <span class="n">expected_fatalities_given_failure</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Return the JCSS LQI life-safety risk cost.</span>
+
+<span class="sd">    This implements the canonical LQI optimization term</span>
+<span class="sd">    ``S(p) = C(p) + G_x k N_F h(p)`` from the JCSS background documents,</span>
+<span class="sd">    where ``h(p)`` is a failure rate or annual failure probability.</span>
+<span class="sd">    """</span>
+
+    <span class="n">value_per_life</span> <span class="o">=</span> <span class="n">_swtp_value</span><span class="p">(</span><span class="n">swtp</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">value_per_life</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"swtp must be positive"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">expected_fatalities_given_failure</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"expected_fatalities_given_failure must be non-negative"</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+        <span class="n">safety_cost</span>
+    <span class="p">)</span> <span class="o">+</span> <span class="n">value_per_life</span> <span class="o">*</span> <span class="n">expected_fatalities_given_failure</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">failure_rate</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_as_scalar_or_array</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="jcss_lqi_risk_cost_from_result">
+<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.jcss_lqi_risk_cost_from_result.html#pystra.decision.ddo.jcss_lqi_risk_cost_from_result">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">jcss_lqi_risk_cost_from_result</span><span class="p">(</span>
+    <span class="n">safety_cost</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">risk</span><span class="p">:</span> <span class="n">RiskResult</span><span class="p">,</span>
+    <span class="n">swtp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">SWTP</span><span class="p">,</span>
+    <span class="n">include_economic_loss</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Return JCSS LQI risk cost from an aggregated risk result.</span>
+
+<span class="sd">    This form is intended for scenario studies where the upstream model already</span>
+<span class="sd">    provides expected annual fatalities.  Set</span>
+<span class="sd">    ``include_economic_loss=True`` when the objective should include nonlinear</span>
+<span class="sd">    economic consequences in addition to the SWTP life-safety term.</span>
+<span class="sd">    """</span>
+
+    <span class="k">if</span> <span class="n">safety_cost</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"safety_cost must be non-negative"</span><span class="p">)</span>
+    <span class="n">risk_cost</span> <span class="o">=</span> <span class="n">risk</span><span class="o">.</span><span class="n">life_safety_cost</span><span class="p">(</span><span class="n">swtp</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">include_economic_loss</span><span class="p">:</span>
+        <span class="n">risk_cost</span> <span class="o">+=</span> <span class="n">risk</span><span class="o">.</span><span class="n">expected_economic_loss</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">safety_cost</span> <span class="o">+</span> <span class="n">risk_cost</span><span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2021-2026, The PySTRA Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><nav aria-label="Project links" class="project-links">
+  <a href="../../../migrating.html">Migration</a>
+  <a href="../../../citing.html">Cite PySTRA</a>
+  <a href="../../../developer.html">Contributing</a>
+  <a href="https://pystra.github.io/pystra/">Stable 1.x documentation</a>
+</nav></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

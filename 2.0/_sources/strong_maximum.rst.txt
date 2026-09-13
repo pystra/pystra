@@ -13,7 +13,7 @@ probability, find replacement design points, or certify global optimality.
 The method follows Dutfoy and Lebrun [DutfoyLebrun2006]_, as described in the
 `OpenTURNS theory documentation
 <https://openturns.github.io/openturns/latest/theory/reliability_sensitivity/strong_maximum_test.html>`_.
-Pystra implements the independent standard-normal case using NumPy and SciPy;
+PySTRA implements the independent standard normal case using NumPy and SciPy;
 OpenTURNS is not a runtime dependency.
 
 After FORM
@@ -67,7 +67,7 @@ Alternatively, specify a point explicitly:
    competing_g = check_result.limit_state_values[check_result.regions["far_failure"]]
 
 The explicit point must be a finite vector in the model's independent
-standard-normal coordinates. ``options`` (``FORMOptions``) selects its transformation
+standard normal coordinates. ``options`` (``FORMOptions``) selects its transformation
 and, for Rosenblatt, conditioning order. For a non-Gaussian copula, use
 :ref:`Rosenblatt <chap_copulas>`; spherical Student-t Nataf space is rejected.
 The test verifies a strictly safe origin and a boundary
@@ -97,7 +97,7 @@ nearly equal square roots.
 Independent Gaussian vectors are normalized onto this sphere. Each sampled
 point is transformed back to physical variables and evaluated in batches.
 A point is classified as near the candidate when
-:math:`u^T(u^*/\beta)>\beta`. Failure uses Pystra's strict :math:`g<0`
+:math:`u^T(u^*/\beta)>\beta`. Failure uses PySTRA's strict :math:`g<0`
 convention. The four masks are ``near_failure``, ``far_failure``, ``near_safe``
 and ``far_safe``. Points have shape ``(point_number, nrv)`` and values have
 shape ``(point_number,)``. Both U and X coordinates are retained explicitly.
@@ -113,7 +113,7 @@ is the normalized spherical cap area
 
 For one variable the sphere consists of two points and
 :math:`p_{\rm cap}=1/2`. Independent samples miss a fixed cap with probability
-:math:`(1-p_{\rm cap})^N`. For requested nominal confidence :math:`c`, Pystra
+:math:`(1-p_{\rm cap})^N`. For requested nominal confidence :math:`c`, PySTRA
 therefore chooses
 
 .. math::
@@ -122,11 +122,11 @@ therefore chooses
 
 ``confidence_level`` reports :math:`1-(1-p_{\rm cap})^N` for the actual count.
 Specify either ``confidence_level`` or ``point_number``; omitting both selects
-0.99. Pystra rounds the required count upward. The reviewed OpenTURNS
+0.99. PySTRA rounds the required count upward. The reviewed OpenTURNS
 implementation rounds to nearest, which can fall below the requested nominal
 confidence. For its two-dimensional reference with
 :math:`\beta=\sqrt{10}-0.3`, :math:`\varepsilon=0.01`, :math:`\tau=2` and
-:math:`c=0.999999`, Pystra uses 55 sphere points instead of 54. The radius and
+:math:`c=0.999999`, PySTRA uses 55 sphere points instead of 54. The radius and
 vicinity geometry match the published reference.
 
 Cost and interpretation
@@ -148,7 +148,7 @@ structural model.
 
 ``competing_region_detected`` means at least one far failure point was found.
 Those points are useful starting locations for further design-point searches
-or for planning multiple-centre importance sampling. They are not themselves
+or for planning multiple-center importance sampling. They are not themselves
 optimized design points. Their raw limit-state magnitudes cannot quantify
 importance: multiplying a limit state by a positive constant preserves the
 event while changing those magnitudes.
@@ -187,6 +187,6 @@ This tests whether a component may have additional important regions beyond
 its one tangent plane. It does not validate the whole system probability.
 Multiple component modes are already intentional in system FORM; applying a
 single-candidate check to the combined system event will naturally flag them.
-Pystra does not run these additional evaluations automatically.
+PySTRA does not run these additional evaluations automatically.
 
 **Continue:** :doc:`notebooks/ex_strong_maximum` · :doc:`api/reliability` · :doc:`theory/design_point_methods`

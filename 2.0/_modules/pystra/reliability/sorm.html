@@ -527,14 +527,14 @@
 <div class="viewcode-block" id="SORM">
 <a class="viewcode-back" href="../../../gen/pystra.reliability.sorm.SORM.html#pystra.reliability.sorm.SORM">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SORM</span><span class="p">(</span><span class="n">_FORMReuse</span><span class="p">,</span> <span class="n">AnalysisObject</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">"""Second Order Reliability Method (SORM).</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Second-order reliability method (SORM).</span>
 
 <span class="sd">    Approximates the failure surface in standard normal space using a</span>
 <span class="sd">    quadratic surface, improving on the linear FORM approximation. Two</span>
 <span class="sd">    approaches are available:</span>
 
 <span class="sd">    **Curve-fitting** (``fit="curve"``, default): computes the Hessian of</span>
-<span class="sd">    the limit state function at the design point, extracts principal</span>
+<span class="sd">    the limit-state function at the design point, extracts principal</span>
 <span class="sd">    curvatures as eigenvalues, and applies the Breitung formula.</span>
 
 <span class="sd">    **Point-fitting** (``fit="point"``): locates fitting points directly</span>
@@ -545,14 +545,14 @@
 
 <span class="sd">    Both methods report the Breitung [Breitung1984]_ and the</span>
 <span class="sd">    Hohenbichler-Rackwitz [Hohenbichler1988]_ failure probabilities and</span>
-<span class="sd">    generalised reliability indices.</span>
+<span class="sd">    generalized reliability indices.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    model : StochasticModel</span>
 <span class="sd">        The stochastic model with random variables and correlations.</span>
 <span class="sd">    limit_state : LimitState</span>
-<span class="sd">        The limit state function.</span>
+<span class="sd">        The limit-state function.</span>
 <span class="sd">    options : SORMOptions, optional</span>
 <span class="sd">        The fit, the reported formula and the Hessian step.</span>
 <span class="sd">    form : FORM, optional</span>
@@ -708,11 +708,11 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_run_pointfit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Run SORM analysis using point-fitting.</span>
 
-<span class="sd">        Finds fitting points on the limit state surface on both the positive</span>
+<span class="sd">        Finds fitting points on the limit-state surface on both the positive</span>
 <span class="sd">        and negative sides of each principal axis in the rotated standard</span>
 <span class="sd">        normal space.  Curvatures are computed from the positions of these</span>
-<span class="sd">        points, producing asymmetric curvatures that are stored in</span>
-<span class="sd">        :attr:`kappa_pf`.</span>
+<span class="sd">        points, producing asymmetric curvatures returned in</span>
+<span class="sd">        :attr:`SORMResult.curvatures`.</span>
 
 <span class="sd">        The generalized Breitung formula for asymmetric curvatures is:</span>
 
@@ -729,11 +729,11 @@
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
-<span class="sd">        run_curvefit : Alternative SORM approach using Hessian eigenvalues.</span>
+<span class="sd">        SORMOptions : Select the Hessian-based alternative with ``fit="curve"``.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">        RuntimeError</span>
+<span class="sd">        AnalysisError</span>
 <span class="sd">            If the FORM analysis has not run or did not converge successfully,</span>
 <span class="sd">            or a fitting point cannot be found.</span>
 <span class="sd">        """</span>
@@ -840,8 +840,9 @@
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">        RuntimeError</span>
-<span class="sd">            If Newton iteration does not converge within *max_iter* steps.</span>
+<span class="sd">        AnalysisError</span>
+<span class="sd">            If the search gradient vanishes or Newton iteration does not</span>
+<span class="sd">            converge within *max_iter* steps.</span>
 <span class="sd">        """</span>
         <span class="n">nrv</span> <span class="o">=</span> <span class="n">R1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -1071,7 +1072,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_evaluate_lsf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">calc_gradient</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">u_space</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        For use in computing the Hessian without altering the FORM object.</span>
-<span class="sd">        Considers the coord transform so the limit state function is evaluated</span>
+<span class="sd">        Considers the coord transform so the limit-state function is evaluated</span>
 <span class="sd">        in physical coordinates, but gradient returned in u-space.</span>
 
 <span class="sd">        This code already in FORM, and a more integrated approach would put</span>

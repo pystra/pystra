@@ -483,8 +483,8 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Dependence and advanced methods</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../copulas.html">Copulas and Isoprobabilistic Transformations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../system.html">System Reliability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../copulas.html">Copulas and isoprobabilistic transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../system.html">System reliability</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../strong_maximum.html">Strong Maximum Test</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../active_learning.html">Active-learning methods and literature</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../literature-benchmarks.html">Literature benchmark definitions and provenance</a></li>
@@ -571,34 +571,89 @@ loss may justify a different resistance model. A restricted loading policy may
 justify a different action model. Rebuild the stochastic model for each case
 so those changes are explicit and reproducible.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ra</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pystra.assessment</span><span class="w"> </span><span class="kn">import</span> <span class="n">AssessmentCase</span><span class="p">,</span> <span class="n">assess_cases</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">assess</span><span class="p">(</span><span class="n">resistance_mean</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">scenario</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">resistance_mean</span><span class="p">):</span>
     <span class="n">model</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
     <span class="n">model</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">"R"</span><span class="p">,</span> <span class="n">resistance_mean</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
     <span class="n">model</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">"S"</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">ra</span><span class="o">.</span><span class="n">FORM</span><span class="p">(</span>
-        <span class="n">model</span><span class="p">,</span>
-        <span class="n">limit_state</span><span class="o">=</span><span class="n">ra</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span><span class="k">lambda</span> <span class="n">R</span><span class="p">,</span> <span class="n">S</span><span class="p">:</span> <span class="n">R</span> <span class="o">-</span> <span class="n">S</span><span class="p">),</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">AssessmentCase</span><span class="p">(</span>
+        <span class="n">name</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">ra</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span><span class="k">lambda</span> <span class="n">R</span><span class="p">,</span> <span class="n">S</span><span class="p">:</span> <span class="n">R</span> <span class="o">-</span> <span class="n">S</span><span class="p">),</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">"units"</span><span class="p">:</span> <span class="s2">"kN"</span><span class="p">,</span> <span class="s2">"reference_period_years"</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+            <span class="s2">"dependence"</span><span class="p">:</span> <span class="s2">"independent"</span><span class="p">,</span> <span class="s2">"model_error"</span><span class="p">:</span> <span class="s2">"omitted for teaching"</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
 
-<span class="n">scenarios</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Reference"</span><span class="p">:</span> <span class="n">assess</span><span class="p">(</span><span class="mf">10.0</span><span class="p">),</span> <span class="s2">"Reduced resistance"</span><span class="p">:</span> <span class="n">assess</span><span class="p">(</span><span class="mf">9.0</span><span class="p">)}</span>
-<span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">converged</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">scenarios</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-<span class="k">assert</span> <span class="n">scenarios</span><span class="p">[</span><span class="s2">"Reduced resistance"</span><span class="p">]</span><span class="o">.</span><span class="n">beta</span> <span class="o">&lt;</span> <span class="n">scenarios</span><span class="p">[</span><span class="s2">"Reference"</span><span class="p">]</span><span class="o">.</span><span class="n">beta</span>
+<span class="n">cases</span> <span class="o">=</span> <span class="p">[</span><span class="n">scenario</span><span class="p">(</span><span class="s2">"Reference"</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">),</span> <span class="n">scenario</span><span class="p">(</span><span class="s2">"Reduced resistance"</span><span class="p">,</span> <span class="mf">9.0</span><span class="p">)]</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">assess_cases</span><span class="p">(</span><span class="n">cases</span><span class="p">)</span>
+<span class="n">table</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">result</span><span class="o">.</span><span class="n">converged</span>
+<span class="k">assert</span> <span class="n">table</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"beta"</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">table</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s2">"beta"</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">table</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s2">"metadata"</span><span class="p">][</span><span class="s2">"reference_period_years"</span><span class="p">]</span> <span class="o">==</span> <span class="mi">50</span>
 </pre></div>
 </div>
+<p>Each case owns a copied model and failure-event specification. The returned
+record keeps every scenario, its assumptions and the method’s diagnostics.
+<code class="docutils literal notranslate"><span class="pre">result.to_frame()</span></code> returns a fresh table; its <code class="docutils literal notranslate"><span class="pre">converged</span></code>, <code class="docutils literal notranslate"><span class="pre">status</span></code> and
+<code class="docutils literal notranslate"><span class="pre">message</span></code> columns distinguish successful estimates from failed cases. Failed
+estimates appear as NaN in the table, while the original reliability record
+remains available in <code class="docutils literal notranslate"><span class="pre">result.cases</span></code>. A failed case has no target margin.</p>
 <p>These normal inputs are a teaching model with a common force unit. Choosing
-probabilistic models from inspection or monitoring data is a separate modelling
+probabilistic models from inspection or monitoring data is a separate modeling
 step; this example does not implement Bayesian updating or deterioration over
 time. See <a class="reference internal" href="models.html"><span class="doc">Specifying a reliability model</span></a> and <a class="reference internal" href="results.html"><span class="doc">Interpreting results and convergence</span></a> for the analysis contract.</p>
+</section>
+<section id="choose-a-reliability-evaluator">
+<h2>Choose a reliability evaluator<a class="headerlink" href="#choose-a-reliability-evaluator" title="Link to this heading">#</a></h2>
+<p>Assessment and calibration use FORM by default. Supply <code class="docutils literal notranslate"><span class="pre">evaluator=</span></code> to use
+another suitable method or a callback for an external solver. The call is
+<code class="docutils literal notranslate"><span class="pre">evaluator(model,</span> <span class="pre">limit_state,</span> <span class="pre">options=options)</span></code> with copied inputs. A method
+constructor such as <code class="docutils literal notranslate"><span class="pre">ra.CrudeMonteCarlo</span></code> returns an analysis whose <code class="docutils literal notranslate"><span class="pre">run()</span></code>
+is called once; a callback can return a
+<a class="reference internal" href="../gen/pystra.assessment.ReliabilityEstimate.html#pystra.assessment.ReliabilityEstimate" title="pystra.assessment.ReliabilityEstimate"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReliabilityEstimate</span></code></a> directly. The evaluator owns
+its random state and external resources. For example, pass
+<code class="docutils literal notranslate"><span class="pre">functools.partial(ra.CrudeMonteCarlo,</span> <span class="pre">rng=431)</span></code> with <code class="docutils literal notranslate"><span class="pre">SimulationOptions</span></code>
+for a reproducible simulation.</p>
+<p>This analytic adapter applies only to the independent normal R-minus-S
+teaching model above:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pystra.assessment</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReliabilityEstimate</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">normal_difference</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">resistance</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="s2">"R"</span><span class="p">),</span> <span class="n">model</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="s2">"S"</span><span class="p">)</span>
+    <span class="n">beta</span> <span class="o">=</span> <span class="p">(</span><span class="n">resistance</span><span class="o">.</span><span class="n">mean</span> <span class="o">-</span> <span class="n">action</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">resistance</span><span class="o">.</span><span class="n">std</span><span class="p">,</span> <span class="n">action</span><span class="o">.</span><span class="n">std</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ReliabilityEstimate</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">"analytic normal difference"</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">)</span>
+
+<span class="n">analytic</span> <span class="o">=</span> <span class="n">assess_cases</span><span class="p">(</span><span class="n">cases</span><span class="p">,</span> <span class="n">evaluator</span><span class="o">=</span><span class="n">normal_difference</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">analytic</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span> <span class="n">table</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>An adapter must return a normal-equivalent index and probability for the same
+failure event and reference period. <code class="docutils literal notranslate"><span class="pre">ReliabilityEstimate</span></code> derives either
+quantity when only the other is supplied; give both to retain a finite index
+when a tail probability underflows. Sampling results that exhaust their budget
+without meeting precision remain unsuccessful in a study, even if their raw
+record includes an estimate. Review that estimate’s uncertainty explicitly.</p>
+<p><code class="docutils literal notranslate"><span class="pre">AnalysisError</span></code> becomes a failed case, preserving its record or message.
+Invalid model specifications and programming errors still raise. A callback
+that converts a failed solver run to a bare probability has discarded its
+status: return the complete result or an unsuccessful <code class="docutils literal notranslate"><span class="pre">ReliabilityEstimate</span></code>.</p>
 </section>
 <section id="connect-reliability-to-a-decision">
 <h2>Connect reliability to a decision<a class="headerlink" href="#connect-reliability-to-a-decision" title="Link to this heading">#</a></h2>
 <p>For a design or intervention grid,
 <a class="reference internal" href="../gen/pystra.decision.ddo.DesignStudy.html#pystra.decision.ddo.DesignStudy" title="pystra.decision.ddo.DesignStudy"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignStudy</span></code></a> evaluates a reliability callback at candidate
-values. <a class="reference internal" href="../gen/pystra.decision.ddo.DDO.html#pystra.decision.ddo.DDO" title="pystra.decision.ddo.DDO"><code class="xref py py-class docutils literal notranslate"><span class="pre">DDO</span></code></a> combines the study with an objective and optional
-acceptability criterion. Distinguish the economic optimum from a feasible
+values. <code class="docutils literal notranslate"><span class="pre">study.run()</span></code> returns a structured snapshot; <code class="docutils literal notranslate"><span class="pre">study.evaluate()</span></code>
+returns its table, including convergence, status, method and message.
+<a class="reference internal" href="../gen/pystra.decision.ddo.DDO.html#pystra.decision.ddo.DDO" title="pystra.decision.ddo.DDO"><code class="xref py py-class docutils literal notranslate"><span class="pre">DDO</span></code></a> combines the study with an acceptability
+criterion and an optional objective. Distinguish the economic optimum from a feasible
 optimum under that criterion, as demonstrated in
-<a class="reference internal" href="../notebooks/ex_design_decision_optimization.html"><span class="doc">Steel-bar design decisions and LQI acceptability</span></a>.</p>
+<a class="reference internal" href="../notebooks/ex_design_decision_optimization.html"><span class="doc">Steel-bar design decisions and LQI acceptability</span></a>. Failed alternatives remain
+in the decision table and cannot be selected by <code class="docutils literal notranslate"><span class="pre">optimize()</span></code> or
+<code class="docutils literal notranslate"><span class="pre">economic_optimum()</span></code>. <code class="docutils literal notranslate"><span class="pre">DDO.run()</span></code> clears the previous table before a rerun;
+its returned table and <code class="docutils literal notranslate"><span class="pre">DDO.results</span></code> are copies. A later successful run is
+required to replace an unsuccessful rerun.</p>
 <p>State consequences, costs, discounting, jurisdictional inputs and reference
 period before interpreting a target reliability. Published SWTP records are
 dated inputs with provenance; check their suitability for the study rather
@@ -657,6 +712,7 @@ between periods without assumptions about temporal dependence.</p>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#keep-scenario-assumptions-visible">Keep scenario assumptions visible</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#choose-a-reliability-evaluator">Choose a reliability evaluator</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#connect-reliability-to-a-decision">Connect reliability to a decision</a></li>
 </ul>
   </nav></div>

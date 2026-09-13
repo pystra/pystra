@@ -57,7 +57,7 @@ Choose the components for your analysis
    * - Reliability estimation
      - Independent final MC; replicated subset simulation with adaptive
        enrichment and independent final sampling; active Gaussian-mixture
-       importance sampling with explicit centres
+       importance sampling with explicit centers
      - Automatic proposal adaptation and true-model correction workflows
    * - Learning functions
      - Explicit scalar/ensemble selection interfaces; U, EFF and FBR voting
@@ -233,9 +233,9 @@ use their candidate pools with an explicit alternative stopping policy.
 
 ``ImportanceSamplingEstimator`` accepts row-wise normal-coordinate proposal
 ``centers``, common spherical ``scale`` and a default 0.1 defensive fraction
-of the target normal distribution. Centres are fixed during a run. A converged
-FORM ``design_point_u`` can supply one centre; known separated modes require
-appropriate additional centres. The proposal cannot guarantee discovery of
+of the target normal distribution. Centers are fixed during a run. A converged
+FORM ``design_point_u`` can supply one center; known separated modes require
+appropriate additional centers. The proposal cannot guarantee discovery of
 unknown modes. Learning adapts the surrogate, while both exploratory and final
 probabilities use ordinary likelihood weighting. Final sampling uses fresh draws.
 

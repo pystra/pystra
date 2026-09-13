@@ -671,7 +671,6 @@
 </details></li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="pystra.calibration.html">pystra.calibration</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="pystra.calibration.factors.html">pystra.calibration.factors</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.analyze_case.html">pystra.calibration.factors.analyze_case</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.derive_factors.html">pystra.calibration.factors.derive_factors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.design_with_factors.html">pystra.calibration.factors.design_with_factors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.select_factors.html">pystra.calibration.factors.select_factors</a></li>
@@ -699,6 +698,22 @@
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.plotting.plot_calibration.html">pystra.calibration.plotting.plot_calibration</a></li>
 </ul>
 </details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.assessment.html">pystra.assessment</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.analyze_case.html">pystra.assessment.analyze_case</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.assess_cases.html">pystra.assessment.assess_cases</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.evaluate_reliability.html">pystra.assessment.evaluate_reliability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.AssessmentCase.html">pystra.assessment.AssessmentCase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.AssessmentResult.html">pystra.assessment.AssessmentResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.CaseResult.html">pystra.assessment.CaseResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityEstimate.html">pystra.assessment.ReliabilityEstimate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityEvaluator.html">pystra.assessment.ReliabilityEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityResult.html">pystra.assessment.ReliabilityResult</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.reporting.html">pystra.reporting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.reporting.reliability_row.html">pystra.reporting.reliability_row</a></li>
 </ul>
 </details></li>
 </ul>
@@ -895,16 +910,36 @@
 <h1>pystra.calibration.factors.solve_designs<a class="headerlink" href="#pystra-calibration-factors-solve-designs" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="pystra.calibration.factors.solve_designs">
-<span class="sig-name descname"><span class="pre">solve_designs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">problem</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_beta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'root'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_evaluations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bracket</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/calibration/factors.html#solve_designs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.calibration.factors.solve_designs" title="Link to this definition">#</a></dt>
-<dd><p>Solve each case to a target and return status/residuals for every case.</p>
-<p><code class="docutils literal notranslate"><span class="pre">root</span></code> uses fsolve with full diagnostics, or bracketed Brent solving when
-a bracket is supplied. <code class="docutils literal notranslate"><span class="pre">alpha</span></code> preserves the normal-space projection
-method. Both require converged inner FORM results and a final beta residual
-within <code class="docutils literal notranslate"><span class="pre">tolerance</span></code>. <code class="docutils literal notranslate"><span class="pre">max_evaluations</span></code> limits FORM runs per case,
-including the final verification. No unsuccessful solve is silently accepted.</p>
+<span class="sig-name descname"><span class="pre">solve_designs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">problem</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_beta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'root'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_evaluations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bracket</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evaluator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/calibration/factors.html#solve_designs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.calibration.factors.solve_designs" title="Link to this definition">#</a></dt>
+<dd><p>Solve each case to a target and retain status and residuals.</p>
 <dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>problem</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="pystra.calibration.factors.FactorCalibrationProblem.html#pystra.calibration.factors.FactorCalibrationProblem" title="pystra.calibration.factors.FactorCalibrationProblem"><code class="xref py py-class docutils literal notranslate"><span class="pre">FactorCalibrationProblem</span></code></a></span>) – Explicit cases, roles, nominal values and design parameter; copied.</p></li>
+<li><p><strong>target_beta</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Finite normal-equivalent target for the same event/reference period.</p></li>
+<li><p><strong>method</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Root solving or normal-space design-point projection.</p></li>
+<li><p><strong>initial_value</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]</span>) – Starting design parameter; defaults to the problem’s common constant.</p></li>
+<li><p><strong>tolerance</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Positive root-solver tolerance and maximum accepted beta residual.</p></li>
+<li><p><strong>max_evaluations</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Reliability evaluation budget per case, including final verification.</p></li>
+<li><p><strong>bracket</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]</span>) – Increasing two-endpoint bracket for Brent root solving. Without it,
+the root method uses fsolve with full diagnostics.</p></li>
+<li><p><strong>options</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></span>) – Evaluator-specific settings; FORMOptions for the default FORM.</p></li>
+<li><p><strong>evaluator</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="pystra.assessment.ReliabilityEvaluator.html#pystra.assessment.ReliabilityEvaluator" title="pystra.assessment.ReliabilityEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReliabilityEvaluator</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Method constructor or result callback, default FORM. Root solving
+requires normal-equivalent estimates. Alpha projection additionally
+requires a named normal-space design point/direction and an analysis
+exposing its matching transform.u_to_x and model.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Every case, its design parameter, reliability record, target residual
+and solve status. Inner convergence, outer success and the final
+residual tolerance are all required. No unsuccessful solve is accepted.</p>
+</dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="pystra.calibration.factors.TargetDesigns.html#pystra.calibration.factors.TargetDesigns" title="pystra.calibration.factors.TargetDesigns"><code class="xref py py-class docutils literal notranslate"><span class="pre">TargetDesigns</span></code></a></span></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Invalid solve settings or missing design-point/projection capabilities.</p>
 </dd>
 </dl>
 </dd></dl>

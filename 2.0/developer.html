@@ -557,7 +557,7 @@ After 2.0, public API changes follow the documented deprecation and release poli
 <ul class="simple">
 <li><p>Use snake_case for functions, methods, parameters, attributes, and compound
 module names; CapWords for classes; UPPER_SNAKE_CASE for constants.</p></li>
-<li><p>Capitalise every letter of an acronym inside a CapWords class name. PEP 8
+<li><p>Capitalize every letter of an acronym inside a CapWords class name. PEP 8
 (<em>Descriptive: Naming Styles</em>) states: “When using acronyms in CapWords,
 capitalize all the letters of the acronym. Thus HTTPServerError is better
 than HttpServerError.” This is a single rule applied uniformly, not a list
@@ -603,6 +603,74 @@ Avoid booleans or numeric flags that silently change a parameter’s meaning.</p
 have type hints and NumPy-style docstrings covering shapes, units, defaults,
 assumptions, returns, and failure behavior. Mark internal helpers with <code class="docutils literal notranslate"><span class="pre">_</span></code>.</p></li>
 </ul>
+</section>
+<section id="house-style">
+<h2>House style<a class="headerlink" href="#house-style" title="Link to this heading">#</a></h2>
+<p>Use these conventions for documentation, docstrings, comments and examples:</p>
+<ul class="simple">
+<li><p>Write <strong>PySTRA</strong> in prose and <code class="docutils literal notranslate"><span class="pre">pystra</span></code> in imports, paths and package commands.
+Preserve literal identifiers, distribution metadata, quotations and legal
+attribution, including the public exception name <code class="docutils literal notranslate"><span class="pre">PystraError</span></code>.</p></li>
+<li><p>Use US English, including <em>optimization</em>, <em>normalized</em>, <em>behavior</em> and
+<em>modeling</em>. External names and API spellings remain unchanged.</p></li>
+<li><p>Use sentence-case titles and headings, retaining proper names and acronyms.
+In authored RST, use <code class="docutils literal notranslate"><span class="pre">=</span></code> for the page title, <code class="docutils literal notranslate"><span class="pre">-</span></code> for sections, then <code class="docutils literal notranslate"><span class="pre">~</span></code> and
+<code class="docutils literal notranslate"><span class="pre">^</span></code> for deeper levels. Preserve heading depth and link destinations.</p></li>
+<li><p>Lead task instructions with verbs and describe current behavior in the
+present tense. Prefer short explanatory paragraphs and plain language.
+Support accuracy and performance claims with evidence and limitations.</p></li>
+<li><p>Use <em>limit state</em> and <em>design point</em> as nouns, and <em>limit-state function</em>
+and <em>design-point search</em> as modifiers. Prefer <em>failure probability</em>;
+<em>probability of failure</em> is also valid when it reads naturally.</p></li>
+<li><p>Use <em>standard normal space</em> and <em>independent standard normal coordinates</em>.
+Define local <code class="docutils literal notranslate"><span class="pre">u</span></code>, <code class="docutils literal notranslate"><span class="pre">x</span></code>, and any correlated-normal <code class="docutils literal notranslate"><span class="pre">z</span></code> notation explicitly;
+preserve and explain the notation of reproduced sources.</p></li>
+<li><p>In new equations, use <code class="docutils literal notranslate"><span class="pre">\mathbf{x}</span></code> and <code class="docutils literal notranslate"><span class="pre">\mathbf{u}</span></code> for Latin vectors,
+<code class="docutils literal notranslate"><span class="pre">\boldsymbol{\alpha}</span></code> for Greek vectors, <code class="docutils literal notranslate"><span class="pre">p_f</span></code> for failure probability and
+<code class="docutils literal notranslate"><span class="pre">\beta</span></code> for the normal-equivalent reliability index. Typography changes
+must preserve mathematical meaning, equation labels and source conventions.</p></li>
+<li><p>State actual array shapes and define dimension names. Public points have
+shape <code class="docutils literal notranslate"><span class="pre">(n_variables,)</span></code>; public sample batches have shape
+<code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_variables)</span></code>. Explicitly document private column kernels.
+State units and reference periods, retaining the source benchmark’s units.
+Put a space between a number and its engineering unit or percent symbol.
+Distinguish a random variable’s CoV from an estimator’s uncertainty.</p></li>
+<li><p>Use NumPy docstring sections for substantive Parameters, Returns and Raises
+contracts. Put constructor arguments on the class and method-specific
+contracts on methods; concise summaries suffice for obvious properties and
+private helpers. A summary sentence is followed by a blank line before
+elaboration. Use raw strings for LaTeX and real source lines for lists.</p></li>
+<li><p>Format identifiers as inline literals and use Sphinx roles for useful API
+links, <code class="docutils literal notranslate"><span class="pre">:doc:</span></code> for pages, <code class="docutils literal notranslate"><span class="pre">:ref:</span></code> for named sections and <code class="docutils literal notranslate"><span class="pre">:eq:</span></code> for equations.
+Use descriptive link labels, RST list-tables for comparisons, <code class="docutils literal notranslate"><span class="pre">*</span></code> for RST
+bullets and <code class="docutils literal notranslate"><span class="pre">-</span></code> for Markdown bullets. Number lists only for ordered actions.</p></li>
+<li><p>End task pages and notebooks with <code class="docutils literal notranslate"><span class="pre">**Continue:**</span></code> and relevant links
+separated by <code class="docutils literal notranslate"><span class="pre">·</span></code>. Keep the purposeful <code class="docutils literal notranslate"><span class="pre">**Use</span> <span class="pre">this</span> <span class="pre">method:**</span></code> theory and
+<code class="docutils literal notranslate"><span class="pre">**Use</span> <span class="pre">it:**</span></code> API labels. Notebooks also retain purpose, prerequisites,
+assumptions, interpreted results, captions and meaningful figure alternatives.</p></li>
+<li><p>Begin library modules with a useful docstring, then standard-library,
+third-party and local imports in separate groups. Omit interpreter/encoding
+headers from library modules. Preserve optional imports and deliberate
+public re-exports; keep explicit <code class="docutils literal notranslate"><span class="pre">__all__</span></code> and the aliases <code class="docutils literal notranslate"><span class="pre">np</span></code> and <code class="docutils literal notranslate"><span class="pre">ra</span></code>.</p></li>
+<li><p>Public signatures have useful type annotations. Use modern built-in
+containers and unions, such as <code class="docutils literal notranslate"><span class="pre">list[float]</span></code> and <code class="docutils literal notranslate"><span class="pre">Result</span> <span class="pre">|</span> <span class="pre">None</span></code>. Keep
+annotation coverage and syntax conversion in dedicated commits, and check
+runtime resolution, forward references and generated documentation.</p></li>
+<li><p>Use f-strings for interpolated messages. Validation messages identify the
+input and constraint, normally without terminal punctuation. Preserve
+exception classes, statuses, causes and existing message contracts.</p></li>
+<li><p>Comments explain mathematics, invariants, provenance or non-obvious choices.
+Remove verified obsolete commented-out code. Preserve NumPy ownership,
+shape, allocation and evaluation-order semantics; style work is not a
+numerical refactor. Black remains the Python formatter.</p></li>
+<li><p>Prefer behavior-named pytest functions, parametrization for shared
+invariants and precise expected exception types. Keep useful test classes,
+numerical reference values, seeds and tolerances.</p></li>
+</ul>
+<p>Use RST for authored source pages; Markdown remains appropriate for notebooks
+and repository documents. <code class="docutils literal notranslate"><span class="pre">docs/source/install.md</span></code> is intentionally parsed as
+RST: do not rename or convert it as a style change. Preserve quoted reference
+titles, source-specific engineering notation and historical migration records.</p>
 </section>
 <section id="keep-computation-and-state-understandable">
 <h2>Keep computation and state understandable<a class="headerlink" href="#keep-computation-and-state-understandable" title="Link to this heading">#</a></h2>
@@ -727,8 +795,8 @@ version bumps; ordinary contributions should not bump the package version.</p>
 packaging checks, and documentation gates. Small documentation edits do not
 require rerunning the entire numerical suite.</p>
 </section>
-<section id="licence-and-method-provenance">
-<h2>Licence and method provenance<a class="headerlink" href="#licence-and-method-provenance" title="Link to this heading">#</a></h2>
+<section id="license-and-method-provenance">
+<h2>License and method provenance<a class="headerlink" href="#license-and-method-provenance" title="Link to this heading">#</a></h2>
 <p>PySTRA is GPL-3.0-or-later. Preserve copyright and licence notices when adapting
 code, and identify its source and changes. Cite the original papers and benchmark
 definitions; distinguish reproductions from variants and software comparisons.
@@ -797,10 +865,11 @@ apply to all contributions.</p>
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#start-with-the-user-and-the-numerical-method">Start with the user and the numerical method</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#naming-and-public-interfaces">Naming and public interfaces</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#house-style">House style</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#keep-computation-and-state-understandable">Keep computation and state understandable</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#numerical-contracts-and-evidence">Numerical contracts and evidence</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#local-workflow-and-pull-requests">Local workflow and pull requests</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#licence-and-method-provenance">Licence and method provenance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#license-and-method-provenance">License and method provenance</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extension-recipes">Extension recipes</a></li>
 </ul>
   </nav></div>

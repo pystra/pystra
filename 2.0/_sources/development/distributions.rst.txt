@@ -45,7 +45,7 @@ moments again would lose precision. For example, Beta exposes ``q``, ``r``,
 ``ScipyDist`` exposes its frozen ``dist_obj``. ``Maximum``, ``MaxParent`` and
 ``ZeroInflated`` expose their nested marginal and exponent or atom probability.
 
-Moment-parameterised marginals also accept ``mean`` and ``std`` in
+Moment-parameterized marginals also accept ``mean`` and ``std`` in
 ``with_parameters``. Supplying either selects moment construction, preserves
 the other moment, and keeps fixed bounds or the GEV shape. A native parameter
 update keeps the other native parameters. Mixing the two modes raises
@@ -75,7 +75,7 @@ independent snapshots. For a moment-based subclass with an additional bound::
         })
 
 The inherited ``with_parameters`` passes this mapping, with replacements,
-to the constructor. A custom class with alternative parameterisations should
+to the constructor. A custom class with alternative parameterizations should
 also override ``with_parameters`` to define explicitly which coordinates stay
 fixed. It must preserve independence, reject unknown or mixed parameter sets,
 and reproduce the law when called without replacements. There is no

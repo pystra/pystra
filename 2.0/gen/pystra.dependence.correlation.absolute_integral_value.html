@@ -671,7 +671,6 @@
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="pystra.calibration.html">pystra.calibration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="pystra.calibration.factors.html">pystra.calibration.factors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.analyze_case.html">pystra.calibration.factors.analyze_case</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.derive_factors.html">pystra.calibration.factors.derive_factors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.design_with_factors.html">pystra.calibration.factors.design_with_factors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.select_factors.html">pystra.calibration.factors.select_factors</a></li>
@@ -699,6 +698,22 @@
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.plotting.plot_calibration.html">pystra.calibration.plotting.plot_calibration</a></li>
 </ul>
 </details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.assessment.html">pystra.assessment</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.analyze_case.html">pystra.assessment.analyze_case</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.assess_cases.html">pystra.assessment.assess_cases</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.evaluate_reliability.html">pystra.assessment.evaluate_reliability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.AssessmentCase.html">pystra.assessment.AssessmentCase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.AssessmentResult.html">pystra.assessment.AssessmentResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.CaseResult.html">pystra.assessment.CaseResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityEstimate.html">pystra.assessment.ReliabilityEstimate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityEvaluator.html">pystra.assessment.ReliabilityEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityResult.html">pystra.assessment.ReliabilityResult</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.reporting.html">pystra.reporting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.reporting.reliability_row.html">pystra.reporting.reliability_row</a></li>
 </ul>
 </details></li>
 </ul>
@@ -893,14 +908,14 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pystra.dependence.correlation.absolute_integral_value">
 <span class="sig-name descname"><span class="pre">absolute_integral_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rho0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/dependence/correlation.html#absolute_integral_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.dependence.correlation.absolute_integral_value" title="Link to this definition">#</a></dt>
-<dd><p>Objective function for the Nataf correlation optimisation.</p>
-<p>Returns <code class="docutils literal notranslate"><span class="pre">|rho_target</span> <span class="pre">-</span> <span class="pre">rho_integral(rho0)|</span></code>, which is minimised
+<dd><p>Objective function for the Nataf correlation optimization.</p>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">|rho_target</span> <span class="pre">-</span> <span class="pre">rho_integral(rho0)|</span></code>, which is minimized
 by <code class="docutils literal notranslate"><span class="pre">scipy.optimize.fmin</span></code> to find the modified correlation
-coefficient <code class="docutils literal notranslate"><span class="pre">rho0</span></code> in standard-normal space.</p>
+coefficient <code class="docutils literal notranslate"><span class="pre">rho0</span></code> in standard normal space.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>rho0</strong> (<em>float</em>) – Trial correlation in standard-normal space.</p></li>
+<li><p><strong>rho0</strong> (<em>float</em>) – Trial correlation in standard normal space.</p></li>
 <li><p><strong>*args</strong> (<em>tuple</em>) – <code class="docutils literal notranslate"><span class="pre">(rho_target,</span> <span class="pre">margi,</span> <span class="pre">margj,</span> <span class="pre">Z1,</span> <span class="pre">Z2,</span> <span class="pre">X1,</span> <span class="pre">X2,</span> <span class="pre">WIP,</span> <span class="pre">detJ)</span></code> —
 the target physical-space correlation and the pre-computed
 quadrature grid (see <code class="xref py py-func docutils literal notranslate"><span class="pre">zi_and_xi()</span></code>).</p></li>

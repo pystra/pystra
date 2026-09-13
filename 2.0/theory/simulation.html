@@ -562,20 +562,19 @@ of undesired configurations, respected to the total numbers of
 samples. <a class="reference internal" href="../references.html#lemaire2010" id="id4"><span>[Lemaire2010]</span></a></p>
 <p>For this analysis Equation <a class="reference internal" href="fundamentals.html#equation-eq-2-70">(2)</a> can be rewritten as</p>
 <div class="math notranslate nohighlight" id="equation-eq-2-91">
-<span class="eqno">(1)<a class="headerlink" href="#equation-eq-2-91" title="Link to this equation">#</a></span>\[        p_f = P(g({\bf X})\leq 0) = \iiint\limits_{g({\bf X})\leq 0}
-        I(g({\bf X})\leq 0) f_{{\bf X}}({\bf x}) d {\bf x}\]</div>
-<p>where <span class="math notranslate nohighlight">\(I\)</span> is an indicator function that is equals to 1 if <span class="math notranslate nohighlight">\(g({\bf
-X}) \leq 0\)</span> and otherwise 0. Equation <a class="reference internal" href="#equation-eq-2-91">(1)</a> can be interpreted as
+<span class="eqno">(1)<a class="headerlink" href="#equation-eq-2-91" title="Link to this equation">#</a></span>\[        p_f = P(g(\mathbf{X})\leq 0) = \iiint\limits_{g(\mathbf{X})\leq 0}
+        I(g(\mathbf{X})\leq 0) f_{\mathbf{X}}(\mathbf{x}) d \mathbf{x}\]</div>
+<p>where <span class="math notranslate nohighlight">\(I\)</span> is an indicator function that is equals to 1 if <span class="math notranslate nohighlight">\(g(\mathbf{X}) \leq 0\)</span> and otherwise 0. Equation <a class="reference internal" href="#equation-eq-2-91">(1)</a> can be interpreted as
 expected value of the indicator function. Therefore, the probability of
 failure can be estimated such as <a class="reference internal" href="../references.html#malioka2009" id="id5"><span>[Malioka2009]</span></a></p>
 <div class="math notranslate nohighlight" id="equation-eq-2-92">
-<span class="eqno">(2)<a class="headerlink" href="#equation-eq-2-92" title="Link to this equation">#</a></span>\[        \tilde{p}_f = \text{Ex}\left[I(g({\bf X})\leq 0)\right] =
-        \frac{1}{n}\sum_{i=1}^{n} I(g({\bf X})\leq 0)\]</div>
+<span class="eqno">(2)<a class="headerlink" href="#equation-eq-2-92" title="Link to this equation">#</a></span>\[        \tilde{p}_f = \text{Ex}\left[I(g(\mathbf{X})\leq 0)\right] =
+        \frac{1}{n}\sum_{i=1}^{n} I(g(\mathbf{X})\leq 0)\]</div>
 <section id="crude-monte-carlo-simulation">
 <h2>Crude Monte Carlo simulation<a class="headerlink" href="#crude-monte-carlo-simulation" title="Link to this heading">#</a></h2>
 <p>The Crude Monte Carlo simulation (CMC) is the most simple form and corresponds
 to a direct application of Equation <a class="reference internal" href="#equation-eq-2-92">(2)</a>. A large number <span class="math notranslate nohighlight">\(n\)</span> of
-samples are simulated for the set of random variables <span class="math notranslate nohighlight">\(\bf X\)</span>. All
+samples are simulated for the set of random variables <span class="math notranslate nohighlight">\(\mathbf{X}\)</span>. All
 samples that lead to a failure are counted <span class="math notranslate nohighlight">\(n_f\)</span> and after all
 simulations the probability of failure <span class="math notranslate nohighlight">\(p_f\)</span> may be estimated by
 <a class="reference internal" href="../references.html#faber2009" id="id6"><span>[Faber2009]</span></a></p>
@@ -598,39 +597,36 @@ methods can be performed. One commonly applied method is the Importance
 Sampling simulation method (IS). Here the prior information about the failure
 surface is added to Equation <a class="reference internal" href="#equation-eq-2-91">(1)</a></p>
 <div class="math notranslate nohighlight" id="equation-eq-2-95">
-<span class="eqno">(5)<a class="headerlink" href="#equation-eq-2-95" title="Link to this equation">#</a></span>\[        p_f = P(g({\bf X})\leq 0) = \iiint\limits_{g({\bf X})\leq 0}
-        I(g({\bf X})\leq 0) \frac{f_{{\bf X}}({\bf x})}{h_{{\bf X}}({\bf
-        x})} h_{{\bf X}}({\bf x}) d {\bf x}\]</div>
-<p>where <span class="math notranslate nohighlight">\(h_{X} ({\bf X})\)</span> is the importance sampling probability
-density function of <span class="math notranslate nohighlight">\(\bf X\)</span>. Consequently Equation <a class="reference internal" href="#equation-eq-2-92">(2)</a> is
+<span class="eqno">(5)<a class="headerlink" href="#equation-eq-2-95" title="Link to this equation">#</a></span>\[        p_f = P(g(\mathbf{X})\leq 0) = \iiint\limits_{g(\mathbf{X})\leq 0}
+        I(g(\mathbf{X})\leq 0) \frac{f_{\mathbf{X}}(\mathbf{x})}{h_{\mathbf{X}}(\mathbf{x})} h_{\mathbf{X}}(\mathbf{x}) d \mathbf{x}\]</div>
+<p>where <span class="math notranslate nohighlight">\(h_{X} (\mathbf{X})\)</span> is the importance sampling probability
+density function of <span class="math notranslate nohighlight">\(\mathbf{X}\)</span>. Consequently Equation <a class="reference internal" href="#equation-eq-2-92">(2)</a> is
 extended to <a class="reference internal" href="../references.html#faber2009" id="id8"><span>[Faber2009]</span></a></p>
 <div class="math notranslate nohighlight" id="equation-eq-2-96">
-<span class="eqno">(6)<a class="headerlink" href="#equation-eq-2-96" title="Link to this equation">#</a></span>\[        \tilde{p}_f = \text{Ex}\left[I(g({\bf X})\leq 0) \frac{f_{{\bf
-        X}}({\bf x})}{h_{{\bf X}}({\bf x})}\right] =
-        \frac{1}{n}\sum_{i=1}^{n} I(g({\bf X})\leq 0)\frac{f_{{\bf X}}({\bf
-        x})}{h_{{\bf X}}({\bf x})}\]</div>
-<p>The key to this approach is to choose <span class="math notranslate nohighlight">\(h_{X} ({\bf X})\)</span> so that samples
+<span class="eqno">(6)<a class="headerlink" href="#equation-eq-2-96" title="Link to this equation">#</a></span>\[        \tilde{p}_f = \text{Ex}\left[I(g(\mathbf{X})\leq 0) \frac{f_{\mathbf{X}}(\mathbf{x})}{h_{\mathbf{X}}(\mathbf{x})}\right] =
+        \frac{1}{n}\sum_{i=1}^{n} I(g(\mathbf{X})\leq 0)\frac{f_{\mathbf{X}}(\mathbf{x})}{h_{\mathbf{X}}(\mathbf{x})}\]</div>
+<p>The key to this approach is to choose <span class="math notranslate nohighlight">\(h_{X} (\mathbf{X})\)</span> so that samples
 are obtained more frequently from the failure domain. For this reason, often a
 FORM (or SORM) analysis is performed to find a prior design point. [Baker2010]</p>
 <figure class="align-center">
-<a class="reference internal image-reference" href="../_images/f-02-10-a.png"><img alt="MC a" height="282" src="../_images/f-02-10-a.png" width="230" />
+<a class="reference internal image-reference" href="../_images/f-02-10-a.png"><img alt="Joint-density contours and a shaded failure region in physical coordinates." height="282" src="../_images/f-02-10-a.png" width="230" />
 </a>
 </figure>
-<p>Representation of a physical space with a set <span class="math notranslate nohighlight">\({\bf X}\)</span> of any two
-random variables. The shaded area denotes the failure domain and <cite>g({bf X}) =
+<p>Representation of a physical space with a set <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> of any two
+random variables. The shaded area denotes the failure domain and <cite>g(mathbf{X}) =
 0</cite> the failure surface.</p>
 <figure class="align-center">
-<a class="reference internal image-reference" href="../_images/f-02-10-b.png"><img alt="MC b" height="280" src="../_images/f-02-10-b.png" width="230" />
+<a class="reference internal image-reference" href="../_images/f-02-10-b.png"><img alt="Direct Monte Carlo samples, with failures beyond the limit-state boundary." height="280" src="../_images/f-02-10-b.png" width="230" />
 </a>
 </figure>
 <p>For the CMC method every dot corresponds to one configuration of the random
-variables <span class="math notranslate nohighlight">\({\bf X}\)</span>. Dots in shaded areas lead to a failure.</p>
+variables <span class="math notranslate nohighlight">\(\mathbf{X}\)</span>. Dots in shaded areas lead to a failure.</p>
 <figure class="align-center">
-<a class="reference internal image-reference" href="../_images/f-02-10-c.png"><img alt="MC c" height="280" src="../_images/f-02-10-c.png" width="235" />
+<a class="reference internal image-reference" href="../_images/f-02-10-c.png"><img alt="Importance samples concentrated around the design point on the failure boundary." height="280" src="../_images/f-02-10-c.png" width="235" />
 </a>
 </figure>
 <p>The IS simulation method uses a distribution centered on the design point
-<span class="math notranslate nohighlight">\({\bf x}^*\)</span>, is obtained from a FORM (or SORM) analysis. More dots in
+<span class="math notranslate nohighlight">\(\mathbf{x}^*\)</span>, is obtained from a FORM (or SORM) analysis. More dots in
 the failure domain can be observed.</p>
 </section>
 <section id="line-sampling">
@@ -640,7 +636,7 @@ important direction <span class="math notranslate nohighlight">\(\boldsymbol{\al
 the n-dimensional sampling problem to a family of one-dimensional problems
 <a class="reference internal" href="../references.html#koutsourelakis2004" id="id9"><span>[Koutsourelakis2004]</span></a>.</p>
 <p>The important direction <span class="math notranslate nohighlight">\(\boldsymbol{\alpha}\)</span> is the unit vector from
-the origin in standard-normal space toward the most probable failure point.
+the origin in standard normal space toward the most probable failure point.
 For each of <span class="math notranslate nohighlight">\(N\)</span> random samples <span class="math notranslate nohighlight">\(\mathbf{u}_i\)</span> drawn from
 <span class="math notranslate nohighlight">\(\mathcal{N}(\mathbf{0}, \mathbf{I})\)</span>, the component along
 <span class="math notranslate nohighlight">\(\boldsymbol{\alpha}\)</span> is projected out to obtain the foot-point</p>

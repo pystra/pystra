@@ -526,8 +526,8 @@
 <span class="sd">    Nataf isoprobabilistic transformation between physical space (x) and</span>
 <span class="sd">    standard normal space (u).</span>
 
-<span class="sd">    The transformation relies on a square-root factorisation of the modified</span>
-<span class="sd">    correlation matrix Ro, such that Ro = inv_T @ inv_T^T.  Two factorisations</span>
+<span class="sd">    The transformation relies on a square-root factorization of the modified</span>
+<span class="sd">    correlation matrix Ro, such that Ro = inv_T @ inv_T^T.  Two factorizations</span>
 <span class="sd">    are available:</span>
 
 <span class="sd">    - **Cholesky** (default): Ro = L @ L^T where L is lower-triangular.</span>
@@ -539,7 +539,7 @@
 <span class="sd">    agree for the same optimum, up to numerical solver error. A fixed numerical</span>
 <span class="sd">    u vector generally maps to different physical points under the two factors.</span>
 
-<span class="sd">    The SVD factorisation is generally more robust because it avoids computing</span>
+<span class="sd">    The SVD factorization is generally more robust because it avoids computing</span>
 <span class="sd">    the explicit inverse of a triangular factor; instead it works with the</span>
 <span class="sd">    orthogonal eigenstructure of Ro.  It is recommended when Ro is</span>
 <span class="sd">    near-singular or poorly conditioned.</span>
@@ -676,14 +676,14 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_compute_cholesky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Ro</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Compute Cholesky factorisation of the modified correlation matrix.</span>
+<span class="sd">        Compute Cholesky factorization of the modified correlation matrix.</span>
 
 <span class="sd">        Decomposes Ro = L @ L^T where L is lower-triangular, then sets::</span>
 
 <span class="sd">            inv_T = L</span>
 <span class="sd">            T     = L^{-1}</span>
 
-<span class="sd">        This is the classical Nataf factorisation.  It requires Ro to be</span>
+<span class="sd">        This is the classical Nataf factorization.  It requires Ro to be</span>
 <span class="sd">        symmetric positive-definite (all eigenvalues strictly positive).</span>
 <span class="sd">        """</span>
         <span class="c1"># Ro = self.model.get_modified_correlation()</span>
@@ -700,7 +700,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_compute_svd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Ro</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Compute SVD-based factorisation of the modified correlation matrix.</span>
+<span class="sd">        Compute SVD-based factorization of the modified correlation matrix.</span>
 
 <span class="sd">        For the symmetric positive-definite matrix Ro the SVD coincides with</span>
 <span class="sd">        the eigendecomposition: Ro = U @ diag(D) @ U^T.  The square-root</span>
@@ -711,7 +711,7 @@
 
 <span class="sd">        This satisfies the same identity as Cholesky (Ro = inv_T @ inv_T^T)</span>
 <span class="sd">        but is more robust for ill-conditioned correlation matrices because</span>
-<span class="sd">        the factorisation exploits the orthogonal eigenstructure rather than</span>
+<span class="sd">        the factorization exploits the orthogonal eigenstructure rather than</span>
 <span class="sd">        relying on triangular back-substitution.</span>
 <span class="sd">        """</span>
         <span class="k">try</span><span class="p">:</span>

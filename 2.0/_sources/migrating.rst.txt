@@ -73,7 +73,7 @@ public name, and they are applied uniformly rather than case by case:
      - ``snake_case``
      - ``model.add_variable``, ``result.failure_probability``
    * - Classes
-     - ``CapWords``, with acronyms fully capitalised
+     - ``CapWords``, with acronyms fully capitalized
      - ``SystemFORM``, ``DDOCriterion``, ``LQI``
    * - Constants
      - ``UPPER_SNAKE_CASE``
@@ -210,10 +210,10 @@ the classes themselves from ``pystra`` or ``pystra.distributions``.
 Top-level namespace
 ~~~~~~~~~~~~~~~~~~~
 
-``import pystra`` gives the everyday modelling classes, distributions,
+``import pystra`` gives the everyday modeling classes, distributions,
 dependence models, reliability methods, systems, load processes and result
 types, options and the error classes: 70 names, listed in ``pystra.__all__``. Every module declares its own
-``__all__``, and nothing else leaks into the namespace. Specialised workflow
+``__all__``, and nothing else leaks into the namespace. Specialized workflow
 tools are imported from their subpackage:
 
 - code calibration: ``pystra.calibration`` (``CodeCalibration``,
@@ -820,7 +820,7 @@ Explicit load cases
 ``LoadCombination`` now stores inspectable probabilistic cases and metadata;
 analysis is explicit through ``analyze_case(cases, case_name, options=...)``.
 Its constructor accepts ``cases``, ``constants``, ``roles``, ``leading_actions``,
-``limit_state`` and labelled Pearson ``correlation``. It validates inputs but
+``limit_state`` and labeled Pearson ``correlation``. It validates inputs but
 performs no reliability analysis. Case/model access returns independent copies.
 Unknown variable overrides raise instead of being silently ignored.
 
@@ -1060,7 +1060,7 @@ For adaptive estimators, ``n_candidates`` caps the selectable pool, while
 The default initial design is ``max(30, 5*n_variables)``. Explicit ``n_initial``
 still takes precedence. Exploration uses a repeated separate random stream
 for comparisons; final estimation is independent. Fixed MC seeds and results
-retain their prior behaviour.
+retain their prior behavior.
 
 ``ReliabilityEstimate`` adds ``converged``, ``status`` and ``diagnostics`` with
 backward-compatible defaults for existing component constructors. Completion

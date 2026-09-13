@@ -583,11 +583,11 @@
 <section id="Checking-a-FORM-design-point">
 <h1>Checking a FORM design point<a class="headerlink" href="#Checking-a-FORM-design-point" title="Link to this heading">#</a></h1>
 <p>Use the Strong Maximum Test to look for competing failure regions and examine what the diagnostic can miss.</p>
-<p><strong>Before you start:</strong> FORM and standard-normal design-point geometry.</p>
+<p><strong>Before you start:</strong> FORM and standard normal design-point geometry.</p>
 <section id="Problem-and-approach">
 <h2>Problem and approach<a class="headerlink" href="#Problem-and-approach" title="Link to this heading">#</a></h2>
-<p>FORM convergence does not establish that its design point represents every important failure region. The strong maximum test samples an enlarged sphere in independent standard-normal space and reports failure points outside the candidate’s vicinity.</p>
-<p>This tutorial checks a single half-space, detects a second failure region, visualizes the four point groups, and constructs a bounded region that the sphere misses. See the <a class="reference internal" href="../theory/design_point_methods.html#theory-rst-theory-strong-maximum"><span class="std std-ref">theory</span></a>, <a class="reference internal" href="../strong_maximum.html"><span class="doc">API guide</span></a>, and <a class="reference external" href="https://openturns.github.io/openturns/latest/theory/reliability_sensitivity/strong_maximum_test.html">OpenTURNS formulation</a>.</p>
+<p>FORM convergence does not establish that its design point represents every important failure region. The strong maximum test samples an enlarged sphere in independent standard normal space and reports failure points outside the candidate’s vicinity.</p>
+<p>This tutorial checks a single half-space, detects a second failure region, visualizes the four point groups, and constructs a bounded region that the sphere misses. See the <a class="reference internal" href="../theory/design_point_methods.html#theory-rst-theory-strong-maximum"><span class="std std-ref">theory</span></a>, <a class="reference internal" href="../strong_maximum.html"><span class="doc">User guide</span></a>, and <a class="reference external" href="https://openturns.github.io/openturns/latest/theory/reliability_sensitivity/strong_maximum_test.html">OpenTURNS formulation</a>.</p>
 <p>The test is a diagnostic, not a failure-probability estimator or a certificate of global optimality.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -838,7 +838,7 @@ First physical restart candidates:
 </section>
 <section id="A-bounded-failure-island-the-sphere-cannot-detect">
 <h2>A bounded failure island the sphere cannot detect<a class="headerlink" href="#A-bounded-failure-island-the-sphere-cannot-detect" title="Link to this heading">#</a></h2>
-<p>Add a small circular failure island centred at <span class="math notranslate nohighlight">\((-2,0)\)</span> with radius 0.2:</p>
+<p>Add a small circular failure island centered at <span class="math notranslate nohighlight">\((-2,0)\)</span> with radius 0.2:</p>
 <div class="math notranslate nohighlight">
 \[g(u)=\min\{3-u_1,(u_1+2)^2+u_2^2-0.2^2\}.\]</div>
 <p>The origin remains safe. The island’s nearest boundary is at radius 1.8, closer than the candidate at radius 3. But the entire island lies inside the sampled sphere, so no number of samples <strong>on that sphere</strong> can find it. A negative test therefore cannot certify the candidate.</p>

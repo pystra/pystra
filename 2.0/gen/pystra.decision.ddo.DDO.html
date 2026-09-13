@@ -671,7 +671,6 @@
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="pystra.calibration.html">pystra.calibration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="pystra.calibration.factors.html">pystra.calibration.factors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.analyze_case.html">pystra.calibration.factors.analyze_case</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.derive_factors.html">pystra.calibration.factors.derive_factors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.design_with_factors.html">pystra.calibration.factors.design_with_factors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.select_factors.html">pystra.calibration.factors.select_factors</a></li>
@@ -699,6 +698,22 @@
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.plotting.plot_calibration.html">pystra.calibration.plotting.plot_calibration</a></li>
 </ul>
 </details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.assessment.html">pystra.assessment</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.analyze_case.html">pystra.assessment.analyze_case</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.assess_cases.html">pystra.assessment.assess_cases</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.evaluate_reliability.html">pystra.assessment.evaluate_reliability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.AssessmentCase.html">pystra.assessment.AssessmentCase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.AssessmentResult.html">pystra.assessment.AssessmentResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.CaseResult.html">pystra.assessment.CaseResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityEstimate.html">pystra.assessment.ReliabilityEstimate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityEvaluator.html">pystra.assessment.ReliabilityEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityResult.html">pystra.assessment.ReliabilityResult</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.reporting.html">pystra.reporting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.reporting.reliability_row.html">pystra.reporting.reliability_row</a></li>
 </ul>
 </details></li>
 </ul>
@@ -922,18 +937,24 @@ table; <a class="reference internal" href="#pystra.decision.ddo.DDO.optimize" ti
 <td><p>Plot results from the most recent run.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pystra.decision.ddo.DDO.run" title="pystra.decision.ddo.DDO.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a></p></td>
-<td><p>Evaluate every alternative and cache the decision table.</p></td>
+<td><p>Evaluate every alternative; a failed rerun clears the previous table.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pystra.decision.ddo.DDO.summary" title="pystra.decision.ddo.DDO.summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">summary</span></code></a></p></td>
-<td><p>Return the key decision points as a small labelled table.</p></td>
+<td><p>Return the key decision points as a small labeled table.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
+<dl class="py property">
+<dt class="sig sig-object py" id="pystra.decision.ddo.DDO.results">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">results</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#pystra.decision.ddo.DDO.results" title="Link to this definition">#</a></dt>
+<dd><p>Independent table from the last completed run, or None.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="pystra.decision.ddo.DDO.run">
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/decision/ddo.html#DDO.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.decision.ddo.DDO.run" title="Link to this definition">#</a></dt>
-<dd><p>Evaluate every alternative and cache the decision table.</p>
+<dd><p>Evaluate every alternative; a failed rerun clears the previous table.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span></p>
@@ -977,7 +998,7 @@ table; <a class="reference internal" href="#pystra.decision.ddo.DDO.optimize" ti
 <dl class="py method">
 <dt class="sig sig-object py" id="pystra.decision.ddo.DDO.summary">
 <span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/decision/ddo.html#DDO.summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.decision.ddo.DDO.summary" title="Link to this definition">#</a></dt>
-<dd><p>Return the key decision points as a small labelled table.</p>
+<dd><p>Return the key decision points as a small labeled table.</p>
 <p>One row for the unconstrained economic optimum and, when the criterion
 admits one, a second for the best feasible alternative.  Columns are the
 design variable, <code class="docutils literal notranslate"><span class="pre">pf</span></code>, <code class="docutils literal notranslate"><span class="pre">beta</span></code> (when present), the objective, and the
@@ -1048,6 +1069,7 @@ study, without rebuilding it row by row.</p>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.decision.ddo.DDO"><code class="docutils literal notranslate"><span class="pre">DDO</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.decision.ddo.DDO.results"><code class="docutils literal notranslate"><span class="pre">DDO.results</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.decision.ddo.DDO.run"><code class="docutils literal notranslate"><span class="pre">DDO.run()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.decision.ddo.DDO.economic_optimum"><code class="docutils literal notranslate"><span class="pre">DDO.economic_optimum()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.decision.ddo.DDO.feasible_results"><code class="docutils literal notranslate"><span class="pre">DDO.feasible_results()</span></code></a></li>

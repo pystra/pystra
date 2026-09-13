@@ -1,8 +1,8 @@
 Active-learning reliability
-***************************
+===========================
 
 Active learning reliability
-===========================
+---------------------------
 
 
 ``pystra.active_learning.ActiveLearning`` combines a surrogate with Monte
@@ -32,11 +32,11 @@ uncertainty calculation. ``EnrichmentEstimator`` implementations additionally
 supply new candidate populations and probability diagnostics after each fit.
 ``SubsetSimulationEstimator`` uses this contract for active subset simulation.
 ``ImportanceSamplingEstimator`` provides Gaussian-mixture importance sampling
-with explicit centres and weighted probability diagnostics. See
+with explicit centers and weighted probability diagnostics. See
 :doc:`/notebooks/ex_active_extensions` for its coverage and checks.
 
 Surrogates and uncertainty
---------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Kriging uses scikit-learn's Matérn 5/2 Gaussian process with response
 normalization and a small numerical nugget. Install the optional ``al`` extra.
@@ -79,7 +79,7 @@ series-system surfaces. Use independent true evaluations, polynomial-degree
 checks and benchmark comparisons before trusting a PCE reliability estimate.
 
 Learning functions
-------------------
+~~~~~~~~~~~~~~~~~~
 
 The U-function [Echard2011]_ selects the smallest value of
 :math:`U=|\mu|/\sigma`, stopping when its minimum reaches the configurable
@@ -100,7 +100,7 @@ EFF. With PCE, the Gaussian assumption is a heuristic applied to bootstrap
 spread; it does not convert that spread into a posterior distribution.
 
 Stopping and interpretation
----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The default ``LearningThreshold`` stops enrichment when the configured score
 threshold is met and the candidate pool contains both predicted failure and
@@ -152,7 +152,7 @@ sample dependence; the runner does not impose a binomial formula on them.
 
 The immutable result contains the estimate, normal-equivalent beta,
 convergence status, true evaluation count, history, conditional sampling CoV
-and, for default Monte Carlo, an exact 95% binomial interval. These sampling diagnostics exclude
+and, for default Monte Carlo, an exact 95 % binomial interval. These sampling diagnostics exclude
 surrogate error. A successful stopping status concerns the sampled points;
 it cannot guarantee discovery of disconnected failure regions or eliminate
 surrogate bias. Nonconvergence emits a warning and preserves an explicitly
@@ -160,7 +160,7 @@ unfinished estimate for diagnosis.
 
 
 Replicated subset sampling uncertainty
---------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 For conditional level j, let p_j be the indicator mean and S_c the sum of
 centered indicators in chain c. The chain-cluster variance approximation is

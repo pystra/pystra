@@ -671,11 +671,13 @@
       <th>live_load_ratio</th>
       <th>dead_load_ratio</th>
       <th>design_value</th>
-      <th>beta</th>
       <th>failure_probability</th>
+      <th>beta</th>
       <th>converged</th>
-      <th>target_margin</th>
+      <th>status</th>
       <th>message</th>
+      <th>method</th>
+      <th>target_margin</th>
     </tr>
   </thead>
   <tbody>
@@ -684,55 +686,65 @@
       <td>0.1</td>
       <td>0.1</td>
       <td>2.288503</td>
-      <td>5.666425</td>
       <td>7.290360e-09</td>
+      <td>5.666425</td>
       <td>True</td>
-      <td>0.966425</td>
+      <td>converged</td>
       <td>Converged</td>
+      <td>FORM</td>
+      <td>0.966425</td>
     </tr>
     <tr>
       <th>1</th>
       <td>0.2</td>
       <td>0.1</td>
       <td>2.354225</td>
-      <td>5.970415</td>
       <td>1.183257e-09</td>
+      <td>5.970415</td>
       <td>True</td>
-      <td>1.270415</td>
+      <td>converged</td>
       <td>Converged</td>
+      <td>FORM</td>
+      <td>1.270415</td>
     </tr>
     <tr>
       <th>2</th>
       <td>0.3</td>
       <td>0.1</td>
       <td>2.419947</td>
-      <td>6.271351</td>
       <td>1.789648e-10</td>
+      <td>6.271351</td>
       <td>True</td>
-      <td>1.571351</td>
+      <td>converged</td>
       <td>Converged</td>
+      <td>FORM</td>
+      <td>1.571351</td>
     </tr>
     <tr>
       <th>3</th>
       <td>0.4</td>
       <td>0.1</td>
       <td>2.485669</td>
-      <td>6.566524</td>
       <td>2.575168e-11</td>
+      <td>6.566524</td>
       <td>True</td>
-      <td>1.866524</td>
+      <td>converged</td>
       <td>Converged</td>
+      <td>FORM</td>
+      <td>1.866524</td>
     </tr>
     <tr>
       <th>4</th>
       <td>0.5</td>
       <td>0.1</td>
       <td>2.551391</td>
-      <td>6.852372</td>
       <td>3.631771e-12</td>
+      <td>6.852372</td>
       <td>True</td>
-      <td>2.152372</td>
+      <td>converged</td>
       <td>Converged</td>
+      <td>FORM</td>
+      <td>2.152372</td>
     </tr>
   </tbody>
 </table>
@@ -788,8 +800,9 @@
 </section>
 <section id="Interpretation">
 <h2>Interpretation<a class="headerlink" href="#Interpretation" title="Link to this heading">#</a></h2>
-<p>Reducing load factors changes the resistance required by the code equation and therefore the achieved reliability. Inspect the per-case target margins before choosing a factor set. This example evaluates specified candidates; it does not automatically optimise the factors.</p>
+<p>Reducing load factors changes the resistance required by the code equation and therefore the achieved reliability. Inspect the per-case target margins before choosing a factor set. This example evaluates specified candidates; it does not automatically optimize the factors.</p>
 <p><a class="reference internal" href="ex_factor_calibration.html"><span class="doc">Calibrating partial and combination factors</span></a> demonstrates factor derivation and verification within the same code-calibration workflow. See <a class="reference internal" href="../theory/code_calibration.html"><span class="doc">code-calibration theory</span></a> for the normalized formulation and its relationship to those operations.</p>
+<p>Study results retain every grid point. Inspect <code class="docutils literal notranslate"><span class="pre">current_result.converged</span></code> and the status/message columns of <code class="docutils literal notranslate"><span class="pre">current_result.to_frame()</span></code> before comparing factor sets. An alternative reliability method or external adapter can be supplied with <code class="docutils literal notranslate"><span class="pre">evaluator=</span></code>; see the <a class="reference internal" href="../guides/calibration.html"><span class="doc">calibration guide</span></a>.</p>
 <p><strong>Continue:</strong> <a class="reference internal" href="../guides/calibration.html"><span class="doc">User guide</span></a> · <a class="reference internal" href="../api/calibration.html"><span class="doc">API reference</span></a> · <a class="reference internal" href="../theory/code_calibration.html"><span class="doc">Theory</span></a></p>
 </section>
 </section>

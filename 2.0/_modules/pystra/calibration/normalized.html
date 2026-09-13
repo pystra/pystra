@@ -511,17 +511,17 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">fields</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataFrame</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataFrame</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">..options</span><span class="w"> </span><span class="kn">import</span> <span class="n">FORMOptions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..assessment</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReliabilityEvaluator</span><span class="p">,</span> <span class="n">ReliabilityResult</span><span class="p">,</span> <span class="n">evaluate_reliability</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..dependence.copula</span><span class="w"> </span><span class="kn">import</span> <span class="n">Copula</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..distributions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Constant</span><span class="p">,</span> <span class="n">Distribution</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..reliability.form</span><span class="w"> </span><span class="kn">import</span> <span class="n">FORM</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LimitState</span><span class="p">,</span> <span class="n">StochasticModel</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..results</span><span class="w"> </span><span class="kn">import</span> <span class="n">FORMResult</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..options</span><span class="w"> </span><span class="kn">import</span> <span class="n">FORMOptions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..reporting</span><span class="w"> </span><span class="kn">import</span> <span class="n">reliability_row</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">"CodeFactors"</span><span class="p">,</span>
@@ -675,7 +675,7 @@
     <span class="n">live_load_ratio</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">dead_load_ratio</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">design_value</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">reliability</span><span class="p">:</span> <span class="n">FORMResult</span>
+    <span class="n">reliability</span><span class="p">:</span> <span class="n">ReliabilityResult</span>
     <span class="n">target_margin</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span></div>
 
 
@@ -730,11 +730,8 @@
                     <span class="s2">"live_load_ratio"</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">live_load_ratio</span><span class="p">,</span>
                     <span class="s2">"dead_load_ratio"</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">dead_load_ratio</span><span class="p">,</span>
                     <span class="s2">"design_value"</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">design_value</span><span class="p">,</span>
-                    <span class="s2">"beta"</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">reliability</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span>
-                    <span class="s2">"failure_probability"</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">reliability</span><span class="o">.</span><span class="n">failure_probability</span><span class="p">,</span>
-                    <span class="s2">"converged"</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">reliability</span><span class="o">.</span><span class="n">converged</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">reliability_row</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">reliability</span><span class="p">),</span>
                     <span class="s2">"target_margin"</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">target_margin</span><span class="p">,</span>
-                    <span class="s2">"message"</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">reliability</span><span class="o">.</span><span class="n">message</span><span class="p">,</span>
                 <span class="p">}</span>
                 <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cases</span>
             <span class="p">]</span>
@@ -806,22 +803,45 @@
         <span class="n">model</span><span class="p">:</span> <span class="n">NormalizedReliabilityModel</span><span class="p">,</span>
         <span class="n">factors</span><span class="p">:</span> <span class="n">CodeFactors</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">FORMOptions</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">evaluator</span><span class="p">:</span> <span class="n">ReliabilityEvaluator</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">target_beta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CodeCalibrationResult</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Return an isolated study result, retaining nonconverged FORM cases.</span>
+<span class="w">        </span><span class="sd">"""Evaluate candidate factors, retaining every failed grid point.</span>
 
-<span class="sd">        Invalid inputs or errors in the limit-state evaluation raise normally;</span>
-<span class="sd">        iteration-limit failures are represented by unsuccessful FormResults.</span>
-<span class="sd">        ``beta`` and target margins are normal-equivalent, including for t space.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        model : NormalizedReliabilityModel</span>
+<span class="sd">            Probability inputs, nominal values and dependence, copied per run.</span>
+<span class="sd">        factors : CodeFactors</span>
+<span class="sd">            Candidate dimensionless factors in the normalized design equation.</span>
+<span class="sd">        options : object, optional</span>
+<span class="sd">            Evaluator settings; FORMOptions for the default method. DDM is not</span>
+<span class="sd">            supported by the built-in normalized limit-state equation.</span>
+<span class="sd">        evaluator : ReliabilityEvaluator, optional</span>
+<span class="sd">            Method constructor or result callback; defaults to FORM. A design</span>
+<span class="sd">            point is not required. See pystra.assessment.evaluate_reliability.</span>
+<span class="sd">        target_beta : float, optional</span>
+<span class="sd">            Finite normal-equivalent index for the same event/reference period.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        CodeCalibrationResult</span>
+<span class="sd">            Input snapshot and every design/result, ordered by dead-load ratio</span>
+<span class="sd">            then live-load ratio. Failed table estimates and target margins are</span>
+<span class="sd">            unavailable; original method records retain their diagnostics.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        AnalysisError and nonconvergence are recorded. Invalid specifications</span>
+<span class="sd">        and programming errors still raise. Beta and target margins are</span>
+<span class="sd">        normal-equivalent, including for Student-t standard space.</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">NormalizedReliabilityModel</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
             <span class="n">factors</span><span class="p">,</span> <span class="n">CodeFactors</span>
         <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"Expected NormalizedReliabilityModel and CodeFactors"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">FORMOptions</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"options must be FORMOptions"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">options</span><span class="o">.</span><span class="n">differentiation</span> <span class="o">==</span> <span class="s2">"ddm"</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">FORMOptions</span><span class="p">)</span> <span class="ow">and</span> <span class="n">options</span><span class="o">.</span><span class="n">differentiation</span> <span class="o">==</span> <span class="s2">"ddm"</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">"The normalized study currently requires finite-difference derivatives"</span>
             <span class="p">)</span>
@@ -849,13 +869,12 @@
                         <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">aq</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">ag</span> <span class="o">*</span> <span class="n">G</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ag</span><span class="p">)</span> <span class="o">*</span> <span class="n">P</span><span class="p">)</span> <span class="o">+</span> <span class="n">aq</span> <span class="o">*</span> <span class="n">Q</span>
                     <span class="p">)</span>
 
-                <span class="n">analysis</span> <span class="o">=</span> <span class="n">FORM</span><span class="p">(</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">evaluate_reliability</span><span class="p">(</span>
                     <span class="n">snapshot</span><span class="o">.</span><span class="n">stochastic_model</span><span class="p">(),</span>
                     <span class="n">LimitState</span><span class="p">(</span><span class="n">limit_state</span><span class="p">),</span>
                     <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
-                    <span class="n">on_failure</span><span class="o">=</span><span class="s2">"return"</span><span class="p">,</span>
+                    <span class="n">evaluator</span><span class="o">=</span><span class="n">evaluator</span><span class="p">,</span>
                 <span class="p">)</span>
-                <span class="n">result</span> <span class="o">=</span> <span class="n">analysis</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
                 <span class="n">margin</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="n">result</span><span class="o">.</span><span class="n">beta</span> <span class="o">-</span> <span class="n">target_beta</span>
                     <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">converged</span> <span class="ow">and</span> <span class="n">target_beta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>

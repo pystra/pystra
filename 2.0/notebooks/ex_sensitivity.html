@@ -587,23 +587,23 @@
 <section id="Problem-and-approach">
 <h2>Problem and approach<a class="headerlink" href="#Problem-and-approach" title="Link to this heading">#</a></h2>
 <p>PySTRA can compute the sensitivity of the FORM reliability index <span class="math notranslate nohighlight">\(\beta\)</span> with respect to the distribution parameters (mean and standard deviation) of each random variable, and with respect to the correlation coefficients.</p>
-<p>Two methods are available, selected via the <code class="docutils literal notranslate"><span class="pre">numerical</span></code> argument of <code class="docutils literal notranslate"><span class="pre">SensitivityAnalysis.run()</span></code>:</p>
+<p>Two methods are available, selected with the <code class="docutils literal notranslate"><span class="pre">method</span></code> constructor argument of <code class="docutils literal notranslate"><span class="pre">SensitivityAnalysis</span></code>. Call <code class="docutils literal notranslate"><span class="pre">run()</span></code> on the configured analysis:</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Method</p></th>
-<th class="head"><p>Call</p></th>
+<th class="head"><p>Constructor argument</p></th>
 <th class="head"><p>Cost</p></th>
-<th class="head"><p>Correlation sens.</p></th>
+<th class="head"><p>Correlation sensitivities</p></th>
 </tr>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>Finite difference (FD)</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">run(numerical=True)</span></code></p></td>
-<td><p><span class="math notranslate nohighlight">\(2p+1\)</span> FORM runs for <span class="math notranslate nohighlight">\(p\)</span> perturbed parameters</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">method=&quot;numerical&quot;</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(p+1\)</span> FORM runs for <span class="math notranslate nohighlight">\(p\)</span> perturbed parameters</p></td>
 <td><p>No</p></td>
 </tr>
 <tr class="row-odd"><td><p>Closed-form (CF)</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">run(numerical=False)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">method=&quot;closed_form&quot;</span></code></p></td>
 <td><p>1 FORM run</p></td>
 <td><p>Yes</p></td>
 </tr>
@@ -618,10 +618,10 @@
 + \underbrace{\boldsymbol{\alpha}^T
   \frac{\partial\mathbf{L}_0^{-1}}{\partial\theta_k}
   \mathbf{z}}_{\text{second term}}\]</div>
-<p>where <span class="math notranslate nohighlight">\(\boldsymbol{\alpha}\)</span> is the FORM direction cosine vector, <span class="math notranslate nohighlight">\(\mathbf{L}_0\)</span> is the Cholesky factor of the modified (Nataf) correlation matrix, and <span class="math notranslate nohighlight">\(\mathbf{z}\)</span> is the correlated standard-normal design point.</p>
+<p>where <span class="math notranslate nohighlight">\(\boldsymbol{\alpha}\)</span> is the FORM direction cosine vector, <span class="math notranslate nohighlight">\(\mathbf{L}_0\)</span> is the Cholesky factor of the modified (Nataf) correlation matrix, and <span class="math notranslate nohighlight">\(\mathbf{z}\)</span> is the correlated standard normal design point.</p>
 <p>The two terms have distinct physical meanings:</p>
 <ul class="simple">
-<li><p><strong>First term</strong> — captures how the <em>marginal</em> CDF transformation shifts at the design point when a distribution parameter changes. For example, increasing the mean of a variable moves where that variable’s CDF maps into standard-normal space, pulling the design point closer to or further from the origin. This term is present even for independent variables.</p></li>
+<li><p><strong>First term</strong> — captures how the <em>marginal</em> CDF transformation shifts at the design point when a distribution parameter changes. For example, increasing the mean of a variable moves where that variable’s CDF maps into standard normal space, pulling the design point closer to or further from the origin. This term is present even for independent variables.</p></li>
 <li><p><strong>Second term</strong> — captures how the <em>Nataf correlation structure</em> changes. The modified correlation matrix <span class="math notranslate nohighlight">\(\mathbf{R}_0\)</span> depends (through double integration) on the marginal distributions, so perturbing a marginal parameter alters <span class="math notranslate nohighlight">\(\mathbf{L}_0\)</span> and hence the isoprobabilistic transformation. For <strong>uncorrelated normal</strong> variables <span class="math notranslate nohighlight">\(\mathbf{R}_0 = \mathbf{I}\)</span> regardless of the marginals, so this term vanishes identically. For correlated non-normal variables it can be the
 dominant contribution — and it is also the term that makes the finite-difference method numerically unstable, as demonstrated in the examples below.</p></li>
 </ul>
@@ -664,8 +664,8 @@ dominant contribution — and it is also the term that makes the finite-differen
 </tbody>
 </table>
 </div>
-<p>The limit state function is <span class="math notranslate nohighlight">\(g(R, S) = R - S\)</span>.</p>
-<p>Because both variables are lognormal and the failure boundary is a plane in standard-normal space, this problem has an exact analytical solution: <span class="math notranslate nohighlight">\(\beta = 2.1218\)</span> (Bourinet 2017, Eq. 30).</p>
+<p>The limit-state function is <span class="math notranslate nohighlight">\(g(R, S) = R - S\)</span>.</p>
+<p>Because both variables are lognormal and the failure boundary is a plane in standard normal space, this problem has an exact analytical solution: <span class="math notranslate nohighlight">\(\beta = 2.1218\)</span> (Bourinet 2017, Eq. 30).</p>
 <section id="Problem-setup">
 <h3>Problem setup<a class="headerlink" href="#Problem-setup" title="Link to this heading">#</a></h3>
 <div class="nbinput nblast docutils container">
@@ -733,7 +733,7 @@ FORM result
 </section>
 <section id="Closed-form-sensitivities">
 <h3>Closed-form sensitivities<a class="headerlink" href="#Closed-form-sensitivities" title="Link to this heading">#</a></h3>
-<p>The closed-form method (<code class="docutils literal notranslate"><span class="pre">numerical=False</span></code>) post-processes the converged FORM design point. It requires only a single FORM run and also returns correlation sensitivities.</p>
+<p>The closed-form method (<code class="docutils literal notranslate"><span class="pre">method=&quot;closed_form&quot;</span></code>) post-processes the converged FORM design point. It requires only a single FORM run and also returns correlation sensitivities.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
@@ -797,13 +797,13 @@ FORM result
 <div class="output_area rendered_html docutils container">
 <style type="text/css">
 </style>
-<table id="T_c0a09">
+<table id="T_8550d">
   <thead>
     <tr>
       <th class="blank level0" >&nbsp;</th>
-      <th id="T_c0a09_level0_col0" class="col_heading level0 col0" >Reference</th>
-      <th id="T_c0a09_level0_col1" class="col_heading level0 col1" >CF</th>
-      <th id="T_c0a09_level0_col2" class="col_heading level0 col2" >FD</th>
+      <th id="T_8550d_level0_col0" class="col_heading level0 col0" >Reference</th>
+      <th id="T_8550d_level0_col1" class="col_heading level0 col1" >CF</th>
+      <th id="T_8550d_level0_col2" class="col_heading level0 col2" >FD</th>
     </tr>
     <tr>
       <th class="index_name level0" >Parameter</th>
@@ -814,28 +814,28 @@ FORM result
   </thead>
   <tbody>
     <tr>
-      <th id="T_c0a09_level0_row0" class="row_heading level0 row0" >∂β/∂μ_R</th>
-      <td id="T_c0a09_row0_col0" class="data row0 col0" >+0.5184</td>
-      <td id="T_c0a09_row0_col1" class="data row0 col1" >+0.5184</td>
-      <td id="T_c0a09_row0_col2" class="data row0 col2" >+0.5156</td>
+      <th id="T_8550d_level0_row0" class="row_heading level0 row0" >∂β/∂μ_R</th>
+      <td id="T_8550d_row0_col0" class="data row0 col0" >+0.5184</td>
+      <td id="T_8550d_row0_col1" class="data row0 col1" >+0.5184</td>
+      <td id="T_8550d_row0_col2" class="data row0 col2" >+0.5156</td>
     </tr>
     <tr>
-      <th id="T_c0a09_level0_row1" class="row_heading level0 row1" >∂β/∂σ_R</th>
-      <td id="T_c0a09_row1_col0" class="data row1 col0" >-0.2548</td>
-      <td id="T_c0a09_row1_col1" class="data row1 col1" >-0.2548</td>
-      <td id="T_c0a09_row1_col2" class="data row1 col2" >-0.2546</td>
+      <th id="T_8550d_level0_row1" class="row_heading level0 row1" >∂β/∂σ_R</th>
+      <td id="T_8550d_row1_col0" class="data row1 col0" >-0.2548</td>
+      <td id="T_8550d_row1_col1" class="data row1 col1" >-0.2548</td>
+      <td id="T_8550d_row1_col2" class="data row1 col2" >-0.2546</td>
     </tr>
     <tr>
-      <th id="T_c0a09_level0_row2" class="row_heading level0 row2" >∂β/∂μ_S</th>
-      <td id="T_c0a09_row2_col0" class="data row2 col0" >-1.3629</td>
-      <td id="T_c0a09_row2_col1" class="data row2 col1" >-1.3630</td>
-      <td id="T_c0a09_row2_col2" class="data row2 col2" >-1.3623</td>
+      <th id="T_8550d_level0_row2" class="row_heading level0 row2" >∂β/∂μ_S</th>
+      <td id="T_8550d_row2_col0" class="data row2 col0" >-1.3629</td>
+      <td id="T_8550d_row2_col1" class="data row2 col1" >-1.3630</td>
+      <td id="T_8550d_row2_col2" class="data row2 col2" >-1.3623</td>
     </tr>
     <tr>
-      <th id="T_c0a09_level0_row3" class="row_heading level0 row3" >∂β/∂σ_S</th>
-      <td id="T_c0a09_row3_col0" class="data row3 col0" >+0.0445</td>
-      <td id="T_c0a09_row3_col1" class="data row3 col1" >+0.0447</td>
-      <td id="T_c0a09_row3_col2" class="data row3 col2" >+0.0417</td>
+      <th id="T_8550d_level0_row3" class="row_heading level0 row3" >∂β/∂σ_S</th>
+      <td id="T_8550d_row3_col0" class="data row3 col0" >+0.0445</td>
+      <td id="T_8550d_row3_col1" class="data row3 col1" >+0.0447</td>
+      <td id="T_8550d_row3_col2" class="data row3 col2" >+0.0417</td>
     </tr>
   </tbody>
 </table></div>
@@ -863,12 +863,12 @@ FORM result
 <div class="output_area rendered_html docutils container">
 <style type="text/css">
 </style>
-<table id="T_8eeaa">
+<table id="T_7aa8a">
   <thead>
     <tr>
       <th class="blank level0" >&nbsp;</th>
-      <th id="T_8eeaa_level0_col0" class="col_heading level0 col0" >Reference</th>
-      <th id="T_8eeaa_level0_col1" class="col_heading level0 col1" >CF</th>
+      <th id="T_7aa8a_level0_col0" class="col_heading level0 col0" >Reference</th>
+      <th id="T_7aa8a_level0_col1" class="col_heading level0 col1" >CF</th>
     </tr>
     <tr>
       <th class="index_name level0" >Parameter</th>
@@ -878,9 +878,9 @@ FORM result
   </thead>
   <tbody>
     <tr>
-      <th id="T_8eeaa_level0_row0" class="row_heading level0 row0" >∂β/∂ρ</th>
-      <td id="T_8eeaa_row0_col0" class="data row0 col0" >+2.4585</td>
-      <td id="T_8eeaa_row0_col1" class="data row0 col1" >+2.4586</td>
+      <th id="T_7aa8a_level0_row0" class="row_heading level0 row0" >∂β/∂ρ</th>
+      <td id="T_7aa8a_row0_col0" class="data row0 col0" >+2.4585</td>
+      <td id="T_7aa8a_row0_col1" class="data row0 col1" >+2.4586</td>
     </tr>
   </tbody>
 </table></div>
@@ -918,11 +918,11 @@ FORM result
 <div class="output_area rendered_html docutils container">
 <style type="text/css">
 </style>
-<table id="T_b74e6">
+<table id="T_36036">
   <thead>
     <tr>
       <th class="blank level0" >&nbsp;</th>
-      <th id="T_b74e6_level0_col0" class="col_heading level0 col0" >∂β/∂σ_S</th>
+      <th id="T_36036_level0_col0" class="col_heading level0 col0" >∂β/∂σ_S</th>
     </tr>
     <tr>
       <th class="index_name level0" >Method</th>
@@ -931,28 +931,28 @@ FORM result
   </thead>
   <tbody>
     <tr>
-      <th id="T_b74e6_level0_row0" class="row_heading level0 row0" >FD (δ=0.1)</th>
-      <td id="T_b74e6_row0_col0" class="data row0 col0" >+0.0342</td>
+      <th id="T_36036_level0_row0" class="row_heading level0 row0" >FD (δ=0.1)</th>
+      <td id="T_36036_row0_col0" class="data row0 col0" >+0.0342</td>
     </tr>
     <tr>
-      <th id="T_b74e6_level0_row1" class="row_heading level0 row1" >FD (δ=0.01)</th>
-      <td id="T_b74e6_row1_col0" class="data row1 col0" >+0.0417</td>
+      <th id="T_36036_level0_row1" class="row_heading level0 row1" >FD (δ=0.01)</th>
+      <td id="T_36036_row1_col0" class="data row1 col0" >+0.0417</td>
     </tr>
     <tr>
-      <th id="T_b74e6_level0_row2" class="row_heading level0 row2" >FD (δ=0.001)</th>
-      <td id="T_b74e6_row2_col0" class="data row2 col0" >+0.1433</td>
+      <th id="T_36036_level0_row2" class="row_heading level0 row2" >FD (δ=0.001)</th>
+      <td id="T_36036_row2_col0" class="data row2 col0" >+0.1433</td>
     </tr>
     <tr>
-      <th id="T_b74e6_level0_row3" class="row_heading level0 row3" >FD (δ=0.0001)</th>
-      <td id="T_b74e6_row3_col0" class="data row3 col0" >-0.1061</td>
+      <th id="T_36036_level0_row3" class="row_heading level0 row3" >FD (δ=0.0001)</th>
+      <td id="T_36036_row3_col0" class="data row3 col0" >-0.1061</td>
     </tr>
     <tr>
-      <th id="T_b74e6_level0_row4" class="row_heading level0 row4" >CF</th>
-      <td id="T_b74e6_row4_col0" class="data row4 col0" >+0.0447</td>
+      <th id="T_36036_level0_row4" class="row_heading level0 row4" >CF</th>
+      <td id="T_36036_row4_col0" class="data row4 col0" >+0.0447</td>
     </tr>
     <tr>
-      <th id="T_b74e6_level0_row5" class="row_heading level0 row5" >Reference</th>
-      <td id="T_b74e6_row5_col0" class="data row5 col0" >+0.0445</td>
+      <th id="T_36036_level0_row5" class="row_heading level0 row5" >Reference</th>
+      <td id="T_36036_row5_col0" class="data row5 col0" >+0.0445</td>
     </tr>
   </tbody>
 </table></div>
@@ -999,7 +999,7 @@ FORM result
 0.3 &amp; 1 &amp; 0.2 \\
 0.2 &amp; 0.2 &amp; 1
 \end{pmatrix}\end{split}\]</div>
-<p>The limit state function is:</p>
+<p>The limit-state function is:</p>
 <div class="math notranslate nohighlight">
 \[g(x_1, x_2, x_3) = 1 - \frac{x_2}{1000 \, x_3} - \left(\frac{x_1}{200 \, x_3}\right)^2\]</div>
 <p>FORM gives <span class="math notranslate nohighlight">\(\beta = 1.7728\)</span> and <span class="math notranslate nohighlight">\(p_f^{\text{FORM}} = 3.81 \times 10^{-2}\)</span>.</p>
@@ -1108,12 +1108,12 @@ FORM result
 <div class="output_area rendered_html docutils container">
 <style type="text/css">
 </style>
-<table id="T_058c0">
+<table id="T_9793b">
   <thead>
     <tr>
       <th class="blank level0" >&nbsp;</th>
-      <th id="T_058c0_level0_col0" class="col_heading level0 col0" >Reference</th>
-      <th id="T_058c0_level0_col1" class="col_heading level0 col1" >CF</th>
+      <th id="T_9793b_level0_col0" class="col_heading level0 col0" >Reference</th>
+      <th id="T_9793b_level0_col1" class="col_heading level0 col1" >CF</th>
     </tr>
     <tr>
       <th class="index_name level0" >Parameter</th>
@@ -1123,34 +1123,34 @@ FORM result
   </thead>
   <tbody>
     <tr>
-      <th id="T_058c0_level0_row0" class="row_heading level0 row0" >∂β/∂μ_X1</th>
-      <td id="T_058c0_row0_col0" class="data row0 col0" >-0.0059</td>
-      <td id="T_058c0_row0_col1" class="data row0 col1" >-0.0059</td>
+      <th id="T_9793b_level0_row0" class="row_heading level0 row0" >∂β/∂μ_X1</th>
+      <td id="T_9793b_row0_col0" class="data row0 col0" >-0.0059</td>
+      <td id="T_9793b_row0_col1" class="data row0 col1" >-0.0059</td>
     </tr>
     <tr>
-      <th id="T_058c0_level0_row1" class="row_heading level0 row1" >∂β/∂σ_X1</th>
-      <td id="T_058c0_row1_col0" class="data row1 col0" >-0.0079</td>
-      <td id="T_058c0_row1_col1" class="data row1 col1" >-0.0079</td>
+      <th id="T_9793b_level0_row1" class="row_heading level0 row1" >∂β/∂σ_X1</th>
+      <td id="T_9793b_row1_col0" class="data row1 col0" >-0.0079</td>
+      <td id="T_9793b_row1_col1" class="data row1 col1" >-0.0079</td>
     </tr>
     <tr>
-      <th id="T_058c0_level0_row2" class="row_heading level0 row2" >∂β/∂μ_X2</th>
-      <td id="T_058c0_row2_col0" class="data row2 col0" >-0.0009</td>
-      <td id="T_058c0_row2_col1" class="data row2 col1" >-0.0009</td>
+      <th id="T_9793b_level0_row2" class="row_heading level0 row2" >∂β/∂μ_X2</th>
+      <td id="T_9793b_row2_col0" class="data row2 col0" >-0.0009</td>
+      <td id="T_9793b_row2_col1" class="data row2 col1" >-0.0009</td>
     </tr>
     <tr>
-      <th id="T_058c0_level0_row3" class="row_heading level0 row3" >∂β/∂σ_X2</th>
-      <td id="T_058c0_row3_col0" class="data row3 col0" >-0.0006</td>
-      <td id="T_058c0_row3_col1" class="data row3 col1" >-0.0006</td>
+      <th id="T_9793b_level0_row3" class="row_heading level0 row3" >∂β/∂σ_X2</th>
+      <td id="T_9793b_row3_col0" class="data row3 col0" >-0.0006</td>
+      <td id="T_9793b_row3_col1" class="data row3 col1" >-0.0006</td>
     </tr>
     <tr>
-      <th id="T_058c0_level0_row4" class="row_heading level0 row4" >∂β/∂μ_X3</th>
-      <td id="T_058c0_row4_col0" class="data row4 col0" >+1.2602</td>
-      <td id="T_058c0_row4_col1" class="data row4 col1" >+1.2603</td>
+      <th id="T_9793b_level0_row4" class="row_heading level0 row4" >∂β/∂μ_X3</th>
+      <td id="T_9793b_row4_col0" class="data row4 col0" >+1.2602</td>
+      <td id="T_9793b_row4_col1" class="data row4 col1" >+1.2603</td>
     </tr>
     <tr>
-      <th id="T_058c0_level0_row5" class="row_heading level0 row5" >∂β/∂σ_X3</th>
-      <td id="T_058c0_row5_col0" class="data row5 col0" >-1.1942</td>
-      <td id="T_058c0_row5_col1" class="data row5 col1" >-1.1948</td>
+      <th id="T_9793b_level0_row5" class="row_heading level0 row5" >∂β/∂σ_X3</th>
+      <td id="T_9793b_row5_col0" class="data row5 col0" >-1.1942</td>
+      <td id="T_9793b_row5_col1" class="data row5 col1" >-1.1948</td>
     </tr>
   </tbody>
 </table></div>
@@ -1188,12 +1188,12 @@ FORM result
 <div class="output_area rendered_html docutils container">
 <style type="text/css">
 </style>
-<table id="T_cae8c">
+<table id="T_0348f">
   <thead>
     <tr>
       <th class="blank level0" >&nbsp;</th>
-      <th id="T_cae8c_level0_col0" class="col_heading level0 col0" >Reference</th>
-      <th id="T_cae8c_level0_col1" class="col_heading level0 col1" >CF</th>
+      <th id="T_0348f_level0_col0" class="col_heading level0 col0" >Reference</th>
+      <th id="T_0348f_level0_col1" class="col_heading level0 col1" >CF</th>
     </tr>
     <tr>
       <th class="index_name level0" >Parameter</th>
@@ -1203,19 +1203,19 @@ FORM result
   </thead>
   <tbody>
     <tr>
-      <th id="T_cae8c_level0_row0" class="row_heading level0 row0" >∂β/∂ρ(X2,X1)</th>
-      <td id="T_cae8c_row0_col0" class="data row0 col0" >-0.5151</td>
-      <td id="T_cae8c_row0_col1" class="data row0 col1" >-0.5150</td>
+      <th id="T_0348f_level0_row0" class="row_heading level0 row0" >∂β/∂ρ(X2,X1)</th>
+      <td id="T_0348f_row0_col0" class="data row0 col0" >-0.5151</td>
+      <td id="T_0348f_row0_col1" class="data row0 col1" >-0.5150</td>
     </tr>
     <tr>
-      <th id="T_cae8c_level0_row1" class="row_heading level0 row1" >∂β/∂ρ(X3,X1)</th>
-      <td id="T_cae8c_row1_col0" class="data row1 col0" >+0.8916</td>
-      <td id="T_cae8c_row1_col1" class="data row1 col1" >+0.8914</td>
+      <th id="T_0348f_level0_row1" class="row_heading level0 row1" >∂β/∂ρ(X3,X1)</th>
+      <td id="T_0348f_row1_col0" class="data row1 col0" >+0.8916</td>
+      <td id="T_0348f_row1_col1" class="data row1 col1" >+0.8914</td>
     </tr>
     <tr>
-      <th id="T_cae8c_level0_row2" class="row_heading level0 row2" >∂β/∂ρ(X3,X2)</th>
-      <td id="T_cae8c_row2_col0" class="data row2 col0" >+0.4688</td>
-      <td id="T_cae8c_row2_col1" class="data row2 col1" >+0.4687</td>
+      <th id="T_0348f_level0_row2" class="row_heading level0 row2" >∂β/∂ρ(X3,X2)</th>
+      <td id="T_0348f_row2_col0" class="data row2 col0" >+0.4688</td>
+      <td id="T_0348f_row2_col1" class="data row2 col1" >+0.4687</td>
     </tr>
   </tbody>
 </table></div>
@@ -1235,7 +1235,7 @@ FORM result
 </thead>
 <tbody>
 <tr class="row-even"><td><p><strong>FORM runs</strong></p></td>
-<td><p><span class="math notranslate nohighlight">\(2p + 1\)</span> (<span class="math notranslate nohighlight">\(p\)</span> parameters)</p></td>
+<td><p><span class="math notranslate nohighlight">\(p + 1\)</span> (<span class="math notranslate nohighlight">\(p\)</span> parameters)</p></td>
 <td><p>1</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>Marginal sens.</strong></p></td>
@@ -1261,7 +1261,7 @@ FORM result
 </tbody>
 </table>
 </div>
-<p><strong>Recommendation:</strong> Use the closed-form method (<code class="docutils literal notranslate"><span class="pre">numerical=False</span></code>) when accuracy and correlation sensitivities are needed. The FD method remains useful as an independent verification tool.</p>
+<p><strong>Recommendation:</strong> Use the closed-form method (<code class="docutils literal notranslate"><span class="pre">method=&quot;closed_form&quot;</span></code>) when accuracy and correlation sensitivities are needed. The FD method remains useful as an independent verification tool.</p>
 <p><strong>Continue:</strong> <a class="reference internal" href="../guides/form_sorm.html"><span class="doc">User guide</span></a> · <a class="reference internal" href="../api/reliability.html"><span class="doc">API reference</span></a> · <a class="reference internal" href="../theory/sensitivity.html"><span class="doc">Theory</span></a></p>
 </section>
 </section>

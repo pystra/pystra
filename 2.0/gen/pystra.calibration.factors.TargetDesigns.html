@@ -671,7 +671,6 @@
 </details></li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="pystra.calibration.html">pystra.calibration</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="pystra.calibration.factors.html">pystra.calibration.factors</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.analyze_case.html">pystra.calibration.factors.analyze_case</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.derive_factors.html">pystra.calibration.factors.derive_factors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.design_with_factors.html">pystra.calibration.factors.design_with_factors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.select_factors.html">pystra.calibration.factors.select_factors</a></li>
@@ -699,6 +698,22 @@
 <li class="toctree-l4"><a class="reference internal" href="pystra.calibration.plotting.plot_calibration.html">pystra.calibration.plotting.plot_calibration</a></li>
 </ul>
 </details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.assessment.html">pystra.assessment</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.analyze_case.html">pystra.assessment.analyze_case</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.assess_cases.html">pystra.assessment.assess_cases</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.evaluate_reliability.html">pystra.assessment.evaluate_reliability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.AssessmentCase.html">pystra.assessment.AssessmentCase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.AssessmentResult.html">pystra.assessment.AssessmentResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.CaseResult.html">pystra.assessment.CaseResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityEstimate.html">pystra.assessment.ReliabilityEstimate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityEvaluator.html">pystra.assessment.ReliabilityEvaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.assessment.ReliabilityResult.html">pystra.assessment.ReliabilityResult</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.reporting.html">pystra.reporting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.reporting.reliability_row.html">pystra.reporting.reliability_row</a></li>
 </ul>
 </details></li>
 </ul>
@@ -902,7 +917,10 @@
 <p class="rubric">Methods</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.calibration.factors.TargetDesigns.to_frame" title="pystra.calibration.factors.TargetDesigns.to_frame"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_frame</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.calibration.factors.TargetDesigns.reliability_frame" title="pystra.calibration.factors.TargetDesigns.reliability_frame"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reliability_frame</span></code></a></p></td>
+<td><p>Return every target solve with its design, residual and diagnostics.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.calibration.factors.TargetDesigns.to_frame" title="pystra.calibration.factors.TargetDesigns.to_frame"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_frame</span></code></a></p></td>
 <td><p>Fresh table of physical design points plus the named design parameter.</p></td>
 </tr>
 </tbody>
@@ -912,6 +930,17 @@
 <dt class="sig sig-object py" id="pystra.calibration.factors.TargetDesigns.to_frame">
 <span class="sig-name descname"><span class="pre">to_frame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/calibration/factors.html#TargetDesigns.to_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.calibration.factors.TargetDesigns.to_frame" title="Link to this definition">#</a></dt>
 <dd><p>Fresh table of physical design points plus the named design parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.calibration.factors.TargetDesigns.reliability_frame">
+<span class="sig-name descname"><span class="pre">reliability_frame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/calibration/factors.html#TargetDesigns.reliability_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.calibration.factors.TargetDesigns.reliability_frame" title="Link to this definition">#</a></dt>
+<dd><p>Return every target solve with its design, residual and diagnostics.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span></p>
@@ -972,6 +1001,7 @@
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.calibration.factors.TargetDesigns"><code class="docutils literal notranslate"><span class="pre">TargetDesigns</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.calibration.factors.TargetDesigns.to_frame"><code class="docutils literal notranslate"><span class="pre">TargetDesigns.to_frame()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.calibration.factors.TargetDesigns.reliability_frame"><code class="docutils literal notranslate"><span class="pre">TargetDesigns.reliability_frame()</span></code></a></li>
 </ul>
 </li>
 </ul>
