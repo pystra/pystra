@@ -16,6 +16,14 @@ from pystra.migrate.__main__ import main
     "before, after",
     [
         (
+            "from pystra import SWTP\n",
+            "from pystra.decision import SWTP\n",
+        ),
+        (
+            "from pystra import CostBenefitModel as Cost\n",
+            "from pystra.decision import CostBenefitModel as Cost\n",
+        ),
+        (
             "import pystra as ra\nx = ra.Form(stochastic_model=m, analysis_options=o, limit_state=g)\n",
             "import pystra as ra\nx = ra.FORM(model=m, options=o, limit_state=g)\n",
         ),

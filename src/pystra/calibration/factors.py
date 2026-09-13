@@ -34,7 +34,6 @@ __all__ = [
     "GoverningFactor",
     "DesignValues",
     "DesignVerification",
-    "analyze_case",
     "solve_designs",
     "derive_factors",
     "select_factors",

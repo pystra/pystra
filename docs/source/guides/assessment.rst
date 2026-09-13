@@ -97,7 +97,7 @@ Connect reliability to a decision
 ---------------------------------
 
 For a design or intervention grid,
-:class:`~pystra.decision.ddo.DesignStudy` evaluates a reliability callback at candidate
+:class:`~pystra.decision.studies.DesignStudy` evaluates a reliability callback at candidate
 values. ``study.run()`` returns a structured snapshot; ``study.evaluate()``
 returns its table, including convergence, status, method and message.
 :class:`~pystra.decision.ddo.DDO` combines the study with an acceptability

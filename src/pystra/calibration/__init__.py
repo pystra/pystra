@@ -5,6 +5,7 @@ The solve/derive/select/verify operations derive candidate partial and
 combination factors from representative cases and check their resulting designs.
 """
 
+from ..assessment import analyze_case
 from .normalized import (
     CodeFactors,
     NominalValues,
@@ -21,7 +22,6 @@ from .factors import (
     GoverningFactor,
     DesignValues,
     DesignVerification,
-    analyze_case,
     solve_designs,
     derive_factors,
     select_factors,
