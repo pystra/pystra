@@ -14,7 +14,7 @@ import pathlib
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-GUIDE = "https://pystra.github.io/pystra/migrating.html"
+GUIDE = "https://pystra.github.io/pystra/2.0/migrating.html"
 SUBPACKAGES = (
     "calibration",
     "decision",
