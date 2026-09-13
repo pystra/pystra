@@ -280,7 +280,7 @@ def solve_designs(
     max_evaluations: int = 100,
     bracket: Optional[Tuple[float, float]] = None,
     options: object = None,
-    evaluator: Optional[ReliabilityEvaluator] = None,
+    evaluator: ReliabilityEvaluator | None = None,
 ) -> TargetDesigns:
     """Solve each case to a target and retain status and residuals.
 
@@ -740,7 +740,7 @@ def verify_designs(
     *,
     target_beta: Optional[float] = None,
     options: object = None,
-    evaluator: Optional[ReliabilityEvaluator] = None,
+    evaluator: ReliabilityEvaluator | None = None,
 ) -> Tuple[DesignVerification, ...]:
     """Check a common design scale or an explicitly named set of designs.
 

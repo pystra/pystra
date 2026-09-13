@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable
 
 import numpy as np
 import pandas as pd
@@ -64,7 +64,7 @@ def annualized_safety_cost(
     failure_probability: float,
     service_life: float,
     interest_rate: float,
-    replacement_cost: Optional[float] = None,
+    replacement_cost: float | None = None,
 ) -> float:
     """Return the annualized safety cost used by the JCSS LQI example."""
 
@@ -108,10 +108,10 @@ class CostBenefitModel(DDOObjective):
     benefit_rate: float
     interest_rate: float
     service_life: float
-    construction_cost: Union[float, Callable[[Any], float]]
-    failure_cost: Union[float, Callable[[Any], float]]
+    construction_cost: float | Callable[[Any], float]
+    failure_cost: float | Callable[[Any], float]
 
-    def _value(self, item: Union[float, Callable[[Any], float]], design: Any) -> float:
+    def _value(self, item: float | Callable[[Any], float], design: Any) -> float:
         value = item(design) if callable(item) else item
         return float(value)
 
@@ -148,7 +148,7 @@ class CostBenefitModel(DDOObjective):
         self,
         design: Any,
         failure_probability: float,
-        replacement_cost: Optional[float] = None,
+        replacement_cost: float | None = None,
     ) -> float:
         """Return the JCSS annualized safety cost for a design point."""
 

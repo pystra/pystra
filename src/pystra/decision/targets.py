@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field, replace
-from typing import Any, Callable, Mapping, Optional, Union
+from typing import Any, Callable, Mapping
 
 import numpy as np
 import pandas as pd
@@ -68,14 +68,14 @@ class TargetReliability:
     pf: float
     beta: float
     method: str
-    k1: Optional[float] = None
-    cost_class: Optional[str] = None
-    variability: Optional[str] = None
-    design: Optional[float] = None
-    objective: Optional[float] = None
-    converged: Optional[bool] = None
+    k1: float | None = None
+    cost_class: str | None = None
+    variability: str | None = None
+    design: float | None = None
+    objective: float | None = None
+    converged: bool | None = None
     message: str = ""
-    source: Optional[str] = None
+    source: str | None = None
     metadata: Mapping[str, Any] = field(default_factory=dict)
 
     def __post_init__(self):
@@ -164,7 +164,7 @@ _VARIABILITY_FACTORS = {"medium": 1.0, "high": 5.0, "low": 0.5}
 
 def lqi_k1(
     safety_cost_rate: float,
-    swtp: Union[float, SWTP],
+    swtp: float | SWTP,
     expected_fatalities_given_failure: float,
 ) -> float:
     """Return the LQI safety cost ratio ``K1``.
@@ -200,10 +200,10 @@ def _beta_from_failure_probability(pf: float) -> float:
 
 
 def lognormal_ratio_failure_probability(
-    design: Union[float, np.ndarray],
+    design: float | np.ndarray,
     resistance_cov: float,
     load_cov: float,
-) -> Union[float, np.ndarray]:
+) -> float | np.ndarray:
     """Return ``P(R - S <= 0)`` for independent lognormal resistance and load.
 
     ``design`` is the ratio ``E[R] / E[S]``.  The expression is the closed-form
@@ -242,7 +242,7 @@ class TargetReliabilityCalibration:
     failure_probability: Callable[[float], float]
     bounds: tuple[float, float] = (1.0, 15.0)
     variable: str = "design"
-    metadata: Optional[Mapping[str, Any]] = None
+    metadata: Mapping[str, Any] | None = None
 
     def run(self) -> TargetReliability:
         """Run the bounded scalar optimization."""
@@ -457,8 +457,8 @@ class RackwitzTargetModel:
     @classmethod
     def table(
         cls,
-        safety_costs: Optional[Mapping[str, float]] = None,
-        failure_costs: Optional[Mapping[str, float]] = None,
+        safety_costs: Mapping[str, float] | None = None,
+        failure_costs: Mapping[str, float] | None = None,
         bounds: tuple[float, float] = (1.0, 15.0),
         **kwargs,
     ) -> pd.DataFrame:

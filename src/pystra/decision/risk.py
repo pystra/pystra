@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Callable, Mapping, Optional, Union
+from typing import Any, Callable, Mapping
 
 import numpy as np
 import pandas as pd
@@ -64,8 +64,8 @@ class RiskResult:
     annual_failure_rate: float
     expected_fatalities: float = 0.0
     expected_economic_loss: float = 0.0
-    scenarios: Optional[pd.DataFrame] = None
-    metadata: Optional[Mapping[str, Any]] = None
+    scenarios: pd.DataFrame | None = None
+    metadata: Mapping[str, Any] | None = None
 
     def __post_init__(self):
         if self.annual_failure_rate < 0:
@@ -84,8 +84,8 @@ class RiskResult:
         weight_col: str = "probability",
         fatalities_col: str = "fatalities",
         economic_loss_col: str = "economic_loss",
-        failure_col: Optional[str] = None,
-        metadata: Optional[Mapping[str, Any]] = None,
+        failure_col: str | None = None,
+        metadata: Mapping[str, Any] | None = None,
     ) -> "RiskResult":
         """Aggregate a scenario table into annual risk quantities.
 
@@ -133,7 +133,7 @@ class RiskResult:
         )
 
     @property
-    def beta(self) -> Optional[float]:
+    def beta(self) -> float | None:
         """Return the generalized reliability index when rate is probability-like."""
 
         if self.annual_failure_rate == 0:
@@ -147,19 +147,19 @@ class RiskResult:
 
         return self.annual_failure_rate
 
-    def get_beta(self) -> Optional[float]:
+    def get_beta(self) -> float | None:
         """Return ``beta`` for reliability-result compatibility."""
 
         return self.beta
 
-    def life_safety_cost(self, swtp: Union[float, SWTP]) -> float:
+    def life_safety_cost(self, swtp: float | SWTP) -> float:
         """Return SWTP-valued expected annual life-safety cost."""
 
         return _swtp_value(swtp) * self.expected_fatalities
 
     def total_risk_cost(
         self,
-        swtp: Optional[Union[float, SWTP]] = None,
+        swtp: float | SWTP | None = None,
         include_life_safety: bool = True,
     ) -> float:
         """Return expected annual economic plus optional life-safety risk cost."""
@@ -190,12 +190,12 @@ class ScenarioRiskModel:
     Callable scenarios are evaluated with the design value when supplied.
     """
 
-    scenarios: Union[Any, Callable[..., Any]]
+    scenarios: Any | Callable[..., Any]
     weight_col: str = "probability"
     fatalities_col: str = "fatalities"
     economic_loss_col: str = "economic_loss"
-    failure_col: Optional[str] = None
-    metadata: Optional[Mapping[str, Any]] = None
+    failure_col: str | None = None
+    metadata: Mapping[str, Any] | None = None
 
     def evaluate(self, design: Any = None) -> RiskResult:
         """Evaluate the scenario model and return a :class:`RiskResult`."""
@@ -222,9 +222,9 @@ class ScenarioRiskModel:
 
 
 def jcss_lqi_risk_cost(
-    safety_cost: Union[float, np.ndarray],
-    failure_rate: Union[float, np.ndarray],
-    swtp: Union[float, SWTP],
+    safety_cost: float | np.ndarray,
+    failure_rate: float | np.ndarray,
+    swtp: float | SWTP,
     expected_fatalities_given_failure: float,
 ):
     """Return the JCSS LQI life-safety risk cost.
@@ -248,7 +248,7 @@ def jcss_lqi_risk_cost(
 def jcss_lqi_risk_cost_from_result(
     safety_cost: float,
     risk: RiskResult,
-    swtp: Union[float, SWTP],
+    swtp: float | SWTP,
     include_economic_loss: bool = False,
 ) -> float:
     """Return JCSS LQI risk cost from an aggregated risk result.

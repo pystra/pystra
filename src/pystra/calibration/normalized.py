@@ -267,7 +267,7 @@ class CodeCalibration:
         factors: CodeFactors,
         *,
         options: object = None,
-        evaluator: Optional[ReliabilityEvaluator] = None,
+        evaluator: ReliabilityEvaluator | None = None,
         target_beta: Optional[float] = None,
     ) -> CodeCalibrationResult:
         """Evaluate candidate factors, retaining every failed grid point.

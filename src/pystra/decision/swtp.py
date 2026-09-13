@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
-from typing import Mapping, Optional, Union
+from typing import Mapping
 
 import pandas as pd
 
@@ -182,12 +182,12 @@ def _normalise_country_code(code: str) -> str:
     return SWTP_ALIASES.get(key, key)
 
 
-def _index_table(index_table: Optional[Mapping[str, SWTPIndexRecord]] = None):
+def _index_table(index_table: Mapping[str, SWTPIndexRecord] | None = None):
     return SWTP_GDP_PPP_INDEX_2024 if index_table is None else index_table
 
 
 def get_swtp_index_record(
-    code: str, index_table: Optional[Mapping[str, SWTPIndexRecord]] = None
+    code: str, index_table: Mapping[str, SWTPIndexRecord] | None = None
 ) -> SWTPIndexRecord:
     """Return the SWTP index record for a country code."""
 
@@ -204,8 +204,8 @@ def get_swtp_index_record(
 
 def get_swtp_record(
     code: str,
-    indexed: Optional[bool] = None,
-    index_table: Optional[Mapping[str, SWTPIndexRecord]] = None,
+    indexed: bool | None = None,
+    index_table: Mapping[str, SWTPIndexRecord] | None = None,
 ) -> SWTPRecord:
     """Return a country-level SWTP record.
 
@@ -241,7 +241,7 @@ def get_swtp_record(
 
 
 def index_swtp_record(
-    code: str, index_table: Optional[Mapping[str, SWTPIndexRecord]] = None
+    code: str, index_table: Mapping[str, SWTPIndexRecord] | None = None
 ) -> SWTPRecord:
     """Return a Rackwitz SWTP record indexed to a newer target year."""
 
@@ -264,8 +264,8 @@ def index_swtp_record(
 
 def get_swtp(
     code: str,
-    indexed: Optional[bool] = None,
-    index_table: Optional[Mapping[str, SWTPIndexRecord]] = None,
+    indexed: bool | None = None,
+    index_table: Mapping[str, SWTPIndexRecord] | None = None,
 ) -> float:
     """Return the SWTP value per statistical life for a country code.
 
@@ -279,8 +279,8 @@ def get_swtp(
 
 
 def swtp_table(
-    indexed: Optional[bool] = None,
-    index_table: Optional[Mapping[str, SWTPIndexRecord]] = None,
+    indexed: bool | None = None,
+    index_table: Mapping[str, SWTPIndexRecord] | None = None,
 ) -> pd.DataFrame:
     """Return the built-in country SWTP table as a dataframe.
 
@@ -313,15 +313,15 @@ class SWTP:
 
     value_per_life: float
     currency: str = "PPPUSD"
-    price_year: Optional[int] = None
-    source: Optional[str] = None
+    price_year: int | None = None
+    source: str | None = None
 
     def __post_init__(self):
         if self.value_per_life <= 0:
             raise ValueError("SWTP value_per_life must be positive")
 
     @classmethod
-    def from_country(cls, code: str, indexed: Optional[bool] = None) -> "SWTP":
+    def from_country(cls, code: str, indexed: bool | None = None) -> "SWTP":
         """Create an SWTP value from the built-in country table.
 
         ``indexed`` must be supplied explicitly.  Use ``indexed=False`` for
@@ -344,8 +344,8 @@ class SWTP:
         work_leisure_parameter: float,
         demographic_constant: float,
         currency: str = "currency units",
-        price_year: Optional[int] = None,
-        source: Optional[str] = "LQI relation SWTP = g / q * G",
+        price_year: int | None = None,
+        source: str | None = "LQI relation SWTP = g / q * G",
     ) -> "SWTP":
         """Create an SWTP value from the LQI relation.
 
@@ -392,11 +392,11 @@ class SWTP:
         return self.value_per_life * expected_fatalities
 
 
-def _swtp_value(swtp: Union[float, SWTP]) -> float:
+def _swtp_value(swtp: float | SWTP) -> float:
     return swtp.value_per_life if isinstance(swtp, SWTP) else float(swtp)
 
 
-def _require_explicit_indexed(indexed: Optional[bool]) -> bool:
+def _require_explicit_indexed(indexed: bool | None) -> bool:
     if indexed is None:
         raise ValueError("indexed=True or indexed=False must be supplied explicitly")
     return bool(indexed)

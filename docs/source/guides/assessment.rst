@@ -48,7 +48,7 @@ estimates appear as NaN in the table, while the original reliability record
 remains available in ``result.cases``. A failed case has no target margin.
 
 These normal inputs are a teaching model with a common force unit. Choosing
-probabilistic models from inspection or monitoring data is a separate modelling
+probabilistic models from inspection or monitoring data is a separate modeling
 step; this example does not implement Bayesian updating or deterioration over
 time. See :doc:`models` and :doc:`results` for the analysis contract.
 

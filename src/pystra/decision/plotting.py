@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Iterable, Mapping, Optional, Sequence
+from typing import Any, Iterable, Mapping, Sequence
 
 import numpy as np
 import pandas as pd
@@ -52,17 +52,17 @@ def _coerce_reference_designs(reference_designs) -> list[dict[str, Any]]:
 def plot_summary(
     data: Any,
     design: str,
-    quantities: Optional[Sequence[str]] = None,
-    labels: Optional[Mapping[str, str]] = None,
-    yscales: Optional[Mapping[str, str]] = None,
-    reference_designs: Optional[Any] = None,
-    target_failure_probability: Optional[float] = None,
+    quantities: Sequence[str] | None = None,
+    labels: Mapping[str, str] | None = None,
+    yscales: Mapping[str, str] | None = None,
+    reference_designs: Any | None = None,
+    target_failure_probability: float | None = None,
     target_label: str = "LQI target",
-    invert_yaxis: Optional[Iterable[str]] = None,
+    invert_yaxis: Iterable[str] | None = None,
     panel_labels: bool = False,
-    axes: Optional[Sequence[Any]] = None,
-    figsize: Optional[tuple[float, float]] = None,
-    line_kwargs: Optional[Mapping[str, Any]] = None,
+    axes: Sequence[Any] | None = None,
+    figsize: tuple[float, float] | None = None,
+    line_kwargs: Mapping[str, Any] | None = None,
 ):
     """Plot a one-dimensional design decision optimization summary.
 

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Optional, Sequence, Union
+from typing import Sequence
 
 import pandas as pd
 
@@ -94,17 +94,17 @@ class DDO:
     :meth:`economic_optimum` the unconstrained economic best.
     """
 
-    study: Union[DesignStudy, "RiskStudy"]
+    study: DesignStudy | RiskStudy
     criterion: DDOCriterion
-    objective: Optional[DDOObjective] = None
-    _results: Optional[pd.DataFrame] = field(default=None, init=False, repr=False)
+    objective: DDOObjective | None = None
+    _results: pd.DataFrame | None = field(default=None, init=False, repr=False)
 
     def __init__(
         self,
         *,
-        study: Union[DesignStudy, "RiskStudy"],
+        study: DesignStudy | RiskStudy,
         criterion: DDOCriterion,
-        objective: Optional[DDOObjective] = None,
+        objective: DDOObjective | None = None,
     ):
         self.study = study
         self.criterion = criterion
@@ -118,7 +118,7 @@ class DDO:
         return self.criterion.evaluate(df)
 
     @property
-    def results(self) -> Optional[pd.DataFrame]:
+    def results(self) -> pd.DataFrame | None:
         """Independent table from the last completed run, or None."""
         return None if self._results is None else self._results.copy(deep=True)
 
@@ -173,7 +173,7 @@ class DDO:
         return feasible.loc[feasible[objective_column].idxmax()]
 
     def summary(self) -> pd.DataFrame:
-        """Return the key decision points as a small labelled table.
+        """Return the key decision points as a small labeled table.
 
         One row for the unconstrained economic optimum and, when the criterion
         admits one, a second for the best feasible alternative.  Columns are the
@@ -214,8 +214,8 @@ class DDO:
 
     def plot(
         self,
-        design: Optional[str] = None,
-        quantities: Optional[Sequence[str]] = None,
+        design: str | None = None,
+        quantities: Sequence[str] | None = None,
         **kwargs,
     ):
         """Plot results from the most recent run."""

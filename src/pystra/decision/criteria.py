@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Callable, Optional, Union
+from typing import Callable
 
 import numpy as np
 import pandas as pd
@@ -36,7 +36,7 @@ __all__ = [
 def jcss_lqi_acceptability_margin(
     safety_cost_derivative: float,
     failure_rate_derivative: float,
-    swtp: Union[float, SWTP],
+    swtp: float | SWTP,
     expected_fatalities_given_failure: float,
 ) -> float:
     """Return the JCSS marginal LQI acceptability margin.
@@ -60,7 +60,7 @@ def jcss_lqi_acceptability_margin(
 def finite_difference_derivative(
     function: Callable[[float], float],
     design: float,
-    step: Optional[float] = None,
+    step: float | None = None,
 ) -> float:
     """Return a central finite-difference derivative for a scalar design."""
 
@@ -75,9 +75,9 @@ def jcss_lqi_acceptability(
     safety_cost: Callable[[float], float],
     failure_rate: Callable[[float], float],
     design: float,
-    swtp: Union[float, SWTP],
+    swtp: float | SWTP,
     expected_fatalities_given_failure: float,
-    step: Optional[float] = None,
+    step: float | None = None,
 ) -> float:
     """Return the finite-difference JCSS LQI acceptability margin."""
 
@@ -92,9 +92,9 @@ def jcss_lqi_is_acceptable(
     safety_cost: Callable[[float], float],
     failure_rate: Callable[[float], float],
     design: float,
-    swtp: Union[float, SWTP],
+    swtp: float | SWTP,
     expected_fatalities_given_failure: float,
-    step: Optional[float] = None,
+    step: float | None = None,
 ) -> bool:
     """Return ``True`` when the JCSS marginal LQI condition is satisfied."""
 
@@ -113,7 +113,7 @@ class DDOCriterion:
     """Base interface for DDO acceptability criteria."""
 
     name = "criterion"
-    feasibility_column: Optional[str] = None
+    feasibility_column: str | None = None
 
     def evaluate(self, results: pd.DataFrame) -> pd.DataFrame:
         """Return decision results with criterion-specific columns."""
@@ -131,8 +131,8 @@ class DDOCriterion:
 
 
 def _lqi_consequence(
-    expected_fatalities_given_failure: Optional[float],
-    consequence: Optional[FatalityConsequence] = None,
+    expected_fatalities_given_failure: float | None,
+    consequence: FatalityConsequence | None = None,
 ) -> FatalityConsequence:
     if consequence is not None and expected_fatalities_given_failure is not None:
         raise ValueError(
@@ -156,15 +156,15 @@ class LQI(DDOCriterion):
     not select the economic optimum by itself.
     """
 
-    swtp: Optional[SWTP] = None
-    consequence: Optional[FatalityConsequence] = None
-    target: Optional[TargetReliability] = None
+    swtp: SWTP | None = None
+    consequence: FatalityConsequence | None = None
+    target: TargetReliability | None = None
 
     name = "lqi"
     feasibility_column = "lqi_acceptable"
 
     @staticmethod
-    def _as_swtp(swtp: Union[float, SWTP]) -> SWTP:
+    def _as_swtp(swtp: float | SWTP) -> SWTP:
         return swtp if isinstance(swtp, SWTP) else SWTP(float(swtp))
 
     @staticmethod
@@ -192,10 +192,10 @@ class LQI(DDOCriterion):
     @classmethod
     def from_swtp(
         cls,
-        swtp: Union[float, SWTP],
+        swtp: float | SWTP,
         *,
-        expected_fatalities_given_failure: Optional[float] = None,
-        consequence: Optional[FatalityConsequence] = None,
+        expected_fatalities_given_failure: float | None = None,
+        consequence: FatalityConsequence | None = None,
         marginal_safety_cost: float,
         variability: str = "medium",
     ) -> "LQI":
@@ -237,10 +237,10 @@ class LQI(DDOCriterion):
         cls,
         code: str,
         *,
-        expected_fatalities_given_failure: Optional[float] = None,
-        consequence: Optional[FatalityConsequence] = None,
+        expected_fatalities_given_failure: float | None = None,
+        consequence: FatalityConsequence | None = None,
         marginal_safety_cost: float,
-        indexed: Optional[bool] = None,
+        indexed: bool | None = None,
         variability: str = "medium",
     ) -> "LQI":
         """Create an LQI criterion from a built-in country SWTP value."""
@@ -260,13 +260,13 @@ class LQI(DDOCriterion):
         gross_domestic_product_per_capita: float,
         work_leisure_parameter: float,
         demographic_constant: float,
-        expected_fatalities_given_failure: Optional[float] = None,
-        consequence: Optional[FatalityConsequence] = None,
+        expected_fatalities_given_failure: float | None = None,
+        consequence: FatalityConsequence | None = None,
         marginal_safety_cost: float,
         variability: str = "medium",
         currency: str = "currency units",
-        price_year: Optional[int] = None,
-        source: Optional[str] = "LQI relation SWTP = g / q * G",
+        price_year: int | None = None,
+        source: str | None = "LQI relation SWTP = g / q * G",
     ) -> "LQI":
         """Create an LQI criterion from the LQI SWTP relation.
 
@@ -290,7 +290,7 @@ class LQI(DDOCriterion):
         )
 
     @property
-    def expected_fatalities_given_failure(self) -> Optional[float]:
+    def expected_fatalities_given_failure(self) -> float | None:
         """Return expected fatalities conditional on failure when available."""
 
         if self.consequence is None:
@@ -298,7 +298,7 @@ class LQI(DDOCriterion):
         return self.consequence.expected_fatalities_given_failure
 
     @property
-    def k1(self) -> Optional[float]:
+    def k1(self) -> float | None:
         """Return the LQI safety cost ratio when a target is available."""
 
         if self.target is None:
@@ -314,8 +314,8 @@ class LQI(DDOCriterion):
 
     def risk_cost(
         self,
-        safety_cost: Union[float, np.ndarray],
-        failure_rate: Union[float, np.ndarray],
+        safety_cost: float | np.ndarray,
+        failure_rate: float | np.ndarray,
     ):
         """Return the JCSS LQI life-safety risk-cost term."""
 
@@ -358,7 +358,7 @@ class LQI(DDOCriterion):
         safety_cost: Callable[[float], float],
         failure_rate: Callable[[float], float],
         design: float,
-        step: Optional[float] = None,
+        step: float | None = None,
     ) -> float:
         """Return the finite-difference LQI acceptability margin at a design.
 
@@ -375,7 +375,7 @@ class LQI(DDOCriterion):
         safety_cost: Callable[[float], float],
         failure_rate: Callable[[float], float],
         bounds: tuple[float, float],
-        step: Optional[float] = None,
+        step: float | None = None,
     ) -> float:
         """Return the design where the LQI acceptability margin changes sign.
 

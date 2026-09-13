@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import Any, Callable, Iterable, Mapping, Optional, Sequence, Union
+from typing import Any, Callable, Iterable, Mapping, Sequence
 
 import pandas as pd
 from ..assessment import ReliabilityEstimate, _snapshot_result
@@ -145,7 +145,7 @@ class RiskStudy:
 
     variable: str
     values: Iterable[Any]
-    model: Union[ScenarioRiskModel, Callable[[Any], Union[RiskResult, Any]]]
+    model: ScenarioRiskModel | Callable[[Any], RiskResult | Any]
 
     def _evaluate_model(self, value: Any) -> RiskResult:
         if isinstance(self.model, ScenarioRiskModel):
@@ -156,7 +156,7 @@ class RiskStudy:
             return result
         return RiskResult.from_scenarios(result, metadata={self.variable: value})
 
-    def evaluate(self, swtp: Optional[Union[float, SWTP]] = None) -> pd.DataFrame:
+    def evaluate(self, swtp: float | SWTP | None = None) -> pd.DataFrame:
         """Return risk quantities for each design value.
 
         The annual failure rate is also exposed as a ``pf`` column so that the
