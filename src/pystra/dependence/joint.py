@@ -1,12 +1,13 @@
 """Marginals plus a copula, and their isoprobabilistic transformations."""
 
 from collections.abc import Sequence
+from typing import Any
 
 import numpy as np
 from numpy.typing import ArrayLike
 from scipy.stats import norm, t
 
-from .copula import Copula, StudentTCopula, _order
+from .copula import Copula, StudentTCopula, _RandomSeed, _order
 from ..distributions import Distribution, ZeroInflated
 
 __all__ = ["JointDistribution", "CopulaTransformation"]
@@ -26,7 +27,7 @@ class JointDistribution:
     copula : Copula
         Dependence specification with dimension equal to the marginal count."""
 
-    def __init__(self, marginals, copula):
+    def __init__(self, marginals: Sequence[Distribution], copula: Copula) -> None:
         self.marginals = tuple(marginals)
         if not isinstance(copula, Copula):
             raise TypeError("copula must implement the Copula interface")
@@ -48,7 +49,7 @@ class JointDistribution:
             raise ValueError("Expected points in joint marginal order")
         return x
 
-    def cdf(self, points, **kwargs):
+    def cdf(self, points: ArrayLike, **kwargs: Any) -> float | np.ndarray:
         """Evaluate the physical joint cumulative distribution.
 
         Parameters
@@ -66,7 +67,7 @@ class JointDistribution:
         p = np.stack([m.cdf(x[..., i]) for i, m in enumerate(self.marginals)], axis=-1)
         return self.copula.cdf(p, **kwargs)
 
-    def logpdf(self, points):
+    def logpdf(self, points: ArrayLike) -> float | np.ndarray:
         """Evaluate log joint density in physical coordinates.
 
         Parameters
@@ -99,11 +100,11 @@ class JointDistribution:
 
         return one(x) if x.ndim == 1 else np.array([one(row) for row in x])
 
-    def pdf(self, points):
+    def pdf(self, points: ArrayLike) -> float | np.ndarray:
         """Return physical joint density with the shape of :meth:`logpdf`."""
         return np.exp(self.logpdf(points))
 
-    def rvs(self, size=1, seed=None):
+    def rvs(self, size: int = 1, seed: _RandomSeed = None) -> np.ndarray:
         """Draw physical observations with this joint law.
 
         Parameters
@@ -121,8 +122,11 @@ class JointDistribution:
         return np.column_stack([m.ppf(p[:, i]) for i, m in enumerate(self.marginals)])
 
     def make_transformation(
-        self, method="rosenblatt", order=None, factorization="cholesky"
-    ):
+        self,
+        method: str = "rosenblatt",
+        order: Sequence[int] | np.ndarray | None = None,
+        factorization: str = "cholesky",
+    ) -> "CopulaTransformation":
         """Build a normal Rosenblatt or spherical generalized Nataf mapping.
 
         Parameters
@@ -170,11 +174,11 @@ class CopulaTransformation:
 
     def __init__(
         self,
-        joint_distribution,
-        method="rosenblatt",
-        order=None,
-        factorization="cholesky",
-    ):
+        joint_distribution: JointDistribution,
+        method: str = "rosenblatt",
+        order: Sequence[int] | np.ndarray | None = None,
+        factorization: str = "cholesky",
+    ) -> None:
         self.joint = joint_distribution
         self.copula = joint_distribution.copula
         self.marginals = joint_distribution.marginals
@@ -245,7 +249,9 @@ class CopulaTransformation:
             ]
         )
 
-    def x_to_u(self, x, marg=None):
+    def x_to_u(
+        self, x: ArrayLike, marg: Sequence[Distribution] | None = None
+    ) -> np.ndarray:
         """Map one physical point to this transformation's reference space.
 
         Parameters
@@ -280,7 +286,9 @@ class CopulaTransformation:
             result[self.order] = z
         return self._vector(result)
 
-    def u_to_x(self, u, marg=None):
+    def u_to_x(
+        self, u: ArrayLike, marg: Sequence[Distribution] | None = None
+    ) -> np.ndarray:
         """Map one reference point to physical marginal coordinates.
 
         Parameters

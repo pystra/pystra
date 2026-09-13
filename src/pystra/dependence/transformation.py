@@ -40,7 +40,7 @@ class Transformation:
 
     standard_space = "normal"
 
-    def __init__(self, transform_type=None):
+    def __init__(self, transform_type: str | None = None) -> None:
         self.transform_types = ["cholesky", "svd"]
 
         self.transform_type = transform_type
@@ -54,7 +54,7 @@ class Transformation:
         self.T = None
         self.inv_T = None
 
-    def x_to_u(self, x, marg):
+    def x_to_u(self, x: ArrayLike, marg: Sequence[Distribution]) -> np.ndarray:
         """Map a physical point to independent standard normal coordinates.
 
         Parameters
@@ -77,7 +77,7 @@ class Transformation:
         u = np.dot(self.T, u)
         return u
 
-    def u_to_x(self, u, marg):
+    def u_to_x(self, u: ArrayLike, marg: Sequence[Distribution]) -> np.ndarray:
         """Map an independent normal point to physical coordinates.
 
         Parameters
@@ -150,7 +150,7 @@ class Transformation:
         """
         return np.linalg.inv(self.jacobian_u_wrt_x(u, x, marg))
 
-    def compute(self, Ro):
+    def compute(self, Ro: ArrayLike) -> None:
         """Compute and store the selected correlation factors.
 
         Parameters

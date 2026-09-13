@@ -8,8 +8,13 @@ correlation matrix ``R``.  This module provides the numerical
 procedure that finds ``Ro`` from ``R`` and the marginal distributions.
 """
 
+from typing import Any
+
 import numpy as np
+from numpy.typing import ArrayLike
 import scipy.optimize as opt
+
+import pystra as _pystra
 
 from ..errors import ModelError
 
@@ -68,11 +73,11 @@ class CorrelationMatrix:
         If the matrix is not a valid correlation matrix.
     """
 
-    def __init__(self, matrix):
+    def __init__(self, matrix: ArrayLike) -> None:
         self._matrix = _validated(matrix)
 
     @property
-    def matrix(self):
+    def matrix(self) -> np.ndarray:
         """The matrix, as a read-only array."""
         return self._matrix
 
@@ -85,15 +90,15 @@ class CorrelationMatrix:
     def __array__(self, dtype=None, copy=None):
         return np.array(self._matrix, dtype=dtype)
 
-    def get_matrix(self):
+    def get_matrix(self) -> np.ndarray:
         """Return the correlation matrix as a read-only NumPy array."""
         return self._matrix
 
-    def cholesky(self):
+    def cholesky(self) -> np.ndarray:
         """Return the lower-triangular factor :math:`L` with :math:`R = L L^T`."""
         return np.linalg.cholesky(self._matrix)
 
-    def nataf(self, model):
+    def nataf(self, model: "_pystra.StochasticModel") -> "CorrelationMatrix":
         """Return the Nataf correlation for this matrix and the model's marginals.
 
         The correlation of the standard-normal variables that the Nataf
@@ -125,8 +130,12 @@ class CorrelationMatrix:
 
     @classmethod
     def nearest_positive_definite(
-        cls, matrix, *, min_eigenvalue=1e-10, max_iterations=100
-    ):
+        cls,
+        matrix: ArrayLike,
+        *,
+        min_eigenvalue: float = 1e-10,
+        max_iterations: int = 100,
+    ) -> "CorrelationMatrix":
         """Return the nearest valid correlation matrix to *matrix*.
 
         Uses Higham's (2002) alternating projections between the positive
@@ -190,7 +199,9 @@ class CorrelationMatrix:
         return cls(X)
 
 
-def compute_modified_correlation_matrix(stochastic_model):
+def compute_modified_correlation_matrix(
+    stochastic_model: "_pystra.StochasticModel",
+) -> np.ndarray:
     r"""Compute the modified (Nataf) correlation matrix.
 
     For each pair of non-normal marginals, the physical-space
@@ -281,7 +292,7 @@ def _nataf_correlation(marg, R):
     return Ro
 
 
-def absolute_integral_value(rho0, *args):
+def absolute_integral_value(rho0: float | np.ndarray, *args: Any) -> float:
     r"""Objective function for the Nataf correlation optimization.
 
     Returns ``|rho_target - rho_integral(rho0)|``, which is minimized
@@ -310,7 +321,9 @@ def absolute_integral_value(rho0, *args):
     return f
 
 
-def set_modified_correlation_matrix(stochastic_model):
+def set_modified_correlation_matrix(
+    stochastic_model: "_pystra.StochasticModel",
+) -> None:
     """Compute the modified correlation matrix and store it on the model.
 
     Convenience wrapper that calls
