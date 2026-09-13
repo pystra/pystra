@@ -75,6 +75,74 @@ After 2.0, public API changes follow the documented deprecation and release poli
   have type hints and NumPy-style docstrings covering shapes, units, defaults,
   assumptions, returns, and failure behavior. Mark internal helpers with `_`.
 
+## House style
+
+Use these conventions for documentation, docstrings, comments and examples:
+
+- Write **PySTRA** in prose and `pystra` in imports, paths and package commands.
+  Preserve literal identifiers, distribution metadata, quotations and legal
+  attribution, including the public exception name `PystraError`.
+- Use US English, including *optimization*, *normalized*, *behavior* and
+  *modeling*. External names and API spellings remain unchanged.
+- Use sentence-case titles and headings, retaining proper names and acronyms.
+  In authored RST, use `=` for the page title, `-` for sections, then `~` and
+  `^` for deeper levels. Preserve heading depth and link destinations.
+- Lead task instructions with verbs and describe current behavior in the
+  present tense. Prefer short explanatory paragraphs and plain language.
+  Support accuracy and performance claims with evidence and limitations.
+- Use *limit state* and *design point* as nouns, and *limit-state function*
+  and *design-point search* as modifiers. Prefer *failure probability*;
+  *probability of failure* is also valid when it reads naturally.
+- Use *standard normal space* and *independent standard normal coordinates*.
+  Define local `u`, `x`, and any correlated-normal `z` notation explicitly;
+  preserve and explain the notation of reproduced sources.
+- In new equations, use `\mathbf{x}` and `\mathbf{u}` for Latin vectors,
+  `\boldsymbol{\alpha}` for Greek vectors, `p_f` for failure probability and
+  `\beta` for the normal-equivalent reliability index. Typography changes
+  must preserve mathematical meaning, equation labels and source conventions.
+- State actual array shapes and define dimension names. Public points have
+  shape `(n_variables,)`; public sample batches have shape
+  `(n_samples, n_variables)`. Explicitly document private column kernels.
+  State units and reference periods, retaining the source benchmark's units.
+  Put a space between a number and its engineering unit or percent symbol.
+  Distinguish a random variable's CoV from an estimator's uncertainty.
+- Use NumPy docstring sections for substantive Parameters, Returns and Raises
+  contracts. Put constructor arguments on the class and method-specific
+  contracts on methods; concise summaries suffice for obvious properties and
+  private helpers. A summary sentence is followed by a blank line before
+  elaboration. Use raw strings for LaTeX and real source lines for lists.
+- Format identifiers as inline literals and use Sphinx roles for useful API
+  links, `:doc:` for pages, `:ref:` for named sections and `:eq:` for equations.
+  Use descriptive link labels, RST list-tables for comparisons, `*` for RST
+  bullets and `-` for Markdown bullets. Number lists only for ordered actions.
+- End task pages and notebooks with `**Continue:**` and relevant links
+  separated by ` · `. Keep the purposeful `**Use this method:**` theory and
+  `**Use it:**` API labels. Notebooks also retain purpose, prerequisites,
+  assumptions, interpreted results, captions and meaningful figure alternatives.
+- Begin library modules with a useful docstring, then standard-library,
+  third-party and local imports in separate groups. Omit interpreter/encoding
+  headers from library modules. Preserve optional imports and deliberate
+  public re-exports; keep explicit `__all__` and the aliases `np` and `ra`.
+- Public signatures have useful type annotations. Use modern built-in
+  containers and unions, such as `list[float]` and `Result | None`. Keep
+  annotation coverage and syntax conversion in dedicated commits, and check
+  runtime resolution, forward references and generated documentation.
+- Use f-strings for interpolated messages. Validation messages identify the
+  input and constraint, normally without terminal punctuation. Preserve
+  exception classes, statuses, causes and existing message contracts.
+- Comments explain mathematics, invariants, provenance or non-obvious choices.
+  Remove verified obsolete commented-out code. Preserve NumPy ownership,
+  shape, allocation and evaluation-order semantics; style work is not a
+  numerical refactor. Black remains the Python formatter.
+- Prefer behavior-named pytest functions, parametrization for shared
+  invariants and precise expected exception types. Keep useful test classes,
+  numerical reference values, seeds and tolerances.
+
+Use RST for authored source pages; Markdown remains appropriate for notebooks
+and repository documents. `docs/source/install.md` is intentionally parsed as
+RST: do not rename or convert it as a style change. Preserve quoted reference
+titles, source-specific engineering notation and historical migration records.
+
 ## Keep computation and state understandable
 
 Models describe a problem; algorithms execute; results record what happened;
