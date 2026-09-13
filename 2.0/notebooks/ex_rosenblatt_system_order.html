@@ -1,0 +1,1528 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Rosenblatt ordering in system reliability &#8212; PySTRA 2.0.0a1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a54fd074" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../_static/documentation_options.js?v=944fa962"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=ccd31ad0"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/ex_rosenblatt_system_order';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Code calibration and engineering decisions" href="../tutorials/calibration_decisions.html" />
+    <link rel="prev" title="System reliability" href="ex_system_reliability.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.0a1" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">These pages document PySTRA 2.0, which is in development. The stable 1.x documentation is at <a href="https://pystra.github.io/pystra/">pystra.github.io/pystra</a>.</div>
+</aside>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 2.0.0a1 documentation - Home"/>
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 2.0.0a1 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item"><a class="version-status" href="../install.html" aria-label="Documentation version 2.0.0a1: installation instructions">2.0.0a1 · development</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API reference
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/getting_started.html">Getting started</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="ex_first_analysis.html">A first reliability analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_intro.html">Comparing FORM, SORM and simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_scipy_distributions.html">Using SciPy distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_openseespy.html">Reliability with an external finite-element model</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/reliability_methods.html">Reliability methods and diagnostics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="ex_simulation.html">Simulation methods for reliability analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_sensitivity.html">Reliability sensitivities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_ddm.html">Direct differentiation of the limit state</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_strong_maximum.html">Checking a FORM design point</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_timing.html">Distribution adapters and analysis cost</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../tutorials/systems_dependence.html">Systems and dependence</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ex_copulas.html">Dependence and probability transformations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_system_reliability.html">System reliability</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Rosenblatt ordering in system reliability</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/calibration_decisions.html">Code calibration and engineering decisions</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="ex_load_combinations.html">Load combinations and FBC processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_generic_calibration.html">Code calibration using normalized reliability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_factor_calibration.html">Calibrating partial and combination factors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_design_decision_optimization.html">Steel-bar design decisions and LQI acceptability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_target_reliability.html">Calibrating target-reliability tables</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/active_learning.html">Advanced methods: active learning and benchmarks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="ex_active_learning.html">Active learning for reliability analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_literature_hat.html">The hat-function benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_literature_truss.html">The 23-bar truss benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_active_extensions.html">PC-Kriging, bootstrap voting and importance sampling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_active_subset.html">Active learning with subset simulation</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../benchmarks.html">Benchmark catalogue</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../tutorial.html" class="nav-link">Examples</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../tutorials/systems_dependence.html" class="nav-link">Systems and dependence</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Rosenblatt ordering in system reliability</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <div class="notebook-actions docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/1f448b87c291b19f2e134dbfa25e37a0/ex_rosenblatt_system_order.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">notebook</span></code></a> · <a class="reference download internal" download="" href="../_downloads/c586c11550b320f8ec48edb5d17d1c3d/ex_rosenblatt_system_order.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">runnable</span> <span class="pre">bundle</span></code></a></p>
+<p><strong>Dependencies:</strong> PySTRA core.</p>
+</div>
+<section id="Rosenblatt-ordering-in-system-reliability">
+<h1>Rosenblatt ordering in system reliability<a class="headerlink" href="#Rosenblatt-ordering-in-system-reliability" title="Link to this heading">#</a></h1>
+<p>Reproduce the Meinen–Steenbergen ordering example and distinguish coordinate changes from changes in the physical failure event.</p>
+<p><strong>Before you start:</strong> the dependence and system-reliability tutorials.</p>
+<section id="Problem-and-approach">
+<h2>Problem and approach<a class="headerlink" href="#Problem-and-approach" title="Link to this heading">#</a></h2>
+<p>This tutorial reproduces selected results from <strong>Nadieh Meinen and Raphaël Steenbergen (2025), “Application of the Rosenblatt transformation in First-Order System Reliability approximations,” Structural Safety 112, 102521</strong>. <a class="reference external" href="https://doi.org/10.1016/j.strusafe.2024.102521">Read the paper</a>.</p>
+<p>Their work shows how the conditioning order used in a Rosenblatt transformation can affect first-order <strong>system</strong> reliability, and why combining component analyses made with different orders requires care. We follow their Example 1, including its fully dependent and independent two-component series systems. The example extends the component benchmark studied by <a class="reference external" href="https://doi.org/10.1016/j.probengmech.2009.04.006">Lebrun and Dutfoy (2009)</a>.</p>
+<p>The examples and research question are credited to those authors. The code, numerical integrations and plots below are computed afresh with PySTRA. Gaussian coordinate alignment and integration in both directions provide additional implementation checks. This notebook does not reproduce the paper’s larger nonlinear parametric study in Example 2.</p>
+<p>Read <a class="reference internal" href="ex_copulas.html"><span class="doc">copulas and transformations</span></a> and <a class="reference internal" href="ex_system_reliability.html"><span class="doc">system reliability</span></a> for the underlying PySTRA APIs.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.integrate</span><span class="w"> </span><span class="kn">import</span> <span class="n">quad</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">expon</span><span class="p">,</span> <span class="n">norm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ra</span>
+
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">"display.precision"</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="n">orders</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Canonical"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">"Reverse"</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]}</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Canonical"</span><span class="p">:</span> <span class="s2">"#176b87"</span><span class="p">,</span> <span class="s2">"Reverse"</span><span class="p">:</span> <span class="s2">"#9b4f96"</span><span class="p">}</span>
+<span class="n">copulas</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"Gaussian"</span><span class="p">:</span> <span class="n">ra</span><span class="o">.</span><span class="n">GaussianCopula</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]),</span>
+    <span class="s2">"Frank"</span><span class="p">:</span> <span class="n">ra</span><span class="o">.</span><span class="n">FrankCopula</span><span class="p">(</span><span class="mf">4.73</span><span class="p">),</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">make_joint</span><span class="p">(</span><span class="n">copula</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">ra</span><span class="o">.</span><span class="n">JointDistribution</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">ra</span><span class="o">.</span><span class="n">ScipyDist</span><span class="p">(</span><span class="s2">"X1"</span><span class="p">,</span> <span class="n">expon</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">)),</span>
+            <span class="n">ra</span><span class="o">.</span><span class="n">ScipyDist</span><span class="p">(</span><span class="s2">"X2"</span><span class="p">,</span> <span class="n">expon</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)),</span>
+        <span class="p">],</span>
+        <span class="n">copula</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">limit_state</span><span class="p">(</span><span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">8</span> <span class="o">*</span> <span class="n">X1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">X2</span> <span class="o">-</span> <span class="mi">1</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">make_options</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">"rosenblatt"</span><span class="p">):</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">FORMOptions</span><span class="p">(</span><span class="n">transform</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="n">rosenblatt_order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">options</span>
+<br/></pre></div>
+</div>
+</div>
+</section>
+<section id="The-component-and-its-joint-probability-model">
+<h2>The component and its joint probability model<a class="headerlink" href="#The-component-and-its-joint-probability-model" title="Link to this heading">#</a></h2>
+<p>The component failure event is</p>
+<div class="math notranslate nohighlight">
+\[g(X_1,X_2)=8X_1+2X_2-1\leq 0,\]</div>
+<p>with exponential marginal rates <span class="math notranslate nohighlight">\(\lambda_1=1\)</span> and <span class="math notranslate nohighlight">\(\lambda_2=3\)</span>. We use either a Gaussian copula with <strong>latent correlation</strong> <span class="math notranslate nohighlight">\(\rho=0.5\)</span>, or a Frank copula with <span class="math notranslate nohighlight">\(\theta=4.73\)</span>, as in Meinen and Steenbergen’s Example 1. The earlier Lebrun–Dutfoy example uses <span class="math notranslate nohighlight">\(\theta=10\)</span>; changing that parameter changes the problem.</p>
+<p>The joint law stays fixed while we change the Rosenblatt order:</p>
+<ul class="simple">
+<li><p><strong>Canonical:</strong> first transform <span class="math notranslate nohighlight">\(X_1\)</span>, then transform <span class="math notranslate nohighlight">\(X_2\)</span> conditional on <span class="math notranslate nohighlight">\(X_1\)</span>.</p></li>
+<li><p><strong>Reverse:</strong> first transform <span class="math notranslate nohighlight">\(X_2\)</span>, then transform <span class="math notranslate nohighlight">\(X_1\)</span> conditional on <span class="math notranslate nohighlight">\(X_2\)</span>.</p></li>
+</ul>
+<p>PySTRA stores the normal coordinates in original variable positions. Thus a coordinate labelled <span class="math notranslate nohighlight">\(u_1\)</span> has a different conditional meaning in the two orders. Matching labels do not establish matching coordinates.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">components</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">copula</span> <span class="ow">in</span> <span class="n">copulas</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">FORM</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">ra</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">(</span><span class="n">make_joint</span><span class="p">(</span><span class="n">copula</span><span class="p">)),</span>
+            <span class="n">limit_state</span><span class="o">=</span><span class="n">ra</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span><span class="n">limit_state</span><span class="p">),</span>
+            <span class="n">options</span><span class="o">=</span><span class="n">make_options</span><span class="p">(</span><span class="n">order</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">result</span><span class="o">.</span><span class="n">converged</span>
+        <span class="n">components</span><span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">"copula"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                <span class="s2">"order"</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
+                <span class="s2">"beta"</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span>
+                <span class="s2">"FORM probability"</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">failure_probability</span><span class="p">,</span>
+                <span class="s2">"alpha"</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="mi">6</span><span class="p">)),</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+<span class="n">component_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s2">"copula"</span><span class="p">,</span> <span class="s2">"order"</span><span class="p">])</span>
+<span class="n">component_table</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>beta</th>
+      <th>FORM probability</th>
+      <th>alpha</th>
+    </tr>
+    <tr>
+      <th>copula</th>
+      <th>order</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="2" valign="top">Gaussian</th>
+      <th>Canonical</th>
+      <td>1.295457</td>
+      <td>0.097581</td>
+      <td>(-0.991823, -0.127619)</td>
+    </tr>
+    <tr>
+      <th>Reverse</th>
+      <td>1.295457</td>
+      <td>0.097581</td>
+      <td>(-0.795134, -0.606433)</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">Frank</th>
+      <th>Canonical</th>
+      <td>1.270281</td>
+      <td>0.101992</td>
+      <td>(-0.995807, -0.091477)</td>
+    </tr>
+    <tr>
+      <th>Reverse</th>
+      <td>1.204093</td>
+      <td>0.114277</td>
+      <td>(-0.725144, -0.688598)</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>The Gaussian probabilities agree at about 0.09758, although the alpha vectors differ. Frank gives about 0.10199 and 0.11428: a different first-order approximation to the <strong>same</strong> probability model. These reproduce the component results underlying the paper’s Figures 1 and 2. PySTRA’s alpha vectors point toward failure; the paper reports positive direction-cosine magnitudes for this example.</p>
+<p>The next figure follows the geometric comparison in the paper’s Figure 1. Each solid curve is the original physical failure boundary mapped into one set of independent normal coordinates. Dashed lines are the FORM tangent approximations; dots mark design points. Equal axis scales matter when comparing distance from the origin.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">1e-7</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">8</span> <span class="o">-</span> <span class="mf">1e-7</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
+<span class="n">physical_boundary</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">x1</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">8</span> <span class="o">*</span> <span class="n">x1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">])</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">copulas</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
+        <span class="n">form</span><span class="p">,</span> <span class="n">result</span> <span class="o">=</span> <span class="n">components</span><span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">label</span><span class="p">]</span>
+        <span class="n">boundary</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">form</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">x_to_u</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">physical_boundary</span><span class="p">])</span>
+        <span class="n">ra</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_form_geometry</span><span class="p">(</span>
+            <span class="n">result</span><span class="p">,</span>
+            <span class="n">boundary</span><span class="o">=</span><span class="n">boundary</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">label</span><span class="p">],</span>
+            <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">2.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">),</span> <span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">2.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="n">name</span> <span class="o">+</span> <span class="s2">" copula"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">get_legend</span><span class="p">()</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+<span class="n">handles</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_legend_handles_labels</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">"lower center"</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">"Conditioning order changes normal-space coordinates"</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.98</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">bottom</span><span class="o">=</span><span class="mf">0.22</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mf">0.87</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.12</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="Canonical and reversed conditioning orders map the same physical boundary differently. Gaussian mappings preserve distances by rotation or reflection; Frank mappings alter the local FORM geometry." src="../_images/notebooks_ex_rosenblatt_system_order_5_0.png" />
+</div>
+</div>
+<p><strong>Figure.</strong> Canonical and reversed conditioning orders map the same physical boundary differently. Gaussian mappings preserve distances by rotation or reflection; Frank mappings alter the local FORM geometry.</p>
+<p>For a Gaussian copula, the two mappings differ by an orthogonal transformation: they rotate or reflect the same normal-space geometry. FORM distances and consistently computed system correlations are preserved, up to solver accuracy.</p>
+<p>For Frank, the change of coordinates is nonlinear. A tangent plane in one coordinate system is generally not a tangent <strong>plane</strong> after that nonlinear transformation. Specifying the copula exactly therefore does not remove order sensitivity from FORM’s approximation.</p>
+</section>
+<section id="Two-fully-dependent-identical-components">
+<h2>Two fully dependent identical components<a class="headerlink" href="#Two-fully-dependent-identical-components" title="Link to this heading">#</a></h2>
+<p>Meinen and Steenbergen first consider identical components whose corresponding variables are perfectly dependent. Represent them using <strong>one shared pair</strong> <span class="math notranslate nohighlight">\((X_1,X_2)\)</span>, rather than introducing duplicate random variables and a singular four-variable correlation matrix.</p>
+<div class="math notranslate nohighlight">
+\[F_1=F_2=\{8X_1+2X_2-1\leq0\},\qquad
+P(F_1\cup F_2)=P(F_1).\]</div>
+<p>This is an important system identity. <code class="docutils literal notranslate"><span class="pre">SystemFORM</span></code> evaluates both components using one complete model and one transformation configuration.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">systems</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">copula</span> <span class="ow">in</span> <span class="n">copulas</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">system</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">SystemFORM</span><span class="p">(</span>
+            <span class="n">ra</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">(</span><span class="n">make_joint</span><span class="p">(</span><span class="n">copula</span><span class="p">)),</span>
+            <span class="n">ra</span><span class="o">.</span><span class="n">SeriesSystem</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">ra</span><span class="o">.</span><span class="n">Component</span><span class="p">(</span><span class="s2">"first"</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">),</span>
+                    <span class="n">ra</span><span class="o">.</span><span class="n">Component</span><span class="p">(</span><span class="s2">"second"</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">),</span>
+                <span class="p">]</span>
+            <span class="p">),</span>
+            <span class="n">options</span><span class="o">=</span><span class="n">make_options</span><span class="p">(</span><span class="n">order</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">system_result</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">system_result</span><span class="o">.</span><span class="n">converged</span>
+        <span class="k">assert</span> <span class="n">system_result</span><span class="o">.</span><span class="n">correlation</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">system_result</span><span class="o">.</span><span class="n">failure_probability</span><span class="p">,</span> <span class="n">system_result</span><span class="o">.</span><span class="n">component_results</span><span class="p">[</span><span class="s2">"first"</span><span class="p">]</span><span class="o">.</span><span class="n">failure_probability</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">)</span>
+        <span class="n">systems</span><span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">system_result</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">"copula"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                <span class="s2">"order"</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
+                <span class="s2">"component probability"</span><span class="p">:</span> <span class="n">system_result</span><span class="o">.</span><span class="n">component_results</span><span class="p">[</span><span class="s2">"first"</span><span class="p">]</span><span class="o">.</span><span class="n">failure_probability</span><span class="p">,</span>
+                <span class="s2">"system probability"</span><span class="p">:</span> <span class="n">system_result</span><span class="o">.</span><span class="n">failure_probability</span><span class="p">,</span>
+                <span class="s2">"tangent-score correlation"</span><span class="p">:</span> <span class="n">system_result</span><span class="o">.</span><span class="n">correlation</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s2">"copula"</span><span class="p">,</span> <span class="s2">"order"</span><span class="p">])</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>component probability</th>
+      <th>system probability</th>
+      <th>tangent-score correlation</th>
+    </tr>
+    <tr>
+      <th>copula</th>
+      <th>order</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="2" valign="top">Gaussian</th>
+      <th>Canonical</th>
+      <td>0.097581</td>
+      <td>0.097581</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>Reverse</th>
+      <td>0.097581</td>
+      <td>0.097581</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">Frank</th>
+      <th>Canonical</th>
+      <td>0.101992</td>
+      <td>0.101992</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>Reverse</th>
+      <td>0.114277</td>
+      <td>0.114277</td>
+      <td>1.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>The identity is preserved for both copulas and both orders. Frank still has two different approximations, each consistent with its own component analysis. Sharing the transformation fixes consistency between components; it does not make the approximation exact.</p>
+</section>
+<section id="Reproduce-the-mixed-coordinate-pitfall">
+<h2>Reproduce the mixed-coordinate pitfall<a class="headerlink" href="#Reproduce-the-mixed-coordinate-pitfall" title="Link to this heading">#</a></h2>
+<p>The paper also combines a canonical component analysis with a reverse one. For shared variables, treating their alpha vectors as if they occupied the same normal coordinate system gives</p>
+<div class="math notranslate nohighlight">
+\[\rho_{\mathrm{mixed}}=\boldsymbol{\alpha}^{C}\cdot\boldsymbol{\alpha}^{R}&lt;1.\]</div>
+<p>This would incorrectly imply that the two identical failure events can occur separately. We deliberately reproduce that calculation below as an <strong>anti-example</strong>, outside <code class="docutils literal notranslate"><span class="pre">SystemFORM</span></code>. The bivariate normal integral computes what the inconsistent tangent model predicts; it is not the probability of the specified physical system.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">normal_intersection</span><span class="p">(</span><span class="n">beta1</span><span class="p">,</span> <span class="n">beta2</span><span class="p">,</span> <span class="n">rho</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">quad</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">u</span><span class="p">:</span> <span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="o">*</span> <span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">((</span><span class="o">-</span><span class="n">beta2</span> <span class="o">-</span> <span class="n">rho</span> <span class="o">*</span> <span class="n">u</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">rho</span><span class="o">**</span><span class="mi">2</span><span class="p">)),</span>
+        <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span>
+        <span class="o">-</span><span class="n">beta1</span><span class="p">,</span>
+        <span class="n">epsabs</span><span class="o">=</span><span class="mf">1e-11</span><span class="p">,</span>
+    <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+
+<span class="n">mixed</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">copulas</span><span class="p">:</span>
+    <span class="n">canonical</span><span class="p">,</span> <span class="n">reverse</span> <span class="o">=</span> <span class="p">(</span><span class="n">components</span><span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">label</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">)</span>
+    <span class="n">rho</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">canonical</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">reverse</span><span class="o">.</span><span class="n">alpha</span><span class="p">))</span>
+    <span class="n">probability</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">canonical</span><span class="o">.</span><span class="n">failure_probability</span>
+        <span class="o">+</span> <span class="n">reverse</span><span class="o">.</span><span class="n">failure_probability</span>
+        <span class="o">-</span> <span class="n">normal_intersection</span><span class="p">(</span><span class="n">canonical</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span> <span class="n">reverse</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span> <span class="n">rho</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">mixed</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">probability</span>
+    <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">"copula"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+            <span class="s2">"unaligned alpha product"</span><span class="p">:</span> <span class="n">rho</span><span class="p">,</span>
+            <span class="s2">"invalid mixed system probability"</span><span class="p">:</span> <span class="n">probability</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">"copula"</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>unaligned alpha product</th>
+      <th>invalid mixed system probability</th>
+    </tr>
+    <tr>
+      <th>copula</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Gaussian</th>
+      <td>0.866025</td>
+      <td>0.132892</td>
+    </tr>
+    <tr>
+      <th>Frank</th>
+      <td>0.785094</td>
+      <td>0.156408</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>The resulting probabilities, approximately <strong>0.133 for Gaussian</strong> and <strong>0.156 for Frank</strong>, reproduce the mixed dependent-system results in the paper. Both violate the identical-event identity.</p>
+<p>For Gaussian coordinates we can demonstrate the repair explicitly. Let <span class="math notranslate nohighlight">\(u^C=A_C z\)</span> and <span class="math notranslate nohighlight">\(u^R=A_R z\)</span>, where <span class="math notranslate nohighlight">\(z\)</span> contains the marginal normal scores. Then</p>
+<div class="math notranslate nohighlight">
+\[Q=A_R A_C^{-1},\qquad QQ^T=I,\qquad
+\alpha^R_{\text{expressed in C}}=Q^T\alpha^R.\]</div>
+<p>Aligning the Gaussian alpha vectors restores correlation one. Simply permuting their labels would not generally accomplish this. The shared transformation used by <code class="docutils literal notranslate"><span class="pre">SystemFORM</span></code> avoids needing this repair in normal use.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gaussian</span> <span class="o">=</span> <span class="n">copulas</span><span class="p">[</span><span class="s2">"Gaussian"</span><span class="p">]</span>
+<span class="n">matrices</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">matrices</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">gaussian</span><span class="o">.</span><span class="n">rosenblatt</span><span class="p">(</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="n">order</span><span class="p">))</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">)]</span>
+    <span class="p">)</span>
+<span class="n">rotation</span> <span class="o">=</span> <span class="n">matrices</span><span class="p">[</span><span class="s2">"Reverse"</span><span class="p">]</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">matrices</span><span class="p">[</span><span class="s2">"Canonical"</span><span class="p">])</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">rotation</span> <span class="o">@</span> <span class="n">rotation</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">)</span>
+<span class="n">alpha_c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">components</span><span class="p">[</span><span class="s2">"Gaussian"</span><span class="p">,</span> <span class="s2">"Canonical"</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span>
+<span class="n">alpha_r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">components</span><span class="p">[</span><span class="s2">"Gaussian"</span><span class="p">,</span> <span class="s2">"Reverse"</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span>
+<span class="n">aligned_r</span> <span class="o">=</span> <span class="n">rotation</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">alpha_r</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">aligned_r</span><span class="p">,</span> <span class="n">alpha_c</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Before alignment:"</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">alpha_c</span> <span class="o">@</span> <span class="n">alpha_r</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"After alignment: "</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">alpha_c</span> <span class="o">@</span> <span class="n">aligned_r</span><span class="p">))</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Before alignment: 0.8660254037844353
+After alignment:  0.9999999999999998
+</pre></div></div>
+</div>
+<p>There is no equivalent single global orthogonal matrix for the Frank transformation. The normal-space tangent model itself changes with order.</p>
+</section>
+<section id="A-reference-from-the-original-failure-event">
+<h2>A reference from the original failure event<a class="headerlink" href="#A-reference-from-the-original-failure-event" title="Link to this heading">#</a></h2>
+<p>The physical event can be integrated directly without a FORM approximation:</p>
+<div class="math notranslate nohighlight">
+\[P_f=\int_0^{1/8} e^{-x}\,
+F_{X_2\mid X_1=x}\!\left(\frac{1-8x}{2}\right)\,dx.\]</div>
+<p>We also integrate along <span class="math notranslate nohighlight">\(X_2\)</span>. Both conditioning orders must give the same original-event probability, even when the corresponding FORM approximations differ. This checks the joint law separately from the tangent approximation.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">original_probability</span><span class="p">(</span><span class="n">copula</span><span class="p">,</span> <span class="n">order</span><span class="p">):</span>
+    <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">order</span>
+    <span class="n">rates</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">integrand</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="n">probabilities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">probabilities</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="o">-</span><span class="n">rates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">boundary</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">weights</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+        <span class="n">probabilities</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="o">-</span><span class="n">rates</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">boundary</span><span class="p">)</span>
+        <span class="n">conditional</span> <span class="o">=</span> <span class="n">copula</span><span class="o">.</span><span class="n">rosenblatt</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)[</span><span class="n">j</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">rates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">rates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">conditional</span>
+
+    <span class="n">value</span><span class="p">,</span> <span class="n">integration_error</span> <span class="o">=</span> <span class="n">quad</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">epsabs</span><span class="o">=</span><span class="mf">1e-11</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">value</span>
+
+
+<span class="n">references</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">copula</span> <span class="ow">in</span> <span class="n">copulas</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">original_probability</span><span class="p">(</span><span class="n">copula</span><span class="p">,</span> <span class="n">order</span><span class="p">)</span> <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">references</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">"copula"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+            <span class="s2">"integrate along X1"</span><span class="p">:</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="s2">"integrate along X2"</span><span class="p">:</span> <span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">"copula"</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>integrate along X1</th>
+      <th>integrate along X2</th>
+    </tr>
+    <tr>
+      <th>copula</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Gaussian</th>
+      <td>0.087185</td>
+      <td>0.087185</td>
+    </tr>
+    <tr>
+      <th>Frank</th>
+      <td>0.093225</td>
+      <td>0.093225</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p><strong>Reproduction note.</strong> Section 3.3 of Meinen and Steenbergen lists dependent-case Monte Carlo probabilities 0.0932 for Gaussian and 0.0872 for Frank. These appear interchanged: using the stated parameters, direct integration gives <strong>Gaussian 0.0871846</strong> and <strong>Frank 0.0932253</strong>. The direct sampling check below supports those assignments. We retain the paper’s stated model and distinguish our computed reference from its printed values.</p>
+</section>
+<section id="Independent-copies-and-direct-simulation">
+<h2>Independent copies and direct simulation<a class="headerlink" href="#Independent-copies-and-direct-simulation" title="Link to this heading">#</a></h2>
+<p>The other limiting case in Example 1 has two independent copies of the component pair. Each pair retains its within-component Gaussian or Frank dependence; the pairs are independent of one another.</p>
+<div class="math notranslate nohighlight">
+\[P(F_1\cup F_2)=1-(1-P_f)^2.\]</div>
+<p>For this case we can combine component probabilities analytically. The Frank law for four variables is the <strong>product of two bivariate Frank copulas</strong>. Applying a single four-dimensional Frank copula would specify a different dependence model. PySTRA currently exposes bivariate Frank directly, so we use the independent-copy formula and sample two independent pairs explicitly.</p>
+<p>The Monte Carlo calculation evaluates the original limit states on samples from the joint law. Its 95% intervals below use the binomial normal approximation, appropriate to the sample size and probabilities in this example. The integration reference supplies the more precise check.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">draws</span> <span class="o">=</span> <span class="mi">250_000</span>
+<span class="n">seeds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">SeedSequence</span><span class="p">(</span><span class="mi">20260906</span><span class="p">)</span><span class="o">.</span><span class="n">spawn</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">copulas</span><span class="p">))</span>
+<span class="n">monte_carlo</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">copula</span><span class="p">),</span> <span class="n">seed</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">copulas</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">seeds</span><span class="p">):</span>
+    <span class="n">samples</span> <span class="o">=</span> <span class="n">make_joint</span><span class="p">(</span><span class="n">copula</span><span class="p">)</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">draws</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">))</span>
+    <span class="n">first</span> <span class="o">=</span> <span class="n">limit_state</span><span class="p">(</span><span class="n">samples</span><span class="p">[:</span><span class="n">draws</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">samples</span><span class="p">[:</span><span class="n">draws</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="mi">0</span>
+    <span class="n">second</span> <span class="o">=</span> <span class="n">limit_state</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="n">draws</span><span class="p">:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">samples</span><span class="p">[</span><span class="n">draws</span><span class="p">:,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">case</span><span class="p">,</span> <span class="n">events</span><span class="p">,</span> <span class="n">reference</span> <span class="ow">in</span> <span class="p">(</span>
+        <span class="p">(</span><span class="s2">"Shared event"</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">references</span><span class="p">[</span><span class="n">name</span><span class="p">]),</span>
+        <span class="p">(</span><span class="s2">"Independent copies"</span><span class="p">,</span> <span class="n">first</span> <span class="o">|</span> <span class="n">second</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">references</span><span class="p">[</span><span class="n">name</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">):</span>
+        <span class="n">estimate</span> <span class="o">=</span> <span class="n">events</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">standard_error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">estimate</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">estimate</span><span class="p">)</span> <span class="o">/</span> <span class="n">draws</span><span class="p">)</span>
+        <span class="n">monte_carlo</span><span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">case</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">estimate</span><span class="p">,</span> <span class="n">standard_error</span><span class="p">)</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">"copula"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                <span class="s2">"system"</span><span class="p">:</span> <span class="n">case</span><span class="p">,</span>
+                <span class="s2">"integration reference"</span><span class="p">:</span> <span class="n">reference</span><span class="p">,</span>
+                <span class="s2">"Monte Carlo"</span><span class="p">:</span> <span class="n">estimate</span><span class="p">,</span>
+                <span class="s2">"95</span><span class="si">% lo</span><span class="s2">wer"</span><span class="p">:</span> <span class="n">estimate</span> <span class="o">-</span> <span class="mf">1.96</span> <span class="o">*</span> <span class="n">standard_error</span><span class="p">,</span>
+                <span class="s2">"95</span><span class="si">% u</span><span class="s2">pper"</span><span class="p">:</span> <span class="n">estimate</span> <span class="o">+</span> <span class="mf">1.96</span> <span class="o">*</span> <span class="n">standard_error</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s2">"copula"</span><span class="p">,</span> <span class="s2">"system"</span><span class="p">])</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>integration reference</th>
+      <th>Monte Carlo</th>
+      <th>95% lower</th>
+      <th>95% upper</th>
+    </tr>
+    <tr>
+      <th>copula</th>
+      <th>system</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="2" valign="top">Gaussian</th>
+      <th>Shared event</th>
+      <td>0.087185</td>
+      <td>0.086588</td>
+      <td>0.085486</td>
+      <td>0.087690</td>
+    </tr>
+    <tr>
+      <th>Independent copies</th>
+      <td>0.166768</td>
+      <td>0.166256</td>
+      <td>0.164797</td>
+      <td>0.167715</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">Frank</th>
+      <th>Shared event</th>
+      <td>0.093225</td>
+      <td>0.092056</td>
+      <td>0.090923</td>
+      <td>0.093189</td>
+    </tr>
+    <tr>
+      <th>Independent copies</th>
+      <td>0.177760</td>
+      <td>0.176728</td>
+      <td>0.175233</td>
+      <td>0.178223</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">summary</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">copulas</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">components</span><span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">label</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">failure_probability</span>
+        <span class="n">summary</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">"copula"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                <span class="s2">"order"</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
+                <span class="s2">"shared-event FORM"</span><span class="p">:</span> <span class="n">systems</span><span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">failure_probability</span><span class="p">,</span>
+                <span class="s2">"independent-copy FORM"</span><span class="p">:</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">p</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">summary</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s2">"copula"</span><span class="p">,</span> <span class="s2">"order"</span><span class="p">])</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>shared-event FORM</th>
+      <th>independent-copy FORM</th>
+    </tr>
+    <tr>
+      <th>copula</th>
+      <th>order</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="2" valign="top">Gaussian</th>
+      <th>Canonical</th>
+      <td>0.097581</td>
+      <td>0.185640</td>
+    </tr>
+    <tr>
+      <th>Reverse</th>
+      <td>0.097581</td>
+      <td>0.185640</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">Frank</th>
+      <th>Canonical</th>
+      <td>0.101992</td>
+      <td>0.193582</td>
+    </tr>
+    <tr>
+      <th>Reverse</th>
+      <td>0.114277</td>
+      <td>0.215495</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>The final plot follows the system comparison in the paper’s Figure 2, adding the direct integration reference and sampling intervals. The red cross is the deliberately invalid mixed-coordinate calculation for the shared-event case. The independent-copy points use the product formula above.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">system_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Shared event"</span><span class="p">,</span> <span class="s2">"Independent copies"</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">copulas</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">offset</span> <span class="ow">in</span> <span class="p">((</span><span class="s2">"Canonical"</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.14</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Reverse"</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.04</span><span class="p">)):</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">components</span><span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">label</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">failure_probability</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">p</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">p</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">],</span>
+            <span class="s2">"o"</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">label</span><span class="p">],</span>
+            <span class="n">label</span><span class="o">=</span><span class="n">label</span> <span class="o">+</span> <span class="s2">" FORM"</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="n">exact</span> <span class="o">=</span> <span class="p">[</span><span class="n">references</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">references</span><span class="p">[</span><span class="n">name</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.06</span><span class="p">,</span> <span class="n">exact</span><span class="p">,</span> <span class="s2">"s"</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Direct integration"</span><span class="p">)</span>
+    <span class="n">estimates</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">monte_carlo</span><span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">label</span><span class="p">]</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">system_labels</span><span class="p">]</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.16</span><span class="p">,</span>
+        <span class="n">estimates</span><span class="p">,</span>
+        <span class="n">yerr</span><span class="o">=</span><span class="mf">1.96</span> <span class="o">*</span> <span class="n">errors</span><span class="p">,</span>
+        <span class="n">fmt</span><span class="o">=</span><span class="s2">"."</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="s2">"#777777"</span><span class="p">,</span>
+        <span class="n">capsize</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="s2">"Monte Carlo (95%)"</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+        <span class="o">-</span><span class="mf">0.24</span><span class="p">,</span>
+        <span class="n">mixed</span><span class="p">[</span><span class="n">name</span><span class="p">],</span>
+        <span class="s2">"x"</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="s2">"#bc352b"</span><span class="p">,</span>
+        <span class="n">markersize</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="s2">"Unaligned alpha (invalid)"</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+        <span class="n">xticks</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="n">xticklabels</span><span class="o">=</span><span class="n">system_labels</span><span class="p">,</span>
+        <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">),</span>
+        <span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="mf">0.075</span><span class="p">,</span> <span class="mf">0.23</span><span class="p">),</span>
+        <span class="n">title</span><span class="o">=</span><span class="n">name</span> <span class="o">+</span> <span class="s2">" copula"</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s2">"y"</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"System failure probability"</span><span class="p">)</span>
+<span class="n">handles</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_legend_handles_labels</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">"lower center"</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">"System approximation and original-event probability"</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.98</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">bottom</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mf">0.87</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.12</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="Consistent system calculations, mixed-order tangent models and original-event references are compared. Sampling intervals describe the Monte Carlo estimates; mixed coordinates violate event consistency." src="../_images/notebooks_ex_rosenblatt_system_order_19_0.png" />
+</div>
+</div>
+<p><strong>Figure.</strong> Consistent system calculations, mixed-order tangent models and original-event references are compared. Sampling intervals describe the Monte Carlo estimates; mixed coordinates violate event consistency.</p>
+</section>
+<section id="Implications-for-reliability-work">
+<h2>Implications for reliability work<a class="headerlink" href="#Implications-for-reliability-work" title="Link to this heading">#</a></h2>
+<p>Meinen and Steenbergen’s central lesson remains relevant with explicit copulas:</p>
+<ul class="simple">
+<li><p><strong>Specify the complete joint law.</strong> A copula fixes dependence; conditioning order then changes coordinates, not that law. Distinguish within-component dependence from dependence across components.</p></li>
+<li><p><strong>Use a common coordinate system for shared variables.</strong> Independently obtained alpha vectors require transformation provenance before system aggregation. Original variable names alone are insufficient.</p></li>
+<li><p><strong>Check approximation sensitivity.</strong> Non-Gaussian Rosenblatt orders can give different first-order approximations even when every component uses a consistent order. Trying several orders is a diagnostic, not a certified probability bound or a guarantee that the largest estimate is conservative.</p></li>
+<li><p><strong>Validate the original event where practical.</strong> Direct integration or simulation provides a check that does not inherit FORM’s tangent-plane approximation.</p></li>
+</ul>
+<p>The paper’s nonlinear Example 2 is a valuable next benchmark. Its component autocorrelation formulation should be reproduced with its assumptions identified explicitly, alongside any alternative calculation using a fully specified joint model.</p>
+</section>
+<section id="References">
+<h2>References<a class="headerlink" href="#References" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p><strong>Meinen, N. E., and Steenbergen, R. D. J. M. (2025).</strong> Application of the Rosenblatt transformation in First-Order System Reliability approximations. <em>Structural Safety</em>, <strong>112</strong>, 102521. <a class="reference external" href="https://doi.org/10.1016/j.strusafe.2024.102521">doi:10.1016/j.strusafe.2024.102521</a>. Main source for this tutorial: Example 1, Figures 1–2, and the discussion of mixed conditioning orders.</p></li>
+<li><p><strong>Lebrun, R., and Dutfoy, A. (2009).</strong> Do Rosenblatt and Nataf isoprobabilistic transformations really differ? <em>Probabilistic Engineering Mechanics</em>, <strong>24</strong>, 577–584. <a class="reference external" href="https://doi.org/10.1016/j.probengmech.2009.04.006">doi:10.1016/j.probengmech.2009.04.006</a>. Earlier component-level example; also reproduced in the <a class="reference internal" href="ex_copulas.html"><span class="doc">copula tutorial</span></a>.</p></li>
+</ol>
+<p><strong>Continue:</strong> <a class="reference internal" href="../copulas.html"><span class="doc">User guide</span></a> · <a class="reference internal" href="../api/probability.html"><span class="doc">API reference</span></a> · <a class="reference internal" href="../theory/transformations.html"><span class="doc">Theory</span></a></p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="ex_system_reliability.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">System reliability</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../tutorials/calibration_decisions.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Code calibration and engineering decisions</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Problem-and-approach">Problem and approach</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#The-component-and-its-joint-probability-model">The component and its joint probability model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Two-fully-dependent-identical-components">Two fully dependent identical components</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Reproduce-the-mixed-coordinate-pitfall">Reproduce the mixed-coordinate pitfall</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#A-reference-from-the-original-failure-event">A reference from the original failure event</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Independent-copies-and-direct-simulation">Independent copies and direct simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Implications-for-reliability-work">Implications for reliability work</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#References">References</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/pystra/pystra/edit/v2.0/docs/source/notebooks/ex_rosenblatt_system_order.ipynb">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2021-2026, The PySTRA Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><nav aria-label="Project links" class="project-links">
+  <a href="../migrating.html">Migration</a>
+  <a href="../citing.html">Cite PySTRA</a>
+  <a href="../developer.html">Contributing</a>
+  <a href="https://pystra.github.io/pystra/">Stable 1.x documentation</a>
+</nav></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

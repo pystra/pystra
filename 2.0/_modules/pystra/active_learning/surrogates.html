@@ -1,0 +1,982 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pystra.active_learning.surrogates &#8212; PySTRA 2.0.0a1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=a54fd074" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../../_static/documentation_options.js?v=944fa962"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=ccd31ad0"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pystra/active_learning/surrogates';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.0a1" />
+  
+    
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">These pages document PySTRA 2.0, which is in development. The stable 1.x documentation is at <a href="https://pystra.github.io/pystra/">pystra.github.io/pystra</a>.</div>
+</aside>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 2.0.0a1 documentation - Home"/>
+    <img src="../../../_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 2.0.0a1 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item"><a class="version-status" href="../../../install.html" aria-label="Documentation version 2.0.0a1: installation instructions">2.0.0a1 · development</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api.html">
+    API reference
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../references.html">
+    References
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../references.html">
+    References
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">pystra.active_learning.surrogates</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for pystra.active_learning.surrogates</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Optional active-learning reliability in independent normal coordinates.</span>
+
+<span class="sd">AK-MCS: Echard, Gayton and Lemaire (2011), doi:10.1016/j.strusafe.2011.01.002.</span>
+<span class="sd">EFF: Bichon et al. (2008), doi:10.2514/1.34321.</span>
+<span class="sd">Adaptive sparse bootstrap PCE: Marelli and Sudret (2018),</span>
+<span class="sd">doi:10.1016/j.strusafe.2018.06.003, using UQLab 2.2.0 selection rules.</span>
+<span class="sd">See THIRD_PARTY_NOTICES and docs/uqlab-pce-provenance.md.</span>
+<span class="sd">"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">._pce</span><span class="w"> </span><span class="kn">import</span> <span class="n">_multi_indices</span><span class="p">,</span> <span class="n">_hermite_basis</span><span class="p">,</span> <span class="n">_fit_lars</span><span class="p">,</span> <span class="n">_fit_ols</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">_positive_integer</span><span class="p">,</span> <span class="n">_points</span><span class="p">,</span> <span class="n">_training</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"Surrogate"</span><span class="p">,</span>
+    <span class="s2">"KrigingSurrogate"</span><span class="p">,</span>
+    <span class="s2">"PCECandidate"</span><span class="p">,</span>
+    <span class="s2">"PCEFitResult"</span><span class="p">,</span>
+    <span class="s2">"EnsembleSurrogate"</span><span class="p">,</span>
+    <span class="s2">"PCESurrogate"</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="Surrogate">
+<a class="viewcode-back" href="../../../gen/pystra.active_learning.surrogates.Surrogate.html#pystra.active_learning.surrogates.Surrogate">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Surrogate</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Predict a scalar limit state in independent standard normal space.</span>
+
+<span class="sd">    Both methods use row-wise points, shape (n_samples, n_variables).</span>
+<span class="sd">    Implementations must replace fitted state on every fit.</span>
+<span class="sd">    """</span>
+
+<div class="viewcode-block" id="Surrogate.fit">
+<a class="viewcode-back" href="../../../gen/pystra.active_learning.surrogates.Surrogate.html#pystra.active_learning.surrogates.Surrogate.fit">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Fit finite scalar observations, shape (n_samples,)."""</span></div>
+
+
+<div class="viewcode-block" id="Surrogate.predict">
+<a class="viewcode-back" href="../../../gen/pystra.active_learning.surrogates.Surrogate.html#pystra.active_learning.surrogates.Surrogate.predict">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return finite mean and nonnegative std arrays, each (n_samples,)."""</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="KrigingSurrogate">
+<a class="viewcode-back" href="../../../gen/pystra.active_learning.surrogates.KrigingSurrogate.html#pystra.active_learning.surrogates.KrigingSurrogate">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">KrigingSurrogate</span><span class="p">(</span><span class="n">Surrogate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Matérn 5/2 Gaussian process with normalized response.</span>
+
+<span class="sd">    Parameters are keyword-only. ``noise`` is a positive numerical nugget;</span>
+<span class="sd">    ``n_restarts`` controls additional likelihood optimization starts.</span>
+<span class="sd">    ``seed`` owns the scikit-learn optimizer's random state.</span>
+<span class="sd">    Requires ``pip install 'pystra[al]'``. Inputs are normal coordinates.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">n_restarts</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">noise</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.gaussian_process</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianProcessRegressor</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.gaussian_process.kernels</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConstantKernel</span><span class="p">,</span> <span class="n">Matern</span>
+        <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+                <span class="s2">"Kriging requires scikit-learn; install with pip install 'pystra[al]'"</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+        <span class="n">_positive_integer</span><span class="p">(</span><span class="n">n_restarts</span><span class="p">,</span> <span class="s2">"n_restarts"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">noise</span><span class="p">)</span> <span class="ow">or</span> <span class="n">noise</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"noise must be finite and positive"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_regressor</span> <span class="o">=</span> <span class="n">GaussianProcessRegressor</span><span class="p">(</span>
+            <span class="n">kernel</span><span class="o">=</span><span class="n">ConstantKernel</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="p">(</span><span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e5</span><span class="p">))</span> <span class="o">*</span> <span class="n">Matern</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="p">(</span><span class="mf">1e-2</span><span class="p">,</span> <span class="mf">1e4</span><span class="p">),</span> <span class="n">nu</span><span class="o">=</span><span class="mf">2.5</span><span class="p">),</span>
+            <span class="n">n_restarts_optimizer</span><span class="o">=</span><span class="n">n_restarts</span><span class="p">,</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="n">noise</span><span class="p">,</span>
+            <span class="n">normalize_y</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fitted</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="KrigingSurrogate.fit">
+<a class="viewcode-back" href="../../../gen/pystra.active_learning.surrogates.KrigingSurrogate.html#pystra.active_learning.surrogates.KrigingSurrogate.fit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Fit normal-coordinate observations; reject nonfinite inputs."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fitted</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">points</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">_training</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_regressor</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fitted</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="KrigingSurrogate.predict">
+<a class="viewcode-back" href="../../../gen/pystra.active_learning.surrogates.KrigingSurrogate.html#pystra.active_learning.surrogates.KrigingSurrogate.predict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return posterior mean/std; raise RuntimeError before fitting."""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fitted</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Surrogate has not been fitted"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_regressor</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">_points</span><span class="p">(</span><span class="n">points</span><span class="p">),</span> <span class="n">return_std</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PCECandidate">
+<a class="viewcode-back" href="../../../gen/pystra.active_learning.surrogates.PCECandidate.html#pystra.active_learning.surrogates.PCECandidate">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PCECandidate</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A candidate degree/truncation and its final OLS error diagnostics."""</span>
+
+    <span class="n">degree</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">q_norm</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">n_candidates</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">n_selected</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">loo_error</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">corrected_loo_error</span><span class="p">:</span> <span class="nb">float</span></div>
+
+
+
+<div class="viewcode-block" id="PCEFitResult">
+<a class="viewcode-back" href="../../../gen/pystra.active_learning.surrogates.PCEFitResult.html#pystra.active_learning.surrogates.PCEFitResult">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PCEFitResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Immutable selected Hermite expansion and evaluated candidate scores.</span>
+
+<span class="sd">    ``indices`` contains one power tuple per coefficient in normal-coordinate</span>
+<span class="sd">    variable order. Errors are normalized by population variance of training</span>
+<span class="sd">    responses. LOO is conditional on the chosen support, not a complete</span>
+<span class="sd">    cross-validation of model selection or a failure-probability error bound.</span>
+<span class="sd">    """</span>
+
+    <span class="n">degree</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">q_norm</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">indices</span><span class="p">:</span> <span class="nb">tuple</span>
+    <span class="n">coefficients</span><span class="p">:</span> <span class="nb">tuple</span>
+    <span class="n">loo_error</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">corrected_loo_error</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">candidates</span><span class="p">:</span> <span class="nb">tuple</span>
+    <span class="n">n_rank_deficient_bootstrap</span><span class="p">:</span> <span class="nb">int</span></div>
+
+
+
+<div class="viewcode-block" id="EnsembleSurrogate">
+<a class="viewcode-back" href="../../../gen/pystra.active_learning.surrogates.EnsembleSurrogate.html#pystra.active_learning.surrogates.EnsembleSurrogate">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EnsembleSurrogate</span><span class="p">(</span><span class="n">Surrogate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A surrogate that also exposes row-wise replicate predictions."""</span>
+
+<div class="viewcode-block" id="EnsembleSurrogate.predict_replicates">
+<a class="viewcode-back" href="../../../gen/pystra.active_learning.surrogates.EnsembleSurrogate.html#pystra.active_learning.surrogates.EnsembleSurrogate.predict_replicates">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict_replicates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return (n_points, n_replicates&gt;=2) finite response predictions."""</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PCESurrogate">
+<a class="viewcode-back" href="../../../gen/pystra.active_learning.surrogates.PCESurrogate.html#pystra.active_learning.surrogates.PCESurrogate">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PCESurrogate</span><span class="p">(</span><span class="n">EnsembleSurrogate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Adaptive sparse Hermite PCE with bootstrap local prediction spread.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    degree : int or sequence of int</span>
+<span class="sd">        Candidate maximum degrees, default (1, 2, 3, 4, 5). An integer fits</span>
+<span class="sd">        a single candidate degree. Sequences must be strictly increasing.</span>
+<span class="sd">    method : str</span>
+<span class="sd">        'lars' (default) selects sparse supports using hybrid LARS and</span>
+<span class="sd">        corrected leave-one-out error; 'ols' fits each complete candidate.</span>
+<span class="sd">    q_norm : float or sequence of float</span>
+<span class="sd">        Hyperbolic truncations in (0, 1], default 1. Sequences increase.</span>
+<span class="sd">        A power tuple is admissible when sum(power**q) &lt;= degree**q.</span>
+<span class="sd">    max_interaction : int, optional</span>
+<span class="sd">        Maximum number of variables in an interaction, default unrestricted.</span>
+<span class="sd">    degree_early_stop, q_norm_early_stop : bool</span>
+<span class="sd">        Default True. Stop degrees after two candidates below the best score;</span>
+<span class="sd">        stop q-norms after two successive nonimprovements, as in UQLab 2.2.0.</span>
+<span class="sd">        Set False for exhaustive searches, e.g. isolated higher-order terms.</span>
+<span class="sd">    n_bootstrap : int</span>
+<span class="sd">        Number of pairs-bootstrap refits on the selected support, default 30.</span>
+<span class="sd">    max_terms : int</span>
+<span class="sd">        Maximum candidate basis size (10000); excessive requests fail clearly.</span>
+<span class="sd">    seed : int, optional</span>
+<span class="sd">        Owns repeatable bootstrap resampling; no global RNG state is changed.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Adapted from UQLab 2.2.0, copyright Stefano Marelli and Bruno Sudret</span>
+<span class="sd">    (ETH Zurich); see THIRD_PARTY_NOTICES. Candidate supports are selected</span>
+<span class="sd">    on centered, normalized LAR paths, refitted by OLS and compared using</span>
+<span class="sd">    corrected LOO. SVD replaces normal-equation inverses. The bootstrap keeps</span>
+<span class="sd">    the selected sparse basis fixed (UQLab's fast bootstrap), so it does not</span>
+<span class="sd">    quantify model-selection or truncation bias. Rank-deficient bootstrap</span>
+<span class="sd">    draws use minimum-norm least squares and are counted in fit_result.</span>
+<span class="sd">    No Gaussian error bound is implied.</span>
+
+<span class="sd">    ``fit_result`` snapshots the chosen degree, q-norm, coefficients, indices</span>
+<span class="sd">    and candidate diagnostics. Every fit starts a fresh adaptive search.</span>
+<span class="sd">    Inputs and predictions use independent standard normal coordinates.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">degree</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+        <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"lars"</span><span class="p">,</span>
+        <span class="n">q_norm</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">max_interaction</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">degree_early_stop</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">q_norm_early_stop</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">n_bootstrap</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span>
+        <span class="n">max_terms</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10_000</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="n">degrees</span> <span class="o">=</span> <span class="p">(</span><span class="n">degree</span><span class="p">,)</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">degree</span><span class="p">)</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">degree</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">_positive_integer</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">"degree"</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">degrees</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="n">b</span> <span class="o">&lt;=</span> <span class="n">a</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="p">[</span><span class="mi">1</span><span class="p">:])):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"degree must be nonempty and strictly increasing"</span><span class="p">)</span>
+        <span class="n">norms</span> <span class="o">=</span> <span class="p">(</span><span class="n">q_norm</span><span class="p">,)</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">q_norm</span><span class="p">)</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">q_norm</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">norms</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">q</span> <span class="o">&lt;=</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">norms</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"q_norm must contain finite numbers in (0, 1]"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q_norm</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">norms</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">b</span> <span class="o">&lt;=</span> <span class="n">a</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q_norm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_norm</span><span class="p">[</span><span class="mi">1</span><span class="p">:])):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"q_norm must be strictly increasing"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"lars"</span><span class="p">,</span> <span class="s2">"ols"</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"method must be 'lars' or 'ols'"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_interaction</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">max_interaction</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="n">_positive_integer</span><span class="p">(</span><span class="n">max_interaction</span><span class="p">,</span> <span class="s2">"max_interaction"</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="p">(</span><span class="s2">"degree_early_stop"</span><span class="p">,</span> <span class="n">degree_early_stop</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"q_norm_early_stop"</span><span class="p">,</span> <span class="n">q_norm_early_stop</span><span class="p">),</span>
+        <span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> must be a bool"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">degree_early_stop</span> <span class="o">=</span> <span class="n">degree_early_stop</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q_norm_early_stop</span> <span class="o">=</span> <span class="n">q_norm_early_stop</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_bootstrap</span> <span class="o">=</span> <span class="n">_positive_integer</span><span class="p">(</span><span class="n">n_bootstrap</span><span class="p">,</span> <span class="s2">"n_bootstrap"</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_terms</span> <span class="o">=</span> <span class="n">_positive_integer</span><span class="p">(</span><span class="n">max_terms</span><span class="p">,</span> <span class="s2">"max_terms"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coefficients</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_result</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="PCESurrogate.fit">
+<a class="viewcode-back" href="../../../gen/pystra.active_learning.surrogates.PCESurrogate.html#pystra.active_learning.surrogates.PCESurrogate.fit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Select degree/truncation/support, then bootstrap its OLS fit."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coefficients</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_result</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">points</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">_training</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"PCE requires at least three training points"</span><span class="p">)</span>
+        <span class="n">dimension</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">interaction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_interaction</span> <span class="ow">or</span> <span class="n">dimension</span>
+        <span class="n">best</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">candidates</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">degree_errors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">degree</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="p">:</span>
+            <span class="n">q_errors</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">previous_size</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">q_norm</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_norm</span><span class="p">:</span>
+                <span class="n">indices</span> <span class="o">=</span> <span class="n">_multi_indices</span><span class="p">(</span>
+                    <span class="n">dimension</span><span class="p">,</span> <span class="n">degree</span><span class="p">,</span> <span class="n">q_norm</span><span class="p">,</span> <span class="n">interaction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_terms</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span> <span class="o">==</span> <span class="n">previous_size</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">previous_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+                <span class="n">basis</span> <span class="o">=</span> <span class="n">_hermite_basis</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">"lars"</span><span class="p">:</span>
+                        <span class="n">support</span><span class="p">,</span> <span class="n">regression</span> <span class="o">=</span> <span class="n">_fit_lars</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">support</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">))</span>
+                        <span class="n">regression</span> <span class="o">=</span> <span class="n">_fit_ols</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="c1"># Unidentifiable dense candidates cannot win selection.</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q_norm</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="k">raise</span>
+                    <span class="n">candidates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">PCECandidate</span><span class="p">(</span><span class="n">degree</span><span class="p">,</span> <span class="n">q_norm</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="n">q_errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="n">candidate</span> <span class="o">=</span> <span class="n">PCECandidate</span><span class="p">(</span>
+                    <span class="n">degree</span><span class="p">,</span>
+                    <span class="n">q_norm</span><span class="p">,</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">),</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="n">support</span><span class="p">),</span>
+                    <span class="n">regression</span><span class="o">.</span><span class="n">loo</span><span class="p">,</span>
+                    <span class="n">regression</span><span class="o">.</span><span class="n">corrected_loo</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">candidates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">candidate</span><span class="p">)</span>
+                <span class="n">q_errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">candidate</span><span class="o">.</span><span class="n">corrected_loo_error</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">candidate</span><span class="o">.</span><span class="n">corrected_loo_error</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+                    <span class="n">best</span> <span class="ow">is</span> <span class="kc">None</span>
+                    <span class="ow">or</span> <span class="n">candidate</span><span class="o">.</span><span class="n">corrected_loo_error</span> <span class="o">&lt;</span> <span class="n">best</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">corrected_loo_error</span>
+                <span class="p">):</span>
+                    <span class="n">best</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">candidate</span><span class="p">,</span>
+                        <span class="n">indices</span><span class="p">[</span><span class="n">support</span><span class="p">],</span>
+                        <span class="n">regression</span><span class="o">.</span><span class="n">coefficients</span><span class="p">,</span>
+                        <span class="n">basis</span><span class="p">[:,</span> <span class="n">support</span><span class="p">],</span>
+                    <span class="p">)</span>
+                <span class="n">finite_q_errors</span> <span class="o">=</span> <span class="p">[</span><span class="n">error</span> <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">q_errors</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">error</span><span class="p">)]</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">q_norm_early_stop</span>
+                    <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">finite_q_errors</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span>
+                    <span class="ow">and</span> <span class="n">finite_q_errors</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="o">&gt;=</span> <span class="n">finite_q_errors</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="o">&gt;=</span> <span class="n">finite_q_errors</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+                <span class="p">):</span>
+                    <span class="k">break</span>
+            <span class="n">degree_error</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">q_errors</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">degree_error</span><span class="p">):</span>
+                <span class="n">degree_errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">degree_error</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">best</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree_early_stop</span>
+                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">degree_errors</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span>
+                <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span>
+                    <span class="n">error</span> <span class="o">&gt;</span> <span class="n">best</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">corrected_loo_error</span> <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">degree_errors</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
+                <span class="p">)</span>
+            <span class="p">):</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="n">best</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">"No identifiable PCE candidate; increase training size or reduce degree"</span>
+            <span class="p">)</span>
+        <span class="n">candidate</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">coefficients</span><span class="p">,</span> <span class="n">basis</span> <span class="o">=</span> <span class="n">best</span>
+        <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
+        <span class="n">ensemble</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">rank_deficient</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_bootstrap</span><span class="p">):</span>
+            <span class="n">resample</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">))</span>
+            <span class="n">fitted</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span>
+                <span class="n">basis</span><span class="p">[</span><span class="n">resample</span><span class="p">],</span> <span class="n">values</span><span class="p">[</span><span class="n">resample</span><span class="p">],</span> <span class="n">rcond</span><span class="o">=</span><span class="kc">None</span>
+            <span class="p">)</span>
+            <span class="n">rank_deficient</span> <span class="o">+=</span> <span class="n">rank</span> <span class="o">&lt;</span> <span class="n">basis</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">fitted</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Nonfinite PCE bootstrap coefficients"</span><span class="p">)</span>
+            <span class="n">ensemble</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitted</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dimension</span> <span class="o">=</span> <span class="n">dimension</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_powers</span> <span class="o">=</span> <span class="n">indices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ensemble</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ensemble</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coefficients</span> <span class="o">=</span> <span class="n">coefficients</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_result</span> <span class="o">=</span> <span class="n">PCEFitResult</span><span class="p">(</span>
+            <span class="n">candidate</span><span class="o">.</span><span class="n">degree</span><span class="p">,</span>
+            <span class="n">candidate</span><span class="o">.</span><span class="n">q_norm</span><span class="p">,</span>
+            <span class="nb">tuple</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">power</span><span class="p">)</span> <span class="k">for</span> <span class="n">power</span> <span class="ow">in</span> <span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">),</span>
+            <span class="nb">tuple</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">coefficient</span><span class="p">)</span> <span class="k">for</span> <span class="n">coefficient</span> <span class="ow">in</span> <span class="n">coefficients</span><span class="p">),</span>
+            <span class="n">candidate</span><span class="o">.</span><span class="n">loo_error</span><span class="p">,</span>
+            <span class="n">candidate</span><span class="o">.</span><span class="n">corrected_loo_error</span><span class="p">,</span>
+            <span class="nb">tuple</span><span class="p">(</span><span class="n">candidates</span><span class="p">),</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">rank_deficient</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PCESurrogate.predict">
+<a class="viewcode-back" href="../../../gen/pystra.active_learning.surrogates.PCESurrogate.html#pystra.active_learning.surrogates.PCESurrogate.predict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return full-design mean and selected-basis bootstrap spread."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coefficients</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Surrogate has not been fitted"</span><span class="p">)</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">_points</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimension</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Prediction dimension differs from training dimension"</span><span class="p">)</span>
+        <span class="n">basis</span> <span class="o">=</span> <span class="n">_hermite_basis</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_powers</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">basis</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coefficients</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span>
+            <span class="n">basis</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ensemble</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PCESurrogate.predict_replicates">
+<a class="viewcode-back" href="../../../gen/pystra.active_learning.surrogates.PCESurrogate.html#pystra.active_learning.surrogates.PCESurrogate.predict_replicates">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict_replicates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return individual selected-support bootstrap responses (columns).</span>
+
+<span class="sd">        Replicate columns refer to the same fitted coefficients across calls,</span>
+<span class="sd">        enabling probability estimates on a common sample. They do not include</span>
+<span class="sd">        model-selection uncertainty. Returned arrays do not alias fitted state.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coefficients</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Surrogate has not been fitted"</span><span class="p">)</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">_points</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimension</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Prediction dimension differs from training dimension"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_hermite_basis</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_powers</span><span class="p">)</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ensemble</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2021-2026, The PySTRA Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><nav aria-label="Project links" class="project-links">
+  <a href="../../../migrating.html">Migration</a>
+  <a href="../../../citing.html">Cite PySTRA</a>
+  <a href="../../../developer.html">Contributing</a>
+  <a href="https://pystra.github.io/pystra/">Stable 1.x documentation</a>
+</nav></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

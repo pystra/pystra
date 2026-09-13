@@ -1,0 +1,975 @@
+{
+  "schema_version": 1,
+  "baseline_revision": "3c91fb8d0f95c300c84869c47bf5847f291dfed2",
+  "scope": "Implemented v2 calibration structure and FORM result contract. Definitions include private helpers for inventory completeness, not public support. Dataclass constructor fields appear under class attributes; generated constructors are not AST definitions.",
+  "replacement_workflows": {
+    "normalized_code_studies": [
+      "pystra.calibration.normalized.NormalizedReliabilityModel",
+      "pystra.calibration.normalized.NominalValues",
+      "pystra.calibration.normalized.CodeFactors",
+      "pystra.calibration.normalized.CodeCalibration.run",
+      "pystra.calibration.normalized.CodeCalibrationResult",
+      "pystra.calibration.plotting.plot_calibration"
+    ],
+    "specialist_design_point_factors": [
+      "pystra.calibration.factors.FactorCalibrationProblem",
+      "pystra.calibration.factors.solve_designs",
+      "pystra.calibration.factors.derive_factors",
+      "pystra.calibration.factors.select_factors",
+      "pystra.calibration.factors.design_with_factors",
+      "pystra.calibration.factors.verify_designs"
+    ],
+    "probabilistic_cases": [
+      "pystra.loads.LoadCombination",
+      "pystra.loads.VariableRoles",
+      "pystra.loads.LoadCombination.from_actions",
+      "pystra.loads.LoadCombination.turkstra",
+      "pystra.calibration.factors.analyze_case"
+    ],
+    "form_run": [
+      "pystra.reliability.form.FORM.run",
+      "pystra.results.FORMResult"
+    ]
+  },
+  "contracts": {
+    "exports": "Public calibration records/functions remain available from pystra.calibration and pystra; Calibration has no alias.",
+    "form_result": "Frozen snapshot. beta normal-equivalent, design_index signed reference-space distance. design_point_x, design_point_u and alpha are read-only arrays in variable_names order. Iteration exhaustion returns status=not_converged and None estimates with warning; invalid inputs/numerical execution errors raise.",
+    "generic_grid": "Finite nonempty 1D ratios in [0,1]. beta fresh array (n_dead_load_ratios,n_live_load_ratios); failed points NaN and retained in cases. to_frame columns: live_load_ratio, dead_load_ratio, design_value, beta, failure_probability, converged, target_margin, message. Model copied; factors/nominals finite positive.",
+    "generic_dependence": "Default independent; explicit copula random-variable order resistance_error,resistance,load_error,dead_load,permanent_load,live_load, omitting constants. Per-run FORMOptions; DDM unsupported for built-in normalized equation.",
+    "specialist_solve": "root (fsolve or bracketed Brent) and alpha. Default beta tolerance=1e-4 and max_evaluations=100 FORM runs per case including final verification. Inner convergence, outer success and final residual required. Failures retained; factor derivation rejects them.",
+    "specialist_derivation": "coeff/matrix require normal standard space and exactly one leading case per variable action. Explicit names align arrays. Separable resistance-scale equation verified at computed design; arbitrary coupled nonlinear decomposition unsupported. Matrix action coefficient uses its own leading-case inputs, preserving reference convention. Singular systems raise.",
+    "factor_results": "Frozen numeric row tuples with case_names/resistance_names/load_names and leading_actions. to_frame(kind) copies. Selection per_case by default; resistance minimum, loads/combinations maximum are explicit. Governing ties retained. Design maximum must be explicitly chosen, then verified.",
+    "load_cases": "Constructor validates/copies but does not analyze. Explicit roles cover random variables; leading metadata identifies variable actions by name. Maxima and companions have separate name-to-distribution mappings. Pearson correlation is a uniquely labelled finite symmetric positive-definite DataFrame with unit diagonal. Unknown overrides raise."
+  },
+  "definitions": [
+    {
+      "name": "pystra.calibration.factors._scalar",
+      "kind": "callable",
+      "signature": "(value, name)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.factors._run_form",
+      "kind": "callable",
+      "signature": "(cases, case_name, overrides=None, options=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.factors.analyze_case",
+      "kind": "callable",
+      "signature": "(cases: LoadCombination, case_name: Optional[str]=None, *, overrides: Optional[Mapping[str, Union[Distribution, Constant]]]=None, options: Optional[FORMOptions]=None)",
+      "decorators": [],
+      "returns": "FORMResult"
+    },
+    {
+      "name": "pystra.calibration.factors.FactorCalibrationProblem",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "_cases",
+        "_nominal_values",
+        "design_parameter"
+      ]
+    },
+    {
+      "name": "pystra.calibration.factors.FactorCalibrationProblem.__init__",
+      "kind": "callable",
+      "signature": "(self, cases: LoadCombination, *, nominal_values: Mapping[str, float], design_parameter: str)",
+      "decorators": [],
+      "returns": "None"
+    },
+    {
+      "name": "pystra.calibration.factors.FactorCalibrationProblem.cases",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": "LoadCombination"
+    },
+    {
+      "name": "pystra.calibration.factors.FactorCalibrationProblem.nominal_values",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": "Mapping[str, float]"
+    },
+    {
+      "name": "pystra.calibration.factors.FactorCalibrationProblem._effect",
+      "kind": "callable",
+      "signature": "(self, case_name, values, *, design_value=1.0)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.factors.FactorCalibrationProblem.design_from_point",
+      "kind": "callable",
+      "signature": "(self, case_name: str, values: Mapping[str, float])",
+      "decorators": [],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.calibration.factors.CalibratedDesign",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "case_name",
+        "converged",
+        "design_value",
+        "evaluations",
+        "message",
+        "reliability",
+        "residual",
+        "target_beta"
+      ]
+    },
+    {
+      "name": "pystra.calibration.factors.TargetDesigns",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "_problem",
+        "designs"
+      ]
+    },
+    {
+      "name": "pystra.calibration.factors.TargetDesigns.problem",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": "FactorCalibrationProblem"
+    },
+    {
+      "name": "pystra.calibration.factors.TargetDesigns.converged",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": "bool"
+    },
+    {
+      "name": "pystra.calibration.factors.TargetDesigns.to_frame",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": "DataFrame"
+    },
+    {
+      "name": "pystra.calibration.factors._InnerFailure",
+      "kind": "class",
+      "bases": [
+        "Exception"
+      ],
+      "attributes": []
+    },
+    {
+      "name": "pystra.calibration.factors.solve_designs",
+      "kind": "callable",
+      "signature": "(problem: FactorCalibrationProblem, *, target_beta: float, method: str='root', initial_value: Optional[float]=None, tolerance: float=0.0001, max_evaluations: int=100, bracket: Optional[Tuple[float, float]]=None, options: Optional[FORMOptions]=None)",
+      "decorators": [],
+      "returns": "TargetDesigns"
+    },
+    {
+      "name": "pystra.calibration.factors.GoverningFactor",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "case_names",
+        "kind",
+        "variable"
+      ]
+    },
+    {
+      "name": "pystra.calibration.factors.FactorSet",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "case_names",
+        "combinations",
+        "governing",
+        "leading_actions",
+        "load_names",
+        "loads",
+        "resistance",
+        "resistance_names"
+      ]
+    },
+    {
+      "name": "pystra.calibration.factors.FactorSet.__post_init__",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.factors.FactorSet.to_frame",
+      "kind": "callable",
+      "signature": "(self, kind: str)",
+      "decorators": [],
+      "returns": "DataFrame"
+    },
+    {
+      "name": "pystra.calibration.factors.derive_factors",
+      "kind": "callable",
+      "signature": "(solutions: TargetDesigns, *, method: str='matrix')",
+      "decorators": [],
+      "returns": "FactorSet"
+    },
+    {
+      "name": "pystra.calibration.factors.select_factors",
+      "kind": "callable",
+      "signature": "(factors: FactorSet, *, resistance: str='per_case', loads: str='per_case', combinations: str='per_case')",
+      "decorators": [],
+      "returns": "FactorSet"
+    },
+    {
+      "name": "pystra.calibration.factors.DesignValues",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "case_names",
+        "values"
+      ]
+    },
+    {
+      "name": "pystra.calibration.factors.DesignValues.governing_cases",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": "Tuple[str, ...]"
+    },
+    {
+      "name": "pystra.calibration.factors.design_with_factors",
+      "kind": "callable",
+      "signature": "(problem: FactorCalibrationProblem, factors: FactorSet)",
+      "decorators": [],
+      "returns": "DesignValues"
+    },
+    {
+      "name": "pystra.calibration.factors.DesignVerification",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "case_name",
+        "design_value",
+        "reliability",
+        "target_margin"
+      ]
+    },
+    {
+      "name": "pystra.calibration.factors.verify_designs",
+      "kind": "callable",
+      "signature": "(problem: FactorCalibrationProblem, design_values: Union[float, Mapping[str, float], DesignValues], *, target_beta: Optional[float]=None, options: Optional[FORMOptions]=None)",
+      "decorators": [],
+      "returns": "Tuple[DesignVerification, ...]"
+    },
+    {
+      "name": "pystra.calibration.normalized._positive",
+      "kind": "callable",
+      "signature": "(value, name)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.normalized._ratios",
+      "kind": "callable",
+      "signature": "(values, name)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.normalized.CodeFactors",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "gamma_g",
+        "gamma_p",
+        "gamma_q",
+        "phi"
+      ]
+    },
+    {
+      "name": "pystra.calibration.normalized.CodeFactors.__post_init__",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.normalized.NominalValues",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "dead_load",
+        "live_load",
+        "permanent_load",
+        "resistance"
+      ]
+    },
+    {
+      "name": "pystra.calibration.normalized.NominalValues.__post_init__",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.normalized.NormalizedReliabilityModel",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "copula",
+        "dead_load",
+        "live_load",
+        "load_error",
+        "nominal_values",
+        "permanent_load",
+        "resistance",
+        "resistance_error"
+      ]
+    },
+    {
+      "name": "pystra.calibration.normalized.NormalizedReliabilityModel.__post_init__",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.calibration.normalized.NormalizedReliabilityModel.stochastic_model",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": "StochasticModel"
+    },
+    {
+      "name": "pystra.calibration.normalized.CodeDesignResult",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "dead_load_ratio",
+        "design_value",
+        "live_load_ratio",
+        "reliability",
+        "target_margin"
+      ]
+    },
+    {
+      "name": "pystra.calibration.normalized.CodeCalibrationResult",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "_model",
+        "cases",
+        "dead_load_ratios",
+        "factors",
+        "live_load_ratios",
+        "target_beta"
+      ]
+    },
+    {
+      "name": "pystra.calibration.normalized.CodeCalibrationResult.model",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": "NormalizedReliabilityModel"
+    },
+    {
+      "name": "pystra.calibration.normalized.CodeCalibrationResult.converged",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": "bool"
+    },
+    {
+      "name": "pystra.calibration.normalized.CodeCalibrationResult.beta",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": "np.ndarray"
+    },
+    {
+      "name": "pystra.calibration.normalized.CodeCalibrationResult.to_frame",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": "DataFrame"
+    },
+    {
+      "name": "pystra.calibration.normalized.CodeCalibration",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "_dead_load_ratios",
+        "_live_load_ratios"
+      ]
+    },
+    {
+      "name": "pystra.calibration.normalized.CodeCalibration.__init__",
+      "kind": "callable",
+      "signature": "(self, *, live_load_ratios: Sequence[float], dead_load_ratios: Sequence[float])",
+      "decorators": [],
+      "returns": "None"
+    },
+    {
+      "name": "pystra.calibration.normalized.CodeCalibration.live_load_ratios",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": "Tuple[float, ...]"
+    },
+    {
+      "name": "pystra.calibration.normalized.CodeCalibration.dead_load_ratios",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": "Tuple[float, ...]"
+    },
+    {
+      "name": "pystra.calibration.normalized.CodeCalibration.design",
+      "kind": "callable",
+      "signature": "(*, live_load_ratio: float, dead_load_ratio: float, factors: CodeFactors, nominal_values: NominalValues)",
+      "decorators": [
+        "staticmethod"
+      ],
+      "returns": "float"
+    },
+    {
+      "name": "pystra.calibration.normalized.CodeCalibration.run",
+      "kind": "callable",
+      "signature": "(self, model: NormalizedReliabilityModel, factors: CodeFactors, *, options: Optional[FORMOptions]=None, target_beta: Optional[float]=None)",
+      "decorators": [],
+      "returns": "CodeCalibrationResult"
+    },
+    {
+      "name": "pystra.calibration.plotting.plot_calibration",
+      "kind": "callable",
+      "signature": "(results, *, target_beta=None, colors=None, ranges=None, ax=None, figsize=(8, 4))",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loads.FBCProcess",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "basic_interval",
+        "name",
+        "parent"
+      ]
+    },
+    {
+      "name": "pystra.loads.FBCProcess.__init__",
+      "kind": "callable",
+      "signature": "(self, name, parent, basic_interval)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loads.FBCProcess.from_maximum",
+      "kind": "callable",
+      "signature": "(cls, name, maximum, maximum_duration, basic_interval)",
+      "decorators": [
+        "classmethod"
+      ],
+      "returns": null
+    },
+    {
+      "name": "pystra.loads.FBCProcess.interval_count",
+      "kind": "callable",
+      "signature": "(self, duration=None, n=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loads.FBCProcess.point_in_time",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loads.FBCProcess.maximum",
+      "kind": "callable",
+      "signature": "(self, duration=None, n=None)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loads._variables",
+      "kind": "callable",
+      "signature": "(values, *, processes=False)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loads.VariableRoles",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "other",
+        "resistance",
+        "variable"
+      ]
+    },
+    {
+      "name": "pystra.loads.VariableRoles.__post_init__",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.loads.VariableRoles.names",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": "Tuple[str, ...]"
+    },
+    {
+      "name": "pystra.loads.LoadCombination",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "_cases",
+        "_constants",
+        "_correlation",
+        "_leading_actions",
+        "limit_state",
+        "roles"
+      ]
+    },
+    {
+      "name": "pystra.loads.LoadCombination.__init__",
+      "kind": "callable",
+      "signature": "(self, *, cases: Mapping[str, _Variables], limit_state: Optional[Callable]=None, constants: Optional[_Variables]=None, roles: Optional[VariableRoles]=None, leading_actions: Optional[Mapping[str, Sequence[str]]]=None, correlation=None)",
+      "decorators": [],
+      "returns": "None"
+    },
+    {
+      "name": "pystra.loads.LoadCombination.case_names",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": "Tuple[str, ...]"
+    },
+    {
+      "name": "pystra.loads.LoadCombination.cases",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": "dict"
+    },
+    {
+      "name": "pystra.loads.LoadCombination.constants",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": "dict"
+    },
+    {
+      "name": "pystra.loads.LoadCombination.leading_actions",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": "Mapping[str, Tuple[str, ...]]"
+    },
+    {
+      "name": "pystra.loads.LoadCombination.case",
+      "kind": "callable",
+      "signature": "(self, case_name: Optional[str]=None)",
+      "decorators": [],
+      "returns": "dict"
+    },
+    {
+      "name": "pystra.loads.LoadCombination.stochastic_model",
+      "kind": "callable",
+      "signature": "(self, case_name: Optional[str]=None, *, overrides: Optional[_Variables]=None)",
+      "decorators": [],
+      "returns": "StochasticModel"
+    },
+    {
+      "name": "pystra.loads.LoadCombination.from_actions",
+      "kind": "callable",
+      "signature": "(cls, *, maxima: Mapping[str, Distribution], companions: Mapping[str, Distribution], resistance: _Variables, other: Optional[_Variables]=None, constants: Optional[_Variables]=None, leading_actions: Optional[Mapping[str, Sequence[str]]]=None, limit_state: Optional[Callable]=None, correlation=None)",
+      "decorators": [
+        "classmethod"
+      ],
+      "returns": "'LoadCombination'"
+    },
+    {
+      "name": "pystra.loads.LoadCombination.turkstra",
+      "kind": "callable",
+      "signature": "(cls, variable: Mapping[str, FBCProcess], reference_period: float, *, limit_state: Optional[Callable]=None, resistance: Optional[_Variables]=None, permanent: Optional[_Variables]=None, other: Optional[_Variables]=None, constants: Optional[_Variables]=None, correlation=None, companion_duration: Union[str, float]='leading_interval')",
+      "decorators": [
+        "classmethod"
+      ],
+      "returns": "'LoadCombination'"
+    },
+    {
+      "name": "pystra.reliability.form.FORM.run",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": "FORMResult"
+    },
+    {
+      "name": "pystra.results._ReadOnlyMapping",
+      "kind": "class",
+      "bases": [
+        "Mapping"
+      ],
+      "attributes": [
+        "_data"
+      ]
+    },
+    {
+      "name": "pystra.results._ReadOnlyMapping.__init__",
+      "kind": "callable",
+      "signature": "(self, data)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results._ReadOnlyMapping.__getitem__",
+      "kind": "callable",
+      "signature": "(self, key)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results._ReadOnlyMapping.__iter__",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results._ReadOnlyMapping.__len__",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results._ReadOnlyMapping.__repr__",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results._frozen",
+      "kind": "callable",
+      "signature": "(value)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results._same",
+      "kind": "callable",
+      "signature": "(a, b)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results._text",
+      "kind": "callable",
+      "signature": "(value)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results._Result",
+      "kind": "class",
+      "bases": [],
+      "attributes": [
+        "_arrays",
+        "_read_only",
+        "message",
+        "method",
+        "n_limit_state_evaluations",
+        "options",
+        "status",
+        "variable_names"
+      ]
+    },
+    {
+      "name": "pystra.results._Result.__post_init__",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results._Result.__eq__",
+      "kind": "callable",
+      "signature": "(self, other)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results._Result.converged",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": "bool"
+    },
+    {
+      "name": "pystra.results._Result._rows",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results._Result.summary",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": "str"
+    },
+    {
+      "name": "pystra.results._ProbabilityResult",
+      "kind": "class",
+      "bases": [
+        "_Result"
+      ],
+      "attributes": [
+        "beta",
+        "failure_probability"
+      ]
+    },
+    {
+      "name": "pystra.results._ProbabilityResult._rows",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results.FORMResult",
+      "kind": "class",
+      "bases": [
+        "_ProbabilityResult"
+      ],
+      "attributes": [
+        "_arrays",
+        "alpha",
+        "design_index",
+        "design_point_u",
+        "design_point_x",
+        "direction_error",
+        "iterations",
+        "limit_state_error",
+        "standard_space"
+      ]
+    },
+    {
+      "name": "pystra.results.FORMResult.from_analysis",
+      "kind": "callable",
+      "signature": "(cls, analysis)",
+      "decorators": [
+        "classmethod"
+      ],
+      "returns": "'FORMResult'"
+    },
+    {
+      "name": "pystra.results.FORMResult._rows",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results.FORMResult.to_dataframe",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results.SORMResult",
+      "kind": "class",
+      "bases": [
+        "_ProbabilityResult"
+      ],
+      "attributes": [
+        "_arrays",
+        "_read_only",
+        "approximations",
+        "curvatures",
+        "fit",
+        "form",
+        "formula"
+      ]
+    },
+    {
+      "name": "pystra.results.SORMResult._rows",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results.SimulationResult",
+      "kind": "class",
+      "bases": [
+        "_ProbabilityResult"
+      ],
+      "attributes": [
+        "_read_only",
+        "coefficient_of_variation",
+        "diagnostics",
+        "n_samples"
+      ]
+    },
+    {
+      "name": "pystra.results.SimulationResult._rows",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results.SystemFORMResult",
+      "kind": "class",
+      "bases": [
+        "_ProbabilityResult"
+      ],
+      "attributes": [
+        "_arrays",
+        "_read_only",
+        "bounds",
+        "component_results",
+        "correlation",
+        "intersections"
+      ]
+    },
+    {
+      "name": "pystra.results.SystemFORMResult._rows",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results.SensitivityResult",
+      "kind": "class",
+      "bases": [
+        "_ProbabilityResult"
+      ],
+      "attributes": [
+        "_arrays",
+        "_read_only",
+        "approach",
+        "correlation",
+        "delta",
+        "form",
+        "marginal"
+      ]
+    },
+    {
+      "name": "pystra.results.SensitivityResult._rows",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results.SensitivityResult.to_dataframe",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results.StrongMaximumResult",
+      "kind": "class",
+      "bases": [
+        "_Result"
+      ],
+      "attributes": [
+        "_arrays",
+        "_read_only",
+        "cap_probability",
+        "confidence_level",
+        "design_index",
+        "design_point_u",
+        "has_competing_points",
+        "limit_state_values",
+        "point_number",
+        "points_u",
+        "points_x",
+        "radius",
+        "regions"
+      ]
+    },
+    {
+      "name": "pystra.results.StrongMaximumResult.points",
+      "kind": "callable",
+      "signature": "(self, region='far_failure', space='u')",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results.StrongMaximumResult._rows",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    },
+    {
+      "name": "pystra.results.DistributionAnalysisResult",
+      "kind": "class",
+      "bases": [
+        "_Result"
+      ],
+      "attributes": [
+        "_arrays",
+        "bins",
+        "limit_state_values",
+        "n_samples",
+        "samples_x"
+      ]
+    },
+    {
+      "name": "pystra.results.DistributionAnalysisResult._rows",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": null
+    }
+  ]
+}

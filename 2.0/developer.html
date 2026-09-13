@@ -1,0 +1,882 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Contributing to PySTRA &#8212; PySTRA 2.0.0a1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=a54fd074" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="_static/documentation_options.js?v=944fa962"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=ccd31ad0"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Adding a distribution" href="development/distributions.html" />
+    <link rel="prev" title="Citing PySTRA and its methods" href="citing.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.0a1" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">These pages document PySTRA 2.0, which is in development. The stable 1.x documentation is at <a href="https://pystra.github.io/pystra/">pystra.github.io/pystra</a>.</div>
+</aside>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 2.0.0a1 documentation - Home"/>
+    <img src="_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 2.0.0a1 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item"><a class="version-status" href="install.html" aria-label="Documentation version 2.0.0a1: installation instructions">2.0.0a1 · development</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api.html">
+    API reference
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="references.html">
+    References
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="#">
+    Contributing to PySTRA
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="references.html">
+    References
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    Contributing to PySTRA
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="development/distributions.html">Adding a distribution</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Contributing to PySTRA</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="contributing-to-pystra">
+<span id="develop-and-create-pull-request-pr"></span><span id="create-working-repository-with-developer-install"></span><span id="instructions-for-developers"></span><span id="pr"></span><span id="install-dev"></span><h1>Contributing to PySTRA<a class="headerlink" href="#contributing-to-pystra" title="Link to this heading">#</a></h1>
+<p>PySTRA implements traditional structural reliability methods and practical
+tools for code calibration and structural assessment. Contributions should
+make those methods easier to understand, verify, and use. General UQ features
+need a specific structural reliability use case to fit the project.</p>
+<p>This guide establishes the conventions for v2 onward. During the migration,
+target <code class="docutils literal notranslate"><span class="pre">v2.0</span></code> for breaking changes and follow the
+<a class="reference external" href="https://github.com/pystra/pystra/blob/v2.0/docs/v2.0-migration-plan.md">migration plan</a>. Existing code still contains
+legacy APIs: their presence is not a style precedent. Implement the agreed
+stage without introducing a second competing API. Changes intended for the
+stable line retain its compatibility requirements.</p>
+<section id="start-with-the-user-and-the-numerical-method">
+<h2>Start with the user and the numerical method<a class="headerlink" href="#start-with-the-user-and-the-numerical-method" title="Link to this heading">#</a></h2>
+<p>For a new method or substantial API change, include a short usage example,
+the problem it solves, its assumptions, and a reference case. Put the proposed
+contract in the PR before expanding the implementation. Routine fixes can
+proceed directly with focused evidence; a separate design document is not
+required for every change.</p>
+<p>Keep numerical changes, mechanical renaming, formatting, and file moves in
+separate commits wherever practical. Update the migration manifest/guide when
+an import, parameter, result schema, default, or supported extension hook changes.
+After 2.0, public API changes follow the documented deprecation and release policy.</p>
+</section>
+<section id="naming-and-public-interfaces">
+<h2>Naming and public interfaces<a class="headerlink" href="#naming-and-public-interfaces" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Use snake_case for functions, methods, parameters, attributes, and compound
+module names; CapWords for classes; UPPER_SNAKE_CASE for constants.</p></li>
+<li><p>Capitalise every letter of an acronym inside a CapWords class name. PEP 8
+(<em>Descriptive: Naming Styles</em>) states: “When using acronyms in CapWords,
+capitalize all the letters of the acronym. Thus HTTPServerError is better
+than HttpServerError.” This is a single rule applied uniformly, not a list
+of blessed exceptions: <code class="docutils literal notranslate"><span class="pre">FORM</span></code>, <code class="docutils literal notranslate"><span class="pre">SORM</span></code>, <code class="docutils literal notranslate"><span class="pre">SystemFORM</span></code>, <code class="docutils literal notranslate"><span class="pre">FBCProcess</span></code>, <code class="docutils literal notranslate"><span class="pre">DDO</span></code>,
+<code class="docutils literal notranslate"><span class="pre">DDOCriterion</span></code>, <code class="docutils literal notranslate"><span class="pre">LQI</span></code>, <code class="docutils literal notranslate"><span class="pre">SWTP</span></code>, <code class="docutils literal notranslate"><span class="pre">PCESurrogate</span></code>, <code class="docutils literal notranslate"><span class="pre">PCKrigingSurrogate</span></code>,
+<code class="docutils literal notranslate"><span class="pre">FBRLearning</span></code>.</p></li>
+<li><p>Name extreme-value distributions by family, not by type numeral: <code class="docutils literal notranslate"><span class="pre">Gumbel</span></code>,
+<code class="docutils literal notranslate"><span class="pre">GumbelMin</span></code>, <code class="docutils literal notranslate"><span class="pre">Frechet</span></code>, <code class="docutils literal notranslate"><span class="pre">Weibull</span></code>, <code class="docutils literal notranslate"><span class="pre">GEV</span></code>, <code class="docutils literal notranslate"><span class="pre">GEVMin</span></code>. The bare family name is the conventional
+flavour (maxima for Gumbel and Fréchet, minima for Weibull) and the opposite
+flavour takes a <code class="docutils literal notranslate"><span class="pre">Min</span></code> or <code class="docutils literal notranslate"><span class="pre">Max</span></code> suffix. Use ASCII in identifiers (<code class="docutils literal notranslate"><span class="pre">Frechet</span></code>)
+and give the Type I/II/III names in docstrings so users can find them.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ScipyDist</span></code> keeps its existing name and is not to be “corrected”. <code class="docutils literal notranslate"><span class="pre">GEVmax</span></code>
+is kept as a permanent alias for <code class="docutils literal notranslate"><span class="pre">GEV</span></code> — the one deliberate alias in the 2.0
+API.</p></li>
+<li><p>Functions, methods, variables, and modules stay lowercase/snake_case,
+including their acronyms — PEP 8’s rule governs CapWords only, so <code class="docutils literal notranslate"><span class="pre">run_form</span></code>
+and <code class="docutils literal notranslate"><span class="pre">pc_kriging.py</span></code> are correct as they stand.</p></li>
+<li><p>Prefer <code class="docutils literal notranslate"><span class="pre">std</span></code>, <code class="docutils literal notranslate"><span class="pre">start_point</span></code>, <code class="docutils literal notranslate"><span class="pre">limit_state</span></code>, <code class="docutils literal notranslate"><span class="pre">model</span></code>, <code class="docutils literal notranslate"><span class="pre">options</span></code>, <code class="docutils literal notranslate"><span class="pre">n_samples</span></code>,
+<code class="docutils literal notranslate"><span class="pre">max_iterations</span></code>, <code class="docutils literal notranslate"><span class="pre">failure_probability</span></code>, and <code class="docutils literal notranslate"><span class="pre">reference_period</span></code>. Use <code class="docutils literal notranslate"><span class="pre">analyze</span></code>
+in Python identifiers. Keep established <code class="docutils literal notranslate"><span class="pre">pdf</span></code>, <code class="docutils literal notranslate"><span class="pre">cdf</span></code>, <code class="docutils literal notranslate"><span class="pre">ppf</span></code>, <code class="docutils literal notranslate"><span class="pre">beta</span></code>, and <code class="docutils literal notranslate"><span class="pre">alpha</span></code>.</p></li>
+<li><p>Name quantities by meaning. Do not use pseudo-Hungarian container/type
+prefixes such as <code class="docutils literal notranslate"><span class="pre">dict_</span></code>, <code class="docutils literal notranslate"><span class="pre">list_</span></code>, or <code class="docutils literal notranslate"><span class="pre">arr_</span></code>, or compressed forms such as
+<code class="docutils literal notranslate"><span class="pre">dfXstarcal</span></code>. This applies to parameters, attributes, private
+helpers, and local variables throughout the codebase, not only public APIs.
+Use <code class="docutils literal notranslate"><span class="pre">nominal_values</span></code>, <code class="docutils literal notranslate"><span class="pre">design_points</span></code>, or <code class="docutils literal notranslate"><span class="pre">reliability_results</span></code> rather than
+<code class="docutils literal notranslate"><span class="pre">dict_nom</span></code>, <code class="docutils literal notranslate"><span class="pre">dfXstar</span></code>, or <code class="docutils literal notranslate"><span class="pre">list_form_obj</span></code>. Replace cryptic abbreviations with
+meaningful names; deleting the prefix alone is not sufficient. Express
+container types through type annotations. Conventional <code class="docutils literal notranslate"><span class="pre">df</span></code> or a readable
+name such as <code class="docutils literal notranslate"><span class="pre">factors_df</span></code> is acceptable for a local DataFrame in a short
+pandas operation when it aids clarity. Prefer semantic names for parameters,
+persistent attributes, and returned results. Judge meaning rather than
+banning words: <code class="docutils literal notranslate"><span class="pre">list_cases()</span></code> describes an operation, and <code class="docutils literal notranslate"><span class="pre">cut_sets</span></code> describes
+a reliability concept. These are different from naming a variable
+<code class="docutils literal notranslate"><span class="pre">list_cases</span></code> merely because its container happens to be a Python list.</p></li>
+<li><p>Mathematical local names such as <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">u</span></code>, and <code class="docutils literal notranslate"><span class="pre">rho</span></code> are appropriate near an
+equation. Preserve user-provided variable names and external API spellings;
+a limit-state argument <code class="docutils literal notranslate"><span class="pre">R</span></code> can remain <code class="docutils literal notranslate"><span class="pre">R</span></code> when it names the model variable.</p></li>
+<li><p>Use properties for cheap data access and verbs for operations. Prefer
+explicit coordinates to boolean switches such as <code class="docutils literal notranslate"><span class="pre">getDesignPoint(False)</span></code>.</p></li>
+<li><p>Make configuration keyword-only, validate it, and reject unknown settings.
+Avoid booleans or numeric flags that silently change a parameter’s meaning.</p></li>
+<li><p>Use explicit imports and deliberate <code class="docutils literal notranslate"><span class="pre">__all__</span></code> exports. Public signatures
+have type hints and NumPy-style docstrings covering shapes, units, defaults,
+assumptions, returns, and failure behavior. Mark internal helpers with <code class="docutils literal notranslate"><span class="pre">_</span></code>.</p></li>
+</ul>
+</section>
+<section id="keep-computation-and-state-understandable">
+<h2>Keep computation and state understandable<a class="headerlink" href="#keep-computation-and-state-understandable" title="Link to this heading">#</a></h2>
+<p>Models describe a problem; algorithms execute; results record what happened;
+reporting presents those results. Constructors must not start an analysis.
+Use explicit inputs and returned results rather than a sequence of methods
+that populate attributes needed by later methods. Snapshot results so a later
+run cannot change an earlier result.</p>
+<p>Prefer small functions for numerical operations and small data objects for
+specifications/results. Add a class when it owns a coherent responsibility.
+Use composition and narrow interfaces where substitution is actually needed;
+avoid deep inheritance trees, general registries, and speculative abstractions.</p>
+<p>Keep arrays and explicit variable/case metadata in numerical kernels. DataFrame
+conversion and plotting belong at the boundary. Do not use mutable tables as
+hidden communication between solver stages. Return figures/axes without
+implicitly displaying them, and return summaries rather than printing during
+computation. Diagnostics can use logging or an explicit progress callback.</p>
+<p>Do not mutate caller-owned models, mappings, arrays, or distributions while
+iterating candidate designs. Keep caches, evaluation counts, and random state
+local to the run, with documented invalidation and RNG ownership.</p>
+<p>For code calibration, prioritize the normalized workflow: candidate factors,
+code designs, reliability evaluation, and comparison against targets. Keep
+probability models separate from factor sets. The specialized inverse workflow
+uses the separate <code class="docutils literal notranslate"><span class="pre">solve_designs</span></code>, <code class="docutils literal notranslate"><span class="pre">derive_factors</span></code>, <code class="docutils literal notranslate"><span class="pre">select_factors</span></code>,
+<code class="docutils literal notranslate"><span class="pre">design_with_factors</span></code> and <code class="docutils literal notranslate"><span class="pre">verify_designs</span></code> operations documented in the
+<a class="reference external" href="https://github.com/pystra/pystra/blob/v2.0/docs/source/migrating.rst">migration guide</a>; do not force all code studies through it.
+Preserve governing-case information and numerical diagnostics. A convenience
+runner composes operations; it does not duplicate them.</p>
+</section>
+<section id="numerical-contracts-and-evidence">
+<h2>Numerical contracts and evidence<a class="headerlink" href="#numerical-contracts-and-evidence" title="Link to this heading">#</a></h2>
+<p>Document coordinate systems, Jacobian direction, variable ordering, failure
+event convention, and reference-period assumptions. Use the agreed 2.0 point
+and batch shapes at public boundaries; adapt existing kernels explicitly during
+migration. Never infer array orientation from a square shape.</p>
+<p>Distinguish estimates, approximations, bounds, and diagnostics. State what
+event a bound applies to. Check the capabilities required by each algorithm;
+unsupported inputs or transformations must fail clearly. Nonconvergence,
+unattainable calibration targets, and sampling-budget termination must remain
+visible to callers. They must not become a zero failure probability or a
+previous run’s successful result.</p>
+<p>Use local random generators and explicit seeds for reproducible examples.
+Specify the numerical environment and statistical tolerance when necessary.
+Prefer published or analytic reference cases and mathematical invariants over
+tests that merely repeat the implementation. For a bug, add a focused regression
+case; for a method, test its assumptions and meaningful failure modes as well
+as a successful example. Explain intentional changes to baseline values.</p>
+<p>Preserve original references and attribution when extracting or reorganizing
+existing methods. Review code against the shared project conventions and
+numerical evidence, rather than a contributor’s personal style.</p>
+</section>
+<section id="local-workflow-and-pull-requests">
+<h2>Local workflow and pull requests<a class="headerlink" href="#local-workflow-and-pull-requests" title="Link to this heading">#</a></h2>
+<p>Create a feature branch from the current integration branch. Install in a
+virtual environment. Use Python 3.13 for the documentation/formatting tools;
+the runtime test matrix covers Python 3.12 and 3.13:</p>
+<p>For a new conda environment, install Python and Pandoc first. Run the package
+commands from your checkout of <code class="docutils literal notranslate"><span class="pre">v2.0</span></code> (or a feature branch based on it):</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>pystra2.0<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.13<span class="w"> </span>pandoc
+conda<span class="w"> </span>activate<span class="w"> </span>pystra2.0
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s1">'.[test,docs,al]'</span>
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">black</span><span class="o">==</span><span class="m">26</span>.5.1
+python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>-q
+</pre></div>
+</div>
+<p>Run Black on changed Python files and include formatting in the appropriate
+commit. Black remains the formatter during migration. Run
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">scripts/api_inventory.py</span> <span class="pre">--check-names</span> <span class="pre">--check-migration</span></code> for naming,
+baseline API coverage, and current calibration signature checks. After changing
+the migration records or the top-level namespace, run
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">scripts/generate_signposts.py</span></code>; the tests check that the signposts are
+current. Update the
+reviewed migration records alongside contract changes; historical naming maps
+are not the current calibration API. Remaining attribute/parameter cleanup and
+import enforcement remain later stages; existing legacy fields are not a precedent for new code.
+CI also executes every indexed tutorial using <code class="docutils literal notranslate"><span class="pre">scripts/execute_notebooks.py</span></code>.</p>
+<p>From <code class="docutils literal notranslate"><span class="pre">docs</span></code>, run:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>html<span class="w"> </span><span class="nv">SPHINXOPTS</span><span class="o">=</span><span class="s2">"-W --keep-going"</span>
+python<span class="w"> </span>../scripts/check_docs.py<span class="w"> </span>build/html
+python<span class="w"> </span>-m<span class="w"> </span>sphinx<span class="w"> </span>-b<span class="w"> </span>doctest<span class="w"> </span>-W<span class="w"> </span>-D<span class="w"> </span><span class="nv">nbsphinx_execute</span><span class="o">=</span>never<span class="w"> </span><span class="nb">source</span><span class="w"> </span>build/doctest
+</pre></div>
+</div>
+<p>Sphinx executes new or edited notebooks and caches the rendered results.
+Changes to PySTRA source, notebook helper modules, the Python interpreter or
+installed dependency versions invalidate all notebook results. A first build
+therefore runs every tutorial. Use <code class="docutils literal notranslate"><span class="pre">-E</span></code> for an explicitly fresh build.</p>
+<p>To render saved outputs after separately executing the tutorials, use
+<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span> <span class="pre">SPHINXOPTS=&quot;-W</span> <span class="pre">--keep-going</span> <span class="pre">-D</span> <span class="pre">nbsphinx_execute=never&quot;</span></code>. This explicit
+shortcut does not validate notebook execution.</p>
+<p>When changing notebook code or APIs used by a notebook, execute the affected
+notebooks and inspect their outputs before building. From the repository root,
+for example:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>scripts/execute_notebooks.py<span class="w"> </span>ex_active_extensions<span class="w"> </span>--output-dir<span class="w"> </span>docs/source/notebooks
+</pre></div>
+</div>
+<p>Omit the notebook name to execute all tutorials in the nested tutorial index,
+as CI does. Add each notebook to exactly one category page under
+<code class="docutils literal notranslate"><span class="pre">docs/source/tutorials/</span></code>; add ordinary links for other discovery routes.
+Provide <code class="docutils literal notranslate"><span class="pre">pystra</span></code> notebook metadata with <code class="docutils literal notranslate"><span class="pre">dependencies</span></code> (<code class="docutils literal notranslate"><span class="pre">core</span></code> or <code class="docutils literal notranslate"><span class="pre">al</span></code>) and
+<code class="docutils literal notranslate"><span class="pre">support_files</span></code> (helper filenames, or an empty list). Put related guide, API and
+theory links in the final Markdown cell. For each code cell producing figures,
+set <code class="docutils literal notranslate"><span class="pre">metadata.pystra.figure_alts</span></code> to a list of descriptive strings in image-output
+order. Add a visible Markdown caption after that cell so the explanation is
+also available when the notebook is opened in Jupyter. The local Sphinx
+extension uses those alternatives and creates runnable download bundles.
+New methods should include a short runnable
+example and theory/reference documentation. Keep optional external-solver or
+network-dependent examples identifiable with their required environment.</p>
+<p>Tutorials use sentence-case titles, a short purpose and prerequisites, explicit
+problem assumptions, runnable code, and interpretation of the results. Use
+<code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">pystra</span> <span class="pre">as</span> <span class="pre">ra</span></code>, Black formatting, explicit seeds for stochastic examples
+and the shared plotting helpers for common reliability figures. Keep benchmark
+attribution and distinguish independent reference probabilities from method
+approximations. Install the project into the environment; do not add repository
+path-search boilerplate to notebooks.</p>
+<p>PRs should state the concrete behavior change, API impact, numerical evidence,
+and relevant validation commands/results. Identify skipped checks and known
+limitations. Use the PR template as a review aid, applying only relevant items.
+Avoid unrelated formatting or dependency churn. Maintainers handle release
+version bumps; ordinary contributions should not bump the package version.</p>
+<p>The migration plan defines the broader release matrix, benchmark comparisons,
+packaging checks, and documentation gates. Small documentation edits do not
+require rerunning the entire numerical suite.</p>
+</section>
+<section id="licence-and-method-provenance">
+<h2>Licence and method provenance<a class="headerlink" href="#licence-and-method-provenance" title="Link to this heading">#</a></h2>
+<p>PySTRA is GPL-3.0-or-later. Preserve copyright and licence notices when adapting
+code, and identify its source and changes. Cite the original papers and benchmark
+definitions; distinguish reproductions from variants and software comparisons.
+Do not imply endorsement by the cited authors or toolbox developers. Include
+independent reference calculations and explicit statistical tolerances for
+stochastic methods. Run optional active-learning checks with <code class="docutils literal notranslate"><span class="pre">.[test,al]</span></code>.</p>
+</section>
+<section id="extension-recipes">
+<h2>Extension recipes<a class="headerlink" href="#extension-recipes" title="Link to this heading">#</a></h2>
+<p>The <a class="reference external" href="https://github.com/pystra/pystra/blob/v2.0/docs/source/development/distributions.rst">distribution recipe</a>
+covers distribution construction and sensitivity hooks. The conventions above
+apply to all contributions.</p>
+</section>
+</section>
+<p id="verifying-your-distribution"><span id="analytical-cdf-derivatives-optional"></span><span id="declaring-sensitivity-parameters"></span><span id="extra-constructor-arguments-ctor-kwargs"></span><span id="adding-a-new-distribution"></span><span id="adding-distributions"></span>The distribution-extension instructions are now collected in
+<a class="reference internal" href="development/distributions.html"><span class="doc">Adding a distribution</span></a>.</p>
+<div class="toctree-wrapper compound">
+</div>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="citing.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Citing PySTRA and its methods</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="development/distributions.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Adding a distribution</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#start-with-the-user-and-the-numerical-method">Start with the user and the numerical method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#naming-and-public-interfaces">Naming and public interfaces</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#keep-computation-and-state-understandable">Keep computation and state understandable</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#numerical-contracts-and-evidence">Numerical contracts and evidence</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#local-workflow-and-pull-requests">Local workflow and pull requests</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#licence-and-method-provenance">Licence and method provenance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extension-recipes">Extension recipes</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/pystra/pystra/edit/v2.0/docs/source/developer.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2021-2026, The PySTRA Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><nav aria-label="Project links" class="project-links">
+  <a href="migrating.html">Migration</a>
+  <a href="citing.html">Cite PySTRA</a>
+  <a href="#">Contributing</a>
+  <a href="https://pystra.github.io/pystra/">Stable 1.x documentation</a>
+</nav></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

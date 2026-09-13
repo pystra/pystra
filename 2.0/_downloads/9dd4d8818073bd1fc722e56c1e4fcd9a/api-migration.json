@@ -1,0 +1,4517 @@
+{
+  "schema_version": 2,
+  "baseline_revision": "69dd5f0625bbf36822c7d7db3f0685d3da299367",
+  "scope": "All baseline definitions through the v2 naming and module migration, calibration replacement, and stage-4 options/results/error contracts. Null current names mark removal/replacement, not an automatic rename. Replacement operations can require rewritten inputs. See calibration-structure-map.json for calibration signatures and fields, and the migration guide for the September 2026 runtime hardening. Private inventory entries are not supported public APIs.",
+  "definitions": [
+    {
+      "old": "pystra.analysis.AnalysisObject",
+      "current": "pystra.reliability.analysis.AnalysisObject",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.analysis.AnalysisObject.__init__",
+      "current": "pystra.reliability.analysis.AnalysisObject.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.analysis.AnalysisObject.init_run",
+      "current": "pystra.reliability.analysis.AnalysisObject.init_run",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions",
+      "current": null,
+      "kind": "class",
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions",
+        "pystra.options.SORMOptions",
+        "pystra.options.SimulationOptions"
+      ],
+      "notes": "Split into frozen settings for FORM, SORM and simulation."
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.__init__",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "AnalysisOptions is replaced by the options classes."
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.getPrintOutput",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "Analyses no longer print; each result has summary()."
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.getFlagSens",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "Unused setting."
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.getMultiProc",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "Unused setting."
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.getBlockSize",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions",
+        "pystra.options.SimulationOptions"
+      ],
+      "notes": "block_size in FORMOptions and SimulationOptions"
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.getImax",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions"
+      ],
+      "notes": "FORMOptions.max_iterations"
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.getE1",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions"
+      ],
+      "notes": "FORMOptions.limit_state_tolerance"
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.getE2",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions"
+      ],
+      "notes": "FORMOptions.gradient_tolerance"
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.getStepSize",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions"
+      ],
+      "notes": "FORMOptions.step_size"
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.getDiffMode",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions"
+      ],
+      "notes": "FORMOptions.differentiation"
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.getffdpara",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions"
+      ],
+      "notes": "FORMOptions.ffd_parameter"
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.getSamples",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.SimulationOptions"
+      ],
+      "notes": "SimulationOptions.n_samples"
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.getRandomGenerator",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "Unused setting; randomness is controlled by rng."
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.getSimulationPoint",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "Unused setting."
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.getSimulationStdv",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.SimulationOptions"
+      ],
+      "notes": "SimulationOptions.sampling_std"
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.getSimulationCov",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.SimulationOptions"
+      ],
+      "notes": "SimulationOptions.target_cov"
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.getTransform",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions",
+        "pystra.options.SimulationOptions"
+      ],
+      "notes": "transform in FORMOptions and SimulationOptions"
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.setPrintOutput",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "Analyses no longer print; each result has summary()."
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.setMultiProc",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "Unused setting."
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.setBlockSize",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions",
+        "pystra.options.SimulationOptions"
+      ],
+      "notes": "block_size in FORMOptions and SimulationOptions"
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.setImax",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions"
+      ],
+      "notes": "FORMOptions.max_iterations"
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.setE1",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions"
+      ],
+      "notes": "FORMOptions.limit_state_tolerance"
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.setE2",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions"
+      ],
+      "notes": "FORMOptions.gradient_tolerance"
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.setStepSize",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions"
+      ],
+      "notes": "FORMOptions.step_size"
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.setDiffMode",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions"
+      ],
+      "notes": "FORMOptions.differentiation"
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.setffdpara",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions"
+      ],
+      "notes": "FORMOptions.ffd_parameter"
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.setBins",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.SimulationOptions"
+      ],
+      "notes": "SimulationOptions.bins"
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.setSamples",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.SimulationOptions"
+      ],
+      "notes": "SimulationOptions.n_samples"
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.setTransform",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions",
+        "pystra.options.SimulationOptions"
+      ],
+      "notes": "transform in FORMOptions and SimulationOptions"
+    },
+    {
+      "old": "pystra.analysis.AnalysisOptions.setRosenblattOrder",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.options.FORMOptions",
+        "pystra.options.SimulationOptions"
+      ],
+      "notes": "rosenblatt_order in FORMOptions and SimulationOptions"
+    },
+    {
+      "old": "pystra.calibration.Calibration",
+      "current": null,
+      "kind": "class",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.FactorCalibrationProblem",
+        "pystra.calibration.factors.solve_designs",
+        "pystra.calibration.factors.derive_factors",
+        "pystra.calibration.factors.select_factors",
+        "pystra.calibration.factors.design_with_factors",
+        "pystra.calibration.factors.verify_designs"
+      ]
+    },
+    {
+      "old": "pystra.calibration.Calibration.__init__",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.FactorCalibrationProblem"
+      ]
+    },
+    {
+      "old": "pystra.calibration.Calibration._print_form_results",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.TargetDesigns.to_frame",
+        "pystra.calibration.factors.FactorSet.to_frame"
+      ]
+    },
+    {
+      "old": "pystra.calibration.Calibration._get_missing_element",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API."
+    },
+    {
+      "old": "pystra.calibration.Calibration._set_labels",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API."
+    },
+    {
+      "old": "pystra.calibration.Calibration.calc_lsf_eval_df",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API."
+    },
+    {
+      "old": "pystra.calibration.Calibration._calibration_optimize",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.solve_designs"
+      ]
+    },
+    {
+      "old": "pystra.calibration.Calibration._calibration_alpha",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.solve_designs"
+      ]
+    },
+    {
+      "old": "pystra.calibration.Calibration.calc_design_param_Xst",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.FactorCalibrationProblem.design_from_point"
+      ]
+    },
+    {
+      "old": "pystra.calibration.Calibration._get_df_Xstar",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.TargetDesigns.to_frame"
+      ]
+    },
+    {
+      "old": "pystra.calibration.Calibration._get_df_Xstar_labels",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.TargetDesigns.to_frame"
+      ]
+    },
+    {
+      "old": "pystra.calibration.Calibration.run",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.FactorCalibrationProblem",
+        "pystra.calibration.factors.solve_designs",
+        "pystra.calibration.factors.derive_factors",
+        "pystra.calibration.factors.select_factors",
+        "pystra.calibration.factors.design_with_factors",
+        "pystra.calibration.factors.verify_designs"
+      ]
+    },
+    {
+      "old": "pystra.calibration.Calibration._run_calibration",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.solve_designs"
+      ]
+    },
+    {
+      "old": "pystra.calibration.Calibration._estimate_factors_coeff",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.derive_factors"
+      ]
+    },
+    {
+      "old": "pystra.calibration.Calibration.get_psi_max",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.select_factors"
+      ]
+    },
+    {
+      "old": "pystra.calibration.Calibration._calibrate_design_param",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.solve_designs"
+      ]
+    },
+    {
+      "old": "pystra.calibration.Calibration._estimate_factors_matrix",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.derive_factors"
+      ]
+    },
+    {
+      "old": "pystra.calibration.Calibration.calc_pg_coeff",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.derive_factors"
+      ]
+    },
+    {
+      "old": "pystra.calibration.Calibration.calc_Xst_nom",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.derive_factors"
+      ]
+    },
+    {
+      "old": "pystra.calibration.Calibration.calc_phi",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.derive_factors"
+      ]
+    },
+    {
+      "old": "pystra.calibration.Calibration.get_phi_min",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.select_factors"
+      ]
+    },
+    {
+      "old": "pystra.calibration.Calibration.calc_gamma",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.derive_factors"
+      ]
+    },
+    {
+      "old": "pystra.calibration.Calibration.calc_pg_matrix",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.derive_factors"
+      ]
+    },
+    {
+      "old": "pystra.calibration.Calibration.calc_phiRz_egS_vect",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.derive_factors"
+      ]
+    },
+    {
+      "old": "pystra.calibration.Calibration.calc_epgS_mat",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.derive_factors"
+      ]
+    },
+    {
+      "old": "pystra.calibration.Calibration._get_psi_row_mat",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.derive_factors"
+      ]
+    },
+    {
+      "old": "pystra.calibration.Calibration.calc_beta_design_param",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.verify_designs"
+      ]
+    },
+    {
+      "old": "pystra.calibration.Calibration.calc_df_pgRS",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API."
+    },
+    {
+      "old": "pystra.calibration.Calibration.get_design_param_factor",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.design_with_factors"
+      ]
+    },
+    {
+      "old": "pystra.calibration.Calibration.print_detailed_output",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Stateful Calibration and table-coordination helpers are removed. Replacement operations use explicit inputs/results; private term isolation is not a general limit-state API.",
+      "replacements": [
+        "pystra.calibration.factors.TargetDesigns.to_frame",
+        "pystra.calibration.factors.FactorSet.to_frame"
+      ]
+    },
+    {
+      "old": "pystra.calibration.GenericModel",
+      "current": "pystra.calibration.normalized.NormalizedReliabilityModel",
+      "kind": "class",
+      "status": "changed_contract",
+      "notes": "Still exported from pystra.calibration; explicit constructor inputs replace setters."
+    },
+    {
+      "old": "pystra.calibration.GenericModel.__init__",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Construct explicit model/factor/nominal records; use named fields instead of mutation or a positional tuple.",
+      "replacements": [
+        "pystra.calibration.normalized.NormalizedReliabilityModel"
+      ]
+    },
+    {
+      "old": "pystra.calibration.GenericModel.set_factors",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Construct explicit model/factor/nominal records; use named fields instead of mutation or a positional tuple.",
+      "replacements": [
+        "pystra.calibration.normalized.CodeFactors"
+      ]
+    },
+    {
+      "old": "pystra.calibration.GenericModel.set_distributions",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Construct explicit model/factor/nominal records; use named fields instead of mutation or a positional tuple.",
+      "replacements": [
+        "pystra.calibration.normalized.NormalizedReliabilityModel"
+      ]
+    },
+    {
+      "old": "pystra.calibration.GenericModel.set_nominals",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Construct explicit model/factor/nominal records; use named fields instead of mutation or a positional tuple.",
+      "replacements": [
+        "pystra.calibration.normalized.NominalValues"
+      ]
+    },
+    {
+      "old": "pystra.calibration.GenericModel.set_model_errors",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Construct explicit model/factor/nominal records; use named fields instead of mutation or a positional tuple.",
+      "replacements": [
+        "pystra.calibration.normalized.NormalizedReliabilityModel"
+      ]
+    },
+    {
+      "old": "pystra.calibration.GenericModel.set_resistance_params",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Construct explicit model/factor/nominal records; use named fields instead of mutation or a positional tuple.",
+      "replacements": [
+        "pystra.calibration.normalized.NormalizedReliabilityModel"
+      ]
+    },
+    {
+      "old": "pystra.calibration.GenericModel.set_dead_params",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Construct explicit model/factor/nominal records; use named fields instead of mutation or a positional tuple.",
+      "replacements": [
+        "pystra.calibration.normalized.NormalizedReliabilityModel"
+      ]
+    },
+    {
+      "old": "pystra.calibration.GenericModel.set_permanent_params",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Construct explicit model/factor/nominal records; use named fields instead of mutation or a positional tuple.",
+      "replacements": [
+        "pystra.calibration.normalized.NormalizedReliabilityModel"
+      ]
+    },
+    {
+      "old": "pystra.calibration.GenericModel.set_live_params",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Construct explicit model/factor/nominal records; use named fields instead of mutation or a positional tuple.",
+      "replacements": [
+        "pystra.calibration.normalized.NormalizedReliabilityModel"
+      ]
+    },
+    {
+      "old": "pystra.calibration.GenericModel.get",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Construct explicit model/factor/nominal records; use named fields instead of mutation or a positional tuple.",
+      "replacements": [
+        "pystra.calibration.normalized.NormalizedReliabilityModel"
+      ]
+    },
+    {
+      "old": "pystra.calibration.GenericCalibration",
+      "current": "pystra.calibration.normalized.CodeCalibration",
+      "kind": "class",
+      "status": "changed_contract",
+      "notes": "Still exported from pystra.calibration; explicit ratio grids and model/factor inputs. See structure map."
+    },
+    {
+      "old": "pystra.calibration.GenericCalibration.__init__",
+      "current": "pystra.calibration.normalized.CodeCalibration.__init__",
+      "kind": "callable",
+      "status": "changed_contract",
+      "notes": "Still exported from pystra.calibration; explicit ratio grids and model/factor inputs. See structure map."
+    },
+    {
+      "old": "pystra.calibration.GenericCalibration.add_model",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "No registration/cache; pass model and factors to run. Styling belongs to the plotting adapter. The normalized limit state is internal.",
+      "replacements": [
+        "pystra.calibration.normalized.CodeCalibration.run",
+        "pystra.calibration.normalized.CodeCalibrationResult"
+      ]
+    },
+    {
+      "old": "pystra.calibration.GenericCalibration.lsf",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "No registration/cache; pass model and factors to run. Styling belongs to the plotting adapter. The normalized limit state is internal."
+    },
+    {
+      "old": "pystra.calibration.GenericCalibration.design",
+      "current": "pystra.calibration.normalized.CodeCalibration.design",
+      "kind": "callable",
+      "status": "changed_contract",
+      "notes": "Still exported from pystra.calibration; explicit ratio grids and model/factor inputs. See structure map."
+    },
+    {
+      "old": "pystra.calibration.GenericCalibration.analyse_design",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "No registration/cache; pass model and factors to run. Styling belongs to the plotting adapter. The normalized limit state is internal.",
+      "replacements": [
+        "pystra.calibration.normalized.CodeCalibration.run",
+        "pystra.calibration.normalized.CodeCalibrationResult"
+      ]
+    },
+    {
+      "old": "pystra.calibration.GenericCalibration.get_reliabilities",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "No registration/cache; pass model and factors to run. Styling belongs to the plotting adapter. The normalized limit state is internal.",
+      "replacements": [
+        "pystra.calibration.normalized.CodeCalibration.run",
+        "pystra.calibration.normalized.CodeCalibrationResult"
+      ]
+    },
+    {
+      "old": "pystra.calibration.GenericCalibration.analyse",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "No registration/cache; pass model and factors to run. Styling belongs to the plotting adapter. The normalized limit state is internal.",
+      "replacements": [
+        "pystra.calibration.normalized.CodeCalibration.run",
+        "pystra.calibration.normalized.CodeCalibrationResult"
+      ]
+    },
+    {
+      "old": "pystra.calibration.GenericCalibration.add_range",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "No registration/cache; pass model and factors to run. Styling belongs to the plotting adapter. The normalized limit state is internal.",
+      "replacements": [
+        "pystra.calibration.plotting.plot_calibration"
+      ]
+    },
+    {
+      "old": "pystra.calibration.GenericCalibration.plot_region",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "No registration/cache; pass model and factors to run. Styling belongs to the plotting adapter. The normalized limit state is internal.",
+      "replacements": [
+        "pystra.calibration.plotting.plot_calibration"
+      ]
+    },
+    {
+      "old": "pystra.calibration.GenericCalibration.beta_region_plot",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "No registration/cache; pass model and factors to run. Styling belongs to the plotting adapter. The normalized limit state is internal.",
+      "replacements": [
+        "pystra.calibration.plotting.plot_calibration"
+      ]
+    },
+    {
+      "old": "pystra.calibration.GenericCalibration.plot",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "No registration/cache; pass model and factors to run. Styling belongs to the plotting adapter. The normalized limit state is internal.",
+      "replacements": [
+        "pystra.calibration.plotting.plot_calibration"
+      ]
+    },
+    {
+      "old": "pystra.cholesky_sensitivity.cholesky_with_derivative",
+      "current": "pystra._numerics.cholesky_sensitivity.cholesky_with_derivative",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.cholesky_sensitivity.dinvL0_dtheta",
+      "current": "pystra._numerics.cholesky_sensitivity.inverse_cholesky_gradient",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.copula._points",
+      "current": "pystra.dependence.copula._points",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula._order",
+      "current": "pystra.dependence.copula._order",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula._sample_size",
+      "current": "pystra.dependence.copula._sample_size",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.Copula",
+      "current": "pystra.dependence.copula.Copula",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.Copula.pdf",
+      "current": "pystra.dependence.copula.Copula.pdf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.Copula.rvs",
+      "current": "pystra.dependence.copula.Copula.rvs",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.GaussianCopula",
+      "current": "pystra.dependence.copula.GaussianCopula",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.GaussianCopula.__init__",
+      "current": "pystra.dependence.copula.GaussianCopula.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.GaussianCopula.correlation",
+      "current": "pystra.dependence.copula.GaussianCopula.correlation",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.GaussianCopula.kendall_tau",
+      "current": "pystra.dependence.copula.GaussianCopula.kendall_tau",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.GaussianCopula.from_kendall_tau",
+      "current": "pystra.dependence.copula.GaussianCopula.from_kendall_tau",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.GaussianCopula.logpdf",
+      "current": "pystra.dependence.copula.GaussianCopula.logpdf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.GaussianCopula.cdf",
+      "current": "pystra.dependence.copula.GaussianCopula.cdf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.GaussianCopula.rosenblatt",
+      "current": "pystra.dependence.copula.GaussianCopula.rosenblatt",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.GaussianCopula.inverse_rosenblatt",
+      "current": "pystra.dependence.copula.GaussianCopula.inverse_rosenblatt",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.IndependentCopula",
+      "current": "pystra.dependence.copula.IndependentCopula",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.IndependentCopula.__init__",
+      "current": "pystra.dependence.copula.IndependentCopula.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.IndependentCopula.cdf",
+      "current": "pystra.dependence.copula.IndependentCopula.cdf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.IndependentCopula.from_kendall_tau",
+      "current": "pystra.dependence.copula.IndependentCopula.from_kendall_tau",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.StudentTCopula",
+      "current": "pystra.dependence.copula.StudentTCopula",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.StudentTCopula.__init__",
+      "current": "pystra.dependence.copula.StudentTCopula.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.StudentTCopula.logpdf",
+      "current": "pystra.dependence.copula.StudentTCopula.logpdf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.StudentTCopula.cdf",
+      "current": "pystra.dependence.copula.StudentTCopula.cdf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.StudentTCopula.rosenblatt",
+      "current": "pystra.dependence.copula.StudentTCopula.rosenblatt",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.StudentTCopula.inverse_rosenblatt",
+      "current": "pystra.dependence.copula.StudentTCopula.inverse_rosenblatt",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.FrankCopula",
+      "current": "pystra.dependence.copula.FrankCopula",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.FrankCopula.__init__",
+      "current": "pystra.dependence.copula.FrankCopula.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.FrankCopula.cdf",
+      "current": "pystra.dependence.copula.FrankCopula.cdf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.FrankCopula._denominator",
+      "current": "pystra.dependence.copula.FrankCopula._denominator",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.FrankCopula.logpdf",
+      "current": "pystra.dependence.copula.FrankCopula.logpdf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.FrankCopula.rosenblatt",
+      "current": "pystra.dependence.copula.FrankCopula.rosenblatt",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.copula.FrankCopula.inverse_rosenblatt",
+      "current": "pystra.dependence.copula.FrankCopula.inverse_rosenblatt",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.correlation.CorrelationMatrix",
+      "current": "pystra.dependence.correlation.CorrelationMatrix",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.correlation.CorrelationMatrix.__init__",
+      "current": "pystra.dependence.correlation.CorrelationMatrix.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.correlation.CorrelationMatrix.__repr__",
+      "current": "pystra.dependence.correlation.CorrelationMatrix.__repr__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.correlation.CorrelationMatrix.__getitem__",
+      "current": "pystra.dependence.correlation.CorrelationMatrix.__getitem__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.correlation.CorrelationMatrix.__setitem__",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "CorrelationMatrix is validated and read-only; build a new matrix."
+    },
+    {
+      "old": "pystra.correlation.CorrelationMatrix.getMatrix",
+      "current": "pystra.dependence.correlation.CorrelationMatrix.get_matrix",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.correlation.computeModifiedCorrelationMatrix",
+      "current": "pystra.dependence.correlation.compute_modified_correlation_matrix",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.correlation.absoluteIntegralValue",
+      "current": "pystra.dependence.correlation.absolute_integral_value",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.correlation.setModifiedCorrelationMatrix",
+      "current": "pystra.dependence.correlation.set_modified_correlation_matrix",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.ddo.SWTPIndexRecord",
+      "current": "pystra.decision.ddo.SWTPIndexRecord",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.SWTPRecord",
+      "current": "pystra.decision.ddo.SWTPRecord",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.SWTPRecord.value_million",
+      "current": "pystra.decision.ddo.SWTPRecord.value_million",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo._record",
+      "current": "pystra.decision.ddo._record",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo._index",
+      "current": "pystra.decision.ddo._index",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo._normalise_country_code",
+      "current": "pystra.decision.ddo._normalise_country_code",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo._index_table",
+      "current": "pystra.decision.ddo._index_table",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.get_swtp_index_record",
+      "current": "pystra.decision.ddo.get_swtp_index_record",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.get_swtp_record",
+      "current": "pystra.decision.ddo.get_swtp_record",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.index_swtp_record",
+      "current": "pystra.decision.ddo.index_swtp_record",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.get_swtp",
+      "current": "pystra.decision.ddo.get_swtp",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.swtp_table",
+      "current": "pystra.decision.ddo.swtp_table",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.SWTP",
+      "current": "pystra.decision.ddo.SWTP",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.SWTP.__post_init__",
+      "current": "pystra.decision.ddo.SWTP.__post_init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.SWTP.from_country",
+      "current": "pystra.decision.ddo.SWTP.from_country",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.SWTP.from_lqi",
+      "current": "pystra.decision.ddo.SWTP.from_lqi",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.SWTP.for_lives",
+      "current": "pystra.decision.ddo.SWTP.for_lives",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.FatalityConsequence",
+      "current": "pystra.decision.ddo.FatalityConsequence",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.FatalityConsequence.__post_init__",
+      "current": "pystra.decision.ddo.FatalityConsequence.__post_init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.FatalityConsequence.expected_fatalities_given_failure",
+      "current": "pystra.decision.ddo.FatalityConsequence.expected_fatalities_given_failure",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.TargetReliability",
+      "current": "pystra.decision.ddo.TargetReliability",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.TargetReliability.__post_init__",
+      "current": "pystra.decision.ddo.TargetReliability.__post_init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.TargetReliability.to_dict",
+      "current": "pystra.decision.ddo.TargetReliability.to_dict",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.TargetReliability.for_period",
+      "current": "pystra.decision.ddo.TargetReliability.for_period",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.RiskResult",
+      "current": "pystra.decision.ddo.RiskResult",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.RiskResult.__post_init__",
+      "current": "pystra.decision.ddo.RiskResult.__post_init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.RiskResult.from_scenarios",
+      "current": "pystra.decision.ddo.RiskResult.from_scenarios",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.RiskResult.beta",
+      "current": "pystra.decision.ddo.RiskResult.beta",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.RiskResult.getFailure",
+      "current": "pystra.decision.ddo.RiskResult.get_failure",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.ddo.RiskResult.getBeta",
+      "current": "pystra.decision.ddo.RiskResult.get_beta",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.ddo.RiskResult.life_safety_cost",
+      "current": "pystra.decision.ddo.RiskResult.life_safety_cost",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.RiskResult.total_risk_cost",
+      "current": "pystra.decision.ddo.RiskResult.total_risk_cost",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.RiskResult.to_dict",
+      "current": "pystra.decision.ddo.RiskResult.to_dict",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.ScenarioRiskModel",
+      "current": "pystra.decision.ddo.ScenarioRiskModel",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.ScenarioRiskModel.evaluate",
+      "current": "pystra.decision.ddo.ScenarioRiskModel.evaluate",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.lqi_k1",
+      "current": "pystra.decision.ddo.lqi_k1",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo._swtp_value",
+      "current": "pystra.decision.ddo._swtp_value",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo._as_scalar_or_array",
+      "current": "pystra.decision.ddo._as_scalar_or_array",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo._beta_from_failure_probability",
+      "current": "pystra.decision.ddo._beta_from_failure_probability",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.lognormal_ratio_failure_probability",
+      "current": "pystra.decision.ddo.lognormal_ratio_failure_probability",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.TargetReliabilityCalibration",
+      "current": "pystra.decision.ddo.TargetReliabilityCalibration",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.TargetReliabilityCalibration.run",
+      "current": "pystra.decision.ddo.TargetReliabilityCalibration.run",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.RackwitzTargetModel",
+      "current": "pystra.decision.ddo.RackwitzTargetModel",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.RackwitzTargetModel.__post_init__",
+      "current": "pystra.decision.ddo.RackwitzTargetModel.__post_init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.RackwitzTargetModel.metadata",
+      "current": "pystra.decision.ddo.RackwitzTargetModel.metadata",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.RackwitzTargetModel.construction_cost",
+      "current": "pystra.decision.ddo.RackwitzTargetModel.construction_cost",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.RackwitzTargetModel.failure_probability",
+      "current": "pystra.decision.ddo.RackwitzTargetModel.failure_probability",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.RackwitzTargetModel.serviceability_probability",
+      "current": "pystra.decision.ddo.RackwitzTargetModel.serviceability_probability",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.RackwitzTargetModel.objective",
+      "current": "pystra.decision.ddo.RackwitzTargetModel.objective",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.RackwitzTargetModel.calibration",
+      "current": "pystra.decision.ddo.RackwitzTargetModel.calibration",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.RackwitzTargetModel.calibrate",
+      "current": "pystra.decision.ddo.RackwitzTargetModel.calibrate",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.RackwitzTargetModel.table",
+      "current": "pystra.decision.ddo.RackwitzTargetModel.table",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.derive_lqi_target",
+      "current": "pystra.decision.ddo.derive_lqi_target",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.rackwitz_table",
+      "current": "pystra.decision.ddo.rackwitz_table",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.jcss_lqi_risk_cost",
+      "current": "pystra.decision.ddo.jcss_lqi_risk_cost",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.jcss_lqi_risk_cost_from_result",
+      "current": "pystra.decision.ddo.jcss_lqi_risk_cost_from_result",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.jcss_lqi_acceptability_margin",
+      "current": "pystra.decision.ddo.jcss_lqi_acceptability_margin",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.finite_difference_derivative",
+      "current": "pystra.decision.ddo.finite_difference_derivative",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.jcss_lqi_acceptability",
+      "current": "pystra.decision.ddo.jcss_lqi_acceptability",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.jcss_lqi_is_acceptable",
+      "current": "pystra.decision.ddo.jcss_lqi_is_acceptable",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.jcss_systematic_reconstruction_objective",
+      "current": "pystra.decision.ddo.jcss_systematic_reconstruction_objective",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.lqi_target_reliability",
+      "current": "pystra.decision.ddo.lqi_target_reliability",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.present_value_factor",
+      "current": "pystra.decision.ddo.present_value_factor",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.annualized_safety_cost",
+      "current": "pystra.decision.ddo.annualized_safety_cost",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.DDOObjective",
+      "current": "pystra.decision.ddo.DDOObjective",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.DDOObjective.evaluate",
+      "current": "pystra.decision.ddo.DDOObjective.evaluate",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.CostBenefitModel",
+      "current": "pystra.decision.ddo.CostBenefitModel",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.CostBenefitModel._value",
+      "current": "pystra.decision.ddo.CostBenefitModel._value",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.CostBenefitModel.present_value_factor",
+      "current": "pystra.decision.ddo.CostBenefitModel.present_value_factor",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.CostBenefitModel.construction",
+      "current": "pystra.decision.ddo.CostBenefitModel.construction",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.CostBenefitModel.consequence",
+      "current": "pystra.decision.ddo.CostBenefitModel.consequence",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.CostBenefitModel.objective",
+      "current": "pystra.decision.ddo.CostBenefitModel.objective",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.CostBenefitModel.annualized_safety_cost",
+      "current": "pystra.decision.ddo.CostBenefitModel.annualized_safety_cost",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.CostBenefitModel.evaluate",
+      "current": "pystra.decision.ddo.CostBenefitModel.evaluate",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo._default_decision_plot_quantities",
+      "current": "pystra.decision.ddo._default_decision_plot_quantities",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo._coerce_reference_designs",
+      "current": "pystra.decision.ddo._coerce_reference_designs",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.plot_summary",
+      "current": "pystra.decision.ddo.plot_summary",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo._coerce_analysis_result",
+      "current": "pystra.decision.ddo._coerce_analysis_result",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.DesignStudy",
+      "current": "pystra.decision.ddo.DesignStudy",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.DesignStudy.evaluate",
+      "current": "pystra.decision.ddo.DesignStudy.evaluate",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.RiskStudy",
+      "current": "pystra.decision.ddo.RiskStudy",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.RiskStudy._evaluate_model",
+      "current": "pystra.decision.ddo.RiskStudy._evaluate_model",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.RiskStudy.evaluate",
+      "current": "pystra.decision.ddo.RiskStudy.evaluate",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.DDOCriterion",
+      "current": "pystra.decision.ddo.DDOCriterion",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.DDOCriterion.evaluate",
+      "current": "pystra.decision.ddo.DDOCriterion.evaluate",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.DDOCriterion.feasible",
+      "current": "pystra.decision.ddo.DDOCriterion.feasible",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo._lqi_consequence",
+      "current": "pystra.decision.ddo._lqi_consequence",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo._require_explicit_indexed",
+      "current": "pystra.decision.ddo._require_explicit_indexed",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.LQI",
+      "current": "pystra.decision.ddo.LQI",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.LQI._as_swtp",
+      "current": "pystra.decision.ddo.LQI._as_swtp",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.LQI.lookup_target",
+      "current": "pystra.decision.ddo.LQI.lookup_target",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.LQI.derive_target",
+      "current": "pystra.decision.ddo.LQI.derive_target",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.LQI.from_swtp",
+      "current": "pystra.decision.ddo.LQI.from_swtp",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.LQI.from_country",
+      "current": "pystra.decision.ddo.LQI.from_country",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.LQI.from_lqi",
+      "current": "pystra.decision.ddo.LQI.from_lqi",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.LQI.expected_fatalities_given_failure",
+      "current": "pystra.decision.ddo.LQI.expected_fatalities_given_failure",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.LQI.k1",
+      "current": "pystra.decision.ddo.LQI.k1",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.LQI._swtp_and_expected_fatalities",
+      "current": "pystra.decision.ddo.LQI._swtp_and_expected_fatalities",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.LQI.risk_cost",
+      "current": "pystra.decision.ddo.LQI.risk_cost",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.LQI.risk_cost_from_result",
+      "current": "pystra.decision.ddo.LQI.risk_cost_from_result",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.LQI.acceptability_margin",
+      "current": "pystra.decision.ddo.LQI.acceptability_margin",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.LQI.acceptability_margin_at",
+      "current": "pystra.decision.ddo.LQI.acceptability_margin_at",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.LQI.acceptability_boundary",
+      "current": "pystra.decision.ddo.LQI.acceptability_boundary",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.LQI.evaluate",
+      "current": "pystra.decision.ddo.LQI.evaluate",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.DDO",
+      "current": "pystra.decision.ddo.DDO",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.DDO.__init__",
+      "current": "pystra.decision.ddo.DDO.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.DDO._evaluate",
+      "current": "pystra.decision.ddo.DDO._evaluate",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.DDO.run",
+      "current": "pystra.decision.ddo.DDO.run",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.DDO._results_or_run",
+      "current": "pystra.decision.ddo.DDO._results_or_run",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.DDO._objective_column",
+      "current": "pystra.decision.ddo.DDO._objective_column",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.DDO.economic_optimum",
+      "current": "pystra.decision.ddo.DDO.economic_optimum",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.DDO.feasible_results",
+      "current": "pystra.decision.ddo.DDO.feasible_results",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.DDO.optimize",
+      "current": "pystra.decision.ddo.DDO.optimize",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.DDO.summary",
+      "current": "pystra.decision.ddo.DDO.summary",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ddo.DDO.plot",
+      "current": "pystra.decision.ddo.DDO.plot",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.beta.Beta",
+      "current": "pystra.distributions.beta.Beta",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.beta.Beta.__init__",
+      "current": "pystra.distributions.beta.Beta.__init__",
+      "kind": "callable",
+      "status": "unchanged",
+      "notes": "input_type removed; native parameters are the keywords q, r. The bounds a and b are the keywords lower and upper. start_point is keyword-only."
+    },
+    {
+      "old": "pystra.distributions.beta.Beta.beta_parameter",
+      "current": "pystra.distributions.beta.Beta.beta_parameter",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.chisquare.ChiSquare",
+      "current": "pystra.distributions.chi_square.ChiSquare",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.chisquare.ChiSquare.__init__",
+      "current": "pystra.distributions.chi_square.ChiSquare.__init__",
+      "kind": "callable",
+      "status": "unchanged",
+      "notes": "input_type removed; native parameters are the keywords df. start_point is keyword-only."
+    },
+    {
+      "old": "pystra.distributions.distribution.StdNormal",
+      "current": "pystra.distributions.distribution.StdNormal",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.distribution.StdNormal.pdf",
+      "current": "pystra.distributions.distribution.StdNormal.pdf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.distribution.StdNormal.cdf",
+      "current": "pystra.distributions.distribution.StdNormal.cdf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.distribution.StdNormal.ppf",
+      "current": "pystra.distributions.distribution.StdNormal.ppf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.distribution.Constant",
+      "current": "pystra.distributions.distribution.Constant",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.distribution.Constant.__init__",
+      "current": "pystra.distributions.distribution.Constant.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.distribution.Constant.getName",
+      "current": "pystra.distributions.distribution.Constant.get_name",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.distributions.distribution.Constant.getValue",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.distributions.distribution.Constant"
+      ],
+      "notes": "Use the value property."
+    },
+    {
+      "old": "pystra.distributions.distribution.Distribution",
+      "current": "pystra.distributions.distribution.Distribution",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.distribution.Distribution.__init__",
+      "current": "pystra.distributions.distribution.Distribution.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.distribution.Distribution.__repr__",
+      "current": "pystra.distributions.distribution.Distribution.__repr__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.distribution.Distribution._update_moments",
+      "current": "pystra.distributions.distribution.Distribution._update_moments",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.distribution.Distribution.getName",
+      "current": "pystra.distributions.distribution.Distribution.get_name",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.distributions.distribution.Distribution.getMean",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.distributions.distribution.Distribution"
+      ],
+      "notes": "Use the mean property."
+    },
+    {
+      "old": "pystra.distributions.distribution.Distribution.getStdv",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.distributions.distribution.Distribution"
+      ],
+      "notes": "Use the std property."
+    },
+    {
+      "old": "pystra.distributions.distribution.Distribution.getStartPoint",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.distributions.distribution.Distribution"
+      ],
+      "notes": "Use the start_point property."
+    },
+    {
+      "old": "pystra.distributions.distribution.Distribution.setStartPoint",
+      "current": "pystra.distributions.distribution.Distribution._set_start_point",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0."
+    },
+    {
+      "old": "pystra.distributions.distribution.Distribution.pdf",
+      "current": "pystra.distributions.distribution.Distribution.pdf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.distribution.Distribution.cdf",
+      "current": "pystra.distributions.distribution.Distribution.cdf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.distribution.Distribution.ppf",
+      "current": "pystra.distributions.distribution.Distribution.ppf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.distribution.Distribution.u_to_x",
+      "current": "pystra.distributions.distribution.Distribution.u_to_x",
+      "kind": "callable",
+      "status": "changed_contract",
+      "notes": "Uses the survival function above u = 3 and log probabilities where probabilities underflow; tail quantiles below 1e-8 are checked against the log-CDF. Unchanged up to u = 3."
+    },
+    {
+      "old": "pystra.distributions.distribution.Distribution.x_to_u",
+      "current": "pystra.distributions.distribution.Distribution.x_to_u",
+      "kind": "callable",
+      "status": "changed_contract",
+      "notes": "Uses the survival function above u = 3 and log probabilities where probabilities underflow. Unchanged below u = 3."
+    },
+    {
+      "old": "pystra.distributions.distribution.Distribution.jacobian",
+      "current": "pystra.distributions.distribution.Distribution.jacobian",
+      "kind": "callable",
+      "status": "changed_contract",
+      "notes": "Forms f(x)/phi(u) from log densities where either density underflows."
+    },
+    {
+      "old": "pystra.distributions.distribution.Distribution.sample",
+      "current": "pystra.distributions.distribution.Distribution.sample",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.distribution.Distribution.plot",
+      "current": "pystra.distributions.distribution.Distribution.plot",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.distribution.Distribution.sensitivity_params",
+      "current": "pystra.distributions.distribution.Distribution.sensitivity_params",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.distribution.Distribution._make_copy",
+      "current": "pystra.distributions.distribution.Distribution._make_copy",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.distribution.Distribution._dmoments_dtheta",
+      "current": "pystra.distributions.distribution.Distribution._dmoments_dtheta",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.distribution.Distribution.dF_dtheta",
+      "current": "pystra.distributions.distribution.Distribution.cdf_gradient",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.distributions.distribution.Distribution.set_location",
+      "current": "pystra.distributions.distribution.Distribution.set_location",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.distribution.Distribution.set_scale",
+      "current": "pystra.distributions.distribution.Distribution.set_scale",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.gamma.Gamma",
+      "current": "pystra.distributions.gamma.Gamma",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.gamma.Gamma.__init__",
+      "current": "pystra.distributions.gamma.Gamma.__init__",
+      "kind": "callable",
+      "status": "unchanged",
+      "notes": "input_type removed; native parameters are the keywords rate, shape. start_point is keyword-only."
+    },
+    {
+      "old": "pystra.distributions.gev.GEVmax",
+      "current": "pystra.distributions.gev.GEV",
+      "kind": "class",
+      "status": "renamed",
+      "notes": "GEVmax remains an alias for GEV."
+    },
+    {
+      "old": "pystra.distributions.gev.GEVmax.__init__",
+      "current": "pystra.distributions.gev.GEV.__init__",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "input_type removed; native parameters are the keywords loc, scale. start_point is keyword-only."
+    },
+    {
+      "old": "pystra.distributions.gev.GEVmax.sensitivity_params",
+      "current": "pystra.distributions.gev.GEV.sensitivity_params",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.distributions.gev.GEVmin",
+      "current": "pystra.distributions.gev.GEVMin",
+      "kind": "class",
+      "status": "renamed",
+      "notes": "Transformation, CDF and quantiles now use the reflection of the GEV consistently, and moments use the minima relations; 1.x results were wrong and change."
+    },
+    {
+      "old": "pystra.distributions.gev.GEVmin.__init__",
+      "current": "pystra.distributions.gev.GEVMin.__init__",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "input_type removed; native parameters are the keywords loc, scale. start_point is keyword-only."
+    },
+    {
+      "old": "pystra.distributions.gev.GEVmin.sensitivity_params",
+      "current": "pystra.distributions.gev.GEVMin.sensitivity_params",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.distributions.gev.GEVmin.pdf",
+      "current": "pystra.distributions.gev.GEVMin.pdf",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.distributions.gev.GEVmin.cdf",
+      "current": "pystra.distributions.gev.GEVMin.cdf",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.distributions.gev.GEVmin.ppf",
+      "current": "pystra.distributions.gev.GEVMin.ppf",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.distributions.gumbel.Gumbel",
+      "current": "pystra.distributions.gumbel.Gumbel",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.gumbel.Gumbel.__init__",
+      "current": "pystra.distributions.gumbel.Gumbel.__init__",
+      "kind": "callable",
+      "status": "unchanged",
+      "notes": "input_type removed; native parameters are the keywords loc, scale. start_point is keyword-only."
+    },
+    {
+      "old": "pystra.distributions.lognormal.Lognormal",
+      "current": "pystra.distributions.lognormal.Lognormal",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.lognormal.Lognormal.__init__",
+      "current": "pystra.distributions.lognormal.Lognormal.__init__",
+      "kind": "callable",
+      "status": "unchanged",
+      "notes": "input_type removed; native parameters are the keywords log_mean, log_std. start_point is keyword-only."
+    },
+    {
+      "old": "pystra.distributions.lognormal.Lognormal._update_params",
+      "current": "pystra.distributions.lognormal.Lognormal._update_params",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.lognormal.Lognormal.pdf",
+      "current": "pystra.distributions.lognormal.Lognormal.pdf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.lognormal.Lognormal.cdf",
+      "current": "pystra.distributions.lognormal.Lognormal.cdf",
+      "kind": "callable",
+      "status": "unchanged",
+      "notes": "Accepts arrays; computed with ndtr."
+    },
+    {
+      "old": "pystra.distributions.lognormal.Lognormal.u_to_x",
+      "current": "pystra.distributions.lognormal.Lognormal.u_to_x",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.lognormal.Lognormal.x_to_u",
+      "current": "pystra.distributions.lognormal.Lognormal.x_to_u",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.lognormal.Lognormal.dF_dtheta",
+      "current": "pystra.distributions.lognormal.Lognormal.cdf_gradient",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.distributions.lognormal.Lognormal.set_location",
+      "current": "pystra.distributions.lognormal.Lognormal.set_location",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.lognormal.Lognormal.set_scale",
+      "current": "pystra.distributions.lognormal.Lognormal.set_scale",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.maximum.Maximum",
+      "current": "pystra.distributions.maximum.Maximum",
+      "kind": "class",
+      "status": "unchanged",
+      "notes": "Moments use deterministic normal-space quadrature (rtol 1e-7, atol 1e-9 in standardized mean/variance), with exact Frechet/Uniform identities, replacing 100 global random draws. A missed tolerance warns and retains the finest finite estimate; nonfinite estimates and nonpositive variance remain errors."
+    },
+    {
+      "old": "pystra.distributions.maximum.Maximum.__init__",
+      "current": "pystra.distributions.maximum.Maximum.__init__",
+      "kind": "callable",
+      "status": "unchanged",
+      "notes": "Unused input_type removed. start_point is keyword-only."
+    },
+    {
+      "old": "pystra.distributions.maximum.Maximum.pdf",
+      "current": "pystra.distributions.maximum.Maximum.pdf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.maximum.Maximum.cdf",
+      "current": "pystra.distributions.maximum.Maximum.cdf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.maximum.Maximum.ppf",
+      "current": "pystra.distributions.maximum.Maximum.ppf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.maximum.Maximum.u_to_x",
+      "current": "pystra.distributions.distribution.Distribution.u_to_x",
+      "kind": "callable",
+      "status": "changed_contract",
+      "notes": "Inherited from Distribution, which evaluates the tail that the point lies in (survival function above u = 3, log probabilities where probabilities underflow)."
+    },
+    {
+      "old": "pystra.distributions.maximum.Maximum.x_to_u",
+      "current": "pystra.distributions.distribution.Distribution.x_to_u",
+      "kind": "callable",
+      "status": "changed_contract",
+      "notes": "Inherited from Distribution, which evaluates the tail that the point lies in (survival function above u = 3, log probabilities where probabilities underflow)."
+    },
+    {
+      "old": "pystra.distributions.maximum.Maximum.jacobian",
+      "current": "pystra.distributions.distribution.Distribution.jacobian",
+      "kind": "callable",
+      "status": "changed_contract",
+      "notes": "Inherited from Distribution, which evaluates the tail that the point lies in (survival function above u = 3, log probabilities where probabilities underflow)."
+    },
+    {
+      "old": "pystra.distributions.maximum.Maximum._get_stats",
+      "current": "pystra.distributions.maximum.Maximum._get_stats",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.maximum.Maximum.set_location",
+      "current": "pystra.distributions.maximum.Maximum.set_location",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.maximum.Maximum.set_scale",
+      "current": "pystra.distributions.maximum.Maximum.set_scale",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.maximum.Maximum.update_stats",
+      "current": "pystra.distributions.maximum.Maximum.update_stats",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.normal.Normal",
+      "current": "pystra.distributions.normal.Normal",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.normal.Normal.__init__",
+      "current": "pystra.distributions.normal.Normal.__init__",
+      "kind": "callable",
+      "status": "unchanged",
+      "notes": "Unused input_type removed. start_point is keyword-only."
+    },
+    {
+      "old": "pystra.distributions.normal.Normal.pdf",
+      "current": "pystra.distributions.normal.Normal.pdf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.normal.Normal.cdf",
+      "current": "pystra.distributions.normal.Normal.cdf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.normal.Normal.ppf",
+      "current": "pystra.distributions.normal.Normal.ppf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.normal.Normal.sample",
+      "current": "pystra.distributions.normal.Normal.sample",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.normal.Normal.u_to_x",
+      "current": "pystra.distributions.normal.Normal.u_to_x",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.normal.Normal.x_to_u",
+      "current": "pystra.distributions.normal.Normal.x_to_u",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.normal.Normal.jacobian",
+      "current": "pystra.distributions.normal.Normal.jacobian",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.normal.Normal.dF_dtheta",
+      "current": "pystra.distributions.normal.Normal.cdf_gradient",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.distributions.normal.Normal.set_location",
+      "current": "pystra.distributions.normal.Normal.set_location",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.normal.Normal.set_scale",
+      "current": "pystra.distributions.normal.Normal.set_scale",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.parent.MaxParent",
+      "current": "pystra.distributions.parent.MaxParent",
+      "kind": "class",
+      "status": "unchanged",
+      "notes": "Moments use deterministic normal-space quadrature (rtol 1e-7, atol 1e-9 in standardized mean/variance), with exact Frechet/Uniform identities, replacing 100 global random draws. A missed tolerance warns and retains the finest finite estimate; nonfinite estimates and nonpositive variance remain errors. Quantile inversion uses log probabilities."
+    },
+    {
+      "old": "pystra.distributions.parent.MaxParent.__init__",
+      "current": "pystra.distributions.parent.MaxParent.__init__",
+      "kind": "callable",
+      "status": "unchanged",
+      "notes": "Unused input_type removed. start_point is keyword-only."
+    },
+    {
+      "old": "pystra.distributions.parent.MaxParent.pdf",
+      "current": "pystra.distributions.parent.MaxParent.pdf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.parent.MaxParent.cdf",
+      "current": "pystra.distributions.parent.MaxParent.cdf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.parent.MaxParent.ppf",
+      "current": "pystra.distributions.parent.MaxParent.ppf",
+      "kind": "callable",
+      "status": "unchanged",
+      "notes": "Inverts through the maximum's log-CDF instead of bracketing, and is accurate in both tails."
+    },
+    {
+      "old": "pystra.distributions.parent.MaxParent.u_to_x",
+      "current": "pystra.distributions.distribution.Distribution.u_to_x",
+      "kind": "callable",
+      "status": "changed_contract",
+      "notes": "Inherited from Distribution, which evaluates the tail that the point lies in (survival function above u = 3, log probabilities where probabilities underflow)."
+    },
+    {
+      "old": "pystra.distributions.parent.MaxParent.x_to_u",
+      "current": "pystra.distributions.distribution.Distribution.x_to_u",
+      "kind": "callable",
+      "status": "changed_contract",
+      "notes": "Inherited from Distribution, which evaluates the tail that the point lies in (survival function above u = 3, log probabilities where probabilities underflow)."
+    },
+    {
+      "old": "pystra.distributions.parent.MaxParent.jacobian",
+      "current": "pystra.distributions.distribution.Distribution.jacobian",
+      "kind": "callable",
+      "status": "changed_contract",
+      "notes": "Inherited from Distribution, which evaluates the tail that the point lies in (survival function above u = 3, log probabilities where probabilities underflow)."
+    },
+    {
+      "old": "pystra.distributions.parent.MaxParent._get_stats",
+      "current": "pystra.distributions.parent.MaxParent._get_stats",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.parent.MaxParent.set_location",
+      "current": "pystra.distributions.parent.MaxParent.set_location",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.parent.MaxParent.set_scale",
+      "current": "pystra.distributions.parent.MaxParent.set_scale",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.parent.MaxParent.set_exponent",
+      "current": "pystra.distributions.parent.MaxParent.set_exponent",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.parent.MaxParent._update_stats",
+      "current": "pystra.distributions.parent.MaxParent._update_stats",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.scipydist.ScipyDist",
+      "current": "pystra.distributions.scipy_dist.ScipyDist",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.scipydist.ScipyDist.__init__",
+      "current": "pystra.distributions.scipy_dist.ScipyDist.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.shiftedexponential.ShiftedExponential",
+      "current": "pystra.distributions.shifted_exponential.ShiftedExponential",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.shiftedexponential.ShiftedExponential.__init__",
+      "current": "pystra.distributions.shifted_exponential.ShiftedExponential.__init__",
+      "kind": "callable",
+      "status": "unchanged",
+      "notes": "input_type removed; native parameters are the keywords rate, shift. start_point is keyword-only."
+    },
+    {
+      "old": "pystra.distributions.shiftedlognormal.ShiftedLognormal",
+      "current": "pystra.distributions.shifted_lognormal.ShiftedLognormal",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.shiftedlognormal.ShiftedLognormal.__init__",
+      "current": "pystra.distributions.shifted_lognormal.ShiftedLognormal.__init__",
+      "kind": "callable",
+      "status": "unchanged",
+      "notes": "Unused input_type removed. start_point is keyword-only."
+    },
+    {
+      "old": "pystra.distributions.shiftedlognormal.ShiftedLognormal._update_params",
+      "current": "pystra.distributions.shifted_lognormal.ShiftedLognormal._update_params",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.shiftedlognormal.ShiftedLognormal.pdf",
+      "current": "pystra.distributions.lognormal.Lognormal.pdf",
+      "kind": "callable",
+      "status": "changed_contract",
+      "notes": "Inherited from Lognormal, which applies the lower bound through its support shift."
+    },
+    {
+      "old": "pystra.distributions.shiftedlognormal.ShiftedLognormal.cdf",
+      "current": "pystra.distributions.lognormal.Lognormal.cdf",
+      "kind": "callable",
+      "status": "changed_contract",
+      "notes": "Inherited from Lognormal, which applies the lower bound through its support shift."
+    },
+    {
+      "old": "pystra.distributions.shiftedlognormal.ShiftedLognormal.u_to_x",
+      "current": "pystra.distributions.lognormal.Lognormal.u_to_x",
+      "kind": "callable",
+      "status": "changed_contract",
+      "notes": "Inherited from Lognormal, which applies the lower bound through its support shift."
+    },
+    {
+      "old": "pystra.distributions.shiftedlognormal.ShiftedLognormal.x_to_u",
+      "current": "pystra.distributions.lognormal.Lognormal.x_to_u",
+      "kind": "callable",
+      "status": "changed_contract",
+      "notes": "Inherited from Lognormal, which applies the lower bound through its support shift."
+    },
+    {
+      "old": "pystra.distributions.shiftedlognormal.ShiftedLognormal.set_lower",
+      "current": "pystra.distributions.shifted_lognormal.ShiftedLognormal.set_lower",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.shiftedrayleigh.ShiftedRayleigh",
+      "current": "pystra.distributions.shifted_rayleigh.ShiftedRayleigh",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.shiftedrayleigh.ShiftedRayleigh.__init__",
+      "current": "pystra.distributions.shifted_rayleigh.ShiftedRayleigh.__init__",
+      "kind": "callable",
+      "status": "unchanged",
+      "notes": "input_type removed; native parameters are the keywords scale, shift. start_point is keyword-only."
+    },
+    {
+      "old": "pystra.distributions.typeiiismallestvalue.TypeIIIsmallestValue",
+      "current": null,
+      "kind": "class",
+      "status": "replaced",
+      "replacements": [
+        "pystra.distributions.weibull.Weibull"
+      ],
+      "notes": "Identical to Weibull; removed as a duplicate."
+    },
+    {
+      "old": "pystra.distributions.typeiiismallestvalue.TypeIIIsmallestValue.__init__",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.distributions.weibull.Weibull.__init__"
+      ],
+      "notes": "Identical to Weibull; removed as a duplicate."
+    },
+    {
+      "old": "pystra.distributions.typeiilargestvalue.TypeIIlargestValue",
+      "current": "pystra.distributions.frechet.Frechet",
+      "kind": "class",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.distributions.typeiilargestvalue.TypeIIlargestValue.__init__",
+      "current": "pystra.distributions.frechet.Frechet.__init__",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "input_type removed; native parameters are the keywords scale, shape. start_point is keyword-only."
+    },
+    {
+      "old": "pystra.distributions.typeiilargestvalue.TypeIIlargestValue.typIIlargest_parameter",
+      "current": "pystra.distributions.frechet.Frechet.frechet_parameter",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.distributions.typeilargestvalue.TypeIlargestValue",
+      "current": null,
+      "kind": "class",
+      "status": "replaced",
+      "replacements": [
+        "pystra.distributions.gumbel.Gumbel"
+      ],
+      "notes": "Identical to Gumbel; removed as a duplicate."
+    },
+    {
+      "old": "pystra.distributions.typeilargestvalue.TypeIlargestValue.__init__",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.distributions.gumbel.Gumbel.__init__"
+      ],
+      "notes": "Identical to Gumbel; removed as a duplicate."
+    },
+    {
+      "old": "pystra.distributions.typeismallestvalue.TypeIsmallestValue",
+      "current": "pystra.distributions.gumbel.GumbelMin",
+      "kind": "class",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.distributions.typeismallestvalue.TypeIsmallestValue.__init__",
+      "current": "pystra.distributions.gumbel.GumbelMin.__init__",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "input_type removed; native parameters are the keywords loc, scale. start_point is keyword-only."
+    },
+    {
+      "old": "pystra.distributions.uniform.Uniform",
+      "current": "pystra.distributions.uniform.Uniform",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.uniform.Uniform.__init__",
+      "current": "pystra.distributions.uniform.Uniform.__init__",
+      "kind": "callable",
+      "status": "unchanged",
+      "notes": "input_type removed; native parameters are the keywords lower, upper. start_point is keyword-only."
+    },
+    {
+      "old": "pystra.distributions.uniform.Uniform.u_to_x",
+      "current": "pystra.distributions.uniform.Uniform.u_to_x",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.uniform.Uniform.x_to_u",
+      "current": "pystra.distributions.distribution.Distribution.x_to_u",
+      "kind": "callable",
+      "status": "changed_contract",
+      "notes": "Inherited from Distribution, which evaluates the tail that the point lies in (survival function above u = 3, log probabilities where probabilities underflow)."
+    },
+    {
+      "old": "pystra.distributions.weibull.Weibull",
+      "current": "pystra.distributions.weibull.Weibull",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.weibull.Weibull.__init__",
+      "current": "pystra.distributions.weibull.Weibull.__init__",
+      "kind": "callable",
+      "status": "unchanged",
+      "notes": "input_type removed; native parameters are the keywords scale, shape. The bound epsilon is the keyword lower. start_point is keyword-only."
+    },
+    {
+      "old": "pystra.distributions.weibull.Weibull.weibull_parameter",
+      "current": "pystra.distributions.weibull.Weibull.weibull_parameter",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.zeroinflated.ZeroInflated",
+      "current": "pystra.distributions.zero_inflated.ZeroInflated",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.zeroinflated.ZeroInflated.__init__",
+      "current": "pystra.distributions.zero_inflated.ZeroInflated.__init__",
+      "kind": "callable",
+      "status": "unchanged",
+      "notes": "Unused input_type removed. start_point is keyword-only."
+    },
+    {
+      "old": "pystra.distributions.zeroinflated.ZeroInflated.pdf",
+      "current": "pystra.distributions.zero_inflated.ZeroInflated.pdf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.zeroinflated.ZeroInflated.cdf",
+      "current": "pystra.distributions.zero_inflated.ZeroInflated.cdf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.zeroinflated.ZeroInflated.ppf",
+      "current": "pystra.distributions.zero_inflated.ZeroInflated.ppf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.zeroinflated.ZeroInflated.u_to_x",
+      "current": "pystra.distributions.distribution.Distribution.u_to_x",
+      "kind": "callable",
+      "status": "changed_contract",
+      "notes": "Inherited from Distribution, which evaluates the tail that the point lies in (survival function above u = 3, log probabilities where probabilities underflow)."
+    },
+    {
+      "old": "pystra.distributions.zeroinflated.ZeroInflated.x_to_u",
+      "current": "pystra.distributions.distribution.Distribution.x_to_u",
+      "kind": "callable",
+      "status": "changed_contract",
+      "notes": "Inherited from Distribution, which evaluates the tail that the point lies in (survival function above u = 3, log probabilities where probabilities underflow)."
+    },
+    {
+      "old": "pystra.distributions.zeroinflated.ZeroInflated.jacobian",
+      "current": "pystra.distributions.distribution.Distribution.jacobian",
+      "kind": "callable",
+      "status": "changed_contract",
+      "notes": "Inherited from Distribution, which evaluates the tail that the point lies in (survival function above u = 3, log probabilities where probabilities underflow)."
+    },
+    {
+      "old": "pystra.distributions.zeroinflated.ZeroInflated._get_stats",
+      "current": "pystra.distributions.zero_inflated.ZeroInflated._get_stats",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.zeroinflated.ZeroInflated.set_location",
+      "current": "pystra.distributions.zero_inflated.ZeroInflated.set_location",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.zeroinflated.ZeroInflated.set_scale",
+      "current": "pystra.distributions.zero_inflated.ZeroInflated.set_scale",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.zeroinflated.ZeroInflated.set_zero_probability",
+      "current": "pystra.distributions.zero_inflated.ZeroInflated.set_zero_probability",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.distributions.zeroinflated.ZeroInflated._update_stats",
+      "current": "pystra.distributions.zero_inflated.ZeroInflated._update_stats",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.fbc.FBCProcess",
+      "current": "pystra.loads.FBCProcess",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.fbc.FBCProcess.__init__",
+      "current": "pystra.loads.FBCProcess.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.fbc.FBCProcess.from_maximum",
+      "current": "pystra.loads.FBCProcess.from_maximum",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.fbc.FBCProcess.interval_count",
+      "current": "pystra.loads.FBCProcess.interval_count",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.fbc.FBCProcess.point_in_time",
+      "current": "pystra.loads.FBCProcess.point_in_time",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.fbc.FBCProcess.maximum",
+      "current": "pystra.loads.FBCProcess.maximum",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.form.Form",
+      "current": "pystra.reliability.form.FORM",
+      "kind": "class",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.form.Form.__init__",
+      "current": "pystra.reliability.form.FORM.__init__",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.form.Form.run",
+      "current": "pystra.reliability.form.FORM.run",
+      "kind": "callable",
+      "status": "changed_contract",
+      "notes": "See calibration-structure-map.json and the migration guide for constructor, evaluation and result changes."
+    },
+    {
+      "old": "pystra.form.Form.computeStartingPoint",
+      "current": "pystra.reliability.form.FORM._compute_starting_point",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.form.Form.computeTransformation",
+      "current": "pystra.reliability.form.FORM._compute_transformation",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.form.Form.computeJacobian",
+      "current": "pystra.reliability.form.FORM._compute_jacobian",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.form.Form.computeLimitState",
+      "current": "pystra.reliability.form.FORM._compute_limit_state",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.form.Form.computeAlpha",
+      "current": "pystra.reliability.form.FORM._compute_alpha",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.form.Form.computeGamma",
+      "current": "pystra.reliability.form.FORM._compute_gamma",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.form.Form.computeSearchDirection",
+      "current": "pystra.reliability.form.FORM._compute_search_direction",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.form.Form.getStepSize",
+      "current": "pystra.reliability.form.FORM._get_step_size",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.form.Form.computeStepSize",
+      "current": "pystra.reliability.form.FORM._compute_step_size",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.form.Form.computeBeta",
+      "current": "pystra.reliability.form.FORM._compute_beta",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.form.Form.computeFailureProbability",
+      "current": "pystra.reliability.form.FORM._compute_failure_probability",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.form.Form.getEquivalentBeta",
+      "current": "pystra.reliability.form.FORM._get_equivalent_beta",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.form.Form.showResults",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.FORMResult"
+      ],
+      "notes": "Read the result record: summary()."
+    },
+    {
+      "old": "pystra.form.Form.showDetailedOutput",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.FORMResult"
+      ],
+      "notes": "Read the result record: summary() and to_dataframe()."
+    },
+    {
+      "old": "pystra.form.Form.getBeta",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.FORMResult"
+      ],
+      "notes": "Read the result record: beta (FORM's geometric index is design_index)."
+    },
+    {
+      "old": "pystra.form.Form.getFailure",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.FORMResult"
+      ],
+      "notes": "Read the result record: failure_probability."
+    },
+    {
+      "old": "pystra.form.Form.getDesignPoint",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.FORMResult"
+      ],
+      "notes": "Read the result record: design_point_u and design_point_x."
+    },
+    {
+      "old": "pystra.form.Form.getAlpha",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.FORMResult"
+      ],
+      "notes": "Read the result record: alpha."
+    },
+    {
+      "old": "pystra.form.Form.getNoFunctionCalls",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.FORMResult"
+      ],
+      "notes": "Read the result record: n_limit_state_evaluations."
+    },
+    {
+      "old": "pystra.integration.rho_integral",
+      "current": "pystra._numerics.integration.rho_integral",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.integration.zi_and_xi",
+      "current": "pystra._numerics.integration.zi_and_xi",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.integration._phi2",
+      "current": "pystra._numerics.integration._phi2",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.integration._dphi2_drho0",
+      "current": "pystra._numerics.integration._dphi2_drho0",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.integration.drho_drho0",
+      "current": "pystra._numerics.integration.drho_drho0",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.integration.drho0_dtheta",
+      "current": "pystra._numerics.integration.drho0_dtheta",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.joint.JointDistribution",
+      "current": "pystra.dependence.joint.JointDistribution",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.joint.JointDistribution.__init__",
+      "current": "pystra.dependence.joint.JointDistribution.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.joint.JointDistribution._points",
+      "current": "pystra.dependence.joint.JointDistribution._points",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.joint.JointDistribution.cdf",
+      "current": "pystra.dependence.joint.JointDistribution.cdf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.joint.JointDistribution.logpdf",
+      "current": "pystra.dependence.joint.JointDistribution.logpdf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.joint.JointDistribution.pdf",
+      "current": "pystra.dependence.joint.JointDistribution.pdf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.joint.JointDistribution.rvs",
+      "current": "pystra.dependence.joint.JointDistribution.rvs",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.joint.JointDistribution.getTransformation",
+      "current": "pystra.dependence.joint.JointDistribution.make_transformation",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.joint.CopulaTransformation",
+      "current": "pystra.dependence.joint.CopulaTransformation",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.joint.CopulaTransformation.__init__",
+      "current": "pystra.dependence.joint.CopulaTransformation.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.joint.CopulaTransformation._vector",
+      "current": "pystra.dependence.joint.CopulaTransformation._vector",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.joint.CopulaTransformation._latent",
+      "current": "pystra.dependence.joint.CopulaTransformation._latent",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.joint.CopulaTransformation._physical",
+      "current": "pystra.dependence.joint.CopulaTransformation._physical",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.joint.CopulaTransformation.x_to_u",
+      "current": "pystra.dependence.joint.CopulaTransformation.x_to_u",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.joint.CopulaTransformation.u_to_x",
+      "current": "pystra.dependence.joint.CopulaTransformation.u_to_x",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.joint.CopulaTransformation.jacobian",
+      "current": "pystra.dependence.joint.CopulaTransformation.jacobian",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination",
+      "current": "pystra.loads.LoadCombination",
+      "kind": "class",
+      "status": "changed_contract",
+      "notes": "See calibration-structure-map.json and the migration guide for constructor, evaluation and result changes."
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination.__init__",
+      "current": "pystra.loads.LoadCombination.__init__",
+      "kind": "callable",
+      "status": "changed_contract",
+      "notes": "See calibration-structure-map.json and the migration guide for constructor, evaluation and result changes."
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination.turkstra",
+      "current": "pystra.loads.LoadCombination.turkstra",
+      "kind": "callable",
+      "status": "changed_contract",
+      "notes": "See calibration-structure-map.json and the migration guide for constructor, evaluation and result changes."
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination._variable_name",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs."
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination._variables_to_dict",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs."
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination._normalise_cases",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs."
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination._warn_legacy_inputs",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs."
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination._init_from_cases",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs."
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination._init_from_legacy",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs.",
+      "replacements": [
+        "pystra.loads.LoadCombination.from_actions"
+      ]
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination._set_common_labels",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs."
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination._case_variable_names",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs."
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination._check_input",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs."
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination.get_label",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs.",
+      "replacements": [
+        "pystra.loads.VariableRoles"
+      ]
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination._set_num_comb",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs."
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination.get_num_comb",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs.",
+      "replacements": [
+        "pystra.loads.LoadCombination.case_names"
+      ]
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination.get_dict_dist_comb",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs.",
+      "replacements": [
+        "pystra.loads.LoadCombination.cases"
+      ]
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination._create_dict_dist_comb",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs.",
+      "replacements": [
+        "pystra.loads.LoadCombination.from_actions"
+      ]
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination._case_name",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs."
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination.case",
+      "current": "pystra.loads.LoadCombination.case",
+      "kind": "callable",
+      "status": "changed_contract",
+      "notes": "See calibration-structure-map.json and the migration guide for constructor, evaluation and result changes."
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination.stochastic_model",
+      "current": "pystra.loads.LoadCombination.stochastic_model",
+      "kind": "callable",
+      "status": "changed_contract",
+      "notes": "See calibration-structure-map.json and the migration guide for constructor, evaluation and result changes."
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination._get_corr_for_stochastic_model",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs."
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination.run_reliability_case",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs.",
+      "replacements": [
+        "pystra.calibration.factors.analyze_case"
+      ]
+    },
+    {
+      "old": "pystra.loadcomb.LoadCombination.eval_lsf_kwargs",
+      "current": null,
+      "kind": "callable",
+      "status": "removed",
+      "notes": "Legacy constructors/duplicate labels and execution helpers are removed. Use explicit cases/roles, from_actions or turkstra, and analyze_case. Evaluate arbitrary limit-state callables directly with complete named inputs."
+    },
+    {
+      "old": "pystra.ls.LineSampling",
+      "current": "pystra.reliability.line_sampling.LineSampling",
+      "kind": "class",
+      "status": "unchanged",
+      "notes": "Assigning form after construction takes effect; None restores internal reruns. Scans keep independent and Nataf correlated normal coordinates within [-37, 37]; unresolved truncated scans raise AnalysisError. Relative uncertainty is computed before squaring tiny probabilities."
+    },
+    {
+      "old": "pystra.ls.LineSampling.__init__",
+      "current": "pystra.reliability.line_sampling.LineSampling.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ls.LineSampling.run",
+      "current": "pystra.reliability.line_sampling.LineSampling.run",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ls.LineSampling._eval_g_at_c",
+      "current": "pystra.reliability.line_sampling.LineSampling._eval_g_at_c",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ls.LineSampling._find_line_intersection",
+      "current": "pystra.reliability.line_sampling.LineSampling._find_line_intersection",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ls.LineSampling.getBeta",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.SimulationResult"
+      ],
+      "notes": "Read the result record: beta (FORM's geometric index is design_index)."
+    },
+    {
+      "old": "pystra.ls.LineSampling.getFailure",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.SimulationResult"
+      ],
+      "notes": "Read the result record: failure_probability."
+    },
+    {
+      "old": "pystra.ls.LineSampling.showResults",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.SimulationResult"
+      ],
+      "notes": "Read the result record: summary()."
+    },
+    {
+      "old": "pystra.mc.MonteCarlo",
+      "current": "pystra.reliability.monte_carlo.MonteCarlo",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.mc.MonteCarlo.__init__",
+      "current": "pystra.reliability.monte_carlo.MonteCarlo.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.mc.MonteCarlo.setPoint",
+      "current": "pystra.reliability.monte_carlo.MonteCarlo._set_point",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.mc.MonteCarlo.computeRandomNumbers",
+      "current": "pystra.reliability.monte_carlo.MonteCarlo._compute_random_numbers",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.mc.MonteCarlo.computeTransformation",
+      "current": "pystra.reliability.monte_carlo.MonteCarlo._compute_transformation",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.mc.MonteCarlo.computeLimitState",
+      "current": "pystra.reliability.monte_carlo.MonteCarlo._compute_limit_state",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.mc.MonteCarlo.computeResults",
+      "current": "pystra.reliability.monte_carlo.MonteCarlo._compute_results",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.mc.MonteCarlo.computeSumUpdate",
+      "current": "pystra.reliability.monte_carlo.MonteCarlo._compute_sum_update",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.mc.MonteCarlo.computeCoefficientOfVariation",
+      "current": "pystra.reliability.monte_carlo.MonteCarlo._compute_coefficient_of_variation",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.mc.MonteCarlo.computePercentDone",
+      "current": "pystra.reliability.monte_carlo.MonteCarlo._compute_percent_done",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.mc.MonteCarlo.computeFailureProbability",
+      "current": "pystra.reliability.monte_carlo.MonteCarlo._compute_failure_probability",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.mc.MonteCarlo.computeBeta",
+      "current": "pystra.reliability.monte_carlo.MonteCarlo._compute_beta",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.mc.MonteCarlo.computeBins",
+      "current": "pystra.reliability.monte_carlo.MonteCarlo._compute_bins",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.mc.MonteCarlo.getBeta",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.SimulationResult"
+      ],
+      "notes": "Read the result record: beta (FORM's geometric index is design_index)."
+    },
+    {
+      "old": "pystra.mc.MonteCarlo.getFailure",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.SimulationResult"
+      ],
+      "notes": "Read the result record: failure_probability."
+    },
+    {
+      "old": "pystra.mc.MonteCarlo.getDistributionData",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.SimulationResult"
+      ],
+      "notes": "Read the result record: limit_state_values."
+    },
+    {
+      "old": "pystra.mc.MonteCarlo.getBins",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.SimulationResult"
+      ],
+      "notes": "Read the result record: bins."
+    },
+    {
+      "old": "pystra.mc.CrudeMonteCarlo",
+      "current": "pystra.reliability.monte_carlo.CrudeMonteCarlo",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.mc.CrudeMonteCarlo.__init__",
+      "current": "pystra.reliability.monte_carlo.CrudeMonteCarlo.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.mc.CrudeMonteCarlo.run",
+      "current": "pystra.reliability.monte_carlo.CrudeMonteCarlo.run",
+      "kind": "callable",
+      "status": "unchanged",
+      "notes": "Invalid evaluations stop sampling. target_cov=0 denotes fixed-budget completion; measured uncertainty is retained."
+    },
+    {
+      "old": "pystra.mc.CrudeMonteCarlo.initializeVariables",
+      "current": "pystra.reliability.monte_carlo.CrudeMonteCarlo._initialize_variables",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.mc.CrudeMonteCarlo.showResults",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.SimulationResult"
+      ],
+      "notes": "Read the result record: summary()."
+    },
+    {
+      "old": "pystra.mc.ImportanceSampling",
+      "current": "pystra.reliability.importance_sampling.ImportanceSampling",
+      "kind": "class",
+      "status": "unchanged",
+      "notes": "Assigning form after construction takes effect; None restores internal reruns. Log likelihood ratios include the proposal determinant, and log weight sums preserve beta and relative uncertainty when probabilities underflow."
+    },
+    {
+      "old": "pystra.mc.ImportanceSampling.__init__",
+      "current": "pystra.reliability.importance_sampling.ImportanceSampling.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.mc.ImportanceSampling.run",
+      "current": "pystra.reliability.importance_sampling.ImportanceSampling.run",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.mc.ImportanceSampling.showResults",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.SimulationResult"
+      ],
+      "notes": "Read the result record: summary()."
+    },
+    {
+      "old": "pystra.mc.DistributionAnalysis",
+      "current": "pystra.reliability.monte_carlo.DistributionAnalysis",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.mc.DistributionAnalysis.__init__",
+      "current": "pystra.reliability.monte_carlo.DistributionAnalysis.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.mc.DistributionAnalysis.run",
+      "current": "pystra.reliability.monte_carlo.DistributionAnalysis.run",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.mc.DistributionAnalysis.initializeVariables",
+      "current": "pystra.reliability.monte_carlo.DistributionAnalysis._initialize_variables",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.mc.DistributionAnalysis.computeDataUpdate",
+      "current": "pystra.reliability.monte_carlo.DistributionAnalysis._compute_data_update",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.mc.DistributionAnalysis.computeDistributionData",
+      "current": "pystra.reliability.monte_carlo.DistributionAnalysis._compute_distribution_data",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.mc.DistributionAnalysis.showResults",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.DistributionAnalysisResult"
+      ],
+      "notes": "Read the result record: summary()."
+    },
+    {
+      "old": "pystra.model.StochasticModel",
+      "current": "pystra.model.StochasticModel",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.model.StochasticModel.__init__",
+      "current": "pystra.model.StochasticModel.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.model.StochasticModel.addVariable",
+      "current": "pystra.model.StochasticModel.add_variable",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Adding marginals after explicit correlation or copula specification is rejected without changing the model; constants remain allowed."
+    },
+    {
+      "old": "pystra.model.StochasticModel.constants",
+      "current": "pystra.model.StochasticModel.constants",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.model.StochasticModel.names",
+      "current": "pystra.model.StochasticModel.names",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.model.StochasticModel.n_marg",
+      "current": "pystra.model.StochasticModel.n_marg",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.model.StochasticModel.marginal_distributions",
+      "current": "pystra.model.StochasticModel.marginal_distributions",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.model.StochasticModel.correlation",
+      "current": "pystra.model.StochasticModel.correlation",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.model.StochasticModel.correlation",
+      "current": "pystra.model.StochasticModel.correlation",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.model.StochasticModel.copula",
+      "current": "pystra.model.StochasticModel.copula",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.model.StochasticModel.copula",
+      "current": "pystra.model.StochasticModel.copula",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.model.StochasticModel.modified_correlation",
+      "current": "pystra.model.StochasticModel.modified_correlation",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.model.StochasticModel.modified_correlation",
+      "current": "pystra.model.StochasticModel.modified_correlation",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.model.StochasticModel.call_function",
+      "current": "pystra.model.StochasticModel.call_function",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.model.StochasticModel.call_function",
+      "current": "pystra.model.StochasticModel.call_function",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.model.StochasticModel.getConstants",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.model.StochasticModel"
+      ],
+      "notes": "Use the read-only constants mapping."
+    },
+    {
+      "old": "pystra.model.StochasticModel.getVariables",
+      "current": "pystra.model.StochasticModel.get_variables",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.model.StochasticModel.getVariable",
+      "current": "pystra.model.StochasticModel.variable",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.model.StochasticModel.getNames",
+      "current": "pystra.model.StochasticModel.get_names",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.model.StochasticModel.getLenMarginalDistributions",
+      "current": "pystra.model.StochasticModel.get_len_marginal_distributions",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.model.StochasticModel.getMarginalDistributions",
+      "current": "pystra.model.StochasticModel.get_marginal_distributions",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.model.StochasticModel.setMarginalDistributions",
+      "current": "pystra.model.StochasticModel.set_marginal_distributions",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.model.StochasticModel.setCorrelation",
+      "current": "pystra.model.StochasticModel.set_correlation",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Correlation dimensions must match the existing random variables; invalid input leaves dependence unchanged."
+    },
+    {
+      "old": "pystra.model.StochasticModel.getCorrelation",
+      "current": "pystra.model.StochasticModel.get_correlation",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.model.StochasticModel.setCopula",
+      "current": "pystra.model.StochasticModel.set_copula",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.model.StochasticModel.getCopula",
+      "current": "pystra.model.StochasticModel.get_copula",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.model.StochasticModel.getJointDistribution",
+      "current": "pystra.model.StochasticModel.get_joint_distribution",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.model.StochasticModel.setModifiedCorrelation",
+      "current": "pystra.model.StochasticModel.set_modified_correlation",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.model.StochasticModel.getModifiedCorrelation",
+      "current": "pystra.model.StochasticModel.get_modified_correlation",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.model.StochasticModel.addCallFunction",
+      "current": "pystra.model.StochasticModel.add_call_function",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.model.StochasticModel.getCallFunction",
+      "current": "pystra.model.StochasticModel.get_call_function",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.model.LimitState",
+      "current": "pystra.model.LimitState",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.model.LimitState.__init__",
+      "current": "pystra.model.LimitState.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.model.LimitState.getExpression",
+      "current": "pystra.model.LimitState.get_expression",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.model.LimitState.setExpression",
+      "current": "pystra.model.LimitState.set_expression",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.model.LimitState.evaluate_lsf",
+      "current": "pystra.model.LimitState.evaluate_lsf",
+      "kind": "callable",
+      "status": "unchanged",
+      "notes": "Nonfinite points, values and gradients or external evaluator exceptions raise AnalysisError. Malformed output shapes raise ModelError. Column-oriented FFD and DDM batches preserve point order. Signature binding errors raise ModelError; exceptions inside a correctly bound evaluator raise AnalysisError with their cause."
+    },
+    {
+      "old": "pystra.model.LimitState.evaluate_nogradient",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.model.LimitState.evaluate_lsf"
+      ],
+      "notes": "Private evaluation helpers of LimitState.evaluate_lsf in 2.0; the limit state keeps no evaluation state."
+    },
+    {
+      "old": "pystra.model.LimitState.evaluate_ffd",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.model.LimitState.evaluate_lsf"
+      ],
+      "notes": "Private evaluation helpers of LimitState.evaluate_lsf in 2.0; the limit state keeps no evaluation state."
+    },
+    {
+      "old": "pystra.model.LimitState.evaluate_ddm",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.model.LimitState.evaluate_lsf"
+      ],
+      "notes": "Private evaluation helpers of LimitState.evaluate_lsf in 2.0; the limit state keeps no evaluation state."
+    },
+    {
+      "old": "pystra.model.LimitState.compute_lsf",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.model.LimitState.evaluate_lsf"
+      ],
+      "notes": "Private evaluation helpers of LimitState.evaluate_lsf in 2.0; the limit state keeps no evaluation state."
+    },
+    {
+      "old": "pystra.quadrature.quadratureRule",
+      "current": "pystra._numerics.quadrature.quadrature_rule",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.sensitivity.SensitivityAnalysis",
+      "current": "pystra.reliability.sensitivity.SensitivityAnalysis",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.sensitivity.SensitivityAnalysis.__init__",
+      "current": "pystra.reliability.sensitivity.SensitivityAnalysis.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.sensitivity.SensitivityAnalysis.run",
+      "current": "pystra.reliability.sensitivity.SensitivityAnalysis.run",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.sensitivity.SensitivityAnalysis.run_form",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.reliability.sensitivity.SensitivityAnalysis.run"
+      ],
+      "notes": "The method and delta are constructor arguments; run() takes none."
+    },
+    {
+      "old": "pystra.sensitivity.SensitivityAnalysis.summary",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.SensitivityResult.to_dataframe"
+      ],
+      "notes": "Read the result record: to_dataframe()."
+    },
+    {
+      "old": "pystra.sensitivity.SensitivityAnalysis._numerical_sens",
+      "current": "pystra.reliability.sensitivity.SensitivityAnalysis._numerical_sens",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.sensitivity.SensitivityAnalysis._cf_sens",
+      "current": "pystra.reliability.sensitivity.SensitivityAnalysis._cf_sens",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.sensitivity.SensitivityAnalysis._compute_dR0_dtheta",
+      "current": "pystra.reliability.sensitivity.SensitivityAnalysis._compute_d_r0_dtheta",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.sensitivity.SensitivityAnalysis._select_nIP",
+      "current": "pystra.reliability.sensitivity.SensitivityAnalysis._select_n_ip",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.sorm.Sorm",
+      "current": "pystra.reliability.sorm.SORM",
+      "kind": "class",
+      "status": "renamed",
+      "notes": "Assigning form after construction selects the supplied FORM; None requests fresh internal FORM on every run. Correction probabilities, Mills ratios and equivalent beta use log space, retaining finite beta when the reported probability underflows."
+    },
+    {
+      "old": "pystra.sorm.Sorm.__init__",
+      "current": "pystra.reliability.sorm.SORM.__init__",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.sorm.Sorm._reset_results",
+      "current": "pystra.reliability.sorm.SORM._reset_results",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.sorm.Sorm._prepare_run",
+      "current": "pystra.reliability.sorm.SORM._prepare_run",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.sorm.Sorm.run",
+      "current": "pystra.reliability.sorm.SORM.run",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Internally generated FORM is refreshed each run. Supplied FORM requires the same model/expression and unchanged parameter/options state. Axis-aligned reference directions are supported."
+    },
+    {
+      "old": "pystra.sorm.Sorm.run_curvefit",
+      "current": "pystra.reliability.sorm.SORM._run_curvefit",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.sorm.Sorm.run_pointfit",
+      "current": "pystra.reliability.sorm.SORM._run_pointfit",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.sorm.Sorm._find_fitting_point",
+      "current": "pystra.reliability.sorm.SORM._find_fitting_point",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.sorm.Sorm._pf_breitung_pf",
+      "current": "pystra.reliability.sorm.SORM._pf_breitung_pf",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.sorm.Sorm._pf_breitung_m_pf",
+      "current": "pystra.reliability.sorm.SORM._pf_breitung_m_pf",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.sorm.Sorm.pf_breitung",
+      "current": "pystra.reliability.sorm.SORM._pf_breitung",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.sorm.Sorm.pf_breitung_m",
+      "current": "pystra.reliability.sorm.SORM._pf_breitung_m",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.sorm.Sorm.showResults",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.SORMResult"
+      ],
+      "notes": "Read the result record: summary()."
+    },
+    {
+      "old": "pystra.sorm.Sorm.showDetailedOutput",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.SORMResult"
+      ],
+      "notes": "Read the result record: summary() and to_dataframe()."
+    },
+    {
+      "old": "pystra.sorm.Sorm.computeHessian",
+      "current": "pystra.reliability.sorm.SORM._compute_hessian",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.sorm.Sorm.evaluateLSF",
+      "current": "pystra.reliability.sorm.SORM._evaluate_lsf",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.sorm.Sorm.orthonormal_matrix",
+      "current": "pystra.reliability.sorm.SORM._orthonormal_matrix",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.sorm.Sorm.gram_schmidt",
+      "current": "pystra.reliability.sorm.SORM._gram_schmidt",
+      "kind": "callable",
+      "status": "renamed",
+      "notes": "Private in 2.0: an implementation stage of run()."
+    },
+    {
+      "old": "pystra.ss.SubsetSimulation",
+      "current": "pystra.reliability.subset_simulation.SubsetSimulation",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ss.SubsetSimulation.__init__",
+      "current": "pystra.reliability.subset_simulation.SubsetSimulation.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ss.SubsetSimulation.run",
+      "current": "pystra.reliability.subset_simulation.SubsetSimulation.run",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ss.SubsetSimulation._finalise",
+      "current": "pystra.reliability.subset_simulation.SubsetSimulation._finalise",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ss.SubsetSimulation._eval_g_batch",
+      "current": "pystra.reliability.subset_simulation.SubsetSimulation._eval_g_batch",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ss.SubsetSimulation._mmh_step",
+      "current": "pystra.reliability.subset_simulation.SubsetSimulation._mmh_step",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.ss.SubsetSimulation.getBeta",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.SimulationResult"
+      ],
+      "notes": "Read the result record: beta (FORM's geometric index is design_index)."
+    },
+    {
+      "old": "pystra.ss.SubsetSimulation.getFailure",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.SimulationResult"
+      ],
+      "notes": "Read the result record: failure_probability."
+    },
+    {
+      "old": "pystra.ss.SubsetSimulation.showResults",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.SimulationResult"
+      ],
+      "notes": "Read the result record: summary()."
+    },
+    {
+      "old": "pystra.strong_maximum.StrongMaximumTest",
+      "current": "pystra.reliability.strong_maximum.StrongMaximumTest",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.strong_maximum.StrongMaximumTest.__init__",
+      "current": "pystra.reliability.strong_maximum.StrongMaximumTest.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.strong_maximum.StrongMaximumTest._positive_integer",
+      "current": "pystra.reliability.strong_maximum.StrongMaximumTest._positive_integer",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.strong_maximum.StrongMaximumTest._clear_results",
+      "current": "pystra.reliability.strong_maximum.StrongMaximumTest._clear_results",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.strong_maximum.StrongMaximumTest._evaluate",
+      "current": "pystra.reliability.strong_maximum.StrongMaximumTest._evaluate",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.strong_maximum.StrongMaximumTest.run",
+      "current": "pystra.reliability.strong_maximum.StrongMaximumTest.run",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.strong_maximum.StrongMaximumTest.getPoints",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.StrongMaximumResult"
+      ],
+      "notes": "Read the result record: points()."
+    },
+    {
+      "old": "pystra.strong_maximum.StrongMaximumTest.getValues",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.StrongMaximumResult"
+      ],
+      "notes": "Read the result record: limit_state_values and regions."
+    },
+    {
+      "old": "pystra.strong_maximum.StrongMaximumTest.showResults",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.StrongMaximumResult"
+      ],
+      "notes": "Read the result record: summary()."
+    },
+    {
+      "old": "pystra.system.Component",
+      "current": "pystra.systems.Component",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.Component.__init__",
+      "current": "pystra.systems.Component.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.Component.evaluate",
+      "current": "pystra.systems.Component.evaluate",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.Component.as_limit_state",
+      "current": "pystra.systems.Component.as_limit_state",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.Component.getLimitState",
+      "current": "pystra.systems.Component.get_limit_state",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.system.Component.iter_components",
+      "current": "pystra.systems.Component.iter_components",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.Component.components",
+      "current": "pystra.systems.Component.components",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.Component.failure_mask",
+      "current": "pystra.systems.Component.failure_mask",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.Component._filter_kwargs",
+      "current": "pystra.systems.Component._filter_kwargs",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.System",
+      "current": "pystra.systems.System",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.System.__init__",
+      "current": "pystra.systems.System.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.System.components",
+      "current": "pystra.systems.System.components",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.System.iter_components",
+      "current": "pystra.systems.System.iter_components",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.System.evaluate",
+      "current": "pystra.systems.System.evaluate",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.System.as_limit_state",
+      "current": "pystra.systems.System.as_limit_state",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.System.getLimitState",
+      "current": "pystra.systems.System.get_limit_state",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.system.System.component_values",
+      "current": "pystra.systems.System.component_values",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.System.component_failure_masks",
+      "current": "pystra.systems.System.component_failure_masks",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.System.failure_mask",
+      "current": "pystra.systems.System.failure_mask",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.System._combine",
+      "current": "pystra.systems.System._combine",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.SeriesSystem",
+      "current": "pystra.systems.SeriesSystem",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.SeriesSystem._combine",
+      "current": "pystra.systems.SeriesSystem._combine",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.ParallelSystem",
+      "current": "pystra.systems.ParallelSystem",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.ParallelSystem._combine",
+      "current": "pystra.systems.ParallelSystem._combine",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.KofNSystem",
+      "current": "pystra.systems.KOfNSystem",
+      "kind": "class",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.system.KofNSystem.__init__",
+      "current": "pystra.systems.KOfNSystem.__init__",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.system.KofNSystem._combine",
+      "current": "pystra.systems.KOfNSystem._combine",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.system.CutSetSystem",
+      "current": "pystra.systems.CutSetSystem",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.CutSetSystem.__init__",
+      "current": "pystra.systems.CutSetSystem.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.CutSetSystem._combine",
+      "current": "pystra.systems.CutSetSystem._combine",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.TieSetSystem",
+      "current": "pystra.systems.TieSetSystem",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.TieSetSystem.__init__",
+      "current": "pystra.systems.TieSetSystem.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.TieSetSystem._combine",
+      "current": "pystra.systems.TieSetSystem._combine",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system.ditlevsen_bounds",
+      "current": "pystra.systems.ditlevsen_bounds",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system._as_node",
+      "current": "pystra.systems._as_node",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system._as_limit_state",
+      "current": "pystra.systems._as_limit_state",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system._component_name",
+      "current": "pystra.systems._component_name",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system._call_signature",
+      "current": "pystra.systems._call_signature",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system._broadcast_values",
+      "current": "pystra.systems._broadcast_values",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system._unique_components",
+      "current": "pystra.systems._unique_components",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system._resolve_component_sets",
+      "current": "pystra.systems._resolve_component_sets",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system._component_catalogue",
+      "current": "pystra.systems._component_catalogue",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system._intersection_matrix",
+      "current": "pystra.systems._intersection_matrix",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system._ditlevsen_bounds_for_order",
+      "current": "pystra.systems._ditlevsen_bounds_for_order",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system._clip_probability",
+      "current": "pystra.systems._clip_probability",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system_form.SystemFORM",
+      "current": "pystra.reliability.system_form.SystemFORM",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system_form.SystemFORM.__init__",
+      "current": "pystra.reliability.system_form.SystemFORM.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system_form.SystemFORM._clear_results",
+      "current": "pystra.reliability.system_form.SystemFORM._clear_results",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system_form.SystemFORM._cdf",
+      "current": "pystra.reliability.system_form.SystemFORM._cdf",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system_form.SystemFORM.run",
+      "current": "pystra.reliability.system_form.SystemFORM.run",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.system_form.SystemFORM.getFailure",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.SystemFORMResult"
+      ],
+      "notes": "Read the result record: failure_probability."
+    },
+    {
+      "old": "pystra.system_form.SystemFORM.getBeta",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.SystemFORMResult"
+      ],
+      "notes": "Read the result record: beta (FORM's geometric index is design_index)."
+    },
+    {
+      "old": "pystra.system_form.SystemFORM.showResults",
+      "current": null,
+      "kind": "callable",
+      "status": "replaced",
+      "replacements": [
+        "pystra.results.SystemFORMResult"
+      ],
+      "notes": "Read the result record: summary()."
+    },
+    {
+      "old": "pystra.transformation.Transformation",
+      "current": "pystra.dependence.transformation.Transformation",
+      "kind": "class",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.transformation.Transformation.__init__",
+      "current": "pystra.dependence.transformation.Transformation.__init__",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.transformation.Transformation.x_to_u",
+      "current": "pystra.dependence.transformation.Transformation.x_to_u",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.transformation.Transformation.u_to_x",
+      "current": "pystra.dependence.transformation.Transformation.u_to_x",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.transformation.Transformation.jacobian",
+      "current": "pystra.dependence.transformation.Transformation.jacobian",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.transformation.Transformation.compute",
+      "current": "pystra.dependence.transformation.Transformation.compute",
+      "kind": "callable",
+      "status": "unchanged"
+    },
+    {
+      "old": "pystra.transformation.Transformation._computeCholesky",
+      "current": "pystra.dependence.transformation.Transformation._compute_cholesky",
+      "kind": "callable",
+      "status": "renamed"
+    },
+    {
+      "old": "pystra.transformation.Transformation._computeSVD",
+      "current": "pystra.dependence.transformation.Transformation._compute_svd",
+      "kind": "callable",
+      "status": "renamed"
+    }
+  ],
+  "active_learning_additions": {
+    "exports": [
+      "PCKrigingSurrogate",
+      "PCKrigingFitResult",
+      "EnsembleSurrogate",
+      "EnsembleLearningFunction",
+      "FBRLearning",
+      "BootstrapBounds",
+      "ImportanceSamplingEstimator",
+      "ImportanceSamplingDiagnostics"
+    ],
+    "import_module": "pystra.active_learning",
+    "named_surrogate": "pc_kriging",
+    "named_learning_function": "fbr",
+    "replicate_contract": "EnsembleSurrogate.predict_replicates: row-wise (n_points, n_replicates>=2), stable replicate columns across calls",
+    "new_history_field": "LearningStep.bootstrap_probability_band: optional immutable pair of actual replicate Pf extremes on fixed IID normal enrichment",
+    "default_change": "FBR defaults to BootstrapBounds; existing U/EFF defaults unchanged",
+    "restrictions": "BootstrapBounds requires an EnsembleSurrogate and fixed IID normal enrichment; spherical Student-t coordinates remain unsupported."
+  },
+  "baseline_context": "Integrated v2 development source, including feature PRs that remain unmerged in 1.x. Old names describe this numerical/refactoring checkpoint, not necessarily a released 1.x API.",
+  "plotting_additions": {
+    "module": "pystra.plotting",
+    "functions": [
+      "plot_limit_state",
+      "plot_form_geometry",
+      "plot_surrogate_slice",
+      "plot_learning_history",
+      "plot_pce_selection",
+      "plot_strong_maximum"
+    ],
+    "contract": "Functions return (figure, axes), accept existing axes, and do not run or refit analyses. Grid/slice true-model evaluations are explicit additional plotting cost; coordinates and diagnostic meanings are documented."
+  }
+}

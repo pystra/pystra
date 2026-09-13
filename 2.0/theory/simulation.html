@@ -1,0 +1,863 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Simulation methods &#8212; PySTRA 2.0.0a1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a54fd074" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../_static/documentation_options.js?v=944fa962"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=ccd31ad0"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'theory/simulation';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="System reliability" href="systems.html" />
+    <link rel="prev" title="FORM, SORM and design-point diagnostics" href="design_point_methods.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.0a1" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">These pages document PySTRA 2.0, which is in development. The stable 1.x documentation is at <a href="https://pystra.github.io/pystra/">pystra.github.io/pystra</a>.</div>
+</aside>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 2.0.0a1 documentation - Home"/>
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 2.0.0a1 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item"><a class="version-status" href="../install.html" aria-label="Documentation version 2.0.0a1: installation instructions">2.0.0a1 · development</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API reference
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="fundamentals.html">Structural reliability fundamentals</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="notation.html">Notation and probability spaces</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="transformations.html">Probability transformations and copulas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design_point_methods.html">FORM, SORM and design-point diagnostics</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Simulation methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systems.html">System reliability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="load_combinations.html">Load combinations and FBC processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_calibration.html">Code calibration using normalized reliability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="decisions.html">Design decisions and societal risk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="active_learning.html">Active-learning reliability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sensitivity.html">Reliability sensitivity</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../theory.html" class="nav-link">Theory</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Simulation methods</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="simulation-methods">
+<h1>Simulation methods<a class="headerlink" href="#simulation-methods" title="Link to this heading">#</a></h1>
+<p id="id1">Simulation estimates the event probability directly from sampled evaluations,
+including when a local design-point approximation is inadequate. The starting
+point is the probability integral in Equation <a class="reference internal" href="fundamentals.html#equation-eq-2-70">(2)</a>. Direct Monte Carlo
+is the basic estimator; importance sampling, line sampling and subset simulation
+seek to reduce the cost of rare-event estimation. <a class="reference internal" href="../references.html#nowak2000" id="id2"><span>[Nowak2000]</span></a> <a class="reference internal" href="../references.html#faber2009" id="id3"><span>[Faber2009]</span></a></p>
+<p>See <a class="reference internal" href="../guides/simulation.html"><span class="doc">Estimating failure probability by simulation</span></a> for the practical workflow and
+<a class="reference internal" href="design_point_methods.html"><span class="doc">FORM, SORM and design-point diagnostics</span></a> for the local approximations being compared.</p>
+<p>The principle of simulation methods is to carry out random sampling in the
+physical (or standardized) space. For each of the samples the limit state
+function is evaluated to figure out, whether the configuration is desired or
+undesired. The probability of failure <span class="math notranslate nohighlight">\(p_f\)</span> is estimated by the number
+of undesired configurations, respected to the total numbers of
+samples. <a class="reference internal" href="../references.html#lemaire2010" id="id4"><span>[Lemaire2010]</span></a></p>
+<p>For this analysis Equation <a class="reference internal" href="fundamentals.html#equation-eq-2-70">(2)</a> can be rewritten as</p>
+<div class="math notranslate nohighlight" id="equation-eq-2-91">
+<span class="eqno">(1)<a class="headerlink" href="#equation-eq-2-91" title="Link to this equation">#</a></span>\[        p_f = P(g({\bf X})\leq 0) = \iiint\limits_{g({\bf X})\leq 0}
+        I(g({\bf X})\leq 0) f_{{\bf X}}({\bf x}) d {\bf x}\]</div>
+<p>where <span class="math notranslate nohighlight">\(I\)</span> is an indicator function that is equals to 1 if <span class="math notranslate nohighlight">\(g({\bf
+X}) \leq 0\)</span> and otherwise 0. Equation <a class="reference internal" href="#equation-eq-2-91">(1)</a> can be interpreted as
+expected value of the indicator function. Therefore, the probability of
+failure can be estimated such as <a class="reference internal" href="../references.html#malioka2009" id="id5"><span>[Malioka2009]</span></a></p>
+<div class="math notranslate nohighlight" id="equation-eq-2-92">
+<span class="eqno">(2)<a class="headerlink" href="#equation-eq-2-92" title="Link to this equation">#</a></span>\[        \tilde{p}_f = \text{Ex}\left[I(g({\bf X})\leq 0)\right] =
+        \frac{1}{n}\sum_{i=1}^{n} I(g({\bf X})\leq 0)\]</div>
+<section id="crude-monte-carlo-simulation">
+<h2>Crude Monte Carlo simulation<a class="headerlink" href="#crude-monte-carlo-simulation" title="Link to this heading">#</a></h2>
+<p>The Crude Monte Carlo simulation (CMC) is the most simple form and corresponds
+to a direct application of Equation <a class="reference internal" href="#equation-eq-2-92">(2)</a>. A large number <span class="math notranslate nohighlight">\(n\)</span> of
+samples are simulated for the set of random variables <span class="math notranslate nohighlight">\(\bf X\)</span>. All
+samples that lead to a failure are counted <span class="math notranslate nohighlight">\(n_f\)</span> and after all
+simulations the probability of failure <span class="math notranslate nohighlight">\(p_f\)</span> may be estimated by
+<a class="reference internal" href="../references.html#faber2009" id="id6"><span>[Faber2009]</span></a></p>
+<div class="math notranslate nohighlight" id="equation-eq-2-93">
+<span class="eqno">(3)<a class="headerlink" href="#equation-eq-2-93" title="Link to this equation">#</a></span>\[        \tilde{p}_f = \frac{n_f}{n}\]</div>
+<p>Theoretically, an infinite number of simulations will provide an exact
+probability of failure. However, time and the power of computers are limited;
+therefore, a suitable amount of simulations <span class="math notranslate nohighlight">\(n\)</span> are required to achieve
+an acceptable level of accuracy. One possibility to reach such a level is to
+limit the coefficient of variation CoV for the probability of
+failure. <a class="reference internal" href="../references.html#lemaire2010" id="id7"><span>[Lemaire2010]</span></a></p>
+<div class="math notranslate nohighlight" id="equation-eq-2-94">
+<span class="eqno">(4)<a class="headerlink" href="#equation-eq-2-94" title="Link to this equation">#</a></span>\[        \text{CoV} = \sqrt{\frac{1-p_f}{n p_f}} \approx \frac{1}{\sqrt{n
+        p_f}} \qquad \text{for} \quad p_f \to 0\]</div>
+</section>
+<section id="importance-sampling">
+<h2>Importance sampling<a class="headerlink" href="#importance-sampling" title="Link to this heading">#</a></h2>
+<p>To decrease the number of simulations and the coefficient of variation, other
+methods can be performed. One commonly applied method is the Importance
+Sampling simulation method (IS). Here the prior information about the failure
+surface is added to Equation <a class="reference internal" href="#equation-eq-2-91">(1)</a></p>
+<div class="math notranslate nohighlight" id="equation-eq-2-95">
+<span class="eqno">(5)<a class="headerlink" href="#equation-eq-2-95" title="Link to this equation">#</a></span>\[        p_f = P(g({\bf X})\leq 0) = \iiint\limits_{g({\bf X})\leq 0}
+        I(g({\bf X})\leq 0) \frac{f_{{\bf X}}({\bf x})}{h_{{\bf X}}({\bf
+        x})} h_{{\bf X}}({\bf x}) d {\bf x}\]</div>
+<p>where <span class="math notranslate nohighlight">\(h_{X} ({\bf X})\)</span> is the importance sampling probability
+density function of <span class="math notranslate nohighlight">\(\bf X\)</span>. Consequently Equation <a class="reference internal" href="#equation-eq-2-92">(2)</a> is
+extended to <a class="reference internal" href="../references.html#faber2009" id="id8"><span>[Faber2009]</span></a></p>
+<div class="math notranslate nohighlight" id="equation-eq-2-96">
+<span class="eqno">(6)<a class="headerlink" href="#equation-eq-2-96" title="Link to this equation">#</a></span>\[        \tilde{p}_f = \text{Ex}\left[I(g({\bf X})\leq 0) \frac{f_{{\bf
+        X}}({\bf x})}{h_{{\bf X}}({\bf x})}\right] =
+        \frac{1}{n}\sum_{i=1}^{n} I(g({\bf X})\leq 0)\frac{f_{{\bf X}}({\bf
+        x})}{h_{{\bf X}}({\bf x})}\]</div>
+<p>The key to this approach is to choose <span class="math notranslate nohighlight">\(h_{X} ({\bf X})\)</span> so that samples
+are obtained more frequently from the failure domain. For this reason, often a
+FORM (or SORM) analysis is performed to find a prior design point. [Baker2010]</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/f-02-10-a.png"><img alt="MC a" height="282" src="../_images/f-02-10-a.png" width="230" />
+</a>
+</figure>
+<p>Representation of a physical space with a set <span class="math notranslate nohighlight">\({\bf X}\)</span> of any two
+random variables. The shaded area denotes the failure domain and <cite>g({bf X}) =
+0</cite> the failure surface.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/f-02-10-b.png"><img alt="MC b" height="280" src="../_images/f-02-10-b.png" width="230" />
+</a>
+</figure>
+<p>For the CMC method every dot corresponds to one configuration of the random
+variables <span class="math notranslate nohighlight">\({\bf X}\)</span>. Dots in shaded areas lead to a failure.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/f-02-10-c.png"><img alt="MC c" height="280" src="../_images/f-02-10-c.png" width="235" />
+</a>
+</figure>
+<p>The IS simulation method uses a distribution centered on the design point
+<span class="math notranslate nohighlight">\({\bf x}^*\)</span>, is obtained from a FORM (or SORM) analysis. More dots in
+the failure domain can be observed.</p>
+</section>
+<section id="line-sampling">
+<h2>Line sampling<a class="headerlink" href="#line-sampling" title="Link to this heading">#</a></h2>
+<p>Line Sampling (LS) is a variance-reduction technique that exploits the
+important direction <span class="math notranslate nohighlight">\(\boldsymbol{\alpha}\)</span> identified by FORM to reduce
+the n-dimensional sampling problem to a family of one-dimensional problems
+<a class="reference internal" href="../references.html#koutsourelakis2004" id="id9"><span>[Koutsourelakis2004]</span></a>.</p>
+<p>The important direction <span class="math notranslate nohighlight">\(\boldsymbol{\alpha}\)</span> is the unit vector from
+the origin in standard-normal space toward the most probable failure point.
+For each of <span class="math notranslate nohighlight">\(N\)</span> random samples <span class="math notranslate nohighlight">\(\mathbf{u}_i\)</span> drawn from
+<span class="math notranslate nohighlight">\(\mathcal{N}(\mathbf{0}, \mathbf{I})\)</span>, the component along
+<span class="math notranslate nohighlight">\(\boldsymbol{\alpha}\)</span> is projected out to obtain the foot-point</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{v}_i = \mathbf{u}_i
+    - \left(\mathbf{u}_i^T \boldsymbol{\alpha}\right) \boldsymbol{\alpha}\]</div>
+<p>which lies in the <span class="math notranslate nohighlight">\((n-1)\)</span>-dimensional hyperplane perpendicular to
+<span class="math notranslate nohighlight">\(\boldsymbol{\alpha}\)</span>. A root-finding step then locates the scalar
+<span class="math notranslate nohighlight">\(c_i\)</span> such that</p>
+<div class="math notranslate nohighlight">
+\[g\!\left(\mathbf{v}_i + c_i\,\boldsymbol{\alpha}\right) = 0\]</div>
+<p>The failure probability is estimated as the average of the one-dimensional
+conditional failure probabilities along each line:</p>
+<div class="math notranslate nohighlight" id="equation-eq-ls-pf">
+<span class="eqno">(7)<a class="headerlink" href="#equation-eq-ls-pf" title="Link to this equation">#</a></span>\[\hat{p}_f = \frac{1}{N} \sum_{i=1}^{N} \Phi(-c_i)\]</div>
+<p>where <span class="math notranslate nohighlight">\(\Phi\)</span> is the standard normal CDF.  Each term
+<span class="math notranslate nohighlight">\(\Phi(-c_i)\)</span> is the probability that a point drawn from
+<span class="math notranslate nohighlight">\(\mathcal{N}(0,1)\)</span> along the <span class="math notranslate nohighlight">\(i\)</span>-th line lies in the failure
+domain.</p>
+<p>The variance of the estimator is</p>
+<div class="math notranslate nohighlight">
+\[\widehat{\operatorname{Var}}\!\left[\hat{p}_f\right]
+    = \frac{1}{N}\,\operatorname{Var}\!\left[\Phi(-c_i)\right]\]</div>
+<p>giving a coefficient of variation</p>
+<div class="math notranslate nohighlight">
+\[\text{CoV} = \frac{\operatorname{Std}\!\left[\Phi(-c_i)\right]}{\sqrt{N}\,\hat{p}_f}\]</div>
+<p>Line Sampling is particularly efficient when the failure surface is
+nearly planar near the design point, because all <span class="math notranslate nohighlight">\(c_i\)</span> are then
+close to <span class="math notranslate nohighlight">\(\beta_{\text{FORM}}\)</span> and
+<span class="math notranslate nohighlight">\(\operatorname{Var}[\Phi(-c_i)]\)</span> is small.</p>
+</section>
+<section id="subset-simulation">
+<h2>Subset simulation<a class="headerlink" href="#subset-simulation" title="Link to this heading">#</a></h2>
+<p>Subset Simulation (SS) is an adaptive simulation method that decomposes the
+rare failure event <span class="math notranslate nohighlight">\(F = \{g(\mathbf{u}) \le 0\}\)</span> into a sequence of
+more frequent nested intermediate events <a class="reference internal" href="../references.html#aubeck2001" id="id10"><span>[AuBeck2001]</span></a>:</p>
+<div class="math notranslate nohighlight">
+\[F_1 \supset F_2 \supset \cdots \supset F_m = F\]</div>
+<p>where <span class="math notranslate nohighlight">\(F_j = \{g(\mathbf{u}) \le y_j\}\)</span> and the thresholds satisfy
+<span class="math notranslate nohighlight">\(y_1 &gt; y_2 &gt; \cdots &gt; y_m = 0\)</span>.  By the chain rule of probability,</p>
+<div class="math notranslate nohighlight" id="equation-eq-ss-pf">
+<span class="eqno">(8)<a class="headerlink" href="#equation-eq-ss-pf" title="Link to this equation">#</a></span>\[p_f = P(F_1) \prod_{j=2}^{m} P(F_j \mid F_{j-1})\]</div>
+<p>Each conditional probability is targeted at a user-specified level
+<span class="math notranslate nohighlight">\(p_0\)</span> (typically 0.1), making every factor in the product relatively
+large and easy to estimate.</p>
+<p><strong>Algorithm</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Level 0</strong> — Generate <span class="math notranslate nohighlight">\(N\)</span> samples from
+<span class="math notranslate nohighlight">\(\mathcal{N}(\mathbf{0}, \mathbf{I})\)</span> and evaluate the LSF.
+Choose <span class="math notranslate nohighlight">\(y_1\)</span> as the <span class="math notranslate nohighlight">\(p_0\)</span>-th quantile of the LSF values,
+so that <span class="math notranslate nohighlight">\(N p_0\)</span> samples satisfy <span class="math notranslate nohighlight">\(g \le y_1\)</span>.  If
+<span class="math notranslate nohighlight">\(y_1 \le 0\)</span>, the failure probability is estimated directly as
+<span class="math notranslate nohighlight">\(\hat{p}_f = N_{\text{fail}} / N\)</span>.</p></li>
+<li><p><strong>Levels</strong> <span class="math notranslate nohighlight">\(j \ge 1\)</span> — Use the <span class="math notranslate nohighlight">\(N p_0\)</span> samples satisfying
+<span class="math notranslate nohighlight">\(g \le y_{j-1}\)</span> as seeds for Modified Metropolis–Hastings (MMH)
+chains.  Generate <span class="math notranslate nohighlight">\(N\)</span> new samples distributed approximately as
+<span class="math notranslate nohighlight">\(\mathcal{N}(\mathbf{0}, \mathbf{I})\)</span> conditioned on
+<span class="math notranslate nohighlight">\(g \le y_{j-1}\)</span>.  Set <span class="math notranslate nohighlight">\(y_j\)</span> as the <span class="math notranslate nohighlight">\(p_0\)</span>-th quantile
+of the new LSF values.  Stop when <span class="math notranslate nohighlight">\(y_j \le 0\)</span>.</p></li>
+<li><p><strong>Final level</strong> — Count the actual failures (<span class="math notranslate nohighlight">\(g \le 0\)</span>) in the last
+conditional sample: <span class="math notranslate nohighlight">\(\hat{p}_m = N_{\text{fail}} / N\)</span>.</p></li>
+<li><p><strong>Estimate</strong> — <span class="math notranslate nohighlight">\(\hat{p}_f = \hat{p}_1 \hat{p}_2 \cdots \hat{p}_m\)</span></p></li>
+</ol>
+<p><strong>Modified Metropolis–Hastings (MMH)</strong></p>
+<p>To generate samples from <span class="math notranslate nohighlight">\(\mathcal{N}(\mathbf{0}, \mathbf{I})\)</span>
+conditioned on <span class="math notranslate nohighlight">\(g(\mathbf{u}) \le y_j\)</span>, the MMH algorithm applies
+Metropolis updates component-wise.  For each component <span class="math notranslate nohighlight">\(d\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\xi_d \sim u_d + \sigma\, \mathcal{U}(-1, 1)\]</div>
+<p>with acceptance probability</p>
+<div class="math notranslate nohighlight">
+\[\alpha_d = \min\!\left(1,\; e^{-(\xi_d^2 - u_d^2)/2}\right)\]</div>
+<p>After assembling all accepted components into a candidate
+<span class="math notranslate nohighlight">\(\mathbf{u}'\)</span>, the entire vector is accepted only if
+<span class="math notranslate nohighlight">\(g(\mathbf{u}') \le y_j\)</span>; otherwise the current state is retained.
+This ensures the stationary distribution is
+<span class="math notranslate nohighlight">\(\mathcal{N}(\mathbf{0}, \mathbf{I}) \mid g(\mathbf{u}) \le y_j\)</span>.</p>
+<p><strong>Coefficient of variation</strong></p>
+<p>Ignoring correlations within the Markov chains (a lower bound on the true
+variance), the CoV of the estimator is approximated by <a class="reference internal" href="../references.html#aubeck2001" id="id11"><span>[AuBeck2001]</span></a></p>
+<div class="math notranslate nohighlight">
+\[\delta^2(\hat{p}_f) \approx \sum_{j=1}^{m} \frac{1 - \hat{p}_j}{N\,\hat{p}_j}\]</div>
+<p>Subset Simulation is particularly effective for small failure probabilities
+(roughly <span class="math notranslate nohighlight">\(p_f &lt; 10^{-3}\)</span>), where crude Monte Carlo would require an
+impractically large number of samples.  A benchmark comparison of simulation
+methods on high-dimensional problems is given in <a class="reference internal" href="../references.html#schueller2007" id="id12"><span>[Schueller2007]</span></a>.</p>
+<p><strong>Use this method:</strong> <a class="reference internal" href="../guides/simulation.html"><span class="doc">Estimating failure probability by simulation</span></a> · <a class="reference internal" href="../notebooks/ex_simulation.html"><span class="doc">Simulation methods for reliability analysis</span></a> · <a class="reference internal" href="../api/reliability.html"><span class="doc">Reliability algorithms and results</span></a></p>
+<p>For coordinate conventions, see <a class="reference internal" href="notation.html"><span class="doc">Notation and probability spaces</span></a>.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="design_point_methods.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">FORM, SORM and design-point diagnostics</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="systems.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">System reliability</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#crude-monte-carlo-simulation">Crude Monte Carlo simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling">Importance sampling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#line-sampling">Line sampling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subset-simulation">Subset simulation</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/pystra/pystra/edit/v2.0/docs/source/theory/simulation.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2021-2026, The PySTRA Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><nav aria-label="Project links" class="project-links">
+  <a href="../migrating.html">Migration</a>
+  <a href="../citing.html">Cite PySTRA</a>
+  <a href="../developer.html">Contributing</a>
+  <a href="https://pystra.github.io/pystra/">Stable 1.x documentation</a>
+</nav></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

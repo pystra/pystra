@@ -1,0 +1,950 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Design decisions and societal risk &#8212; PySTRA 2.0.0a1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a54fd074" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../_static/documentation_options.js?v=944fa962"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=ccd31ad0"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'theory/decisions';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Active-learning reliability" href="active_learning.html" />
+    <link rel="prev" title="Code calibration using normalized reliability" href="code_calibration.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.0a1" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">These pages document PySTRA 2.0, which is in development. The stable 1.x documentation is at <a href="https://pystra.github.io/pystra/">pystra.github.io/pystra</a>.</div>
+</aside>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 2.0.0a1 documentation - Home"/>
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 2.0.0a1 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item"><a class="version-status" href="../install.html" aria-label="Documentation version 2.0.0a1: installation instructions">2.0.0a1 · development</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API reference
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="fundamentals.html">Structural reliability fundamentals</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="notation.html">Notation and probability spaces</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="transformations.html">Probability transformations and copulas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design_point_methods.html">FORM, SORM and design-point diagnostics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulation.html">Simulation methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systems.html">System reliability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="load_combinations.html">Load combinations and FBC processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_calibration.html">Code calibration using normalized reliability</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Design decisions and societal risk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="active_learning.html">Active-learning reliability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sensitivity.html">Reliability sensitivity</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../theory.html" class="nav-link">Theory</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Design decisions and societal risk</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="design-decisions-and-societal-risk">
+<h1>Design decisions and societal risk<a class="headerlink" href="#design-decisions-and-societal-risk" title="Link to this heading">#</a></h1>
+<section id="design-decision-optimization-and-societal-risk-acceptance">
+<h2>Design Decision optimization and Societal Risk Acceptance<a class="headerlink" href="#design-decision-optimization-and-societal-risk-acceptance" title="Link to this heading">#</a></h2>
+<p>Design decision optimization with societal risk acceptance is normally applied
+after a reliability analysis has estimated <span class="math notranslate nohighlight">\(p_f\)</span> or <span class="math notranslate nohighlight">\(\beta\)</span>.  It
+does not require a different FORM, SORM, or simulation model.  Instead, an
+economic objective is evaluated subject to a societal acceptability criterion.
+This follows the risk-based decision framing used in the JCSS risk assessment
+guidance <a class="reference internal" href="../references.html#jcss2008riskassessment" id="id1"><span>[JCSS2008RiskAssessment]</span></a> <a class="reference internal" href="../references.html#kroonmaes2008riskframework" id="id2"><span>[KroonMaes2008RiskFramework]</span></a> and the
+risk-informed decision principles codified in ISO 2394 <a class="reference internal" href="../references.html#iso2394" id="id3"><span>[ISO2394]</span></a>.
+Pystra’s initial DDO criterion uses the life quality index (LQI) to define a
+minimum acceptable life-safety level with societal willingness to pay (SWTP) as
+the life-safety valuation, following the LQI method and the JCSS
+risk-assessment background documents and examples <a class="reference internal" href="../references.html#nathwani1997lqi" id="id4"><span>[Nathwani1997LQI]</span></a>
+<a class="reference internal" href="../references.html#nathwani2009lifequality" id="id5"><span>[Nathwani2009LifeQuality]</span></a> <a class="reference internal" href="../references.html#rackwitz2002lqi" id="id6"><span>[Rackwitz2002LQI]</span></a> <a class="reference internal" href="../references.html#rackwitz2008lqi" id="id7"><span>[Rackwitz2008LQI]</span></a>
+<a class="reference internal" href="../references.html#streicher2008lqi" id="id8"><span>[Streicher2008LQI]</span></a> <a class="reference internal" href="../references.html#schubert2009lqi" id="id9"><span>[Schubert2009LQI]</span></a> <a class="reference internal" href="../references.html#vancoile2019alarp" id="id10"><span>[VanCoile2019ALARP]</span></a>.</p>
+<p>For life-safety problems, the LQI literature expresses the societal willingness
+to pay (SWTP) to save one statistical life as a function of the gross domestic
+product available for risk reduction, the LQI work–leisure parameter, and a
+demographic life-time constant; mortality enters through the demographic
+constant rather than through that parameter.  In the notation used by Rackwitz,
+this is of the form</p>
+<div class="math notranslate nohighlight" id="equation-eq-lqi-swtp">
+<span class="eqno">(1)<a class="headerlink" href="#equation-eq-lqi-swtp" title="Link to this equation">#</a></span>\[\mathrm{SWTP}_x = \frac{g}{q} C_x\]</div>
+<p>where <span class="math notranslate nohighlight">\(g\)</span> is the income or GDP measure available for risk reduction,
+<span class="math notranslate nohighlight">\(q\)</span> is the dimensionless LQI work–leisure (income-elasticity) parameter
+(typically about 0.1–0.2, e.g. 0.175 in Schubert and Faber, 2009; it is <em>not</em>
+an annual mortality rate), and <span class="math notranslate nohighlight">\(C_x\)</span> depends on the mortality reduction
+scheme, discounting, and the predictive cohort life table
+<a class="reference internal" href="../references.html#rackwitz2004discounting" id="id11"><span>[Rackwitz2004Discounting]</span></a>.  In <a class="reference internal" href="../gen/pystra.decision.ddo.SWTP.html#pystra.decision.ddo.SWTP.from_lqi" title="pystra.decision.ddo.SWTP.from_lqi"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_lqi()</span></code></a> this parameter
+is named <code class="docutils literal notranslate"><span class="pre">work_leisure_parameter</span></code>.  This SWTP interpretation is developed in the LQI literature
+<a class="reference internal" href="../references.html#pandeynathwani2004lqi" id="id12"><span>[PandeyNathwani2004LQI]</span></a> <a class="reference internal" href="../references.html#pandeynathwanilind2006lqi" id="id13"><span>[PandeyNathwaniLind2006LQI]</span></a> and used by
+Rackwitz for structural reliability optimization and acceptability
+<a class="reference internal" href="../references.html#rackwitz2002lqi" id="id14"><span>[Rackwitz2002LQI]</span></a>.  The <code class="docutils literal notranslate"><span class="pre">ra.decision.SWTP.from_lqi</span></code> helper
+(<a class="reference internal" href="../gen/pystra.decision.ddo.SWTP.html#pystra.decision.ddo.SWTP.from_lqi" title="pystra.decision.ddo.SWTP.from_lqi"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_lqi()</span></code></a>) implements the relationship for
+user-supplied demographic values.</p>
+<p>Pystra also includes a small source-backed country table from Rackwitz’s JCSS
+background document <a class="reference internal" href="../references.html#rackwitz2008lqi" id="id15"><span>[Rackwitz2008LQI]</span></a>.  The anchor values are the
+<span class="math notranslate nohighlight">\(G_{\Delta \bar{l}}\)</span> column in Table 7, in millions of 1999 PPPUS$:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id24">
+<caption><span class="caption-text">Built-in SWTP country values</span><a class="headerlink" href="#id24" title="Link to this table">#</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Code</p></th>
+<th class="head"><p>Country</p></th>
+<th class="head"><p>SWTP [10<sup>6</sup> PPPUS$]</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>CA</p></td>
+<td><p>Canada</p></td>
+<td><p>1.8</p></td>
+</tr>
+<tr class="row-odd"><td><p>US</p></td>
+<td><p>USA</p></td>
+<td><p>2.1</p></td>
+</tr>
+<tr class="row-even"><td><p>AT</p></td>
+<td><p>Austria</p></td>
+<td><p>1.9</p></td>
+</tr>
+<tr class="row-odd"><td><p>BE</p></td>
+<td><p>Belgium</p></td>
+<td><p>2.4</p></td>
+</tr>
+<tr class="row-even"><td><p>CZ</p></td>
+<td><p>Czech Republic</p></td>
+<td><p>0.54</p></td>
+</tr>
+<tr class="row-odd"><td><p>DK</p></td>
+<td><p>Denmark</p></td>
+<td><p>1.7</p></td>
+</tr>
+<tr class="row-even"><td><p>FI</p></td>
+<td><p>Finland</p></td>
+<td><p>1.3</p></td>
+</tr>
+<tr class="row-odd"><td><p>FR</p></td>
+<td><p>France</p></td>
+<td><p>1.9</p></td>
+</tr>
+<tr class="row-even"><td><p>DE</p></td>
+<td><p>Germany</p></td>
+<td><p>1.9</p></td>
+</tr>
+<tr class="row-odd"><td><p>IT</p></td>
+<td><p>Italy</p></td>
+<td><p>1.8</p></td>
+</tr>
+<tr class="row-even"><td><p>NL</p></td>
+<td><p>Netherlands</p></td>
+<td><p>2.8</p></td>
+</tr>
+<tr class="row-odd"><td><p>NO</p></td>
+<td><p>Norway</p></td>
+<td><p>1.8</p></td>
+</tr>
+<tr class="row-even"><td><p>ES</p></td>
+<td><p>Spain</p></td>
+<td><p>1.3</p></td>
+</tr>
+<tr class="row-odd"><td><p>SE</p></td>
+<td><p>Sweden</p></td>
+<td><p>1.5</p></td>
+</tr>
+<tr class="row-even"><td><p>CH</p></td>
+<td><p>Switzerland</p></td>
+<td><p>1.8</p></td>
+</tr>
+<tr class="row-odd"><td><p>GB</p></td>
+<td><p>United Kingdom</p></td>
+<td><p>1.7</p></td>
+</tr>
+<tr class="row-even"><td><p>JP</p></td>
+<td><p>Japan</p></td>
+<td><p>1.3</p></td>
+</tr>
+<tr class="row-odd"><td><p>NZ</p></td>
+<td><p>New Zealand</p></td>
+<td><p>1.3</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The anchor table is intentionally not overwritten with newer values.  For
+current studies, <a class="reference internal" href="../gen/pystra.decision.ddo.index_swtp_record.html#pystra.decision.ddo.index_swtp_record" title="pystra.decision.ddo.index_swtp_record"><code class="xref py py-func docutils literal notranslate"><span class="pre">index_swtp_record()</span></code></a> and
+<code class="docutils literal notranslate"><span class="pre">swtp_table(indexed=True)</span></code> return a separately traceable indexed table.
+High-level country-based LQI construction requires users to choose
+<code class="docutils literal notranslate"><span class="pre">indexed=True</span></code> or <code class="docutils literal notranslate"><span class="pre">indexed=False</span></code> explicitly.  The built-in indexed view
+uses the World Bank WDI GDP per capita PPP indicator <code class="docutils literal notranslate"><span class="pre">NY.GDP.PCAP.PP.CD</span></code> to
+scale each Rackwitz anchor value from 1999 to 2024 <a class="reference internal" href="../references.html#worldbankwdi" id="id16"><span>[WorldBankWDI]</span></a>.  This is a
+practical update of the LQI income term <span class="math notranslate nohighlight">\(g\)</span>; it is not a substitute for a
+full recalculation of mortality tables, discounting, and age averaging.</p>
+<p>Target reliabilities may be taken from published tables or calculated from an
+explicit decision model.  Rackwitz <a class="reference internal" href="../references.html#rackwitz2000codemaking" id="id17"><span>[Rackwitz2000CodeMaking]</span></a> formulates the
+code-making problem as an economic optimization in which the annual failure
+rate is the natural reliability measure.  Steenbergen, Rózsás, and
+Vrouwenvelder <a class="reference internal" href="../references.html#steenbergen2018target" id="id18"><span>[Steenbergen2018Target]</span></a> revisit the same framework and
+emphasize annual failure rates as a way to compare targets across design and
+remaining working lives.  In normalized form, the Rackwitz/Steenbergen model
+implemented by <a class="reference internal" href="../gen/pystra.decision.ddo.RackwitzTargetModel.html#pystra.decision.ddo.RackwitzTargetModel" title="pystra.decision.ddo.RackwitzTargetModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">RackwitzTargetModel</span></code></a> maximizes</p>
+<div class="math notranslate nohighlight" id="equation-eq-rackwitz-target-objective">
+<span class="eqno">(2)<a class="headerlink" href="#equation-eq-rackwitz-target-objective" title="Link to this equation">#</a></span>\[Z(p) = B - C(p)
+       - U\frac{\lambda}{\gamma} P_{f,\mathrm{SLS}}(p)
+       - (C(p)+A)\frac{\omega}{\gamma}
+       - (C(p)+H)\frac{\lambda}{\gamma} P_{f,\mathrm{ULS}}(p)\]</div>
+<p>where <span class="math notranslate nohighlight">\(p = E[R]/E[S]\)</span>, <span class="math notranslate nohighlight">\(C(p)=C_0+C_1p\)</span>, <span class="math notranslate nohighlight">\(\gamma\)</span> is the
+discount or interest rate, <span class="math notranslate nohighlight">\(\omega\)</span> is the obsolescence rate, and
+<span class="math notranslate nohighlight">\(\lambda\)</span> is the load occurrence rate.  Pystra uses a closed-form
+lognormal resistance-demand model for <span class="math notranslate nohighlight">\(P_f(p)\)</span> in this calibration.</p>
+<p>Every cost is normalized by the base construction cost <span class="math notranslate nohighlight">\(C_0\)</span>
+(<code class="docutils literal notranslate"><span class="pre">base_cost</span></code>), so the model’s cost inputs are <em>ratios</em> to <span class="math notranslate nohighlight">\(C_0\)</span>, mapped
+to <a class="reference internal" href="../gen/pystra.decision.ddo.RackwitzTargetModel.html#pystra.decision.ddo.RackwitzTargetModel" title="pystra.decision.ddo.RackwitzTargetModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">RackwitzTargetModel</span></code></a> parameters as follows.</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id25">
+<caption><span class="caption-text">Normalized cost inputs (fractions of <span class="math notranslate nohighlight">\(C_0\)</span>)</span><a class="headerlink" href="#id25" title="Link to this table">#</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Symbol</p></th>
+<th class="head"><p>Parameter</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(C_1/C_0\)</span></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">safety_cost_ratio</span></code></p></td>
+<td><p>marginal safety cost per unit of <span class="math notranslate nohighlight">\(p\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(H/C_0\)</span></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">failure_cost_ratio</span></code></p></td>
+<td><p>failure (ULS) consequence cost</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(U/C_0\)</span></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">serviceability_cost_ratio</span></code></p></td>
+<td><p>serviceability (SLS) cost</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(A/C_0\)</span></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">demolition_cost_ratio</span></code></p></td>
+<td><p>demolition / obsolescence cost</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(b/C_0\)</span></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">benefit_rate</span></code></p></td>
+<td><p>constant annual benefit (independent of <span class="math notranslate nohighlight">\(p\)</span>)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The rates <span class="math notranslate nohighlight">\(\gamma\)</span>, <span class="math notranslate nohighlight">\(\omega\)</span>, and <span class="math notranslate nohighlight">\(\lambda\)</span> are
+<code class="docutils literal notranslate"><span class="pre">interest_rate</span></code>, <code class="docutils literal notranslate"><span class="pre">obsolescence_rate</span></code>, and <code class="docutils literal notranslate"><span class="pre">load_occurrence_rate</span></code>.  Because
+the objective is normalized by <span class="math notranslate nohighlight">\(C_0\)</span>, the resulting target table depends
+only on these relative cost and consequence ratios, not on a particular
+jurisdiction; the calibrated classes can be compared with the rounded target
+reliabilities tabulated in the JCSS Probabilistic Model Code <a class="reference internal" href="../references.html#jcsspmc2001" id="id19"><span>[JCSSPMC2001]</span></a> and
+ISO 2394 <a class="reference internal" href="../references.html#iso2394" id="id20"><span>[ISO2394]</span></a>.  A table for other classes is recalculated by passing
+<code class="docutils literal notranslate"><span class="pre">safety_costs</span></code> (the <span class="math notranslate nohighlight">\(C_1/C_0\)</span> values) and <code class="docutils literal notranslate"><span class="pre">failure_costs</span></code> (the
+<span class="math notranslate nohighlight">\(H/C_0\)</span> values) to
+<a class="reference internal" href="../gen/pystra.decision.ddo.RackwitzTargetModel.html#pystra.decision.ddo.RackwitzTargetModel.table" title="pystra.decision.ddo.RackwitzTargetModel.table"><code class="xref py py-meth docutils literal notranslate"><span class="pre">table()</span></code></a>.</p>
+<p>Fischer, Barnardo, and Faber <a class="reference internal" href="../references.html#fischer2012lqi" id="id21"><span>[Fischer2012LQI]</span></a> provide a convenient LQI route
+for turning an SWTP value and expected fatalities given failure into minimum
+target reliabilities; the marginal life-saving cost underlying this route is
+examined in detail by Fischer et al. <a class="reference internal" href="../references.html#fischer2013marginalcost" id="id22"><span>[Fischer2013MarginalCost]</span></a>.  For medium
+variability, define the safety cost ratio</p>
+<div class="math notranslate nohighlight" id="equation-eq-lqi-k1">
+<span class="eqno">(3)<a class="headerlink" href="#equation-eq-lqi-k1" title="Link to this equation">#</a></span>\[K_1 = \frac{C_1(\gamma_S + \omega)}
+           {\mathrm{SWTP}\,N_F}\]</div>
+<p>where <span class="math notranslate nohighlight">\(C_1(\gamma_S + \omega)\)</span> is the marginal safety cost term and
+<span class="math notranslate nohighlight">\(N_F\)</span> is the expected number of fatalities given failure.  The
+corresponding target classes are approximated as:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id26">
+<caption><span class="caption-text">LQI target reliability classes for medium variability</span><a class="headerlink" href="#id26" title="Link to this table">#</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Safety cost ratio <span class="math notranslate nohighlight">\(K_1\)</span></p></th>
+<th class="head"><p>Cost class</p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(\beta\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(p_f\)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(10^{-3}\)</span> to <span class="math notranslate nohighlight">\(10^{-2}\)</span></p></td>
+<td><p>Large</p></td>
+<td><p>3.1</p></td>
+<td><p><span class="math notranslate nohighlight">\(10^{-3}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(10^{-4}\)</span> to <span class="math notranslate nohighlight">\(10^{-3}\)</span></p></td>
+<td><p>Medium</p></td>
+<td><p>3.7</p></td>
+<td><p><span class="math notranslate nohighlight">\(10^{-4}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(10^{-5}\)</span> to <span class="math notranslate nohighlight">\(10^{-4}\)</span></p></td>
+<td><p>Small</p></td>
+<td><p>4.2</p></td>
+<td><p><span class="math notranslate nohighlight">\(10^{-5}\)</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>For normal studies, <code class="docutils literal notranslate"><span class="pre">ra.decision.LQI</span></code> (<a class="reference internal" href="../gen/pystra.decision.ddo.LQI.html#pystra.decision.ddo.LQI" title="pystra.decision.ddo.LQI"><code class="xref py py-class docutils literal notranslate"><span class="pre">LQI</span></code></a>) builds this target
+directly from a country SWTP value or a user-supplied SWTP value, expected
+fatalities given failure or an explicit consequence model, and marginal safety
+cost.  <code class="docutils literal notranslate"><span class="pre">ra.decision.LQI.lookup_target</span></code> returns the rounded source-table target for a
+given <span class="math notranslate nohighlight">\(K_1\)</span>, while the lower-level <a class="reference internal" href="../gen/pystra.decision.ddo.lqi_k1.html#pystra.decision.ddo.lqi_k1" title="pystra.decision.ddo.lqi_k1"><code class="xref py py-func docutils literal notranslate"><span class="pre">lqi_k1()</span></code></a> and
+<a class="reference internal" href="../gen/pystra.decision.ddo.lqi_target_reliability.html#pystra.decision.ddo.lqi_target_reliability" title="pystra.decision.ddo.lqi_target_reliability"><code class="xref py py-func docutils literal notranslate"><span class="pre">lqi_target_reliability()</span></code></a> helpers remain available in
+<a class="reference internal" href="../api/decisions.html#module-pystra.decision.ddo" title="pystra.decision.ddo"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pystra.decision.ddo</span></code></a>.  When the underlying resistance-demand model should be
+calculated instead of looked up, <code class="docutils literal notranslate"><span class="pre">ra.decision.LQI.derive_target</span></code> solves the marginal
+target problem</p>
+<div class="math notranslate nohighlight" id="equation-eq-lqi-marginal-target">
+<span class="eqno">(4)<a class="headerlink" href="#equation-eq-lqi-marginal-target" title="Link to this equation">#</a></span>\[\min_p\; K_1p + P_f(p),
+\qquad\mathrm{or}\qquad
+K_1 = -\frac{dP_f(p)}{dp}.\]</div>
+<p><code class="docutils literal notranslate"><span class="pre">ra.decision.DDO</span></code> (<a class="reference internal" href="../gen/pystra.decision.ddo.DDO.html#pystra.decision.ddo.DDO" title="pystra.decision.ddo.DDO"><code class="xref py py-class docutils literal notranslate"><span class="pre">DDO</span></code></a>) then evaluates the selected objective and
+criterion without changing the underlying stochastic model.  The best feasible
+alternative is obtained with <code class="docutils literal notranslate"><span class="pre">DDO.optimize()</span></code>; the unconstrained economic
+optimum is available separately as <code class="docutils literal notranslate"><span class="pre">DDO.economic_optimum()</span></code>.</p>
+<p>For direct JCSS-style optimization, the canonical life-safety risk-cost term
+is</p>
+<div class="math notranslate nohighlight" id="equation-eq-lqi-jcss-risk-cost">
+<span class="eqno">(5)<a class="headerlink" href="#equation-eq-lqi-jcss-risk-cost" title="Link to this equation">#</a></span>\[S(p) = C(p) + \mathrm{SWTP}\,N_F\,h(p)\]</div>
+<p>where <span class="math notranslate nohighlight">\(C(p)\)</span> is the safety or construction cost and <span class="math notranslate nohighlight">\(h(p)\)</span> is a
+failure rate or annual failure probability.  The marginal acceptance condition
+is</p>
+<div class="math notranslate nohighlight" id="equation-eq-lqi-jcss-acceptance">
+<span class="eqno">(6)<a class="headerlink" href="#equation-eq-lqi-jcss-acceptance" title="Link to this equation">#</a></span>\[\frac{dC(p)}{dp} \ge
+-\mathrm{SWTP}\,N_F\,\frac{dh(p)}{dp}.\]</div>
+<p><code class="docutils literal notranslate"><span class="pre">ra.decision.LQI</span></code> exposes these operations as methods such as
+<code class="docutils literal notranslate"><span class="pre">risk_cost</span></code>, <code class="docutils literal notranslate"><span class="pre">acceptability_margin_at</span></code>, and <code class="docutils literal notranslate"><span class="pre">acceptability_boundary</span></code>.
+The underlying
+<a class="reference internal" href="../gen/pystra.decision.ddo.jcss_lqi_risk_cost.html#pystra.decision.ddo.jcss_lqi_risk_cost" title="pystra.decision.ddo.jcss_lqi_risk_cost"><code class="xref py py-func docutils literal notranslate"><span class="pre">jcss_lqi_risk_cost()</span></code></a> and
+<a class="reference internal" href="../gen/pystra.decision.ddo.jcss_lqi_acceptability.html#pystra.decision.ddo.jcss_lqi_acceptability" title="pystra.decision.ddo.jcss_lqi_acceptability"><code class="xref py py-func docutils literal notranslate"><span class="pre">jcss_lqi_acceptability()</span></code></a> functions remain available for
+direct reproduction of the JCSS equations.</p>
+<p>The current implementation separates an objective from an acceptability
+criterion and reserves solver logic for future work.  This keeps LQI in its
+proper role as a minimum safety criterion rather than the optimizer itself.
+Life-cycle cost and utility models based on stochastic renewal processes are a
+natural source for future objective implementations <a class="reference internal" href="../references.html#pandeywangcheng2015renewal" id="id23"><span>[PandeyWangCheng2015Renewal]</span></a>.</p>
+<p><strong>Use this method:</strong> <a class="reference internal" href="../guides/assessment.html"><span class="doc">Comparing structural assessment scenarios</span></a> · <a class="reference internal" href="../notebooks/ex_target_reliability.html"><span class="doc">Calibrating target-reliability tables</span></a> · <a class="reference internal" href="../api/decisions.html"><span class="doc">Design decisions and target reliability</span></a></p>
+<p>For coordinate conventions, see <a class="reference internal" href="notation.html"><span class="doc">Notation and probability spaces</span></a>.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="code_calibration.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Code calibration using normalized reliability</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="active_learning.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Active-learning reliability</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#design-decision-optimization-and-societal-risk-acceptance">Design Decision optimization and Societal Risk Acceptance</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/pystra/pystra/edit/v2.0/docs/source/theory/decisions.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2021-2026, The PySTRA Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><nav aria-label="Project links" class="project-links">
+  <a href="../migrating.html">Migration</a>
+  <a href="../citing.html">Cite PySTRA</a>
+  <a href="../developer.html">Contributing</a>
+  <a href="https://pystra.github.io/pystra/">Stable 1.x documentation</a>
+</nav></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

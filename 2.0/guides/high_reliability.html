@@ -1,0 +1,891 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Working at high reliability &#8212; PySTRA 2.0.0a1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a54fd074" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../_static/documentation_options.js?v=944fa962"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=ccd31ad0"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'guides/high_reliability';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Interpreting results and convergence" href="results.html" />
+    <link rel="prev" title="Estimating failure probability by simulation" href="simulation.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.0a1" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">These pages document PySTRA 2.0, which is in development. The stable 1.x documentation is at <a href="https://pystra.github.io/pystra/">pystra.github.io/pystra</a>.</div>
+</aside>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 2.0.0a1 documentation - Home"/>
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 2.0.0a1 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item"><a class="version-status" href="../install.html" aria-label="Documentation version 2.0.0a1: installation instructions">2.0.0a1 · development</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API reference
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Build and check an analysis</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="methods.html">Choosing a reliability method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">Specifying a reliability model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="form_sorm.html">Running FORM and SORM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulation.html">Estimating failure probability by simulation</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Working at high reliability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="results.html">Interpreting results and convergence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting reliability analyses</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Dependence and advanced methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../copulas.html">Copulas and Isoprobabilistic Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../system.html">System Reliability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../strong_maximum.html">Strong Maximum Test</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../active_learning.html">Active-learning methods and literature</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../literature-benchmarks.html">Literature benchmark definitions and provenance</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Engineering workflows</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="calibration.html">Calibrating code factors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="assessment.html">Comparing structural assessment scenarios</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plotting.html">Reliability figures</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../user_guide.html" class="nav-link">User guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Working at high reliability</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="working-at-high-reliability">
+<h1>Working at high reliability<a class="headerlink" href="#working-at-high-reliability" title="Link to this heading">#</a></h1>
+<p>Structural target reliability indices depend on the reference period and the
+consequence class, and optimisation, assessment and rare-event studies can reach
+much larger indices. The probabilities involved are then tiny, and ordinary
+floating-point formulas fail before the reliability method does. The standard
+normal CDF rounds to exactly one above <span class="math notranslate nohighlight">\(u \approx 8.3\)</span>, so the usual
+transformation <span class="math notranslate nohighlight">\(x = F^{-1}(\Phi(u))\)</span> returns an infinite load there.
+PySTRA evaluates each tail probability on the side where it is small, and
+switches to log probabilities where even that underflows. This page shows what
+you can rely on and how to read results far into the tails.</p>
+<section id="what-stays-accurate">
+<h2>What stays accurate<a class="headerlink" href="#what-stays-accurate" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Component</p></th>
+<th class="head"><p>Behaviour at small probabilities</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Marginal transformations</p></td>
+<td><p>In an unbounded tail, accurate to floating-point tolerance while the
+tail probability is a normal double, down to about
+<span class="math notranslate nohighlight">\(2 \times 10^{-308}\)</span> at <span class="math notranslate nohighlight">\(|u| \approx 37.5\)</span>: the built-in
+distributions round-trip there to within about <span class="math notranslate nohighlight">\(10^{-10}\)</span> in
+<span class="math notranslate nohighlight">\(u\)</span>. Beyond that for the normal, lognormal and Gumbel families,
+and for <code class="docutils literal notranslate"><span class="pre">Maximum</span></code> and <code class="docutils literal notranslate"><span class="pre">MaxParent</span></code> built on them. A finite bound
+limits resolution on its own side; see <a class="reference internal" href="#limits">Limits</a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Distribution functions</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">cdf</span></code>, <code class="docutils literal notranslate"><span class="pre">sf</span></code>, <code class="docutils literal notranslate"><span class="pre">logcdf</span></code>, <code class="docutils literal notranslate"><span class="pre">logsf</span></code> and <code class="docutils literal notranslate"><span class="pre">logpdf</span></code> of the built-in
+distributions are accurate in their own tails. <code class="docutils literal notranslate"><span class="pre">ppf</span></code> and <code class="docutils literal notranslate"><span class="pre">isf</span></code> of
+some SciPy distributions are numerical inverses that can fail far into
+a tail; the transformations check them (see <a class="reference internal" href="#custom-distributions">Custom distributions</a>).</p></td>
+</tr>
+<tr class="row-even"><td><p>FORM</p></td>
+<td><p>Design points far into a tail transform correctly, and Jacobians use
+log densities where the densities underflow.</p></td>
+</tr>
+<tr class="row-odd"><td><p>SORM</p></td>
+<td><p>Curvature corrections and the Mills ratio are evaluated in log space.
+The reliability index stays finite when the probability underflows;
+this is checked at <span class="math notranslate nohighlight">\(\beta = 40\)</span> for both fits and formulas.</p></td>
+</tr>
+<tr class="row-even"><td><p>Importance sampling</p></td>
+<td><p>Likelihood ratios and weight sums are accumulated in log space. The
+reliability index and the estimated coefficient of variation of the
+probability estimate stay finite when the probability underflows; this
+is checked at <span class="math notranslate nohighlight">\(\beta = 40\)</span>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Line sampling</p></td>
+<td><p>Line contributions are pooled in log space. Each line is searched only
+while every standard normal coordinate, and for Nataf each correlated
+coordinate, stays within <span class="math notranslate nohighlight">\([-37, 37]\)</span>. A line whose crossing lies
+beyond raises <a class="reference internal" href="../gen/pystra.errors.AnalysisError.html#pystra.errors.AnalysisError" title="pystra.errors.AnalysisError"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisError</span></code></a>. A limit state
+<span class="math notranslate nohighlight">\(40 - X\)</span> therefore fails, whereas
+<span class="math notranslate nohighlight">\(40 - (X + Y)/\sqrt{2}\)</span>, with the same index, succeeds.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Numerical stability is separate from accuracy. FORM and SORM remain local
+approximations, and sampling estimates remain uncertain; see <a class="reference internal" href="form_sorm.html"><span class="doc">Running FORM and SORM</span></a>
+and <a class="reference internal" href="simulation.html"><span class="doc">Estimating failure probability by simulation</span></a>.</p>
+</section>
+<section id="check-a-high-reliability-case">
+<h2>Check a high-reliability case<a class="headerlink" href="#check-a-high-reliability-case" title="Link to this heading">#</a></h2>
+<p>A lognormal resistance against a Gumbel load has its design point at
+<span class="math notranslate nohighlight">\(u \approx 8.9\)</span> for the load, where <span class="math notranslate nohighlight">\(\Phi(u)\)</span> has already rounded
+to one. FORM and line sampling agree with a numerical reference integral of
+the model’s one-dimensional formula:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">integrate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ra</span>
+
+<span class="n">resistance</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Lognormal</span><span class="p">(</span><span class="s2">"R"</span><span class="p">,</span> <span class="mf">60.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">)</span>
+<span class="n">load</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Gumbel</span><span class="p">(</span><span class="s2">"S"</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="n">resistance</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="n">load</span><span class="p">)</span>
+<span class="n">limit_state</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span><span class="k">lambda</span> <span class="n">R</span><span class="p">,</span> <span class="n">S</span><span class="p">:</span> <span class="n">R</span> <span class="o">-</span> <span class="n">S</span><span class="p">)</span>
+
+<span class="n">form</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">FORM</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">)</span>
+<span class="n">form_result</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">line</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">LineSampling</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">,</span>
+    <span class="n">limit_state</span><span class="p">,</span>
+    <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
+    <span class="n">options</span><span class="o">=</span><span class="n">ra</span><span class="o">.</span><span class="n">SimulationOptions</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">50</span><span class="p">),</span>
+    <span class="n">rng</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+<span class="c1"># P(S &gt; R): the resistance density times the load's survival function</span>
+<span class="n">pf</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span>
+    <span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">resistance</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">+</span> <span class="n">load</span><span class="o">.</span><span class="n">logsf</span><span class="p">(</span><span class="n">r</span><span class="p">)),</span>
+    <span class="n">resistance</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mf">1e-12</span><span class="p">),</span>
+    <span class="n">resistance</span><span class="o">.</span><span class="n">isf</span><span class="p">(</span><span class="mf">1e-15</span><span class="p">),</span>
+    <span class="n">points</span><span class="o">=</span><span class="p">[</span><span class="mf">60.0</span><span class="p">],</span>
+    <span class="n">epsabs</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">epsrel</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span>
+    <span class="n">limit</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">"FORM </span><span class="si">{</span><span class="n">form_result</span><span class="o">.</span><span class="n">beta</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, line sampling </span><span class="si">{</span><span class="n">line</span><span class="o">.</span><span class="n">beta</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, "</span>
+    <span class="sa">f</span><span class="s2">"reference </span><span class="si">{</span><span class="o">-</span><span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">pf</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"load design point u = </span><span class="si">{</span><span class="n">form_result</span><span class="o">.</span><span class="n">design_point_u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>FORM 9.002, line sampling 9.003, reference 9.003
+load design point u = 8.86
+</pre></div>
+</div>
+<p>The failure probability here is about <span class="math notranslate nohighlight">\(10^{-19}\)</span>. The load’s
+transformation stays finite and invertible even further out, where a direct
+<span class="math notranslate nohighlight">\(F^{-1}(\Phi(10))\)</span> returns infinity:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">u_to_x</span><span class="p">(</span><span class="mf">10.0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"x = </span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, back to u = </span><span class="si">{</span><span class="n">load</span><span class="o">.</span><span class="n">x_to_u</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>x = 69.58, back to u = 10.000000
+</pre></div>
+</div>
+</section>
+<section id="read-a-probability-that-underflows">
+<h2>Read a probability that underflows<a class="headerlink" href="#read-a-probability-that-underflows" title="Link to this heading">#</a></h2>
+<p>Doubles below about <span class="math notranslate nohighlight">\(2 \times 10^{-308}\)</span> lose precision, and below about
+<span class="math notranslate nohighlight">\(5 \times 10^{-324}\)</span> they are zero. A probability that small, or one that
+underflows in an intermediate step, is reported as <code class="docutils literal notranslate"><span class="pre">0.0</span></code>. SORM, importance
+sampling and line sampling compute the reliability index from the logarithm of
+the probability, so the index remains finite. It is then the quantity to report:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">standard</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
+<span class="n">standard</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">"X"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">standard</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">"Y"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">ImportanceSampling</span><span class="p">(</span>
+    <span class="n">standard</span><span class="p">,</span>
+    <span class="n">ra</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span><span class="k">lambda</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">:</span> <span class="mi">40</span> <span class="o">-</span> <span class="n">X</span><span class="p">),</span>
+    <span class="n">options</span><span class="o">=</span><span class="n">ra</span><span class="o">.</span><span class="n">SimulationOptions</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">4000</span><span class="p">,</span> <span class="n">target_cov</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+    <span class="n">rng</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">failure_probability</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>0.0 40.0
+</pre></div>
+</div>
+<p>Probabilities this small rarely matter for a structure directly. But
+intermediate designs in optimisation and sensitivity studies can reach them, and
+a finite index keeps those studies well defined. Crude Monte Carlo with no
+observed failures also reports a zero probability, with an infinite index and
+uncertainty. That zero is a lack of information, not an underflow; see
+<a class="reference internal" href="troubleshooting.html"><span class="doc">Troubleshooting reliability analyses</span></a>.</p>
+</section>
+<section id="custom-distributions">
+<h2>Custom distributions<a class="headerlink" href="#custom-distributions" title="Link to this heading">#</a></h2>
+<p>A distribution built on a SciPy frozen distribution, such as
+<a class="reference internal" href="../gen/pystra.distributions.scipy_dist.ScipyDist.html#pystra.distributions.scipy_dist.ScipyDist" title="pystra.distributions.scipy_dist.ScipyDist"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScipyDist</span></code></a> or a subclass that passes
+<code class="docutils literal notranslate"><span class="pre">dist_obj</span></code>, inherits SciPy’s survival and log functions. A subclass that
+overrides one of these functions should also override its companions:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cdf</span></code> or <code class="docutils literal notranslate"><span class="pre">ppf</span></code>: also <code class="docutils literal notranslate"><span class="pre">sf</span></code> and <code class="docutils literal notranslate"><span class="pre">isf</span></code>. Otherwise the upper tail falls
+back to <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">-</span> <span class="pre">cdf(x)</span></code> and <code class="docutils literal notranslate"><span class="pre">ppf(1</span> <span class="pre">-</span> <span class="pre">q)</span></code>, which lose it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pdf</span></code>: also <code class="docutils literal notranslate"><span class="pre">logpdf</span></code>. Otherwise the log density is <code class="docutils literal notranslate"><span class="pre">log(pdf(x))</span></code>, and
+the Jacobian fails where the density underflows.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">logcdf</span></code> and <code class="docutils literal notranslate"><span class="pre">logsf</span></code>, computed without first forming the probability,
+extend the transformation beyond <span class="math notranslate nohighlight">\(10^{-308}\)</span>.</p></li>
+</ul>
+<p>When the base class’s <code class="docutils literal notranslate"><span class="pre">u_to_x</span></code> is used, a quantile with a tail probability
+below <span class="math notranslate nohighlight">\(10^{-8}\)</span> is checked against the log-CDF or log-survival function
+and solved again if it misses by more than <span class="math notranslate nohighlight">\(10^{-8}\)</span> in relative log
+probability. This guards against numerical inverses that stall far into a tail,
+as SciPy’s beta quantile does. Direct calls to <code class="docutils literal notranslate"><span class="pre">ppf</span></code> or <code class="docutils literal notranslate"><span class="pre">isf</span></code> are not
+checked, and distributions with their own transformations, such as <code class="docutils literal notranslate"><span class="pre">Normal</span></code>
+and <code class="docutils literal notranslate"><span class="pre">Lognormal</span></code>, do not need the check.</p>
+</section>
+<section id="limits">
+<h2>Limits<a class="headerlink" href="#limits" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>A finite bound cannot be approached closer than one unit in the last place.
+Bounded tails, as in <code class="docutils literal notranslate"><span class="pre">Uniform</span></code>, <code class="docutils literal notranslate"><span class="pre">Beta</span></code>, the lower bounds of
+<code class="docutils literal notranslate"><span class="pre">ShiftedExponential</span></code> and <code class="docutils literal notranslate"><span class="pre">ShiftedLognormal</span></code>, and the bounded GEV forms,
+therefore lose resolution before the probability does: transformed points
+reach the bound itself.</p></li>
+<li><p>Without a closed form, the tails depend on SciPy’s log functions. Some are
+computed as <code class="docutils literal notranslate"><span class="pre">log(cdf)</span></code> or <code class="docutils literal notranslate"><span class="pre">log(sf)</span></code> and underflow beyond
+<span class="math notranslate nohighlight">\(|u| \approx 38\)</span>, as for <code class="docutils literal notranslate"><span class="pre">Gamma</span></code>; others, such as the logistic’s,
+stay accurate further, and the transformation then extends with them.</p></li>
+<li><p>Line sampling’s search range is limited as described in the table.</p></li>
+<li><p>The conditional functions of non-elliptical copulas, such as Frank, are
+evaluated in probability space.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ZeroInflated</span></code> keeps points within its probability mass at exactly zero.</p></li>
+</ul>
+<p><strong>Continue:</strong> <a class="reference internal" href="simulation.html"><span class="doc">Estimating failure probability by simulation</span></a> · <a class="reference internal" href="troubleshooting.html"><span class="doc">Troubleshooting reliability analyses</span></a> ·
+<a class="reference internal" href="../theory/transformations.html#very-small-probabilities"><span class="std std-ref">Theory: very small probabilities</span></a> ·
+<a class="reference internal" href="../api/probability.html"><span class="doc">Distributions and dependence</span></a></p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="simulation.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Estimating failure probability by simulation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="results.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Interpreting results and convergence</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-stays-accurate">What stays accurate</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#check-a-high-reliability-case">Check a high-reliability case</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#read-a-probability-that-underflows">Read a probability that underflows</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#custom-distributions">Custom distributions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limits">Limits</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/pystra/pystra/edit/v2.0/docs/source/guides/high_reliability.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2021-2026, The PySTRA Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><nav aria-label="Project links" class="project-links">
+  <a href="../migrating.html">Migration</a>
+  <a href="../citing.html">Cite PySTRA</a>
+  <a href="../developer.html">Contributing</a>
+  <a href="https://pystra.github.io/pystra/">Stable 1.x documentation</a>
+</nav></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

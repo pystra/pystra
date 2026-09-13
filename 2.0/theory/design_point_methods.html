@@ -1,0 +1,922 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>FORM, SORM and design-point diagnostics &#8212; PySTRA 2.0.0a1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a54fd074" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../_static/documentation_options.js?v=944fa962"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=ccd31ad0"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'theory/design_point_methods';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Simulation methods" href="simulation.html" />
+    <link rel="prev" title="Probability transformations and copulas" href="transformations.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.0a1" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">These pages document PySTRA 2.0, which is in development. The stable 1.x documentation is at <a href="https://pystra.github.io/pystra/">pystra.github.io/pystra</a>.</div>
+</aside>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 2.0.0a1 documentation - Home"/>
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 2.0.0a1 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item"><a class="version-status" href="../install.html" aria-label="Documentation version 2.0.0a1: installation instructions">2.0.0a1 · development</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API reference
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="fundamentals.html">Structural reliability fundamentals</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="notation.html">Notation and probability spaces</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="transformations.html">Probability transformations and copulas</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">FORM, SORM and design-point diagnostics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulation.html">Simulation methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systems.html">System reliability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="load_combinations.html">Load combinations and FBC processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_calibration.html">Code calibration using normalized reliability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="decisions.html">Design decisions and societal risk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="active_learning.html">Active-learning reliability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sensitivity.html">Reliability sensitivity</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../theory.html" class="nav-link">Theory</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">FORM, SORM and design-point diagnostics</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="form-sorm-and-design-point-diagnostics">
+<h1>FORM, SORM and design-point diagnostics<a class="headerlink" href="#form-sorm-and-design-point-diagnostics" title="Link to this heading">#</a></h1>
+<section id="first-order-reliability-method-form">
+<h2>First-Order reliability method (FORM)<a class="headerlink" href="#first-order-reliability-method-form" title="Link to this heading">#</a></h2>
+<p>Let <span class="math notranslate nohighlight">\(\bf Z\)</span> be a set of uncorrelated and standardized normally distributed random
+variables <span class="math notranslate nohighlight">\(( Z_1 ,\dots, Z_n )\)</span> in the normalized z-space, corresponding
+to any set of random variables <span class="math notranslate nohighlight">\({\bf X} = ( X_1 , \dots , X_n )\)</span> in the
+physical x-space, then the limit state surface in x-space is also mapped on
+the corresponding limit state surface in z-space.</p>
+<p>According to Definition <a class="reference internal" href="fundamentals.html#equation-eq-2-78">(10)</a>, the reliability index <span class="math notranslate nohighlight">\(\beta\)</span> is
+the minimum distance from the z-origin to the failure surface. This distance
+<span class="math notranslate nohighlight">\(\beta\)</span> can directly be mapped to a probability of failure</p>
+<div class="math notranslate nohighlight" id="equation-eq-2-90">
+<span class="eqno">(1)<a class="headerlink" href="#equation-eq-2-90" title="Link to this equation">#</a></span>\[        p_f \approx p_{f1} = \Phi(-\beta)\]</div>
+<p>this corresponds to a linearization of the failure surface. The linearization point
+is the design point <span class="math notranslate nohighlight">\({\bf z}^*\)</span>. This procedure is called First Order
+Reliability Method (FORM) and <span class="math notranslate nohighlight">\(\beta\)</span> is the First Order Reliability
+Index. <a class="reference internal" href="../references.html#madsen2006" id="id1"><span>[Madsen2006]</span></a></p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/f-02-09-a.png"><img alt="FORM a" height="282" src="../_images/f-02-09-a.png" width="230" />
+</a>
+</figure>
+<p>Representation of a physical space with a set <span class="math notranslate nohighlight">\({\bf X}\)</span> of any two
+random variables. The shaded area denotes the failure domain and
+<span class="math notranslate nohighlight">\(g({\bf X}) = 0\)</span> the failure surface.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/f-02-09-b.png"><img alt="FORM b" height="282" src="../_images/f-02-09-b.png" width="227" />
+</a>
+</figure>
+<p>After
+transformation in the normalized space, the random variables <span class="math notranslate nohighlight">\({\bf X}\)</span>
+are now uncorrelated and standardized normally distributed, also the failure
+surface is transformed into <span class="math notranslate nohighlight">\(g({\bf Z}) = 0\)</span>.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/f-02-09-c.png"><img alt="FORM c" height="280" src="../_images/f-02-09-c.png" width="227" />
+</a>
+</figure>
+<p>FORM corresponds to a linearization of the failure surface <span class="math notranslate nohighlight">\(g({\bf Z}) =
+0\)</span>. Performing this method, the design point <span class="math notranslate nohighlight">\({\bf z}^*\)</span> and the
+reliability index <span class="math notranslate nohighlight">\(\beta\)</span> can be computed.</p>
+</section>
+<section id="second-order-reliability-method-sorm">
+<h2>Second-Order reliability method (SORM)<a class="headerlink" href="#second-order-reliability-method-sorm" title="Link to this heading">#</a></h2>
+<p>FORM approximates the failure surface <span class="math notranslate nohighlight">\(g({\bf Z}) = 0\)</span> by a tangent
+hyperplane at the design point.  When the failure surface has significant
+curvature at the design point, this linear approximation can over- or
+under-estimate <span class="math notranslate nohighlight">\(p_f\)</span>.  The Second-Order Reliability Method (SORM)
+improves on FORM by fitting a quadratic surface (paraboloid) to
+<span class="math notranslate nohighlight">\(g({\bf Z}) = 0\)</span> at the design point, thereby capturing
+second-order effects <a class="reference internal" href="../references.html#baker2010" id="id2"><span>[Baker2010]</span></a>.</p>
+<section id="quadratic-approximation-in-rotated-space">
+<h3>Quadratic approximation in rotated space<a class="headerlink" href="#quadratic-approximation-in-rotated-space" title="Link to this heading">#</a></h3>
+<p>Starting from the FORM design point <span class="math notranslate nohighlight">\({\bf z}^*\)</span> and the unit
+direction vector <span class="math notranslate nohighlight">\(\boldsymbol{\alpha} = -{\bf z}^*/\beta\)</span>, the
+standard normal space is rotated so that <span class="math notranslate nohighlight">\({\bf z}^*\)</span> lies at
+distance <span class="math notranslate nohighlight">\(\beta\)</span> along the last axis.  Let <span class="math notranslate nohighlight">\({\bf R}\)</span> denote
+the orthonormal rotation matrix constructed by Gram–Schmidt
+orthonormalisation with <span class="math notranslate nohighlight">\(\boldsymbol{\alpha}\)</span> in the last row, and
+let <span class="math notranslate nohighlight">\({\bf u}' = {\bf R}\,{\bf z}\)</span> be coordinates in the rotated
+space.  In these coordinates the failure surface is approximated as:</p>
+<div class="math notranslate nohighlight">
+\[g({\bf u}') \approx \beta - u'_n
++ \tfrac{1}{2} \sum_{i=1}^{n-1} \kappa_i \,(u'_i)^2\]</div>
+<p>where <span class="math notranslate nohighlight">\(\kappa_i\)</span> are the <em>principal curvatures</em> of the failure
+surface at the design point and <span class="math notranslate nohighlight">\(u'_n\)</span> is the coordinate along the
+design-point direction.  Positive curvature means the failure surface
+curves away from the origin (conservative with respect to FORM); negative
+curvature means it curves towards the origin (unconservative).</p>
+<p>The key task is to determine the principal curvatures <span class="math notranslate nohighlight">\(\kappa_i\)</span>.
+Pystra provides two approaches.</p>
+</section>
+<section id="curve-fitting">
+<h3>Curve-Fitting<a class="headerlink" href="#curve-fitting" title="Link to this heading">#</a></h3>
+<p>The default method (<code class="docutils literal notranslate"><span class="pre">fit=&quot;curve&quot;</span></code>) obtains the curvatures from the
+Hessian matrix of the limit state function.  The Hessian <span class="math notranslate nohighlight">\({\bf H}\)</span>
+of <span class="math notranslate nohighlight">\(g\)</span> at the design point <span class="math notranslate nohighlight">\({\bf z}^*\)</span> is computed by finite
+differences of the gradient that is already available from FORM.  This
+matrix is then rotated and normalised:</p>
+<div class="math notranslate nohighlight">
+\[{\bf A} = \frac{{\bf R}\,{\bf H}\,{\bf R}^T}
+{\lVert \nabla g({\bf z}^*) \rVert}\]</div>
+<p>The principal curvatures <span class="math notranslate nohighlight">\(\kappa_i\)</span> are the eigenvalues of the
+leading <span class="math notranslate nohighlight">\((n{-}1) \times (n{-}1)\)</span> sub-matrix of <span class="math notranslate nohighlight">\({\bf A}\)</span>
+(i.e.the block excluding the last row and column, which corresponds to
+the design-point direction).  These curvatures are symmetric: the
+paraboloid has the same curvature on both sides of each principal axis.</p>
+<p>The Breitung approximation <a class="reference internal" href="../references.html#breitung1984" id="id3"><span>[Breitung1984]</span></a> then gives the second-order
+failure probability:</p>
+<div class="math notranslate nohighlight" id="equation-eq-sorm-breitung">
+<span class="eqno">(2)<a class="headerlink" href="#equation-eq-sorm-breitung" title="Link to this equation">#</a></span>\[p_{f2} = \Phi(-\beta) \prod_{i=1}^{n-1}
+\left(1 + \kappa_i \,\beta\right)^{-1/2}\]</div>
+<p>This result is asymptotically exact as <span class="math notranslate nohighlight">\(\beta \to \infty\)</span>.</p>
+</section>
+<section id="point-fitting">
+<h3>Point-Fitting<a class="headerlink" href="#point-fitting" title="Link to this heading">#</a></h3>
+<p>An alternative method (<code class="docutils literal notranslate"><span class="pre">fit=&quot;point&quot;</span></code>) determines the curvatures by
+locating fitting points directly on the failure surface, without computing
+the Hessian.  For each of the <span class="math notranslate nohighlight">\(n{-}1\)</span> principal axes in the rotated
+space, a pair of trial points is placed at <span class="math notranslate nohighlight">\(u'_i = \pm k\beta\)</span>
+(where <span class="math notranslate nohighlight">\(k\)</span> is an adaptive step coefficient), with all other
+off-axis coordinates set to zero and <span class="math notranslate nohighlight">\(u'_n = \beta\)</span>.  Newton
+iteration along the <span class="math notranslate nohighlight">\(u'_n\)</span>-direction then drives each point onto
+the surface <span class="math notranslate nohighlight">\(g = 0\)</span>.</p>
+<p>Once a fitting point has converged, its curvature is computed from the
+displacement along the design-point direction:</p>
+<div class="math notranslate nohighlight">
+\[\kappa_i = \frac{2\,(u'_n - \beta)}{(u'_i)^2}\]</div>
+<p>Because points are fitted on both the positive and negative sides of each
+axis, the method yields asymmetric curvatures <span class="math notranslate nohighlight">\(\kappa_i^+\)</span> and
+<span class="math notranslate nohighlight">\(\kappa_i^-\)</span>.  The generalised Breitung formula for asymmetric
+curvatures is:</p>
+<div class="math notranslate nohighlight" id="equation-eq-sorm-breitung-pf">
+<span class="eqno">(3)<a class="headerlink" href="#equation-eq-sorm-breitung-pf" title="Link to this equation">#</a></span>\[p_{f2} = \Phi(-\beta) \prod_{i=1}^{n-1} \frac{1}{2}
+\left[ \left(1 + \beta\, \kappa_i^+\right)^{-1/2}
+     + \left(1 + \beta\, \kappa_i^-\right)^{-1/2} \right]\]</div>
+<p>When the curvatures are symmetric (<span class="math notranslate nohighlight">\(\kappa_i^+ = \kappa_i^-\)</span>), this
+reduces to the standard Breitung formula <a class="reference internal" href="#equation-eq-sorm-breitung">(2)</a>.</p>
+</section>
+<section id="hohenbichler-rackwitz-modification">
+<h3>Hohenbichler–Rackwitz Modification<a class="headerlink" href="#hohenbichler-rackwitz-modification" title="Link to this heading">#</a></h3>
+<p>The Breitung formula is asymptotically exact for large <span class="math notranslate nohighlight">\(\beta\)</span> but
+can be inaccurate for moderate values.  Hohenbichler and Rackwitz
+<a class="reference internal" href="../references.html#hohenbichler1988" id="id4"><span>[Hohenbichler1988]</span></a> proposed replacing <span class="math notranslate nohighlight">\(\beta\)</span> in the curvature
+terms with:</p>
+<div class="math notranslate nohighlight">
+\[\psi = \frac{\phi(\beta)}{\Phi(-\beta)}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\phi\)</span> is the standard normal PDF.  The quantity <span class="math notranslate nohighlight">\(\psi\)</span>
+is the conditional mean of the standard normal distribution given that it
+exceeds <span class="math notranslate nohighlight">\(\beta\)</span>, and provides a better local expansion for moderate
+reliability indices.  The modified formula is:</p>
+<div class="math notranslate nohighlight" id="equation-eq-sorm-hr">
+<span class="eqno">(4)<a class="headerlink" href="#equation-eq-sorm-hr" title="Link to this equation">#</a></span>\[p_{f2}^{\text{HR}} = \Phi(-\beta) \prod_{i=1}^{n-1}
+\left(1 + \psi\, \kappa_i\right)^{-1/2}\]</div>
+<p>with the obvious extension to asymmetric curvatures from point-fitting.
+Both the standard and modified Breitung results are reported by Pystra.</p>
+</section>
+<section id="validity-and-method-comparison">
+<h3>Validity and method comparison<a class="headerlink" href="#validity-and-method-comparison" title="Link to this heading">#</a></h3>
+<p>The Breitung and Hohenbichler–Rackwitz formulas require each curvature
+term in the product to be positive.  For the standard Breitung formula
+this means <span class="math notranslate nohighlight">\(\kappa_i &gt; -1/\beta\)</span>; for the modified formula,
+<span class="math notranslate nohighlight">\(\kappa_i &gt; -1/\psi\)</span>.  If any curvature violates this bound the
+approximating paraboloid opens towards the origin and the second-order
+approximation is invalid.</p>
+<p>The two fitting methods offer different trade-offs:</p>
+<ul class="simple">
+<li><p><strong>Curve-fitting</strong> requires fewer limit state evaluations (one gradient
+perturbation per random variable) and produces symmetric curvatures.  It
+is well suited to smooth failure surfaces where the curvature is
+approximately the same on both sides of the design point.</p></li>
+<li><p><strong>Point-fitting</strong> requires more evaluations (Newton iteration for each
+of <span class="math notranslate nohighlight">\(2(n{-}1)\)</span> fitting points) but captures asymmetric curvature.
+This is advantageous when the failure surface has markedly different
+shapes on each side of the design point, as can occur with non-linear
+limit state functions.</p></li>
+</ul>
+</section>
+</section>
+<section id="strong-maximum-test">
+<span id="theory-rst-theory-strong-maximum"></span><span id="theory-strong-maximum"></span><h2>Strong Maximum Test<a class="headerlink" href="#strong-maximum-test" title="Link to this heading">#</a></h2>
+<p>A converged local FORM design point need not represent every important
+failure region. The Strong Maximum Test <a class="reference internal" href="../references.html#dutfoylebrun2006" id="id5"><span>[DutfoyLebrun2006]</span></a> probes an enlarged
+sphere around the origin for failure points outside the candidate’s vicinity.
+Pystra implements the independent standard-normal case described by
+<a class="reference external" href="https://openturns.github.io/openturns/latest/theory/reliability_sensitivity/strong_maximum_test.html">OpenTURNS</a>.
+See <a class="reference internal" href="../notebooks/ex_strong_maximum.html"><span class="doc">Checking a FORM design point</span></a> for geometric examples and
+<a class="reference internal" href="../strong_maximum.html#chap-strong-maximum"><span class="std std-ref">Strong Maximum Test</span></a> for the API.</p>
+<section id="sphere-geometry">
+<h3>Sphere geometry<a class="headerlink" href="#sphere-geometry" title="Link to this heading">#</a></h3>
+<p>Let the candidate be <span class="math notranslate nohighlight">\(u^*\)</span>, with <span class="math notranslate nohighlight">\(\beta=\|u^*\|&gt;0\)</span>, and assume
+that the origin is strictly safe. A density ratio <span class="math notranslate nohighlight">\(0&lt;\varepsilon&lt;1\)</span>
+defines the relevant normal-density radius <span class="math notranslate nohighlight">\(r_\varepsilon\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\frac{\varphi_n(r_\varepsilon e)}{\varphi_n(u^*)}=\varepsilon,
+\qquad r_\varepsilon=\sqrt{\beta^2-2\log\varepsilon},
+\qquad \|e\|=1.\]</div>
+<p>With enlargement factor <span class="math notranslate nohighlight">\(\tau&gt;1\)</span>, the sampled sphere has radius</p>
+<div class="math notranslate nohighlight">
+\[r=\beta+\tau(r_\varepsilon-\beta)
+  =\beta(1+\tau\delta_\varepsilon),\qquad
+\delta_\varepsilon=r_\varepsilon/\beta-1.\]</div>
+<p>Independent Gaussian directions normalized to length <span class="math notranslate nohighlight">\(r\)</span> give uniform
+sphere samples. A point is near the candidate when</p>
+<div class="math notranslate nohighlight">
+\[u\cdot\frac{u^*}{\beta}&gt;\beta,
+\quad\text{equivalently}\quad
+\cos\angle(u,u^*)&gt;\frac{\beta}{r}.\]</div>
+<p>Crossing near/far with safe/failure gives four retained point groups.
+Pystra classifies failure by <span class="math notranslate nohighlight">\(g&lt;0\)</span>. Far failure points are possible
+restart locations for additional design-point searches, not optimized design
+points themselves. The magnitude of <span class="math notranslate nohighlight">\(g\)</span> does not measure a region’s
+probability importance.</p>
+</section>
+<section id="cap-probability-and-evaluation-budget">
+<h3>Cap probability and evaluation budget<a class="headerlink" href="#cap-probability-and-evaluation-budget" title="Link to this heading">#</a></h3>
+<p>The reference detection cap has half-angle
+<span class="math notranslate nohighlight">\(\theta=\arccos(r_\varepsilon/r)\)</span>, which differs from the candidate
+vicinity angle <span class="math notranslate nohighlight">\(\arccos(\beta/r)\)</span>. For dimension <span class="math notranslate nohighlight">\(n&gt;1\)</span>, its
+normalized surface area is</p>
+<div class="math notranslate nohighlight">
+\[p_\mathrm{cap}=\frac12 I_{\sin^2\theta}
+    \left(\frac{n-1}{2},\frac12\right),\]</div>
+<p>where <span class="math notranslate nohighlight">\(I\)</span> is the regularized incomplete beta function. In one dimension
+the sphere consists of two points and <span class="math notranslate nohighlight">\(p_\mathrm{cap}=1/2\)</span>.
+For <span class="math notranslate nohighlight">\(N\)</span> independent samples, nominal cap-detection confidence is</p>
+<div class="math notranslate nohighlight">
+\[c_N=1-(1-p_\mathrm{cap})^N,\qquad
+N=\left\lceil\frac{\log(1-c)}{\log(1-p_\mathrm{cap})}\right\rceil.\]</div>
+<p>Pystra rounds upward to meet the requested nominal confidence; OpenTURNS’
+reference implementation rounds to the nearest integer. Users can specify
+confidence or a fixed count, with a hard <code class="docutils literal notranslate"><span class="pre">max_points</span></code> budget checked before
+sphere evaluation. The total is <span class="math notranslate nohighlight">\(N+2\)</span> point evaluations including the
+origin and boundary checks. The cap can become small in high dimensions,
+so inspect the budget before using an expensive structural model.</p>
+</section>
+<section id="interpretation-and-limitations">
+<h3>Interpretation and limitations<a class="headerlink" href="#interpretation-and-limitations" title="Link to this heading">#</a></h3>
+<p>Nominal confidence is a sampling statement about hitting a fixed cap under
+the test’s local-plane and failure-region extent assumptions. It is not a
+posterior probability that FORM is correct, a failure-probability estimate,
+or a bound on approximation error. A bounded failure island entirely inside
+the sphere cannot be detected, regardless of sample count. The tutorial
+constructs such an island closer to the origin than the supplied candidate.</p>
+<p>Use the diagnostic on individual <code class="docutils literal notranslate"><span class="pre">SystemFORM.component_results</span></code> to look
+for missed regions within each component. Checking every component does not
+validate the system probability. With a non-Gaussian copula, use Rosenblatt
+so that the sphere geometry and cap probability apply in independent normal
+space. Generalized Student-t Nataf would require different density-radius
+geometry and is not supported by this implementation.</p>
+<p><strong>Use this method:</strong> <a class="reference internal" href="../guides/form_sorm.html"><span class="doc">Running FORM and SORM</span></a> · <a class="reference internal" href="../notebooks/ex_intro.html"><span class="doc">Comparing FORM, SORM and simulation</span></a> · <a class="reference internal" href="../api/reliability.html"><span class="doc">Reliability algorithms and results</span></a></p>
+<p>For coordinate conventions, see <a class="reference internal" href="notation.html"><span class="doc">Notation and probability spaces</span></a>.</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="transformations.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Probability transformations and copulas</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="simulation.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Simulation methods</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#first-order-reliability-method-form">First-Order reliability method (FORM)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#second-order-reliability-method-sorm">Second-Order reliability method (SORM)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quadratic-approximation-in-rotated-space">Quadratic approximation in rotated space</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#curve-fitting">Curve-Fitting</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#point-fitting">Point-Fitting</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hohenbichler-rackwitz-modification">Hohenbichler–Rackwitz Modification</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#validity-and-method-comparison">Validity and method comparison</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#strong-maximum-test">Strong Maximum Test</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sphere-geometry">Sphere geometry</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cap-probability-and-evaluation-budget">Cap probability and evaluation budget</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interpretation-and-limitations">Interpretation and limitations</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/pystra/pystra/edit/v2.0/docs/source/theory/design_point_methods.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2021-2026, The PySTRA Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><nav aria-label="Project links" class="project-links">
+  <a href="../migrating.html">Migration</a>
+  <a href="../citing.html">Cite PySTRA</a>
+  <a href="../developer.html">Contributing</a>
+  <a href="https://pystra.github.io/pystra/">Stable 1.x documentation</a>
+</nav></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

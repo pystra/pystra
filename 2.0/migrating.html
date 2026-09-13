@@ -1,0 +1,1800 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Migrating from 1.x to 2.0 &#8212; PySTRA 2.0.0a1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=a54fd074" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="_static/documentation_options.js?v=944fa962"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=ccd31ad0"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'migrating';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Complete symbol map" href="migration-map.html" />
+    <link rel="prev" title="Reliability sensitivity" href="theory/sensitivity.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.0a1" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">These pages document PySTRA 2.0, which is in development. The stable 1.x documentation is at <a href="https://pystra.github.io/pystra/">pystra.github.io/pystra</a>.</div>
+</aside>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 2.0.0a1 documentation - Home"/>
+    <img src="_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 2.0.0a1 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item"><a class="version-status" href="install.html" aria-label="Documentation version 2.0.0a1: installation instructions">2.0.0a1 · development</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api.html">
+    API reference
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="#">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="references.html">
+    References
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="references.html">
+    References
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="migration-map.html">Complete symbol map</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Migrating from 1.x to 2.0</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="migrating-from-1-x-to-2-0">
+<h1>Migrating from 1.x to 2.0<a class="headerlink" href="#migrating-from-1-x-to-2-0" title="Link to this heading">#</a></h1>
+<p>This guide takes a 1.x script to the 2.0 API. The checklist below covers the
+edits most scripts need, the sections after it give the details, and the
+<a class="reference internal" href="migration-map.html"><span class="doc">Complete symbol map</span></a> lists every renamed, replaced and removed name. For what
+2.0 adds, see <a class="reference internal" href="whatsnew.html"><span class="doc">What’s new in PySTRA 2.0</span></a>.</p>
+<p>PySTRA 2.0 is in pre-release (2.0.0a1). The remaining engineering-workflow and
+release work is described in the
+<a class="reference download internal" download="" href="_downloads/c10ae84106f5584aa56deef062e1426f/v2.0-migration-plan.md"><code class="xref download docutils literal notranslate"><span class="pre">migration</span> <span class="pre">plan</span></code></a>, and details on this page
+can still change before the release candidate.</p>
+<p>The outstanding feature PRs remain unmerged in 1.x and are reserved for 2.0.
+Their functionality is new in this release, including the Strong Maximum
+Test, copula/joint-distribution support, DDO/LQI refinements, and the SORM
+prerequisite fix. Active learning is also new in 2.0. Earlier feature-branch
+interfaces are development history, not released 1.x APIs to migrate from.</p>
+<section id="upgrading-a-1-x-script">
+<h2>Upgrading a 1.x script<a class="headerlink" href="#upgrading-a-1-x-script" title="Link to this heading">#</a></h2>
+<p>Most 1.x scripts need the same few edits. Work through them in order; each
+links to its details below.</p>
+<ol class="arabic simple">
+<li><p><strong>Imports.</strong> <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">pystra</span> <span class="pre">as</span> <span class="pre">ra</span></code> still works. Update imports of moved
+modules (<a class="reference internal" href="#moved-modules"><span class="std std-ref">Moved modules</span></a>) and renamed classes, such as <code class="docutils literal notranslate"><span class="pre">Form</span></code> to
+<code class="docutils literal notranslate"><span class="pre">FORM</span></code> (<a class="reference internal" href="#renamed-classes"><span class="std std-ref">Renamed classes</span></a>). An old name raises an error that names
+its replacement (<a class="reference internal" href="#signposts"><span class="std std-ref">Signposts for old names</span></a>).</p></li>
+<li><p><strong>Method names.</strong> Methods use snake_case: <code class="docutils literal notranslate"><span class="pre">addVariable</span></code> becomes
+<code class="docutils literal notranslate"><span class="pre">add_variable</span></code> and <code class="docutils literal notranslate"><span class="pre">setCorrelation</span></code> becomes <code class="docutils literal notranslate"><span class="pre">set_correlation</span></code>.</p></li>
+<li><p><strong>Distributions.</strong> <code class="docutils literal notranslate"><span class="pre">stdv</span></code> becomes <code class="docutils literal notranslate"><span class="pre">std</span></code> and <code class="docutils literal notranslate"><span class="pre">startpoint</span></code> becomes
+<code class="docutils literal notranslate"><span class="pre">start_point</span></code>. <code class="docutils literal notranslate"><span class="pre">input_type=True</span></code> gives way to native keywords, as in
+<code class="docutils literal notranslate"><span class="pre">Gumbel(&quot;Q&quot;,</span> <span class="pre">loc=8.9,</span> <span class="pre">scale=1.56)</span></code> (<a class="reference internal" href="#models-and-distributions">Models and distributions</a>).</p></li>
+<li><p><strong>Options.</strong> <code class="docutils literal notranslate"><span class="pre">AnalysisOptions</span></code> becomes <code class="docutils literal notranslate"><span class="pre">FORMOptions</span></code>, <code class="docutils literal notranslate"><span class="pre">SORMOptions</span></code> or
+<code class="docutils literal notranslate"><span class="pre">SimulationOptions</span></code>, passed as <code class="docutils literal notranslate"><span class="pre">options=</span></code> (<a class="reference internal" href="#options-and-constructors">Options and constructors</a>).</p></li>
+<li><p><strong>Results.</strong> <code class="docutils literal notranslate"><span class="pre">run()</span></code> returns a result record: <code class="docutils literal notranslate"><span class="pre">form.getBeta()</span></code> becomes
+<code class="docutils literal notranslate"><span class="pre">result.beta</span></code> and <code class="docutils literal notranslate"><span class="pre">form.showResults()</span></code> becomes <code class="docutils literal notranslate"><span class="pre">print(result.summary())</span></code>
+(<a class="reference internal" href="#result-records">Result records</a> and <a class="reference internal" href="#getters-and-printing">Getters and printing</a>).</p></li>
+<li><p><strong>Randomness.</strong> Pass <code class="docutils literal notranslate"><span class="pre">rng=seed</span></code> to a simulation instead of seeding NumPy’s
+global random state (<a class="reference internal" href="#randomness">Randomness</a>).</p></li>
+<li><p><strong>Correlation.</strong> Add every random variable before calling
+<code class="docutils literal notranslate"><span class="pre">set_correlation</span></code>; the matrix is now validated (<a class="reference internal" href="#correlation-matrices">Correlation matrices</a>).</p></li>
+<li><p><strong>Failures.</strong> A nonconverged analysis raises <code class="docutils literal notranslate"><span class="pre">AnalysisError</span></code>; pass
+<code class="docutils literal notranslate"><span class="pre">on_failure=&quot;return&quot;</span></code> to keep its record instead (<a class="reference internal" href="#failure-handling"><span class="std std-ref">Failure handling</span></a>).</p></li>
+<li><p><strong>Calibration.</strong> Explicit operations replace the <code class="docutils literal notranslate"><span class="pre">Calibration</span></code> class
+(<a class="reference internal" href="#code-calibration-using-normalized-reliability">Code calibration using normalized reliability</a>).</p></li>
+</ol>
+<p>Results can differ from 1.x where 2.0 corrects a numerical error, and seeded
+simulations differ within sampling error; the <a class="reference internal" href="changelog.html"><span class="doc">Changelog</span></a> lists the
+corrections. There is not yet an automatic converter for user scripts; see
+<a class="reference internal" href="#migration-tools">Migration tools</a>.</p>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+<section id="naming-conventions-in-2-0">
+<h2>Naming conventions in 2.0<a class="headerlink" href="#naming-conventions-in-2-0" title="Link to this heading">#</a></h2>
+<p>PySTRA 2.0 adopts PEP 8 throughout the public API. Three rules cover every
+public name, and they are applied uniformly rather than case by case:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 25.0%" />
+<col style="width: 45.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Kind of name</p></th>
+<th class="head"><p>Convention</p></th>
+<th class="head"><p>Example</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Functions, methods, parameters, attributes, modules</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">snake_case</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">model.add_variable</span></code>, <code class="docutils literal notranslate"><span class="pre">result.failure_probability</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Classes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">CapWords</span></code>, with acronyms fully capitalised</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SystemFORM</span></code>, <code class="docutils literal notranslate"><span class="pre">DDOCriterion</span></code>, <code class="docutils literal notranslate"><span class="pre">LQI</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Constants</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">UPPER_SNAKE_CASE</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">DEFAULT_BLOCK_SIZE</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The acronym rule follows PEP 8’s <em>Descriptive: Naming Styles</em>, which states:
+“When using acronyms in CapWords, capitalize all the letters of the acronym.
+Thus <code class="docutils literal notranslate"><span class="pre">HTTPServerError</span></code> is better than <code class="docutils literal notranslate"><span class="pre">HttpServerError</span></code>.” Because PySTRA’s
+domain is dense with acronyms — FORM, SORM, PCE, PC-Kriging, FBR, DDO, LQI,
+SWTP — applying this consistently is what makes the API predictable: if you
+know the acronym, you know how it is spelled in the code.</p>
+<p>Note that the rule governs <em>CapWords only</em>. Functions, methods and module
+names keep their acronyms lowercase, so <code class="docutils literal notranslate"><span class="pre">run_form</span></code> and <code class="docutils literal notranslate"><span class="pre">pc_kriging</span></code> are
+correct and are not affected.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ScipyDist</span></code> keeps its existing name. In 2.0, <code class="docutils literal notranslate"><span class="pre">GEVmax</span></code> remains available as
+an alias for <code class="docutils literal notranslate"><span class="pre">GEV</span></code>; it is the one deliberate alias in the new API.</p>
+<p>Extreme-value distributions are named by family rather than by type number.
+The literature labels the three Fisher–Tippett limits with Roman numerals —
+Type I (Gumbel), Type II (Fréchet) and Type III (Weibull), all special cases of
+the generalized extreme value (GEV) distribution — and PySTRA 1.x followed it
+with names such as <code class="docutils literal notranslate"><span class="pre">TypeIlargestValue</span></code>. In 2.0 the class takes the family
+name. The bare name is the conventional flavour, maxima for <code class="docutils literal notranslate"><span class="pre">Gumbel</span></code> and
+<code class="docutils literal notranslate"><span class="pre">Frechet</span></code> and minima for <code class="docutils literal notranslate"><span class="pre">Weibull</span></code>, and the opposite flavour takes a
+suffix, as in <code class="docutils literal notranslate"><span class="pre">GumbelMin</span></code> and <code class="docutils literal notranslate"><span class="pre">GEVMin</span></code>. <code class="docutils literal notranslate"><span class="pre">Frechet</span></code> is the ASCII spelling of Fréchet.</p>
+</section>
+<section id="implemented-naming-changes">
+<h2>Implemented naming changes<a class="headerlink" href="#implemented-naming-changes" title="Link to this heading">#</a></h2>
+<p>Functions and methods now use snake_case. Inconsistent class names follow the
+project’s CapWords convention. Apart from <code class="docutils literal notranslate"><span class="pre">GEVmax</span></code>, there are no aliases for the replaced names; old names
+and module paths raise errors that name their replacements (see <a class="reference internal" href="#signposts"><span class="std std-ref">Signposts for old names</span></a>).
+Modules moved into subpackages (see <a class="reference internal" href="#moved-modules"><span class="std std-ref">Moved modules</span></a>). Calibration is now a package
+with explicit exports; its structural changes are described below.</p>
+<section id="renamed-classes">
+<span id="id1"></span><h3>Renamed classes<a class="headerlink" href="#renamed-classes" title="Link to this heading">#</a></h3>
+<p>The classes below were renamed in 2.0. Apart from <code class="docutils literal notranslate"><span class="pre">GEVmax</span></code>, which remains an
+alias for <code class="docutils literal notranslate"><span class="pre">GEV</span></code>, there are no aliases; an old name raises an error that names its replacement
+(see <a class="reference internal" href="#signposts"><span class="std std-ref">Signposts for old names</span></a>). <code class="docutils literal notranslate"><span class="pre">TypeIlargestValue</span></code> and <code class="docutils literal notranslate"><span class="pre">TypeIIIsmallestValue</span></code> duplicated
+<code class="docutils literal notranslate"><span class="pre">Gumbel</span></code> and <code class="docutils literal notranslate"><span class="pre">Weibull</span></code> exactly, so those classes are removed and the
+existing names used instead.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>1.x</p></th>
+<th class="head"><p>2.0</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Form</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">FORM</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Sorm</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SORM</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">TypeIlargestValue</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Gumbel</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">TypeIsmallestValue</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">GumbelMin</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">TypeIIlargestValue</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Frechet</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">TypeIIIsmallestValue</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Weibull</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GEVmax</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">GEV</span></code> (<code class="docutils literal notranslate"><span class="pre">GEVmax</span></code> still works as an alias)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">GEVmin</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">GEVMin</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">KofNSystem</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">KOfNSystem</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">GenericModel</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">NormalizedReliabilityModel</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GenericCalibration</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">CodeCalibration</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Classes added during 2.0 development follow the same rule: <code class="docutils literal notranslate"><span class="pre">FORMResult</span></code>,
+<code class="docutils literal notranslate"><span class="pre">PCESurrogate</span></code>, <code class="docutils literal notranslate"><span class="pre">PCECandidate</span></code>, <code class="docutils literal notranslate"><span class="pre">PCEFitResult</span></code>, <code class="docutils literal notranslate"><span class="pre">PCKrigingSurrogate</span></code>,
+<code class="docutils literal notranslate"><span class="pre">PCKrigingFitResult</span></code> and <code class="docutils literal notranslate"><span class="pre">FBRLearning</span></code>. Earlier development snapshots
+spelled them in title case (<code class="docutils literal notranslate"><span class="pre">FormResult</span></code>, <code class="docutils literal notranslate"><span class="pre">PceSurrogate</span></code> and so on) and
+numbered the extreme-value classes (<code class="docutils literal notranslate"><span class="pre">Type1LargestValue</span></code> and so on); those
+spellings were never released.</p>
+</section>
+<section id="moved-modules">
+<span id="id2"></span><h3>Moved modules<a class="headerlink" href="#moved-modules" title="Link to this heading">#</a></h3>
+<p>Modules are grouped into subpackages in 2.0. Code that imports from the
+top-level <code class="docutils literal notranslate"><span class="pre">pystra</span></code> namespace is unaffected; code that imports a module path
+directly needs the new path.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 45.0%" />
+<col style="width: 55.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>1.x module</p></th>
+<th class="head"><p>2.0 module</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pystra.analysis</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pystra.reliability.analysis</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pystra.form</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pystra.reliability.form</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pystra.sorm</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pystra.reliability.sorm</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pystra.mc</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pystra.reliability.monte_carlo</span></code>; <code class="docutils literal notranslate"><span class="pre">ImportanceSampling</span></code> is in
+<code class="docutils literal notranslate"><span class="pre">pystra.reliability.importance_sampling</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pystra.ls</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pystra.reliability.line_sampling</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pystra.ss</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pystra.reliability.subset_simulation</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pystra.sensitivity</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pystra.reliability.sensitivity</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pystra.correlation</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pystra.dependence.correlation</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pystra.transformation</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pystra.dependence.transformation</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pystra.loadcomb</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pystra.loads</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pystra.integration</span></code>, <code class="docutils literal notranslate"><span class="pre">pystra.quadrature</span></code>,
+<code class="docutils literal notranslate"><span class="pre">pystra.cholesky_sensitivity</span></code></p></td>
+<td><p>Private numerical helpers in <code class="docutils literal notranslate"><span class="pre">pystra._numerics</span></code>; no longer public</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Modules added during 2.0 development moved with them: <code class="docutils literal notranslate"><span class="pre">copula</span></code> and <code class="docutils literal notranslate"><span class="pre">joint</span></code>
+to <code class="docutils literal notranslate"><span class="pre">pystra.dependence</span></code>; <code class="docutils literal notranslate"><span class="pre">system_form</span></code> and <code class="docutils literal notranslate"><span class="pre">strong_maximum</span></code> to
+<code class="docutils literal notranslate"><span class="pre">pystra.reliability</span></code>; <code class="docutils literal notranslate"><span class="pre">system</span></code> to <code class="docutils literal notranslate"><span class="pre">pystra.systems</span></code>; <code class="docutils literal notranslate"><span class="pre">ddo</span></code> to
+<code class="docutils literal notranslate"><span class="pre">pystra.decision</span></code>; and <code class="docutils literal notranslate"><span class="pre">fbc</span></code> into <code class="docutils literal notranslate"><span class="pre">pystra.loads</span></code>. Distribution modules with compound names now use
+snake_case, for example <code class="docutils literal notranslate"><span class="pre">pystra.distributions.shifted_lognormal</span></code>; import
+the classes themselves from <code class="docutils literal notranslate"><span class="pre">pystra</span></code> or <code class="docutils literal notranslate"><span class="pre">pystra.distributions</span></code>.</p>
+</section>
+<section id="top-level-namespace">
+<span id="id3"></span><h3>Top-level namespace<a class="headerlink" href="#top-level-namespace" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">pystra</span></code> gives the everyday modelling classes, distributions,
+dependence models, reliability methods, systems, load processes and result
+types, options and the error classes: 70 names, listed in <code class="docutils literal notranslate"><span class="pre">pystra.__all__</span></code>. Every module declares its own
+<code class="docutils literal notranslate"><span class="pre">__all__</span></code>, and nothing else leaks into the namespace. Specialised workflow
+tools are imported from their subpackage:</p>
+<ul class="simple">
+<li><p>code calibration: <code class="docutils literal notranslate"><span class="pre">pystra.calibration</span></code> (<code class="docutils literal notranslate"><span class="pre">CodeCalibration</span></code>,
+<code class="docutils literal notranslate"><span class="pre">solve_designs</span></code>, <code class="docutils literal notranslate"><span class="pre">derive_factors</span></code> and so on);</p></li>
+<li><p>design decisions and target reliability: <code class="docutils literal notranslate"><span class="pre">pystra.decision</span></code> (<code class="docutils literal notranslate"><span class="pre">DDO</span></code>,
+<code class="docutils literal notranslate"><span class="pre">LQI</span></code>, <code class="docutils literal notranslate"><span class="pre">SWTP</span></code>, <code class="docutils literal notranslate"><span class="pre">TargetReliability</span></code> and so on);</p></li>
+<li><p>active-learning components: <code class="docutils literal notranslate"><span class="pre">pystra.active_learning</span></code>. <code class="docutils literal notranslate"><span class="pre">ActiveLearning</span></code>
+itself is also available as <code class="docutils literal notranslate"><span class="pre">pystra.ActiveLearning</span></code>.</p></li>
+</ul>
+<p>These tools are new in 2.0. Using one of their names at the top level raises
+an error that names the subpackage to import it from.</p>
+</section>
+<section id="signposts-for-old-names">
+<span id="signposts"></span><h3>Signposts for old names<a class="headerlink" href="#signposts-for-old-names" title="Link to this heading">#</a></h3>
+<p>Apart from <code class="docutils literal notranslate"><span class="pre">GEVmax</span></code>, 2.0 keeps no aliases for replaced names, but it tells you
+where each one went:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pystra.Form</span></code> and every other 1.x name raise an <code class="docutils literal notranslate"><span class="pre">AttributeError</span></code> that
+names the replacement, for example “PySTRA 2.0 renamed Form to FORM: use
+pystra.FORM”.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">pystra.form</span></code> and <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">pystra.form</span> <span class="pre">import</span> <span class="pre">...</span></code> raise an
+<code class="docutils literal notranslate"><span class="pre">ImportError</span></code> that names the new module.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">pystra</span> <span class="pre">import</span> <span class="pre">Form</span></code> raises Python’s own <code class="docutils literal notranslate"><span class="pre">ImportError</span></code>: Python
+replaces a package’s message with its generic one for this form of import.
+It adds a “Did you mean” suggestion when the new name is similar, as it is
+for <code class="docutils literal notranslate"><span class="pre">FORM</span></code>.</p></li>
+</ul>
+<p>The messages are generated from the migration records by
+<code class="docutils literal notranslate"><span class="pre">scripts/generate_signposts.py</span></code>. They will be removed in 3.0.</p>
+</section>
+<section id="errors">
+<span id="id4"></span><h3>Errors<a class="headerlink" href="#errors" title="Link to this heading">#</a></h3>
+<p>PySTRA raises its own exception types. An invalid model, distribution or input
+specification raises <code class="docutils literal notranslate"><span class="pre">pystra.ModelError</span></code>, which is also a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code>; in 1.x
+these checks raised a bare <code class="docutils literal notranslate"><span class="pre">Exception</span></code>. An analysis that cannot produce a valid
+result raises <code class="docutils literal notranslate"><span class="pre">pystra.AnalysisError</span></code>, which is also a <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code>. Both
+derive from <code class="docutils literal notranslate"><span class="pre">pystra.PystraError</span></code>.</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id6">
+<caption><span class="caption-text">Representative changes</span><a class="headerlink" href="#id6" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 45.0%" />
+<col style="width: 55.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>1.x</p></th>
+<th class="head"><p>Current 2.0 development API</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">model.addVariable(rv)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">model.add_variable(rv)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">model.setCorrelation(matrix)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">model.set_correlation(matrix)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">options.setImax(100)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">FORMOptions(max_iterations=100)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">form.getBeta()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">result.beta</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">form.getFailure()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">result.failure_probability</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">form.getDesignPoint(False)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">result.design_point_x</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">form.showResults()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">print(result.summary())</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">distribution.dF_dtheta(x)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">distribution.cdf_gradient(x)</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The class names <code class="docutils literal notranslate"><span class="pre">SystemFORM</span></code>, <code class="docutils literal notranslate"><span class="pre">FBCProcess</span></code>,
+<code class="docutils literal notranslate"><span class="pre">ScipyDist</span></code>, <code class="docutils literal notranslate"><span class="pre">DDO</span></code>, <code class="docutils literal notranslate"><span class="pre">DDOCriterion</span></code>, <code class="docutils literal notranslate"><span class="pre">DDOObjective</span></code>, <code class="docutils literal notranslate"><span class="pre">LQI</span></code>, <code class="docutils literal notranslate"><span class="pre">SWTP</span></code>,
+<code class="docutils literal notranslate"><span class="pre">SWTPRecord</span></code>, and <code class="docutils literal notranslate"><span class="pre">SWTPIndexRecord</span></code> retain their original spellings in the
+source and feature contributions. This does not imply that every class was
+available in a published 1.x release. Acronyms in
+CapWords retain their capitals, as recommended by
+<a class="reference external" href="https://peps.python.org/pep-0008/#descriptive-naming-styles">PEP 8</a>.
+<code class="docutils literal notranslate"><span class="pre">Form</span></code> and <code class="docutils literal notranslate"><span class="pre">Sorm</span></code> became <code class="docutils literal notranslate"><span class="pre">FORM</span></code> and <code class="docutils literal notranslate"><span class="pre">SORM</span></code> under the same rule, and
+the extreme-value classes are now named by family (see <a class="reference internal" href="#renamed-classes"><span class="std std-ref">Renamed classes</span></a>).</p>
+<p>The <a class="reference download internal" download="" href="_downloads/a319e08b6ae77172d41a03c50d5e6219/naming-map.json"><code class="xref download docutils literal notranslate"><span class="pre">naming</span> <span class="pre">map</span></code></a> records the
+reviewed spelling changes and retained class names. The <a class="reference download internal" download="" href="_downloads/9dd4d8818073bd1fc722e56c1e4fcd9a/api-migration.json"><code class="xref download docutils literal notranslate"><span class="pre">definition</span> <span class="pre">manifest</span></code></a>
+maps all 645 inventoried definitions, including private helpers. The
+<a class="reference download internal" download="" href="_downloads/e0d697d8b21f405a426c05043639a83c/api-baseline.json"><code class="xref download docutils literal notranslate"><span class="pre">baseline</span> <span class="pre">inventory</span></code></a> records
+signatures, assigned attributes, dependency versions, and observed exports.
+Inventory inclusion does not imply that an internal helper or an incidental
+third-party export is a supported public API.
+The baseline includes unmerged feature PRs; its <code class="docutils literal notranslate"><span class="pre">1.6.0</span></code> version label does
+not make their interfaces part of the released 1.x API. For new joint
+distributions, use <code class="docutils literal notranslate"><span class="pre">joint.make_transformation(...)</span></code> directly.</p>
+<p>The distribution package now explicitly exports PySTRA classes. Import NumPy
+and SciPy helpers directly from their own packages. Previously leaked SciPy
+objects no longer shadow the <code class="docutils literal notranslate"><span class="pre">beta</span></code>, <code class="docutils literal notranslate"><span class="pre">gamma</span></code>, <code class="docutils literal notranslate"><span class="pre">gumbel</span></code>, <code class="docutils literal notranslate"><span class="pre">uniform</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">weibull</span></code> distribution modules.</p>
+</section>
+</section>
+<section id="current-example">
+<h2>Current example<a class="headerlink" href="#current-example" title="Link to this heading">#</a></h2>
+<p>This example uses the current API and is executed by the documentation checks.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ra</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">"R"</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">"S"</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">limit_state</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span><span class="k">lambda</span> <span class="n">R</span><span class="p">,</span> <span class="n">S</span><span class="p">:</span> <span class="n">R</span> <span class="o">-</span> <span class="n">S</span><span class="p">)</span>
+<span class="n">form</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">FORM</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+    <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"beta = </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">beta</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">; converged = </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">converged</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>beta = 3.5355; converged = True
+</pre></div>
+</div>
+</section>
+<section id="options-and-constructors">
+<h2>Options and constructors<a class="headerlink" href="#options-and-constructors" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">AnalysisOptions</span></code> is removed. Each analysis takes one frozen settings object
+through its <code class="docutils literal notranslate"><span class="pre">options</span></code> keyword:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Settings</p></th>
+<th class="head"><p>Used by</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">FORMOptions</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">FORM</span></code>, <code class="docutils literal notranslate"><span class="pre">SystemFORM</span></code>, <code class="docutils literal notranslate"><span class="pre">SensitivityAnalysis</span></code>, <code class="docutils literal notranslate"><span class="pre">StrongMaximumTest</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SORMOptions</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SORM</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SimulationOptions</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">CrudeMonteCarlo</span></code>, <code class="docutils literal notranslate"><span class="pre">ImportanceSampling</span></code>, <code class="docutils literal notranslate"><span class="pre">LineSampling</span></code>,
+<code class="docutils literal notranslate"><span class="pre">SubsetSimulation</span></code>, <code class="docutils literal notranslate"><span class="pre">DistributionAnalysis</span></code>, <code class="docutils literal notranslate"><span class="pre">ActiveLearning</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Unknown fields are rejected, values are validated when the object is created,
+and the defaults are those of 1.x. Derive modified settings with
+<code class="xref py py-func docutils literal notranslate"><span class="pre">dataclasses.replace()</span></code>. A simulation method rejects a setting that it
+does not use, such as <code class="docutils literal notranslate"><span class="pre">target_cov</span></code> for line sampling.</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id7">
+<caption><span class="caption-text">Settings</span><a class="headerlink" href="#id7" title="Link to this table">#</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Earlier API (including intermediate development spellings)</p></th>
+<th class="head"><p>2.0</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">set_imax(n)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">FORMOptions(max_iterations=n)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">set_e1(e)</span></code>, <code class="docutils literal notranslate"><span class="pre">set_e2(e)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">limit_state_tolerance</span></code>, <code class="docutils literal notranslate"><span class="pre">gradient_tolerance</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">set_step_size(s)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">step_size</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">set_diff_mode(&quot;ddm&quot;)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">differentiation=&quot;ddm&quot;</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">set_ffd_parameter(p)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ffd_parameter</span></code> (FORM and SORM)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">set_block_size(n)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">block_size</span></code> (FORM and simulation)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">set_samples(n)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SimulationOptions(n_samples=n)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">target_cov</span></code>, <code class="docutils literal notranslate"><span class="pre">stdv_sim</span></code>, <code class="docutils literal notranslate"><span class="pre">set_bins(n)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">target_cov</span></code>, <code class="docutils literal notranslate"><span class="pre">sampling_std</span></code>, <code class="docutils literal notranslate"><span class="pre">bins</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">set_transform(t)</span></code>, <code class="docutils literal notranslate"><span class="pre">set_rosenblatt_order(o)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">transform</span></code>, <code class="docutils literal notranslate"><span class="pre">rosenblatt_order</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">set_print_output(flag)</span></code></p></td>
+<td><p>Removed: analyses do not print; use <code class="docutils literal notranslate"><span class="pre">result.summary()</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SORM.run(fit_type=&quot;pf&quot;)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SORMOptions(fit=&quot;point&quot;)</span></code>; <code class="docutils literal notranslate"><span class="pre">fit_type=&quot;cf&quot;</span></code> is <code class="docutils literal notranslate"><span class="pre">fit=&quot;curve&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">transf_type</span></code>, <code class="docutils literal notranslate"><span class="pre">Ro_method</span></code>, <code class="docutils literal notranslate"><span class="pre">flag_sens</span></code>, <code class="docutils literal notranslate"><span class="pre">Recorded_u</span></code>, <code class="docutils literal notranslate"><span class="pre">Recorded_x</span></code>,
+<code class="docutils literal notranslate"><span class="pre">ffdpara_thetag</span></code>, <code class="docutils literal notranslate"><span class="pre">sim_point</span></code>, <code class="docutils literal notranslate"><span class="pre">multi_proc</span></code> and <code class="docutils literal notranslate"><span class="pre">random_generator</span></code> had
+no effect and are removed.</p>
+<p>Constructors take the model and limit state first, then keyword-only
+settings: <code class="docutils literal notranslate"><span class="pre">FORM(model,</span> <span class="pre">limit_state,</span> <span class="pre">*,</span> <span class="pre">options=None)</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Earlier development API (removed)</span>
+<span class="n">options</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">AnalysisOptions</span><span class="p">()</span>
+<span class="n">options</span><span class="o">.</span><span class="n">set_imax</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">form</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">FORM</span><span class="p">(</span><span class="n">stochastic_model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
+               <span class="n">analysis_options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The equivalent current constructor is checked with the example above:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">form</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">FORM</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">ra</span><span class="o">.</span><span class="n">FORMOptions</span><span class="p">(</span><span class="n">max_iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">SensitivityAnalysis(model,</span> <span class="pre">limit_state,</span> <span class="pre">*,</span> <span class="pre">options=None,</span> <span class="pre">method=&quot;numerical&quot;,</span>
+<span class="pre">delta=0.01)</span></code> takes the method and step that were <code class="docutils literal notranslate"><span class="pre">run()</span></code> arguments; use
+<code class="docutils literal notranslate"><span class="pre">method=&quot;closed_form&quot;</span></code> for <code class="docutils literal notranslate"><span class="pre">run(numerical=False)</span></code>. <code class="docutils literal notranslate"><span class="pre">SystemFORM(model,</span>
+<span class="pre">system,</span> <span class="pre">...)</span></code> takes the model first. Both reverse the 1.x argument order, and
+<code class="docutils literal notranslate"><span class="pre">run_form()</span></code> is removed. The Monte Carlo classes no longer take
+<code class="docutils literal notranslate"><span class="pre">analysis_options</span></code> first.</p>
+<p>SORM, importance sampling and line sampling no longer run FORM when
+constructed; <code class="docutils literal notranslate"><span class="pre">run()</span></code> does. Pass a completed analysis as <code class="docutils literal notranslate"><span class="pre">form=</span></code> to reuse its
+design point. SORM then uses that analysis’s settings and rejects a
+non-default <code class="docutils literal notranslate"><span class="pre">SORMOptions.form</span></code>. When importance or line sampling runs FORM
+itself, it uses the default FORM settings with its own block size and
+transformation; to use others, such as direct differentiation, run FORM first
+and pass it.</p>
+<p>An internally generated FORM analysis is recomputed on every run. A supplied
+FORM must have converged for the same model and limit-state expression, with
+unchanged distribution parameters, dependence and FORM options. Rerun FORM
+after changing those inputs. Importance and line sampling must also use the
+same reference transformation and conditioning order as the supplied FORM.
+Unknown custom distribution state causes FORM to be recomputed before reuse.
+Changes inside an external solver, a callable closure or other external data
+cannot be detected automatically: rerun FORM after those changes too.</p>
+<p>Assigning <code class="docutils literal notranslate"><span class="pre">analysis.form</span> <span class="pre">=</span> <span class="pre">completed_form</span></code> after construction selects that
+FORM analysis for <code class="docutils literal notranslate"><span class="pre">SORM</span></code>, <code class="docutils literal notranslate"><span class="pre">LineSampling</span></code> and <code class="docutils literal notranslate"><span class="pre">ImportanceSampling</span></code>;
+assigning <code class="docutils literal notranslate"><span class="pre">None</span></code> restores a freshly computed FORM on each run. A supplied
+analysis must still match the model, limit-state expression and coordinates.</p>
+<p><code class="docutils literal notranslate"><span class="pre">LimitState.evaluate_lsf(x,</span> <span class="pre">model,</span> <span class="pre">*,</span> <span class="pre">differentiation=&quot;no&quot;,</span>
+<span class="pre">ffd_parameter=1000,</span> <span class="pre">block_size=1000)</span></code> takes explicit settings instead of an
+options object.</p>
+</section>
+<section id="randomness">
+<h2>Randomness<a class="headerlink" href="#randomness" title="Link to this heading">#</a></h2>
+<p>Crude Monte Carlo, importance sampling, distribution analysis, line sampling
+and subset simulation drew from NumPy’s global random state, so
+<code class="docutils literal notranslate"><span class="pre">np.random.seed</span></code> controlled them. They now take <code class="docutils literal notranslate"><span class="pre">rng</span></code>, as do
+<code class="docutils literal notranslate"><span class="pre">StrongMaximumTest</span></code> and <code class="docutils literal notranslate"><span class="pre">ActiveLearning</span></code>, where it replaces <code class="docutils literal notranslate"><span class="pre">seed</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1.x</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">2026</span><span class="p">)</span>
+<span class="n">analysis</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">CrudeMonteCarlo</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+<span class="c1"># 2.0</span>
+<span class="n">analysis</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">CrudeMonteCarlo</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="mi">2026</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">rng</span></code> accepts a seed, a <code class="docutils literal notranslate"><span class="pre">numpy.random.Generator</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code>. An integer
+seed recreates the same stream on every <code class="docutils literal notranslate"><span class="pre">run()</span></code>; a generator advances its own
+state, so successive runs differ; <code class="docutils literal notranslate"><span class="pre">None</span></code> draws fresh entropy. The global
+random state is neither used nor changed. The streams differ from 1.x, so a
+seeded 1.x estimate is not reproduced exactly, but agrees within its sampling
+error. A <code class="docutils literal notranslate"><span class="pre">StrongMaximumTest</span></code> given an integer seed now repeats its sphere
+sample on each run instead of advancing.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Maximum</span></code> and <code class="docutils literal notranslate"><span class="pre">MaxParent</span></code> now compute their moments deterministically, by
+Gauss-Hermite quadrature of the quantile function in standard normal space,
+with exact identities for Fréchet and uniform parents. They no longer consume
+100 global random draws on construction. Successive quadrature estimates are
+compared at relative tolerance <code class="docutils literal notranslate"><span class="pre">1e-7</span></code> and absolute tolerance <code class="docutils literal notranslate"><span class="pre">1e-9</span></code> in
+standardized mean and variance. A missed tolerance emits <code class="docutils literal notranslate"><span class="pre">RuntimeWarning</span></code> and
+keeps the finest finite estimate, which serves for start points and
+finite-difference steps; it does not reject an otherwise valid distribution.
+Nonfinite estimates and nonpositive variance remain errors. Moment values and
+default start points can therefore change from the old random estimates. Normal CDF and quantile calculations now
+retain lower-tail probabilities that the former error-function subtraction
+rounded to zero.</p>
+<p>Marginal transformations now evaluate each tail on the side where its
+probability is small, and use log probabilities where probabilities underflow
+(<a class="reference internal" href="theory/transformations.html"><span class="doc">Probability transformations and copulas</span></a>). Transformed points up to <span class="math notranslate nohighlight">\(u = 3\)</span> are
+unchanged. Beyond it they can differ in the last digits, and they are finite
+where 1.x returned infinite values. Every distribution also provides <code class="docutils literal notranslate"><span class="pre">sf</span></code>,
+<code class="docutils literal notranslate"><span class="pre">isf</span></code>, <code class="docutils literal notranslate"><span class="pre">logcdf</span></code>, <code class="docutils literal notranslate"><span class="pre">logsf</span></code> and <code class="docutils literal notranslate"><span class="pre">logpdf</span></code>. <code class="docutils literal notranslate"><span class="pre">GEVMin</span></code> (<code class="docutils literal notranslate"><span class="pre">GEVmin</span></code> in 1.x)
+was transformed from quantiles of <span class="math notranslate nohighlight">\(-X\)</span> and converted its moments with the
+relations for maxima, so results for models that use it change.</p>
+</section>
+<section id="result-records">
+<h2>Result records<a class="headerlink" href="#result-records" title="Link to this heading">#</a></h2>
+<p>Every analysis’s <code class="docutils literal notranslate"><span class="pre">run()</span></code> now returns an immutable record from
+<a class="reference internal" href="gen/pystra.results.html#module-pystra.results" title="pystra.results"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pystra.results</span></code></a>: <code class="docutils literal notranslate"><span class="pre">FORMResult</span></code>, <code class="docutils literal notranslate"><span class="pre">SORMResult</span></code>, <code class="docutils literal notranslate"><span class="pre">SimulationResult</span></code>,
+<code class="docutils literal notranslate"><span class="pre">SystemFORMResult</span></code>, <code class="docutils literal notranslate"><span class="pre">SensitivityResult</span></code>, <code class="docutils literal notranslate"><span class="pre">StrongMaximumResult</span></code> or
+<code class="docutils literal notranslate"><span class="pre">DistributionAnalysisResult</span></code>. In 1.x only sensitivity analysis returned a
+value. A later run cannot change an earlier record. Every record has
+<code class="docutils literal notranslate"><span class="pre">method</span></code>, <code class="docutils literal notranslate"><span class="pre">status</span></code>, <code class="docutils literal notranslate"><span class="pre">message</span></code>, <code class="docutils literal notranslate"><span class="pre">n_limit_state_evaluations</span></code> and
+<code class="docutils literal notranslate"><span class="pre">variable_names</span></code>, the <code class="docutils literal notranslate"><span class="pre">converged</span></code> property and <code class="docutils literal notranslate"><span class="pre">summary()</span></code>; estimates
+add <code class="docutils literal notranslate"><span class="pre">failure_probability</span></code> and <code class="docutils literal notranslate"><span class="pre">beta</span></code>. See <a class="reference internal" href="guides/results.html"><span class="doc">Interpreting results and convergence</span></a>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">FORMResult.beta</span></code> is the normal-equivalent index, and <code class="docutils literal notranslate"><span class="pre">design_index</span></code> the
+signed distance of the design point in <code class="docutils literal notranslate"><span class="pre">standard_space</span></code>. These differ in
+Student-t standard space. A normal-space index remains finite even when its
+very small probability underflows to zero. Iteration exhaustion raises
+<code class="docutils literal notranslate"><span class="pre">AnalysisError</span></code>, which carries the unconverged record, with no probability,
+index or design point, in <code class="docutils literal notranslate"><span class="pre">.result</span></code>; see <a class="reference internal" href="#failure-handling"><span class="std std-ref">Failure handling</span></a>. The design point and direction are
+read-only arrays in <code class="docutils literal notranslate"><span class="pre">variable_names</span></code> order. Records compare equal by value
+but, holding arrays, are not hashable.</p>
+<p>If you used the 2.0 development <code class="docutils literal notranslate"><span class="pre">FORMResult</span></code>, its fields are renamed:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Before</p></th>
+<th class="head"><p>Now</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">design_point</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">design_point_x</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">standard_point</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">design_point_u</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geometric_beta</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">design_index</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">converged</span></code> field</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">status</span></code> field; <code class="docutils literal notranslate"><span class="pre">converged</span></code> is a property</p></td>
+</tr>
+<tr class="row-even"><td><p>tuples</p></td>
+<td><p>read-only NumPy arrays</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">SensitivityAnalysis.run()</span></code> returns a <code class="docutils literal notranslate"><span class="pre">SensitivityResult</span></code> instead of a
+dictionary:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1.x</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">analysis</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">numerical</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">result</span><span class="p">[</span><span class="s2">"R"</span><span class="p">][</span><span class="s2">"mean"</span><span class="p">]</span>
+<span class="n">closed</span> <span class="o">=</span> <span class="n">analysis</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">numerical</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">closed</span><span class="p">[</span><span class="s2">"marginal"</span><span class="p">][</span><span class="s2">"R"</span><span class="p">][</span><span class="s2">"mean"</span><span class="p">],</span> <span class="n">closed</span><span class="p">[</span><span class="s2">"correlation"</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>The current constructors select the differentiation method:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">SensitivityAnalysis</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">"numerical"</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">result</span><span class="o">.</span><span class="n">marginal</span><span class="p">[</span><span class="s2">"R"</span><span class="p">][</span><span class="s2">"mean"</span><span class="p">]</span>
+<span class="n">closed</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">SensitivityAnalysis</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">"closed_form"</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">closed</span><span class="o">.</span><span class="n">marginal</span><span class="p">[</span><span class="s2">"R"</span><span class="p">][</span><span class="s2">"mean"</span><span class="p">],</span> <span class="n">closed</span><span class="o">.</span><span class="n">correlation</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">result.to_dataframe()</span></code> gives the table that <code class="docutils literal notranslate"><span class="pre">analysis.summary(result)</span></code>
+gave.</p>
+<p>Two outcomes are reported differently in the records. A simulation that
+observed no failures reports an infinite coefficient of variation, rather
+than crude Monte Carlo’s placeholder of 1.0, and its status is
+<code class="docutils literal notranslate"><span class="pre">&quot;precision_not_met&quot;</span></code> when a positive precision target was requested.
+<code class="docutils literal notranslate"><span class="pre">target_cov=0</span></code> instead requests a fixed budget and reports <code class="docutils literal notranslate"><span class="pre">&quot;completed&quot;</span></code>
+when that budget is used, retaining the measured coefficient of variation.
+A SORM fit whose curvatures make Breitung’s formula
+undefined printed a message and reported a probability and index of 0.0; its
+record now has status <code class="docutils literal notranslate"><span class="pre">&quot;not_converged&quot;</span></code> and no estimate, and <code class="docutils literal notranslate"><span class="pre">run()</span></code>
+raises it in an <code class="docutils literal notranslate"><span class="pre">AnalysisError</span></code> unless <code class="docutils literal notranslate"><span class="pre">on_failure=&quot;return&quot;</span></code>. Likewise, an
+undefined modified Breitung probability is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</section>
+<section id="models-and-distributions">
+<h2>Models and distributions<a class="headerlink" href="#models-and-distributions" title="Link to this heading">#</a></h2>
+<p>Distributions take <code class="docutils literal notranslate"><span class="pre">std</span></code> and <code class="docutils literal notranslate"><span class="pre">start_point</span></code> in place of <code class="docutils literal notranslate"><span class="pre">stdv</span></code> and
+<code class="docutils literal notranslate"><span class="pre">startpoint</span></code>, and <code class="docutils literal notranslate"><span class="pre">mean</span></code>, <code class="docutils literal notranslate"><span class="pre">std</span></code> and <code class="docutils literal notranslate"><span class="pre">start_point</span></code> are read-only
+properties.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>1.x</p></th>
+<th class="head"><p>2.0</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Normal(&quot;R&quot;,</span> <span class="pre">10,</span> <span class="pre">stdv=1)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Normal(&quot;R&quot;,</span> <span class="pre">10,</span> <span class="pre">std=1)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dist.getMean()</span></code>, <code class="docutils literal notranslate"><span class="pre">dist.getStdv()</span></code>, <code class="docutils literal notranslate"><span class="pre">dist.stdv</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dist.mean</span></code>, <code class="docutils literal notranslate"><span class="pre">dist.std</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">startpoint=...</span></code>, <code class="docutils literal notranslate"><span class="pre">dist.getStartPoint()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">start_point=...</span></code>, <code class="docutils literal notranslate"><span class="pre">dist.start_point</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Constant(name,</span> <span class="pre">val=...)</span></code>, <code class="docutils literal notranslate"><span class="pre">constant.getValue()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Constant(name,</span> <span class="pre">value=...)</span></code>, <code class="docutils literal notranslate"><span class="pre">constant.value</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">model.getVariable(name)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">model.variable(name)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">model.getConstants()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">model.constants</span></code>, a read-only mapping</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Distributions, constants and models print informatively, for example
+<code class="docutils literal notranslate"><span class="pre">Normal('R',</span> <span class="pre">mean=10,</span> <span class="pre">std=1)</span></code>.</p>
+<p>Native parameters are keyword arguments of the same constructor, replacing
+<code class="docutils literal notranslate"><span class="pre">input_type</span></code>: give either the mean and standard deviation or every native
+parameter. The names follow SciPy. <code class="docutils literal notranslate"><span class="pre">GumbelMin</span></code> takes its scale where
+<code class="docutils literal notranslate"><span class="pre">input_type</span></code> took the inverse, and the <code class="docutils literal notranslate"><span class="pre">Weibull</span></code> scale is measured from the
+lower bound where <code class="docutils literal notranslate"><span class="pre">input_type</span></code> took the characteristic value <span class="math notranslate nohighlight">\(u_1\)</span>. The
+bounds of <code class="docutils literal notranslate"><span class="pre">Weibull</span></code> and <code class="docutils literal notranslate"><span class="pre">Beta</span></code> are the keywords <code class="docutils literal notranslate"><span class="pre">lower</span></code> and <code class="docutils literal notranslate"><span class="pre">upper</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">start_point</span></code> is keyword-only for every distribution.</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id8">
+<caption><span class="caption-text">Native parameters, with 2.0 class names</span><a class="headerlink" href="#id8" title="Link to this table">#</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>1.x</p></th>
+<th class="head"><p>2.0</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Gumbel(&quot;Q&quot;,</span> <span class="pre">mu,</span> <span class="pre">scale,</span> <span class="pre">input_type=True)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Gumbel(&quot;Q&quot;,</span> <span class="pre">loc=mu,</span> <span class="pre">scale=scale)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">GumbelMin(&quot;R&quot;,</span> <span class="pre">mu,</span> <span class="pre">beta,</span> <span class="pre">input_type=True)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">GumbelMin(&quot;R&quot;,</span> <span class="pre">loc=mu,</span> <span class="pre">scale=1</span> <span class="pre">/</span> <span class="pre">beta)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GEV(&quot;X&quot;,</span> <span class="pre">loc,</span> <span class="pre">scale,</span> <span class="pre">shape,</span> <span class="pre">input_type=True)</span></code>, also <code class="docutils literal notranslate"><span class="pre">GEVMin</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">GEV(&quot;X&quot;,</span> <span class="pre">shape=shape,</span> <span class="pre">loc=loc,</span> <span class="pre">scale=scale)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Frechet(&quot;X&quot;,</span> <span class="pre">u_n,</span> <span class="pre">k,</span> <span class="pre">input_type=True)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Frechet(&quot;X&quot;,</span> <span class="pre">scale=u_n,</span> <span class="pre">shape=k)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Lognormal(&quot;R&quot;,</span> <span class="pre">lamb,</span> <span class="pre">zeta,</span> <span class="pre">input_type=True)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Lognormal(&quot;R&quot;,</span> <span class="pre">log_mean=lamb,</span> <span class="pre">log_std=zeta)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Uniform(&quot;X&quot;,</span> <span class="pre">a,</span> <span class="pre">b,</span> <span class="pre">input_type=True)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Uniform(&quot;X&quot;,</span> <span class="pre">lower=a,</span> <span class="pre">upper=b)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Weibull(&quot;W&quot;,</span> <span class="pre">u_1,</span> <span class="pre">k,</span> <span class="pre">epsilon,</span> <span class="pre">input_type=True)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Weibull(&quot;W&quot;,</span> <span class="pre">scale=u_1</span> <span class="pre">-</span> <span class="pre">epsilon,</span> <span class="pre">shape=k,</span> <span class="pre">lower=epsilon)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Weibull(&quot;W&quot;,</span> <span class="pre">mean,</span> <span class="pre">std,</span> <span class="pre">epsilon)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Weibull(&quot;W&quot;,</span> <span class="pre">mean,</span> <span class="pre">std,</span> <span class="pre">lower=epsilon)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Beta(&quot;B&quot;,</span> <span class="pre">q,</span> <span class="pre">r,</span> <span class="pre">a,</span> <span class="pre">b,</span> <span class="pre">input_type=True)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Beta(&quot;B&quot;,</span> <span class="pre">q=q,</span> <span class="pre">r=r,</span> <span class="pre">lower=a,</span> <span class="pre">upper=b)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Beta(&quot;B&quot;,</span> <span class="pre">mean,</span> <span class="pre">std,</span> <span class="pre">a,</span> <span class="pre">b)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Beta(&quot;B&quot;,</span> <span class="pre">mean,</span> <span class="pre">std,</span> <span class="pre">lower=a,</span> <span class="pre">upper=b)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Gamma(&quot;G&quot;,</span> <span class="pre">beta,</span> <span class="pre">alpha,</span> <span class="pre">input_type=True)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Gamma(&quot;G&quot;,</span> <span class="pre">rate=beta,</span> <span class="pre">shape=alpha)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ShiftedExponential(&quot;E&quot;,</span> <span class="pre">lamb,</span> <span class="pre">x_zero,</span> <span class="pre">input_type=True)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ShiftedExponential(&quot;E&quot;,</span> <span class="pre">rate=lamb,</span> <span class="pre">shift=x_zero)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ShiftedRayleigh(&quot;X&quot;,</span> <span class="pre">a,</span> <span class="pre">x_zero,</span> <span class="pre">input_type=True)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ShiftedRayleigh(&quot;X&quot;,</span> <span class="pre">scale=a,</span> <span class="pre">shift=x_zero)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ChiSquare(&quot;C&quot;,</span> <span class="pre">nu,</span> <span class="pre">input_type=True)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ChiSquare(&quot;C&quot;,</span> <span class="pre">df=nu)</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="correlation-matrices">
+<h2>Correlation matrices<a class="headerlink" href="#correlation-matrices" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">CorrelationMatrix</span></code> is checked when it is created: it must be square, finite,
+symmetric, with a unit diagonal and positive definite, or <code class="docutils literal notranslate"><span class="pre">ModelError</span></code> is
+raised. <code class="docutils literal notranslate"><span class="pre">set_correlation</span></code> checks an array in the same way; in 1.x any array
+was accepted, and an invalid one failed later, if at all. The matrix is held as
+a read-only array, so element assignment is removed: build a new matrix. The
+unused attributes <code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">sigma</span></code> and <code class="docutils literal notranslate"><span class="pre">p1</span></code> to <code class="docutils literal notranslate"><span class="pre">p4</span></code> are removed.</p>
+<p>Set all random variables before setting explicit correlation or a copula.
+Adding another marginal afterwards raises an error and leaves the model
+unchanged, rather than replacing its dependence with an identity matrix.
+Constants can still be added. The matrix dimensions must match the existing
+random variables when <code class="docutils literal notranslate"><span class="pre">set_correlation</span></code> is called.</p>
+<p><code class="docutils literal notranslate"><span class="pre">cholesky()</span></code> returns the lower Cholesky factor; <code class="docutils literal notranslate"><span class="pre">nataf(model)</span></code> returns the
+standard-normal correlation that the Nataf transformation uses for the model’s
+marginals; and <code class="docutils literal notranslate"><span class="pre">CorrelationMatrix.nearest_positive_definite(matrix)</span></code> repairs
+an estimate that is not positive definite, using Higham’s (2002) method.</p>
+</section>
+<section id="failure-handling">
+<span id="id5"></span><h2>Failure handling<a class="headerlink" href="#failure-handling" title="Link to this heading">#</a></h2>
+<p>In 1.x, FORM warned when it exhausted its iterations and kept its last,
+unconverged values. Nonconvergence now raises <code class="docutils literal notranslate"><span class="pre">AnalysisError</span></code> (a
+<code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code> and a <code class="docutils literal notranslate"><span class="pre">PystraError</span></code>), which carries the unconverged record
+in <code class="docutils literal notranslate"><span class="pre">.result</span></code>. <code class="docutils literal notranslate"><span class="pre">FORM</span></code>, <code class="docutils literal notranslate"><span class="pre">SORM</span></code>, <code class="docutils literal notranslate"><span class="pre">SystemFORM</span></code> and <code class="docutils literal notranslate"><span class="pre">SensitivityAnalysis</span></code>
+take <code class="docutils literal notranslate"><span class="pre">on_failure=&quot;return&quot;</span></code> to return that record instead, with status
+<code class="docutils literal notranslate"><span class="pre">&quot;not_converged&quot;</span></code> and no probability, index or estimate; FORM also warns.
+Use it for batch studies:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">FORM</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="k">except</span> <span class="n">ra</span><span class="o">.</span><span class="n">AnalysisError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">error</span><span class="o">.</span><span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">limit_state_error</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">FORM</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="n">on_failure</span><span class="o">=</span><span class="s2">"return"</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">converged</span><span class="p">:</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>SORM also fails when Breitung’s formula is undefined for the fitted
+curvatures, and system FORM when a component does not converge or its
+integration fails. Code calibration returns its unconverged cases, as before.
+Valid simulations report an unmet positive precision target as
+<code class="docutils literal notranslate"><span class="pre">&quot;precision_not_met&quot;</span></code> with their estimate. Invalid limit-state values or
+external-solver exceptions raise <code class="docutils literal notranslate"><span class="pre">AnalysisError</span></code>; the originating exception
+is retained as its cause. An evaluation error may have no result record;
+SORM can wrap it in a failed record under <code class="docutils literal notranslate"><span class="pre">on_failure=&quot;return&quot;</span></code>. Importance and line sampling
+require a converged FORM prerequisite. Line sampling raises when evaluation
+or root refinement fails, with the affected line identified; failed evaluations
+are never treated as safe samples or replaced with a bracket midpoint.
+A limit state whose argument names do not match the model raises
+<code class="docutils literal notranslate"><span class="pre">ModelError</span></code>; an exception inside a correctly bound evaluator raises
+<code class="docutils literal notranslate"><span class="pre">AnalysisError</span></code> with the original exception as its cause.</p>
+<p>SORM evaluates its correction formulas and Mills ratio in log space.
+Importance sampling accumulates log likelihood ratios and log moment sums, and
+line sampling normalizes its probabilities before computing their dispersion.
+A reported probability can therefore underflow to zero while its reliability
+index and relative uncertainty stay finite. No observed failures still gives an
+infinite reliability index and uncertainty. Line sampling restricts its scan to
+standard normal coordinates in <code class="docutils literal notranslate"><span class="pre">[-37,</span> <span class="pre">37]</span></code>, including the correlated
+coordinates of a Nataf transformation. If that truncates the scan and no
+intersection is found, <code class="docutils literal notranslate"><span class="pre">AnalysisError</span></code> reports the unresolved line rather
+than assigning it the probability of the truncated endpoint.</p>
+</section>
+<section id="getters-and-printing">
+<h2>Getters and printing<a class="headerlink" href="#getters-and-printing" title="Link to this heading">#</a></h2>
+<p>The analysis getters and printing methods are removed; read the record that
+<code class="docutils literal notranslate"><span class="pre">run()</span></code> returns. The analyses’ remaining numerical state (<code class="docutils literal notranslate"><span class="pre">beta</span></code>, <code class="docutils literal notranslate"><span class="pre">Pf</span></code>,
+<code class="docutils literal notranslate"><span class="pre">u</span></code>, <code class="docutils literal notranslate"><span class="pre">kappa</span></code>, <code class="docutils literal notranslate"><span class="pre">cov_q_bar</span></code> and so on) is private, and <code class="docutils literal notranslate"><span class="pre">limitstate</span></code> is
+renamed <code class="docutils literal notranslate"><span class="pre">limit_state</span></code>.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>1.x</p></th>
+<th class="head"><p>2.0</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">get_failure()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">result.failure_probability</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">get_beta()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">result.beta</span></code>; FORM’s geometric index is <code class="docutils literal notranslate"><span class="pre">result.design_index</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">get_equivalent_beta()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">result.beta</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">get_design_point()</span></code>, <code class="docutils literal notranslate"><span class="pre">get_design_point(False)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">result.design_point_u</span></code>, <code class="docutils literal notranslate"><span class="pre">result.design_point_x</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">get_alpha()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">result.alpha</span></code>, in <code class="docutils literal notranslate"><span class="pre">result.variable_names</span></code> order</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">get_no_function_calls()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">result.n_limit_state_evaluations</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">show_results()</span></code>, <code class="docutils literal notranslate"><span class="pre">show_detailed_output()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">print(result.summary())</span></code>, <code class="docutils literal notranslate"><span class="pre">result.to_dataframe()</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>SORM <code class="docutils literal notranslate"><span class="pre">pf2_breitung</span></code>, <code class="docutils literal notranslate"><span class="pre">pf2_breitung_m</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">result.approximations[&quot;breitung&quot;]</span></code>, <code class="docutils literal notranslate"><span class="pre">[&quot;modified_breitung&quot;]</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>SORM <code class="docutils literal notranslate"><span class="pre">kappa</span></code>, <code class="docutils literal notranslate"><span class="pre">kappa_pf</span></code>, <code class="docutils literal notranslate"><span class="pre">betaHL</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">result.curvatures</span></code>, <code class="docutils literal notranslate"><span class="pre">result.form.design_index</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Monte Carlo <code class="docutils literal notranslate"><span class="pre">cov_q_bar</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">result.coefficient_of_variation</span></code>, <code class="docutils literal notranslate"><span class="pre">result.n_samples</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">result.diagnostics[&quot;history&quot;]</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Subset simulation <code class="docutils literal notranslate"><span class="pre">thresholds</span></code>, <code class="docutils literal notranslate"><span class="pre">conditional_probs</span></code>, <code class="docutils literal notranslate"><span class="pre">n_levels</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">result.diagnostics[&quot;thresholds&quot;]</span></code> and so on</p></td>
+</tr>
+<tr class="row-odd"><td><p>Strong Maximum Test <code class="docutils literal notranslate"><span class="pre">status</span></code>, <code class="docutils literal notranslate"><span class="pre">get_points()</span></code>, <code class="docutils literal notranslate"><span class="pre">get_values()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">result.has_competing_points</span></code>, <code class="docutils literal notranslate"><span class="pre">result.points(region,</span> <span class="pre">space)</span></code>,
+<code class="docutils literal notranslate"><span class="pre">result.limit_state_values[result.regions[region]]</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">results_valid</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">result.status</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SensitivityAnalysis.summary(result)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">result.to_dataframe()</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>FORM’s getters returned the geometric index; in normal space it equals
+<code class="docutils literal notranslate"><span class="pre">result.beta</span></code>, and in Student-t space use <code class="docutils literal notranslate"><span class="pre">result.design_index</span></code>.
+<code class="docutils literal notranslate"><span class="pre">plot_strong_maximum</span></code> takes the Strong Maximum Test’s record. The
+distribution analysis’s samples are <code class="docutils literal notranslate"><span class="pre">result.samples_x</span></code> and
+<code class="docutils literal notranslate"><span class="pre">result.limit_state_values</span></code>; crude Monte Carlo no longer exposes its stored
+samples. To test a system component’s design point, pass the component limit
+state and <code class="docutils literal notranslate"><span class="pre">result.component_results[name].design_point_u</span></code> to
+<code class="docutils literal notranslate"><span class="pre">StrongMaximumTest</span></code> explicitly.</p>
+</section>
+<section id="code-calibration-using-normalized-reliability">
+<h2>Code calibration using normalized reliability<a class="headerlink" href="#code-calibration-using-normalized-reliability" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">GenericCalibration</span></code> is renamed <code class="docutils literal notranslate"><span class="pre">CodeCalibration</span></code>, and <code class="docutils literal notranslate"><span class="pre">GenericModel</span></code>
+becomes <code class="docutils literal notranslate"><span class="pre">NormalizedReliabilityModel</span></code>. Their implementation is in
+<code class="docutils literal notranslate"><span class="pre">pystra.calibration.normalized</span></code>. These names describe the engineering
+workflow and probability model; no compatibility aliases are retained.</p>
+<p><code class="docutils literal notranslate"><span class="pre">CodeCalibration</span></code> is the primary code-calibration workflow. It evaluates
+candidate factors against a probability model over a normalized G/P/Q load-ratio
+grid. It does not silently choose a fitting objective or optimize the factors.</p>
+<p>Replace model setters and the 14-position <code class="docutils literal notranslate"><span class="pre">GenericModel.get()</span></code> tuple with
+explicit constructor fields. <code class="docutils literal notranslate"><span class="pre">NominalValues</span></code> holds characteristic values;
+<code class="docutils literal notranslate"><span class="pre">CodeFactors</span></code> holds a separate candidate factor set. Both validate positive,
+finite values. <code class="docutils literal notranslate"><span class="pre">NormalizedReliabilityModel</span></code> copies distributions/constants and optionally
+accepts a copula. The copula follows the random-variable order
+resistance_error, resistance, load_error, dead_load, permanent_load, live_load,
+omitting constants. Independence is the default.</p>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">replace</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ra</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">calibration</span><span class="o">.</span><span class="n">NormalizedReliabilityModel</span><span class="p">(</span>
+    <span class="n">resistance</span><span class="o">=</span><span class="n">ra</span><span class="o">.</span><span class="n">Lognormal</span><span class="p">(</span><span class="s2">"R"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.08</span><span class="p">),</span>
+    <span class="n">dead_load</span><span class="o">=</span><span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">"G"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.08</span><span class="p">),</span>
+    <span class="n">permanent_load</span><span class="o">=</span><span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">"P"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">),</span>
+    <span class="n">live_load</span><span class="o">=</span><span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">"Q"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">),</span>
+    <span class="n">resistance_error</span><span class="o">=</span><span class="n">ra</span><span class="o">.</span><span class="n">Lognormal</span><span class="p">(</span><span class="s2">"w_R"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">),</span>
+    <span class="n">load_error</span><span class="o">=</span><span class="n">ra</span><span class="o">.</span><span class="n">Lognormal</span><span class="p">(</span><span class="s2">"w_S"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">),</span>
+    <span class="n">nominal_values</span><span class="o">=</span><span class="n">ra</span><span class="o">.</span><span class="n">calibration</span><span class="o">.</span><span class="n">NominalValues</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">factors</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">calibration</span><span class="o">.</span><span class="n">CodeFactors</span><span class="p">(</span><span class="n">phi</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">gamma_g</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">gamma_p</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">gamma_q</span><span class="o">=</span><span class="mf">1.6</span><span class="p">)</span>
+<span class="n">study</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">calibration</span><span class="o">.</span><span class="n">CodeCalibration</span><span class="p">(</span>
+    <span class="n">live_load_ratios</span><span class="o">=</span><span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">],</span> <span class="n">dead_load_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">current</span> <span class="o">=</span> <span class="n">study</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">factors</span><span class="p">,</span> <span class="n">target_beta</span><span class="o">=</span><span class="mf">3.8</span><span class="p">)</span>
+<span class="n">proposed</span> <span class="o">=</span> <span class="n">study</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">replace</span><span class="p">(</span><span class="n">factors</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mf">0.9</span><span class="p">),</span> <span class="n">target_beta</span><span class="o">=</span><span class="mf">3.8</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">current</span><span class="o">.</span><span class="n">to_frame</span><span class="p">())</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">calibration</span><span class="o">.</span><span class="n">plot_calibration</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">"Current"</span><span class="p">:</span> <span class="n">current</span><span class="p">,</span> <span class="s2">"Proposed"</span><span class="p">:</span> <span class="n">proposed</span><span class="p">},</span> <span class="n">target_beta</span><span class="o">=</span><span class="mf">3.8</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>This replaces <code class="docutils literal notranslate"><span class="pre">add_model(...)</span></code>, <code class="docutils literal notranslate"><span class="pre">analyse()</span></code> and the study’s mutable result
+cache. Each <code class="docutils literal notranslate"><span class="pre">run(model,</span> <span class="pre">factors,</span> <span class="pre">*,</span> <span class="pre">options=None,</span> <span class="pre">target_beta=None)</span></code> returns a
+new <code class="docutils literal notranslate"><span class="pre">CodeCalibrationResult</span></code> with the analyzed model snapshot, factors, designs,
+and a <code class="docutils literal notranslate"><span class="pre">FORMResult</span></code> at every grid point. <code class="docutils literal notranslate"><span class="pre">beta</span></code> is a fresh array of shape
+<code class="docutils literal notranslate"><span class="pre">(n_dead_load_ratios,</span> <span class="pre">n_live_load_ratios)</span></code>. Failed points are retained as NaN;
+their target margins are unavailable. <code class="docutils literal notranslate"><span class="pre">to_frame()</span></code> returns a reporting copy.
+<code class="docutils literal notranslate"><span class="pre">plot_calibration</span></code> accepts completed results and refuses to draw an envelope
+that would hide failed points. Labels, colors and range annotations belong to
+this plotting function, replacing styling in model registration.</p>
+<p>Grids must be nonempty, one-dimensional, and within [0, 1], including endpoints.
+FORM options can be supplied explicitly; the built-in normalized limit state
+currently requires finite-difference derivatives and rejects DDM mode.</p>
+</section>
+<section id="explicit-load-cases">
+<h2>Explicit load cases<a class="headerlink" href="#explicit-load-cases" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> now stores inspectable probabilistic cases and metadata;
+analysis is explicit through <code class="docutils literal notranslate"><span class="pre">analyze_case(cases,</span> <span class="pre">case_name,</span> <span class="pre">options=...)</span></code>.
+Its constructor accepts <code class="docutils literal notranslate"><span class="pre">cases</span></code>, <code class="docutils literal notranslate"><span class="pre">constants</span></code>, <code class="docutils literal notranslate"><span class="pre">roles</span></code>, <code class="docutils literal notranslate"><span class="pre">leading_actions</span></code>,
+<code class="docutils literal notranslate"><span class="pre">limit_state</span></code> and labelled Pearson <code class="docutils literal notranslate"><span class="pre">correlation</span></code>. It validates inputs but
+performs no reliability analysis. Case/model access returns independent copies.
+Unknown variable overrides raise instead of being silently ignored.</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">VariableRoles(resistance=(...),</span> <span class="pre">other=(...),</span> <span class="pre">variable=(...))</span></code> when case
+roles matter. <code class="docutils literal notranslate"><span class="pre">leading_actions</span></code> maps each case name to its leading variable
+action names. Explicit-case construction preserves these roles; case insertion
+order never determines a leading action.</p>
+<p>Replace the legacy nested <code class="docutils literal notranslate"><span class="pre">dict_dist_comb</span></code>/<code class="docutils literal notranslate"><span class="pre">action_distributions</span></code> constructor
+with <code class="docutils literal notranslate"><span class="pre">LoadCombination.from_actions(maxima=...,</span> <span class="pre">companions=...,</span> <span class="pre">resistance=...,</span>
+<span class="pre">other=...,</span> <span class="pre">constants=...,</span> <span class="pre">limit_state=...)</span></code>. Maxima and companions are separate
+mappings from action names to distributions. The default generates one
+<code class="docutils literal notranslate"><span class="pre">&lt;action&gt;_max</span></code> case per action. Use <code class="docutils literal notranslate"><span class="pre">LoadCombination.turkstra</span></code> for the retained
+FBC reference-period/companion-duration construction.</p>
+<p>The old <code class="docutils literal notranslate"><span class="pre">lsf</span></code>, <code class="docutils literal notranslate"><span class="pre">corr</span></code>, <code class="docutils literal notranslate"><span class="pre">opt</span></code> and positional constructor arguments are
+removed: use <code class="docutils literal notranslate"><span class="pre">limit_state</span></code>, <code class="docutils literal notranslate"><span class="pre">correlation</span></code> and per-evaluation <code class="docutils literal notranslate"><span class="pre">options</span></code>.
+<code class="docutils literal notranslate"><span class="pre">run_reliability_case</span></code> is replaced by <code class="docutils literal notranslate"><span class="pre">analyze_case</span></code>. Duplicate label groups,
+mutable case-distribution attributes and special zero-filled limit-state
+helpers are removed. Ordinary mappings remain appropriate for named cases,
+nominal values and overrides; fixed records express roles and results.</p>
+</section>
+<section id="partial-and-combination-factor-calibration">
+<h2>Partial and combination factor calibration<a class="headerlink" href="#partial-and-combination-factor-calibration" title="Link to this heading">#</a></h2>
+<p>The old <code class="docutils literal notranslate"><span class="pre">Calibration</span></code> object is removed, without an alias. Its hidden sequence
+of mutable DataFrame attributes is replaced by independently usable operations:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">calibration</span><span class="o">.</span><span class="n">FactorCalibrationProblem</span><span class="p">(</span>
+    <span class="n">cases</span><span class="p">,</span> <span class="n">nominal_values</span><span class="o">=</span><span class="n">nominal_values</span><span class="p">,</span> <span class="n">design_parameter</span><span class="o">=</span><span class="s2">"scale"</span>
+<span class="p">)</span>
+<span class="n">targets</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">calibration</span><span class="o">.</span><span class="n">solve_designs</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">target_beta</span><span class="o">=</span><span class="mf">4.3</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">"root"</span><span class="p">)</span>
+<span class="n">factors</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">calibration</span><span class="o">.</span><span class="n">derive_factors</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">"matrix"</span><span class="p">)</span>
+<span class="n">selected</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">calibration</span><span class="o">.</span><span class="n">select_factors</span><span class="p">(</span>
+    <span class="n">factors</span><span class="p">,</span> <span class="n">resistance</span><span class="o">=</span><span class="s2">"minimum"</span><span class="p">,</span> <span class="n">loads</span><span class="o">=</span><span class="s2">"maximum"</span><span class="p">,</span> <span class="n">combinations</span><span class="o">=</span><span class="s2">"maximum"</span>
+<span class="p">)</span>
+<span class="n">designs</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">calibration</span><span class="o">.</span><span class="n">design_with_factors</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">selected</span><span class="p">)</span>
+<span class="n">checks</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">calibration</span><span class="o">.</span><span class="n">verify_designs</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">designs</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="n">target_beta</span><span class="o">=</span><span class="mf">4.3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here <code class="docutils literal notranslate"><span class="pre">cases</span></code> is a <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> with explicit roles, leading actions,
+a limit state and a common <code class="docutils literal notranslate"><span class="pre">Constant(&quot;scale&quot;,</span> <span class="pre">...)</span></code>. <code class="docutils literal notranslate"><span class="pre">nominal_values</span></code> maps
+exactly the random-variable role names to positive characteristic values.
+See the factor-calibration tutorial for complete linear and nonlinear examples.</p>
+<p><code class="docutils literal notranslate"><span class="pre">solve_designs</span></code> supports <code class="docutils literal notranslate"><span class="pre">method=&quot;root&quot;</span></code> (fsolve, or Brent with a supplied
+<code class="docutils literal notranslate"><span class="pre">bracket</span></code>) and <code class="docutils literal notranslate"><span class="pre">method=&quot;alpha&quot;</span></code>. The default tolerance is 1e-4 in beta and
+<code class="docutils literal notranslate"><span class="pre">max_evaluations=100</span></code> limits FORM runs per case, including final verification.
+Each <code class="docutils literal notranslate"><span class="pre">CalibratedDesign</span></code> carries the design value, reliability, target residual,
+convergence, evaluation count and message. A failed inner or outer solve remains
+in the result and cannot enter factor derivation. Solver success alone is
+insufficient: the final beta residual must also satisfy the tolerance.</p>
+<p><code class="docutils literal notranslate"><span class="pre">derive_factors</span></code> supports the original <code class="docutils literal notranslate"><span class="pre">matrix</span></code> and <code class="docutils literal notranslate"><span class="pre">coeff</span></code> methods.
+These specialist methods require normal standard space and exactly one leading
+case per variable action. Alpha projection also requires normal space. The
+design rule assumes a separable resistance scale with multiplicative model
+errors; designs are checked against the full limit-state residual. Arbitrary
+coupled nonlinear functions are not supported by term isolation. The matrix
+method retains the reference convention of evaluating each action coefficient
+in its own leading case, then assembling by names. Singular systems raise.</p>
+<p><code class="docutils literal notranslate"><span class="pre">FactorSet</span></code> contains immutable numeric rows with explicit case/variable axes.
+<code class="docutils literal notranslate"><span class="pre">to_frame(&quot;resistance&quot;)</span></code>, <code class="docutils literal notranslate"><span class="pre">to_frame(&quot;loads&quot;)</span></code> and
+<code class="docutils literal notranslate"><span class="pre">to_frame(&quot;combinations&quot;)</span></code> return fresh tables. Selection defaults to
+<code class="docutils literal notranslate"><span class="pre">&quot;per_case&quot;</span></code>; extrema must be requested explicitly, and governing-case ties
+are retained. <code class="docutils literal notranslate"><span class="pre">design_with_factors</span></code> returns named design values. Selecting
+their maximum is explicit in the example, followed by verification of every
+case; extrema alone do not establish that targets are met.</p>
+</section>
+<section id="saved-objects-and-extensions">
+<h2>Saved objects and extensions<a class="headerlink" href="#saved-objects-and-extensions" title="Link to this heading">#</a></h2>
+<p>Objects pickled with 1.x, such as models, distributions and analyses, cannot be
+loaded in 2.0: their classes, modules and internal state have changed. Rebuild
+them from their definitions, and keep results as plain data, for example with
+<code class="docutils literal notranslate"><span class="pre">result.to_dataframe()</span></code>.</p>
+<p>A custom subclass of <code class="docutils literal notranslate"><span class="pre">Distribution</span></code> keeps working if it passes a SciPy frozen
+distribution as <code class="docutils literal notranslate"><span class="pre">dist_obj</span></code> or overrides <code class="docutils literal notranslate"><span class="pre">u_to_x</span></code>, <code class="docutils literal notranslate"><span class="pre">x_to_u</span></code> and
+<code class="docutils literal notranslate"><span class="pre">jacobian</span></code>; rename <code class="docutils literal notranslate"><span class="pre">stdv</span></code> to <code class="docutils literal notranslate"><span class="pre">std</span></code> and <code class="docutils literal notranslate"><span class="pre">startpoint</span></code> to <code class="docutils literal notranslate"><span class="pre">start_point</span></code>.
+A subclass that overrides <code class="docutils literal notranslate"><span class="pre">cdf</span></code>, <code class="docutils literal notranslate"><span class="pre">ppf</span></code> or <code class="docutils literal notranslate"><span class="pre">pdf</span></code> should also provide
+<code class="docutils literal notranslate"><span class="pre">sf</span></code>, <code class="docutils literal notranslate"><span class="pre">isf</span></code> and <code class="docutils literal notranslate"><span class="pre">logpdf</span></code> to keep small probabilities accurate; see
+<a class="reference internal" href="guides/high_reliability.html"><span class="doc">Working at high reliability</span></a>. Sensitivity analysis rebuilds a distribution
+from its constructor arguments, so store any beyond the mean and standard
+deviation in <code class="docutils literal notranslate"><span class="pre">_ctor_kwargs</span></code>.</p>
+<p>A limit-state function receives one keyword argument for each variable and
+constant, so its argument names must match the model’s names; otherwise
+<code class="docutils literal notranslate"><span class="pre">ModelError</span></code> is raised.</p>
+<p>The public contracts for batched evaluators and for extending distributions are
+still being settled and can change before the beta.</p>
+</section>
+<section id="migration-records">
+<h2>Migration records<a class="headerlink" href="#migration-records" title="Link to this heading">#</a></h2>
+<p>The <a class="reference download internal" download="" href="_downloads/6a69ab0f3755c5bd6e11138d95db16a1/calibration-naming-map.json"><code class="xref download docutils literal notranslate"><span class="pre">calibration</span> <span class="pre">naming</span> <span class="pre">map</span></code></a>
+records the intermediate naming-only stage. It is historical: several of those
+intermediate names have since been removed. The
+<a class="reference download internal" download="" href="_downloads/2b7adaaf58157b2bfe34b087fac9dda6/calibration-structure-map.json"><code class="xref download docutils literal notranslate"><span class="pre">calibration</span> <span class="pre">structure</span> <span class="pre">map</span></code></a>
+records replacement operations and current definitions, signatures and result
+fields. The definition manifest retains a disposition for every baseline
+entry; removed/replaced APIs have no misleading one-to-one current name.
+These maps are not global text-substitution recipes for user scripts.</p>
+<p>The <a class="reference download internal" download="" href="_downloads/3e508067f00e0d0816070fcab5a352d4/calibration-review.md"><code class="xref download docutils literal notranslate"><span class="pre">calibration</span> <span class="pre">review</span></code></a> records the original
+reproductions and their resolution. Readable local <code class="docutils literal notranslate"><span class="pre">df</span></code> names, statistical
+degrees of freedom and conversion methods such as <code class="docutils literal notranslate"><span class="pre">to_dict()</span></code> retain their
+meanings; pseudo-Hungarian container prefixes are removed.</p>
+</section>
+<section id="integration-and-validation">
+<h2>Integration and validation<a class="headerlink" href="#integration-and-validation" title="Link to this heading">#</a></h2>
+<p>The outstanding Strong Maximum Test, copula/joint distribution, DDO/LQI,
+formatting, and SORM prerequisite PRs remain unmerged in 1.x. Their commits
+are included on <code class="docutils literal notranslate"><span class="pre">v2.0</span></code> and their changes are reserved for this release.
+System FORM was included earlier. Contributor attribution is retained in
+the integration records and source history.</p>
+<p>The corrected reference point is the Git tag <code class="docutils literal notranslate"><span class="pre">baseline/v2.0-before-naming</span></code>.
+All 478 tests and all 13 indexed tutorials pass before and after the naming
+pass. Canonicalizing the mapped identifiers gives matching Python syntax trees
+across all 45 package modules, apart from documentation and version metadata.
+No numerical formulas or tolerances changed in the naming commit.</p>
+<p>A follow-up replaces wildcard imports in the distribution package to correct
+the module collisions described above. Five import regression cases bring the
+suite to 483 tests at that checkpoint. The calibration replacement adds direct
+analytic and failure regressions while preserving all nine specialist reference
+tests. Both original 10-by-10 generic tutorial grids match to floating-point
+precision. See the migration plan for the latest validation record.</p>
+<p>The SORM prerequisite fix is included. Monte Carlo also now reports an infinite
+estimated reliability index when no failures are sampled, consistent with its
+zero probability estimate. This is not evidence of zero true failure
+probability; finite-sample uncertainty reporting remains further work.</p>
+</section>
+<section id="migration-tools">
+<h2>Migration tools<a class="headerlink" href="#migration-tools" title="Link to this heading">#</a></h2>
+<p>There is not yet an automatic converter for user scripts. A conservative
+converter for unambiguous imports, calls and keywords, with dry-run diffs, is
+planned before the beta. Until then, use the checklist at the top of this page,
+the <a class="reference internal" href="migration-map.html"><span class="doc">Complete symbol map</span></a> and the error messages of the signposts.</p>
+<p>The scripts below maintain this repository.
+<code class="docutils literal notranslate"><span class="pre">scripts/migrate_names.py</span></code> applies the reviewed map to tracked repository
+code and notebook source, with a dry run by default. It preserves notebook
+outputs and ignores untracked files. It is a repository maintenance tool,
+not a type-aware converter for arbitrary user scripts.</p>
+<p><code class="docutils literal notranslate"><span class="pre">scripts/api_inventory.py</span> <span class="pre">--check-names</span></code> checks package function/method names
+and the migrated class names. <code class="docutils literal notranslate"><span class="pre">--check-migration</span></code> verifies baseline manifest
+coverage and current calibration definition/signature records.
+<code class="docutils literal notranslate"><span class="pre">scripts/execute_notebooks.py</span> <span class="pre">--output-dir</span> <span class="pre">DIR</span></code>
+executes the tutorials listed in the tutorial index in fresh kernels. CI runs
+these checks, the test suite, formatting, documentation, and package builds.</p>
+</section>
+<section id="active-learning-new-in-2-0">
+<h2>Active learning: new in 2.0<a class="headerlink" href="#active-learning-new-in-2-0" title="Link to this heading">#</a></h2>
+<p>Active learning is a new 2.0 capability, developed from the <code class="docutils literal notranslate"><span class="pre">al</span></code> contribution
+and the literature-guided extensions. It remains unmerged in 1.x. Import from
+<code class="docutils literal notranslate"><span class="pre">pystra.active_learning</span></code>. <code class="docutils literal notranslate"><span class="pre">PCESurrogate</span></code>, <code class="docutils literal notranslate"><span class="pre">learning_u</span></code> and
+<code class="docutils literal notranslate"><span class="pre">learning_eff</span></code> follow the 2.0 naming conventions. Surrogates now consume
+independent normal coordinates, not physical points.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ActiveLearning.run()</span></code> returns an immutable <code class="docutils literal notranslate"><span class="pre">ActiveLearningResult</span></code> with
+<code class="docutils literal notranslate"><span class="pre">failure_probability</span></code>, <code class="docutils literal notranslate"><span class="pre">beta</span></code>, conditional sampling diagnostics and explicit
+convergence status. Its <code class="docutils literal notranslate"><span class="pre">n_limit_state_evaluations</span></code> counts true-model calls,
+the name every result record uses; <code class="docutils literal notranslate"><span class="pre">SubsetRun.n_samples</span></code> counts surrogate
+samples. Settings are keyword-only; use lowercase <code class="docutils literal notranslate"><span class="pre">u</span></code> or <code class="docutils literal notranslate"><span class="pre">eff</span></code>
+for the named learning functions. Stopping policies are explicit components.</p>
+<p>The four components are now <code class="docutils literal notranslate"><span class="pre">Surrogate</span></code>, <code class="docutils literal notranslate"><span class="pre">LearningFunction</span></code>,
+<code class="docutils literal notranslate"><span class="pre">ReliabilityEstimator</span></code> and <code class="docutils literal notranslate"><span class="pre">StoppingCriterion</span></code>. The import path remains
+<code class="docutils literal notranslate"><span class="pre">pystra.active_learning</span></code>, now a package. Existing concise calls retain the
+same default workflow and numerical settings: <code class="docutils literal notranslate"><span class="pre">learning_threshold</span></code> configures
+the named U/EFF policy, <code class="docutils literal notranslate"><span class="pre">n_estimation</span></code> configures final independent MC, and
+<code class="docutils literal notranslate"><span class="pre">target_cov</span></code> configures <code class="docutils literal notranslate"><span class="pre">LearningThreshold</span></code>. For explicit components use
+<code class="docutils literal notranslate"><span class="pre">UFunction(threshold=...)</span></code>, <code class="docutils literal notranslate"><span class="pre">MonteCarloEstimator(n_samples=...)</span></code> and
+<code class="docutils literal notranslate"><span class="pre">LearningThreshold(target_cov=...)</span></code> instead. Combining a component with its
+shortcut raises ValueError. Configure these objects directly rather than
+assigning former runner attributes <code class="docutils literal notranslate"><span class="pre">learning_threshold</span></code>, <code class="docutils literal notranslate"><span class="pre">n_estimation</span></code>
+or <code class="docutils literal notranslate"><span class="pre">target_cov</span></code>. <code class="docutils literal notranslate"><span class="pre">analysis.learning_function</span></code> now holds a policy object.</p>
+<p><code class="docutils literal notranslate"><span class="pre">BetaBounds</span></code>, <code class="docutils literal notranslate"><span class="pre">BetaStability</span></code> and <code class="docutils literal notranslate"><span class="pre">AllCriteria</span></code> are explicit alternatives.
+History entries add <code class="docutils literal notranslate"><span class="pre">probability_band</span></code>, <code class="docutils literal notranslate"><span class="pre">beta_band</span></code> and
+<code class="docutils literal notranslate"><span class="pre">learning_satisfied</span></code>. The result now stores a single immutable <code class="docutils literal notranslate"><span class="pre">estimate</span></code>
+record. Attribute access to <code class="docutils literal notranslate"><span class="pre">failure_probability</span></code>, <code class="docutils literal notranslate"><span class="pre">beta</span></code>, <code class="docutils literal notranslate"><span class="pre">sampling_cov</span></code>,
+<code class="docutils literal notranslate"><span class="pre">sampling_interval</span></code> and <code class="docutils literal notranslate"><span class="pre">n_estimation</span></code> is unchanged, but these are properties;
+<code class="docutils literal notranslate"><span class="pre">dataclasses.asdict(result)</span></code> nests sampling data under <code class="docutils literal notranslate"><span class="pre">estimate</span></code>. Use named
+fields when constructing result records; their positional constructor has
+changed. A custom estimator may return no sampling interval (None), and
+<code class="docutils literal notranslate"><span class="pre">result.estimate</span></code> identifies its method, dependence and confidence level.</p>
+<p><code class="docutils literal notranslate"><span class="pre">seed</span></code> controls run-owned randomness. Explicit surrogate instances retain
+their own optimizer/bootstrap configuration; set their seed at construction.
+See <a class="reference internal" href="active_learning.html"><span class="doc">Active-learning methods and literature</span></a> for composition and extension contracts, and
+<a class="reference internal" href="notebooks/ex_active_learning.html"><span class="doc">Active learning for reliability analysis</span></a> for scope and limitations.</p>
+<p>PCE now defaults to adaptive sparse fitting: <code class="docutils literal notranslate"><span class="pre">method=&quot;lars&quot;</span></code> with candidate
+degrees 1 through 5. An integer <code class="docutils literal notranslate"><span class="pre">degree</span></code> fits a single candidate. Pass
+<code class="docutils literal notranslate"><span class="pre">method=&quot;ols&quot;</span></code> for dense fitting. <code class="docutils literal notranslate"><span class="pre">q_norm</span></code> accepts one or more hyperbolic
+truncations and <code class="docutils literal notranslate"><span class="pre">max_interaction</span></code> limits interaction order. Sparse PCE’s
+default initial design is <code class="docutils literal notranslate"><span class="pre">max(30,</span> <span class="pre">5*n_variables)</span></code>. <code class="docutils literal notranslate"><span class="pre">fit_result</span></code> returns
+immutable selection diagnostics. Both PCE methods use core NumPy/SciPy;
+Kriging retains the optional scikit-learn dependency.</p>
+<section id="estimator-driven-subset-enrichment">
+<h3>Estimator-driven subset enrichment<a class="headerlink" href="#estimator-driven-subset-enrichment" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">SubsetSimulationEstimator</span></code> implements the new <code class="docutils literal notranslate"><span class="pre">EnrichmentEstimator</span></code>
+contract. Pass it to <code class="docutils literal notranslate"><span class="pre">ActiveLearning(estimator=...)</span></code> to resample conditional
+populations after each fit, then run independent final sampling. Existing
+<code class="docutils literal notranslate"><span class="pre">ReliabilityEstimator</span></code> subclasses remain final-only and retain fixed MC
+pools. Their implementations need not change. <code class="docutils literal notranslate"><span class="pre">EnrichmentResult</span></code> separates
+selection points from estimator-computed probabilities; never average its
+pooled conditional samples to estimate Pf.</p>
+<p>For adaptive estimators, <code class="docutils literal notranslate"><span class="pre">n_candidates</span></code> caps the selectable pool, while
+<code class="docutils literal notranslate"><span class="pre">SubsetSimulationEstimator(n_samples=...)</span></code> sets the per-level sample size.
+The default initial design is <code class="docutils literal notranslate"><span class="pre">max(30,</span> <span class="pre">5*n_variables)</span></code>. Explicit <code class="docutils literal notranslate"><span class="pre">n_initial</span></code>
+still takes precedence. Exploration uses a repeated separate random stream
+for comparisons; final estimation is independent. Fixed MC seeds and results
+retain their prior behaviour.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ReliabilityEstimate</span></code> adds <code class="docutils literal notranslate"><span class="pre">converged</span></code>, <code class="docutils literal notranslate"><span class="pre">status</span></code> and <code class="docutils literal notranslate"><span class="pre">diagnostics</span></code> with
+backward-compatible defaults for existing component constructors. Completion
+of the sampling algorithm is distinct from adequate CoV. <code class="docutils literal notranslate"><span class="pre">LearningStep</span></code> adds
+<code class="docutils literal notranslate"><span class="pre">estimation_converged</span></code> and optional <code class="docutils literal notranslate"><span class="pre">sampling_cov</span></code> for exploration. Built-in
+stopping rules reject incomplete exploratory estimates. The active result may
+have status <code class="docutils literal notranslate"><span class="pre">estimation_failed</span></code> if final subset sampling cannot finish.
+Subset diagnostics contain <code class="docutils literal notranslate"><span class="pre">SubsetRun</span></code> and <code class="docutils literal notranslate"><span class="pre">SubsetLevel</span></code> snapshots, with
+no IID binomial confidence interval. The standalone <code class="docutils literal notranslate"><span class="pre">pystra.SubsetSimulation</span></code>
+API and numerical implementation are unchanged in this increment.</p>
+</section>
+</section>
+<section id="additional-active-learning-contracts">
+<h2>Additional active-learning contracts<a class="headerlink" href="#additional-active-learning-contracts" title="Link to this heading">#</a></h2>
+<p>The public import path remains <code class="docutils literal notranslate"><span class="pre">pystra.active_learning</span></code>. The new named
+surrogate is <code class="docutils literal notranslate"><span class="pre">&quot;pc_kriging&quot;</span></code> and the new named learning function is <code class="docutils literal notranslate"><span class="pre">&quot;fbr&quot;</span></code>.
+<code class="docutils literal notranslate"><span class="pre">PCKrigingSurrogate</span></code> and <code class="docutils literal notranslate"><span class="pre">PCKrigingFitResult</span></code> expose sequential PC-Kriging;
+<code class="docutils literal notranslate"><span class="pre">ImportanceSamplingEstimator</span></code> and <code class="docutils literal notranslate"><span class="pre">ImportanceSamplingDiagnostics</span></code> supply
+explicit weighted sampling. Both use independent normal coordinates.</p>
+<p><code class="docutils literal notranslate"><span class="pre">EnsembleSurrogate.predict_replicates</span></code> and
+<code class="docutils literal notranslate"><span class="pre">EnsembleLearningFunction.select_replicates</span></code> extend the existing scalar
+contracts without changing U/EFF. <code class="docutils literal notranslate"><span class="pre">PCESurrogate</span></code> implements the ensemble
+interface. <code class="docutils literal notranslate"><span class="pre">FBRLearning</span></code> requires it; incompatible combinations fail before
+true-model evaluation. Named FBR defaults to <code class="docutils literal notranslate"><span class="pre">BootstrapBounds</span></code>; existing
+U/EFF defaults remain unchanged. Bootstrap probability stopping is restricted
+to fixed IID normal enrichment and rejected for adaptive weighted/conditional
+pools, including when nested inside <code class="docutils literal notranslate"><span class="pre">AllCriteria</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">LearningStep.bootstrap_probability_band</span></code> is an optional immutable pair of
+actual bootstrap Pf extremes, separate from <code class="docutils literal notranslate"><span class="pre">probability_band</span></code> (the
+mean/spread sensitivity diagnostic). <code class="docutils literal notranslate"><span class="pre">None</span></code> means it was not calculated.
+Neither field is a confidence interval for total surrogate error. See
+<a class="reference internal" href="active_learning.html"><span class="doc">Active-learning methods and literature</span></a> for formulas, limitations and the worked tutorial.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="theory/sensitivity.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Reliability sensitivity</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="migration-map.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Complete symbol map</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#upgrading-a-1-x-script">Upgrading a 1.x script</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#naming-conventions-in-2-0">Naming conventions in 2.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implemented-naming-changes">Implemented naming changes</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#renamed-classes">Renamed classes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#moved-modules">Moved modules</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#top-level-namespace">Top-level namespace</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#signposts-for-old-names">Signposts for old names</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#errors">Errors</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#current-example">Current example</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#options-and-constructors">Options and constructors</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#randomness">Randomness</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#result-records">Result records</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#models-and-distributions">Models and distributions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#correlation-matrices">Correlation matrices</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#failure-handling">Failure handling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getters-and-printing">Getters and printing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-calibration-using-normalized-reliability">Code calibration using normalized reliability</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#explicit-load-cases">Explicit load cases</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#partial-and-combination-factor-calibration">Partial and combination factor calibration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#saved-objects-and-extensions">Saved objects and extensions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#migration-records">Migration records</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#integration-and-validation">Integration and validation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#migration-tools">Migration tools</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#active-learning-new-in-2-0">Active learning: new in 2.0</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#estimator-driven-subset-enrichment">Estimator-driven subset enrichment</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#additional-active-learning-contracts">Additional active-learning contracts</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/pystra/pystra/edit/v2.0/docs/source/migrating.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2021-2026, The PySTRA Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><nav aria-label="Project links" class="project-links">
+  <a href="#">Migration</a>
+  <a href="citing.html">Cite PySTRA</a>
+  <a href="developer.html">Contributing</a>
+  <a href="https://pystra.github.io/pystra/">Stable 1.x documentation</a>
+</nav></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

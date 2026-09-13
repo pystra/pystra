@@ -1,0 +1,1399 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Calibrating target-reliability tables &#8212; PySTRA 2.0.0a1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a54fd074" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../_static/documentation_options.js?v=944fa962"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=ccd31ad0"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/ex_target_reliability';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Advanced methods: active learning and benchmarks" href="../tutorials/active_learning.html" />
+    <link rel="prev" title="Steel-bar design decisions and LQI acceptability" href="ex_design_decision_optimization.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.0a1" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">These pages document PySTRA 2.0, which is in development. The stable 1.x documentation is at <a href="https://pystra.github.io/pystra/">pystra.github.io/pystra</a>.</div>
+</aside>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 2.0.0a1 documentation - Home"/>
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 2.0.0a1 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item"><a class="version-status" href="../install.html" aria-label="Documentation version 2.0.0a1: installation instructions">2.0.0a1 · development</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API reference
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/getting_started.html">Getting started</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="ex_first_analysis.html">A first reliability analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_intro.html">Comparing FORM, SORM and simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_scipy_distributions.html">Using SciPy distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_openseespy.html">Reliability with an external finite-element model</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/reliability_methods.html">Reliability methods and diagnostics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="ex_simulation.html">Simulation methods for reliability analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_sensitivity.html">Reliability sensitivities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_ddm.html">Direct differentiation of the limit state</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_strong_maximum.html">Checking a FORM design point</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_timing.html">Distribution adapters and analysis cost</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/systems_dependence.html">Systems and dependence</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="ex_copulas.html">Dependence and probability transformations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_system_reliability.html">System reliability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_rosenblatt_system_order.html">Rosenblatt ordering in system reliability</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../tutorials/calibration_decisions.html">Code calibration and engineering decisions</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ex_load_combinations.html">Load combinations and FBC processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_generic_calibration.html">Code calibration using normalized reliability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_factor_calibration.html">Calibrating partial and combination factors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_design_decision_optimization.html">Steel-bar design decisions and LQI acceptability</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Calibrating target-reliability tables</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/active_learning.html">Advanced methods: active learning and benchmarks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="ex_active_learning.html">Active learning for reliability analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_literature_hat.html">The hat-function benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_literature_truss.html">The 23-bar truss benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_active_extensions.html">PC-Kriging, bootstrap voting and importance sampling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_active_subset.html">Active learning with subset simulation</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../benchmarks.html">Benchmark catalogue</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../tutorial.html" class="nav-link">Examples</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../tutorials/calibration_decisions.html" class="nav-link">Code calibration and engineering decisions</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Calibrating target-reliability tables</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <div class="notebook-actions docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/be0cbd3846dcc44aad2c777fb8c37526/ex_target_reliability.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">notebook</span></code></a> · <a class="reference download internal" download="" href="../_downloads/c5e92cb7f12aae31746ab06ecc27e62e/ex_target_reliability.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">runnable</span> <span class="pre">bundle</span></code></a></p>
+<p><strong>Dependencies:</strong> PySTRA core.</p>
+</div>
+<section id="Calibrating-target-reliability-tables">
+<h1>Calibrating target-reliability tables<a class="headerlink" href="#Calibrating-target-reliability-tables" title="Link to this heading">#</a></h1>
+<p>Calculate target reliabilities from economic and LQI assumptions, compare representative code classes, and examine reference periods and jurisdictional inputs.</p>
+<p><strong>Before you start:</strong> failure probabilities, reliability indices and discounted costs. This example uses PySTRA’s core dependencies. The <a class="reference internal" href="ex_design_decision_optimization.html"><span class="doc">steel-bar decision study</span></a> provides the single-structure context.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ra</span>
+</pre></div>
+</div>
+</div>
+<section id="From-a-decision-to-a-target-table">
+<h2>From a decision to a target table<a class="headerlink" href="#From-a-decision-to-a-target-table" title="Link to this heading">#</a></h2>
+<p>A code jurisdiction asks the same question many times under representative assumptions: how do target reliabilities change with the relative cost of safety, failure consequences, and uncertainty model?</p>
+<p>PySTRA exposes this as target-reliability calibration. First, the LQI target can be calculated from the marginal model</p>
+<div class="math notranslate nohighlight">
+\[\min_p\;K_1p + P_f(p), \qquad K_1 = -\frac{dP_f(p)}{dp},\]</div>
+<p>instead of only being looked up from the rounded Fischer/Barnardo/Faber table.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lqi_rows</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">k1</span> <span class="ow">in</span> <span class="p">[(</span><span class="s2">"large"</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">),</span> <span class="p">(</span><span class="s2">"medium"</span><span class="p">,</span> <span class="mf">1e-4</span><span class="p">),</span> <span class="p">(</span><span class="s2">"small"</span><span class="p">,</span> <span class="mf">1e-5</span><span class="p">)]:</span>
+    <span class="n">published</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">decision</span><span class="o">.</span><span class="n">LQI</span><span class="o">.</span><span class="n">lookup_target</span><span class="p">(</span><span class="n">k1</span><span class="p">)</span>
+    <span class="n">calculated</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">decision</span><span class="o">.</span><span class="n">LQI</span><span class="o">.</span><span class="n">derive_target</span><span class="p">(</span><span class="n">k1</span><span class="p">,</span> <span class="n">resistance_cov</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">load_cov</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+    <span class="n">lqi_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">"class"</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
+            <span class="s2">"K1"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">k1</span><span class="si">:</span><span class="s2">.0e</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="s2">"published beta"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">published</span><span class="o">.</span><span class="n">beta</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="s2">"calculated beta"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">calculated</span><span class="o">.</span><span class="n">beta</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="s2">"published pf"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">published</span><span class="o">.</span><span class="n">pf</span><span class="si">:</span><span class="s2">.0e</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="s2">"calculated pf"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">calculated</span><span class="o">.</span><span class="n">pf</span><span class="si">:</span><span class="s2">.1e</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+
+<span class="n">lqi_targets</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">lqi_rows</span><span class="p">)</span>
+<span class="n">lqi_targets</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>class</th>
+      <th>K1</th>
+      <th>published beta</th>
+      <th>calculated beta</th>
+      <th>published pf</th>
+      <th>calculated pf</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>large</td>
+      <td>1e-03</td>
+      <td>3.1</td>
+      <td>3.13</td>
+      <td>1e-03</td>
+      <td>8.8e-04</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>medium</td>
+      <td>1e-04</td>
+      <td>3.7</td>
+      <td>3.71</td>
+      <td>1e-04</td>
+      <td>1.0e-04</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>small</td>
+      <td>1e-05</td>
+      <td>4.2</td>
+      <td>4.22</td>
+      <td>1e-05</td>
+      <td>1.2e-05</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Rackwitz’s code-making formulation, restated by Steenbergen, Rózsás, and Vrouwenvelder (2018), uses a normalized life-cycle objective:</p>
+<div class="math notranslate nohighlight">
+\[Z(p)=B-C(p)-U\frac{\lambda}{\gamma}P_{f,SLS}(p)-(C(p)+A)\frac{\omega}{\gamma}-(C(p)+H)\frac{\lambda}{\gamma}P_{f,ULS}(p).\]</div>
+<p>Here <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">=</span> <span class="pre">E[R]</span> <span class="pre">/</span> <span class="pre">E[S]</span></code>, <code class="docutils literal notranslate"><span class="pre">C(p)</span> <span class="pre">=</span> <span class="pre">C0</span> <span class="pre">+</span> <span class="pre">C1</span> <span class="pre">p</span></code>, and the ULS and SLS probabilities come from a lognormal resistance-demand model. A single <code class="docutils literal notranslate"><span class="pre">RackwitzTargetModel</span></code> therefore behaves like the linked steel-bar decision study: maximize an objective, then read off the reliability at the optimum.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">normal_moderate</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">decision</span><span class="o">.</span><span class="n">RackwitzTargetModel</span><span class="p">(</span>
+    <span class="n">safety_cost_ratio</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span>
+    <span class="n">failure_cost_ratio</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">normal_moderate_result</span> <span class="o">=</span> <span class="n">normal_moderate</span><span class="o">.</span><span class="n">calibrate</span><span class="p">()</span>
+
+<span class="c1"># Teaching columns only; full model provenance is in .to_dict() / .metadata.</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">normal_moderate_result</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()])[</span>
+    <span class="p">[</span><span class="s2">"method"</span><span class="p">,</span> <span class="s2">"design"</span><span class="p">,</span> <span class="s2">"pf"</span><span class="p">,</span> <span class="s2">"beta"</span><span class="p">,</span> <span class="s2">"objective"</span><span class="p">,</span> <span class="s2">"converged"</span><span class="p">]</span>
+<span class="p">]</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>method</th>
+      <th>design</th>
+      <th>pf</th>
+      <th>beta</th>
+      <th>objective</th>
+      <th>converged</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Rackwitz/Steenbergen</td>
+      <td>4.837457</td>
+      <td>0.000073</td>
+      <td>3.797091</td>
+      <td>-1.941943</td>
+      <td>True</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Before a jurisdiction publishes a target, it must also decide the reference period. Steenbergen et al. emphasize annual failure rates because they keep this choice explicit. The same annual <code class="docutils literal notranslate"><span class="pre">pf</span></code> maps to a different equivalent lifetime reliability depending on the dependence model; <code class="docutils literal notranslate"><span class="pre">TargetReliability.for_period()</span></code> compounds the annual <code class="docutils literal notranslate"><span class="pre">pf</span></code> to perform that conversion.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Each route returns a TargetReliability; .for_period() compounds the annual</span>
+<span class="c1"># failure probability over a reference period under a chosen dependence model.</span>
+<span class="c1"># (The fully-dependent column is a single renewal, i.e. the annual target.)</span>
+<span class="c1"># These are LQI source-table targets (their numeric values resemble, but are</span>
+<span class="c1"># not, the rounded JCSS benchmark classes).</span>
+<span class="n">targets</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"LQI small class (pf 1e-5)"</span><span class="p">:</span> <span class="n">ra</span><span class="o">.</span><span class="n">decision</span><span class="o">.</span><span class="n">LQI</span><span class="o">.</span><span class="n">lookup_target</span><span class="p">(</span><span class="mf">1e-5</span><span class="p">),</span>
+    <span class="s2">"LQI medium class (pf 1e-4)"</span><span class="p">:</span> <span class="n">ra</span><span class="o">.</span><span class="n">decision</span><span class="o">.</span><span class="n">LQI</span><span class="o">.</span><span class="n">lookup_target</span><span class="p">(</span><span class="mf">1e-4</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">"target"</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
+        <span class="s2">"annual pf"</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">pf</span><span class="p">,</span>
+        <span class="s2">"β 50 yr, independent"</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">for_period</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span>
+        <span class="s2">"β 50 yr, 10-yr dependence"</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">for_period</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">dependence_interval</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span>
+        <span class="s2">"β 50 yr, fully dependent"</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">for_period</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">dependence_interval</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+<span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>target</th>
+      <th>annual pf</th>
+      <th>β 50 yr, independent</th>
+      <th>β 50 yr, 10-yr dependence</th>
+      <th>β 50 yr, fully dependent</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>LQI small class (pf 1e-5)</td>
+      <td>0.00001</td>
+      <td>3.290596</td>
+      <td>3.890597</td>
+      <td>4.264891</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>LQI medium class (pf 1e-4)</td>
+      <td>0.00010</td>
+      <td>2.576676</td>
+      <td>3.290583</td>
+      <td>3.719016</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>A target table is just a sweep of these calibrations across representative cost and consequence classes. The calculated Rackwitz/Steenbergen table is shown beside the published rounded benchmark from the <a class="reference external" href="https://www.jcss-lc.org/publications/jcsspmc/part_i.pdf">JCSS Probabilistic Model Code</a> (related consequence/reliability classes appear in ISO 2394 and EN 1990, though the matrices are not identical). These are <em>representative</em> calibrations, not an exact reproduction: the published matrix is
+rounded to one decimal and each class reflects its own modelling judgment (consequence model, COVs, reference period), whereas this table applies one consistent objective and varies only the two cost ratios. It therefore reproduces the <em>trend</em> — β rises as safety gets cheaper or consequences grow — rather than each rounded cell; matching specific published values would mean fitting the per-class ratios and COVs. This is the code-jurisdiction version of the single-structure decision workflow.</p>
+<p>Because this objective is <em>normalized</em> by the base construction cost, the table depends only on the relative cost and consequence ratios — it is the same for every country. Changing those ratios (or the COVs, interest, and obsolescence rates) recalibrates the table for <strong>new settings</strong>. The jurisdiction’s economy enters elsewhere — through the SWTP — which the next section uses to retarget for a <strong>new country</strong>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rackwitz_targets</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">decision</span><span class="o">.</span><span class="n">RackwitzTargetModel</span><span class="o">.</span><span class="n">table</span><span class="p">()</span>
+<span class="n">rackwitz_beta</span> <span class="o">=</span> <span class="n">rackwitz_targets</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span>
+    <span class="n">index</span><span class="o">=</span><span class="s2">"relative_safety_cost"</span><span class="p">,</span>
+    <span class="n">columns</span><span class="o">=</span><span class="s2">"failure_consequence"</span><span class="p">,</span>
+    <span class="n">values</span><span class="o">=</span><span class="s2">"beta"</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">loc</span><span class="p">[[</span><span class="s2">"large"</span><span class="p">,</span> <span class="s2">"normal"</span><span class="p">,</span> <span class="s2">"small"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"minor"</span><span class="p">,</span> <span class="s2">"moderate"</span><span class="p">,</span> <span class="s2">"large"</span><span class="p">]]</span>
+
+<span class="n">published_jcss_beta</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">"minor"</span><span class="p">:</span> <span class="p">[</span><span class="mf">3.1</span><span class="p">,</span> <span class="mf">3.7</span><span class="p">,</span> <span class="mf">4.2</span><span class="p">],</span>
+        <span class="s2">"moderate"</span><span class="p">:</span> <span class="p">[</span><span class="mf">3.3</span><span class="p">,</span> <span class="mf">4.2</span><span class="p">,</span> <span class="mf">4.4</span><span class="p">],</span>
+        <span class="s2">"large"</span><span class="p">:</span> <span class="p">[</span><span class="mf">3.7</span><span class="p">,</span> <span class="mf">4.4</span><span class="p">,</span> <span class="mf">4.7</span><span class="p">],</span>
+    <span class="p">},</span>
+    <span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([</span><span class="s2">"large"</span><span class="p">,</span> <span class="s2">"normal"</span><span class="p">,</span> <span class="s2">"small"</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">"relative_safety_cost"</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">"calculated beta"</span><span class="p">:</span> <span class="n">rackwitz_beta</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+        <span class="s2">"published beta"</span><span class="p">:</span> <span class="n">published_jcss_beta</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead tr th {
+        text-align: left;
+    }
+
+    .dataframe thead tr:last-of-type th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="3" halign="left">calculated beta</th>
+      <th colspan="3" halign="left">published beta</th>
+    </tr>
+    <tr>
+      <th>failure_consequence</th>
+      <th>minor</th>
+      <th>moderate</th>
+      <th>large</th>
+      <th>minor</th>
+      <th>moderate</th>
+      <th>large</th>
+    </tr>
+    <tr>
+      <th>relative_safety_cost</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>large</th>
+      <td>3.03</td>
+      <td>3.13</td>
+      <td>3.25</td>
+      <td>3.1</td>
+      <td>3.3</td>
+      <td>3.7</td>
+    </tr>
+    <tr>
+      <th>normal</th>
+      <td>3.74</td>
+      <td>3.80</td>
+      <td>3.88</td>
+      <td>3.7</td>
+      <td>4.2</td>
+      <td>4.4</td>
+    </tr>
+    <tr>
+      <th>small</th>
+      <td>4.37</td>
+      <td>4.40</td>
+      <td>4.45</td>
+      <td>4.2</td>
+      <td>4.4</td>
+      <td>4.7</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+<section id="Re-target-for-a-new-jurisdiction-or-new-settings">
+<h2>Re-target for a new jurisdiction or new settings<a class="headerlink" href="#Re-target-for-a-new-jurisdiction-or-new-settings" title="Link to this heading">#</a></h2>
+<p>The two routes above split cleanly:</p>
+<ul class="simple">
+<li><p><strong>New settings</strong> → the normalized Rackwitz/Steenbergen objective. Cost ratios, COVs, and rates are structural and economic assumptions, <em>not</em> a country. Change them to recalibrate the whole table.</p></li>
+<li><p><strong>New country</strong> → the LQI route. A jurisdiction enters through exactly one quantity: its SWTP. Everything else (marginal safety cost, expected fatalities) is the decision scenario.</p></li>
+</ul>
+<p>First, new settings — recalibrate the normalized table with tighter resistance variability and a higher discount rate (again a <em>representative</em> calibration, not exact JCSS/ISO values):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ra</span><span class="o">.</span><span class="n">decision</span><span class="o">.</span><span class="n">RackwitzTargetModel</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">resistance_cov</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">load_cov</span><span class="o">=</span><span class="mf">0.35</span><span class="p">,</span> <span class="n">interest_rate</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)[</span>
+    <span class="p">[</span><span class="s2">"relative_safety_cost"</span><span class="p">,</span> <span class="s2">"failure_consequence"</span><span class="p">,</span> <span class="s2">"beta"</span><span class="p">]</span>
+<span class="p">]</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>relative_safety_cost</th>
+      <th>failure_consequence</th>
+      <th>beta</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>large</td>
+      <td>minor</td>
+      <td>3.022741</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>large</td>
+      <td>moderate</td>
+      <td>3.117148</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>large</td>
+      <td>large</td>
+      <td>3.235785</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>normal</td>
+      <td>minor</td>
+      <td>3.755065</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>normal</td>
+      <td>moderate</td>
+      <td>3.807678</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>normal</td>
+      <td>large</td>
+      <td>3.883094</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>small</td>
+      <td>minor</td>
+      <td>4.399291</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>small</td>
+      <td>moderate</td>
+      <td>4.426015</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>small</td>
+      <td>large</td>
+      <td>4.469441</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>The COVs and rates above are one kind of <em>setting</em>. The cost classes themselves are also inputs: every cost in the model is a ratio to the base construction cost <span class="math notranslate nohighlight">\(C_0\)</span>, so <code class="docutils literal notranslate"><span class="pre">safety_costs</span></code> are the <span class="math notranslate nohighlight">\(C_1/C_0\)</span> values (marginal safety cost) and <code class="docutils literal notranslate"><span class="pre">failure_costs</span></code> are the <span class="math notranslate nohighlight">\(H/C_0\)</span> values (failure consequence). Pass your own dictionaries to recalibrate the table for different cost and consequence assumptions — this is how you change “those numbers”:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># safety_costs are C1/C0, failure_costs are H/C0 — set your own classes.</span>
+<span class="n">ra</span><span class="o">.</span><span class="n">decision</span><span class="o">.</span><span class="n">RackwitzTargetModel</span><span class="o">.</span><span class="n">table</span><span class="p">(</span>
+    <span class="n">safety_costs</span><span class="o">=</span><span class="p">{</span><span class="s2">"cheap safety"</span><span class="p">:</span> <span class="mf">0.005</span><span class="p">,</span> <span class="s2">"costly safety"</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">},</span>
+    <span class="n">failure_costs</span><span class="o">=</span><span class="p">{</span><span class="s2">"low"</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">"high"</span><span class="p">:</span> <span class="mf">8.0</span><span class="p">},</span>
+<span class="p">)[</span>
+    <span class="p">[</span>
+        <span class="s2">"relative_safety_cost"</span><span class="p">,</span>
+        <span class="s2">"failure_consequence"</span><span class="p">,</span>
+        <span class="s2">"safety_cost_ratio"</span><span class="p">,</span>
+        <span class="s2">"failure_cost_ratio"</span><span class="p">,</span>
+        <span class="s2">"beta"</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="p">]</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>relative_safety_cost</th>
+      <th>failure_consequence</th>
+      <th>safety_cost_ratio</th>
+      <th>failure_cost_ratio</th>
+      <th>beta</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>cheap safety</td>
+      <td>low</td>
+      <td>0.005</td>
+      <td>1.0</td>
+      <td>4.247738</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>cheap safety</td>
+      <td>high</td>
+      <td>0.005</td>
+      <td>8.0</td>
+      <td>4.346548</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>costly safety</td>
+      <td>low</td>
+      <td>0.100</td>
+      <td>1.0</td>
+      <td>3.396431</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>costly safety</td>
+      <td>high</td>
+      <td>0.100</td>
+      <td>8.0</td>
+      <td>3.583340</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Now a new country. The helper below takes a country code and a decision scenario and returns the LQI target reliability; the only country-dependent line is the SWTP lookup. Swapping <code class="docutils literal notranslate"><span class="pre">&quot;CH&quot;</span></code> for any other built-in country (or flipping <code class="docutils literal notranslate"><span class="pre">indexed</span></code>) retargets it — that is the entire change needed to rebuild targets for a different jurisdiction.</p>
+<p>Holding the scenario fixed (marginal safety cost 5000, 12 expected fatalities), a wealthier country with a higher SWTP requires a higher reliability for the <em>same</em> engineering decision. The <strong>rounded table β</strong> is coarse — CH/US/NO all land in one class — while the <strong>calculated β</strong> varies smoothly with the SWTP:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">lqi_target_for_country</span><span class="p">(</span>
+    <span class="n">country</span><span class="p">,</span> <span class="n">marginal_safety_cost</span><span class="p">,</span> <span class="n">expected_fatalities</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">indexed</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Country-specific LQI target reliability.</span>
+
+<span class="sd">    The only country-dependent input is the SWTP; everything else describes the</span>
+<span class="sd">    decision scenario. Swap ``country`` (or ``indexed``) to retarget.</span>
+<span class="sd">    """</span>
+    <span class="n">lqi</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">decision</span><span class="o">.</span><span class="n">LQI</span><span class="o">.</span><span class="n">from_country</span><span class="p">(</span>
+        <span class="n">country</span><span class="p">,</span>
+        <span class="n">indexed</span><span class="o">=</span><span class="n">indexed</span><span class="p">,</span>
+        <span class="n">expected_fatalities_given_failure</span><span class="o">=</span><span class="n">expected_fatalities</span><span class="p">,</span>
+        <span class="n">marginal_safety_cost</span><span class="o">=</span><span class="n">marginal_safety_cost</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">calculated</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">decision</span><span class="o">.</span><span class="n">LQI</span><span class="o">.</span><span class="n">derive_target</span><span class="p">(</span><span class="n">lqi</span><span class="o">.</span><span class="n">k1</span><span class="p">)</span>  <span class="c1"># calculated from the marginal model</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">"country"</span><span class="p">:</span> <span class="n">country</span><span class="p">,</span>
+        <span class="s2">"SWTP [10^6]"</span><span class="p">:</span> <span class="n">lqi</span><span class="o">.</span><span class="n">swtp</span><span class="o">.</span><span class="n">value_per_life</span> <span class="o">/</span> <span class="mf">1e6</span><span class="p">,</span>
+        <span class="s2">"K1"</span><span class="p">:</span> <span class="n">lqi</span><span class="o">.</span><span class="n">k1</span><span class="p">,</span>
+        <span class="s2">"cost class"</span><span class="p">:</span> <span class="n">lqi</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">cost_class</span><span class="p">,</span>  <span class="c1"># rounded LQI source-table class</span>
+        <span class="s2">"rounded table beta"</span><span class="p">:</span> <span class="n">lqi</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span>
+        <span class="s2">"calculated beta"</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">calculated</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">}</span>
+
+
+<span class="n">scenario</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">marginal_safety_cost</span><span class="o">=</span><span class="mf">5000.0</span><span class="p">,</span> <span class="n">expected_fatalities</span><span class="o">=</span><span class="mf">12.0</span><span class="p">)</span>
+<span class="n">country_targets</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="n">lqi_target_for_country</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="o">**</span><span class="n">scenario</span><span class="p">)</span> <span class="k">for</span> <span class="n">code</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"CH"</span><span class="p">,</span> <span class="s2">"US"</span><span class="p">,</span> <span class="s2">"NO"</span><span class="p">,</span> <span class="s2">"JP"</span><span class="p">,</span> <span class="s2">"CZ"</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">country_targets</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>country</th>
+      <th>SWTP [10^6]</th>
+      <th>K1</th>
+      <th>cost class</th>
+      <th>rounded table beta</th>
+      <th>calculated beta</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>CH</td>
+      <td>4.999502</td>
+      <td>0.000083</td>
+      <td>small</td>
+      <td>4.2</td>
+      <td>3.75</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>US</td>
+      <td>5.220884</td>
+      <td>0.000080</td>
+      <td>small</td>
+      <td>4.2</td>
+      <td>3.76</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>NO</td>
+      <td>6.007365</td>
+      <td>0.000069</td>
+      <td>small</td>
+      <td>4.2</td>
+      <td>3.79</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>JP</td>
+      <td>2.628652</td>
+      <td>0.000159</td>
+      <td>medium</td>
+      <td>3.7</td>
+      <td>3.60</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>CZ</td>
+      <td>1.996526</td>
+      <td>0.000209</td>
+      <td>medium</td>
+      <td>3.7</td>
+      <td>3.53</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+<section id="Interpretation">
+<h2>Interpretation<a class="headerlink" href="#Interpretation" title="Link to this heading">#</a></h2>
+<p>Calculated targets depend on the selected uncertainty, cost, consequence and temporal-dependence models. The normalized table reproduces trends in published rounded classes; it is not an exact reproduction of every published target. SWTP records carry dated source assumptions, and jurisdictional suitability requires review for the intended study.</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">TargetReliability</span></code> to retain the probability, index and provenance, and state the dependence assumption when converting reference periods. See the <a class="reference internal" href="../guides/assessment.html"><span class="doc">decision guide</span></a>, <a class="reference internal" href="../api/decisions.html"><span class="doc">API</span></a> and <a class="reference internal" href="../theory/decisions.html"><span class="doc">theory</span></a>.</p>
+<p><strong>Continue:</strong> <a class="reference internal" href="../guides/assessment.html"><span class="doc">User guide</span></a> · <a class="reference internal" href="../api/decisions.html"><span class="doc">API reference</span></a> · <a class="reference internal" href="../theory/decisions.html"><span class="doc">Theory</span></a></p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="ex_design_decision_optimization.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Steel-bar design decisions and LQI acceptability</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../tutorials/active_learning.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Advanced methods: active learning and benchmarks</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#From-a-decision-to-a-target-table">From a decision to a target table</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Re-target-for-a-new-jurisdiction-or-new-settings">Re-target for a new jurisdiction or new settings</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Interpretation">Interpretation</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/pystra/pystra/edit/v2.0/docs/source/notebooks/ex_target_reliability.ipynb">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2021-2026, The PySTRA Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><nav aria-label="Project links" class="project-links">
+  <a href="../migrating.html">Migration</a>
+  <a href="../citing.html">Cite PySTRA</a>
+  <a href="../developer.html">Contributing</a>
+  <a href="https://pystra.github.io/pystra/">Stable 1.x documentation</a>
+</nav></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

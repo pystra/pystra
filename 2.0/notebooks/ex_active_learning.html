@@ -1,0 +1,1453 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Active learning for reliability analysis &#8212; PySTRA 2.0.0a1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a54fd074" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../_static/documentation_options.js?v=944fa962"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=ccd31ad0"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/ex_active_learning';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="The hat-function benchmark" href="ex_literature_hat.html" />
+    <link rel="prev" title="Advanced methods: active learning and benchmarks" href="../tutorials/active_learning.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.0a1" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">These pages document PySTRA 2.0, which is in development. The stable 1.x documentation is at <a href="https://pystra.github.io/pystra/">pystra.github.io/pystra</a>.</div>
+</aside>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 2.0.0a1 documentation - Home"/>
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 2.0.0a1 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item"><a class="version-status" href="../install.html" aria-label="Documentation version 2.0.0a1: installation instructions">2.0.0a1 · development</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API reference
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/getting_started.html">Getting started</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="ex_first_analysis.html">A first reliability analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_intro.html">Comparing FORM, SORM and simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_scipy_distributions.html">Using SciPy distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_openseespy.html">Reliability with an external finite-element model</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/reliability_methods.html">Reliability methods and diagnostics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="ex_simulation.html">Simulation methods for reliability analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_sensitivity.html">Reliability sensitivities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_ddm.html">Direct differentiation of the limit state</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_strong_maximum.html">Checking a FORM design point</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_timing.html">Distribution adapters and analysis cost</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/systems_dependence.html">Systems and dependence</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="ex_copulas.html">Dependence and probability transformations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_system_reliability.html">System reliability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_rosenblatt_system_order.html">Rosenblatt ordering in system reliability</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/calibration_decisions.html">Code calibration and engineering decisions</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="ex_load_combinations.html">Load combinations and FBC processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_generic_calibration.html">Code calibration using normalized reliability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_factor_calibration.html">Calibrating partial and combination factors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_design_decision_optimization.html">Steel-bar design decisions and LQI acceptability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_target_reliability.html">Calibrating target-reliability tables</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../tutorials/active_learning.html">Advanced methods: active learning and benchmarks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Active learning for reliability analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_literature_hat.html">The hat-function benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_literature_truss.html">The 23-bar truss benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_active_extensions.html">PC-Kriging, bootstrap voting and importance sampling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ex_active_subset.html">Active learning with subset simulation</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../benchmarks.html">Benchmark catalogue</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../tutorial.html" class="nav-link">Examples</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../tutorials/active_learning.html" class="nav-link">Advanced methods: active learning and benchmarks</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Active learning for reliability analysis</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <div class="notebook-actions docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/160ebbf14af05bbdae4f440e242eaf1b/ex_active_learning.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">notebook</span></code></a> · <a class="reference download internal" download="" href="../_downloads/d7151fe622f891982858cc11e49ff06c/ex_active_learning.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">runnable</span> <span class="pre">bundle</span></code></a></p>
+<p><strong>Dependencies:</strong> PySTRA with the optional <code class="docutils literal notranslate"><span class="pre">al</span></code> extra.</p>
+</div>
+<section id="Active-learning-for-reliability-analysis">
+<h1>Active learning for reliability analysis<a class="headerlink" href="#Active-learning-for-reliability-analysis" title="Link to this heading">#</a></h1>
+<p>Build surrogate-assisted reliability analyses and test them against analytical and published benchmarks.</p>
+<p><strong>Before you start:</strong> FORM and simulation; install the optional al extra for Kriging.</p>
+<section id="Problem-and-approach">
+<h2>Problem and approach<a class="headerlink" href="#Problem-and-approach" title="Link to this heading">#</a></h2>
+<p>Active learning replaces many expensive limit-state evaluations with a surrogate, then enriches the training design near the predicted failure boundary.</p>
+<p>This tutorial credits <strong>Bruno Sudret’s group</strong>, particularly <strong>Stefano Marelli, Maliki Moustapha and Bruno Sudret</strong>, for bootstrap PCE local-error estimation and the general active-learning reliability framework:</p>
+<ul class="simple">
+<li><p>Echard, Gayton &amp; Lemaire (2011), <a class="reference external" href="https://doi.org/10.1016/j.strusafe.2011.01.002">AK-MCS</a>.</p></li>
+<li><p>Bichon et al. (2008), <a class="reference external" href="https://doi.org/10.2514/1.34321">expected feasibility</a>.</p></li>
+<li><p>Marelli &amp; Sudret (2018), <a class="reference external" href="https://doi.org/10.1016/j.strusafe.2018.06.003">bootstrap sparse PCE</a>.</p></li>
+<li><p>Teixeira, Nogal &amp; O’Connor (2021), <a class="reference external" href="https://doi.org/10.1016/j.strusafe.2020.102019">adaptive metamodel reliability review</a>.</p></li>
+<li><p>Moustapha, Marelli &amp; Sudret (2022), <a class="reference external" href="https://doi.org/10.1016/j.strusafe.2021.102174">survey, framework and benchmark</a>.</p></li>
+</ul>
+<p>PySTRA adapts the <strong>UQLab 2.2.0 adaptive sparse-PCE implementation</strong>: hybrid least-angle regression, corrected leave-one-out model selection, degree/hyperbolic truncation searches and bootstrap refits on the selected basis. The source copyright and BSD notice are retained in <code class="docutils literal notranslate"><span class="pre">THIRD_PARTY_NOTICES</span></code>. Numerical fixtures compare unmodified UQLab routines, executed in Octave, against PySTRA on four designs. This does not imply endorsement by the authors.</p>
+<p>The sparse-regression foundation is <strong>Géraud Blatman and Bruno Sudret (2011)</strong>, <a class="reference external" href="https://doi.org/10.1016/j.jcp.2010.12.021">Adaptive sparse polynomial chaos expansion based on Least Angle Regression</a>.</p>
+<p>The normal-sum and beam problems also appear in UQLab’s reliability benchmarks. We derive their reference probabilities analytically below, rather than copying rounded reference values.</p>
+<p>Install the optional Kriging dependency from a v2.0 checkout with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">&quot;.[al]&quot;</span></code>. PCE uses the existing NumPy/SciPy dependencies.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.integrate</span><span class="w"> </span><span class="kn">import</span> <span class="n">quad</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ra</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pystra.active_learning</span><span class="w"> </span><span class="kn">import</span> <span class="n">ActiveLearning</span><span class="p">,</span> <span class="n">PCESurrogate</span><span class="p">,</span> <span class="n">learning_eff</span>
+<br/></pre></div>
+</div>
+</div>
+</section>
+<section id="Normal-sum:-an-exact-reference">
+<h2>Normal sum: an exact reference<a class="headerlink" href="#Normal-sum:-an-exact-reference" title="Link to this heading">#</a></h2>
+<p>For five independent <span class="math notranslate nohighlight">\(X_i\sim N(1,1)\)</span> and <span class="math notranslate nohighlight">\(g=\sum_i X_i\)</span>, <span class="math notranslate nohighlight">\(g\sim N(5,5)\)</span> (the second parameter here is variance). Failure means <span class="math notranslate nohighlight">\(g\leq0\)</span>: <span class="math notranslate nohighlight">\(P_f=\Phi(-\sqrt{5})=0.01267366\)</span>.</p>
+<p>All surrogates are fitted in <strong>independent normal coordinates</strong>. Only true limit-state evaluations are transformed to physical coordinates. A degree-one PCE can represent this example exactly.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="sa">f</span><span class="s2">"x</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">limit_state</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">x3</span><span class="p">,</span> <span class="n">x4</span><span class="p">:</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">x1</span> <span class="o">+</span> <span class="n">x2</span> <span class="o">+</span> <span class="n">x3</span> <span class="o">+</span> <span class="n">x4</span><span class="p">)</span>
+<span class="n">analysis</span> <span class="o">=</span> <span class="n">ActiveLearning</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+    <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
+    <span class="n">surrogate</span><span class="o">=</span><span class="s2">"pce"</span><span class="p">,</span>
+    <span class="n">surrogate_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">"degree"</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+    <span class="n">rng</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">normal_result</span> <span class="o">=</span> <span class="n">analysis</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">normal_reference</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">normal_result</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Analytic Pf: </span><span class="si">{</span><span class="n">normal_reference</span><span class="si">:</span><span class="s2">.8f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">normal_result</span><span class="o">.</span><span class="n">converged</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ActiveLearningResult(estimate=ReliabilityEstimate(failure_probability=0.01172, sampling_cov=0.029038634968247264, sampling_interval=(0.01106215119711848, 0.0124063930386602), confidence_level=0.95, n_samples=100000, method=&#39;monte_carlo&#39;, sampling_dependence=&#39;independent&#39;, converged=True, status=&#39;completed&#39;, diagnostics=()), converged=True, status=&#39;converged&#39;, n_limit_state_evaluations=30, history=(LearningStep(failure_probability=0.0133, learning_score=80682388905.02026, n_limit_state_evaluations=30, probability_band=(0.0133, 0.0133), beta_band=(2.2173380441467163, 2.2173380441467163), learning_satisfied=True, estimation_converged=True, sampling_cov=None, bootstrap_probability_band=None),))
+Analytic Pf: 0.01267366
+</pre></div></div>
+</div>
+<section id="Compose-the-four-components-explicitly">
+<h3>Compose the four components explicitly<a class="headerlink" href="#Compose-the-four-components-explicitly" title="Link to this heading">#</a></h3>
+<p>The same normal-sum problem can be configured using separate <strong>surrogate, reliability estimator, learning function and stopping criterion</strong> objects. The public import path is still <code class="docutils literal notranslate"><span class="pre">pystra.active_learning</span></code>.</p>
+<p>Here the stopping policy combines the learning threshold with the beta-band and beta-stability rules from Moustapha, Marelli &amp; Sudret (2022), Eqs. (2)–(3). Both beta tests must hold over two consecutive iterations. Stability needs a previous fit for each comparison, so there are at least three fits. Even with this exactly representable polynomial, the policy deliberately requires additional observations before it accepts the history.</p>
+<p><code class="docutils literal notranslate"><span class="pre">probability_band</span></code> classifies the fixed candidate pool at mean ± 2 std; <code class="docutils literal notranslate"><span class="pre">beta_band</span></code> transforms those probabilities into ascending reliability indices. These are <strong>surrogate diagnostics</strong>, not confidence limits on the true failure probability. Bootstrap spread can miss shared model bias. The independent final MC estimate has separate sampling diagnostics in <code class="docutils literal notranslate"><span class="pre">result.estimate</span></code>.</p>
+<p>This example uses independent final Monte Carlo and a fixed normal enrichment pool. The <a class="reference internal" href="ex_active_subset.html"><span class="doc">active subset tutorial</span></a> shows how <code class="docutils literal notranslate"><span class="pre">SubsetSimulationEstimator</span></code> also generates enrichment populations after each fit. A final-only custom estimator still retains the fixed MC enrichment workflow.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pystra.active_learning</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">MonteCarloEstimator</span><span class="p">,</span>
+    <span class="n">UFunction</span><span class="p">,</span>
+    <span class="n">LearningThreshold</span><span class="p">,</span>
+    <span class="n">BetaBounds</span><span class="p">,</span>
+    <span class="n">BetaStability</span><span class="p">,</span>
+    <span class="n">AllCriteria</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">composed</span> <span class="o">=</span> <span class="n">ActiveLearning</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+    <span class="n">limit_state</span><span class="o">=</span><span class="n">limit_state</span><span class="p">,</span>
+    <span class="n">surrogate</span><span class="o">=</span><span class="n">PCESurrogate</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">7</span><span class="p">),</span>
+    <span class="n">estimator</span><span class="o">=</span><span class="n">MonteCarloEstimator</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">100_000</span><span class="p">),</span>
+    <span class="n">learning_function</span><span class="o">=</span><span class="n">UFunction</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+    <span class="n">stopping_criterion</span><span class="o">=</span><span class="n">AllCriteria</span><span class="p">(</span>
+        <span class="n">criteria</span><span class="o">=</span><span class="p">(</span>
+            <span class="n">LearningThreshold</span><span class="p">(),</span>
+            <span class="n">BetaBounds</span><span class="p">(</span><span class="n">consecutive</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+            <span class="n">BetaStability</span><span class="p">(</span><span class="n">consecutive</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="p">),</span>
+    <span class="n">rng</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">composed_result</span> <span class="o">=</span> <span class="n">composed</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">composed_result</span><span class="o">.</span><span class="n">converged</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">composed_result</span><span class="o">.</span><span class="n">history</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">composed_result</span><span class="o">.</span><span class="n">estimate</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Analytic Pf: </span><span class="si">{</span><span class="n">normal_reference</span><span class="si">:</span><span class="s2">.8f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">"True evaluations"</span><span class="p">:</span> <span class="n">fit</span><span class="o">.</span><span class="n">n_limit_state_evaluations</span><span class="p">,</span>
+            <span class="s2">"Candidate Pf"</span><span class="p">:</span> <span class="n">fit</span><span class="o">.</span><span class="n">failure_probability</span><span class="p">,</span>
+            <span class="s2">"Candidate beta"</span><span class="p">:</span> <span class="n">fit</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span>
+            <span class="s2">"Beta band"</span><span class="p">:</span> <span class="n">fit</span><span class="o">.</span><span class="n">beta_band</span><span class="p">,</span>
+            <span class="s2">"Learning threshold met"</span><span class="p">:</span> <span class="n">fit</span><span class="o">.</span><span class="n">learning_satisfied</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">fit</span> <span class="ow">in</span> <span class="n">composed_result</span><span class="o">.</span><span class="n">history</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ReliabilityEstimate(failure_probability=0.01172, sampling_cov=0.029038634968247264, sampling_interval=(0.01106215119711848, 0.0124063930386602), confidence_level=0.95, n_samples=100000, method=&#39;monte_carlo&#39;, sampling_dependence=&#39;independent&#39;, converged=True, status=&#39;completed&#39;, diagnostics=())
+Analytic Pf: 0.01267366
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>True evaluations</th>
+      <th>Candidate Pf</th>
+      <th>Candidate beta</th>
+      <th>Beta band</th>
+      <th>Learning threshold met</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>30</td>
+      <td>0.0133</td>
+      <td>2.217338</td>
+      <td>(2.2173380441467163, 2.2173380441467163)</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>31</td>
+      <td>0.0133</td>
+      <td>2.217338</td>
+      <td>(2.2173380441467163, 2.2173380441467163)</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>32</td>
+      <td>0.0133</td>
+      <td>2.217338</td>
+      <td>(2.2173380441467163, 2.2173380441467163)</td>
+      <td>True</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+</section>
+<section id="Four-branch-series-system">
+<h2>Four-branch series system<a class="headerlink" href="#Four-branch-series-system" title="Link to this heading">#</a></h2>
+<p>The classical <span class="math notranslate nohighlight">\(k=6\)</span> benchmark is discussed by <a class="reference external" href="https://doi.org/10.1016/j.strusafe.2004.11.001">Schueremans &amp; Van Gemert (2005)</a>. For independent standard normal <span class="math notranslate nohighlight">\(X_1,X_2\)</span>, define <span class="math notranslate nohighlight">\(V=(X_1-X_2)/\sqrt2\)</span> and <span class="math notranslate nohighlight">\(W=(X_1+X_2)/\sqrt2\)</span>. These rotated coordinates are independent standard normals. The four branches reduce to</p>
+<div class="math notranslate nohighlight">
+\[g=\min\{3+0.2V^2-W,\;3+0.2V^2+W,\;\sqrt2(3+V),\;\sqrt2(3-V)\}.\]</div>
+<p>Consequently,</p>
+<div class="math notranslate nohighlight">
+\[P_f=2\Phi(-3)+\int_{-3}^{3}2\Phi[-(3+0.2v^2)]\varphi(v)\,dv.\]</div>
+<p>This gives an independent deterministic reference, approximately 0.00445733. The nonsmooth minimum is a demanding global polynomial target, so we use Kriging here. A good result on a smooth polynomial does not validate PCE for this system.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">four_branch</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">):</span>
+    <span class="n">along</span> <span class="o">=</span> <span class="p">(</span><span class="n">x0</span> <span class="o">+</span> <span class="n">x1</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">across</span> <span class="o">=</span> <span class="p">(</span><span class="n">x0</span> <span class="o">-</span> <span class="n">x1</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span>
+        <span class="mi">3</span> <span class="o">+</span> <span class="mf">0.2</span> <span class="o">*</span> <span class="n">across</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">along</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">3</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">across</span><span class="p">))</span>
+    <span class="p">)</span>
+
+
+<span class="n">four_reference</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="mi">2</span> <span class="o">*</span> <span class="n">norm</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">quad</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">norm</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="mi">3</span> <span class="o">+</span> <span class="mf">0.2</span> <span class="o">*</span> <span class="n">v</span> <span class="o">*</span> <span class="n">v</span><span class="p">)</span> <span class="o">*</span> <span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">epsabs</span><span class="o">=</span><span class="mf">1e-13</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">"x0"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">"x1"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">four_analysis</span> <span class="o">=</span> <span class="n">ActiveLearning</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+    <span class="n">limit_state</span><span class="o">=</span><span class="n">ra</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span><span class="n">four_branch</span><span class="p">),</span>
+    <span class="n">rng</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
+    <span class="n">n_candidates</span><span class="o">=</span><span class="mi">12_000</span><span class="p">,</span>
+    <span class="n">surrogate_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">"n_restarts"</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+<span class="p">)</span>
+<span class="n">four_result</span> <span class="o">=</span> <span class="n">four_analysis</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">four_result</span><span class="o">.</span><span class="n">converged</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Quadrature Pf: </span><span class="si">{</span><span class="n">four_reference</span><span class="si">:</span><span class="s2">.8f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">"Surrogate Pf: </span><span class="si">{</span><span class="n">four_result</span><span class="o">.</span><span class="n">failure_probability</span><span class="si">:</span><span class="s2">.8f</span><span class="si">}</span><span class="s2">; true calls: </span><span class="si">{</span><span class="n">four_result</span><span class="o">.</span><span class="n">n_limit_state_evaluations</span><span class="si">}</span><span class="s2">"</span>
+<span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Quadrature Pf: 0.00445733
+Surrogate Pf: 0.00434000; true calls: 48
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_limit_state</span><span class="p">(</span>
+    <span class="k">lambda</span> <span class="n">points</span><span class="p">:</span> <span class="n">four_branch</span><span class="p">(</span><span class="o">*</span><span class="n">points</span><span class="o">.</span><span class="n">T</span><span class="p">),</span>
+    <span class="n">bounds</span><span class="o">=</span><span class="p">((</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span>
+    <span class="n">surrogate</span><span class="o">=</span><span class="n">four_analysis</span><span class="o">.</span><span class="n">surrogate_model</span><span class="p">,</span>
+    <span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s2">"$u_1$"</span><span class="p">,</span> <span class="s2">"$u_2$"</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Four-branch system: all four failure regions"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="The four-branch boundary has four distinct failure regions. Comparing true and surrogate contours exposes regions a single local approximation can miss." src="../_images/notebooks_ex_active_learning_8_0.png" />
+</div>
+</div>
+<p><strong>Figure.</strong> The four-branch boundary has four distinct failure regions. Comparing true and surrogate contours exposes regions a single local approximation can miss.</p>
+<section id="Adaptive-sparse-PCE-on-the-same-four-branch-problem">
+<h3>Adaptive sparse PCE on the same four-branch problem<a class="headerlink" href="#Adaptive-sparse-PCE-on-the-same-four-branch-problem" title="Link to this heading">#</a></h3>
+<p>Use <code class="docutils literal notranslate"><span class="pre">method=&quot;lars&quot;</span></code> (the default), provide candidate degrees and q-norms, and inspect <code class="docutils literal notranslate"><span class="pre">fit_result</span></code>. Each enrichment repeats sparse selection and OLS fitting. Here we disable degree early stopping to search the complete specified range. A larger U threshold asks for more confident candidate classifications.</p>
+<p>The bootstrap holds the selected support fixed; it does not account for uncertainty in model selection or common truncation bias. PySTRA uses uniform pairs resampling. The local UQLab index generator weights endpoint observations less heavily; the parity fixtures use common uniform indices on both sides.</p>
+<p>This remains single-point enrichment. It does not reproduce every enrichment and stopping strategy in the published active-learning framework.</p>
+<p><code class="docutils literal notranslate"><span class="pre">fit_result.n_rank_deficient_bootstrap</span></code> reports how many resampled fits required a minimum-norm solution. Such draws are retained, as in UQLab; a large count is useful evidence that the selected support is ambitious for the available design. Grow the design and independently validate predictions.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sparse_model</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
+<span class="n">sparse_model</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">"x0"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">sparse_model</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">"x1"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">sparse_analysis</span> <span class="o">=</span> <span class="n">ActiveLearning</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">sparse_model</span><span class="p">,</span>
+    <span class="n">limit_state</span><span class="o">=</span><span class="n">ra</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span><span class="n">four_branch</span><span class="p">),</span>
+    <span class="n">surrogate</span><span class="o">=</span><span class="s2">"pce"</span><span class="p">,</span>
+    <span class="n">surrogate_kwargs</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">"degree"</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">13</span><span class="p">)),</span>
+        <span class="s2">"q_norm"</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.75</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+        <span class="s2">"degree_early_stop"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="n">n_initial</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">n_candidates</span><span class="o">=</span><span class="mi">12_000</span><span class="p">,</span>
+    <span class="n">learning_threshold</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">rng</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">sparse_result</span> <span class="o">=</span> <span class="n">sparse_analysis</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">sparse_analysis</span><span class="o">.</span><span class="n">surrogate_model</span><span class="o">.</span><span class="n">fit_result</span>
+<span class="k">assert</span> <span class="n">sparse_result</span><span class="o">.</span><span class="n">converged</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Pf: </span><span class="si">{</span><span class="n">sparse_result</span><span class="o">.</span><span class="n">failure_probability</span><span class="si">:</span><span class="s2">.8f</span><span class="si">}</span><span class="s2">; quadrature: </span><span class="si">{</span><span class="n">four_reference</span><span class="si">:</span><span class="s2">.8f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">"True evaluations: </span><span class="si">{</span><span class="n">sparse_result</span><span class="o">.</span><span class="n">n_limit_state_evaluations</span><span class="si">}</span><span class="s2">; degree: </span><span class="si">{</span><span class="n">fit</span><span class="o">.</span><span class="n">degree</span><span class="si">}</span><span class="s2">; q: </span><span class="si">{</span><span class="n">fit</span><span class="o">.</span><span class="n">q_norm</span><span class="si">}</span><span class="s2">; terms: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+<span class="p">)</span>
+<span class="n">candidate_scores</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">"Degree"</span><span class="p">:</span> <span class="n">candidate</span><span class="o">.</span><span class="n">degree</span><span class="p">,</span>
+            <span class="s2">"q"</span><span class="p">:</span> <span class="n">candidate</span><span class="o">.</span><span class="n">q_norm</span><span class="p">,</span>
+            <span class="s2">"Selected terms"</span><span class="p">:</span> <span class="n">candidate</span><span class="o">.</span><span class="n">n_selected</span><span class="p">,</span>
+            <span class="s2">"Corrected LOO"</span><span class="p">:</span> <span class="n">candidate</span><span class="o">.</span><span class="n">corrected_loo_error</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="n">fit</span><span class="o">.</span><span class="n">candidates</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+<span class="n">candidate_scores</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Pf: 0.00442000; quadrature: 0.00445733
+True evaluations: 119; degree: 7; q: 1.0; terms: 16
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Degree</th>
+      <th>q</th>
+      <th>Selected terms</th>
+      <th>Corrected LOO</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2</td>
+      <td>0.75</td>
+      <td>3</td>
+      <td>0.185995</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>1.00</td>
+      <td>4</td>
+      <td>0.181677</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>0.75</td>
+      <td>5</td>
+      <td>0.182316</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3</td>
+      <td>1.00</td>
+      <td>5</td>
+      <td>0.182316</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4</td>
+      <td>0.75</td>
+      <td>6</td>
+      <td>0.042527</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>4</td>
+      <td>1.00</td>
+      <td>8</td>
+      <td>0.039793</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>5</td>
+      <td>0.75</td>
+      <td>7</td>
+      <td>0.038410</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>5</td>
+      <td>1.00</td>
+      <td>9</td>
+      <td>0.040926</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>6</td>
+      <td>0.75</td>
+      <td>10</td>
+      <td>0.040558</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>6</td>
+      <td>1.00</td>
+      <td>16</td>
+      <td>0.018523</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>7</td>
+      <td>0.75</td>
+      <td>10</td>
+      <td>0.041014</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>7</td>
+      <td>1.00</td>
+      <td>16</td>
+      <td>0.018177</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>8</td>
+      <td>0.75</td>
+      <td>17</td>
+      <td>0.019425</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>8</td>
+      <td>1.00</td>
+      <td>18</td>
+      <td>0.024588</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>9</td>
+      <td>0.75</td>
+      <td>18</td>
+      <td>0.019650</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>9</td>
+      <td>1.00</td>
+      <td>20</td>
+      <td>0.021279</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>10</td>
+      <td>0.75</td>
+      <td>14</td>
+      <td>0.032297</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>10</td>
+      <td>1.00</td>
+      <td>13</td>
+      <td>0.037011</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>11</td>
+      <td>0.75</td>
+      <td>14</td>
+      <td>0.032297</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>11</td>
+      <td>1.00</td>
+      <td>13</td>
+      <td>0.037011</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>12</td>
+      <td>0.75</td>
+      <td>13</td>
+      <td>0.037011</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>12</td>
+      <td>1.00</td>
+      <td>14</td>
+      <td>0.035159</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">validation_points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">892</span><span class="p">)</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">100_000</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">true_failure</span> <span class="o">=</span> <span class="n">four_branch</span><span class="p">(</span><span class="o">*</span><span class="n">validation_points</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span>
+<span class="n">predicted_failure</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">sparse_analysis</span><span class="o">.</span><span class="n">surrogate_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">batch</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">validation_points</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+    <span class="o">&lt;=</span> <span class="mi">0</span>
+<span class="p">)</span>
+<span class="n">false_positive</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">predicted_failure</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">true_failure</span><span class="p">)</span>
+<span class="n">false_negative</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="o">~</span><span class="n">predicted_failure</span> <span class="o">&amp;</span> <span class="n">true_failure</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"False-positive probability mass: </span><span class="si">{</span><span class="n">false_positive</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"False-negative probability mass: </span><span class="si">{</span><span class="n">false_negative</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">"Total disagreement / reference Pf: </span><span class="si">{</span><span class="p">(</span><span class="n">false_positive</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">false_negative</span><span class="p">)</span><span class="o">/</span><span class="n">four_reference</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">"</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_pce_selection</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+False-positive probability mass: 0.000320
+False-negative probability mass: 0.000200
+Total disagreement / reference Pf: 11.7%
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="Sparse-PCE selection compares candidate truncations and their cross-validation errors; a small regression error still requires a separate failure-classification check." src="../_images/notebooks_ex_active_learning_12_1.png" />
+</div>
+</div>
+<p><strong>Figure.</strong> Sparse-PCE selection compares candidate truncations and their cross-validation errors; a small regression error still requires a separate failure-classification check.</p>
+</section>
+</section>
+<section id="Lognormal-beam:-another-exact-reference">
+<h2>Lognormal beam: another exact reference<a class="headerlink" href="#Lognormal-beam:-another-exact-reference" title="Link to this heading">#</a></h2>
+<p>For a simply supported beam under uniform load, midspan deflection is <span class="math notranslate nohighlight">\(D=5pL^4/(32Ebh^3)\)</span>. The limit is 0.015 m. Inputs are independent lognormal variables with the physical means and standard deviations below. Units are m, MN/m and MN/m².</p>
+<p>Because <span class="math notranslate nohighlight">\(\log D=\log(5/32)+\log p+4\log L-\log E-\log b-3\log h\)</span>, its distribution is exactly normal. We can derive <span class="math notranslate nohighlight">\(P(D\geq0.015)\)</span> without simulation. Here PCE approximates the smooth exponential response in normal coordinates; adaptive degree selection can improve the approximation, while the first example is already exactly linear.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">names</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"b"</span><span class="p">,</span> <span class="s2">"h"</span><span class="p">,</span> <span class="s2">"length"</span><span class="p">,</span> <span class="s2">"elasticity"</span><span class="p">,</span> <span class="s2">"load"</span><span class="p">)</span>
+<span class="n">means</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">30000</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">])</span>
+<span class="n">stds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0075</span><span class="p">,</span> <span class="mf">0.015</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mi">4500</span><span class="p">,</span> <span class="mf">0.002</span><span class="p">])</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">means</span><span class="p">,</span> <span class="n">stds</span><span class="p">):</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">Lognormal</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">))</span>
+<span class="n">powers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">variances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">((</span><span class="n">stds</span> <span class="o">/</span> <span class="n">means</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">log_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">5</span> <span class="o">/</span> <span class="mi">32</span><span class="p">)</span> <span class="o">+</span> <span class="n">powers</span> <span class="o">@</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">means</span><span class="p">)</span> <span class="o">-</span> <span class="n">variances</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">log_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">powers</span><span class="o">**</span><span class="mi">2</span> <span class="o">@</span> <span class="n">variances</span><span class="p">)</span>
+<span class="n">beam_reference</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">sf</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">0.015</span><span class="p">)</span> <span class="o">-</span> <span class="n">log_mean</span><span class="p">)</span> <span class="o">/</span> <span class="n">log_std</span><span class="p">)</span>
+<span class="n">beam_analysis</span> <span class="o">=</span> <span class="n">ActiveLearning</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+    <span class="n">limit_state</span><span class="o">=</span><span class="n">ra</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">b</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">elasticity</span><span class="p">,</span> <span class="n">load</span><span class="p">:</span> <span class="mf">0.015</span>
+        <span class="o">-</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">load</span> <span class="o">*</span> <span class="n">length</span><span class="o">**</span><span class="mi">4</span> <span class="o">/</span> <span class="p">(</span><span class="mi">32</span> <span class="o">*</span> <span class="n">elasticity</span> <span class="o">*</span> <span class="n">b</span> <span class="o">*</span> <span class="n">h</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>
+    <span class="p">),</span>
+    <span class="n">surrogate</span><span class="o">=</span><span class="s2">"pce"</span><span class="p">,</span>
+    <span class="n">rng</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
+    <span class="n">n_candidates</span><span class="o">=</span><span class="mi">12_000</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">beam_result</span> <span class="o">=</span> <span class="n">beam_analysis</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">beam_result</span><span class="o">.</span><span class="n">converged</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">"Problem"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+            <span class="s2">"Reference Pf"</span><span class="p">:</span> <span class="n">reference</span><span class="p">,</span>
+            <span class="s2">"Estimated Pf"</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">failure_probability</span><span class="p">,</span>
+            <span class="s2">"True evaluations"</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">n_limit_state_evaluations</span><span class="p">,</span>
+            <span class="s2">"Sampling CoV"</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">sampling_cov</span><span class="p">,</span>
+            <span class="s2">"Status"</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s2">"Normal sum"</span><span class="p">,</span> <span class="n">normal_reference</span><span class="p">,</span> <span class="n">normal_result</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"Four branch"</span><span class="p">,</span> <span class="n">four_reference</span><span class="p">,</span> <span class="n">four_result</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"Beam"</span><span class="p">,</span> <span class="n">beam_reference</span><span class="p">,</span> <span class="n">beam_result</span><span class="p">),</span>
+        <span class="p">]</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Problem</th>
+      <th>Reference Pf</th>
+      <th>Estimated Pf</th>
+      <th>True evaluations</th>
+      <th>Sampling CoV</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Normal sum</td>
+      <td>0.012674</td>
+      <td>0.01172</td>
+      <td>30</td>
+      <td>0.029039</td>
+      <td>converged</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Four branch</td>
+      <td>0.004457</td>
+      <td>0.00434</td>
+      <td>48</td>
+      <td>0.047897</td>
+      <td>converged</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Beam</td>
+      <td>0.017206</td>
+      <td>0.01753</td>
+      <td>61</td>
+      <td>0.023674</td>
+      <td>converged</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+<section id="What-the-uncertainty-estimates-mean">
+<h2>What the uncertainty estimates mean<a class="headerlink" href="#What-the-uncertainty-estimates-mean" title="Link to this heading">#</a></h2>
+<p>EFF is the Gaussian expectation <span class="math notranslate nohighlight">\(E[\max(0,2\sigma-|G|)]\)</span>. It is symmetric in the predicted mean and has the units of the limit-state function. Changing the scale of <span class="math notranslate nohighlight">\(g\)</span> requires changing the EFF stopping tolerance.</p>
+<p>PCE uncertainty is local bootstrap prediction spread. It can be small while all fits share the same truncation bias. It is neither a calibrated Gaussian posterior nor a total reliability error bound. The Gaussian assumption in EFF is therefore a heuristic when used with PCE.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">locations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">161</span><span class="p">)</span>
+<span class="n">eff</span> <span class="o">=</span> <span class="n">learning_eff</span><span class="p">(</span><span class="n">locations</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">locations</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">34</span><span class="p">)</span>
+<span class="n">training</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">surrogate</span> <span class="o">=</span> <span class="n">PCESurrogate</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+<span class="n">surrogate</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">training</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">training</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">training</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">layout</span><span class="o">=</span><span class="s2">"constrained"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">locations</span><span class="p">,</span> <span class="n">eff</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+    <span class="n">xlabel</span><span class="o">=</span><span class="s2">"Predicted mean (std = 1)"</span><span class="p">,</span>
+    <span class="n">ylabel</span><span class="o">=</span><span class="s2">"EFF"</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"Symmetric expected feasibility"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">ra</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_surrogate_slice</span><span class="p">(</span>
+    <span class="n">surrogate</span><span class="p">,</span>
+    <span class="n">locations</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">],</span>
+    <span class="n">limit_state</span><span class="o">=</span><span class="k">lambda</span> <span class="n">points</span><span class="p">:</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Spread and shared truncation bias"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="EFF is symmetric around zero predicted mean. The surrogate slice also shows that bootstrap spread can be small while truncation bias remains." src="../_images/notebooks_ex_active_learning_17_0.png" />
+</div>
+</div>
+<p><strong>Figure.</strong> EFF is symmetric around zero predicted mean. The surrogate slice also shows that bootstrap spread can be small while truncation bias remains.</p>
+</section>
+<section id="Validation-and-stopping-status">
+<h2>Validation and stopping status<a class="headerlink" href="#Validation-and-stopping-status" title="Link to this heading">#</a></h2>
+<p>The regression suite runs three seeds (7, 23, 101) for Kriging U/EFF on the normal sum and four-branch problem, Kriging U on the beam, and adaptive PCE U on the normal sum, beam and four-branch system. It compares estimates with the independent references, allows four binomial standard errors plus 5% surrogate approximation error, and checks classifications against 100,000 independent true evaluations. EFF is separately checked against direct payoff quadrature. The combined
+learning-threshold/beta-band/beta-stability policy is also tested on normal-sum and four-branch problems with the same three seeds, probability and classification criteria. Contract tests exercise insufficient history, interrupted convergence, all-safe predictions, budget termination and custom estimator uncertainty.</p>
+<p><code class="docutils literal notranslate"><span class="pre">run()</span></code> returns an immutable result. Nonconvergence emits a warning and keeps an explicitly unfinished estimate. <code class="docutils literal notranslate"><span class="pre">max_iterations</span></code>, <code class="docutils literal notranslate"><span class="pre">candidate_exhaustion</span></code> and <code class="docutils literal notranslate"><span class="pre">sampling_precision</span></code> explain why the run stopped. Increase the appropriate budget and investigate surrogate quality before accepting an unfinished result.</p>
+<p>The final Monte Carlo population is independent of the enrichment design. <code class="docutils literal notranslate"><span class="pre">sampling_cov</span></code> and <code class="docutils literal notranslate"><span class="pre">sampling_interval</span></code> describe <strong>only sampling error conditional on the fitted surrogate</strong>. Zero failures do not imply zero uncertainty. A <code class="docutils literal notranslate"><span class="pre">converged</span></code> status means the finite-pool learning and sampling criteria passed; it does not guarantee discovery of every failure region or remove surrogate bias.</p>
+<p>The four-branch boundary plot and independent classification tests are useful checks that a probability comparison alone would miss. For expensive structural models, reserve true evaluations for an analogous independent validation.</p>
+<p>A 95% sampling interval need not contain the analytic reference in every seeded run, even for an exact surrogate. This is why the regression tests use a four-standard-error sampling tolerance. The four-branch plot also shows growing discrepancies in remote tails where the finite candidate population supplies little information.</p>
+<p>For classification disagreement, the tests allow at most 10% of the reference Pf for Kriging and the smooth PCE examples, and 15% for the nonsmooth four-branch PCE example. Every case uses the same probability-estimate tolerance, and all four failure regions are checked separately. These are explicit benchmark acceptance budgets, not general error bounds.</p>
+<p><code class="docutils literal notranslate"><span class="pre">method=&quot;ols&quot;</span></code> retains dense fitting. Default sparse degree candidates are 1 through 5; provide a wider range when warranted by independent validation. Both PCE methods use NumPy/SciPy, while Kriging uses the optional <code class="docutils literal notranslate"><span class="pre">al</span></code> extra.</p>
+<p><strong>Continue:</strong> <a class="reference internal" href="../active_learning.html"><span class="doc">User guide</span></a> · <a class="reference internal" href="../api/active_learning.html"><span class="doc">API reference</span></a> · <a class="reference internal" href="../theory/active_learning.html"><span class="doc">Theory</span></a></p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../tutorials/active_learning.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Advanced methods: active learning and benchmarks</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="ex_literature_hat.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">The hat-function benchmark</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Problem-and-approach">Problem and approach</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Normal-sum:-an-exact-reference">Normal sum: an exact reference</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Compose-the-four-components-explicitly">Compose the four components explicitly</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Four-branch-series-system">Four-branch series system</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Adaptive-sparse-PCE-on-the-same-four-branch-problem">Adaptive sparse PCE on the same four-branch problem</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Lognormal-beam:-another-exact-reference">Lognormal beam: another exact reference</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#What-the-uncertainty-estimates-mean">What the uncertainty estimates mean</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Validation-and-stopping-status">Validation and stopping status</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/pystra/pystra/edit/v2.0/docs/source/notebooks/ex_active_learning.ipynb">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2021-2026, The PySTRA Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><nav aria-label="Project links" class="project-links">
+  <a href="../migrating.html">Migration</a>
+  <a href="../citing.html">Cite PySTRA</a>
+  <a href="../developer.html">Contributing</a>
+  <a href="https://pystra.github.io/pystra/">Stable 1.x documentation</a>
+</nav></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

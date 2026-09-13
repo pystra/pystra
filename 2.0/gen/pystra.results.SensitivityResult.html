@@ -1,0 +1,1141 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>pystra.results.SensitivityResult &#8212; PySTRA 2.0.0a1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a54fd074" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../_static/documentation_options.js?v=944fa962"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=ccd31ad0"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'gen/pystra.results.SensitivityResult';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pystra.results.SimulationResult" href="pystra.results.SimulationResult.html" />
+    <link rel="prev" title="pystra.results.SORMResult" href="pystra.results.SORMResult.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.0a1" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">These pages document PySTRA 2.0, which is in development. The stable 1.x documentation is at <a href="https://pystra.github.io/pystra/">pystra.github.io/pystra</a>.</div>
+</aside>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 2.0.0a1 documentation - Home"/>
+    <img src="../_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 2.0.0a1 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item"><a class="version-status" href="../install.html" aria-label="Documentation version 2.0.0a1: installation instructions">2.0.0a1 · development</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../api.html">
+    API reference
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../api.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../references.html">
+    References
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/models.html">Models and analysis options</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.model.html">pystra.model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.model.LimitState.html">pystra.model.LimitState</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.model.StochasticModel.html">pystra.model.StochasticModel</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.reliability.analysis.html">pystra.reliability.analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.reliability.analysis.AnalysisObject.html">pystra.reliability.analysis.AnalysisObject</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.options.html">pystra.options</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.options.FORMOptions.html">pystra.options.FORMOptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.options.SORMOptions.html">pystra.options.SORMOptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.options.SimulationOptions.html">pystra.options.SimulationOptions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.errors.html">pystra.errors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.errors.AnalysisError.html">pystra.errors.AnalysisError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.errors.ModelError.html">pystra.errors.ModelError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.errors.PystraError.html">pystra.errors.PystraError</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../api/reliability.html">Reliability algorithms and results</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.reliability.form.html">pystra.reliability.form</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.reliability.form.FORM.html">pystra.reliability.form.FORM</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="pystra.results.html">pystra.results</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pystra.results.DistributionAnalysisResult.html">pystra.results.DistributionAnalysisResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.results.FORMResult.html">pystra.results.FORMResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.results.SORMResult.html">pystra.results.SORMResult</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">pystra.results.SensitivityResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.results.SimulationResult.html">pystra.results.SimulationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.results.StrongMaximumResult.html">pystra.results.StrongMaximumResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.results.SystemFORMResult.html">pystra.results.SystemFORMResult</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.reliability.sorm.html">pystra.reliability.sorm</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.reliability.sorm.SORM.html">pystra.reliability.sorm.SORM</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.reliability.monte_carlo.html">pystra.reliability.monte_carlo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.reliability.monte_carlo.CrudeMonteCarlo.html">pystra.reliability.monte_carlo.CrudeMonteCarlo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.reliability.monte_carlo.DistributionAnalysis.html">pystra.reliability.monte_carlo.DistributionAnalysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.reliability.monte_carlo.MonteCarlo.html">pystra.reliability.monte_carlo.MonteCarlo</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.reliability.importance_sampling.html">pystra.reliability.importance_sampling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.reliability.importance_sampling.ImportanceSampling.html">pystra.reliability.importance_sampling.ImportanceSampling</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.reliability.line_sampling.html">pystra.reliability.line_sampling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.reliability.line_sampling.LineSampling.html">pystra.reliability.line_sampling.LineSampling</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.reliability.subset_simulation.html">pystra.reliability.subset_simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.reliability.subset_simulation.SubsetSimulation.html">pystra.reliability.subset_simulation.SubsetSimulation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.reliability.sensitivity.html">pystra.reliability.sensitivity</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.reliability.sensitivity.SensitivityAnalysis.html">pystra.reliability.sensitivity.SensitivityAnalysis</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.systems.html">pystra.systems</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.systems.ditlevsen_bounds.html">pystra.systems.ditlevsen_bounds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.systems.Component.html">pystra.systems.Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.systems.CutSetSystem.html">pystra.systems.CutSetSystem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.systems.KOfNSystem.html">pystra.systems.KOfNSystem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.systems.ParallelSystem.html">pystra.systems.ParallelSystem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.systems.SeriesSystem.html">pystra.systems.SeriesSystem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.systems.System.html">pystra.systems.System</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.systems.TieSetSystem.html">pystra.systems.TieSetSystem</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.reliability.system_form.html">pystra.reliability.system_form</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.reliability.system_form.SystemFORM.html">pystra.reliability.system_form.SystemFORM</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.reliability.strong_maximum.html">pystra.reliability.strong_maximum</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.reliability.strong_maximum.StrongMaximumTest.html">pystra.reliability.strong_maximum.StrongMaximumTest</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/probability.html">Distributions and dependence</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.distributions.html">pystra.distributions</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.distributions.beta.html">pystra.distributions.beta</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.distributions.beta.Beta.html">pystra.distributions.beta.Beta</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.distributions.chi_square.html">pystra.distributions.chi_square</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.distributions.chi_square.ChiSquare.html">pystra.distributions.chi_square.ChiSquare</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.distributions.distribution.html">pystra.distributions.distribution</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.distributions.distribution.Constant.html">pystra.distributions.distribution.Constant</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.distributions.distribution.Distribution.html">pystra.distributions.distribution.Distribution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.distributions.distribution.StdNormal.html">pystra.distributions.distribution.StdNormal</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.distributions.frechet.html">pystra.distributions.frechet</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.distributions.frechet.Frechet.html">pystra.distributions.frechet.Frechet</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.distributions.gamma.html">pystra.distributions.gamma</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.distributions.gamma.Gamma.html">pystra.distributions.gamma.Gamma</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.distributions.gev.html">pystra.distributions.gev</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.distributions.gev.GEV.html">pystra.distributions.gev.GEV</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.distributions.gev.GEVMin.html">pystra.distributions.gev.GEVMin</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.distributions.gumbel.html">pystra.distributions.gumbel</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.distributions.gumbel.Gumbel.html">pystra.distributions.gumbel.Gumbel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.distributions.gumbel.GumbelMin.html">pystra.distributions.gumbel.GumbelMin</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.distributions.lognormal.html">pystra.distributions.lognormal</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.distributions.lognormal.Lognormal.html">pystra.distributions.lognormal.Lognormal</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.distributions.maximum.html">pystra.distributions.maximum</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.distributions.maximum.Maximum.html">pystra.distributions.maximum.Maximum</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.distributions.normal.html">pystra.distributions.normal</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.distributions.normal.Normal.html">pystra.distributions.normal.Normal</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.distributions.parent.html">pystra.distributions.parent</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.distributions.parent.MaxParent.html">pystra.distributions.parent.MaxParent</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.distributions.scipy_dist.html">pystra.distributions.scipy_dist</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.distributions.scipy_dist.ScipyDist.html">pystra.distributions.scipy_dist.ScipyDist</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.distributions.shifted_exponential.html">pystra.distributions.shifted_exponential</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.distributions.shifted_exponential.ShiftedExponential.html">pystra.distributions.shifted_exponential.ShiftedExponential</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.distributions.shifted_lognormal.html">pystra.distributions.shifted_lognormal</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.distributions.shifted_lognormal.ShiftedLognormal.html">pystra.distributions.shifted_lognormal.ShiftedLognormal</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.distributions.shifted_rayleigh.html">pystra.distributions.shifted_rayleigh</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.distributions.shifted_rayleigh.ShiftedRayleigh.html">pystra.distributions.shifted_rayleigh.ShiftedRayleigh</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.distributions.uniform.html">pystra.distributions.uniform</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.distributions.uniform.Uniform.html">pystra.distributions.uniform.Uniform</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.distributions.weibull.html">pystra.distributions.weibull</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.distributions.weibull.Weibull.html">pystra.distributions.weibull.Weibull</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.distributions.zero_inflated.html">pystra.distributions.zero_inflated</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.distributions.zero_inflated.ZeroInflated.html">pystra.distributions.zero_inflated.ZeroInflated</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.dependence.copula.html">pystra.dependence.copula</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.dependence.copula.Copula.html">pystra.dependence.copula.Copula</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.dependence.copula.FrankCopula.html">pystra.dependence.copula.FrankCopula</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.dependence.copula.GaussianCopula.html">pystra.dependence.copula.GaussianCopula</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.dependence.copula.IndependentCopula.html">pystra.dependence.copula.IndependentCopula</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.dependence.copula.StudentTCopula.html">pystra.dependence.copula.StudentTCopula</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.dependence.joint.html">pystra.dependence.joint</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.dependence.joint.CopulaTransformation.html">pystra.dependence.joint.CopulaTransformation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.dependence.joint.JointDistribution.html">pystra.dependence.joint.JointDistribution</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.dependence.transformation.html">pystra.dependence.transformation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.dependence.transformation.Transformation.html">pystra.dependence.transformation.Transformation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.dependence.correlation.html">pystra.dependence.correlation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.dependence.correlation.absolute_integral_value.html">pystra.dependence.correlation.absolute_integral_value</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.dependence.correlation.compute_modified_correlation_matrix.html">pystra.dependence.correlation.compute_modified_correlation_matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.dependence.correlation.set_modified_correlation_matrix.html">pystra.dependence.correlation.set_modified_correlation_matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.dependence.correlation.CorrelationMatrix.html">pystra.dependence.correlation.CorrelationMatrix</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/calibration.html">Code calibration and load combinations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.loads.html">pystra.loads</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.loads.FBCProcess.html">pystra.loads.FBCProcess</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.loads.LoadCombination.html">pystra.loads.LoadCombination</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.loads.VariableRoles.html">pystra.loads.VariableRoles</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.calibration.html">pystra.calibration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.calibration.factors.html">pystra.calibration.factors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.analyze_case.html">pystra.calibration.factors.analyze_case</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.derive_factors.html">pystra.calibration.factors.derive_factors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.design_with_factors.html">pystra.calibration.factors.design_with_factors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.select_factors.html">pystra.calibration.factors.select_factors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.solve_designs.html">pystra.calibration.factors.solve_designs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.verify_designs.html">pystra.calibration.factors.verify_designs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.CalibratedDesign.html">pystra.calibration.factors.CalibratedDesign</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.DesignValues.html">pystra.calibration.factors.DesignValues</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.DesignVerification.html">pystra.calibration.factors.DesignVerification</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.FactorCalibrationProblem.html">pystra.calibration.factors.FactorCalibrationProblem</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.FactorSet.html">pystra.calibration.factors.FactorSet</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.GoverningFactor.html">pystra.calibration.factors.GoverningFactor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.factors.TargetDesigns.html">pystra.calibration.factors.TargetDesigns</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.calibration.normalized.html">pystra.calibration.normalized</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.normalized.CodeCalibration.html">pystra.calibration.normalized.CodeCalibration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.normalized.CodeCalibrationResult.html">pystra.calibration.normalized.CodeCalibrationResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.normalized.CodeDesignResult.html">pystra.calibration.normalized.CodeDesignResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.normalized.CodeFactors.html">pystra.calibration.normalized.CodeFactors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.normalized.NominalValues.html">pystra.calibration.normalized.NominalValues</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.normalized.NormalizedReliabilityModel.html">pystra.calibration.normalized.NormalizedReliabilityModel</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.calibration.plotting.html">pystra.calibration.plotting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.calibration.plotting.plot_calibration.html">pystra.calibration.plotting.plot_calibration</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/decisions.html">Design decisions and target reliability</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.SWTP.html">pystra.decision.ddo.SWTP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.FatalityConsequence.html">pystra.decision.ddo.FatalityConsequence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.LQI.html">pystra.decision.ddo.LQI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.TargetReliability.html">pystra.decision.ddo.TargetReliability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.CostBenefitModel.html">pystra.decision.ddo.CostBenefitModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.DesignStudy.html">pystra.decision.ddo.DesignStudy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.RiskStudy.html">pystra.decision.ddo.RiskStudy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.ScenarioRiskModel.html">pystra.decision.ddo.ScenarioRiskModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.RiskResult.html">pystra.decision.ddo.RiskResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.DDO.html">pystra.decision.ddo.DDO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.DDOObjective.html">pystra.decision.ddo.DDOObjective</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.DDOCriterion.html">pystra.decision.ddo.DDOCriterion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.RackwitzTargetModel.html">pystra.decision.ddo.RackwitzTargetModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.lqi_k1.html">pystra.decision.ddo.lqi_k1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.lqi_target_reliability.html">pystra.decision.ddo.lqi_target_reliability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.derive_lqi_target.html">pystra.decision.ddo.derive_lqi_target</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.rackwitz_table.html">pystra.decision.ddo.rackwitz_table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.jcss_lqi_risk_cost.html">pystra.decision.ddo.jcss_lqi_risk_cost</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.jcss_lqi_risk_cost_from_result.html">pystra.decision.ddo.jcss_lqi_risk_cost_from_result</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.jcss_lqi_acceptability.html">pystra.decision.ddo.jcss_lqi_acceptability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.jcss_lqi_acceptability_margin.html">pystra.decision.ddo.jcss_lqi_acceptability_margin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.jcss_lqi_is_acceptable.html">pystra.decision.ddo.jcss_lqi_is_acceptable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.jcss_systematic_reconstruction_objective.html">pystra.decision.ddo.jcss_systematic_reconstruction_objective</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.present_value_factor.html">pystra.decision.ddo.present_value_factor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.annualized_safety_cost.html">pystra.decision.ddo.annualized_safety_cost</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.finite_difference_derivative.html">pystra.decision.ddo.finite_difference_derivative</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.lognormal_ratio_failure_probability.html">pystra.decision.ddo.lognormal_ratio_failure_probability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.plot_summary.html">pystra.decision.ddo.plot_summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.TargetReliabilityCalibration.html">pystra.decision.ddo.TargetReliabilityCalibration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.get_swtp.html">pystra.decision.ddo.get_swtp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.get_swtp_record.html">pystra.decision.ddo.get_swtp_record</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.get_swtp_index_record.html">pystra.decision.ddo.get_swtp_index_record</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.index_swtp_record.html">pystra.decision.ddo.index_swtp_record</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.swtp_table.html">pystra.decision.ddo.swtp_table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.SWTPRecord.html">pystra.decision.ddo.SWTPRecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pystra.decision.ddo.SWTPIndexRecord.html">pystra.decision.ddo.SWTPIndexRecord</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/active_learning.html">Active-learning reliability</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.active_learning.html">pystra.active_learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.active_learning.analysis.html">pystra.active_learning.analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.analysis.ActiveLearning.html">pystra.active_learning.analysis.ActiveLearning</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.active_learning.estimation.html">pystra.active_learning.estimation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.estimation.EnrichmentEstimator.html">pystra.active_learning.estimation.EnrichmentEstimator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.estimation.EnrichmentResult.html">pystra.active_learning.estimation.EnrichmentResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.estimation.MonteCarloEstimator.html">pystra.active_learning.estimation.MonteCarloEstimator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.estimation.ReliabilityEstimator.html">pystra.active_learning.estimation.ReliabilityEstimator</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.active_learning.importance.html">pystra.active_learning.importance</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.importance.ImportanceSamplingDiagnostics.html">pystra.active_learning.importance.ImportanceSamplingDiagnostics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.importance.ImportanceSamplingEstimator.html">pystra.active_learning.importance.ImportanceSamplingEstimator</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.active_learning.learning.html">pystra.active_learning.learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.learning.learning_eff.html">pystra.active_learning.learning.learning_eff</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.learning.learning_u.html">pystra.active_learning.learning.learning_u</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.learning.EnsembleLearningFunction.html">pystra.active_learning.learning.EnsembleLearningFunction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.learning.ExpectedFeasibility.html">pystra.active_learning.learning.ExpectedFeasibility</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.learning.FBRLearning.html">pystra.active_learning.learning.FBRLearning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.learning.LearningDecision.html">pystra.active_learning.learning.LearningDecision</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.learning.LearningFunction.html">pystra.active_learning.learning.LearningFunction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.learning.UFunction.html">pystra.active_learning.learning.UFunction</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.active_learning.pc_kriging.html">pystra.active_learning.pc_kriging</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.pc_kriging.PCKrigingFitResult.html">pystra.active_learning.pc_kriging.PCKrigingFitResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.pc_kriging.PCKrigingSurrogate.html">pystra.active_learning.pc_kriging.PCKrigingSurrogate</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.active_learning.results.html">pystra.active_learning.results</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.results.ActiveLearningResult.html">pystra.active_learning.results.ActiveLearningResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.results.LearningStep.html">pystra.active_learning.results.LearningStep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.results.ReliabilityEstimate.html">pystra.active_learning.results.ReliabilityEstimate</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.active_learning.stopping.html">pystra.active_learning.stopping</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.stopping.AllCriteria.html">pystra.active_learning.stopping.AllCriteria</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.stopping.BetaBounds.html">pystra.active_learning.stopping.BetaBounds</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.stopping.BetaStability.html">pystra.active_learning.stopping.BetaStability</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.stopping.BootstrapBounds.html">pystra.active_learning.stopping.BootstrapBounds</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.stopping.LearningThreshold.html">pystra.active_learning.stopping.LearningThreshold</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.stopping.StoppingCriterion.html">pystra.active_learning.stopping.StoppingCriterion</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.active_learning.subset.html">pystra.active_learning.subset</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.subset.SubsetLevel.html">pystra.active_learning.subset.SubsetLevel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.subset.SubsetRun.html">pystra.active_learning.subset.SubsetRun</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.subset.SubsetSimulationEstimator.html">pystra.active_learning.subset.SubsetSimulationEstimator</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pystra.active_learning.surrogates.html">pystra.active_learning.surrogates</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.surrogates.EnsembleSurrogate.html">pystra.active_learning.surrogates.EnsembleSurrogate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.surrogates.KrigingSurrogate.html">pystra.active_learning.surrogates.KrigingSurrogate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.surrogates.PCECandidate.html">pystra.active_learning.surrogates.PCECandidate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.surrogates.PCEFitResult.html">pystra.active_learning.surrogates.PCEFitResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.surrogates.PCESurrogate.html">pystra.active_learning.surrogates.PCESurrogate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pystra.active_learning.surrogates.Surrogate.html">pystra.active_learning.surrogates.Surrogate</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/plotting.html">Reliability figures</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pystra.plotting.html">pystra.plotting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="pystra.plotting.plot_form_geometry.html">pystra.plotting.plot_form_geometry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.plotting.plot_learning_history.html">pystra.plotting.plot_learning_history</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.plotting.plot_limit_state.html">pystra.plotting.plot_limit_state</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.plotting.plot_pce_selection.html">pystra.plotting.plot_pce_selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.plotting.plot_strong_maximum.html">pystra.plotting.plot_strong_maximum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pystra.plotting.plot_surrogate_slice.html">pystra.plotting.plot_surrogate_slice</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../api.html" class="nav-link">API reference</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../api/reliability.html" class="nav-link">Reliability algorithms and results</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="pystra.results.html" class="nav-link">pystra.results</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">pystra.results.SensitivityResult</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="pystra-results-sensitivityresult">
+<h1>pystra.results.SensitivityResult<a class="headerlink" href="#pystra-results-sensitivityresult" title="Link to this heading">#</a></h1>
+<p><strong>Use it:</strong> <a class="reference internal" href="../guides/methods.html"><span class="doc">User guide</span></a> · <a class="reference internal" href="../notebooks/ex_intro.html"><span class="doc">Worked example</span></a> · <a class="reference internal" href="../theory/design_point_methods.html"><span class="doc">Theory</span></a></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pystra.results.SensitivityResult">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">SensitivityResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_limit_state_evaluations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">failure_probability</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">form</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approach</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marginal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correlation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/results.html#SensitivityResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.results.SensitivityResult" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_ProbabilityResult</span></code></p>
+<p>Record of a sensitivity analysis of the FORM reliability index.</p>
+<p><code class="docutils literal notranslate"><span class="pre">failure_probability</span></code> and <code class="docutils literal notranslate"><span class="pre">beta</span></code> are those of <code class="docutils literal notranslate"><span class="pre">form</span></code>, the FORM
+analysis at the model’s parameters. The sensitivities are derivatives of
+its design index.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.results.SensitivityResult.form">
+<span class="sig-name descname"><span class="pre">form</span></span><a class="headerlink" href="#pystra.results.SensitivityResult.form" title="Link to this definition">#</a></dt>
+<dd><p>FORM at the model’s parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="pystra.results.FORMResult.html#pystra.results.FORMResult" title="pystra.results.FORMResult">FORMResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.results.SensitivityResult.approach">
+<span class="sig-name descname"><span class="pre">approach</span></span><a class="headerlink" href="#pystra.results.SensitivityResult.approach" title="Link to this definition">#</a></dt>
+<dd><p>Forward finite differences, or Bourinet’s (2017) closed form.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>{“numerical”, “closed_form”}</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.results.SensitivityResult.marginal">
+<span class="sig-name descname"><span class="pre">marginal</span></span><a class="headerlink" href="#pystra.results.SensitivityResult.marginal" title="Link to this definition">#</a></dt>
+<dd><p>Derivative of the index with respect to each distribution parameter,
+by variable and parameter name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Mapping[str, Mapping[str, float]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.results.SensitivityResult.correlation">
+<span class="sig-name descname"><span class="pre">correlation</span></span><a class="headerlink" href="#pystra.results.SensitivityResult.correlation" title="Link to this definition">#</a></dt>
+<dd><p>Closed form only: derivatives with respect to the correlation
+coefficients, symmetric with a zero diagonal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pystra.results.SensitivityResult.delta">
+<span class="sig-name descname"><span class="pre">delta</span></span><a class="headerlink" href="#pystra.results.SensitivityResult.delta" title="Link to this definition">#</a></dt>
+<dd><p>Numerical only: the relative perturbation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.results.SensitivityResult.summary" title="pystra.results.SensitivityResult.summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">summary</span></code></a></p></td>
+<td><p>Return a plain-text report of the principal results.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.results.SensitivityResult.to_dataframe" title="pystra.results.SensitivityResult.to_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_dataframe</span></code></a></p></td>
+<td><p>Return the marginal sensitivities as a tidy table.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.results.SensitivityResult.to_dataframe">
+<span class="sig-name descname"><span class="pre">to_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/results.html#SensitivityResult.to_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.results.SensitivityResult.to_dataframe" title="Link to this definition">#</a></dt>
+<dd><p>Return the marginal sensitivities as a tidy table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Columns <code class="docutils literal notranslate"><span class="pre">Variable</span></code>, <code class="docutils literal notranslate"><span class="pre">Parameter</span></code> and <code class="docutils literal notranslate"><span class="pre">∂β/∂θ</span></code>.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pandas.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pystra.results.SensitivityResult.converged">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">converged</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><a class="headerlink" href="#pystra.results.SensitivityResult.converged" title="Link to this definition">#</a></dt>
+<dd><p>Whether the method met its termination criteria.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.results.SensitivityResult.summary">
+<span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pystra.results.SensitivityResult.summary" title="Link to this definition">#</a></dt>
+<dd><p>Return a plain-text report of the principal results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="pystra.results.SORMResult.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">pystra.results.SORMResult</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="pystra.results.SimulationResult.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">pystra.results.SimulationResult</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.results.SensitivityResult"><code class="docutils literal notranslate"><span class="pre">SensitivityResult</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.results.SensitivityResult.form"><code class="docutils literal notranslate"><span class="pre">SensitivityResult.form</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.results.SensitivityResult.approach"><code class="docutils literal notranslate"><span class="pre">SensitivityResult.approach</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.results.SensitivityResult.marginal"><code class="docutils literal notranslate"><span class="pre">SensitivityResult.marginal</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.results.SensitivityResult.correlation"><code class="docutils literal notranslate"><span class="pre">SensitivityResult.correlation</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.results.SensitivityResult.delta"><code class="docutils literal notranslate"><span class="pre">SensitivityResult.delta</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.results.SensitivityResult.to_dataframe"><code class="docutils literal notranslate"><span class="pre">SensitivityResult.to_dataframe()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.results.SensitivityResult.converged"><code class="docutils literal notranslate"><span class="pre">SensitivityResult.converged</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.results.SensitivityResult.summary"><code class="docutils literal notranslate"><span class="pre">SensitivityResult.summary()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/pystra/pystra/edit/v2.0/docs/source/gen/pystra.results.SensitivityResult.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2021-2026, The PySTRA Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><nav aria-label="Project links" class="project-links">
+  <a href="../migrating.html">Migration</a>
+  <a href="../citing.html">Cite PySTRA</a>
+  <a href="../developer.html">Contributing</a>
+  <a href="https://pystra.github.io/pystra/">Stable 1.x documentation</a>
+</nav></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,1546 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pystra.distributions.distribution &#8212; PySTRA 2.0.0a1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=a54fd074" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../../_static/documentation_options.js?v=944fa962"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=ccd31ad0"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pystra/distributions/distribution';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.0a1" />
+  
+    
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">These pages document PySTRA 2.0, which is in development. The stable 1.x documentation is at <a href="https://pystra.github.io/pystra/">pystra.github.io/pystra</a>.</div>
+</aside>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 2.0.0a1 documentation - Home"/>
+    <img src="../../../_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 2.0.0a1 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item"><a class="version-status" href="../../../install.html" aria-label="Documentation version 2.0.0a1: installation instructions">2.0.0a1 · development</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api.html">
+    API reference
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../references.html">
+    References
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../get_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../whatsnew.html">
+    What’s new in PySTRA 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorial.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../theory.html">
+    Theory
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../migrating.html">
+    Migrating from 1.x to 2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../references.html">
+    References
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../developer.html">
+    Contributing to PySTRA
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pystra/pystra" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/ccaprani" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">pystra.distributions.distribution</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for pystra.distributions.distribution</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python -tt</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">special</span> <span class="k">as</span> <span class="n">sp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats._distn_infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">rv_frozen</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModelError</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"StdNormal"</span><span class="p">,</span> <span class="s2">"Constant"</span><span class="p">,</span> <span class="s2">"Distribution"</span><span class="p">]</span>
+
+
+<span class="n">_LOG_HALF</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">_TINY</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">tiny</span>
+<span class="n">_LOG_TINY</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">_TINY</span><span class="p">)</span>
+<span class="c1"># Above u = 3 the complement 1 - Phi(u) would lose more than 1e-13 of its</span>
+<span class="c1"># relative precision, so the survival function is used from there on.</span>
+<span class="n">_U_SWITCH</span> <span class="o">=</span> <span class="mf">3.0</span>
+<span class="n">_P_SWITCH</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">ndtr</span><span class="p">(</span><span class="n">_U_SWITCH</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_log1mexp</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Return ``log(1 - exp(a))`` for ``a &lt;= 0`` without cancellation.</span>
+
+<span class="sd">    Uses ``log(-expm1(a))`` for ``a &gt; -log 2`` and ``log1p(-exp(a))``</span>
+<span class="sd">    otherwise (Mächler, 2012, "Accurately computing log(1 - exp(-|a|))").</span>
+<span class="sd">    """</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">,</span> <span class="n">under</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">a</span> <span class="o">&gt;</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="n">a</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">a</span><span class="p">)))[()]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_call</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Call a distribution method on an array of points.</span>
+
+<span class="sd">    Arrays go to the method at once. A single point is passed as a float,</span>
+<span class="sd">    and a method written only for scalars (it raises ``TypeError`` for an</span>
+<span class="sd">    array) is called point by point, so subclass overrides from 1.x keep</span>
+<span class="sd">    working. Returns a 1-D array.</span>
+<span class="sd">    """</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">values</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">function</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[</span><span class="mi">0</span><span class="p">])),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndmin</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">function</span><span class="p">(</span><span class="n">values</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndmin</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">function</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">()],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_piecewise</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">upper</span><span class="p">,</span> <span class="n">lower_fn</span><span class="p">,</span> <span class="n">upper_fn</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Apply ``lower_fn`` where ``upper`` is false and ``upper_fn`` where true.</span>
+
+<span class="sd">    Each function receives a 1-D array of the selected values, so only one</span>
+<span class="sd">    tail formula is evaluated per element. Scalars give NumPy scalars.</span>
+<span class="sd">    """</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">flat</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">upper</span><span class="p">,</span> <span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">flat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">upper</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+        <span class="n">out</span><span class="p">[</span><span class="o">~</span><span class="n">upper</span><span class="p">]</span> <span class="o">=</span> <span class="n">_call</span><span class="p">(</span><span class="n">lower_fn</span><span class="p">,</span> <span class="n">flat</span><span class="p">[</span><span class="o">~</span><span class="n">upper</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">upper</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="n">out</span><span class="p">[</span><span class="n">upper</span><span class="p">]</span> <span class="o">=</span> <span class="n">_call</span><span class="p">(</span><span class="n">upper_fn</span><span class="p">,</span> <span class="n">flat</span><span class="p">[</span><span class="n">upper</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">out</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">)[()]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_solve_log_tail</span><span class="p">(</span><span class="n">log_tail</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Solve ``log_tail(x) = target`` where the tail probability underflows.</span>
+
+<span class="sd">    ``log_tail`` is a log-CDF (``step &lt; 0``) or a log-survival function</span>
+<span class="sd">    (``step &gt; 0``). It exceeds every target at ``start`` and decreases in</span>
+<span class="sd">    the direction of ``step``. The bracket is widened by doubling, then</span>
+<span class="sd">    bisected until its ends are adjacent doubles. Points past the support,</span>
+<span class="sd">    where the logarithm is ``-inf`` or undefined, count as past the</span>
+<span class="sd">    solution; a solution beyond the double range gives ``+-inf``.</span>
+<span class="sd">    """</span>
+    <span class="n">targets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">direction</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">step</span><span class="p">)</span>
+    <span class="n">inner</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">targets</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">start</span><span class="p">))</span>
+    <span class="n">outer</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">targets</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">direction</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">start</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">outer</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">step</span><span class="p">))</span>
+    <span class="n">todo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">targets</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">todo</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">width</span><span class="p">):</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flatnonzero</span><span class="p">(</span><span class="n">todo</span><span class="p">)</span>
+        <span class="n">trial</span> <span class="o">=</span> <span class="n">inner</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">+</span> <span class="n">direction</span> <span class="o">*</span> <span class="n">width</span>
+        <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">):</span>
+            <span class="n">short</span> <span class="o">=</span> <span class="n">log_tail</span><span class="p">(</span><span class="n">trial</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">targets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">inner</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="n">short</span><span class="p">]]</span> <span class="o">=</span> <span class="n">trial</span><span class="p">[</span><span class="n">short</span><span class="p">]</span>
+        <span class="n">outer</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="o">~</span><span class="n">short</span><span class="p">]]</span> <span class="o">=</span> <span class="n">trial</span><span class="p">[</span><span class="o">~</span><span class="n">short</span><span class="p">]</span>
+        <span class="n">todo</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="o">~</span><span class="n">short</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">width</span> <span class="o">*=</span> <span class="mi">2</span>
+    <span class="n">found</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">outer</span><span class="p">)</span>
+    <span class="n">lower</span><span class="p">,</span> <span class="n">upper</span> <span class="o">=</span> <span class="n">inner</span><span class="p">[</span><span class="n">found</span><span class="p">],</span> <span class="n">outer</span><span class="p">[</span><span class="n">found</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1100</span><span class="p">):</span>
+        <span class="n">middle</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">lower</span> <span class="o">+</span> <span class="n">upper</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">((</span><span class="n">middle</span> <span class="o">!=</span> <span class="n">lower</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">middle</span> <span class="o">!=</span> <span class="n">upper</span><span class="p">)):</span>
+            <span class="k">break</span>
+        <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">):</span>
+            <span class="n">short</span> <span class="o">=</span> <span class="n">log_tail</span><span class="p">(</span><span class="n">middle</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">targets</span><span class="p">[</span><span class="n">found</span><span class="p">]</span>
+        <span class="n">lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">short</span><span class="p">,</span> <span class="n">middle</span><span class="p">,</span> <span class="n">lower</span><span class="p">)</span>
+        <span class="n">upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">short</span><span class="p">,</span> <span class="n">upper</span><span class="p">,</span> <span class="n">middle</span><span class="p">)</span>
+    <span class="n">outer</span><span class="p">[</span><span class="n">found</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">lower</span> <span class="o">+</span> <span class="n">upper</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">outer</span>
+
+
+<div class="viewcode-block" id="StdNormal">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.StdNormal.html#pystra.distributions.distribution.StdNormal">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">StdNormal</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Standard normal distribution (mean 0, standard deviation 1).</span>
+
+<span class="sd">    A lightweight implementation using ``scipy.special`` error functions,</span>
+<span class="sd">    avoiding the overhead of a full ``scipy.stats`` distribution object.</span>
+<span class="sd">    This class is used internally by the Nataf transformation and by the</span>
+<span class="sd">    marginal distribution mappings (``x_to_u`` / ``u_to_x``).</span>
+<span class="sd">    """</span>
+
+<div class="viewcode-block" id="StdNormal.pdf">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.StdNormal.html#pystra.distributions.distribution.StdNormal.pdf">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Probability density function of the standard normal.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        u : float or array_like</span>
+<span class="sd">            Quantile(s) in standard normal space.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or ndarray</span>
+<span class="sd">            Density value(s).</span>
+<span class="sd">        """</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">u</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">p</span></div>
+
+
+<div class="viewcode-block" id="StdNormal.cdf">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.StdNormal.html#pystra.distributions.distribution.StdNormal.cdf">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Cumulative distribution function of the standard normal.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        u : float or array_like</span>
+<span class="sd">            Quantile(s) in standard normal space.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or ndarray</span>
+<span class="sd">            Probability value(s) in [0, 1].</span>
+<span class="sd">        """</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">ndtr</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">p</span></div>
+
+
+<div class="viewcode-block" id="StdNormal.ppf">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.StdNormal.html#pystra.distributions.distribution.StdNormal.ppf">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ppf</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Percent-point (inverse CDF) of the standard normal.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        p : float or array_like</span>
+<span class="sd">            Probability value(s) in (0, 1).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or ndarray</span>
+<span class="sd">            Quantile(s) in standard normal space.</span>
+<span class="sd">        """</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">ndtri</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">u</span></div>
+</div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_uses_native_parameters</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="o">**</span><span class="n">native</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Whether a constructor received native parameters instead of moments.</span>
+
+<span class="sd">    A distribution takes either its mean and standard deviation or every one</span>
+<span class="sd">    of its native parameters, never a mixture of the two.</span>
+<span class="sd">    """</span>
+    <span class="n">kind</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">distribution</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="s2">" and "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">native</span><span class="p">)</span>
+    <span class="n">given</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">native</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">given</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">mean</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">std</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">kind</span><span class="si">}</span><span class="s2"> needs mean and std, or </span><span class="si">{</span><span class="n">names</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">mean</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">std</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">kind</span><span class="si">}</span><span class="s2"> takes mean and std, or </span><span class="si">{</span><span class="n">names</span><span class="si">}</span><span class="s2">, not both"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">given</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">native</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">kind</span><span class="si">}</span><span class="s2"> needs mean and std, or </span><span class="si">{</span><span class="n">names</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+
+<div class="viewcode-block" id="Constant">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Constant.html#pystra.distributions.distribution.Constant">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Constant</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A deterministic (non-random) variable in the limit state function.</span>
+
+<span class="sd">    Constants are included in the stochastic model but are not treated as</span>
+<span class="sd">    random variables — they carry a fixed value through every evaluation of</span>
+<span class="sd">    the limit state function.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name of the constant (must match a keyword argument of the limit</span>
+<span class="sd">        state function).</span>
+<span class="sd">    value : float</span>
+<span class="sd">        The fixed value.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="n">value</span>
+
+<div class="viewcode-block" id="Constant.get_name">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Constant.html#pystra.distributions.distribution.Constant.get_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Return the constant name."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""The fixed value."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Constant(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">, value=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="si">!r}</span><span class="s2">)"</span></div>
+
+
+
+<div class="viewcode-block" id="Distribution">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Distribution</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Base class for all probability distributions used in reliability analysis.</span>
+
+<span class="sd">    Subclasses typically construct a ``scipy.stats`` frozen distribution</span>
+<span class="sd">    object (``dist_obj``) and pass it to this base class, which then</span>
+<span class="sd">    delegates ``pdf``, ``cdf``, ``ppf``, and the Nataf-space</span>
+<span class="sd">    transformations (``x_to_u``, ``u_to_x``, ``jacobian``) to it.</span>
+
+<span class="sd">    Subclasses that do not wrap a SciPy distribution must override the</span>
+<span class="sd">    transformation and Jacobian methods directly, or provide the tail</span>
+<span class="sd">    functions below (see, e.g., :class:`Maximum`).</span>
+
+<span class="sd">    **Tail accuracy.** Every distribution provides ``cdf``, ``sf``,</span>
+<span class="sd">    ``logcdf``, ``logsf``, ``pdf``, ``logpdf``, ``ppf`` and ``isf``, each</span>
+<span class="sd">    accurate in its own tail. ``u_to_x`` and ``x_to_u`` evaluate the tail</span>
+<span class="sd">    that the point lies in, so a probability near one is never formed:</span>
+<span class="sd">    ``x = F^{-1}(Phi(u))`` for ``u &lt;= 0`` and ``x = Fbar^{-1}(Phi(-u))``</span>
+<span class="sd">    for ``u &gt; 0``. Beyond the smallest normal double (``|u|`` above about</span>
+<span class="sd">    37.5) the log-probability is inverted instead, in closed form where</span>
+<span class="sd">    one exists and otherwise by solving the log-CDF or log-survival</span>
+<span class="sd">    function. Jacobians switch to log densities when the densities</span>
+<span class="sd">    underflow. Subclasses that override ``cdf`` or ``ppf`` should override</span>
+<span class="sd">    ``sf`` or ``isf`` as well; the fallbacks ``1 - cdf`` and ``ppf(1 - q)``</span>
+<span class="sd">    lose the upper tail.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name of the random variable.  Must match a keyword argument of</span>
+<span class="sd">        the limit state function.</span>
+<span class="sd">    dist_obj : scipy.stats.rv_frozen, optional</span>
+<span class="sd">        A frozen SciPy distribution.  When provided, ``mean`` and</span>
+<span class="sd">        ``std`` are computed from the distribution automatically.</span>
+<span class="sd">    mean : float, optional</span>
+<span class="sd">        Mean of the distribution (required if *dist_obj* is ``None``).</span>
+<span class="sd">    std : float, optional</span>
+<span class="sd">        Standard deviation (required if *dist_obj* is ``None``).</span>
+<span class="sd">    start_point : float, optional</span>
+<span class="sd">        Starting point for iterative search algorithms (defaults to</span>
+<span class="sd">        the mean).</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name of the random variable.</span>
+<span class="sd">    dist_type : str</span>
+<span class="sd">        Human-readable label set by each subclass (e.g. ``"Normal"``).</span>
+<span class="sd">    """</span>
+
+    <span class="n">std_normal</span> <span class="o">=</span> <span class="n">StdNormal</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">dist_obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_point</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dist_type</span> <span class="o">=</span> <span class="s2">"BaseCls"</span>
+
+        <span class="c1"># Extra constructor keyword arguments needed to faithfully</span>
+        <span class="c1"># reconstruct this distribution beyond (name, mean, std).</span>
+        <span class="c1"># Subclasses with additional parameters (e.g. shape for GEV,</span>
+        <span class="c1"># bounds for Beta) should set this in their __init__ *before*</span>
+        <span class="c1"># calling super().__init__().  These are passed through by</span>
+        <span class="c1"># _make_copy() but are NOT sensitivity parameters — they are</span>
+        <span class="c1"># treated as fixed constants unless the subclass also adds them</span>
+        <span class="c1"># to sensitivity_params.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_ctor_kwargs"</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ctor_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># This is the key object that is to be defined in derived classes that</span>
+        <span class="c1"># are using the base class functionality</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span> <span class="o">=</span> <span class="n">dist_obj</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_moments</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_start_point</span><span class="p">(</span><span class="n">start_point</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Mean of the distribution."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mean</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">std</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Standard deviation of the distribution."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_std</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start_point</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Starting point of the design-point search; the mean by default."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_point</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">, mean=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="si">:</span><span class="s2">.6g</span><span class="si">}</span><span class="s2">, std=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="si">:</span><span class="s2">.6g</span><span class="si">}</span><span class="s2">)"</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_std</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">mean</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">std</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ModelError</span><span class="p">(</span><span class="s2">"Mean and std dev must be defined in derived classes"</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mean</span> <span class="o">=</span> <span class="n">mean</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_std</span> <span class="o">=</span> <span class="n">std</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ModelError</span><span class="p">(</span><span class="s2">"Std. deviation must be a positive noninfinite number."</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_start_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_point</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">start_point</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_start_point</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_start_point</span> <span class="o">=</span> <span class="n">start_point</span>
+
+    <span class="c1"># The following can be overridden by derived classes to implement more</span>
+    <span class="c1"># efficient calculations where desirable</span>
+
+<div class="viewcode-block" id="Distribution.pdf">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.pdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Probability density function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : float or array_like</span>
+<span class="sd">            Value(s) in physical space.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or ndarray</span>
+<span class="sd">            Density value(s).</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Distribution.logpdf">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.logpdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Log density, ``-inf`` where the density is zero."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">pdf</span> <span class="ow">is</span> <span class="n">Distribution</span><span class="o">.</span><span class="n">pdf</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Distribution.cdf">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.cdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Cumulative distribution function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : float or array_like</span>
+<span class="sd">            Value(s) in physical space.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or ndarray</span>
+<span class="sd">            Probability value(s) in [0, 1].</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Distribution.sf">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.sf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Survival function ``1 - F(x)``, accurate in the upper tail."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scipy_cdf</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Distribution.logcdf">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.logcdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logcdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Logarithm of the CDF, accurate in both tails.</span>
+
+<span class="sd">        Below the median the logarithm of the CDF itself (or SciPy's</span>
+<span class="sd">        ``logcdf``) is used; above it, ``log1p(-sf(x))`` keeps the</span>
+<span class="sd">        difference from zero.</span>
+<span class="sd">        """</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_piecewise</span><span class="p">(</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lower_logcdf</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Distribution.logsf">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.logsf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logsf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Logarithm of the survival function, accurate in both tails."""</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_piecewise</span><span class="p">(</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">v</span><span class="p">)),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upper_logsf</span>
+        <span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_lower_logcdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Log-CDF below the median."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scipy_cdf</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">logcdf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_upper_logsf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Log-survival function above the median."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scipy_cdf</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">logsf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_scipy_cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Whether the CDF family can be delegated to ``dist_obj``."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">cdf</span> <span class="ow">is</span> <span class="n">Distribution</span><span class="o">.</span><span class="n">cdf</span>
+
+<div class="viewcode-block" id="Distribution.ppf">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.ppf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ppf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Percent-point function (inverse CDF).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        u : float or array_like</span>
+<span class="sd">            Probability value(s) in (0, 1).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or ndarray</span>
+<span class="sd">            Quantile(s) in physical space.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">u</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Distribution.isf">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.isf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Inverse survival function, accurate for small upper-tail ``q``."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">ppf</span> <span class="ow">is</span> <span class="n">Distribution</span><span class="o">.</span><span class="n">ppf</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">isf</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_ppf_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logp</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Quantile at which ``logcdf`` equals ``logp``, for any ``logp &lt;= 0``."""</span>
+        <span class="n">logp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">logp</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_piecewise</span><span class="p">(</span>
+            <span class="n">logp</span><span class="p">,</span>
+            <span class="n">logp</span> <span class="o">&gt;</span> <span class="n">_LOG_HALF</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lower_quantile_log</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upper_quantile_log</span><span class="p">(</span><span class="n">_log1mexp</span><span class="p">(</span><span class="n">v</span><span class="p">)),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_isf_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logq</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Quantile at which ``logsf`` equals ``logq``, for any ``logq &lt;= 0``."""</span>
+        <span class="n">logq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">logq</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_piecewise</span><span class="p">(</span>
+            <span class="n">logq</span><span class="p">,</span>
+            <span class="n">logq</span> <span class="o">&gt;</span> <span class="n">_LOG_HALF</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_upper_quantile_log</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lower_quantile_log</span><span class="p">(</span><span class="n">_log1mexp</span><span class="p">(</span><span class="n">v</span><span class="p">)),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_lower_quantile_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logp</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Lower-tail quantile from a log-probability of at most log(1/2).</span>
+
+<span class="sd">        Below the smallest normal double the log-CDF is solved directly.</span>
+<span class="sd">        Subclasses with a closed form override this.</span>
+<span class="sd">        """</span>
+        <span class="n">logp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">logp</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span>
+        <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">under</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">_call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ppf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">logp</span><span class="p">))</span>
+        <span class="n">deep</span> <span class="o">=</span> <span class="p">(</span><span class="n">logp</span> <span class="o">&lt;</span> <span class="n">_LOG_TINY</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">logp</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">deep</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">x</span><span class="p">[</span><span class="n">deep</span><span class="p">]</span> <span class="o">=</span> <span class="n">_solve_log_tail</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logcdf</span><span class="p">,</span> <span class="n">logp</span><span class="p">[</span><span class="n">deep</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">_TINY</span><span class="p">),</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">std</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_upper_quantile_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logq</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Upper-tail quantile from a log-probability of at most log(1/2)."""</span>
+        <span class="n">logq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">logq</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span>
+        <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">under</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">_call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">logq</span><span class="p">))</span>
+        <span class="n">deep</span> <span class="o">=</span> <span class="p">(</span><span class="n">logq</span> <span class="o">&lt;</span> <span class="n">_LOG_TINY</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">logq</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">deep</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">x</span><span class="p">[</span><span class="n">deep</span><span class="p">]</span> <span class="o">=</span> <span class="n">_solve_log_tail</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logsf</span><span class="p">,</span> <span class="n">logq</span><span class="p">[</span><span class="n">deep</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">isf</span><span class="p">(</span><span class="n">_TINY</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+<div class="viewcode-block" id="Distribution.u_to_x">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.u_to_x">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">u_to_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Transform from standard normal space to physical space.</span>
+
+<span class="sd">        Applies the marginal Nataf mapping ``x = F^{-1}(Phi(u))``. Above</span>
+<span class="sd">        ``u = 3`` it is evaluated as ``Fbar^{-1}(Phi(-u))``, so the</span>
+<span class="sd">        probability passed on is never rounded towards one; far into either</span>
+<span class="sd">        tail the log-probability is used (see :meth:`_tail_quantiles`).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        u : float or array_like</span>
+<span class="sd">            Value(s) in standard normal (u) space.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or ndarray</span>
+<span class="sd">            Corresponding value(s) in physical (x) space.</span>
+<span class="sd">        """</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">ndtr</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+        <span class="n">upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flatnonzero</span><span class="p">(</span><span class="n">u</span> <span class="o">&gt;</span> <span class="n">_U_SWITCH</span><span class="p">)</span>
+        <span class="n">lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flatnonzero</span><span class="p">(</span><span class="n">u</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">5.0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">upper</span><span class="o">.</span><span class="n">size</span> <span class="ow">or</span> <span class="n">lower</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+            <span class="c1"># Tail points are inverted below, where their result is checked</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">p</span><span class="p">[</span><span class="n">upper</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+            <span class="n">p</span><span class="p">[</span><span class="n">lower</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">_call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ppf</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">sign</span><span class="p">,</span> <span class="n">quantile</span><span class="p">,</span> <span class="n">log_tail</span><span class="p">,</span> <span class="n">log_quantile</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">upper</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">isf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logsf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upper_quantile_log</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">lower</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ppf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logcdf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lower_quantile_log</span><span class="p">),</span>
+        <span class="p">):</span>
+            <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="n">sign</span> <span class="o">*</span> <span class="n">u</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+                <span class="n">prob</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">ndtr</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+                <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+                    <span class="c1"># SciPy warns when its numerical inverse gives up; that</span>
+                    <span class="c1"># result is checked and solved again</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">"ignore"</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+                    <span class="n">xt</span> <span class="o">=</span> <span class="n">_call</span><span class="p">(</span><span class="n">quantile</span><span class="p">,</span> <span class="n">prob</span><span class="p">)</span>
+                    <span class="n">x</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tail_quantiles</span><span class="p">(</span>
+                        <span class="n">xt</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">log_quantile</span><span class="p">,</span> <span class="n">log_tail</span><span class="p">,</span> <span class="o">-</span><span class="n">sign</span>
+                    <span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)[()]</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_tail_quantiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">quantile_log</span><span class="p">,</span> <span class="n">log_tail</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Refine quantiles whose tail probability is below 1e-8.</span>
+
+<span class="sd">        ``prob = Phi(z)`` is the tail probability of each point. Below the</span>
+<span class="sd">        smallest normal double the quantile comes from ``log Phi(z)``.</span>
+<span class="sd">        Numerical inverse CDFs (SciPy's beta, for example) can also stall</span>
+<span class="sd">        or return NaN far into a tail, so each tail quantile is checked</span>
+<span class="sd">        against the log-CDF or log-survival function and solved again if</span>
+<span class="sd">        it misses by more than 1e-8 in relative log-probability.</span>
+<span class="sd">        """</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flatnonzero</span><span class="p">(</span><span class="n">prob</span> <span class="o">&lt;</span> <span class="mf">1e-8</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">x</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">log_ndtr</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+        <span class="n">deep</span> <span class="o">=</span> <span class="n">prob</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">_TINY</span>
+        <span class="k">if</span> <span class="n">deep</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">x</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="n">deep</span><span class="p">]]</span> <span class="o">=</span> <span class="n">quantile_log</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="n">deep</span><span class="p">])</span>
+        <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">):</span>
+            <span class="n">got</span> <span class="o">=</span> <span class="n">_call</span><span class="p">(</span><span class="n">log_tail</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+        <span class="n">bad</span> <span class="o">=</span> <span class="o">~</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">got</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">1e-8</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">target</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">bad</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">x</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="n">bad</span><span class="p">]]</span> <span class="o">=</span> <span class="n">_solve_log_tail</span><span class="p">(</span>
+                <span class="n">log_tail</span><span class="p">,</span> <span class="n">target</span><span class="p">[</span><span class="n">bad</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">direction</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+<div class="viewcode-block" id="Distribution.x_to_u">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.x_to_u">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">x_to_u</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Transform from physical space to standard normal space.</span>
+
+<span class="sd">        Applies the marginal Nataf mapping ``u = Phi^{-1}(F(x))``, as</span>
+<span class="sd">        ``u = -Phi^{-1}(Fbar(x))`` above ``u = 3``, with log probabilities</span>
+<span class="sd">        where these underflow.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : float or array_like</span>
+<span class="sd">            Value(s) in physical (x) space.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or ndarray</span>
+<span class="sd">            Corresponding value(s) in standard normal (u) space.</span>
+<span class="sd">        """</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">_call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cdf</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">ndtri</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+        <span class="n">deep</span> <span class="o">=</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="n">_TINY</span>
+        <span class="k">if</span> <span class="n">deep</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">u</span><span class="p">[</span><span class="n">deep</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">ndtri_exp</span><span class="p">(</span><span class="n">_call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logcdf</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">deep</span><span class="p">]))</span>
+        <span class="n">upper</span> <span class="o">=</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="n">_P_SWITCH</span>
+        <span class="k">if</span> <span class="n">upper</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">_call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sf</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">upper</span><span class="p">])</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="o">-</span><span class="n">sp</span><span class="o">.</span><span class="n">ndtri</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+            <span class="n">tail</span> <span class="o">=</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="n">_TINY</span>
+            <span class="k">if</span> <span class="n">tail</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="n">v</span><span class="p">[</span><span class="n">tail</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">sp</span><span class="o">.</span><span class="n">ndtri_exp</span><span class="p">(</span><span class="n">_call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logsf</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">upper</span><span class="p">][</span><span class="n">tail</span><span class="p">]))</span>
+            <span class="n">u</span><span class="p">[</span><span class="n">upper</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="k">return</span> <span class="n">u</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)[()]</span></div>
+
+
+<div class="viewcode-block" id="Distribution.jacobian">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.jacobian">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Diagonal Jacobian of the marginal x-to-u transformation.</span>
+
+<span class="sd">        Returns a diagonal matrix ``J`` where the diagonal entry is</span>
+<span class="sd">        ``f_X(x) / phi(u)`` (Lemaire, eq. 4.9).  This is assembled</span>
+<span class="sd">        into the full Jacobian by the :class:`Transformation` class.</span>
+<span class="sd">        The ratio is formed from log densities where either density</span>
+<span class="sd">        underflows.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        u : float or array_like</span>
+<span class="sd">            Value(s) in standard normal space.</span>
+<span class="sd">        x : float or array_like</span>
+<span class="sd">            Corresponding value(s) in physical space.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray</span>
+<span class="sd">            Diagonal Jacobian matrix of shape ``(n, n)`` where *n* is</span>
+<span class="sd">            the length of the input arrays.</span>
+<span class="sd">        """</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span>
+        <span class="n">pdf1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndmin</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">pdf2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">std_normal</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">):</span>
+            <span class="n">ratio</span> <span class="o">=</span> <span class="n">pdf1</span> <span class="o">/</span> <span class="n">pdf2</span>
+        <span class="n">tail</span> <span class="o">=</span> <span class="p">(</span><span class="n">pdf1</span> <span class="o">&lt;</span> <span class="mf">1e-300</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">pdf2</span> <span class="o">&lt;</span> <span class="mf">1e-300</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tail</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">log_phi</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">u</span><span class="p">[</span><span class="n">tail</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+            <span class="n">ratio</span><span class="p">[</span><span class="n">tail</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">tail</span><span class="p">])</span> <span class="o">-</span> <span class="n">log_phi</span><span class="p">)</span>
+        <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">ratio</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">J</span></div>
+
+
+<div class="viewcode-block" id="Distribution.sample">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.sample">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Draw random samples from the distribution.</span>
+
+<span class="sd">        Uses inverse-transform sampling via ``ppf``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n : int, optional</span>
+<span class="sd">            Number of samples (default 1000).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray</span>
+<span class="sd">            Array of shape ``(n,)`` with sampled values.</span>
+<span class="sd">        """</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">samples</span></div>
+
+
+<div class="viewcode-block" id="Distribution.plot">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Plot the probability density function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ax : matplotlib.axes.Axes, optional</span>
+<span class="sd">            Axes to plot on.  A new figure is created if ``None``.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional keyword arguments forwarded to</span>
+<span class="sd">            ``ax.plot()``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        matplotlib.axes.Axes</span>
+<span class="sd">            The axes containing the plot.</span>
+<span class="sd">        """</span>
+        <span class="c1"># auto-range</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">samples</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">samples</span><span class="p">),</span> <span class="mi">100</span><span class="p">)</span>
+
+        <span class="n">show</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">show</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">ax</span></div>
+
+
+    <span class="c1"># ------------------------------------------------------------------</span>
+    <span class="c1"># Sensitivity-analysis support</span>
+    <span class="c1"># ------------------------------------------------------------------</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sensitivity_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Distribution parameters for which sensitivities are computed.</span>
+
+<span class="sd">        Returns a dict ``{param_name: current_value}`` listing every</span>
+<span class="sd">        parameter with respect to which :math:`\partial\beta/\partial\theta`</span>
+<span class="sd">        should be evaluated.</span>
+
+<span class="sd">        The default implementation returns ``{"mean": μ, "std": σ}``,</span>
+<span class="sd">        which is appropriate for most distributions.  Distributions with</span>
+<span class="sd">        additional parameters of interest (e.g. the GEV shape parameter)</span>
+<span class="sd">        should override this property to include them.</span>
+
+<span class="sd">        Parameters listed in :attr:`_ctor_kwargs` but **not** in</span>
+<span class="sd">        ``sensitivity_params`` are held fixed during sensitivity analysis</span>
+<span class="sd">        — they are only used by :meth:`_make_copy` to faithfully</span>
+<span class="sd">        reconstruct the distribution.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            ``{param_name: current_value}``</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"mean"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="s2">"std"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_make_copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">overrides</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Construct a copy of this distribution with perturbed parameters.</span>
+
+<span class="sd">        Builds a fresh instance of the same type using the current</span>
+<span class="sd">        ``(mean, std)`` and any extra constructor keyword arguments</span>
+<span class="sd">        stored in :attr:`_ctor_kwargs`.  The *overrides* dict replaces</span>
+<span class="sd">        individual parameter values; its keys must match those of</span>
+<span class="sd">        :attr:`sensitivity_params` or :attr:`_ctor_kwargs`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        **overrides</span>
+<span class="sd">            Parameter values to override.  For example,</span>
+<span class="sd">            ``dist._make_copy(mean=dist.mean + h)`` perturbs the mean.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Distribution</span>
+<span class="sd">            A new distribution instance with the perturbed parameters.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the subclass constructor does not accept the provided</span>
+<span class="sd">            arguments (e.g. a composite distribution that cannot be</span>
+<span class="sd">            reconstructed from ``(name, mean, std)``).</span>
+<span class="sd">        """</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"mean"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="s2">"std"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">}</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ctor_kwargs</span><span class="p">)</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">overrides</span><span class="p">)</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"mean"</span><span class="p">)</span>
+        <span class="n">std</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"std"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_dmoments_dtheta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Derivatives of mean and standard deviation w.r.t. a parameter.</span>
+
+<span class="sd">        Returns ``(∂μ/∂θ, ∂σ/∂θ)`` for the parameter named *param*.</span>
+<span class="sd">        This is needed by :func:`~pystra._numerics.integration.drho0_dtheta` to</span>
+<span class="sd">        evaluate the general form of :math:`\partial h/\partial\theta`</span>
+<span class="sd">        (Eq. 24 of Bourinet 2017).</span>
+
+<span class="sd">        For ``"mean"`` and ``"std"`` the derivatives are exact:</span>
+<span class="sd">        ``(1, 0)`` and ``(0, 1)`` respectively.  For any other parameter</span>
+<span class="sd">        (e.g. a shape parameter) central finite differences via</span>
+<span class="sd">        :meth:`_make_copy` are used.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        param : str</span>
+<span class="sd">            Parameter name (a key of :attr:`sensitivity_params`).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple of float</span>
+<span class="sd">            ``(∂μ/∂θ, ∂σ/∂θ)``</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">param</span> <span class="o">==</span> <span class="s2">"mean"</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">param</span> <span class="o">==</span> <span class="s2">"std"</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sensitivity_params</span><span class="p">[</span><span class="n">param</span><span class="p">]</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="mf">1e-10</span><span class="p">)</span>
+        <span class="n">d_plus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_copy</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">param</span><span class="p">:</span> <span class="n">val</span> <span class="o">+</span> <span class="n">h</span><span class="p">})</span>
+        <span class="n">d_minus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_copy</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">param</span><span class="p">:</span> <span class="n">val</span> <span class="o">-</span> <span class="n">h</span><span class="p">})</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">d_plus</span><span class="o">.</span><span class="n">mean</span> <span class="o">-</span> <span class="n">d_minus</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">h</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">d_plus</span><span class="o">.</span><span class="n">std</span> <span class="o">-</span> <span class="n">d_minus</span><span class="o">.</span><span class="n">std</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">h</span><span class="p">),</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="Distribution.cdf_gradient">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.cdf_gradient">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cdf_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Derivatives of the CDF w.r.t. each sensitivity parameter.</span>
+
+<span class="sd">        Returns ``∂F_X(x)/∂θ`` for every parameter listed by</span>
+<span class="sd">        :attr:`sensitivity_params`.  The base-class implementation uses</span>
+<span class="sd">        central finite differences on the CDF via :meth:`_make_copy`.</span>
+
+<span class="sd">        Before computing derivatives, a reconstruction sanity check</span>
+<span class="sd">        verifies that :meth:`_make_copy` (with no overrides) reproduces</span>
+<span class="sd">        the current distribution.  This catches both constructor</span>
+<span class="sd">        failures (e.g. composite distributions) and silent mismatches</span>
+<span class="sd">        (e.g. distributions whose extra constructor arguments are not</span>
+<span class="sd">        stored in :attr:`_ctor_kwargs`).</span>
+
+<span class="sd">        Subclasses may override this with analytical expressions for</span>
+<span class="sd">        better accuracy and performance (see :class:`Normal` and</span>
+<span class="sd">        :class:`Lognormal`).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : float</span>
+<span class="sd">            Evaluation point in physical space.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            ``{param_name: ∂F/∂θ}`` for each parameter in</span>
+<span class="sd">            :attr:`sensitivity_params`.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the distribution cannot be faithfully reconstructed by</span>
+<span class="sd">            :meth:`_make_copy`.</span>
+<span class="sd">        """</span>
+        <span class="c1"># --- Validate that _make_copy reproduces this distribution ---</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">test</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_copy</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> does not support sensitivity "</span>
+                <span class="sa">f</span><span class="s2">"analysis.  Set _ctor_kwargs in the subclass __init__ "</span>
+                <span class="sa">f</span><span class="s2">"or override _make_copy()."</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+        <span class="c1"># Use a scalar test point for validation (x may be an array</span>
+        <span class="c1"># when called from drho0_dtheta with quadrature grids)</span>
+        <span class="n">x_test</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">)</span>
+        <span class="n">ref_cdf</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x_test</span><span class="p">))</span>
+        <span class="n">test_cdf</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x_test</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">test_cdf</span> <span class="o">-</span> <span class="n">ref_cdf</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e-6</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">ref_cdf</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">._make_copy() does not faithfully "</span>
+                <span class="sa">f</span><span class="s2">"reconstruct the distribution (CDF mismatch at "</span>
+                <span class="sa">f</span><span class="s2">"x=</span><span class="si">{</span><span class="n">x_test</span><span class="si">}</span><span class="s2">: original=</span><span class="si">{</span><span class="n">ref_cdf</span><span class="si">:</span><span class="s2">.8g</span><span class="si">}</span><span class="s2">, "</span>
+                <span class="sa">f</span><span class="s2">"copy=</span><span class="si">{</span><span class="n">test_cdf</span><span class="si">:</span><span class="s2">.8g</span><span class="si">}</span><span class="s2">).  "</span>
+                <span class="sa">f</span><span class="s2">"Set _ctor_kwargs correctly in the subclass __init__."</span>
+            <span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sensitivity_params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span> <span class="o">*</span> <span class="mf">1e-8</span><span class="p">)</span>
+            <span class="n">d_plus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_copy</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">param</span><span class="p">:</span> <span class="n">val</span> <span class="o">+</span> <span class="n">h</span><span class="p">})</span>
+            <span class="n">d_minus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_copy</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">param</span><span class="p">:</span> <span class="n">val</span> <span class="o">-</span> <span class="n">h</span><span class="p">})</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">d_plus</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">d_minus</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="Distribution.set_location">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.set_location">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Update the location parameter of the underlying SciPy distribution.</span>
+
+<span class="sd">        After updating, ``mean`` and ``std`` are recomputed.  This is</span>
+<span class="sd">        used by the sensitivity analysis to perturb distribution</span>
+<span class="sd">        parameters.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        loc : float, optional</span>
+<span class="sd">            New location parameter (default 0).</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        Exception</span>
+<span class="sd">            If the distribution does not wrap a SciPy frozen distribution.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="p">,</span> <span class="n">rv_frozen</span><span class="p">):</span>
+            <span class="n">pdict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">kwds</span>
+            <span class="n">pdict</span><span class="p">[</span><span class="s2">"loc"</span><span class="p">]</span> <span class="o">=</span> <span class="n">loc</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_moments</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ModelError</span><span class="p">(</span><span class="s2">"Distribution is not a SciPy object"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Distribution.set_scale">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.set_scale">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Update the scale parameter of the underlying SciPy distribution.</span>
+
+<span class="sd">        After updating, ``mean`` and ``std`` are recomputed.  This is</span>
+<span class="sd">        used by the sensitivity analysis to perturb distribution</span>
+<span class="sd">        parameters.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        scale : float, optional</span>
+<span class="sd">            New scale parameter (default 1).</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        Exception</span>
+<span class="sd">            If the distribution does not wrap a SciPy frozen distribution.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="p">,</span> <span class="n">rv_frozen</span><span class="p">):</span>
+            <span class="n">pdict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">kwds</span>
+            <span class="n">pdict</span><span class="p">[</span><span class="s2">"scale"</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_moments</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ModelError</span><span class="p">(</span><span class="s2">"Distribution is not a SciPy object"</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2021-2026, The PySTRA Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><nav aria-label="Project links" class="project-links">
+  <a href="../../../migrating.html">Migration</a>
+  <a href="../../../citing.html">Cite PySTRA</a>
+  <a href="../../../developer.html">Contributing</a>
+  <a href="https://pystra.github.io/pystra/">Stable 1.x documentation</a>
+</nav></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
