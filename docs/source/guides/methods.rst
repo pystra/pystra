@@ -49,6 +49,10 @@ A practical sequence
 4. When evaluations dominate cost, consider :doc:`/active_learning`, retaining
    an evaluation budget for independent validation.
 
+After checking the FORM solution, use :doc:`sensitivity` to quantify local
+changes in the reliability index with marginal parameters and, where supported,
+physical correlation coefficients.
+
 Discontinuous functions can be sampled directly when affordable, but ordinary
 FORM and SORM require local derivatives. Strong nonlinearity, multiple failure
 regions and transformation ordering require particular care. PySTRA normally
