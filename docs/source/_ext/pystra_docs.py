@@ -1,4 +1,4 @@
-"""Notebook downloads and meaningful figure alternatives for the PySTRA docs."""
+"""Notebook downloads, figure alternatives and the migration map for the PySTRA docs."""
 
 from io import BytesIO
 import json
@@ -138,10 +138,88 @@ def _notebook_anchors(app, doctree):
             known.add(alias)
 
 
+# Modules of the released 1.6.0 package (tag v1.6.0). Other baseline entries
+# came from feature branches merged for 2.0 and were never released in 1.x.
+_RELEASED_1X = frozenset(
+    """pystra pystra.analysis pystra.calibration pystra.cholesky_sensitivity
+    pystra.correlation pystra.distributions pystra.distributions.beta
+    pystra.distributions.chisquare pystra.distributions.distribution
+    pystra.distributions.gamma pystra.distributions.gev pystra.distributions.gumbel
+    pystra.distributions.lognormal pystra.distributions.maximum
+    pystra.distributions.normal pystra.distributions.parent
+    pystra.distributions.scipydist pystra.distributions.shiftedexponential
+    pystra.distributions.shiftedlognormal pystra.distributions.shiftedrayleigh
+    pystra.distributions.typeiiismallestvalue pystra.distributions.typeiilargestvalue
+    pystra.distributions.typeilargestvalue pystra.distributions.typeismallestvalue
+    pystra.distributions.uniform pystra.distributions.weibull
+    pystra.distributions.zeroinflated pystra.form pystra.integration pystra.loadcomb
+    pystra.ls pystra.mc pystra.model pystra.quadrature pystra.sensitivity pystra.sorm
+    pystra.ss pystra.transformation""".split()
+)
+_CHANGE = {
+    "renamed": "renamed",
+    "replaced": "replaced",
+    "removed": "removed",
+    "changed_contract": "changed",
+}
+
+
+def _rst_text(text):
+    """Escape inline markup in the manifest's free-text notes."""
+    text = text.replace("\\", "\\\\")
+    for char in "*|`":
+        text = text.replace(char, "\\" + char)
+    return re.sub(r"(\w)_(?=\W|$)", r"\1\\_", text)
+
+
+def _write_migration_map(app):
+    """Generate the complete symbol map from the migration manifest."""
+    source = Path(app.srcdir)
+    manifest = json.loads(
+        (source.parent / "migration" / "api-migration.json").read_text()
+    )
+    modules = set(_RELEASED_1X)
+    for entry in manifest["definitions"]:
+        parts = entry["old"].split(".")
+        for index, part in enumerate(parts[1:], start=1):
+            if part[:1].isupper():
+                modules.add(".".join(parts[:index]))
+                break
+    groups = {}
+    for entry in manifest["definitions"]:
+        parts = entry["old"].split(".")
+        if entry["status"] == "unchanged" or any(p.startswith("_") for p in parts):
+            continue
+        prefixes = [".".join(parts[:i]) for i in range(1, len(parts))]
+        module = max((p for p in prefixes if p in modules), key=len, default="pystra")
+        groups.setdefault(module, []).append(entry)
+    lines = []
+    for module in sorted(groups):
+        title = f"``{module}``" + ("" if module in _RELEASED_1X else " (not in 1.6.0)")
+        lines += [title, "-" * len(title), "", ".. list-table::"]
+        lines += ["   :header-rows: 1", "   :widths: 28 32 10 30", ""]
+        lines += ["   * - 1.x name", "     - 2.0", "     - Change", "     - Notes"]
+        for entry in sorted(groups[module], key=lambda item: item["old"]):
+            targets = [entry["current"]] if entry["current"] else []
+            targets += entry.get("replacements", [])
+            new = ", ".join(f"``{target}``" for target in targets) or "(none)"
+            notes = _rst_text(entry.get("notes", ""))
+            lines += [f"   * - ``{entry['old'][len(module) + 1:]}``", f"     - {new}"]
+            lines += [f"     - {_CHANGE[entry['status']]}"]
+            lines += [f"     - {notes}" if notes else "     -"]
+        lines.append("")
+    target = source / "_generated" / "migration-map.inc"
+    target.parent.mkdir(exist_ok=True)
+    text = "\n".join(lines) + "\n"
+    if not target.exists() or target.read_text() != text:
+        target.write_text(text)
+
+
 def setup(app):
     # install.md is a legacy RST source; MyST is used explicitly for the
     # contributor include, without changing the installation page parser.
     app.add_source_suffix(".md", "restructuredtext", override=True)
+    app.connect("builder-inited", _write_migration_map)
     app.connect("env-before-read-docs", _prepare_notebooks)
     app.connect("doctree-read", _figure_alternatives)
     app.connect("doctree-read", _notebook_anchors)

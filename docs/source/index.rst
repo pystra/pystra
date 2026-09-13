@@ -9,9 +9,10 @@ Define your engineering model in Python, quantify its reliability, and inspect
 the assumptions and diagnostics behind the result.
 
 These pages describe **PySTRA** |release|, the **2.0 development API**.
-Follow :doc:`install` to install this version. Existing users can consult
-:doc:`migrating`; the `stable documentation <https://pystra.github.io/pystra/>`_
-uses the released 1.x API.
+Follow :doc:`install` to install this version. :doc:`whatsnew` summarises the
+release, and existing users can consult :doc:`migrating`; the
+`stable documentation <https://pystra.github.io/pystra/>`_ uses the released 1.x
+API.
 
 .. container:: workflow-grid
 
@@ -55,6 +56,7 @@ Find the right material
 -----------------------
 
 * :doc:`get_started` takes you from installation to a checked first result.
+* :doc:`whatsnew` summarises what 2.0 adds and changes.
 * :doc:`user_guide` helps you choose methods, build models and interpret results.
 * :doc:`tutorial` contains worked tutorials and published benchmark problems.
 * :doc:`api` describes public objects, parameters, results and extension details.
@@ -69,6 +71,7 @@ see :doc:`guides/troubleshooting`. To reproduce a paper example, browse the
    :maxdepth: 2
 
    get_started
+   whatsnew
    user_guide
    tutorial
    api

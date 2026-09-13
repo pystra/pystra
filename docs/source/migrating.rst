@@ -1,17 +1,60 @@
 Migrating from 1.x to 2.0
 =========================
 
-This page describes the API currently implemented on the ``v2.0`` development
-branch (|release|). Naming, module organization, the calibration replacement,
-result records, frozen options and native distribution parameters are
-implemented. Remaining engineering-workflow and release work is described in the
-:download:`migration plan <../v2.0-migration-plan.md>`.
+This guide takes a 1.x script to the 2.0 API. The checklist below covers the
+edits most scripts need, the sections after it give the details, and the
+:doc:`migration-map` lists every renamed, replaced and removed name. For what
+2.0 adds, see :doc:`whatsnew`.
+
+PySTRA 2.0 is in pre-release (|release|). The remaining engineering-workflow and
+release work is described in the
+:download:`migration plan <../v2.0-migration-plan.md>`, and details on this page
+can still change before the release candidate.
 
 The outstanding feature PRs remain unmerged in 1.x and are reserved for 2.0.
 Their functionality is new in this release, including the Strong Maximum
 Test, copula/joint-distribution support, DDO/LQI refinements, and the SORM
 prerequisite fix. Active learning is also new in 2.0. Earlier feature-branch
 interfaces are development history, not released 1.x APIs to migrate from.
+
+Upgrading a 1.x script
+----------------------
+
+Most 1.x scripts need the same few edits. Work through them in order; each
+links to its details below.
+
+#. **Imports.** ``import pystra as ra`` still works. Update imports of moved
+   modules (:ref:`moved-modules`) and renamed classes, such as ``Form`` to
+   ``FORM`` (:ref:`renamed-classes`). An old name raises an error that names
+   its replacement (:ref:`signposts`).
+#. **Method names.** Methods use snake_case: ``addVariable`` becomes
+   ``add_variable`` and ``setCorrelation`` becomes ``set_correlation``.
+#. **Distributions.** ``stdv`` becomes ``std`` and ``startpoint`` becomes
+   ``start_point``. ``input_type=True`` gives way to native keywords, as in
+   ``Gumbel("Q", loc=8.9, scale=1.56)`` (`Models and distributions`_).
+#. **Options.** ``AnalysisOptions`` becomes ``FORMOptions``, ``SORMOptions`` or
+   ``SimulationOptions``, passed as ``options=`` (`Options and constructors`_).
+#. **Results.** ``run()`` returns a result record: ``form.getBeta()`` becomes
+   ``result.beta`` and ``form.showResults()`` becomes ``print(result.summary())``
+   (`Result records`_ and `Getters and printing`_).
+#. **Randomness.** Pass ``rng=seed`` to a simulation instead of seeding NumPy's
+   global random state (`Randomness`_).
+#. **Correlation.** Add every random variable before calling
+   ``set_correlation``; the matrix is now validated (`Correlation matrices`_).
+#. **Failures.** A nonconverged analysis raises ``AnalysisError``; pass
+   ``on_failure="return"`` to keep its record instead (:ref:`failure-handling`).
+#. **Calibration.** Explicit operations replace the ``Calibration`` class
+   (`Code calibration using normalized reliability`_).
+
+Results can differ from 1.x where 2.0 corrects a numerical error, and seeded
+simulations differ within sampling error; the :doc:`changelog` lists the
+corrections. There is not yet an automatic converter for user scripts; see
+`Migration tools`_.
+
+.. toctree::
+   :hidden:
+
+   migration-map
 
 Naming conventions in 2.0
 -------------------------
@@ -847,6 +890,30 @@ are retained. ``design_with_factors`` returns named design values. Selecting
 their maximum is explicit in the example, followed by verification of every
 case; extrema alone do not establish that targets are met.
 
+Saved objects and extensions
+----------------------------
+
+Objects pickled with 1.x, such as models, distributions and analyses, cannot be
+loaded in 2.0: their classes, modules and internal state have changed. Rebuild
+them from their definitions, and keep results as plain data, for example with
+``result.to_dataframe()``.
+
+A custom subclass of ``Distribution`` keeps working if it passes a SciPy frozen
+distribution as ``dist_obj`` or overrides ``u_to_x``, ``x_to_u`` and
+``jacobian``; rename ``stdv`` to ``std`` and ``startpoint`` to ``start_point``.
+A subclass that overrides ``cdf``, ``ppf`` or ``pdf`` should also provide
+``sf``, ``isf`` and ``logpdf`` to keep small probabilities accurate; see
+:doc:`guides/high_reliability`. Sensitivity analysis rebuilds a distribution
+from its constructor arguments, so store any beyond the mean and standard
+deviation in ``_ctor_kwargs``.
+
+A limit-state function receives one keyword argument for each variable and
+constant, so its argument names must match the model's names; otherwise
+``ModelError`` is raised.
+
+The public contracts for batched evaluators and for extending distributions are
+still being settled and can change before the beta.
+
 Migration records
 -----------------
 
@@ -891,9 +958,15 @@ estimated reliability index when no failures are sampled, consistent with its
 zero probability estimate. This is not evidence of zero true failure
 probability; finite-sample uncertainty reporting remains further work.
 
-Repository migration tools
---------------------------
+Migration tools
+---------------
 
+There is not yet an automatic converter for user scripts. A conservative
+converter for unambiguous imports, calls and keywords, with dry-run diffs, is
+planned before the beta. Until then, use the checklist at the top of this page,
+the :doc:`migration-map` and the error messages of the signposts.
+
+The scripts below maintain this repository.
 ``scripts/migrate_names.py`` applies the reviewed map to tracked repository
 code and notebook source, with a dry run by default. It preserves notebook
 outputs and ignores untracked files. It is a repository maintenance tool,
