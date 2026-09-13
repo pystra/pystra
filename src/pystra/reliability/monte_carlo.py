@@ -185,10 +185,18 @@ class MonteCarlo(AnalysisObject):
         )
 
     def _compute_bins(self, samples):
-        """Return an optimal amount of bins for a histogram
+        """Choose the configured histogram count or the sample-size rule.
 
-        :Returns:
-          - bins (int): Returns amount on bins
+        Parameters
+        ----------
+        samples : int
+            Number of sampled responses.
+
+        Returns
+        -------
+        int or numpy.floating
+            Configured count, or ceil(4 * samples**0.25). The histogram caller
+            converts this integer-valued result to int.
         """
 
         if self.options.bins is not None:
@@ -199,36 +207,35 @@ class MonteCarlo(AnalysisObject):
 
 
 class CrudeMonteCarlo(MonteCarlo):
-    """Crude Monte Carlo simulation (CMC)
+    r"""Crude Monte Carlo simulation (CMC).
 
-    The Crude Monte Carlo simulation (CMC) is the most simple form and
-    corresponds to a direct application of Equation (24). A large number
-    :math:`n` of samples are simulated for the set of random variables
-    :math:`{\\bf X}`. All samples that lead to a failure are counted :math:`n_f`
-    and after all simulations the probability of failure :math:`p_f` may be
-    estimated by [Faber2009]_
+    With the default sampling density, failure probability is the fraction
+    of simulated points classified as failures [Faber2009]_. For n points
+    and n_f failures,
 
     .. math::
 
-               \\tilde{p}_f = \\frac{n_f}{n}
+        \tilde{p}_f = \frac{n_f}{n}.
 
-    Theoretically, an infinite number of simulations will provide an exact
-    probability of failure. However, time and the power of computers are
-    limited; therefore, a suitable amount of simulations :math:`n` are required
-    to achieve an acceptable level of accuracy.
+    Finite sampling introduces uncertainty; use the returned sampling
+    coefficient of variation to assess it. A shifted or scaled sampling
+    density uses density-ratio weights instead of unweighted counts.
 
     Parameters
     ----------
     model : StochasticModel
+        Named physical variables and their joint probability model.
     limit_state : LimitState
+        Physical response evaluated at each sample point.
     options : SimulationOptions, optional
+        Sampling, convergence and transformation settings.
+    point : array_like, optional
+        Center of the sampling density in standard coordinates; the origin
+        by default.
     rng : int, numpy.random.Generator or None, optional
         Random source; NumPy's global generator is not used. A seed recreates
         the same stream on every run, a generator advances its own state, and
         None draws fresh entropy.
-    point : ndarray, optional
-        Center of the sampling density in standard coordinates; the origin
-        by default.
     """
 
     def __init__(
