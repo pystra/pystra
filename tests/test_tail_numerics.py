@@ -248,3 +248,26 @@ def test_scalar_only_subclass_methods_still_work():
     model.add_variable(distribution)
     result = ra.FORM(model, ra.LimitState(lambda R, S: R - S)).run()
     assert result.converged
+
+
+def test_zero_inflated_lower_tail_stays_in_the_atom():
+    distribution = ra.ZeroInflated("Z", ra.Lognormal("X", 10, 3), p=0.3)
+    for u in (-6.0, -10.0, -30.0):
+        assert distribution.u_to_x(u) == 0.0
+
+
+@pytest.mark.parametrize(
+    "distribution",
+    [ra.Lognormal("L", 10, 3), ra.ShiftedLognormal("S", 10, 3, 2.0)],
+)
+def test_lognormal_functions_propagate_nan(distribution):
+    for function in (
+        distribution.cdf,
+        distribution.sf,
+        distribution.pdf,
+        distribution.logpdf,
+        distribution.x_to_u,
+    ):
+        assert np.isnan(function(np.nan))
+    lower = distribution._shift
+    assert distribution.cdf(lower) == 0.0 and distribution.pdf(lower - 1) == 0.0

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
+from scipy import special as sp
 from .distribution import Distribution, _piecewise
 from ..errors import ModelError
 
@@ -154,6 +155,15 @@ class ZeroInflated(Distribution):
             lambda v: self.ppf(-np.expm1(v)),
             lambda v: self.dist._isf_log(v - np.log(self.q)),
         )
+
+    def _tail_quantiles(self, x, prob, z, quantile_log, log_tail, direction):
+        # The zero atom makes the CDF non-invertible, so quantiles cannot be
+        # checked against it. The log quantiles already send both tails
+        # through the parent and keep points in the atom at exactly zero.
+        index = np.flatnonzero(prob < 1e-8)
+        if index.size:
+            x[index] = quantile_log(sp.log_ndtr(z[index]))
+        return x
 
     def _get_stats(self):
         """

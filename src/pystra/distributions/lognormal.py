@@ -72,7 +72,8 @@ class Lognormal(Distribution):
         """Standardized log value, ``-inf`` at or below the lower bound."""
         y = np.asarray(x, dtype=float) - self._shift
         with np.errstate(divide="ignore", invalid="ignore"):
-            return np.where(y > 0, (np.log(y) - self.lamb) / self.zeta, -np.inf)[()]
+            z = (np.log(y) - self.lamb) / self.zeta
+        return np.where(y <= 0, -np.inf, z)[()]
 
     def pdf(self, x):
         """
@@ -82,7 +83,7 @@ class Lognormal(Distribution):
         z = self._z(x)
         with np.errstate(divide="ignore", invalid="ignore"):
             p = np.exp(-0.5 * z**2) / (np.sqrt(2 * np.pi) * self.zeta * y)
-        return np.where(y > 0, p, 0.0)[()]
+        return np.where(y <= 0, 0.0, p)[()]
 
     def logpdf(self, x):
         """Log density."""
@@ -90,7 +91,7 @@ class Lognormal(Distribution):
         z = self._z(x)
         with np.errstate(divide="ignore", invalid="ignore"):
             lp = -0.5 * z**2 - np.log(self.zeta * y) - 0.5 * np.log(2 * np.pi)
-        return np.where(y > 0, lp, -np.inf)[()]
+        return np.where(y <= 0, -np.inf, lp)[()]
 
     def cdf(self, x):
         """
