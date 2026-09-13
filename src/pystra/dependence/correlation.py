@@ -1,5 +1,3 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
 """Correlation matrix handling and Nataf correlation modification.
 
 The Nataf model transforms correlated non-normal random variables into

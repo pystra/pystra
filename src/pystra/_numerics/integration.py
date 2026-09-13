@@ -1,5 +1,3 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
 """Numerical integration for the Nataf modified correlation matrix.
 
 The Nataf model requires solving for a modified correlation coefficient

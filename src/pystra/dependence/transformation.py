@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+"""Normal Nataf coordinate transforms and directed Jacobians."""
 
 from collections.abc import Sequence
 

@@ -1,5 +1,3 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
 """Gauss-Legendre quadrature rule for numerical integration.
 
 This module provides the quadrature points and weights used by the
