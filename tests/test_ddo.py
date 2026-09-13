@@ -773,3 +773,18 @@ def test_design_study_preserves_form_failure_record_and_read_only_design_point()
     assert failed.cases[0].reliability.method == "FORM"
     assert failed.cases[0].reliability.design_point_x is None
     assert first.cases[0].reliability.beta == pytest.approx(3)
+
+
+def test_design_study_identifies_the_solver_for_a_resultless_failure():
+    from functools import partial
+
+    class ExternalSolver:
+        def run(self, value):
+            raise ra.AnalysisError("external mesh failed")
+
+    for callback in (ExternalSolver().run, partial(ExternalSolver().run)):
+        result = ra.decision.DesignStudy("area", [1], callback).run()
+        failure = result.cases[0].reliability
+        assert failure.method == "ExternalSolver"
+        assert failure.message == "external mesh failed"
+        assert not failure.converged

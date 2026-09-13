@@ -117,6 +117,41 @@ def test_assessment_retains_form_and_external_failures_without_target_margins():
     assert result.to_frame().target_margin.isna().all()
 
 
+def test_resultless_failure_labels_identify_wrapped_and_returned_solvers():
+    class ExternalSolver:
+        def __init__(self, model, limit_state, *, options=None):
+            pass
+
+        def run(self):
+            raise ra.AnalysisError("external mesh failed")
+
+    callbacks = (
+        partial(ExternalSolver),
+        lambda model, limit_state, options=None: ExternalSolver(model, limit_state),
+    )
+    for callback in callbacks:
+        result = assess_cases([normal_case("bridge")], evaluator=callback)
+        row = result.to_frame().iloc[0]
+        assert row.case_name == "bridge"
+        assert row.method == "ExternalSolver"
+        assert row.message == "external mesh failed"
+        assert not row.converged
+
+
+def test_anonymous_resultless_failure_has_a_readable_label_and_original_message():
+    def fail():
+        raise ra.AnalysisError("external mesh failed")
+
+    anonymous = lambda model, limit_state, options=None: fail()
+    for callback in (anonymous, partial(anonymous)):
+        result = assess_cases([normal_case("bridge")], evaluator=callback)
+        row = result.to_frame().iloc[0]
+        assert row.case_name == "bridge"
+        assert row.method == "external evaluator (AnalysisError)"
+        assert row.message == "external mesh failed"
+        assert not row.converged
+
+
 def test_sampling_method_constructor_is_accepted_and_retains_precision_status():
     case = normal_case(resistance=6)
     # One fixed block avoids a random stopping-time comparison; check against

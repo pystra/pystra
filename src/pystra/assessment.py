@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from copy import deepcopy
 from dataclasses import dataclass
+from functools import partial
 from typing import Any, Protocol
 
 import numpy as np
@@ -136,6 +137,21 @@ def _snapshot_result(result: Any) -> Any:
     return deepcopy(result)
 
 
+def _evaluation_method(evaluator: Any, error: AnalysisError) -> str:
+    """Identify the known solver or callback behind a resultless failure."""
+    if evaluator is None:
+        return "FORM"
+    while isinstance(evaluator, partial):
+        evaluator = evaluator.func
+    owner = getattr(evaluator, "__self__", None)
+    if owner is not None:
+        evaluator = owner
+    name = getattr(evaluator, "__name__", type(evaluator).__name__)
+    if name == "<lambda>":
+        return f"external evaluator ({type(error).__name__})"
+    return name
+
+
 def _evaluate(
     model: StochasticModel,
     limit_state: LimitState,
@@ -169,10 +185,8 @@ def _evaluate(
         result = error.result
         if result is None:
             result = ReliabilityEstimate(
-                method=(
-                    getattr(evaluator, "__name__", type(evaluator).__name__)
-                    if evaluator
-                    else "FORM"
+                method=_evaluation_method(
+                    analysis if analysis is not None else evaluator, error
                 ),
                 status="not_converged",
                 message=str(error),

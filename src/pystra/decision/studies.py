@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import Any, Callable, Iterable, Mapping, Sequence
 
 import pandas as pd
-from ..assessment import ReliabilityEstimate, _snapshot_result
+from ..assessment import ReliabilityEstimate, _evaluation_method, _snapshot_result
 from ..errors import AnalysisError
 from ..reporting import reliability_row
 
@@ -124,7 +124,9 @@ class DesignStudy:
                 result = error.result
                 if result is None:
                     result = ReliabilityEstimate(
-                        method="callback", status="not_converged", message=str(error)
+                        method=_evaluation_method(self.analysis, error),
+                        status="not_converged",
+                        message=str(error),
                     )
                 elif _coerce_analysis_result(result)["converged"]:
                     raise ValueError(
