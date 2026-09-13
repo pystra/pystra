@@ -270,13 +270,35 @@ class CodeCalibration:
         evaluator: Optional[ReliabilityEvaluator] = None,
         target_beta: Optional[float] = None,
     ) -> CodeCalibrationResult:
-        """Return an isolated study result, retaining every failed case.
+        """Evaluate candidate factors, retaining every failed grid point.
 
-        ``evaluator`` accepts a method constructor or reliability callback,
-        with evaluator-specific ``options``; the default is FORM. AnalysisError
-        and nonconvergence are recorded with diagnostics. Invalid specifications
-        and programming errors still raise. ``beta`` and target margins are
-        normal-equivalent, including for t space. A design point is not required.
+        Parameters
+        ----------
+        model : NormalizedReliabilityModel
+            Probability inputs, nominal values and dependence, copied per run.
+        factors : CodeFactors
+            Candidate dimensionless factors in the normalized design equation.
+        options : object, optional
+            Evaluator settings; FORMOptions for the default method. DDM is not
+            supported by the built-in normalized limit-state equation.
+        evaluator : ReliabilityEvaluator, optional
+            Method constructor or result callback; defaults to FORM. A design
+            point is not required. See pystra.assessment.evaluate_reliability.
+        target_beta : float, optional
+            Finite normal-equivalent index for the same event/reference period.
+
+        Returns
+        -------
+        CodeCalibrationResult
+            Input snapshot and every design/result, ordered by dead-load ratio
+            then live-load ratio. Failed table estimates and target margins are
+            unavailable; original method records retain their diagnostics.
+
+        Notes
+        -----
+        AnalysisError and nonconvergence are recorded. Invalid specifications
+        and programming errors still raise. Beta and target margins are
+        normal-equivalent, including for Student-t standard space.
         """
         if not isinstance(model, NormalizedReliabilityModel) or not isinstance(
             factors, CodeFactors

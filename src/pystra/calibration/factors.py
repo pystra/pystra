@@ -282,17 +282,44 @@ def solve_designs(
     options: object = None,
     evaluator: Optional[ReliabilityEvaluator] = None,
 ) -> TargetDesigns:
-    """Solve each case to a target and return status/residuals for every case.
+    """Solve each case to a target and retain status and residuals.
 
-    ``root`` uses fsolve with full diagnostics, or bracketed Brent solving when
-    a bracket is supplied. ``alpha`` preserves the normal-space projection
-    method. Both require converged inner reliability results and a final beta residual
-    within ``tolerance``. ``max_evaluations`` limits reliability runs per case,
-    including the final verification. No unsuccessful solve is silently accepted.
-    ``evaluator`` defaults to FORM; a method constructor or callback may be
-    supplied for root solving. Alpha projection additionally requires a named
-    design point in normal space and an analysis exposing its matching
-    ``transform.u_to_x`` and ``model``. Estimate-only callbacks are rejected.
+    Parameters
+    ----------
+    problem : FactorCalibrationProblem
+        Explicit cases, roles, nominal values and design parameter; copied.
+    target_beta : float
+        Finite normal-equivalent target for the same event/reference period.
+    method : {"root", "alpha"}, default "root"
+        Root solving or normal-space design-point projection.
+    initial_value : float, optional
+        Starting design parameter; defaults to the problem's common constant.
+    tolerance : float, default 0.0001
+        Positive root-solver tolerance and maximum accepted beta residual.
+    max_evaluations : int, default 100
+        Reliability evaluation budget per case, including final verification.
+    bracket : tuple of float, optional
+        Increasing two-endpoint bracket for Brent root solving. Without it,
+        the root method uses fsolve with full diagnostics.
+    options : object, optional
+        Evaluator-specific settings; FORMOptions for the default FORM.
+    evaluator : ReliabilityEvaluator, optional
+        Method constructor or result callback, default FORM. Root solving
+        requires normal-equivalent estimates. Alpha projection additionally
+        requires a named normal-space design point/direction and an analysis
+        exposing its matching transform.u_to_x and model.
+
+    Returns
+    -------
+    TargetDesigns
+        Every case, its design parameter, reliability record, target residual
+        and solve status. Inner convergence, outer success and the final
+        residual tolerance are all required. No unsuccessful solve is accepted.
+
+    Raises
+    ------
+    ValueError
+        Invalid solve settings or missing design-point/projection capabilities.
     """
     if not isinstance(problem, FactorCalibrationProblem):
         raise TypeError("Expected FactorCalibrationProblem")
@@ -715,12 +742,28 @@ def verify_designs(
     options: object = None,
     evaluator: Optional[ReliabilityEvaluator] = None,
 ) -> Tuple[DesignVerification, ...]:
-    """Check a common design scale or an explicitly named set of case designs.
+    """Check a common design scale or an explicitly named set of designs.
 
-    To check the governing common design, supply ``max(designs.values)``
-    explicitly. Every case is returned, including nonconverged analyses.
-    ``evaluator`` accepts a method constructor or reliability callback, as in
-    :func:`~pystra.assessment.evaluate_reliability`; the default is FORM.
+    Parameters
+    ----------
+    problem : FactorCalibrationProblem
+        Cases and the common resistance-scale design parameter.
+    design_values : float, mapping or DesignValues
+        Common scale or exactly one scale per case. To verify the governing
+        common design, supply max(designs.values) explicitly.
+    target_beta : float, optional
+        Finite normal-equivalent target for the same event/reference period.
+    options : object, optional
+        Evaluator-specific settings; FORMOptions for the default FORM.
+    evaluator : ReliabilityEvaluator, optional
+        Method constructor or result callback as in
+        pystra.assessment.evaluate_reliability; defaults to FORM.
+
+    Returns
+    -------
+    tuple of DesignVerification
+        Achieved reliability and optional beta-minus-target margin for every
+        supplied case, including failed analyses. Failed cases have no margin.
     """
     names = problem._cases.case_names
     if isinstance(design_values, DesignValues):

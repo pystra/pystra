@@ -36,3 +36,5 @@ Module details
 
    pystra.loads
    pystra.calibration
+   pystra.assessment
+   pystra.reporting
