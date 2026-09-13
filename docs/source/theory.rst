@@ -768,7 +768,8 @@ after a reliability analysis has estimated :math:`p_f` or :math:`\beta`.  It
 does not require a different FORM, SORM, or simulation model.  Instead, an
 economic objective is evaluated subject to a societal acceptability criterion.
 This follows the risk-based decision framing used in the JCSS risk assessment
-guidance [JCSS2008RiskAssessment]_ [KroonMaes2008RiskFramework]_.
+guidance [JCSS2008RiskAssessment]_ [KroonMaes2008RiskFramework]_ and the
+risk-informed decision principles codified in ISO 2394 [ISO2394]_.
 Pystra's initial DDO criterion uses the life quality index (LQI) to define a
 minimum acceptable life-safety level with societal willingness to pay (SWTP) as
 the life-safety valuation, following the LQI method and the JCSS
@@ -778,9 +779,10 @@ risk-assessment background documents and examples [Nathwani1997LQI]_
 
 For life-safety problems, the LQI literature expresses the societal willingness
 to pay (SWTP) to save one statistical life as a function of the gross domestic
-product available for risk reduction, the annual mortality rate, and a
-demographic life-time constant.  In the notation used by Rackwitz, this is of
-the form
+product available for risk reduction, the LQI work--leisure parameter, and a
+demographic life-time constant; mortality enters through the demographic
+constant rather than through that parameter.  In the notation used by Rackwitz,
+this is of the form
 
 .. math::
    :label: eq:lqi_swtp
@@ -788,8 +790,12 @@ the form
    \mathrm{SWTP}_x = \frac{g}{q} C_x
 
 where :math:`g` is the income or GDP measure available for risk reduction,
-:math:`q` is the mortality rate, and :math:`C_x` depends on the mortality
-reduction scheme.  This SWTP interpretation is developed in the LQI literature
+:math:`q` is the dimensionless LQI work--leisure (income-elasticity) parameter
+(typically about 0.1--0.2, e.g. 0.175 in Schubert and Faber, 2009; it is *not*
+an annual mortality rate), and :math:`C_x` depends on the mortality reduction
+scheme, discounting, and the predictive cohort life table
+[Rackwitz2004Discounting]_.  In :meth:`~pystra.ddo.SWTP.from_lqi` this parameter
+is named ``work_leisure_parameter``.  This SWTP interpretation is developed in the LQI literature
 [PandeyNathwani2004LQI]_ [PandeyNathwaniLind2006LQI]_ and used by
 Rackwitz for structural reliability optimization and acceptability
 [Rackwitz2002LQI]_.  The ``ra.SWTP.from_lqi`` helper
@@ -871,9 +877,70 @@ scale each Rackwitz anchor value from 1999 to 2024 [WorldBankWDI]_.  This is a
 practical update of the LQI income term :math:`g`; it is not a substitute for a
 full recalculation of mortality tables, discounting, and age averaging.
 
-Fischer, Barnardo, and Faber [Fischer2012LQI]_ provide a convenient way to
-turn an SWTP value and expected fatalities given failure into minimum target
-reliabilities.  For medium variability, define the safety cost ratio
+Target reliabilities may be taken from published tables or calculated from an
+explicit decision model.  Rackwitz [Rackwitz2000CodeMaking]_ formulates the
+code-making problem as an economic optimization in which the annual failure
+rate is the natural reliability measure.  Steenbergen, Rózsás, and
+Vrouwenvelder [Steenbergen2018Target]_ revisit the same framework and
+emphasize annual failure rates as a way to compare targets across design and
+remaining working lives.  In normalized form, the Rackwitz/Steenbergen model
+implemented by :class:`~pystra.ddo.RackwitzTargetModel` maximizes
+
+.. math::
+   :label: eq:rackwitz_target_objective
+
+   Z(p) = B - C(p)
+          - U\frac{\lambda}{\gamma} P_{f,\mathrm{SLS}}(p)
+          - (C(p)+A)\frac{\omega}{\gamma}
+          - (C(p)+H)\frac{\lambda}{\gamma} P_{f,\mathrm{ULS}}(p)
+
+where :math:`p = E[R]/E[S]`, :math:`C(p)=C_0+C_1p`, :math:`\gamma` is the
+discount or interest rate, :math:`\omega` is the obsolescence rate, and
+:math:`\lambda` is the load occurrence rate.  Pystra uses a closed-form
+lognormal resistance-demand model for :math:`P_f(p)` in this calibration.
+
+Every cost is normalized by the base construction cost :math:`C_0`
+(``base_cost``), so the model's cost inputs are *ratios* to :math:`C_0`, mapped
+to :class:`~pystra.ddo.RackwitzTargetModel` parameters as follows.
+
+.. list-table:: Normalized cost inputs (fractions of :math:`C_0`)
+   :header-rows: 1
+
+   * - Symbol
+     - Parameter
+     - Meaning
+   * - :math:`C_1/C_0`
+     - ``safety_cost_ratio``
+     - marginal safety cost per unit of :math:`p`
+   * - :math:`H/C_0`
+     - ``failure_cost_ratio``
+     - failure (ULS) consequence cost
+   * - :math:`U/C_0`
+     - ``serviceability_cost_ratio``
+     - serviceability (SLS) cost
+   * - :math:`A/C_0`
+     - ``demolition_cost_ratio``
+     - demolition / obsolescence cost
+   * - :math:`b/C_0`
+     - ``benefit_rate``
+     - constant annual benefit (independent of :math:`p`)
+
+The rates :math:`\gamma`, :math:`\omega`, and :math:`\lambda` are
+``interest_rate``, ``obsolescence_rate``, and ``load_occurrence_rate``.  Because
+the objective is normalized by :math:`C_0`, the resulting target table depends
+only on these relative cost and consequence ratios, not on a particular
+jurisdiction; the calibrated classes can be compared with the rounded target
+reliabilities tabulated in the JCSS Probabilistic Model Code [JCSSPMC2001]_ and
+ISO 2394 [ISO2394]_.  A table for other classes is recalculated by passing
+``safety_costs`` (the :math:`C_1/C_0` values) and ``failure_costs`` (the
+:math:`H/C_0` values) to
+:meth:`~pystra.ddo.RackwitzTargetModel.table`.
+
+Fischer, Barnardo, and Faber [Fischer2012LQI]_ provide a convenient LQI route
+for turning an SWTP value and expected fatalities given failure into minimum
+target reliabilities; the marginal life-saving cost underlying this route is
+examined in detail by Fischer et al. [Fischer2013MarginalCost]_.  For medium
+variability, define the safety cost ratio
 
 .. math::
    :label: eq:lqi_k1
@@ -908,13 +975,24 @@ corresponding target classes are approximated as:
 For normal studies, ``ra.LQI`` (:class:`~pystra.ddo.LQI`) builds this target
 directly from a country SWTP value or a user-supplied SWTP value, expected
 fatalities given failure or an explicit consequence model, and marginal safety
-cost.  The lower-level :func:`~pystra.ddo.lqi_k1` and
+cost.  ``ra.LQI.lookup_target`` returns the rounded source-table target for a
+given :math:`K_1`, while the lower-level :func:`~pystra.ddo.lqi_k1` and
 :func:`~pystra.ddo.lqi_target_reliability` helpers remain available in
-:mod:`pystra.ddo` for reproducing the source tables.  ``ra.DDO``
-(:class:`~pystra.ddo.DDO`) then evaluates the selected objective and criterion
-without changing the underlying stochastic model.  The feasibility-aware result
-is obtained with ``DDO.optimize()`` or ``DDO.best_feasible()``; the
-unconstrained economic optimum remains available separately.
+:mod:`pystra.ddo`.  When the underlying resistance-demand model should be
+calculated instead of looked up, ``ra.LQI.derive_target`` solves the marginal
+target problem
+
+.. math::
+   :label: eq:lqi_marginal_target
+
+   \min_p\; K_1p + P_f(p),
+   \qquad\mathrm{or}\qquad
+   K_1 = -\frac{dP_f(p)}{dp}.
+
+``ra.DDO`` (:class:`~pystra.ddo.DDO`) then evaluates the selected objective and
+criterion without changing the underlying stochastic model.  The best feasible
+alternative is obtained with ``DDO.optimize()``; the unconstrained economic
+optimum is available separately as ``DDO.economic_optimum()``.
 
 For direct JCSS-style optimization, the canonical life-safety risk-cost term
 is
@@ -935,7 +1013,8 @@ is
    -\mathrm{SWTP}\,N_F\,\frac{dh(p)}{dp}.
 
 ``ra.LQI`` exposes these operations as methods such as
-``risk_cost`` and ``marginal_acceptance``.  The underlying
+``risk_cost``, ``acceptability_margin_at``, and ``acceptability_boundary``.
+The underlying
 :func:`~pystra.ddo.jcss_lqi_risk_cost` and
 :func:`~pystra.ddo.jcss_lqi_acceptability` functions remain available for
 direct reproduction of the JCSS equations.
@@ -945,9 +1024,6 @@ criterion and reserves solver logic for future work.  This keeps LQI in its
 proper role as a minimum safety criterion rather than the optimizer itself.
 Life-cycle cost and utility models based on stochastic renewal processes are a
 natural source for future objective implementations [PandeyWangCheng2015Renewal]_.
-Future non-scalar applications, such as bridge portfolios or networks with
-correlated failures and nonlinear economic consequences, should add a richer
-decision-context abstraction before they add solvers.
 
 
 Simulation Methods
