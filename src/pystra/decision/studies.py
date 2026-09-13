@@ -2,68 +2,141 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 from dataclasses import dataclass
 from typing import Any, Callable, Iterable, Mapping, Optional, Sequence, Union
 
 import pandas as pd
-from scipy.stats import norm
+from ..assessment import ReliabilityEstimate, _snapshot_result
+from ..errors import AnalysisError
+from ..reporting import reliability_row
 
 from .risk import RiskResult, ScenarioRiskModel
 from .swtp import SWTP
 
-__all__ = ["DesignStudy", "RiskStudy"]
+__all__ = ["DesignStudy", "DesignResult", "DesignStudyResult", "RiskStudy"]
 
 
-def _coerce_analysis_result(result: Any) -> Mapping[str, float]:
-    if isinstance(result, Mapping):
-        pf = (
-            result.get("pf")
-            if "pf" in result
-            else result.get("failure_probability", result.get("failure"))
+def _coerce_analysis_result(result: Any) -> Mapping[str, Any]:
+    return reliability_row(result, probability_name="pf")
+
+
+@dataclass(frozen=True)
+class DesignResult:
+    """One design value and its original reliability result snapshot."""
+
+    value: Any
+    reliability: Any
+
+
+@dataclass(frozen=True)
+class DesignStudyResult:
+    """Every design alternative, including failed analyses and diagnostics."""
+
+    variable: str
+    cases: tuple[DesignResult, ...]
+
+    @property
+    def converged(self) -> bool:
+        """Whether every alternative met its evaluator's criteria."""
+        return all(
+            _coerce_analysis_result(case.reliability)["converged"]
+            for case in self.cases
         )
-        beta = result.get("beta", result.get("reliability_index"))
-    elif hasattr(result, "failure_probability") or hasattr(result, "beta"):
-        pf = getattr(result, "failure_probability", None)
-        beta = getattr(result, "beta", None)
-    elif isinstance(result, Sequence) and not isinstance(result, (str, bytes)):
-        pf = result[0] if len(result) > 0 else None
-        beta = result[1] if len(result) > 1 else None
-    else:
-        pf = result
-        beta = None
 
-    if pf is None and beta is None:
-        raise ValueError("analysis result must provide pf and/or beta")
-    if pf is None:
-        pf = float(norm.cdf(-float(beta)))
-    if beta is None:
-        beta = -float(norm.ppf(float(pf)))
-    return {"pf": float(pf), "beta": float(beta)}
+    def to_frame(self, *, include_analysis: bool = False) -> pd.DataFrame:
+        """Return a fresh table; failed estimates are NaN, with status retained."""
+        rows = []
+        for case in self.cases:
+            row = {
+                self.variable: deepcopy(case.value),
+                **_coerce_analysis_result(case.reliability),
+            }
+            if include_analysis:
+                row["analysis"] = _snapshot_result(case.reliability)
+            rows.append(row)
+        columns = [
+            self.variable,
+            "pf",
+            "beta",
+            "converged",
+            "status",
+            "message",
+            "method",
+        ]
+        if include_analysis:
+            columns.append("analysis")
+        return pd.DataFrame(rows, columns=columns)
 
 
 @dataclass
 class DesignStudy:
-    """Evaluate reliability results over a one-dimensional design range."""
+    """Evaluate a reliability callback over a one-dimensional design range.
+
+    Parameters
+    ----------
+    variable : str
+        Design-variable name for output tables; must not shadow result columns.
+    values : iterable
+        Design alternatives, copied to a tuple so repeated runs retain the grid.
+    analysis : callable
+        Called once for each value. May return a reliability record, an analytic
+        probability, a (pf, beta) pair, or a mapping with pf and/or beta. Records
+        retain status and diagnostics. AnalysisError becomes a failed alternative;
+        invalid specifications and programming errors still raise.
+    """
 
     variable: str
     values: Iterable[Any]
     analysis: Callable[[Any], Any]
 
-    def evaluate(self, include_analysis: bool = False) -> pd.DataFrame:
-        """Run the analysis callback for each design value."""
+    def __post_init__(self) -> None:
+        reserved = {
+            "pf",
+            "beta",
+            "converged",
+            "status",
+            "message",
+            "method",
+            "analysis",
+        }
+        if (
+            not isinstance(self.variable, str)
+            or not self.variable
+            or self.variable in reserved
+        ):
+            raise ValueError(
+                "variable must be a nonempty name distinct from result columns"
+            )
+        if not callable(self.analysis):
+            raise TypeError("analysis must be callable")
+        self.values = tuple(deepcopy(tuple(self.values)))
+        if not self.values:
+            raise ValueError("A design study needs at least one alternative")
 
-        rows = []
+    def run(self) -> DesignStudyResult:
+        """Return design/result snapshots for all alternatives, including failures."""
+        records = []
         for value in self.values:
-            result = self.analysis(value)
-            data = dict(_coerce_analysis_result(result))
-            data[self.variable] = value
-            if include_analysis:
-                data["analysis"] = result
-            rows.append(data)
-        columns = [self.variable, "pf", "beta"]
-        if include_analysis:
-            columns.append("analysis")
-        return pd.DataFrame(rows, columns=columns)
+            try:
+                result = self.analysis(deepcopy(value))
+            except AnalysisError as error:
+                result = error.result
+                if result is None:
+                    result = ReliabilityEstimate(
+                        method="callback", status="not_converged", message=str(error)
+                    )
+                elif _coerce_analysis_result(result)["converged"]:
+                    raise ValueError(
+                        "AnalysisError must carry a failed result"
+                    ) from error
+            _coerce_analysis_result(result)
+            records.append(DesignResult(deepcopy(value), _snapshot_result(result)))
+        return DesignStudyResult(self.variable, tuple(records))
+
+    def evaluate(self, include_analysis: bool = False) -> pd.DataFrame:
+        """Run the callback and return estimates with explicit status columns."""
+        return self.run().to_frame(include_analysis=include_analysis)
 
 
 @dataclass

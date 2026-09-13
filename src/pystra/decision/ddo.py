@@ -97,7 +97,7 @@ class DDO:
     study: Union[DesignStudy, "RiskStudy"]
     criterion: DDOCriterion
     objective: Optional[DDOObjective] = None
-    results: Optional[pd.DataFrame] = field(default=None, init=False, repr=False)
+    _results: Optional[pd.DataFrame] = field(default=None, init=False, repr=False)
 
     def __init__(
         self,
@@ -109,7 +109,7 @@ class DDO:
         self.study = study
         self.criterion = criterion
         self.objective = objective
-        self.results = None
+        self._results = None
 
     def _evaluate(self) -> pd.DataFrame:
         df = self.study.evaluate()
@@ -117,14 +117,26 @@ class DDO:
             df = self.objective.evaluate(df, design=self.study.variable)
         return self.criterion.evaluate(df)
 
-    def run(self) -> pd.DataFrame:
-        """Evaluate every alternative and cache the decision table."""
+    @property
+    def results(self) -> Optional[pd.DataFrame]:
+        """Independent table from the last completed run, or None."""
+        return None if self._results is None else self._results.copy(deep=True)
 
-        self.results = self._evaluate()
+    def run(self) -> pd.DataFrame:
+        """Evaluate every alternative; a failed rerun clears the previous table."""
+        self._results = None
+        self._results = self._evaluate()
         return self.results
 
     def _results_or_run(self) -> pd.DataFrame:
-        return self.results if self.results is not None else self.run()
+        return self.results if self._results is not None else self.run()
+
+    @staticmethod
+    def _successful(results: pd.DataFrame) -> pd.Series:
+        """Only successful reliability evaluations can support a decision."""
+        if "converged" in results:
+            return results["converged"].fillna(False).astype(bool)
+        return pd.Series(True, index=results.index)
 
     def _objective_column(self) -> str:
         if self.objective is not None:
@@ -138,13 +150,16 @@ class DDO:
         objective_column = self._objective_column()
         if objective_column not in df:
             raise ValueError("Objective results are not available")
-        return df.loc[df[objective_column].idxmax()]
+        candidates = df.loc[self._successful(df) & df[objective_column].notna()]
+        if candidates.empty:
+            raise ValueError("No successful alternatives have an objective value")
+        return candidates.loc[candidates[objective_column].idxmax()]
 
     def feasible_results(self) -> pd.DataFrame:
         """Return evaluated alternatives satisfying the criterion."""
 
         df = self._results_or_run()
-        return df.loc[self.criterion.feasible(df)]
+        return df.loc[self._successful(df) & self.criterion.feasible(df).fillna(False)]
 
     def optimize(self) -> pd.Series:
         """Return the feasible alternative with the largest objective value."""

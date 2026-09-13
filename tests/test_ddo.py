@@ -523,6 +523,10 @@ def test_ddo_runs_lqi_algorithm_and_selects_objective():
         "As",
         "pf",
         "beta",
+        "converged",
+        "status",
+        "message",
+        "method",
         "objective",
         "annualized_safety_cost",
         "expected_fatalities_given_failure",
@@ -560,7 +564,8 @@ def test_ddo_direct_construction_caches_results():
     assert ddo.results is None
 
     results = ddo.run()
-    assert ddo.results is results
+    assert ddo.results.equals(results)
+    assert ddo.results is not results
     assert ddo.results.loc[0, "target_pf"].item() == pytest.approx(1e-5)
     assert results.loc[0, "lqi_acceptable"].item() is False
 
@@ -621,3 +626,102 @@ def test_plot_summary_returns_axes_for_design_table():
     assert axes[-1].get_xlabel() == "cross section"
 
     plt.close(fig)
+
+
+class _AcceptEveryAlternative(ra.decision.DDOCriterion):
+    feasibility_column = "acceptable"
+
+    def evaluate(self, results):
+        return results.assign(acceptable=True)
+
+
+class _PreferLargerDesign(ra.decision.DDOObjective):
+    def evaluate(self, results, design):
+        return results.assign(objective=results[design])
+
+
+def test_decision_failures_stay_visible_even_when_the_criterion_would_accept_them():
+    from pystra.assessment import ReliabilityEstimate
+
+    def analyze(value):
+        if value == 3:
+            raise ra.AnalysisError("mesh failure")
+        return ReliabilityEstimate(
+            method="external",
+            beta=value,
+            status="completed" if value == 1 else "precision_not_met",
+            message="success" if value == 1 else "sampling budget",
+        )
+
+    study = ra.decision.DesignStudy("area", (v for v in (1, 2, 3)), analyze)
+    snapshot = study.run()
+    assert len(snapshot.cases) == 3
+    assert snapshot.cases[1].reliability.beta == 2
+    assert not snapshot.converged
+    assert snapshot.to_frame().beta.isna().tolist() == [False, True, True]
+    # Generator-backed studies repeat their full grid.
+    assert snapshot.to_frame().equals(study.evaluate())
+    ddo = ra.decision.DDO(
+        study=study,
+        criterion=_AcceptEveryAlternative(),
+        objective=_PreferLargerDesign(),
+    )
+    result = ddo.run()
+    assert len(result) == 3 and result.converged.tolist() == [True, False, False]
+    assert result.message.tolist() == ["success", "sampling budget", "mesh failure"]
+    assert ddo.economic_optimum().area == 1
+    assert ddo.optimize().area == 1
+    assert ddo.feasible_results().area.tolist() == [1]
+
+
+def test_failed_decision_rerun_clears_cached_success_and_returned_tables_are_copies():
+    failed = False
+
+    def analyze(value):
+        if failed:
+            raise TypeError("bad callback implementation")
+        return {"pf": 1e-3}
+
+    ddo = ra.decision.DDO(
+        study=ra.decision.DesignStudy("area", [1, 2], analyze),
+        criterion=_AcceptEveryAlternative(),
+        objective=_PreferLargerDesign(),
+    )
+    first = ddo.run()
+    first.loc[0, "objective"] = 999
+    assert ddo.economic_optimum().area == 2
+    failed = True
+    with pytest.raises(TypeError, match="bad callback"):
+        ddo.run()
+    assert ddo.results is None
+
+
+def test_no_failed_alternative_can_be_selected_when_every_analysis_fails():
+    def analyze(value):
+        raise ra.AnalysisError("not converged")
+
+    ddo = ra.decision.DDO(
+        study=ra.decision.DesignStudy("area", [1, 2], analyze),
+        criterion=_AcceptEveryAlternative(),
+        objective=_PreferLargerDesign(),
+    )
+    assert len(ddo.run()) == 2
+    with pytest.raises(ValueError, match="No successful alternatives"):
+        ddo.economic_optimum()
+    with pytest.raises(ValueError, match="No feasible alternatives"):
+        ddo.optimize()
+
+
+def test_design_study_preserves_form_failure_record_and_read_only_design_point():
+    model = ra.StochasticModel()
+    model.add_variable(ra.Normal("X", 0, 1))
+    analysis = ra.FORM(model, ra.LimitState(lambda X: 3 - X))
+    study = ra.decision.DesignStudy("size", [1], lambda value: analysis.run())
+    first = study.run()
+    assert not first.cases[0].reliability.design_point_x.flags.writeable
+    analysis.options = ra.FORMOptions(max_iterations=1)
+    failed = study.run()
+    assert not failed.converged
+    assert failed.cases[0].reliability.method == "FORM"
+    assert failed.cases[0].reliability.design_point_x is None
+    assert first.cases[0].reliability.beta == pytest.approx(3)
