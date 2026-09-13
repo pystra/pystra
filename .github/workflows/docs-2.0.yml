@@ -1,0 +1,45 @@
+name: Deploy 2.0 documentation
+
+# Publishes the documentation of the v2.0 branch under /2.0/ on GitHub Pages,
+# keeping the 1.x documentation at the site root.
+
+on:
+  push:
+    branches: [v2.0]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: docs-2.0
+  cancel-in-progress: true
+
+env:
+  OPENBLAS_NUM_THREADS: "1"
+  OMP_NUM_THREADS: "1"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install
+        run: |
+          sudo apt-get update && sudo apt-get install -y pandoc
+          python -m pip install -e ".[docs,al]"
+      - name: Execute maintained tutorials
+        run: python scripts/execute_notebooks.py --output-dir docs/source/notebooks
+      - name: Build documentation
+        working-directory: docs
+        run: python -m sphinx -b html -W --keep-going -D nbsphinx_execute=never source build/html
+      - name: Deploy under /2.0/
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/build/html
+          destination_dir: "2.0"
+          keep_files: true

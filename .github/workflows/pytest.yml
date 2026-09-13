@@ -2,6 +2,7 @@ name: Tests
 
 on:
   workflow_dispatch:
+  workflow_call:
   pull_request:
   push:
     branches: [main, v2.0]
@@ -21,12 +22,16 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.12", "3.13"]
+        python-version: ["3.12", "3.13", "3.14"]
         include:
           - os: windows-latest
-            python-version: "3.13"
+            python-version: "3.12"
+          - os: windows-latest
+            python-version: "3.14"
           - os: macos-latest
-            python-version: "3.13"
+            python-version: "3.12"
+          - os: macos-latest
+            python-version: "3.14"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -46,11 +51,27 @@ jobs:
         run: |
           python -m coverage run --source=pystra -m pytest -q
           python -m coverage xml
+          python -m coverage report --fail-under=85
       - uses: actions/upload-artifact@v4
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.13'
         with:
           name: coverage
           path: coverage.xml
+
+  minimum-dependencies:
+    name: Minimum dependencies on Python 3.12
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install the oldest supported dependencies
+        run: python -m pip install -e ".[test,al]" -c ci/minimum-requirements.txt
+      - name: Record versions
+        run: python -m pip list
+      - name: Test
+        run: python -m pytest -q
 
   quality:
     name: Naming, formatting, tutorials, and package
