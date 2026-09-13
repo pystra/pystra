@@ -25,19 +25,18 @@ For this analysis Equation :eq:`eq:2_70` can be rewritten as
 .. math::
    :label: eq:2_91
 
-           p_f = P(g({\bf X})\leq 0) = \iiint\limits_{g({\bf X})\leq 0}
-           I(g({\bf X})\leq 0) f_{{\bf X}}({\bf x}) d {\bf x}
+           p_f = P(g(\mathbf{X})\leq 0) = \iiint\limits_{g(\mathbf{X})\leq 0}
+           I(g(\mathbf{X})\leq 0) f_{\mathbf{X}}(\mathbf{x}) d \mathbf{x}
 
-where :math:`I` is an indicator function that is equals to 1 if :math:`g({\bf
-X}) \leq 0` and otherwise 0. Equation :eq:`eq:2_91` can be interpreted as
+where :math:`I` is an indicator function that is equals to 1 if :math:`g(\mathbf{X}) \leq 0` and otherwise 0. Equation :eq:`eq:2_91` can be interpreted as
 expected value of the indicator function. Therefore, the probability of
 failure can be estimated such as [Malioka2009]_
 
 .. math::
    :label: eq:2_92
 
-           \tilde{p}_f = \text{Ex}\left[I(g({\bf X})\leq 0)\right] =
-           \frac{1}{n}\sum_{i=1}^{n} I(g({\bf X})\leq 0)
+           \tilde{p}_f = \text{Ex}\left[I(g(\mathbf{X})\leq 0)\right] =
+           \frac{1}{n}\sum_{i=1}^{n} I(g(\mathbf{X})\leq 0)
 
 
 Crude Monte Carlo simulation
@@ -45,7 +44,7 @@ Crude Monte Carlo simulation
 
 The Crude Monte Carlo simulation (CMC) is the most simple form and corresponds
 to a direct application of Equation :eq:`eq:2_92`. A large number :math:`n` of
-samples are simulated for the set of random variables :math:`\bf X`. All
+samples are simulated for the set of random variables :math:`\mathbf{X}`. All
 samples that lead to a failure are counted :math:`n_f` and after all
 simulations the probability of failure :math:`p_f` may be estimated by
 [Faber2009]_
@@ -80,23 +79,20 @@ surface is added to Equation :eq:`eq:2_91`
 .. math::
    :label: eq:2_95
 
-           p_f = P(g({\bf X})\leq 0) = \iiint\limits_{g({\bf X})\leq 0}
-           I(g({\bf X})\leq 0) \frac{f_{{\bf X}}({\bf x})}{h_{{\bf X}}({\bf
-           x})} h_{{\bf X}}({\bf x}) d {\bf x}
+           p_f = P(g(\mathbf{X})\leq 0) = \iiint\limits_{g(\mathbf{X})\leq 0}
+           I(g(\mathbf{X})\leq 0) \frac{f_{\mathbf{X}}(\mathbf{x})}{h_{\mathbf{X}}(\mathbf{x})} h_{\mathbf{X}}(\mathbf{x}) d \mathbf{x}
 
-where :math:`h_{X} ({\bf X})` is the importance sampling probability
-density function of :math:`\bf X`. Consequently Equation :eq:`eq:2_92` is
+where :math:`h_{X} (\mathbf{X})` is the importance sampling probability
+density function of :math:`\mathbf{X}`. Consequently Equation :eq:`eq:2_92` is
 extended to [Faber2009]_
 
 .. math::
   :label: eq:2_96
 
-          \tilde{p}_f = \text{Ex}\left[I(g({\bf X})\leq 0) \frac{f_{{\bf
-          X}}({\bf x})}{h_{{\bf X}}({\bf x})}\right] =
-          \frac{1}{n}\sum_{i=1}^{n} I(g({\bf X})\leq 0)\frac{f_{{\bf X}}({\bf
-          x})}{h_{{\bf X}}({\bf x})}
+          \tilde{p}_f = \text{Ex}\left[I(g(\mathbf{X})\leq 0) \frac{f_{\mathbf{X}}(\mathbf{x})}{h_{\mathbf{X}}(\mathbf{x})}\right] =
+          \frac{1}{n}\sum_{i=1}^{n} I(g(\mathbf{X})\leq 0)\frac{f_{\mathbf{X}}(\mathbf{x})}{h_{\mathbf{X}}(\mathbf{x})}
 
-The key to this approach is to choose :math:`h_{X} ({\bf X})` so that samples
+The key to this approach is to choose :math:`h_{X} (\mathbf{X})` so that samples
 are obtained more frequently from the failure domain. For this reason, often a
 FORM (or SORM) analysis is performed to find a prior design point. [Baker2010]
 
@@ -105,8 +101,8 @@ FORM (or SORM) analysis is performed to find a prior design point. [Baker2010]
    :align: center
    :scale: 50
 
-Representation of a physical space with a set :math:`{\bf X}` of any two
-random variables. The shaded area denotes the failure domain and `g({\bf X}) =
+Representation of a physical space with a set :math:`\mathbf{X}` of any two
+random variables. The shaded area denotes the failure domain and `g(\mathbf{X}) =
 0` the failure surface.
 
 .. figure:: ../images/f-02-10-b.*
@@ -115,7 +111,7 @@ random variables. The shaded area denotes the failure domain and `g({\bf X}) =
    :scale: 50
 
 For the CMC method every dot corresponds to one configuration of the random
-variables :math:`{\bf X}`. Dots in shaded areas lead to a failure.
+variables :math:`\mathbf{X}`. Dots in shaded areas lead to a failure.
 
 .. figure:: ../images/f-02-10-c.*
    :alt: Importance samples concentrated around the design point on the failure boundary.
@@ -124,7 +120,7 @@ variables :math:`{\bf X}`. Dots in shaded areas lead to a failure.
 
 
 The IS simulation method uses a distribution centered on the design point
-:math:`{\bf x}^*`, is obtained from a FORM (or SORM) analysis. More dots in
+:math:`\mathbf{x}^*`, is obtained from a FORM (or SORM) analysis. More dots in
 the failure domain can be observed.
 
 

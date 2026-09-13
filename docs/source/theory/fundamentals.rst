@@ -34,7 +34,7 @@ expressed by a limit-state function. [Ditlevsen2007]_
 .. note::
    **Limit-state function**
 
-   Let :math:`{\bf X}` describe a set of random variables :math:`{X}_1
+   Let :math:`\mathbf{X}` describe a set of random variables :math:`{X}_1
    \dots {X}_n` which influence the performance of a structure. Then the
    functionality of the structure is called limit-state function, denoted by
    :math:`g` and given by
@@ -42,12 +42,12 @@ expressed by a limit-state function. [Ditlevsen2007]_
    .. math::
       :label: eq:2_69
 
-              g({\bf X})=g(X_1,\dots,X_n)
+              g(\mathbf{X})=g(X_1,\dots,X_n)
 
 The boundary between desired and undesired performance would be given when
-:math:`g({\bf X}) = 0`. If :math:`g({\bf X}) > 0`, it implies a desired
+:math:`g(\mathbf{X}) = 0`. If :math:`g(\mathbf{X}) > 0`, it implies a desired
 performance and the structure is safe. An undesired performance is given by
-:math:`g({\bf X}) \leq 0` and it implies an unsafe structure or failure of the
+:math:`g(\mathbf{X}) \leq 0` and it implies an unsafe structure or failure of the
 system. [Baker2010]_
 
 The probability of failure :math:`p_f` is equal to the probability that an
@@ -56,17 +56,16 @@ undesired performance will occur. It can be expressed mathematically as
 .. math::
    :label: eq:2_70
 
-           p_f = P(g({\bf X})\leq 0) = \iiint\limits_{g({\bf X})\leq 0} f_{{\bf
-           X}}({\bf x}) d {\bf x}
+           p_f = P(g(\mathbf{X})\leq 0) = \iiint\limits_{g(\mathbf{X})\leq 0} f_{\mathbf{X}}(\mathbf{x}) d \mathbf{x}
 
-assuming that all random variables :math:`{\bf X}` are continuous. However,
+assuming that all random variables :math:`\mathbf{X}` are continuous. However,
 there are three major issues related to the Equation :eq:`eq:2_70`, proposed
 by [Baker2010]_:
 
    1. There is not always enough information to define the complete joint
-      probability density function :math:`f_X({\bf x})`.
-   2. The limit-state function :math:`g({\bf X})` may be difficult to evaluate.
-   3. Even if :math:`f_X({\bf x})` and :math:`g({\bf X})` are known, numerical
+      probability density function :math:`f_X(\mathbf{x})`.
+   2. The limit-state function :math:`g(\mathbf{X})` may be difficult to evaluate.
+   3. Even if :math:`f_X(\mathbf{x})` and :math:`g(\mathbf{X})` are known, numerical
       computing of high dimensional integrals is difficult.
 
 Various methods address these challenges. The most common are Monte Carlo
@@ -156,39 +155,38 @@ The reliability index can be interpreted as a measure of the distance to the
 failure surface, as shown in the Figure above. In the one dimensional case the
 standard deviation of the safety margin was used as scale. To obtain a similar
 scale in the case of more basic variables, Hasofer and Lind (1974) proposed a
-non-homogeneous linear mapping of a set of random variables :math:`{\bf X}`
+non-homogeneous linear mapping of a set of random variables :math:`\mathbf{X}`
 from a physical space into a set of normalized and uncorrelated random
-variables :math:`{\bf Z}` in a normalized space. [Madsen2006]_
+variables :math:`\mathbf{Z}` in a normalized space. [Madsen2006]_
 
 .. note::
    [Hasofer and Lind Reliability Index]
 
    The Hasofer and Lind reliability index, denoted by :math:`\beta_{HL}`, is
-   the shortest distance :math:`{\bf z}^*` from the origin to the failure
-   surface :math:`g({\bf Z})` in a normalized space.
+   the shortest distance :math:`\mathbf{z}^*` from the origin to the failure
+   surface :math:`g(\mathbf{Z})` in a normalized space.
 
    .. math::
       :label: eq:2_78
 
-              \beta_{HL}:=\beta={\vec\alpha}^T{\bf z}^*
+              \beta_{HL}:=\beta=\boldsymbol{\alpha}^T\mathbf{z}^*
 
-The shortest distance to the failure surface :math:`{\bf z}^*` is also known
+The shortest distance to the failure surface :math:`\mathbf{z}^*` is also known
 as design point and :math:`{\vec \alpha}` denotes the normal vector to the
-failure surface :math:`g({\bf Z})` and is given by
+failure surface :math:`g(\mathbf{Z})` and is given by
 
 .. math::
    :label: eq:2_79
 
-           {\vec\alpha} = - \frac{\nabla g({\bf z}^*)}{|\nabla g({\bf z}^*)|}
+           \boldsymbol{\alpha} = - \frac{\nabla g(\mathbf{z}^*)}{|\nabla g(\mathbf{z}^*)|}
 
-where :math:`g({\bf z})` is the gradient vector, which is assumed to exist:
+where :math:`g(\mathbf{z})` is the gradient vector, which is assumed to exist:
 [Madsen2006]_
 
 .. math::
    :label: eq:2_80
 
-           \nabla g({\bf z}) = \left (\frac{\partial g}{\partial z_1}({\bf
-           z}),\ldots, \frac{\partial g}{\partial z_n}({\bf z})\right)
+           \nabla g(\mathbf{z}) = \left (\frac{\partial g}{\partial z_1}(\mathbf{z}),\ldots, \frac{\partial g}{\partial z_n}(\mathbf{z})\right)
 
 Finding the reliability index :math:`\beta` is therefore an optimization
 problem
@@ -196,7 +194,7 @@ problem
 .. math::
    :label: eq:2_81
 
-           \min_x \, |{\bf z}|\,: \, g({\bf z})=0
+           \min_x \, |\mathbf{z}|\,: \, g(\mathbf{z})=0
 
 The calculation of :math:`\beta` can be undertaken in a number of different
 ways. In the general case where the failure surface is non-linear, an

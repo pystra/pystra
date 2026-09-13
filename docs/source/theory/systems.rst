@@ -6,11 +6,11 @@ System reliability
 
 System reliability concerns a structure whose failure is governed by more than
 one component event.  If the component limit states are
-:math:`g_i({\bf X})`, the component failure events are
+:math:`g_i(\mathbf{X})`, the component failure events are
 
 .. math::
 
-   F_i = \{g_i({\bf X}) \leq 0\}.
+   F_i = \{g_i(\mathbf{X}) \leq 0\}.
 
 For a series system the system failure event is the union of component failure
 events,
@@ -23,7 +23,7 @@ and the equivalent scalar limit-state function can be written as
 
 .. math::
 
-   g_\mathrm{series}({\bf X}) = \min_i g_i({\bf X}).
+   g_\mathrm{series}(\mathbf{X}) = \min_i g_i(\mathbf{X}).
 
 For a parallel system the system failure event is the intersection of component
 failure events,
@@ -36,7 +36,7 @@ with equivalent scalar limit-state function
 
 .. math::
 
-   g_\mathrm{parallel}({\bf X}) = \max_i g_i({\bf X}).
+   g_\mathrm{parallel}(\mathbf{X}) = \max_i g_i(\mathbf{X}).
 
 These min/max forms are useful because they preserve the standard PySTRA sign
 convention: positive means safe and non-positive means failed.  They also
@@ -130,7 +130,7 @@ defined by
 
 .. math::
 
-   g_\mathrm{FBC}({\bf X}) = \min(g_1, g_2, g_3, g_4),
+   g_\mathrm{FBC}(\mathbf{X}) = \min(g_1, g_2, g_3, g_4),
 
 where
 

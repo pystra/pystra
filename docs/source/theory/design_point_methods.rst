@@ -5,9 +5,9 @@ First-order reliability method (FORM)
 -------------------------------------
 
 
-Let :math:`\bf Z` be a set of uncorrelated and standardized normally distributed random
+Let :math:`\mathbf{Z}` be a set of uncorrelated and standardized normally distributed random
 variables :math:`( Z_1 ,\dots, Z_n )` in the normalized z-space, corresponding
-to any set of random variables :math:`{\bf X} = ( X_1 , \dots , X_n )` in the
+to any set of random variables :math:`\mathbf{X} = ( X_1 , \dots , X_n )` in the
 physical x-space, then the limit-state surface in x-space is also mapped on
 the corresponding limit-state surface in z-space.
 
@@ -21,7 +21,7 @@ the minimum distance from the z-origin to the failure surface. This distance
            p_f \approx p_{f1} = \Phi(-\beta)
 
 this corresponds to a linearization of the failure surface. The linearization point
-is the design point :math:`{\bf z}^*`. This procedure is called the first-order
+is the design point :math:`\mathbf{z}^*`. This procedure is called the first-order
 reliability method (FORM), and :math:`\beta` is the first-order reliability
 index. [Madsen2006]_
 
@@ -31,9 +31,9 @@ index. [Madsen2006]_
    :align: center
    :scale: 50
 
-Representation of a physical space with a set :math:`{\bf X}` of any two
+Representation of a physical space with a set :math:`\mathbf{X}` of any two
 random variables. The shaded area denotes the failure domain and
-:math:`g({\bf X}) = 0` the failure surface.
+:math:`g(\mathbf{X}) = 0` the failure surface.
 
 .. figure:: ../images/f-02-09-b.*
    :alt: Circular normal-density contours and the transformed failure surface.
@@ -41,46 +41,46 @@ random variables. The shaded area denotes the failure domain and
    :scale: 50
 
 After
-transformation in the normalized space, the random variables :math:`{\bf X}`
+transformation in the normalized space, the random variables :math:`\mathbf{X}`
 are now uncorrelated and standardized normally distributed, also the failure
-surface is transformed into :math:`g({\bf Z}) = 0`.
+surface is transformed into :math:`g(\mathbf{Z}) = 0`.
 
 .. figure:: ../images/f-02-09-c.*
    :alt: Tangent approximation at the design point, with distance beta from the origin.
    :align: center
    :scale: 50
 
-FORM corresponds to a linearization of the failure surface :math:`g({\bf Z}) =
-0`. Performing this method, the design point :math:`{\bf z}^*` and the
+FORM corresponds to a linearization of the failure surface :math:`g(\mathbf{Z}) =
+0`. Performing this method, the design point :math:`\mathbf{z}^*` and the
 reliability index :math:`\beta` can be computed.
 
 
 Second-order reliability method (SORM)
 --------------------------------------
 
-FORM approximates the failure surface :math:`g({\bf Z}) = 0` by a tangent
+FORM approximates the failure surface :math:`g(\mathbf{Z}) = 0` by a tangent
 hyperplane at the design point.  When the failure surface has significant
 curvature at the design point, this linear approximation can over- or
 under-estimate :math:`p_f`.  The Second-Order Reliability Method (SORM)
 improves on FORM by fitting a quadratic surface (paraboloid) to
-:math:`g({\bf Z}) = 0` at the design point, thereby capturing
+:math:`g(\mathbf{Z}) = 0` at the design point, thereby capturing
 second-order effects [Baker2010]_.
 
 Quadratic approximation in rotated space
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Starting from the FORM design point :math:`{\bf z}^*` and the unit
-direction vector :math:`\boldsymbol{\alpha} = -{\bf z}^*/\beta`, the
-standard normal space is rotated so that :math:`{\bf z}^*` lies at
-distance :math:`\beta` along the last axis.  Let :math:`{\bf R}` denote
+Starting from the FORM design point :math:`\mathbf{z}^*` and the unit
+direction vector :math:`\boldsymbol{\alpha} = -\mathbf{z}^*/\beta`, the
+standard normal space is rotated so that :math:`\mathbf{z}^*` lies at
+distance :math:`\beta` along the last axis.  Let :math:`\mathbf{R}` denote
 the orthonormal rotation matrix constructed by Gram--Schmidt
 orthonormalization with :math:`\boldsymbol{\alpha}` in the last row, and
-let :math:`{\bf u}' = {\bf R}\,{\bf z}` be coordinates in the rotated
+let :math:`\mathbf{u}' = \mathbf{R}\,\mathbf{z}` be coordinates in the rotated
 space.  In these coordinates the failure surface is approximated as:
 
 .. math::
 
-    g({\bf u}') \approx \beta - u'_n
+    g(\mathbf{u}') \approx \beta - u'_n
     + \tfrac{1}{2} \sum_{i=1}^{n-1} \kappa_i \,(u'_i)^2
 
 where :math:`\kappa_i` are the *principal curvatures* of the failure
@@ -96,18 +96,18 @@ Curve-fitting
 ~~~~~~~~~~~~~
 
 The default method (``fit="curve"``) obtains the curvatures from the
-Hessian matrix of the limit-state function.  The Hessian :math:`{\bf H}`
-of :math:`g` at the design point :math:`{\bf z}^*` is computed by finite
+Hessian matrix of the limit-state function.  The Hessian :math:`\mathbf{H}`
+of :math:`g` at the design point :math:`\mathbf{z}^*` is computed by finite
 differences of the gradient that is already available from FORM.  This
 matrix is then rotated and normalized:
 
 .. math::
 
-    {\bf A} = \frac{{\bf R}\,{\bf H}\,{\bf R}^T}
-    {\lVert \nabla g({\bf z}^*) \rVert}
+    \mathbf{A} = \frac{\mathbf{R}\,\mathbf{H}\,\mathbf{R}^T}
+    {\lVert \nabla g(\mathbf{z}^*) \rVert}
 
 The principal curvatures :math:`\kappa_i` are the eigenvalues of the
-leading :math:`(n{-}1) \times (n{-}1)` sub-matrix of :math:`{\bf A}`
+leading :math:`(n{-}1) \times (n{-}1)` sub-matrix of :math:`\mathbf{A}`
 (i.e.\ the block excluding the last row and column, which corresponds to
 the design-point direction).  These curvatures are symmetric: the
 paraboloid has the same curvature on both sides of each principal axis.

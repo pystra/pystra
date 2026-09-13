@@ -15,20 +15,19 @@ Transformation of dependent random variables using Nataf approach
 
 One method to handle this is using the Nataf joint distribution model, if the
 marginal cdfs are known. [Baker2010]_ The correlated random variables
-:math:`{\bf X} = ( X_1 , \dots , X_n )` with the correlation matrix :math:`\bf
-R` can be transformed by
+:math:`\mathbf{X} = ( X_1 , \dots , X_n )` with the correlation matrix :math:`\mathbf{R}` can be transformed by
 
 .. math::
    :label: eq:2_82
 
            y_i=\Phi^{-1}\left(F_{X_{i}}(x_i)\right) \qquad i = 1,\dots,n
 
-into normally distributed random variables :math:`\bf Y` with zero means and
-unit variance, but still correlated with :math:`{\bf R}_0` . Nataf’s
-distribution for :math:`\bf X` is obtained by assuming that :math:`\bf Y` is
+into normally distributed random variables :math:`\mathbf{Y}` with zero means and
+unit variance, but still correlated with :math:`\mathbf{R}_0` . Nataf’s
+distribution for :math:`\mathbf{X}` is obtained by assuming that :math:`\mathbf{Y}` is
 jointly normal. [Liu1986]_
 
-The correlation coefficients for :math:`\bf X` and :math:`\bf Y` are related by
+The correlation coefficients for :math:`\mathbf{X}` and :math:`\mathbf{Y}` are related by
 
 .. math::
    :label: eq:2_83
@@ -41,27 +40,26 @@ The correlation coefficients for :math:`\bf X` and :math:`\bf Y` are related by
            \exp\left(-\frac{y_i^2-2\rho_{Y_i,Y_j}y_iy_j+y_j^2}{2(1-\rho_{Y_i,Y_j}^2)}\right) d y_i d y_j
 
 Once this is done, the transformation from the correlated normal random
-variables :math:`\bf Y` to uncorrelated normal random variables :math:`\bf Z`
+variables :math:`\mathbf{Y}` to uncorrelated normal random variables :math:`\mathbf{Z}`
 is addressed. Hence, the transformation is
 
 .. math::
    :label: eq:2_84
 
-           {\bf z}={\bf L}_0^{-1}{\bf y} \quad \Leftrightarrow \quad {\bf y} =
-           {\bf L}_0{\bf z}
+           \mathbf{z}=\mathbf{L}_0^{-1}\mathbf{y} \quad \Leftrightarrow \quad \mathbf{y} =
+           \mathbf{L}_0\mathbf{z}
 
 where :math:`\mathbf{L}_0\mathbf{L}_0^T=\mathbf{R}_0` is the
-Cholesky factorization of the correlation matrix of :math:`\bf Y`. The Jacobian matrix, denoted by :math:`\bf J`,
+Cholesky factorization of the correlation matrix of :math:`\mathbf{Y}`. The Jacobian matrix, denoted by :math:`\mathbf{J}`,
 for the transformation is given by
 
 .. math::
    :label: eq:2_85
 
-           {\bf J}_{ZX} = \frac{\partial {\bf z}}{\partial {\bf x}} = {\bf
-           L}_0^{-1}\text{diag} \left(\frac{f_{X_i}(x_i)}{\varphi(y_i)}\right)
+           \mathbf{J}_{ZX} = \frac{\partial \mathbf{z}}{\partial \mathbf{x}} = \mathbf{L}_0^{-1}\text{diag} \left(\frac{f_{X_i}(x_i)}{\varphi(y_i)}\right)
 
 This approach is useful when the marginal distribution for the random
-variables :math:`\bf X` is known and the knowledge about the variables
+variables :math:`\mathbf{X}` is known and the knowledge about the variables
 dependence is limited to correlation coefficients. [Baker2010]_
 [DerKiureghian2006]_
 
@@ -69,12 +67,12 @@ Transformation of dependent random variables using Rosenblatt approach
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 An alternative to the Nataf approach is to consider the joint pdf of
-:math:`\bf X` as a product of conditional pdfs.
+:math:`\mathbf{X}` as a product of conditional pdfs.
 
 .. math::
    :label: eq:2_86
 
-           f_{{\bf X}}({\bf x}) = f_{X_1}(x_1) f_{X_2|X_1}(x_2|x_1) \dots
+           f_{\mathbf{X}}(\mathbf{x}) = f_{X_1}(x_1) f_{X_2|X_1}(x_2|x_1) \dots
            f_{X_n|X_1,\dots,X_{n-1}}(x_n|x_1,\dots,x_{n-1})
 
 As a result of the sequential conditioning in the pdf, the conditional cdfs
@@ -87,9 +85,9 @@ are given for :math:`i \in [1,n]`
            \int_{-\infty}^{x_i}
            f_{X_i|X_1,\dots,X_{i-1}}(x_i|x_1,\dots,x_{i-1}) d x_i
 
-These conditional distributions for the random variables :math:`\bf X` can be
+These conditional distributions for the random variables :math:`\mathbf{X}` can be
 transformed into standard normal marginal distributions for the variables
-:math:`\bf Z`, using the so called Rosenblatt transformation
+:math:`\mathbf{Z}`, using the so called Rosenblatt transformation
 [Rosenblatt1952]_, suggested by Hohenbichler and Rackwitz (1981).
 
 .. math::
@@ -109,7 +107,7 @@ elements [Baker2010]
 .. math::
    :label: eq:2_89
 
-           \left[{\bf J}_{ZX}\right]_{i,j} = \frac{\partial z_i}{\partial x_j} =
+           \left[\mathbf{J}_{ZX}\right]_{i,j} = \frac{\partial z_i}{\partial x_j} =
            \begin{cases}\displaystyle
            \frac{1}{\varphi(z_i)}\frac{\partial}{\partial x_j}
            F_{X_i|X_1,\dots,X_{i-1}}(x_i|x_1,\dots,x_{i-1}) & i \geq j\\
