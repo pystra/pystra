@@ -74,12 +74,12 @@ class MaxParent(Distribution):
 
         self.dist_type = "MaxParent"
 
-    def pdf(self, x: ArrayLike) -> float | np.ndarray:
+    def pdf(self, x: float | np.ndarray) -> float | np.ndarray:
         """Evaluate the probability density function."""
         with np.errstate(under="ignore"):
             return np.exp(self.logpdf(x))
 
-    def cdf(self, x: ArrayLike) -> float | np.ndarray:
+    def cdf(self, x: float | np.ndarray) -> float | np.ndarray:
         """Evaluate the cumulative distribution function."""
         with np.errstate(under="ignore"):
             return np.exp(self.logcdf(x))
@@ -94,22 +94,22 @@ class MaxParent(Distribution):
         with np.errstate(divide="ignore"):
             return self._isf_log(np.log(np.asarray(q, dtype=float)))
 
-    def logpdf(self, x: ArrayLike) -> float | np.ndarray:
+    def logpdf(self, x: float | np.ndarray) -> float | np.ndarray:
         """Log density."""
         logpdf = self.max_dist.logpdf(x) - np.log(self.N)
         if self.N == 1:
             return logpdf
         return logpdf + (1 / self.N - 1) * self.max_dist.logcdf(x)
 
-    def logcdf(self, x: ArrayLike) -> float | np.ndarray:
+    def logcdf(self, x: float | np.ndarray) -> float | np.ndarray:
         """Log CDF, the maximum's divided by ``N``."""
         return self.max_dist.logcdf(x) / self.N
 
-    def sf(self, x: ArrayLike) -> float | np.ndarray:
+    def sf(self, x: float | np.ndarray) -> float | np.ndarray:
         """Survival function ``1 - F_max(x)**(1/N)``."""
         return -np.expm1(self.logcdf(x))
 
-    def logsf(self, x: ArrayLike) -> float | np.ndarray:
+    def logsf(self, x: float | np.ndarray) -> float | np.ndarray:
         """Log survival function."""
         # Once 1 - F**(1/N) is below 1e-200 it equals (1 - F) / N
         a = np.asarray(self.logcdf(x), dtype=float)
