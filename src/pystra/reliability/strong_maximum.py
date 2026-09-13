@@ -2,7 +2,7 @@
 
 The geometry follows the Strong Maximum Test described by Dutfoy and Lebrun
 (2006) and documented by OpenTURNS. This implementation specializes the test
-to PySTRA's independent standard-normal space.
+to PySTRA's independent standard normal space.
 """
 
 from copy import copy
@@ -28,7 +28,7 @@ class StrongMaximumTest(AnalysisObject):
     form : FORM, optional
         Successfully converged FORM analysis. Reuses its model, transform and
         settings. Alternatively supply all of model, limit_state and
-        design_point (in independent standard-normal coordinates).
+        design_point (in independent standard normal coordinates).
     model, limit_state, design_point, options : optional
         Explicit candidate inputs and FORMOptions; cannot be combined with
         form. The candidate must be on the limit-state boundary and the

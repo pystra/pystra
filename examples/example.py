@@ -7,14 +7,14 @@ import numpy as np
 
 def example_limitstatefunction(r, X1, X2, X3):
     """
-    example limit state function
+    example limit-state function
     """
     return r - X2 * (1000 * X3) ** (-1) - (X1 * (200 * X3) ** (-1)) ** 2
 
 
 # Define a main() function.
 def main():
-    # Define limit state function
+    # Define limit-state function
     # - case 1: define directly as lambda function
     # limit_state = LimitState(lambda X1,X2,X3: 1 - X2*(1000*X3)**(-1) - (X1*(200*X3)**(-1))**2)
     # - case 2: use predefined function

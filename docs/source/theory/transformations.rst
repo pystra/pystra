@@ -5,7 +5,7 @@ Probability transformation
 --------------------------
 
 
-Classical FORM uses independent standard-normal coordinates. A probability
+Classical FORM uses independent standard normal coordinates. A probability
 transformation maps the joint law of the physical variables into that space.
 Generalized Nataf also permits spherical non-normal standard spaces, provided
 the reliability calculation uses the corresponding probability law.

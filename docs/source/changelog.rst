@@ -425,4 +425,4 @@ Initial release.
 - Crude Monte Carlo simulation.
 - Nataf isoprobabilistic transformation.
 - 15+ probability distributions.
-- Stochastic model and limit state function framework.
+- Stochastic model and limit-state function framework.

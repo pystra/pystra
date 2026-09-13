@@ -51,7 +51,7 @@ class AnalysisObject:
     model : StochasticModel
         The probabilistic model.
     limit_state : LimitState
-        The limit state function.
+        The limit-state function.
     options : optional
         The analysis's settings, an instance of its ``_options_type``;
         the defaults if omitted.

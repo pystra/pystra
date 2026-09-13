@@ -9,7 +9,7 @@ Notation and probability spaces
    * - :math:`\mathbf{x}`, :math:`\mathbf{X}`
      - Physical input values and random variables, with their engineering units.
    * - :math:`\mathbf{u}`, :math:`\mathbf{U}`
-     - Independent standard-normal coordinates in the usual transformation.
+     - Independent standard normal coordinates in the usual transformation.
    * - :math:`\mathbf{z}`, :math:`\mathbf{Z}`
      - Independent normal coordinates in older derivations that use z-space for
        u-space. In the sensitivity derivation, :math:`\mathbf{z}` instead

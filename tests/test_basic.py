@@ -5,7 +5,7 @@ import pystra as ra
 
 def lsf(X1, X2, X3):
     """
-    example limit state function
+    example limit-state function
     """
     return 1.7 - X2 * (1000 * X3) ** (-1) - (X1 * (200 * X3) ** (-1)) ** 2
 

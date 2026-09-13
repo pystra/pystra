@@ -62,7 +62,7 @@ The sensitivity of :math:`\beta` to a marginal distribution parameter
 where :math:`\boldsymbol\alpha` is the FORM direction cosine vector,
 :math:`\mathbf{L}_0` is the Cholesky factor of the modified (Nataf)
 correlation matrix :math:`\mathbf{R}_0`, and :math:`\mathbf{z}` is the
-correlated standard-normal design point.
+correlated standard normal design point.
 
 The first term captures how the marginal transformation changes at the
 design point; the second term accounts for changes in the correlation

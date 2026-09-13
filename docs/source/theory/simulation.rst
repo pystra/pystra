@@ -137,7 +137,7 @@ the n-dimensional sampling problem to a family of one-dimensional problems
 [Koutsourelakis2004]_.
 
 The important direction :math:`\boldsymbol{\alpha}` is the unit vector from
-the origin in standard-normal space toward the most probable failure point.
+the origin in standard normal space toward the most probable failure point.
 For each of :math:`N` random samples :math:`\mathbf{u}_i` drawn from
 :math:`\mathcal{N}(\mathbf{0}, \mathbf{I})`, the component along
 :math:`\boldsymbol{\alpha}` is projected out to obtain the foot-point

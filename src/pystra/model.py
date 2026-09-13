@@ -52,7 +52,7 @@ class StochasticModel:
         obj : Distribution or Constant
             The variable to add.  Distributions are treated as random
             variables; Constants are stored separately and passed as
-            fixed values to the limit state function.
+            fixed values to the limit-state function.
 
         Raises
         ------
@@ -235,16 +235,16 @@ class LimitState:
     r"""
     The Limit State function definition class.
 
-    The limit state function can be defined in two main ways:
+    The limit-state function can be defined in two main ways:
 
-    1. Numerical differentiation (FFD): the limit state function need only return
+    1. Numerical differentiation (FFD): the limit-state function need only return
     its value at a set of evaluation points, X. In this form, the function can be
     either:
 
         (a) A python lambda object;
         (b) A python function object.
 
-    2. Using the Direct Differentiation Method (DDM): the limit state function
+    2. Using the Direct Differentiation Method (DDM): the limit-state function
     is a python function object return both its value and gradient vector at each
     of the evaluation points.
 
@@ -355,7 +355,7 @@ class LimitState:
         block_size=1000,
         counter=None,
     ):
-        """Evaluate the limit state function and (optionally) its gradient.
+        """Evaluate the limit-state function and (optionally) its gradient.
 
         Dispatches to the appropriate evaluation strategy based on the
         differentiation mode: no gradient (``"no"``), forward finite
@@ -385,7 +385,7 @@ class LimitState:
         Returns
         -------
         G : ndarray
-            Limit state function values, shape ``(1, nx)``.
+            Limit-state function values, shape ``(1, nx)``.
         grad_G : ndarray
             Gradient matrix, shape ``(nrv, nx)``.  Zero when no
             gradient is computed.
@@ -492,7 +492,7 @@ class LimitState:
         return G, grad_G, nx
 
     def _call(self, x, model, ddm=False):
-        """Call the user-defined limit state function.
+        """Call the user-defined limit-state function.
 
         Builds a keyword-argument dictionary mapping variable names to their
         rows of ``x`` (and constants to matching vectors), then calls

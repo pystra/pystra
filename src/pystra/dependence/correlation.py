@@ -4,7 +4,7 @@
 
 The Nataf model transforms correlated non-normal random variables into
 correlated standard-normal variables.  When the marginal distributions
-are non-normal, the correlation matrix in standard-normal space (the
+are non-normal, the correlation matrix in standard normal space (the
 *modified* correlation matrix ``Ro``) differs from the physical-space
 correlation matrix ``R``.  This module provides the numerical
 procedure that finds ``Ro`` from ``R`` and the marginal distributions.
@@ -214,7 +214,7 @@ def compute_modified_correlation_matrix(stochastic_model):
     -------
     ndarray
         The symmetric modified correlation matrix ``Ro`` of shape
-        ``(n, n)`` in standard-normal space.
+        ``(n, n)`` in standard normal space.
     """
     copula = stochastic_model.get_copula()
     if copula is not None:
@@ -290,12 +290,12 @@ def absolute_integral_value(rho0, *args):
 
     Returns ``|rho_target - rho_integral(rho0)|``, which is minimized
     by ``scipy.optimize.fmin`` to find the modified correlation
-    coefficient ``rho0`` in standard-normal space.
+    coefficient ``rho0`` in standard normal space.
 
     Parameters
     ----------
     rho0 : float
-        Trial correlation in standard-normal space.
+        Trial correlation in standard normal space.
     *args : tuple
         ``(rho_target, margi, margj, Z1, Z2, X1, X2, WIP, detJ)`` —
         the target physical-space correlation and the pre-computed

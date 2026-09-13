@@ -8,8 +8,8 @@ First-order reliability method (FORM)
 Let :math:`\bf Z` be a set of uncorrelated and standardized normally distributed random
 variables :math:`( Z_1 ,\dots, Z_n )` in the normalized z-space, corresponding
 to any set of random variables :math:`{\bf X} = ( X_1 , \dots , X_n )` in the
-physical x-space, then the limit state surface in x-space is also mapped on
-the corresponding limit state surface in z-space.
+physical x-space, then the limit-state surface in x-space is also mapped on
+the corresponding limit-state surface in z-space.
 
 According to Definition :eq:`eq:2_78`, the reliability index :math:`\beta` is
 the minimum distance from the z-origin to the failure surface. This distance
@@ -21,9 +21,9 @@ the minimum distance from the z-origin to the failure surface. This distance
            p_f \approx p_{f1} = \Phi(-\beta)
 
 this corresponds to a linearization of the failure surface. The linearization point
-is the design point :math:`{\bf z}^*`. This procedure is called First Order
-Reliability Method (FORM) and :math:`\beta` is the First Order Reliability
-Index. [Madsen2006]_
+is the design point :math:`{\bf z}^*`. This procedure is called the first-order
+reliability method (FORM), and :math:`\beta` is the first-order reliability
+index. [Madsen2006]_
 
 
 .. figure:: ../images/f-02-09-a.*
@@ -96,7 +96,7 @@ Curve-fitting
 ~~~~~~~~~~~~~
 
 The default method (``fit="curve"``) obtains the curvatures from the
-Hessian matrix of the limit state function.  The Hessian :math:`{\bf H}`
+Hessian matrix of the limit-state function.  The Hessian :math:`{\bf H}`
 of :math:`g` at the design point :math:`{\bf z}^*` is computed by finite
 differences of the gradient that is already available from FORM.  This
 matrix is then rotated and normalized:
@@ -195,7 +195,7 @@ approximation is invalid.
 
 The two fitting methods offer different trade-offs:
 
-- **Curve-fitting** requires fewer limit state evaluations (one gradient
+- **Curve-fitting** requires fewer limit-state evaluations (one gradient
   perturbation per random variable) and produces symmetric curvatures.  It
   is well suited to smooth failure surfaces where the curvature is
   approximately the same on both sides of the design point.
@@ -204,7 +204,7 @@ The two fitting methods offer different trade-offs:
   of :math:`2(n{-}1)` fitting points) but captures asymmetric curvature.
   This is advantageous when the failure surface has markedly different
   shapes on each side of the design point, as can occur with non-linear
-  limit state functions.
+  limit-state functions.
 
 
 .. _theory_strong_maximum:
@@ -216,7 +216,7 @@ Strong Maximum Test
 A converged local FORM design point need not represent every important
 failure region. The Strong Maximum Test [DutfoyLebrun2006]_ probes an enlarged
 sphere around the origin for failure points outside the candidate's vicinity.
-PySTRA implements the independent standard-normal case described by
+PySTRA implements the independent standard normal case described by
 `OpenTURNS <https://openturns.github.io/openturns/latest/theory/reliability_sensitivity/strong_maximum_test.html>`_.
 See :doc:`/notebooks/ex_strong_maximum` for geometric examples and
 :ref:`chap_strong_maximum` for the API.

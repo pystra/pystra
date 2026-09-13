@@ -4,8 +4,8 @@ PySTRA — Python Structural Reliability Analysis.
 PySTRA provides tools for computing the probability of failure of
 engineering systems using established structural reliability methods:
 
-- **FORM** (First Order Reliability Method)
-- **SORM** (Second Order Reliability Method)
+- **FORM** (first-order reliability method)
+- **SORM** (second-order reliability method)
 - **Monte Carlo** simulation (Crude, Line Sampling, Subset Simulation)
 - **Sensitivity analysis** of the reliability index
 - **Load combination** and **partial factor calibration**

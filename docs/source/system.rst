@@ -6,7 +6,7 @@ System reliability
 PySTRA separates the system failure event from its probability calculation.
 The ``pystra.systems`` topology classes compose component limit states for
 simulation. ``SystemFORM`` estimates series and parallel probabilities from
-separate component FORM analyses in one shared standard-normal space.
+separate component FORM analyses in one shared standard normal space.
 
 Do not use ordinary FORM or SORM on the combined min/max function as a general
 system reliability method. One tangent plane can miss other failure regions,
@@ -116,7 +116,7 @@ k-of-n and cut/tie-set inputs are currently rejected by ``SystemFORM``; use
 original-system simulation for these events.
 
 For each component, FORM finds a tangent failure half-space in the same
-independent standard-normal coordinates:
+independent standard normal coordinates:
 
 .. math::
 
@@ -152,7 +152,7 @@ design point; convergence alone does not establish global accuracy. The optional
 for competing regions on an enlarged sphere.
 
 The method is exact up to integration error for affine limit states in
-standard-normal space. For nonlinear components, compare with original-system
+standard normal space. For nonlinear components, compare with original-system
 simulation. The four-branch notebook illustrates the difference between the
 first-order approximation and the nonlinear event probability.
 

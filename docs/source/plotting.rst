@@ -51,7 +51,7 @@ probability estimate.
 
 Pass ``surrogate=analysis.surrogate_model`` to compare a fitted surrogate
 boundary. Both callables must use the same coordinates. Active-learning
-surrogates use independent standard-normal coordinates, so transform the
+surrogates use independent standard normal coordinates, so transform the
 true model inputs when the physical variables differ from those coordinates.
 
 Inspect learning and model selection

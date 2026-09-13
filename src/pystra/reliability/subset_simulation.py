@@ -27,7 +27,7 @@ class SubsetSimulation(AnalysisObject):
     chosen adaptively so that each conditional probability is approximately
     equal to the target level :math:`p_0`.  Conditional samples are generated
     via the Modified Metropolis–Hastings (MMH) algorithm operating
-    component-wise in standard-normal space.
+    component-wise in standard normal space.
 
     Parameters
     ----------
@@ -39,7 +39,7 @@ class SubsetSimulation(AnalysisObject):
         Target conditional failure probability per subset level (default 0.1).
     proposal_sigma : float, optional
         Half-width of the uniform proposal kernel used in MMH, measured in
-        standard-deviation units of the standard-normal space (default 1.0).
+        standard-deviation units of the standard normal space (default 1.0).
     rng : int, numpy.random.Generator or None, optional
         Random source; NumPy's global generator is not used. A seed recreates
         the same stream on every run, a generator advances its own state, and

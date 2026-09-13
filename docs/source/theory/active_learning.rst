@@ -152,7 +152,7 @@ sample dependence; the runner does not impose a binomial formula on them.
 
 The immutable result contains the estimate, normal-equivalent beta,
 convergence status, true evaluation count, history, conditional sampling CoV
-and, for default Monte Carlo, an exact 95% binomial interval. These sampling diagnostics exclude
+and, for default Monte Carlo, an exact 95 % binomial interval. These sampling diagnostics exclude
 surrogate error. A successful stopping status concerns the sampled points;
 it cannot guarantee discovery of disconnected failure regions or eliminate
 surrogate bias. Nonconvergence emits a warning and preserves an explicitly

@@ -25,7 +25,7 @@ Monte Carlo observes zero failures
 
 Do not interpret a zero count as proof that failure is impossible. For a
 preselected, fixed sample size of ``N`` independent direct trials with no
-failures, a one-sided 95% binomial upper confidence limit is
+failures, a one-sided 95 % binomial upper confidence limit is
 :math:`1-0.05^{1/N}` (approximately :math:`3/N`). This formula does not apply
 unchanged to importance weights, correlated subset chains or adaptive stopping.
 Increase the budget or choose a rare-event estimator using :doc:`methods`.

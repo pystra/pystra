@@ -29,14 +29,14 @@ state is used to define failure in the context of SRA. [Nowak2000]_
 
 This boundary is usually interpreted and formulated within a mathematical
 model for the functionality and performance of a structural system, and
-expressed by a limit state function. [Ditlevsen2007]_
+expressed by a limit-state function. [Ditlevsen2007]_
 
 .. note::
-   [Limit State Function]
+   **Limit-state function**
 
    Let :math:`{\bf X}` describe a set of random variables :math:`{X}_1
    \dots {X}_n` which influence the performance of a structure. Then the
-   functionality of the structure is called limit state function, denoted by
+   functionality of the structure is called limit-state function, denoted by
    :math:`g` and given by
 
    .. math::
@@ -51,7 +51,7 @@ performance and the structure is safe. An undesired performance is given by
 system. [Baker2010]_
 
 The probability of failure :math:`p_f` is equal to the probability that an
-undesired performance will occur. It can be mathematical expressed as
+undesired performance will occur. It can be expressed mathematically as
 
 .. math::
    :label: eq:2_70
@@ -65,19 +65,18 @@ by [Baker2010]_:
 
    1. There is not always enough information to define the complete joint
       probability density function :math:`f_X({\bf x})`.
-   2. The limit state function :math:`g({\bf X})` may be difficult to evaluate.
+   2. The limit-state function :math:`g({\bf X})` may be difficult to evaluate.
    3. Even if :math:`f_X({\bf x})` and :math:`g({\bf X})` are known, numerical
       computing of high dimensional integrals is difficult.
 
-For this reason various methods have been developed to overcome these chal-
-lenges. The most common ones are the Monte Carlo simulation method and the
-First Order Reliability Method (FORM).
+Various methods address these challenges. The most common are Monte Carlo
+simulation and the first-order reliability method (FORM).
 
 The classical approach
 ----------------------
 
 Before discussing more general methods, the principles are shown on a
-"historical" and simplified limit state function.
+"historical" and simplified limit-state function.
 
 .. math::
    :label: eq:2_71
@@ -96,7 +95,7 @@ failure is according to Equation :eq:`eq:2_70`:
 
 If :math:`R` and :math:`S` are independent the Equation :eq:`eq:2_72` can be
 rewritten as a convolution integral, where the probability of failure
-:math:`p_f` can be (numerical) computed. [Schneider2007]_
+:math:`p_f` can be computed numerically. [Schneider2007]_
 
 .. math::
    :label: eq:2_73
@@ -118,7 +117,7 @@ analytically.
 
            M = R - S
 
-where :math:`M` is the safety margin and also normal distributed :math:`M \sim N
+where :math:`M` is the safety margin and also normally distributed :math:`M \sim N
 (\mu_M , \sigma_M )` with the parameters
 
 .. math::
@@ -139,10 +138,10 @@ standard normal distribution function.
 
            p_f = \Phi\left(\frac{0-\mu_m}{\sigma_M}\right)=\Phi(-\beta)
 
-Where :math:`\beta` is the so called Cornell reliability index, named after
-Cornell (1969), and is equal to the number of the standard derivation
-:math:`\sigma_M` by which the mean values :math:`\mu_M` of the safety margin
-:math:`M` are zero. [Faber2009]_
+Here :math:`\beta` is the Cornell reliability index, named after Cornell
+(1969). It measures the distance from zero to the mean safety margin
+:math:`\mu_M` in units of its standard deviation :math:`\sigma_M`.
+[Faber2009]_
 
 .. figure:: ../images/f-02-08-a.*
    :alt: Resistance, load and safety-margin densities; beta standard deviations separate the margin mean from zero.

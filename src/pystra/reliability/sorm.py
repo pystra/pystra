@@ -16,14 +16,14 @@ __all__ = ["SORM"]
 
 
 class SORM(_FORMReuse, AnalysisObject):
-    r"""Second Order Reliability Method (SORM).
+    r"""Second-order reliability method (SORM).
 
     Approximates the failure surface in standard normal space using a
     quadratic surface, improving on the linear FORM approximation. Two
     approaches are available:
 
     **Curve-fitting** (``fit="curve"``, default): computes the Hessian of
-    the limit state function at the design point, extracts principal
+    the limit-state function at the design point, extracts principal
     curvatures as eigenvalues, and applies the Breitung formula.
 
     **Point-fitting** (``fit="point"``): locates fitting points directly
@@ -41,7 +41,7 @@ class SORM(_FORMReuse, AnalysisObject):
     model : StochasticModel
         The stochastic model with random variables and correlations.
     limit_state : LimitState
-        The limit state function.
+        The limit-state function.
     options : SORMOptions, optional
         The fit, the reported formula and the Hessian step.
     form : FORM, optional
@@ -194,7 +194,7 @@ class SORM(_FORMReuse, AnalysisObject):
     def _run_pointfit(self):
         """Run SORM analysis using point-fitting.
 
-        Finds fitting points on the limit state surface on both the positive
+        Finds fitting points on the limit-state surface on both the positive
         and negative sides of each principal axis in the rotated standard
         normal space.  Curvatures are computed from the positions of these
         points, producing asymmetric curvatures returned in
@@ -558,7 +558,7 @@ class SORM(_FORMReuse, AnalysisObject):
     def _evaluate_lsf(self, x, calc_gradient=False, u_space=True):
         """
         For use in computing the Hessian without altering the FORM object.
-        Considers the coord transform so the limit state function is evaluated
+        Considers the coord transform so the limit-state function is evaluated
         in physical coordinates, but gradient returned in u-space.
 
         This code already in FORM, and a more integrated approach would put

@@ -104,7 +104,7 @@ class EnrichmentEstimator(ReliabilityEstimator):
 
 
 class MonteCarloEstimator(ReliabilityEstimator):
-    """Independent normal Monte Carlo with an exact 95% binomial interval.
+    """Independent normal Monte Carlo with an exact 95 % binomial interval.
 
     ``n_samples`` defaults to 100000 and must be at least 2. No/all failures
     yield infinite CoV, so endpoint samples cannot claim adequate precision.

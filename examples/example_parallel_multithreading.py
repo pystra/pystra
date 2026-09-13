@@ -24,7 +24,7 @@ start_time = time.time()
 
 def example_limitstatefunction(X1, X2, X3):
     """
-    example limit state function
+    example limit-state function
     """
     # Define an output queue
     output = mp.Queue()
@@ -70,7 +70,7 @@ def example_limitstatefunction(X1, X2, X3):
 ############################################################################
 # Define a main() function.
 def main():
-    # Define limit state function  # - case 2: use predefined function
+    # Define limit-state function  # - case 2: use predefined function
     limit_state = LimitState(example_limitstatefunction)
 
     # Set some options (optional)

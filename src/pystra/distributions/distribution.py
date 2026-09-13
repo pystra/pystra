@@ -193,11 +193,11 @@ def _uses_native_parameters(distribution, mean, std, **native):
 
 
 class Constant:
-    """A deterministic (non-random) variable in the limit state function.
+    """A deterministic (non-random) variable in the limit-state function.
 
     Constants are included in the stochastic model but are not treated as
     random variables — they carry a fixed value through every evaluation of
-    the limit state function.
+    the limit-state function.
 
     Parameters
     ----------
@@ -254,7 +254,7 @@ class Distribution:
     ----------
     name : str
         Name of the random variable.  Must match a keyword argument of
-        the limit state function.
+        the limit-state function.
     dist_obj : scipy.stats.rv_frozen, optional
         A frozen SciPy distribution.  When provided, ``mean`` and
         ``std`` are computed from the distribution automatically.

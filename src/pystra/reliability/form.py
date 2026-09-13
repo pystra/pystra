@@ -36,7 +36,7 @@ class FORM(AnalysisObject):
     Numerical convergence does not establish the accuracy of the local
     boundary approximation or exclude competing failure regions.
 
-    Independent standard-normal coordinates are the usual choice. Explicit
+    Independent standard normal coordinates are the usual choice. Explicit
     spherical Student-t generalized Nataf instead uses a Student-t half-space
     tail. ``FORMResult.design_index`` is the signed geometric distance and
     ``FORMResult.beta`` the normal-equivalent index.

@@ -50,7 +50,7 @@ Hohenbichler–Rackwitz modification (``"modified_breitung"``). Here the boundar
 is a plane, so FORM and SORM agree with the exact probability. For a curved
 boundary, inspect fitting diagnostics and compare with an independent estimate.
 
-SORM requires standard-normal coordinates. A Student-t copula can still be
+SORM requires standard normal coordinates. A Student-t copula can still be
 mapped to independent normals through Rosenblatt; explicit spherical Student-t
 coordinates are a different choice. See :doc:`/copulas`.
 

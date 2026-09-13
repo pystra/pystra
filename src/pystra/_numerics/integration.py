@@ -3,7 +3,7 @@
 """Numerical integration for the Nataf modified correlation matrix.
 
 The Nataf model requires solving for a modified correlation coefficient
-``rho_0`` in standard-normal space that reproduces a given correlation
+``rho_0`` in standard normal space that reproduces a given correlation
 coefficient ``rho`` in physical space.  The functions in this module
 evaluate the double integral that relates ``rho_0`` to the physical
 correlation using 2-D Gauss-Legendre quadrature.
@@ -25,7 +25,7 @@ def rho_integral(rho0, margi, margj, Z1, Z2, X1, X2, WIP, detJ):
     Parameters
     ----------
     rho0 : float
-        Trial correlation in standard-normal space.
+        Trial correlation in standard normal space.
     margi, margj : Distribution
         Marginal distributions of the two random variables.
     Z1, Z2 : ndarray
@@ -66,7 +66,7 @@ def rho_integral(rho0, margi, margj, Z1, Z2, X1, X2, WIP, detJ):
 def zi_and_xi(margi, margj, zmax, nIP):
     """Set up the 2-D quadrature grid for the Nataf correlation integral.
 
-    Computes the meshgrid arrays of standard-normal coordinates (Z1, Z2),
+    Computes the meshgrid arrays of standard normal coordinates (Z1, Z2),
     their physical-space counterparts (X1, X2), the outer-product weight
     matrix, and the Jacobian determinant for the coordinate mapping.
 
@@ -83,7 +83,7 @@ def zi_and_xi(margi, margj, zmax, nIP):
     Returns
     -------
     Z1, Z2 : ndarray
-        Meshgrid arrays of standard-normal coordinates, each of
+        Meshgrid arrays of standard normal coordinates, each of
         shape ``(nIP, nIP)``.
     X1, X2 : ndarray
         Physical-space values corresponding to Z1 and Z2.
@@ -176,7 +176,7 @@ def drho_drho0(rho0, margi, margj, Z1, Z2, X1, X2, WIP, detJ):
     Parameters
     ----------
     rho0 : float
-        Modified correlation in standard-normal space.
+        Modified correlation in standard normal space.
     margi, margj : Distribution
         Marginal distributions.
     Z1, Z2, X1, X2, WIP, detJ

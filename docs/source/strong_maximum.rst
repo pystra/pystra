@@ -13,7 +13,7 @@ probability, find replacement design points, or certify global optimality.
 The method follows Dutfoy and Lebrun [DutfoyLebrun2006]_, as described in the
 `OpenTURNS theory documentation
 <https://openturns.github.io/openturns/latest/theory/reliability_sensitivity/strong_maximum_test.html>`_.
-PySTRA implements the independent standard-normal case using NumPy and SciPy;
+PySTRA implements the independent standard normal case using NumPy and SciPy;
 OpenTURNS is not a runtime dependency.
 
 After FORM
@@ -67,7 +67,7 @@ Alternatively, specify a point explicitly:
    competing_g = check_result.limit_state_values[check_result.regions["far_failure"]]
 
 The explicit point must be a finite vector in the model's independent
-standard-normal coordinates. ``options`` (``FORMOptions``) selects its transformation
+standard normal coordinates. ``options`` (``FORMOptions``) selects its transformation
 and, for Rosenblatt, conditioning order. For a non-Gaussian copula, use
 :ref:`Rosenblatt <chap_copulas>`; spherical Student-t Nataf space is rejected.
 The test verifies a strictly safe origin and a boundary

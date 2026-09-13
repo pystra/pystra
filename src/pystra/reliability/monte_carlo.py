@@ -280,7 +280,7 @@ class CrudeMonteCarlo(MonteCarlo):
             # Coumpute percent done
             self._compute_percent_done()
 
-            # stroing all values of the limit state function
+            # stroing all values of the limit-state function
             if self._u_all is None:
                 self._all_G1 = self._G
             else:
@@ -403,7 +403,7 @@ class CrudeMonteCarlo(MonteCarlo):
 class DistributionAnalysis(MonteCarlo):
     """Distribution Analysis
 
-    To analyze the random variables, used in the limit state function, a
+    To analyze the random variables, used in the limit-state function, a
     numerical distribution analysis based on Monte Carlo simulation can be
     performed.
 

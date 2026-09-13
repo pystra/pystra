@@ -173,7 +173,7 @@ def test_standard_benchmarks(problem, surrogate, learning, seed):
     result = analysis.run()
     assert result.converged, result
     assert result.n_limit_state_evaluations < 250
-    # 4 binomial standard errors plus a separate 5% surrogate error allowance.
+    # 4 binomial standard errors plus a separate 5 % surrogate error allowance.
     sampling_error = 4 * np.sqrt(reference * (1 - reference) / result.n_estimation)
     assert (
         abs(result.failure_probability - reference) < sampling_error + 0.05 * reference
@@ -183,8 +183,8 @@ def test_standard_benchmarks(problem, surrogate, learning, seed):
     truth = analysis._evaluate(points) <= 0
     prediction = analysis._predict(analysis.surrogate_model, points)[0] <= 0
     # A global polynomial approximates this nonsmooth minimum less closely
-    # than Kriging: permit at most 15% of Pf in misclassified probability
-    # mass (10% for the other cases), separately from the same Pf criterion.
+    # than Kriging: permit at most 15 % of Pf in misclassified probability
+    # mass (10 % for the other cases), separately from the same Pf criterion.
     classification_fraction = 0.15 if nonsmooth_pce else 0.1
     assert np.mean(truth != prediction) < classification_fraction * reference
     if problem == "four_branch":
