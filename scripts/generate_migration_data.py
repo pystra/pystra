@@ -28,7 +28,7 @@ def generate() -> str:
             "public_path": settings["current_public_classes"].get(target, target),
             "keywords": constructor.get("keyword_renames", {}),
             "manual": manual,
-            "positional_limit": constructor.get("positional_limit", 1000),
+            "positional_limit": constructor.get("positional_limit"),
         }
         symbols[old] = record
         if target:

@@ -159,7 +159,7 @@ DATA = json.loads(r"""
       "pystra.results.FORMResult"
     ],
     "getBeta": [
-      "pystra.decision.risk.RiskResult.get_beta",
+      "pystra.decision.ddo.RiskResult.get_beta",
       "pystra.results.FORMResult",
       "pystra.results.SimulationResult",
       "pystra.results.SystemFORMResult"
@@ -205,7 +205,7 @@ DATA = json.loads(r"""
       "pystra.model.LimitState.get_expression"
     ],
     "getFailure": [
-      "pystra.decision.risk.RiskResult.get_failure",
+      "pystra.decision.ddo.RiskResult.get_failure",
       "pystra.results.FORMResult",
       "pystra.results.SimulationResult",
       "pystra.results.SystemFORMResult"
@@ -370,7 +370,7 @@ DATA = json.loads(r"""
       "pystra.reliability.sorm.SORM._run_pointfit"
     ],
     "run_reliability_case": [
-      "pystra.assessment.analyze_case"
+      "pystra.calibration.factors.analyze_case"
     ],
     "setBins": [
       "pystra.options.SimulationOptions"
@@ -527,7 +527,7 @@ DATA = json.loads(r"""
     "pystra.AnalysisOptions": {
       "keywords": {},
       "manual": true,
-      "positional_limit": 1000,
+      "positional_limit": null,
       "public_path": null,
       "target": null
     },
@@ -544,7 +544,7 @@ DATA = json.loads(r"""
     "pystra.Calibration": {
       "keywords": {},
       "manual": true,
-      "positional_limit": 1000,
+      "positional_limit": null,
       "public_path": null,
       "target": null
     },
@@ -584,7 +584,7 @@ DATA = json.loads(r"""
     "pystra.Copula": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
+      "positional_limit": null,
       "public_path": "pystra.dependence.Copula",
       "target": "pystra.dependence.copula.Copula"
     },
@@ -605,9 +605,9 @@ DATA = json.loads(r"""
     "pystra.CostBenefitModel": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.objectives.CostBenefitModel",
-      "target": "pystra.decision.objectives.CostBenefitModel"
+      "positional_limit": null,
+      "public_path": "pystra.decision.CostBenefitModel",
+      "target": "pystra.decision.ddo.CostBenefitModel"
     },
     "pystra.CrudeMonteCarlo": {
       "keywords": {
@@ -637,23 +637,23 @@ DATA = json.loads(r"""
     "pystra.DDOCriterion": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.criteria.DDOCriterion",
-      "target": "pystra.decision.criteria.DDOCriterion"
+      "positional_limit": null,
+      "public_path": "pystra.decision.DDOCriterion",
+      "target": "pystra.decision.ddo.DDOCriterion"
     },
     "pystra.DDOObjective": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.objectives.DDOObjective",
-      "target": "pystra.decision.objectives.DDOObjective"
+      "positional_limit": null,
+      "public_path": "pystra.decision.DDOObjective",
+      "target": "pystra.decision.ddo.DDOObjective"
     },
     "pystra.DesignStudy": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.studies.DesignStudy",
-      "target": "pystra.decision.studies.DesignStudy"
+      "positional_limit": null,
+      "public_path": "pystra.decision.DesignStudy",
+      "target": "pystra.decision.ddo.DesignStudy"
     },
     "pystra.Distribution": {
       "keywords": {
@@ -697,9 +697,9 @@ DATA = json.loads(r"""
     "pystra.FatalityConsequence": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.risk.FatalityConsequence",
-      "target": "pystra.decision.risk.FatalityConsequence"
+      "positional_limit": null,
+      "public_path": "pystra.decision.FatalityConsequence",
+      "target": "pystra.decision.ddo.FatalityConsequence"
     },
     "pystra.Form": {
       "keywords": {
@@ -796,7 +796,7 @@ DATA = json.loads(r"""
     "pystra.GenericModel": {
       "keywords": {},
       "manual": true,
-      "positional_limit": 1000,
+      "positional_limit": null,
       "public_path": "pystra.calibration.NormalizedReliabilityModel",
       "target": "pystra.calibration.normalized.NormalizedReliabilityModel"
     },
@@ -862,9 +862,9 @@ DATA = json.loads(r"""
     "pystra.LQI": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.criteria.LQI",
-      "target": "pystra.decision.criteria.LQI"
+      "positional_limit": null,
+      "public_path": "pystra.decision.LQI",
+      "target": "pystra.decision.ddo.LQI"
     },
     "pystra.LimitState": {
       "keywords": {},
@@ -945,37 +945,37 @@ DATA = json.loads(r"""
     "pystra.NormalizedReliabilityModel": {
       "keywords": {},
       "manual": true,
-      "positional_limit": 1000,
+      "positional_limit": null,
       "public_path": "pystra.calibration.NormalizedReliabilityModel",
       "target": "pystra.calibration.normalized.NormalizedReliabilityModel"
     },
     "pystra.ParallelSystem": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
+      "positional_limit": null,
       "public_path": "pystra.ParallelSystem",
       "target": "pystra.systems.ParallelSystem"
     },
     "pystra.RackwitzTargetModel": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.targets.RackwitzTargetModel",
-      "target": "pystra.decision.targets.RackwitzTargetModel"
+      "positional_limit": null,
+      "public_path": "pystra.decision.RackwitzTargetModel",
+      "target": "pystra.decision.ddo.RackwitzTargetModel"
     },
     "pystra.RiskResult": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.risk.RiskResult",
-      "target": "pystra.decision.risk.RiskResult"
+      "positional_limit": null,
+      "public_path": "pystra.decision.RiskResult",
+      "target": "pystra.decision.ddo.RiskResult"
     },
     "pystra.RiskStudy": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.studies.RiskStudy",
-      "target": "pystra.decision.studies.RiskStudy"
+      "positional_limit": null,
+      "public_path": "pystra.decision.RiskStudy",
+      "target": "pystra.decision.ddo.RiskStudy"
     },
     "pystra.SORM": {
       "keywords": {
@@ -991,16 +991,16 @@ DATA = json.loads(r"""
     "pystra.SWTP": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.swtp.SWTP",
-      "target": "pystra.decision.swtp.SWTP"
+      "positional_limit": null,
+      "public_path": "pystra.decision.SWTP",
+      "target": "pystra.decision.ddo.SWTP"
     },
     "pystra.ScenarioRiskModel": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.risk.ScenarioRiskModel",
-      "target": "pystra.decision.risk.ScenarioRiskModel"
+      "positional_limit": null,
+      "public_path": "pystra.decision.ScenarioRiskModel",
+      "target": "pystra.decision.ddo.ScenarioRiskModel"
     },
     "pystra.ScipyDist": {
       "keywords": {
@@ -1025,7 +1025,7 @@ DATA = json.loads(r"""
     "pystra.SeriesSystem": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
+      "positional_limit": null,
       "public_path": "pystra.SeriesSystem",
       "target": "pystra.systems.SeriesSystem"
     },
@@ -1073,7 +1073,7 @@ DATA = json.loads(r"""
     "pystra.StdNormal": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
+      "positional_limit": null,
       "public_path": "pystra.StdNormal",
       "target": "pystra.distributions.distribution.StdNormal"
     },
@@ -1133,9 +1133,9 @@ DATA = json.loads(r"""
     "pystra.TargetReliability": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.targets.TargetReliability",
-      "target": "pystra.decision.targets.TargetReliability"
+      "positional_limit": null,
+      "public_path": "pystra.decision.TargetReliability",
+      "target": "pystra.decision.ddo.TargetReliability"
     },
     "pystra.TieSetSystem": {
       "keywords": {},
@@ -1234,14 +1234,14 @@ DATA = json.loads(r"""
     "pystra.analysis.AnalysisOptions": {
       "keywords": {},
       "manual": true,
-      "positional_limit": 1000,
+      "positional_limit": null,
       "public_path": null,
       "target": null
     },
     "pystra.calibration.Calibration": {
       "keywords": {},
       "manual": true,
-      "positional_limit": 1000,
+      "positional_limit": null,
       "public_path": null,
       "target": null
     },
@@ -1262,14 +1262,14 @@ DATA = json.loads(r"""
     "pystra.calibration.GenericModel": {
       "keywords": {},
       "manual": true,
-      "positional_limit": 1000,
+      "positional_limit": null,
       "public_path": "pystra.calibration.NormalizedReliabilityModel",
       "target": "pystra.calibration.normalized.NormalizedReliabilityModel"
     },
     "pystra.calibration.NormalizedReliabilityModel": {
       "keywords": {},
       "manual": true,
-      "positional_limit": 1000,
+      "positional_limit": null,
       "public_path": "pystra.calibration.NormalizedReliabilityModel",
       "target": "pystra.calibration.normalized.NormalizedReliabilityModel"
     },
@@ -1283,14 +1283,14 @@ DATA = json.loads(r"""
     "pystra.calibration.normalized.NormalizedReliabilityModel": {
       "keywords": {},
       "manual": true,
-      "positional_limit": 1000,
+      "positional_limit": null,
       "public_path": "pystra.calibration.NormalizedReliabilityModel",
       "target": "pystra.calibration.normalized.NormalizedReliabilityModel"
     },
     "pystra.copula.Copula": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
+      "positional_limit": null,
       "public_path": "pystra.dependence.Copula",
       "target": "pystra.dependence.copula.Copula"
     },
@@ -1332,9 +1332,9 @@ DATA = json.loads(r"""
     "pystra.ddo.CostBenefitModel": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.objectives.CostBenefitModel",
-      "target": "pystra.decision.objectives.CostBenefitModel"
+      "positional_limit": null,
+      "public_path": "pystra.decision.CostBenefitModel",
+      "target": "pystra.decision.ddo.CostBenefitModel"
     },
     "pystra.ddo.DDO": {
       "keywords": {},
@@ -1346,114 +1346,107 @@ DATA = json.loads(r"""
     "pystra.ddo.DDOCriterion": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.criteria.DDOCriterion",
-      "target": "pystra.decision.criteria.DDOCriterion"
+      "positional_limit": null,
+      "public_path": "pystra.decision.DDOCriterion",
+      "target": "pystra.decision.ddo.DDOCriterion"
     },
     "pystra.ddo.DDOObjective": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.objectives.DDOObjective",
-      "target": "pystra.decision.objectives.DDOObjective"
+      "positional_limit": null,
+      "public_path": "pystra.decision.DDOObjective",
+      "target": "pystra.decision.ddo.DDOObjective"
     },
     "pystra.ddo.DesignStudy": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.studies.DesignStudy",
-      "target": "pystra.decision.studies.DesignStudy"
+      "positional_limit": null,
+      "public_path": "pystra.decision.DesignStudy",
+      "target": "pystra.decision.ddo.DesignStudy"
     },
     "pystra.ddo.FatalityConsequence": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.risk.FatalityConsequence",
-      "target": "pystra.decision.risk.FatalityConsequence"
+      "positional_limit": null,
+      "public_path": "pystra.decision.FatalityConsequence",
+      "target": "pystra.decision.ddo.FatalityConsequence"
     },
     "pystra.ddo.LQI": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.criteria.LQI",
-      "target": "pystra.decision.criteria.LQI"
+      "positional_limit": null,
+      "public_path": "pystra.decision.LQI",
+      "target": "pystra.decision.ddo.LQI"
     },
     "pystra.ddo.RackwitzTargetModel": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.targets.RackwitzTargetModel",
-      "target": "pystra.decision.targets.RackwitzTargetModel"
+      "positional_limit": null,
+      "public_path": "pystra.decision.RackwitzTargetModel",
+      "target": "pystra.decision.ddo.RackwitzTargetModel"
     },
     "pystra.ddo.RiskResult": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.risk.RiskResult",
-      "target": "pystra.decision.risk.RiskResult"
+      "positional_limit": null,
+      "public_path": "pystra.decision.RiskResult",
+      "target": "pystra.decision.ddo.RiskResult"
     },
     "pystra.ddo.RiskStudy": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.studies.RiskStudy",
-      "target": "pystra.decision.studies.RiskStudy"
+      "positional_limit": null,
+      "public_path": "pystra.decision.RiskStudy",
+      "target": "pystra.decision.ddo.RiskStudy"
     },
     "pystra.ddo.SWTP": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.swtp.SWTP",
-      "target": "pystra.decision.swtp.SWTP"
+      "positional_limit": null,
+      "public_path": "pystra.decision.SWTP",
+      "target": "pystra.decision.ddo.SWTP"
     },
     "pystra.ddo.SWTPIndexRecord": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.swtp.SWTPIndexRecord",
-      "target": "pystra.decision.swtp.SWTPIndexRecord"
+      "positional_limit": null,
+      "public_path": "pystra.decision.ddo.SWTPIndexRecord",
+      "target": "pystra.decision.ddo.SWTPIndexRecord"
     },
     "pystra.ddo.SWTPRecord": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.swtp.SWTPRecord",
-      "target": "pystra.decision.swtp.SWTPRecord"
+      "positional_limit": null,
+      "public_path": "pystra.decision.ddo.SWTPRecord",
+      "target": "pystra.decision.ddo.SWTPRecord"
     },
     "pystra.ddo.ScenarioRiskModel": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.risk.ScenarioRiskModel",
-      "target": "pystra.decision.risk.ScenarioRiskModel"
+      "positional_limit": null,
+      "public_path": "pystra.decision.ScenarioRiskModel",
+      "target": "pystra.decision.ddo.ScenarioRiskModel"
     },
     "pystra.ddo.TargetReliability": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.targets.TargetReliability",
-      "target": "pystra.decision.targets.TargetReliability"
+      "positional_limit": null,
+      "public_path": "pystra.decision.TargetReliability",
+      "target": "pystra.decision.ddo.TargetReliability"
     },
     "pystra.ddo.TargetReliabilityCalibration": {
       "keywords": {},
       "manual": true,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.targets.TargetReliabilityCalibration",
-      "target": "pystra.decision.targets.TargetReliabilityCalibration"
+      "positional_limit": null,
+      "public_path": "pystra.decision.ddo.TargetReliabilityCalibration",
+      "target": "pystra.decision.ddo.TargetReliabilityCalibration"
     },
-    "pystra.decision.criteria.DDOCriterion": {
+    "pystra.decision.ddo.CostBenefitModel": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.criteria.DDOCriterion",
-      "target": "pystra.decision.criteria.DDOCriterion"
-    },
-    "pystra.decision.criteria.LQI": {
-      "keywords": {},
-      "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.criteria.LQI",
-      "target": "pystra.decision.criteria.LQI"
+      "positional_limit": null,
+      "public_path": "pystra.decision.CostBenefitModel",
+      "target": "pystra.decision.ddo.CostBenefitModel"
     },
     "pystra.decision.ddo.DDO": {
       "keywords": {},
@@ -1462,101 +1455,108 @@ DATA = json.loads(r"""
       "public_path": "pystra.decision.DDO",
       "target": "pystra.decision.ddo.DDO"
     },
-    "pystra.decision.objectives.CostBenefitModel": {
+    "pystra.decision.ddo.DDOCriterion": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.objectives.CostBenefitModel",
-      "target": "pystra.decision.objectives.CostBenefitModel"
+      "positional_limit": null,
+      "public_path": "pystra.decision.DDOCriterion",
+      "target": "pystra.decision.ddo.DDOCriterion"
     },
-    "pystra.decision.objectives.DDOObjective": {
+    "pystra.decision.ddo.DDOObjective": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.objectives.DDOObjective",
-      "target": "pystra.decision.objectives.DDOObjective"
+      "positional_limit": null,
+      "public_path": "pystra.decision.DDOObjective",
+      "target": "pystra.decision.ddo.DDOObjective"
     },
-    "pystra.decision.risk.FatalityConsequence": {
+    "pystra.decision.ddo.DesignStudy": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.risk.FatalityConsequence",
-      "target": "pystra.decision.risk.FatalityConsequence"
+      "positional_limit": null,
+      "public_path": "pystra.decision.DesignStudy",
+      "target": "pystra.decision.ddo.DesignStudy"
     },
-    "pystra.decision.risk.RiskResult": {
+    "pystra.decision.ddo.FatalityConsequence": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.risk.RiskResult",
-      "target": "pystra.decision.risk.RiskResult"
+      "positional_limit": null,
+      "public_path": "pystra.decision.FatalityConsequence",
+      "target": "pystra.decision.ddo.FatalityConsequence"
     },
-    "pystra.decision.risk.ScenarioRiskModel": {
+    "pystra.decision.ddo.LQI": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.risk.ScenarioRiskModel",
-      "target": "pystra.decision.risk.ScenarioRiskModel"
+      "positional_limit": null,
+      "public_path": "pystra.decision.LQI",
+      "target": "pystra.decision.ddo.LQI"
     },
-    "pystra.decision.studies.DesignStudy": {
+    "pystra.decision.ddo.RackwitzTargetModel": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.studies.DesignStudy",
-      "target": "pystra.decision.studies.DesignStudy"
+      "positional_limit": null,
+      "public_path": "pystra.decision.RackwitzTargetModel",
+      "target": "pystra.decision.ddo.RackwitzTargetModel"
     },
-    "pystra.decision.studies.RiskStudy": {
+    "pystra.decision.ddo.RiskResult": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.studies.RiskStudy",
-      "target": "pystra.decision.studies.RiskStudy"
+      "positional_limit": null,
+      "public_path": "pystra.decision.RiskResult",
+      "target": "pystra.decision.ddo.RiskResult"
     },
-    "pystra.decision.swtp.SWTP": {
+    "pystra.decision.ddo.RiskStudy": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.swtp.SWTP",
-      "target": "pystra.decision.swtp.SWTP"
+      "positional_limit": null,
+      "public_path": "pystra.decision.RiskStudy",
+      "target": "pystra.decision.ddo.RiskStudy"
     },
-    "pystra.decision.swtp.SWTPIndexRecord": {
+    "pystra.decision.ddo.SWTP": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.swtp.SWTPIndexRecord",
-      "target": "pystra.decision.swtp.SWTPIndexRecord"
+      "positional_limit": null,
+      "public_path": "pystra.decision.SWTP",
+      "target": "pystra.decision.ddo.SWTP"
     },
-    "pystra.decision.swtp.SWTPRecord": {
+    "pystra.decision.ddo.SWTPIndexRecord": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.swtp.SWTPRecord",
-      "target": "pystra.decision.swtp.SWTPRecord"
+      "positional_limit": null,
+      "public_path": "pystra.decision.ddo.SWTPIndexRecord",
+      "target": "pystra.decision.ddo.SWTPIndexRecord"
     },
-    "pystra.decision.targets.RackwitzTargetModel": {
+    "pystra.decision.ddo.SWTPRecord": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.targets.RackwitzTargetModel",
-      "target": "pystra.decision.targets.RackwitzTargetModel"
+      "positional_limit": null,
+      "public_path": "pystra.decision.ddo.SWTPRecord",
+      "target": "pystra.decision.ddo.SWTPRecord"
     },
-    "pystra.decision.targets.TargetReliability": {
+    "pystra.decision.ddo.ScenarioRiskModel": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.targets.TargetReliability",
-      "target": "pystra.decision.targets.TargetReliability"
+      "positional_limit": null,
+      "public_path": "pystra.decision.ScenarioRiskModel",
+      "target": "pystra.decision.ddo.ScenarioRiskModel"
     },
-    "pystra.decision.targets.TargetReliabilityCalibration": {
+    "pystra.decision.ddo.TargetReliability": {
+      "keywords": {},
+      "manual": false,
+      "positional_limit": null,
+      "public_path": "pystra.decision.TargetReliability",
+      "target": "pystra.decision.ddo.TargetReliability"
+    },
+    "pystra.decision.ddo.TargetReliabilityCalibration": {
       "keywords": {},
       "manual": true,
-      "positional_limit": 1000,
-      "public_path": "pystra.decision.targets.TargetReliabilityCalibration",
-      "target": "pystra.decision.targets.TargetReliabilityCalibration"
+      "positional_limit": null,
+      "public_path": "pystra.decision.ddo.TargetReliabilityCalibration",
+      "target": "pystra.decision.ddo.TargetReliabilityCalibration"
     },
     "pystra.dependence.copula.Copula": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
+      "positional_limit": null,
       "public_path": "pystra.dependence.Copula",
       "target": "pystra.dependence.copula.Copula"
     },
@@ -1813,7 +1813,7 @@ DATA = json.loads(r"""
     "pystra.distributions.StdNormal": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
+      "positional_limit": null,
       "public_path": "pystra.StdNormal",
       "target": "pystra.distributions.distribution.StdNormal"
     },
@@ -1936,7 +1936,7 @@ DATA = json.loads(r"""
     "pystra.distributions.distribution.StdNormal": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
+      "positional_limit": null,
       "public_path": "pystra.StdNormal",
       "target": "pystra.distributions.distribution.StdNormal"
     },
@@ -2610,14 +2610,14 @@ DATA = json.loads(r"""
     "pystra.system.ParallelSystem": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
+      "positional_limit": null,
       "public_path": "pystra.ParallelSystem",
       "target": "pystra.systems.ParallelSystem"
     },
     "pystra.system.SeriesSystem": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
+      "positional_limit": null,
       "public_path": "pystra.SeriesSystem",
       "target": "pystra.systems.SeriesSystem"
     },
@@ -2671,14 +2671,14 @@ DATA = json.loads(r"""
     "pystra.systems.ParallelSystem": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
+      "positional_limit": null,
       "public_path": "pystra.ParallelSystem",
       "target": "pystra.systems.ParallelSystem"
     },
     "pystra.systems.SeriesSystem": {
       "keywords": {},
       "manual": false,
-      "positional_limit": 1000,
+      "positional_limit": null,
       "public_path": "pystra.SeriesSystem",
       "target": "pystra.systems.SeriesSystem"
     },

@@ -1,6 +1,7 @@
 """AST resolution with source-span edits; source is never unparsed."""
 
 import ast
+import difflib
 from dataclasses import dataclass, field
 import json
 import re
@@ -433,7 +434,18 @@ class _Editor(ast.NodeVisitor):
                 "SubsetSimulation",
             }:
                 self.simulation = True
-            if len(node.args) > record.get("positional_limit", 1000):
+            positional_limit = record.get("positional_limit")
+            if node.args and positional_limit is None:
+                self.warn(
+                    node,
+                    "Positional configuration requires review: constructor arity is unavailable.",
+                )
+            elif any(isinstance(argument, ast.Starred) for argument in node.args):
+                self.warn(
+                    node,
+                    "Expanded positional constructor arguments require manual review.",
+                )
+            elif positional_limit is not None and len(node.args) > positional_limit:
                 self.warn(
                     node,
                     "Positional configuration may include input_type or moved options; use explicit 2.0 keywords.",
@@ -571,6 +583,31 @@ def _json_spans(source):
     yield from walk(0, ())
 
 
+def _source_pieces(original, converted):
+    """Keep notebook source chunks while mapping their boundaries through edits."""
+    opcodes = difflib.SequenceMatcher(
+        a="".join(original), b=converted, autojunk=False
+    ).get_opcodes()
+    pieces = []
+    boundary = previous = 0
+    for index, piece in enumerate(original):
+        boundary += len(piece)
+        if index == len(original) - 1:
+            end = len(converted)
+        else:
+            for tag, start_old, end_old, start_new, end_new in opcodes:
+                if boundary <= end_old:
+                    end = (
+                        start_new + boundary - start_old
+                        if tag == "equal"
+                        else start_new if boundary <= start_old else end_new
+                    )
+                    break
+        pieces.append(converted[previous:end])
+        previous = end
+    return pieces
+
+
 def _notebook(source):
     notebook = json.loads(source)
     edits = {}
@@ -589,11 +626,13 @@ def _notebook(source):
             for d in result.diagnostics
         )
         if text != result.source:
-            edits[("cells", index, "source")] = (
-                result.source.splitlines(keepends=True)
-                if isinstance(code, list)
-                else result.source
-            )
+            path = ("cells", index, "source")
+            if isinstance(code, list):
+                for part, replacement in enumerate(_source_pieces(code, result.source)):
+                    if replacement != code[part]:
+                        edits[(*path, part)] = replacement
+            else:
+                edits[path] = result.source
         try:
             ast.parse(text)
         except SyntaxError:
@@ -620,7 +659,7 @@ def _notebook(source):
         set(diagnostics), key=lambda d: (d.cell, d.line, d.column, d.message)
     )
     spans = [
-        (start, end, json.dumps(edits[path], ensure_ascii=False))
+        (start, end, json.dumps(edits[path], ensure_ascii="\\u" in source[start:end]))
         for path, start, end in _json_spans(source)
         if path in edits
     ]
@@ -633,7 +672,8 @@ def convert_notebook(source: str) -> Conversion:
     """Convert notebook code cells in document order, preserving other JSON.
 
     Markdown, outputs and metadata are untouched. Only changed code-cell
-    source fields are serialized. Imports carry across earlier valid Python
+    source strings are serialized; list layout and unchanged chunks remain intact.
+    Imports carry across earlier valid Python
     cells; IPython syntax is left unchanged and flagged. Cell execution order
     at runtime is not inferred. Diagnostics use one-based cell numbers.
     """

@@ -281,3 +281,62 @@ def test_class_moved_out_of_top_level_uses_public_subpackage():
     assert (
         convert_source(source).source == "from pystra.decision import DDO\nx = DDO()\n"
     )
+
+
+@pytest.mark.parametrize("indent", [None, 1, 2, 4, "\t"])
+@pytest.mark.parametrize("ensure_ascii", [False, True])
+def test_notebook_retains_source_list_layout(indent, ensure_ascii):
+    source = (
+        json.dumps(
+            {
+                "cells": [
+                    {
+                        "cell_type": "code",
+                        "source": [
+                            "import pystra as ra\n",
+                            "x = ra.Form()  # é\n",
+                            "print(x)\n",
+                        ],
+                    }
+                ],
+                "metadata": {"unchanged": True},
+            },
+            indent=indent,
+            ensure_ascii=ensure_ascii,
+        )
+        + "\n"
+    )
+    result = convert_notebook(source)
+    assert result.source == source.replace("ra.Form()", "ra.FORM()")
+    assert convert_notebook(result.source).source == result.source
+
+
+def test_notebook_retains_arbitrary_source_chunk_boundaries():
+    chunks = ["import pystra", " as ra\nx = ra.For", "m()\n"]
+    source = json.dumps({"cells": [{"cell_type": "code", "source": chunks}]}, indent=2)
+    result = convert_notebook(source)
+    converted = json.loads(result.source)["cells"][0]["source"]
+    assert len(converted) == len(chunks)
+    assert "".join(converted) == "import pystra as ra\nx = ra.FORM()\n"
+    assert result.source.count("\n") == source.count("\n")
+
+
+@pytest.mark.parametrize("missing", [False, True])
+def test_unknown_constructor_arity_requires_review(monkeypatch, missing):
+    from pystra.migrate._data import DATA
+
+    record = dict(DATA["symbols"]["pystra.Normal"])
+    if missing:
+        record.pop("positional_limit", None)
+    else:
+        record["positional_limit"] = None
+    monkeypatch.setitem(DATA["symbols"], "pystra.Normal", record)
+    result = convert_source("import pystra as ra\nx = ra.Normal('X', 3, 1)\n")
+    assert any(
+        "constructor arity is unavailable" in d.message for d in result.diagnostics
+    )
+
+
+def test_expanded_positional_arguments_require_review():
+    result = convert_source("import pystra as ra\nx = ra.Normal(*parameters)\n")
+    assert any("Expanded positional" in d.message for d in result.diagnostics)
