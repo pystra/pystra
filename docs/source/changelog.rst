@@ -62,6 +62,11 @@ Added
   transformations.
 - System reliability tutorial notebook and theory content with classical
   benchmark references.
+- Every distribution provides ``sf``, ``isf``, ``logcdf``, ``logsf`` and
+  ``logpdf``, each accurate in its own tail. Marginal transformations evaluate
+  the tail that a point lies in and use log probabilities where probabilities
+  underflow, so they stay finite and accurate to :math:`|u| \approx 37.5`, and
+  beyond that for the normal, lognormal and Gumbel families.
 
 Fixed
 ~~~~~
@@ -88,6 +93,20 @@ Fixed
   or zero gradients. Nonconverged runs warn and have ``results_valid=False``.
 - Ditlevsen bounds reject missing pairs, nonfinite inputs and intersections
   inconsistent with marginal probabilities.
+- Transformations of Gumbel, Gamma, Weibull, Fréchet, GEV and other
+  SciPy-based distributions returned infinite physical values above
+  :math:`u \approx 8.3`, where :math:`\Phi(u)` rounds to one. Line sampling
+  with a lognormal resistance and a Gumbel load now agrees with direct
+  integration to four decimals at reliability indices 4.2, 6.1 and 9.0.
+- ``GEVMin`` (``GEVmin`` in 1.x) took its transformation from quantiles of
+  :math:`-X`, returning mirrored points of the wrong sign, and converted
+  between moments and location/scale with the relations for maxima:
+  ``GEVMin("X", 10, 3, shape=s)`` had an actual mean of about 7.3. Results for
+  models that use it change.
+- ``MaxParent`` inverted its CDF by bracketing, which failed for a lognormal
+  maximum with large ``N``; it now inverts through the maximum's log-CDF.
+- ``Lognormal.cdf`` accepts arrays, and Student-t copula transformations use
+  the upper-tail functions of composite marginals.
 
 Changed
 ~~~~~~~

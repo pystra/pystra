@@ -1955,19 +1955,22 @@
       "old": "pystra.distributions.distribution.Distribution.u_to_x",
       "current": "pystra.distributions.distribution.Distribution.u_to_x",
       "kind": "callable",
-      "status": "unchanged"
+      "status": "changed_contract",
+      "notes": "Uses the survival function above u = 3 and log probabilities where probabilities underflow; tail quantiles below 1e-8 are checked against the log-CDF. Unchanged up to u = 3."
     },
     {
       "old": "pystra.distributions.distribution.Distribution.x_to_u",
       "current": "pystra.distributions.distribution.Distribution.x_to_u",
       "kind": "callable",
-      "status": "unchanged"
+      "status": "changed_contract",
+      "notes": "Uses the survival function above u = 3 and log probabilities where probabilities underflow. Unchanged below u = 3."
     },
     {
       "old": "pystra.distributions.distribution.Distribution.jacobian",
       "current": "pystra.distributions.distribution.Distribution.jacobian",
       "kind": "callable",
-      "status": "unchanged"
+      "status": "changed_contract",
+      "notes": "Forms f(x)/phi(u) from log densities where either density underflows."
     },
     {
       "old": "pystra.distributions.distribution.Distribution.sample",
@@ -2054,7 +2057,8 @@
       "old": "pystra.distributions.gev.GEVmin",
       "current": "pystra.distributions.gev.GEVMin",
       "kind": "class",
-      "status": "renamed"
+      "status": "renamed",
+      "notes": "Transformation, CDF and quantiles now use the reflection of the GEV consistently, and moments use the minima relations; 1.x results were wrong and change."
     },
     {
       "old": "pystra.distributions.gev.GEVmin.__init__",
@@ -2129,7 +2133,8 @@
       "old": "pystra.distributions.lognormal.Lognormal.cdf",
       "current": "pystra.distributions.lognormal.Lognormal.cdf",
       "kind": "callable",
-      "status": "unchanged"
+      "status": "unchanged",
+      "notes": "Accepts arrays; computed with ndtr."
     },
     {
       "old": "pystra.distributions.lognormal.Lognormal.u_to_x",
@@ -2341,7 +2346,8 @@
       "old": "pystra.distributions.parent.MaxParent.ppf",
       "current": "pystra.distributions.parent.MaxParent.ppf",
       "kind": "callable",
-      "status": "unchanged"
+      "status": "unchanged",
+      "notes": "Inverts through the maximum's log-CDF instead of bracketing, and is accurate in both tails."
     },
     {
       "old": "pystra.distributions.parent.MaxParent.u_to_x",

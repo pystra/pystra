@@ -156,3 +156,5 @@ References
    :hidden:
 
    citing
+
+.. [Maechler2012] Mächler, M. (2012). Accurately computing log(1 − exp(−|a|)), assessed by the Rmpfr package. Vignette of the R package Rmpfr. `CRAN <https://cran.r-project.org/web/packages/Rmpfr/vignettes/log1mexp-note.pdf>`_.

@@ -251,6 +251,59 @@ For exponential rates 1 and 3, :math:`\theta=10`, and failure event
 about 0.1038. This difference is approximation error, not a different
 underlying probability for each order.
 
+Very small probabilities
+------------------------
+
+Every marginal mapping above passes through a probability,
+:math:`\Phi(u)` or :math:`F_X(x)`. In double precision :math:`\Phi(u)` rounds
+to one above :math:`u \approx 8.3`, so :math:`F_X^{-1}(\Phi(u))` returns the
+upper end of the support, which is infinite for most load models. Line
+sampling and importance sampling at high reliability visit such points
+routinely, and FORM does so when the design point lies beyond them.
+
+Pystra evaluates each tail on the side where its probability is small. With
+the survival function :math:`\bar F_X = 1 - F_X`,
+
+.. math::
+
+   x = \begin{cases}
+       F_X^{-1}\bigl(\Phi(u)\bigr), & u \le 3,\\
+       \bar F_X^{-1}\bigl(\Phi(-u)\bigr), & u > 3,
+   \end{cases}
+   \qquad
+   u = \begin{cases}
+       \Phi^{-1}\bigl(F_X(x)\bigr), & F_X(x) \le \Phi(3),\\
+       -\Phi^{-1}\bigl(\bar F_X(x)\bigr), & \text{otherwise}.
+   \end{cases}
+
+Up to :math:`u = 3` the complement :math:`1 - \Phi(u)` keeps its relative
+precision to about :math:`10^{-13}`. Both forms stay exact until the tail
+probability itself underflows, at :math:`|u| \approx 37.5`
+(:math:`\Phi(-37.5) \approx 5 \times 10^{-308}`). Beyond that the logarithm
+:math:`\log \Phi(u)` is inverted: in closed form for the normal, lognormal and
+Gumbel families, and otherwise by solving :math:`\log F_X(x) = \log \Phi(u)`.
+Quantities such as :math:`\log(1 - e^{a})` are computed as
+:math:`\log(-\operatorname{expm1} a)` or :math:`\operatorname{log1p}(-e^{a})`,
+whichever avoids cancellation [Maechler2012]_.
+
+Composite distributions inherit this accuracy from their parents. The maximum
+of :math:`N` draws has :math:`\log F = N \log F_P`, and its survival
+probability :math:`q` corresponds to the parent survival probability
+:math:`-\operatorname{expm1}\bigl(\operatorname{log1p}(-q)/N\bigr)`, which
+equals :math:`q/N` to double precision once :math:`q < 10^{-200}`.
+
+Numerical inverse CDFs can fail silently far into a tail: SciPy's beta
+quantile stalls near :math:`4 \times 10^{-50}` for probabilities below about
+:math:`10^{-100}`. Pystra checks every quantile whose tail probability is
+below :math:`10^{-8}` against the log-CDF and solves again where it misses.
+Jacobians :math:`f_X(x)/\varphi(u)` are formed from log densities where
+either density underflows.
+
+Two limits remain. A bounded support cannot place :math:`x` closer to its
+bound than one unit in the last place, so a bounded tail loses resolution
+before its probability does. The conditional distributions of non-elliptical
+copulas, such as Frank, are still evaluated in probability space.
+
 **Use this method:** :doc:`/copulas` · :doc:`/notebooks/ex_copulas` · :doc:`/api/probability`
 
 For coordinate conventions, see :doc:`notation`.

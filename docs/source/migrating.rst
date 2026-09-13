@@ -423,6 +423,15 @@ change from the old random estimates. Normal CDF and quantile calculations now
 retain lower-tail probabilities that the former error-function subtraction
 rounded to zero.
 
+Marginal transformations now evaluate each tail on the side where its
+probability is small, and use log probabilities where probabilities underflow
+(:doc:`theory/transformations`). Transformed points up to :math:`u = 3` are
+unchanged. Beyond it they can differ in the last digits, and they are finite
+where 1.x returned infinite values. Every distribution also provides ``sf``,
+``isf``, ``logcdf``, ``logsf`` and ``logpdf``. ``GEVMin`` (``GEVmin`` in 1.x)
+was transformed from quantiles of :math:`-X` and converted its moments with the
+relations for maxima, so results for models that use it change.
+
 Result records
 --------------
 
