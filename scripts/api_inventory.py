@@ -75,9 +75,29 @@ def check_names(root):
         json.loads(mapping_path.read_text())["classes"] if mapping_path.exists() else {}
     )
     for path in sorted((root / "src/pystra").rglob("*.py")):
-        for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"))):
-            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and any(
-                c.isupper() for c in node.name
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+        # NodeVisitor dispatch requires visit_<AST class>, an external API
+        # spelling protected by CONTRIBUTING.md. Restrict this exemption to
+        # real AST node names on direct visitor/transformer methods.
+        visitor_methods = {
+            method
+            for node in ast.walk(tree)
+            if isinstance(node, ast.ClassDef)
+            and any(
+                ast.unparse(base) in ("ast.NodeVisitor", "ast.NodeTransformer")
+                for base in node.bases
+            )
+            for method in node.body
+            if isinstance(method, ast.FunctionDef)
+            and method.name.startswith("visit_")
+            and isinstance(getattr(ast, method.name[6:], None), type)
+            and issubclass(getattr(ast, method.name[6:]), ast.AST)
+        }
+        for node in ast.walk(tree):
+            if (
+                isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+                and any(c.isupper() for c in node.name)
+                and node not in visitor_methods
             ):
                 errors.append(f"{path.relative_to(root)}:{node.lineno}: {node.name}")
             elif isinstance(node, ast.ClassDef) and node.name in legacy_classes:
