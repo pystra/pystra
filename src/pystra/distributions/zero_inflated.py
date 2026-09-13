@@ -9,21 +9,21 @@ __all__ = ["ZeroInflated"]
 
 
 class ZeroInflated(Distribution):
-    """
-    A Zero-Inflated rendering of the provided distribution.
+    """Mixture of a point mass at zero and a supplied distribution.
 
-    Variable loads sometimes have values of zero when they are not occurring.
-    This distribution creates a mixed distribution where there is a certain
-    probability `p` of a zero value, otherwise with a probability `1-p` a
-    realization of the provided distribution occurs.
+    With probability p the value is zero; with probability 1 - p a value
+    is drawn from dist.
 
-    :Attributes:
-      - name (str):             Name of the random variable\n
-      - mean (float):           Mean\n
-      - std (float):           Standard deviation\n
-      - dist (Distribution):    Distribution to zero-inflate
-      - p (float):              Probability of zero
-      - start_point (float):     Start point for seach\n
+    Parameters
+    ----------
+    name : str
+        Name of the random variable, matching a limit-state argument.
+    dist : Distribution
+        Distribution realized when the variable is not set to zero.
+    p : float
+        Probability of setting the variable to zero; must satisfy 0 <= p < 1.
+    start_point : float, optional
+        Starting point for the design-point search. Defaults to the mean.
     """
 
     _native_parameters = ()

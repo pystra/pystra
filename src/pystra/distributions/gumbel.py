@@ -14,13 +14,23 @@ __all__ = ["Gumbel", "GumbelMin"]
 class Gumbel(Distribution):
     """Gumbel distribution for maxima: the Type I extreme value distribution.
 
-    :Attributes:
-        - name (str):     Name of the random variable\n
-        - mean (float): Mean\n
-        - std (float): Standard deviation\n
-        - loc (float): Location, given instead of mean and std\n
-        - scale (float): Scale, given instead of mean and std\n
-        - start_point (float): Start point for seach\n
+    Supply either mean and std or ``loc`` and ``scale``.
+    The two parameterizations cannot be combined.
+
+    Parameters
+    ----------
+    name : str
+        Name of the random variable, matching a limit-state argument.
+    mean : float, optional
+        Mean in physical space.
+    std : float, optional
+        Standard deviation in physical space.
+    loc : float, optional
+        Location parameter. Supply with the other native parameters instead of mean and std.
+    scale : float, optional
+        Positive scale parameter. Supply with the other native parameters instead of mean and std.
+    start_point : float, optional
+        Starting point for the design-point search. Defaults to the mean.
     """
 
     _native_parameters = ("loc", "scale")
@@ -117,13 +127,23 @@ class Gumbel(Distribution):
 class GumbelMin(Distribution):
     """Gumbel distribution for minima: the Type I smallest value distribution.
 
-    :Attributes:
-      - name (str):   Name of the random variable\n
-      - mean (float): Mean\n
-      - std (float): Standard deviation\n
-      - loc (float): Location, given instead of mean and std\n
-      - scale (float): Scale, given instead of mean and std\n
-      - start_point (float): Start point for seach\n
+    Supply either mean and std or ``loc`` and ``scale``.
+    The two parameterizations cannot be combined.
+
+    Parameters
+    ----------
+    name : str
+        Name of the random variable, matching a limit-state argument.
+    mean : float, optional
+        Mean in physical space.
+    std : float, optional
+        Standard deviation in physical space.
+    loc : float, optional
+        Location parameter. Supply with the other native parameters instead of mean and std.
+    scale : float, optional
+        Positive scale parameter. Supply with the other native parameters instead of mean and std.
+    start_point : float, optional
+        Starting point for the design-point search. Defaults to the mean.
     """
 
     _native_parameters = ("loc", "scale")

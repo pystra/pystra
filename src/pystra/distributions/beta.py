@@ -10,17 +10,29 @@ __all__ = ["Beta"]
 
 
 class Beta(Distribution):
-    """Beta distribution
+    """Beta distribution on a bounded interval.
 
-    :Attributes:
-      - name (str):   Name of the random variable\n
-      - mean (float): Mean\n
-      - std (float): Standard deviation\n
-      - lower (float): Lower bound\n
-      - upper (float): Upper bound\n
-      - q (float): First shape parameter, given instead of mean and std\n
-      - r (float): Second shape parameter, given instead of mean and std\n
-      - start_point (float): Start point for seach\n
+    Supply either mean and std or ``q`` and ``r``.
+    The two parameterizations cannot be combined.
+
+    Parameters
+    ----------
+    name : str
+        Name of the random variable, matching a limit-state argument.
+    mean : float, optional
+        Mean in physical space.
+    std : float, optional
+        Standard deviation in physical space.
+    q : float, optional
+        First beta shape parameter. Supply with the other native parameters instead of mean and std.
+    r : float, optional
+        Second beta shape parameter. Supply with the other native parameters instead of mean and std.
+    lower : float, optional
+        Lower bound of the distribution. Defaults to 0.
+    upper : float, optional
+        Upper bound of the distribution. Defaults to 1.
+    start_point : float, optional
+        Starting point for the design-point search. Defaults to the mean.
     """
 
     _native_parameters = ("q", "r")

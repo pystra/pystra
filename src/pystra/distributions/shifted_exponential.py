@@ -9,15 +9,25 @@ __all__ = ["ShiftedExponential"]
 
 
 class ShiftedExponential(Distribution):
-    """Shifted exponential distribution
+    """Shifted exponential distribution.
 
-    :Attributes:
-        - name (str):         Name of the random variable\n
-        - mean (float):       Mean\n
-        - std (float):       Standard deviation\n
-        - rate (float): Rate, given instead of mean and std\n
-        - shift (float): Lower bound, given instead of mean and std\n
-        - start_point (float): Start point for seach\n
+    Supply either mean and std or ``rate`` and ``shift``.
+    The two parameterizations cannot be combined.
+
+    Parameters
+    ----------
+    name : str
+        Name of the random variable, matching a limit-state argument.
+    mean : float, optional
+        Mean in physical space.
+    std : float, optional
+        Standard deviation in physical space.
+    rate : float, optional
+        Positive rate parameter (the reciprocal of scale). Supply with the other native parameters instead of mean and std.
+    shift : float, optional
+        Additive shift, equal to the lower bound of the distribution. Supply with the other native parameters instead of mean and std.
+    start_point : float, optional
+        Starting point for the design-point search. Defaults to the mean.
     """
 
     _native_parameters = ("rate", "shift")

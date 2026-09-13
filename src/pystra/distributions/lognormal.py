@@ -10,19 +10,25 @@ __all__ = ["Lognormal"]
 
 
 class Lognormal(Distribution):
-    """Lognormal distribution
+    """Lognormal distribution using direct PDF and CDF formulas.
 
-    :Arguments:
-      - name (str):         Name of the random variable
-      - mean (float):       Mean
-      - std (float):       Standard deviation\n
-      - log_mean (float): Mean of ln(X), given instead of mean and std\n
-      - log_std (float): Standard deviation of ln(X), given instead of mean and std\n
-      - start_point (float): Start point for seach\n
+    Supply either mean and std or ``log_mean`` and ``log_std``.
+    The two parameterizations cannot be combined.
 
-    Note: Could use scipy to do the heavy lifting. However, there is a small
-    performance hit, so for this common dist use bespoke implementation
-    for the PDF, CDF.
+    Parameters
+    ----------
+    name : str
+        Name of the random variable, matching a limit-state argument.
+    mean : float, optional
+        Mean in physical space.
+    std : float, optional
+        Standard deviation in physical space.
+    log_mean : float, optional
+        Mean of the underlying normal variable, log(X). Supply with the other native parameters instead of mean and std.
+    log_std : float, optional
+        Standard deviation of the underlying normal variable, log(X). Supply with the other native parameters instead of mean and std.
+    start_point : float, optional
+        Starting point for the design-point search. Defaults to the mean.
     """
 
     _native_parameters = ("log_mean", "log_std")

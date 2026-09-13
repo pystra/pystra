@@ -8,33 +8,36 @@ __all__ = ["GEV", "GEVmax", "GEVMin"]
 
 
 class GEV(Distribution):
-    """Generalized Extreme Value (GEV) distribution for maxima.
+    """Generalized extreme value (GEV) distribution for maxima.
 
-    ``GEVmax`` is an alias for this class.
+    GEVmax is an alias for this class.
 
-    This distribution unifies the different types of extreme value
-    distributions: Gumbel (Type I), Fréchet (Type II), and
-    Weibull (Type III).
+    Supply either mean and std or ``loc`` and ``scale``.
+    The two parameterizations cannot be combined.
 
-    :Arguments:
-        - name (str):       Name of the random variable\n
-        - mean (float):     Mean\n
-        - std (float):     Standard deviation\n
-        - shape (float):    Shape parameter. shape < 0.0 is Weibull,
-          shape > 0 is Frechet.\n
-        - loc (float): Location, given instead of mean and std\n
-        - scale (float): Scale, given instead of mean and std\n
-        - start_point (float): Start point for seach\n
+    Parameters
+    ----------
+    name : str
+        Name of the random variable, matching a limit-state argument.
+    mean : float, optional
+        Mean in physical space.
+    std : float, optional
+        Standard deviation in physical space.
+    shape : float
+        Required shape parameter, less than 0.5 for finite variance.
+        Negative, zero and positive values give the Weibull, Gumbel and
+        Fréchet cases, respectively.
+    loc : float, optional
+        Location parameter. Supply with the other native parameters instead of mean and std.
+    scale : float, optional
+        Positive scale parameter. Supply with the other native parameters instead of mean and std.
+    start_point : float, optional
+        Starting point for the design-point search. Defaults to the mean.
 
-    :Raises:
-        - ValueError: If `shape` is greater than or equal to 0.5
-
-    :Notes:
-        - The shape parameter `shape` must be less than 0.5 for
-          finite variance.
-        - `shape` < 0 is the Weibull case, `shape` = 0 is the
-          Gumbel case, and `shape` > 0 is the Fréchet case.
-        - This distribution is to model maxima.
+    Raises
+    ------
+    ValueError
+        If shape is greater than or equal to 0.5.
     """
 
     _native_parameters = ("loc", "scale")
@@ -110,26 +113,34 @@ GEVmax = GEV
 
 
 class GEVMin(Distribution):
-    """Generalized Extreme Value (GEV) distribution for minima.
+    """Generalized extreme value (GEV) distribution for minima.
 
-    This distribution unifies the different types of extreme value distributions: Gumbel (Type I), Fréchet (Type II), and Weibull (Type III).
+    Supply either mean and std or ``loc`` and ``scale``.
+    The two parameterizations cannot be combined.
 
-    :Arguments:
-        - name (str):       Name of the random variable\n
-        - mean (float):     Mean\n
-        - std (float):     Standard deviation\n
-        - shape (float):       Shape parameter. shape < 0.0 is Weibull, shape > 0 is Frechet.\n
-        - loc (float): Location, given instead of mean and std\n
-        - scale (float): Scale, given instead of mean and std\n
-        - start_point (float): Start point for seach\n
+    Parameters
+    ----------
+    name : str
+        Name of the random variable, matching a limit-state argument.
+    mean : float, optional
+        Mean in physical space.
+    std : float, optional
+        Standard deviation in physical space.
+    shape : float
+        Required shape parameter, less than 0.5 for finite variance.
+        Negative, zero and positive values give the Weibull, Gumbel and
+        Fréchet cases, respectively.
+    loc : float, optional
+        Location parameter. Supply with the other native parameters instead of mean and std.
+    scale : float, optional
+        Positive scale parameter. Supply with the other native parameters instead of mean and std.
+    start_point : float, optional
+        Starting point for the design-point search. Defaults to the mean.
 
-    :Raises:
-        - ValueError: If `shape` is greater than or equal to 0.5
-
-    :Notes:
-        - The shape parameter `shape` must be less than 0.5 for finite variance.
-        - `shape` < 0 is the Weibull case, `shape` = 0 is the Gumbel case, and `shape` > 0 is the Fréchet case.
-        - This distribution is to model minima.
+    Raises
+    ------
+    ValueError
+        If shape is greater than or equal to 0.5.
     """
 
     _native_parameters = ("loc", "scale")

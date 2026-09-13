@@ -11,7 +11,7 @@ __all__ = ["Maximum"]
 
 
 class Maximum(Distribution):
-    """Distribution of maxima from the passed in parent distribution.
+    """Distribution of maxima from a supplied parent distribution.
 
     Moments are computed deterministically by Gauss-Hermite quadrature of the
     quantile function in standard normal space, with exact identities for
@@ -20,13 +20,16 @@ class Maximum(Distribution):
     warns and keeps the finest estimate, which serves for start points and
     finite-difference steps. Nonfinite moments raise :class:`~pystra.ModelError`.
 
-    :Attributes:
-      - name (str):             Name of the random variable\n
-      - mean (float):           Mean\n
-      - std (float):           Standard deviation\n
-      - parent (Distribution):  Parent distribution object
-      - N (float):              Power to which distribution is raised
-      - start_point (float):     Start point for seach\n
+    Parameters
+    ----------
+    name : str
+        Name of the random variable, matching a limit-state argument.
+    parent : Distribution
+        Parent distribution whose CDF is raised to the power N.
+    N : float
+        Finite exponent, at least 1. Integer N represents N independent observations.
+    start_point : float, optional
+        Starting point for the design-point search. Defaults to the mean.
     """
 
     _native_parameters = ()

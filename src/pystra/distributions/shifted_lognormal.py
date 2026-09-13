@@ -7,20 +7,23 @@ __all__ = ["ShiftedLognormal"]
 
 
 class ShiftedLognormal(Lognormal):
-    """Shifted Lognormal distribution
+    """Shifted lognormal distribution.
 
-    If X is a lognormal random variable, then Y = X + lower is a shifted lognormal random variable.
+    If X is lognormal, Y = X + lower has this distribution. The supplied
+    mean and standard deviation describe Y.
 
-    :Arguments:
-      - name (str):         Name of the random variable
-      - mean (float):       Mean
-      - std (float):       Standard deviation\n
-      - lower (float):      Lower bound of the distribution (i.e. the shift applied to the lognormal)\n
-      - start_point (float): Start point for seach\n
-
-    Note: Could use scipy to do the heavy lifting. However, there is a small
-    performance hit, so for this common dist use bespoke implementation
-    for the PDF, CDF.
+    Parameters
+    ----------
+    name : str
+        Name of the random variable, matching a limit-state argument.
+    mean : float
+        Mean in physical space.
+    std : float
+        Standard deviation in physical space.
+    lower : float
+        Lower bound of the distribution.
+    start_point : float, optional
+        Starting point for the design-point search. Defaults to the mean.
     """
 
     _native_parameters = ()

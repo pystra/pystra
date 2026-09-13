@@ -11,8 +11,7 @@ __all__ = ["MaxParent"]
 
 
 class MaxParent(Distribution):
-    """Parent distribution of the provided distribution which represents
-    the distribution of maxima of a random variable.
+    """Parent distribution recovered from a distribution of maxima.
 
     For example, given an annual maximum distribution of imposed load, find
     the parent distribution of imposed load, if the load is applied 6 times
@@ -25,13 +24,16 @@ class MaxParent(Distribution):
     warns and keeps the finest estimate, which serves for start points and
     finite-difference steps. Nonfinite moments raise :class:`~pystra.ModelError`.
 
-    :Attributes:
-      - name (str):             Name of the random variable\n
-      - mean (float):           Mean\n
-      - std (float):           Standard deviation\n
-      - maximum (Distribution): Distribution of maximum object
-      - N (float):              Power to which distribution is raised
-      - start_point (float):     Start point for seach\n
+    Parameters
+    ----------
+    name : str
+        Name of the random variable, matching a limit-state argument.
+    max_dist : Distribution
+        Distribution of maxima whose CDF is raised to the power 1/N.
+    N : float
+        Finite exponent, at least 1. Integer N represents N independent observations.
+    start_point : float, optional
+        Starting point for the design-point search. Defaults to the mean.
     """
 
     _native_parameters = ()

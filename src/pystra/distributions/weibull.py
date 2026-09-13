@@ -12,14 +12,25 @@ __all__ = ["Weibull"]
 class Weibull(Distribution):
     """Weibull distribution: the Type III extreme value distribution for minima.
 
-    :Attributes:
-        - name (str):       Name of the random variable\n
-        - mean (float):     Mean\n
-        - std (float):     Standard deviation\n
-        - lower (float):    Lower bound\n
-        - scale (float): Scale, measured from the lower bound, given instead of mean and std\n
-        - shape (float): Shape, given instead of mean and std\n
-        - start_point (float): Start point for seach\n
+    Supply either mean and std or ``scale`` and ``shape``.
+    The two parameterizations cannot be combined.
+
+    Parameters
+    ----------
+    name : str
+        Name of the random variable, matching a limit-state argument.
+    mean : float, optional
+        Mean in physical space.
+    std : float, optional
+        Standard deviation in physical space.
+    scale : float, optional
+        Positive scale parameter. Supply with the other native parameters instead of mean and std.
+    shape : float, optional
+        Shape parameter. Supply with the other native parameters instead of mean and std.
+    lower : float, optional
+        Lower bound of the distribution. Defaults to 0.
+    start_point : float, optional
+        Starting point for the design-point search. Defaults to the mean.
     """
 
     _native_parameters = ("scale", "shape")

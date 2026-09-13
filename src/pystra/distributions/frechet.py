@@ -13,13 +13,23 @@ __all__ = ["Frechet"]
 class Frechet(Distribution):
     """Fréchet distribution: the Type II extreme value distribution for maxima.
 
-    :Attributes:
-      - name (str):   Name of the random variable\n
-      - mean (float): Mean\n
-      - std (float): Standard deviation\n
-      - scale (float): Scale, given instead of mean and std\n
-      - shape (float): Shape, given instead of mean and std\n
-      - start_point (float): Start point for seach\n
+    Supply either mean and std or ``scale`` and ``shape``.
+    The two parameterizations cannot be combined.
+
+    Parameters
+    ----------
+    name : str
+        Name of the random variable, matching a limit-state argument.
+    mean : float, optional
+        Mean in physical space.
+    std : float, optional
+        Standard deviation in physical space.
+    scale : float, optional
+        Positive scale parameter. Supply with the other native parameters instead of mean and std.
+    shape : float, optional
+        Shape parameter. Supply with the other native parameters instead of mean and std.
+    start_point : float, optional
+        Starting point for the design-point search. Defaults to the mean.
     """
 
     _native_parameters = ("scale", "shape")

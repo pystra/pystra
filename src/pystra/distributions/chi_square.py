@@ -9,14 +9,28 @@ __all__ = ["ChiSquare"]
 
 
 class ChiSquare(Distribution):
-    """Chi-Square distribution
+    """Chi-square distribution.
 
-    :Attributes:
-      - name (str):   Name of the random variable\n
-      - mean (float): Mean\n
-      - std (float): Standard deviation\n
-      - df (float): Degrees of freedom, given instead of mean and std\n
-      - start_point (float): Start point for seach\n
+    Supply either mean and std or ``df``.
+    The two parameterizations cannot be combined.
+
+    Parameters
+    ----------
+    name : str
+        Name of the random variable, matching a limit-state argument.
+    mean : float, optional
+        Mean in physical space.
+    std : float, optional
+        Standard deviation in physical space.
+    df : float, optional
+        Degrees of freedom. Supply instead of mean and std.
+    start_point : float, optional
+        Starting point for the design-point search. Defaults to the mean.
+
+    Notes
+    -----
+    The moment parameterization should satisfy mean = std**2 / 2.
+    Use df to specify the chi-square law directly.
     """
 
     _native_parameters = ("df",)

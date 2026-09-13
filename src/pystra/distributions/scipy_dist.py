@@ -11,14 +11,18 @@ __all__ = ["ScipyDist"]
 
 
 class ScipyDist(Distribution):
-    """Distribution wrapper for a frozen Scipy Stats Distribution object
+    """Wrapper for a frozen continuous SciPy distribution.
 
-    Discrete random variables not yet supported.
+    Discrete random variables are not supported.
 
-    :Attributes:
-      - name (str):             Name of the random variable\n
-      - dist_obj (Scipy dist):  The Scipy distribution object\n
-      - start_point (float):     Start point for seach\n
+    Parameters
+    ----------
+    name : str
+        Name of the random variable, matching a limit-state argument.
+    dist_obj : scipy.stats.rv_frozen
+        Frozen continuous SciPy distribution to wrap.
+    start_point : float, optional
+        Starting point for the design-point search. Defaults to the mean.
     """
 
     _native_parameters = ()

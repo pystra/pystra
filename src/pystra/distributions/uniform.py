@@ -10,15 +10,25 @@ __all__ = ["Uniform"]
 
 
 class Uniform(Distribution):
-    """Uniform distribution
+    """Uniform distribution.
 
-    :Attributes:
-      - name (str):   Name of the random variable\n
-      - mean (float): Mean\n
-      - std (float): Standard deviation\n
-      - lower (float): Lower bound, given instead of mean and std\n
-      - upper (float): Upper bound, given instead of mean and std\n
-      - start_point (float): Start point for seach\n
+    Supply either mean and std or ``lower`` and ``upper``.
+    The two parameterizations cannot be combined.
+
+    Parameters
+    ----------
+    name : str
+        Name of the random variable, matching a limit-state argument.
+    mean : float, optional
+        Mean in physical space.
+    std : float, optional
+        Standard deviation in physical space.
+    lower : float, optional
+        Lower bound of the distribution. Supply with the other native parameters instead of mean and std.
+    upper : float, optional
+        Upper bound of the distribution. Supply with the other native parameters instead of mean and std.
+    start_point : float, optional
+        Starting point for the design-point search. Defaults to the mean.
     """
 
     _native_parameters = ("lower", "upper")

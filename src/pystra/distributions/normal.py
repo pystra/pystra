@@ -10,16 +10,18 @@ __all__ = ["Normal"]
 
 
 class Normal(Distribution):
-    """Normal distribution
+    """Normal distribution using direct standard normal formulas.
 
-    :Attributes:
-      - name (str):         Name of the random variable\n
-      - mean (float):       Mean\n
-      - std (float):       Standard deviation\n
-      - start_point (float): Start point for seach\n
-
-    Note: while we could use SciPy norm distribution here, there is a
-    substantial perfromance hit, so use local implementation.
+    Parameters
+    ----------
+    name : str
+        Name of the random variable, matching a limit-state argument.
+    mean : float
+        Mean in physical space.
+    std : float
+        Standard deviation in physical space.
+    start_point : float, optional
+        Starting point for the design-point search. Defaults to the mean.
     """
 
     def __init__(self, name, mean, std, *, start_point=None):
