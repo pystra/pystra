@@ -640,6 +640,54 @@ class _PreferLargerDesign(ra.decision.DDOObjective):
         return results.assign(objective=results[design])
 
 
+@pytest.mark.parametrize("failed_values", [{2}, {1, 2, 3}])
+def test_cost_benefit_objective_skips_failed_alternatives(failed_values):
+    def analyze(value):
+        if value in failed_values:
+            raise ra.AnalysisError("mesh failure")
+        return {"pf": 1e-4}
+
+    costed_values = []
+
+    def construction_cost(value):
+        costed_values.append(value)
+        return 100 * value
+
+    objective = ra.decision.CostBenefitModel(
+        benefit_rate=1000,
+        interest_rate=0.03,
+        service_life=50,
+        construction_cost=construction_cost,
+        failure_cost=1e6,
+    )
+    ddo = ra.decision.DDO(
+        study=ra.decision.DesignStudy("area", [1, 2, 3], analyze),
+        criterion=_AcceptEveryAlternative(),
+        objective=objective,
+    )
+    result = ddo.run()
+    failed = result.area.isin(failed_values)
+    assert result.area.tolist() == [1, 2, 3]
+    assert result.loc[failed, "objective"].isna().all()
+    assert result.loc[failed, "pf"].isna().all()
+    assert result.loc[failed, "message"].eq("mesh failure").all()
+    assert not set(costed_values) & failed_values
+    if (~failed).any():
+        assert result.loc[failed, "annualized_safety_cost"].isna().all()
+        assert result.loc[~failed, "objective"].tolist() == pytest.approx(
+            [objective.objective(value, 1e-4) for value in (1, 3)]
+        )
+        assert ddo.economic_optimum().area == 1
+        assert ddo.optimize().area == 1
+        assert ddo.feasible_results().area.tolist() == [1, 3]
+    else:
+        assert not costed_values
+        with pytest.raises(ValueError, match="No successful alternatives"):
+            ddo.economic_optimum()
+        with pytest.raises(ValueError, match="No feasible alternatives"):
+            ddo.optimize()
+
+
 def test_decision_failures_stay_visible_even_when_the_criterion_would_accept_them():
     from pystra.assessment import ReliabilityEstimate
 

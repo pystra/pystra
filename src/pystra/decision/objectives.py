@@ -96,7 +96,11 @@ class DDOObjective:
     objective_column = "objective"
 
     def evaluate(self, results: pd.DataFrame, design: str) -> pd.DataFrame:
-        """Return decision results with objective-specific columns."""
+        """Return successful decision rows with objective-specific columns.
+
+        Preserve the input row indices so DDO can align these values with
+        failed alternatives, which remain visible with unavailable objectives.
+        """
 
         raise NotImplementedError
 

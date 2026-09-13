@@ -114,7 +114,14 @@ class DDO:
     def _evaluate(self) -> pd.DataFrame:
         df = self.study.evaluate()
         if self.objective is not None:
-            df = self.objective.evaluate(df, design=self.study.variable)
+            successful = self._successful(df)
+            if successful.any():
+                evaluated = self.objective.evaluate(
+                    df.loc[successful].copy(), design=self.study.variable
+                )
+                df = pd.concat([evaluated, df.loc[~successful]]).reindex(df.index)
+            else:
+                df[self.objective.objective_column] = float("nan")
         return self.criterion.evaluate(df)
 
     @property
