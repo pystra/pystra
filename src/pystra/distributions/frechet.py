@@ -67,6 +67,10 @@ class Frechet(Distribution):
         self.dist_type = "Frechet"
 
     def frechet_parameter(self, x, *args):
+        """Return the moment residual for Fréchet shape fitting.
+
+        The optimizer supplies the trial shape x; args contains mean and std.
+        """
         mean, std = args
         f = (spec.gamma(1 - 2 / x) - (spec.gamma(1 - 1 / x)) ** 2) ** 0.5 - (
             std / mean

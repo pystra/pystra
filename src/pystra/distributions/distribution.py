@@ -319,6 +319,7 @@ class Distribution:
             raise ModelError("Std. deviation must be a positive noninfinite number.")
 
     def get_name(self):
+        """Return the random-variable name."""
         return self.name
 
     def _set_start_point(self, start_point=None):
@@ -899,8 +900,7 @@ class Distribution:
         """Update the location parameter of the underlying SciPy distribution.
 
         After updating, ``mean`` and ``std`` are recomputed.  This is
-        used by the sensitivity analysis to perturb distribution
-        parameters.
+        available for callers that need an in-place parameter update.
 
         Parameters
         ----------
@@ -909,7 +909,7 @@ class Distribution:
 
         Raises
         ------
-        Exception
+        ModelError
             If the distribution does not wrap a SciPy frozen distribution.
         """
         if isinstance(self.dist_obj, rv_frozen):
@@ -923,8 +923,7 @@ class Distribution:
         """Update the scale parameter of the underlying SciPy distribution.
 
         After updating, ``mean`` and ``std`` are recomputed.  This is
-        used by the sensitivity analysis to perturb distribution
-        parameters.
+        available for callers that need an in-place parameter update.
 
         Parameters
         ----------
@@ -933,7 +932,7 @@ class Distribution:
 
         Raises
         ------
-        Exception
+        ModelError
             If the distribution does not wrap a SciPy frozen distribution.
         """
         if isinstance(self.dist_obj, rv_frozen):

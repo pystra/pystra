@@ -82,6 +82,11 @@ class Weibull(Distribution):
         self.dist_type = "Weibull"
 
     def weibull_parameter(self, x, *args):
+        """Return the moment residual for Weibull shape fitting.
+
+        The optimizer supplies the trial shape x; args contains mean minus
+        the lower bound and the standard deviation.
+        """
         meaneps, std = args
         f = (spec.gamma(1 + 2 / x) - (spec.gamma(1 + 1 / x)) ** 2) ** 0.5 - (
             std / meaneps

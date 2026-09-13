@@ -14,11 +14,22 @@ __all__ = ["StochasticModel", "LimitState"]
 
 
 class StochasticModel:
-    """Stochastic model
+    """Named random variables, constants and their dependence model.
 
     Random variables and constants are added with :meth:`add_variable`.
-    ``model.variable(name)`` returns a random variable, and
-    ``model.constants`` is a read-only mapping of constant names to values.
+    Random-variable insertion order defines correlation rows and columns
+    and the columns accepted by :meth:`LimitState.evaluate`.
+
+    Parameters
+    ----------
+    joint_distribution : JointDistribution, optional
+        Initial marginals and explicit copula. Omit it to add variables
+        individually and specify physical correlation or a copula later.
+
+    Notes
+    -----
+    The names and marginal-distribution properties expose the stored lists;
+    the constants property is a read-only view of stored constant values.
     """
 
     def __init__(self, joint_distribution=None):
@@ -153,6 +164,7 @@ class StochasticModel:
     # ---- Transitional getter/setter methods pending the result/options redesign ----
 
     def get_variables(self):
+        """Return the stored mapping of random-variable names to distributions."""
         return self.variables
 
     def variable(self, name):
@@ -160,15 +172,23 @@ class StochasticModel:
         return self.variables[name]
 
     def get_names(self):
+        """Return the stored names in variable and constant insertion order."""
         return self._names
 
     def get_len_marginal_distributions(self):
+        """Return the number of random variables, excluding constants."""
         return len(self._marg)
 
     def get_marginal_distributions(self):
+        """Return the stored marginal list in random-variable insertion order."""
         return self._marg
 
     def set_marginal_distributions(self, marg):
+        """Replace the stored marginal list without copying or reordering it.
+
+        This low-level setter does not update names, the variable mapping or
+        dependence. Callers must keep those structures consistent.
+        """
         self._marg = marg
 
     def set_correlation(self, obj):
@@ -189,6 +209,11 @@ class StochasticModel:
         self._Ro = None
 
     def get_correlation(self):
+        """Return the stored physical Pearson matrix, or None before variables exist.
+
+        Raises ValueError when dependence is specified by an explicit copula,
+        which does not in general determine the physical Pearson matrix.
+        """
         if self._copula is not None:
             raise ValueError(
                 "Physical Pearson correlation is not specified by an explicit copula; use get_copula()"
@@ -205,6 +230,7 @@ class StochasticModel:
         self._Ro = None
 
     def get_copula(self):
+        """Return the explicit copula, or None for physical Pearson input."""
         return self._copula
 
     def get_joint_distribution(self):
@@ -219,21 +245,25 @@ class StochasticModel:
         return JointDistribution(self._marg, copula)
 
     def set_modified_correlation(self, correlation):
+        """Store a Nataf correlation matrix without copying or validating it."""
         self._Ro = correlation
 
     def get_modified_correlation(self):
+        """Return the stored Nataf correlation, or None before it is computed."""
         return self._Ro
 
     def add_call_function(self, add):
+        """Add to the cumulative number of limit-state evaluations."""
         self._call_function += add
 
     def get_call_function(self):
+        """Return the cumulative number of limit-state evaluations."""
         return self._call_function
 
 
 class LimitState:
     r"""
-    The Limit State function definition class.
+    A physical limit-state callable and its evaluation interface.
 
     The limit-state function can be defined in two main ways:
 
@@ -245,7 +275,7 @@ class LimitState:
         (b) A python function object.
 
     2. Using the Direct Differentiation Method (DDM): the limit-state function
-    is a python function object return both its value and gradient vector at each
+    is a Python function object returning both its value and gradient vector at each
     of the evaluation points.
 
     Note in both cases that each parameter (i.e. function argument) may be passed
@@ -262,6 +292,13 @@ class LimitState:
 
         def lsf(**kwargs):
             return sum(v**2 for v in kwargs.values())
+
+    Parameters
+    ----------
+    expression : callable, optional
+        Physical response called with named variables and constants. Set an
+        expression before evaluation. In DDM mode it also returns derivatives
+        in random-variable order; see :meth:`evaluate` for shapes.
     """
 
     def __init__(self, expression=None):
@@ -271,9 +308,11 @@ class LimitState:
     # Legacy getter/setter methods (expression is already a public attribute)
 
     def get_expression(self):
+        """Return the stored limit-state callable."""
         return self.expression
 
     def set_expression(self, expression):
+        """Replace the limit-state callable without evaluating it."""
         self.expression = expression
 
     def evaluate(

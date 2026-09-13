@@ -17,30 +17,21 @@ __all__ = [
 
 
 class MonteCarlo(AnalysisObject):
-    r"""Monte Carlo Simulation
+    """Base implementation for Monte Carlo simulation analyses.
 
-    The preceding sections describe some methods for determining the reliability
-    index :math:`\\beta` for some common forms of the limit state
-    function. However, it is sometimes extremely difficult or impossible to find
-    :math:`\\beta`. [Nowak2000]_
-
-    In this case, the probability of failure :math:`p_f` may also be estimated
-    by numerical simulation methods. A large variety of simulation techniques
-    can be found in the literature, indeed, the most commonly used method is the
-    Monte Carlo method. [Faber2009]_
-
-    The principle of simulation methods is to carry out random sampling in the
-    physical (or standardized) space. For each of the samples the limit state
-    function is evaluated to figure out, whether the configuration is desired or
-    undesired. The probability of failure :math:`p_f` is estimated by the number
-    of undesired configurations, respected to the total numbers of
-    samples. [Lemaire2010]_
+    Random samples in physical or standard space estimate the failure
+    probability from limit-state evaluations [Nowak2000]_ [Faber2009]_
+    [Lemaire2010]_. Use CrudeMonteCarlo for direct sampling or a specialized
+    subclass for a different sampling scheme.
 
     Parameters
     ----------
     model : StochasticModel
+        Named physical variables and their joint probability model.
     limit_state : LimitState
+        Physical response evaluated at the sample points.
     options : SimulationOptions, optional
+        Sampling, convergence and transformation settings.
     rng : int, numpy.random.Generator or None, optional
         Random source; NumPy's global generator is not used. A seed recreates
         the same stream on every run, a generator advances its own state, and
@@ -103,12 +94,10 @@ class MonteCarlo(AnalysisObject):
         )
 
     def _compute_transformation(self):
-        """Compute transformation from u to x space
+        """Transform each sample column from standard to physical space.
 
-        .. note::
-
-           TODO: this method takes a lot of time, find some better solution.
-
+        The stored arrays have shape (n_variables, block_size), with rows in
+        model variable order. Each transformation receives one sample column.
         """
         self._x = np.zeros((self._nrv, self._block_size))
 

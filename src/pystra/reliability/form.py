@@ -225,10 +225,24 @@ class FORM(AnalysisObject):
             self._step = self.options.step_size
 
     def _compute_step_size(self, G, gradient, u, d):
-        """Calculate the step size for the calculation
+        """Choose a step by comparing trial points with the current merit.
 
-        :Returns:
-            - step_size (float): Returns the value of the step size.
+        Parameters
+        ----------
+        G : ndarray
+            Current limit-state value, shape (1, 1).
+        gradient : ndarray
+            Gradient in standard space, shape (1, n_variables).
+        u : ndarray
+            Current point in standard space, shape (n_variables,).
+        d : ndarray
+            Search direction, shape (1, n_variables).
+
+        Returns
+        -------
+        float
+            Selected step from the six trials 1, 1/2, ..., 1/32. The last
+            trial is returned if none improves the merit.
         """
         c = (np.linalg.norm(u) * np.linalg.norm(gradient) ** (-1)) * 2 + 10
         merit = 0.5 * (np.linalg.norm(u)) ** 2 + c * np.absolute(G)

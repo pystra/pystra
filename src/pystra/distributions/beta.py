@@ -85,6 +85,10 @@ class Beta(Distribution):
         self.dist_type = "Beta"
 
     def beta_parameter(self, q, *args):
+        """Return the standard-deviation residual for beta shape fitting.
+
+        The optimizer supplies q; args contains lower, upper, mean and std.
+        """
         a, b, mean, std = args
         r = (b - mean) * (mean - a) ** (-1) * q
         f = np.absolute(
