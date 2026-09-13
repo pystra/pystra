@@ -1,5 +1,7 @@
 """Generalized extreme value distributions for maxima and minima."""
 
+from typing import overload
+
 from numpy.typing import ArrayLike
 import numpy as np
 from scipy.stats import genextreme
@@ -29,6 +31,7 @@ class GEV(Distribution):
         Standard deviation in physical space.
     shape : float
         Required shape parameter, less than 0.5 for finite variance.
+        The displayed None default marks a missing argument and is rejected.
         Negative, zero and positive values give the Weibull, Gumbel and
         Fréchet cases, respectively.
     loc : float, optional
@@ -52,6 +55,45 @@ class GEV(Distribution):
             "loc": self.dist_obj.kwds["loc"],
             "scale": self.dist_obj.kwds["scale"],
         }
+
+    @overload
+    def __init__(
+        self,
+        name: str,
+        mean: float,
+        std: float,
+        shape: float,
+        *,
+        loc: None = None,
+        scale: None = None,
+        start_point: float | None = None,
+    ) -> None: ...
+
+    @overload
+    def __init__(
+        self,
+        name: str,
+        mean: None = None,
+        std: None = None,
+        *,
+        shape: float,
+        loc: float,
+        scale: float,
+        start_point: float | None = None,
+    ) -> None: ...
+
+    @overload
+    def __init__(
+        self,
+        name: str,
+        mean: None,
+        std: None,
+        shape: float,
+        *,
+        loc: float,
+        scale: float,
+        start_point: float | None = None,
+    ) -> None: ...
 
     def __init__(
         self,
@@ -132,6 +174,7 @@ class GEVMin(Distribution):
         Standard deviation in physical space.
     shape : float
         Required shape parameter, less than 0.5 for finite variance.
+        The displayed None default marks a missing argument and is rejected.
         Negative, zero and positive values give the Weibull, Gumbel and
         Fréchet cases, respectively.
     loc : float, optional
@@ -155,6 +198,45 @@ class GEVMin(Distribution):
             "loc": -self.dist_obj.kwds["loc"],
             "scale": self.dist_obj.kwds["scale"],
         }
+
+    @overload
+    def __init__(
+        self,
+        name: str,
+        mean: float,
+        std: float,
+        shape: float,
+        *,
+        loc: None = None,
+        scale: None = None,
+        start_point: float | None = None,
+    ) -> None: ...
+
+    @overload
+    def __init__(
+        self,
+        name: str,
+        mean: None = None,
+        std: None = None,
+        *,
+        shape: float,
+        loc: float,
+        scale: float,
+        start_point: float | None = None,
+    ) -> None: ...
+
+    @overload
+    def __init__(
+        self,
+        name: str,
+        mean: None,
+        std: None,
+        shape: float,
+        *,
+        loc: float,
+        scale: float,
+        start_point: float | None = None,
+    ) -> None: ...
 
     def __init__(
         self,
