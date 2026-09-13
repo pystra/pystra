@@ -1,12 +1,15 @@
 """Named stochastic models and physical limit-state evaluation."""
 
 import inspect
+from collections.abc import Callable, Mapping
+from typing import Any
 from collections import OrderedDict
 from types import MappingProxyType
 
 from numpy.typing import ArrayLike, NDArray
 import numpy as np
 
+import pystra as _pystra
 from .distributions import Distribution, Constant
 from .errors import ModelError, AnalysisError
 
@@ -32,7 +35,9 @@ class StochasticModel:
     the constants property is a read-only view of stored constant values.
     """
 
-    def __init__(self, joint_distribution=None):
+    def __init__(
+        self, joint_distribution: "_pystra.JointDistribution | None" = None
+    ) -> None:
         """
         Use ordered dictionary to make sure that the order corresponds to the
         correlation matrix
@@ -55,7 +60,7 @@ class StochasticModel:
                 self.add_variable(marginal)
             self.set_copula(joint_distribution.copula)
 
-    def add_variable(self, obj):
+    def add_variable(self, obj: Distribution | Constant) -> None:
         """Add a random variable or constant to the model.
 
         Parameters
@@ -98,7 +103,7 @@ class StochasticModel:
 
     # ---- Properties (preferred access) ----
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         items = [repr(d) for d in self._marg] + [
             f"Constant({name!r}, value={value!r})"
             for name, value in self._consts.items()
@@ -106,84 +111,84 @@ class StochasticModel:
         return f"StochasticModel([{', '.join(items)}])"
 
     @property
-    def constants(self):
+    def constants(self) -> Mapping[str, float]:
         """Read-only mapping of constant names to values."""
         return MappingProxyType(self._consts)
 
     @property
-    def names(self):
+    def names(self) -> list[str]:
         """List of all variable and constant names, in insertion order."""
         return self._names
 
     @property
-    def n_marg(self):
+    def n_marg(self) -> int:
         """Number of marginal (stochastic) distributions."""
         return len(self._marg)
 
     @property
-    def marginal_distributions(self):
+    def marginal_distributions(self) -> list[Distribution]:
         """List of marginal Distribution objects."""
         return self._marg
 
     @property
-    def correlation(self):
+    def correlation(self) -> np.ndarray | None:
         """Correlation matrix (n × n numpy array)."""
         return self.get_correlation()
 
     @correlation.setter
-    def correlation(self, value):
+    def correlation(self, value: "_pystra.CorrelationMatrix | ArrayLike") -> None:
         self.set_correlation(value)
 
     @property
-    def copula(self):
+    def copula(self) -> "_pystra.dependence.copula.Copula | None":
         """Explicit dependence specification, or None for legacy Pearson input."""
         return self._copula
 
     @copula.setter
-    def copula(self, value):
+    def copula(self, value: "_pystra.dependence.copula.Copula") -> None:
         self.set_copula(value)
 
     @property
-    def modified_correlation(self):
+    def modified_correlation(self) -> np.ndarray | None:
         """Modified (Nataf) correlation matrix Ro."""
         return self._Ro
 
     @modified_correlation.setter
-    def modified_correlation(self, value):
+    def modified_correlation(self, value: np.ndarray | None) -> None:
         self._Ro = value
 
     @property
-    def call_function(self):
+    def call_function(self) -> int:
         """Cumulative number of limit-state function evaluations."""
         return self._call_function
 
     @call_function.setter
-    def call_function(self, value):
+    def call_function(self, value: int) -> None:
         self._call_function = value
 
     # Named access and dependence configuration
 
-    def get_variables(self):
+    def get_variables(self) -> OrderedDict[str, Distribution]:
         """Return the stored mapping of random-variable names to distributions."""
         return self.variables
 
-    def variable(self, name):
+    def variable(self, name: str) -> Distribution:
         """Return the random variable called *name*."""
         return self.variables[name]
 
-    def get_names(self):
+    def get_names(self) -> list[str]:
         """Return the stored names in variable and constant insertion order."""
         return self._names
 
-    def get_len_marginal_distributions(self):
+    def get_len_marginal_distributions(self) -> int:
         """Return the number of random variables, excluding constants."""
         return len(self._marg)
 
-    def get_marginal_distributions(self):
+    def get_marginal_distributions(self) -> list[Distribution]:
         """Return the stored marginal list in random-variable insertion order."""
         return self._marg
 
-    def set_marginal_distributions(self, marg):
+    def set_marginal_distributions(self, marg: list[Distribution]) -> None:
         """Replace the stored marginal list without copying or reordering it.
 
         This low-level setter does not update names, the variable mapping or
@@ -191,7 +196,7 @@ class StochasticModel:
         """
         self._marg = marg
 
-    def set_correlation(self, obj):
+    def set_correlation(self, obj: "_pystra.CorrelationMatrix | ArrayLike") -> None:
         """Set the physical correlation matrix, replacing any copula.
 
         Accepts a :class:`~pystra.CorrelationMatrix`, or an array that is
@@ -208,7 +213,7 @@ class StochasticModel:
         self._copula = None
         self._Ro = None
 
-    def get_correlation(self):
+    def get_correlation(self) -> np.ndarray | None:
         """Return the stored physical Pearson matrix, or None before variables exist.
 
         Raises ValueError when dependence is specified by an explicit copula,
@@ -220,7 +225,7 @@ class StochasticModel:
             )
         return self._correlation
 
-    def set_copula(self, copula):
+    def set_copula(self, copula: "_pystra.dependence.copula.Copula") -> None:
         """Replace legacy Pearson dependence with an explicit copula."""
         from .dependence.joint import JointDistribution
 
@@ -229,11 +234,11 @@ class StochasticModel:
         self._correlation = None
         self._Ro = None
 
-    def get_copula(self):
+    def get_copula(self) -> "_pystra.dependence.copula.Copula | None":
         """Return the explicit copula, or None for physical Pearson input."""
         return self._copula
 
-    def get_joint_distribution(self):
+    def get_joint_distribution(self) -> "_pystra.JointDistribution":
         """Return marginals plus the explicit or calibrated Gaussian copula."""
         from .dependence.joint import JointDistribution
         from .dependence.copula import GaussianCopula
@@ -244,19 +249,19 @@ class StochasticModel:
             copula = GaussianCopula(compute_modified_correlation_matrix(self))
         return JointDistribution(self._marg, copula)
 
-    def set_modified_correlation(self, correlation):
+    def set_modified_correlation(self, correlation: np.ndarray | None) -> None:
         """Store a Nataf correlation matrix without copying or validating it."""
         self._Ro = correlation
 
-    def get_modified_correlation(self):
+    def get_modified_correlation(self) -> np.ndarray | None:
         """Return the stored Nataf correlation, or None before it is computed."""
         return self._Ro
 
-    def add_call_function(self, add):
+    def add_call_function(self, add: int) -> None:
         """Add to the cumulative number of limit-state evaluations."""
         self._call_function += add
 
-    def get_call_function(self):
+    def get_call_function(self) -> int:
         """Return the cumulative number of limit-state evaluations."""
         return self._call_function
 
@@ -301,17 +306,17 @@ class LimitState:
         in random-variable order; see :meth:`evaluate` for shapes.
     """
 
-    def __init__(self, expression=None):
+    def __init__(self, expression: Callable[..., Any] | None = None) -> None:
         self.expression = expression
         """Expression of the limit-state function"""
 
     # Legacy getter/setter methods (expression is already a public attribute)
 
-    def get_expression(self):
+    def get_expression(self) -> Callable[..., Any] | None:
         """Return the stored limit-state callable."""
         return self.expression
 
-    def set_expression(self, expression):
+    def set_expression(self, expression: Callable[..., Any] | None) -> None:
         """Replace the limit-state callable without evaluating it."""
         self.expression = expression
 

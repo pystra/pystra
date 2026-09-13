@@ -17,12 +17,14 @@ Two methods are available, selected by the ``method`` argument of
   number of variables is large.
 """
 
+from typing import Literal
 import copy
 import math
 from numbers import Real
 
 import numpy as np
 
+import pystra as _pystra
 from .form import FORM
 from ..errors import AnalysisError, ModelError
 from .analysis import _check_on_failure
@@ -75,14 +77,14 @@ class SensitivityAnalysis:
 
     def __init__(
         self,
-        model,
-        limit_state,
+        model: "_pystra.StochasticModel",
+        limit_state: "_pystra.LimitState",
         *,
-        options=None,
-        method="numerical",
-        delta=0.01,
-        on_failure="raise",
-    ):
+        options: "_pystra.FORMOptions | None" = None,
+        method: Literal["numerical", "closed_form"] = "numerical",
+        delta: float = 0.01,
+        on_failure: Literal["raise", "return"] = "raise",
+    ) -> None:
         if not isinstance(model, StochasticModel):
             raise TypeError("SensitivityAnalysis requires a StochasticModel")
         if not isinstance(limit_state, LimitState):
@@ -111,14 +113,14 @@ class SensitivityAnalysis:
         self.delta = delta
         self.on_failure = _check_on_failure(on_failure)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         names = tuple(self.model.get_variables())
         return (
             f"SensitivityAnalysis(variables={names!r}, method={self.method!r}, "
             f"options={self.options!r})"
         )
 
-    def run(self):
+    def run(self) -> "_pystra.SensitivityResult":
         r"""Run the sensitivity analysis.
 
         Returns

@@ -2,6 +2,8 @@
 
 import numpy as np
 
+import pystra as _pystra
+from ..dependence.copula import _RandomSeed
 from .form import FORM
 from ._form_reuse import _check_form, _check_coordinates, _FORMReuse
 from ..options import FORMOptions
@@ -33,14 +35,22 @@ class ImportanceSampling(_FORMReuse, CrudeMonteCarlo):
         transformation.
     """
 
-    def __init__(self, model, limit_state, *, options=None, form=None, rng=None):
+    def __init__(
+        self,
+        model: "_pystra.StochasticModel",
+        limit_state: "_pystra.LimitState",
+        *,
+        options: "_pystra.SimulationOptions | None" = None,
+        form: "_pystra.FORM | None" = None,
+        rng: _RandomSeed = None,
+    ) -> None:
         super().__init__(model, limit_state, options=options, rng=rng)
         if form is not None and not isinstance(form, FORM):
             raise TypeError("form must be a FORM analysis")
         self.form = form
         self._form_result = None
 
-    def run(self):
+    def run(self) -> "_pystra.SimulationResult":
         """Run importance sampling and return a :class:`SimulationResult`.
 
         Samples are centered on the FORM design point. If no completed FORM

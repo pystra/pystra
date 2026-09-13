@@ -8,9 +8,12 @@ to PySTRA's independent standard normal space.
 from copy import copy
 import math
 
+from numpy.typing import ArrayLike
 import numpy as np
 from scipy.special import betainc
 
+import pystra as _pystra
+from ..dependence.copula import _RandomSeed
 from .analysis import AnalysisObject, _check_rng, _generator
 from .form import FORM
 from ..model import LimitState
@@ -83,19 +86,19 @@ class StrongMaximumTest(AnalysisObject):
 
     def __init__(
         self,
-        form=None,
+        form: "_pystra.FORM | None" = None,
         *,
-        model=None,
-        limit_state=None,
-        design_point=None,
-        options=None,
-        importance_level=0.15,
-        accuracy_level=3.0,
-        confidence_level=None,
-        point_number=None,
-        rng=None,
-        max_points=1000000,
-    ):
+        model: "_pystra.StochasticModel | None" = None,
+        limit_state: "_pystra.LimitState | None" = None,
+        design_point: ArrayLike | None = None,
+        options: "_pystra.FORMOptions | None" = None,
+        importance_level: float = 0.15,
+        accuracy_level: float = 3.0,
+        confidence_level: float | None = None,
+        point_number: int | None = None,
+        rng: _RandomSeed = None,
+        max_points: int = 1000000,
+    ) -> None:
         if form is not None:
             if (
                 not isinstance(form, FORM)
@@ -222,7 +225,7 @@ class StrongMaximumTest(AnalysisObject):
             )
         return x, values
 
-    def run(self):
+    def run(self) -> "_pystra.StrongMaximumResult":
         """Evaluate the sphere and classify points by failure and vicinity.
 
         Returns a :class:`StrongMaximumResult`.

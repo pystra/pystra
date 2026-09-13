@@ -3,6 +3,8 @@
 import numpy as np
 from scipy.stats import norm as scipy_norm
 
+import pystra as _pystra
+from ..dependence.copula import _RandomSeed
 from .analysis import AnalysisObject, _check_rng, _generator
 from ..options import SimulationOptions
 from ..results import SimulationResult
@@ -60,8 +62,15 @@ class SubsetSimulation(AnalysisObject):
     _options_type = SimulationOptions
 
     def __init__(
-        self, model, limit_state, *, options=None, p0=0.1, proposal_sigma=1.0, rng=None
-    ):
+        self,
+        model: "_pystra.StochasticModel",
+        limit_state: "_pystra.LimitState",
+        *,
+        options: "_pystra.SimulationOptions | None" = None,
+        p0: float = 0.1,
+        proposal_sigma: float = 1.0,
+        rng: _RandomSeed = None,
+    ) -> None:
         super().__init__(model, limit_state, options)
         self.rng = _check_rng(rng)
         self.options._require_defaults(
@@ -78,7 +87,7 @@ class SubsetSimulation(AnalysisObject):
         self._conditional_probs = []
         self._n_levels = None
 
-    def run(self):
+    def run(self) -> "_pystra.SimulationResult":
         """Run subset simulation and return a :class:`SimulationResult`."""
         self._results_valid = True
         self.init_run()

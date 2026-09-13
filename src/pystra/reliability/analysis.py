@@ -7,6 +7,7 @@ diagnostic analyses. Their settings are the frozen objects in
 
 import numpy as np
 
+import pystra as _pystra
 from ..errors import ModelError
 from ..model import StochasticModel, LimitState
 from ..dependence.transformation import Transformation
@@ -70,7 +71,12 @@ class AnalysisObject:
     _options_type = None
     _requires_limit_state = True
 
-    def __init__(self, model, limit_state, options=None):
+    def __init__(
+        self,
+        model: "_pystra.StochasticModel",
+        limit_state: "_pystra.LimitState | None",
+        options: "_pystra.FORMOptions | _pystra.SORMOptions | _pystra.SimulationOptions | None" = None,
+    ) -> None:
         name = type(self).__name__
         if not isinstance(model, StochasticModel):
             raise TypeError(
@@ -100,7 +106,7 @@ class AnalysisObject:
         self._results_valid = False
         self._n_evaluations = 0
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         names = tuple(self.model.get_variables())
         return f"{type(self).__name__}(variables={names!r}, options={self.options!r})"
 
@@ -131,7 +137,7 @@ class AnalysisObject:
             )
         return self.limit_state._evaluate_lsf(x, self.model, **kwargs)
 
-    def init_run(self):
+    def init_run(self) -> None:
         """Initialize the model's isoprobabilistic transformation.
 
         Uses the explicit copula or calibrates the legacy Gaussian Nataf

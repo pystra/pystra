@@ -1,10 +1,12 @@
 """First-order reliability analysis using a design-point search."""
 
+from typing import Literal
 import warnings
 
 import numpy as np
 from scipy.stats import norm as normal
 
+import pystra as _pystra
 from .analysis import AnalysisObject, _check_on_failure
 from ._form_reuse import _problem_state
 from ..errors import AnalysisError
@@ -48,7 +50,14 @@ class FORM(AnalysisObject):
     supports_spherical_space = True
     _options_type = FORMOptions
 
-    def __init__(self, model, limit_state, *, options=None, on_failure="raise"):
+    def __init__(
+        self,
+        model: "_pystra.StochasticModel",
+        limit_state: "_pystra.LimitState",
+        *,
+        options: "_pystra.FORMOptions | None" = None,
+        on_failure: Literal["raise", "return"] = "raise",
+    ) -> None:
         super().__init__(model, limit_state, options)
         self.on_failure = _check_on_failure(on_failure)
 

@@ -1,8 +1,11 @@
 """Monte Carlo reliability estimates and sampled response distributions."""
 
+from numpy.typing import ArrayLike
 import numpy as np
 from scipy.special import logsumexp, ndtri_exp
 
+import pystra as _pystra
+from ..dependence.copula import _RandomSeed
 from .analysis import AnalysisObject, _check_rng, _generator
 from ..distributions import StdNormal
 from ..options import SimulationOptions
@@ -40,7 +43,14 @@ class MonteCarlo(AnalysisObject):
     _options_type = SimulationOptions
     _unused_options = ("bins",)
 
-    def __init__(self, model, limit_state, *, options=None, rng=None):
+    def __init__(
+        self,
+        model: "_pystra.StochasticModel",
+        limit_state: "_pystra.LimitState",
+        *,
+        options: "_pystra.SimulationOptions | None" = None,
+        rng: _RandomSeed = None,
+    ) -> None:
         super().__init__(model, limit_state, options)
         self.options._require_defaults(type(self).__name__, self._unused_options)
         self.rng = _check_rng(rng)
@@ -221,11 +231,19 @@ class CrudeMonteCarlo(MonteCarlo):
         by default.
     """
 
-    def __init__(self, model, limit_state, *, options=None, point=None, rng=None):
+    def __init__(
+        self,
+        model: "_pystra.StochasticModel",
+        limit_state: "_pystra.LimitState",
+        *,
+        options: "_pystra.SimulationOptions | None" = None,
+        point: ArrayLike | None = None,
+        rng: _RandomSeed = None,
+    ) -> None:
         super().__init__(model, limit_state, options=options, rng=rng)
         self.point = point
 
-    def run(self):
+    def run(self) -> "_pystra.SimulationResult":
         """Run the simulation and return a :class:`SimulationResult`."""
         self._results_valid = False
         self._Pf = self._beta = None
@@ -406,10 +424,17 @@ class DistributionAnalysis(MonteCarlo):
 
     _unused_options = ("target_cov",)
 
-    def __init__(self, model, limit_state, *, options=None, rng=None):
+    def __init__(
+        self,
+        model: "_pystra.StochasticModel",
+        limit_state: "_pystra.LimitState",
+        *,
+        options: "_pystra.SimulationOptions | None" = None,
+        rng: _RandomSeed = None,
+    ) -> None:
         super().__init__(model, limit_state, options=options, rng=rng)
 
-    def run(self):
+    def run(self) -> "_pystra.DistributionAnalysisResult":
         """Sample the model and return a :class:`DistributionAnalysisResult`."""
         self._results_valid = True
 

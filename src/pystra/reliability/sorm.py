@@ -1,9 +1,12 @@
 """Second-order reliability approximations at a FORM design point."""
 
+from typing import Literal
+
 import numpy as np
 from scipy.stats import norm as normal
 from scipy.special import log_ndtr, ndtri_exp
 
+import pystra as _pystra
 from .form import FORM
 from .analysis import AnalysisObject, _check_on_failure
 from ._form_reuse import _check_form, _check_coordinates, _FORMReuse
@@ -60,8 +63,14 @@ class SORM(_FORMReuse, AnalysisObject):
     _options_type = SORMOptions
 
     def __init__(
-        self, model, limit_state, *, options=None, form=None, on_failure="raise"
-    ):
+        self,
+        model: "_pystra.StochasticModel",
+        limit_state: "_pystra.LimitState",
+        *,
+        options: "_pystra.SORMOptions | None" = None,
+        form: "_pystra.FORM | None" = None,
+        on_failure: Literal["raise", "return"] = "raise",
+    ) -> None:
         if form is not None and not isinstance(form, FORM):
             raise TypeError("form must be a FORM analysis")
         self.form = form
@@ -138,7 +147,7 @@ class SORM(_FORMReuse, AnalysisObject):
             _check_coordinates(self.form, self.transform)
         self._fit_type = fit_type
 
-    def run(self):
+    def run(self) -> "_pystra.SORMResult":
         """Run SORM with the fit in ``options.fit``.
 
         Curve fitting uses the eigenvalues of the Hessian at the design

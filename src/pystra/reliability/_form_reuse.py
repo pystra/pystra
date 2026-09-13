@@ -4,6 +4,7 @@ from collections.abc import Mapping
 
 import numpy as np
 
+import pystra as _pystra
 from ..dependence.copula import Copula
 from ..distributions.distribution import Distribution, rv_frozen
 from ..errors import AnalysisError, ModelError
@@ -15,12 +16,12 @@ class _FORMReuse:
     """Keep explicit FORM assignment distinct from an internally computed FORM."""
 
     @property
-    def form(self):
+    def form(self) -> "_pystra.FORM | None":
         """The last FORM analysis; assigning None requests a fresh FORM each run."""
         return self._form
 
     @form.setter
-    def form(self, value):
+    def form(self, value: "_pystra.FORM | None") -> None:
         from .form import FORM
 
         if value is not None and not isinstance(value, FORM):

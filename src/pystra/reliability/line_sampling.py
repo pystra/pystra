@@ -4,6 +4,8 @@ import numpy as np
 from scipy import optimize
 from scipy.special import log_ndtr, logsumexp, ndtri_exp
 
+import pystra as _pystra
+from ..dependence.copula import _RandomSeed
 from .analysis import AnalysisObject, _check_rng, _generator
 from .form import FORM
 from ._form_reuse import _check_form, _check_coordinates, _FORMReuse
@@ -67,7 +69,15 @@ class LineSampling(_FORMReuse, AnalysisObject):
 
     _options_type = SimulationOptions
 
-    def __init__(self, model, limit_state, *, options=None, form=None, rng=None):
+    def __init__(
+        self,
+        model: "_pystra.StochasticModel",
+        limit_state: "_pystra.LimitState",
+        *,
+        options: "_pystra.SimulationOptions | None" = None,
+        form: "_pystra.FORM | None" = None,
+        rng: _RandomSeed = None,
+    ) -> None:
         super().__init__(model, limit_state, options)
         self.rng = _check_rng(rng)
         self.options._require_defaults(
@@ -84,7 +94,7 @@ class LineSampling(_FORMReuse, AnalysisObject):
         self._n_samples = None
         self._pf_contributions = None
 
-    def run(self):
+    def run(self) -> "_pystra.SimulationResult":
         """Run line sampling and return a :class:`SimulationResult`."""
         self._results_valid = False
         self._Pf = self._beta = self._cov = None

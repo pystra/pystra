@@ -1,9 +1,12 @@
 """Component FORM approximation for series and parallel failure events."""
 
+from typing import Literal
+
 import numpy as np
 from scipy.integrate import quad
 from scipy.stats import multivariate_normal, norm
 
+import pystra as _pystra
 from .analysis import AnalysisObject, _check_on_failure
 from .form import FORM
 from ..systems import Component, SeriesSystem, ParallelSystem, ditlevsen_bounds
@@ -57,15 +60,15 @@ class SystemFORM(AnalysisObject):
 
     def __init__(
         self,
-        model,
-        system,
+        model: "_pystra.StochasticModel",
+        system: SeriesSystem | ParallelSystem,
         *,
-        options=None,
-        on_failure="raise",
-        maxpts=1000000,
-        abseps=1e-10,
-        releps=1e-5,
-    ):
+        options: "_pystra.FORMOptions | None" = None,
+        on_failure: Literal["raise", "return"] = "raise",
+        maxpts: int = 1000000,
+        abseps: float = 1e-10,
+        releps: float = 1e-5,
+    ) -> None:
         if type(system) not in (SeriesSystem, ParallelSystem):
             raise TypeError("SystemFORM requires a series or parallel system")
         super().__init__(model, None, options)
@@ -202,7 +205,7 @@ class SystemFORM(AnalysisObject):
             )
         return value
 
-    def run(self):
+    def run(self) -> "_pystra.SystemFORMResult":
         """Run each unique component once, then integrate the system event.
 
         Returns a :class:`SystemFORMResult`.
