@@ -646,6 +646,7 @@
 <span class="sd">            is :math:`\partial\beta / \partial\rho_{ij}`, with a zero diagonal.</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_evaluations</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_converged</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_diagnostics</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">numerical</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">"numerical"</span>
         <span class="k">if</span> <span class="n">numerical</span><span class="p">:</span>
             <span class="n">base</span><span class="p">,</span> <span class="n">marginal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_numerical_sens</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delta</span><span class="p">)</span>
@@ -678,18 +679,21 @@
             <span class="n">correlation</span><span class="o">=</span><span class="n">correlation</span> <span class="k">if</span> <span class="n">ok</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">delta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">delta</span> <span class="k">if</span> <span class="n">numerical</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
+            <span class="n">diagnostics</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_diagnostics</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_failure</span> <span class="o">==</span> <span class="s2">"raise"</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">AnalysisError</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_form</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_form</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Run FORM on *model*, recording its evaluations and convergence."""</span>
         <span class="n">form</span> <span class="o">=</span> <span class="n">FORM</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit_state</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="n">on_failure</span><span class="o">=</span><span class="s2">"return"</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_evaluations</span> <span class="o">+=</span> <span class="n">result</span><span class="o">.</span><span class="n">n_limit_state_evaluations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_converged</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_converged</span> <span class="ow">and</span> <span class="n">result</span><span class="o">.</span><span class="n">converged</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">converged</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_diagnostics</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"failed_form"</span><span class="p">:</span> <span class="n">result</span><span class="p">,</span> <span class="o">**</span><span class="n">context</span><span class="p">}</span>
         <span class="k">return</span> <span class="n">form</span><span class="p">,</span> <span class="n">result</span>
 
     <span class="c1"># ------------------------------------------------------------------</span>
@@ -714,7 +718,9 @@
             <span class="n">sensitivities</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">p</span><span class="p">:</span> <span class="mf">0.0</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">dist</span><span class="o">.</span><span class="n">sensitivity_params</span><span class="p">}</span>
 
         <span class="c1"># Get the base result</span>
-        <span class="n">form</span><span class="p">,</span> <span class="n">base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_form</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+        <span class="n">form</span><span class="p">,</span> <span class="n">base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_form</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">phase</span><span class="o">=</span><span class="s2">"baseline"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">base</span><span class="o">.</span><span class="n">converged</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">base</span><span class="p">,</span> <span class="p">{}</span>
         <span class="n">beta0</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">_beta</span>
 
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
@@ -735,7 +741,15 @@
                 <span class="n">delta_actual</span> <span class="o">=</span> <span class="n">new_dist</span><span class="o">.</span><span class="n">sensitivity_params</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">-</span> <span class="n">val</span>
 
                 <span class="c1"># Run FORM with perturbed model</span>
-                <span class="n">form</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_form</span><span class="p">(</span><span class="n">model1</span><span class="p">)</span>
+                <span class="n">form</span><span class="p">,</span> <span class="n">perturbed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_form</span><span class="p">(</span>
+                    <span class="n">model1</span><span class="p">,</span>
+                    <span class="n">phase</span><span class="o">=</span><span class="s2">"perturbation"</span><span class="p">,</span>
+                    <span class="n">variable</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">parameter</span><span class="o">=</span><span class="n">param</span><span class="p">,</span>
+                    <span class="n">step</span><span class="o">=</span><span class="n">delta_actual</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">perturbed</span><span class="o">.</span><span class="n">converged</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">base</span><span class="p">,</span> <span class="p">{}</span>
                 <span class="n">beta1</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">_beta</span>
                 <span class="n">sensitivities</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">beta1</span> <span class="o">-</span> <span class="n">beta0</span><span class="p">)</span> <span class="o">/</span> <span class="n">delta_actual</span>
 
@@ -766,7 +780,9 @@
                 <span class="s2">"Closed-form sensitivities assume legacy physical Pearson input; use numerical=True for explicit copulas"</span>
             <span class="p">)</span>
         <span class="c1"># 1. Run FORM</span>
-        <span class="n">form</span><span class="p">,</span> <span class="n">base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_form</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+        <span class="n">form</span><span class="p">,</span> <span class="n">base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_form</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">phase</span><span class="o">=</span><span class="s2">"baseline"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">base</span><span class="o">.</span><span class="n">converged</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">base</span><span class="p">,</span> <span class="p">{},</span> <span class="kc">None</span>
 
         <span class="c1"># Extract converged quantities</span>
         <span class="n">alpha</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">_alpha</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># shape (nrv,)</span>

@@ -579,6 +579,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_converged</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_e1</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_e2</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_result</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="FORM.run">
 <a class="viewcode-back" href="../../../gen/pystra.reliability.form.FORM.html#pystra.reliability.form.FORM.run">[docs]</a>
@@ -586,6 +587,7 @@
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Execute FORM and return an immutable :class:`FORMResult` snapshot.</span>
 <span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_result</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_results_valid</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_converged</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_beta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Pf</span> <span class="o">=</span> <span class="kc">None</span>
@@ -670,7 +672,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_run_expression</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit_state</span><span class="o">.</span><span class="n">expression</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_run_options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_run_model_state</span> <span class="o">=</span> <span class="n">_problem_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">FORMResult</span><span class="o">.</span><span class="n">from_analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_result</span> <span class="o">=</span> <span class="n">FORMResult</span><span class="o">.</span><span class="n">from_analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_converged</span><span class="p">:</span>
             <span class="n">message</span> <span class="o">=</span> <span class="s2">"FORM did not converge within the iteration limit"</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_failure</span> <span class="o">==</span> <span class="s2">"raise"</span><span class="p">:</span>

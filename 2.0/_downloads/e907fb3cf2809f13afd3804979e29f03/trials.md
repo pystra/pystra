@@ -8,8 +8,9 @@ historical example remains appropriate for every method.
 **Result:** all seven 1.6.0 example scripts and eleven tutorial notebooks passed
 conversion/idempotence checks. Eleven complete scripts/tutorials were manually
 migrated, executed in both versions and passed their numerical comparisons.
-The OpenSees example was attempted in both versions but could not initialise
-MPI in this sandbox; it remains an external-environment release check.
+The sandbox run could not initialize OpenSees MPI. Claude subsequently ran all
+twelve trials in the maintainer environment on integration revision `609cba7`;
+all twelve passed, including OpenSees under both versions.
 
 ## Reproduce the trials
 
@@ -43,6 +44,13 @@ notebook's own seeds retained. Migrated simulations receive explicit integer
 
 [Machine-readable evidence](trial_scripts/results.json) contains the complete
 conversion inventory, comparison criteria and numerical records.
+The runner writes this combined artifact directly as `OUTPUT/results.json`;
+copy it to `docs/migration/trial_scripts/results.json` after reviewing a new run.
+Revision IDs, library source hashes and dependency versions are captured at
+execution time. Source locations use `<repo>` and `<baseline>` placeholders;
+no hand-written environment label or separate merge step is needed. Reruns
+preserve the schema and numerical criteria; revisions and environment values
+reflect the actual checkouts used.
 [Reviewed migrated scripts](trial_scripts/) and their
 [manual patches](trial_scripts/manual/) are retained alongside the runner.
 
@@ -157,12 +165,19 @@ The example/intro CMC and importance-sampling differences range from 1.09 to
 
 ## External environment and remaining release checks
 
-`examples/openseespy_ex.py` was converted, manually updated and attempted under
-both versions with installed OpenSeesPy and opsvis. Both processes exit with
-status 15 before analysing the model: `MPI_Init` reports that it cannot create
-a listener socket (`Operation not permitted`). The complete migrated script
-is retained. Repeat it in the maintainer's unrestricted numerical environment;
-this is not counted as a numerical pass.
+`examples/openseespy_ex.py` passed under both versions in the maintainer
+environment on 13 September 2026. Claude ran the complete runner without
+`--skip-external` on integration revision `609cba7`, against a fresh archive of
+`v1.6.0`: exit status 0, all twelve trials `passed`. That environment used
+Python 3.13.12, OpenSeesPy 3.8.0.0, opsvis 1.3.7, NumPy 2.4.4, SciPy 1.17.1,
+pandas 3.0.2 and Matplotlib 3.10.8, with one OpenMP/BLAS thread and `Agg`.
+
+The committed machine-readable artifact records the independently regenerated
+sandbox run: eleven numerical passes and OpenSees execution failures with
+status 15 because `MPI_Init` cannot create a listener socket (`Operation not
+permitted`). It does not relabel that failure as the maintainer pass. Use
+`--skip-external` for sandboxed reproductions; the complete migrated OpenSees
+script remains available for unrestricted runs.
 
 These trials do not replace the integration branch's complete notebook,
 platform/dependency, installed-package, performance or external-solver release

@@ -960,6 +960,10 @@
 <span class="sd">        coefficients, symmetric with a zero diagonal.</span>
 <span class="sd">    delta : float or None</span>
 <span class="sd">        Numerical only: the relative perturbation.</span>
+<span class="sd">    diagnostics : Mapping</span>
+<span class="sd">        On nonconvergence, ``failed_form`` retains the failed inner FORM</span>
+<span class="sd">        record and ``phase`` identifies the baseline or perturbation. A</span>
+<span class="sd">        perturbation also records its variable, parameter and actual step.</span>
 <span class="sd">    """</span>
 
     <span class="n">form</span><span class="p">:</span> <span class="n">FORMResult</span>
@@ -967,9 +971,10 @@
     <span class="n">marginal</span><span class="p">:</span> <span class="n">Mapping</span>
     <span class="n">correlation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
     <span class="n">delta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="n">diagnostics</span><span class="p">:</span> <span class="n">Mapping</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="n">_arrays</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"correlation"</span><span class="p">,)</span>
-    <span class="n">_read_only</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"marginal"</span><span class="p">,)</span>
+    <span class="n">_read_only</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"marginal"</span><span class="p">,</span> <span class="s2">"diagnostics"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="o">*</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_rows</span><span class="p">(),</span> <span class="p">(</span><span class="s2">"Approach"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">approach</span><span class="p">)]</span>
