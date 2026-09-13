@@ -1,0 +1,575 @@
+{
+  "source": "/home/ccaprani/projects/pystra/.claude/worktrees/v2.0-contracts",
+  "source_revision": "c0fd369f12158ddea47447197cc8812e08f958fc",
+  "commands": [
+    {
+      "label": "uv-version",
+      "command": [
+        "/home/ccaprani/.local/bin/uv",
+        "--version"
+      ],
+      "cwd": "/tmp/pystra-c6e-installed/run",
+      "returncode": 0,
+      "seconds": 0.0077531629940494895,
+      "optional": false,
+      "log": "/tmp/pystra-c6e-installed/logs/uv-version.log"
+    },
+    {
+      "label": "build",
+      "command": [
+        "/home/ccaprani/.local/bin/uv",
+        "build",
+        "--python",
+        "/home/ccaprani/anaconda3/bin/python",
+        "--out-dir",
+        "/tmp/pystra-c6e-installed/dist",
+        "--offline",
+        "--no-index",
+        "--find-links",
+        "/tmp/pystra-c6e-installed/dependency-wheels",
+        "/home/ccaprani/projects/pystra/.claude/worktrees/v2.0-contracts"
+      ],
+      "cwd": "/tmp/pystra-c6e-installed/run",
+      "returncode": 0,
+      "seconds": 0.9907696999725886,
+      "optional": false,
+      "log": "/tmp/pystra-c6e-installed/logs/build.log"
+    },
+    {
+      "label": "venv",
+      "command": [
+        "/home/ccaprani/.local/bin/uv",
+        "venv",
+        "--python",
+        "/home/ccaprani/anaconda3/bin/python",
+        "/tmp/pystra-c6e-installed/venv"
+      ],
+      "cwd": "/tmp/pystra-c6e-installed/run",
+      "returncode": 0,
+      "seconds": 0.027307761018164456,
+      "optional": false,
+      "log": "/tmp/pystra-c6e-installed/logs/venv.log"
+    },
+    {
+      "label": "install",
+      "command": [
+        "/home/ccaprani/.local/bin/uv",
+        "pip",
+        "install",
+        "--python",
+        "/tmp/pystra-c6e-installed/venv/bin/python",
+        "--offline",
+        "--no-index",
+        "--find-links",
+        "/tmp/pystra-c6e-installed/dependency-wheels",
+        "/tmp/pystra-c6e-installed/dist/pystra-2.0.0a1-py3-none-any.whl"
+      ],
+      "cwd": "/tmp/pystra-c6e-installed/run",
+      "returncode": 0,
+      "seconds": 0.4108268470154144,
+      "optional": false,
+      "log": "/tmp/pystra-c6e-installed/logs/install.log"
+    },
+    {
+      "label": "dependency-check",
+      "command": [
+        "/home/ccaprani/.local/bin/uv",
+        "pip",
+        "check",
+        "--python",
+        "/tmp/pystra-c6e-installed/venv/bin/python"
+      ],
+      "cwd": "/tmp/pystra-c6e-installed/run",
+      "returncode": 0,
+      "seconds": 0.007488781004212797,
+      "optional": false,
+      "log": "/tmp/pystra-c6e-installed/logs/dependency-check.log"
+    },
+    {
+      "label": "freeze",
+      "command": [
+        "/home/ccaprani/.local/bin/uv",
+        "pip",
+        "freeze",
+        "--python",
+        "/tmp/pystra-c6e-installed/venv/bin/python"
+      ],
+      "cwd": "/tmp/pystra-c6e-installed/run",
+      "returncode": 0,
+      "seconds": 0.00566704198718071,
+      "optional": false,
+      "log": "/tmp/pystra-c6e-installed/logs/freeze.log"
+    },
+    {
+      "label": "imports-and-session",
+      "command": [
+        "/tmp/pystra-c6e-installed/venv/bin/python",
+        "-I",
+        "/tmp/pystra-c6e-installed/run/check_installed_package.py",
+        "--installed-smoke",
+        "--output",
+        "/tmp/pystra-c6e-installed/installed-session.json"
+      ],
+      "cwd": "/tmp/pystra-c6e-installed/run",
+      "returncode": 0,
+      "seconds": 3.1503564920276403,
+      "optional": false,
+      "log": "/tmp/pystra-c6e-installed/logs/imports-and-session.log"
+    },
+    {
+      "label": "converter-help",
+      "command": [
+        "/tmp/pystra-c6e-installed/venv/bin/python",
+        "-I",
+        "-m",
+        "pystra.migrate",
+        "--help"
+      ],
+      "cwd": "/tmp/pystra-c6e-installed/run",
+      "returncode": 0,
+      "seconds": 0.7142477390007116,
+      "optional": false,
+      "log": "/tmp/pystra-c6e-installed/logs/converter-help.log"
+    },
+    {
+      "label": "optional-opensees-install",
+      "command": [
+        "/home/ccaprani/.local/bin/uv",
+        "pip",
+        "install",
+        "--python",
+        "/tmp/pystra-c6e-installed/venv/bin/python",
+        "--offline",
+        "--no-index",
+        "--find-links",
+        "/tmp/pystra-c6e-installed/dependency-wheels",
+        "openseespy"
+      ],
+      "cwd": "/tmp/pystra-c6e-installed/run",
+      "returncode": 1,
+      "seconds": 0.007352200977038592,
+      "optional": true,
+      "log": "/tmp/pystra-c6e-installed/logs/optional-opensees-install.log"
+    },
+    {
+      "label": "ddm_example",
+      "command": [
+        "/tmp/pystra-c6e-installed/venv/bin/python",
+        "-I",
+        "/tmp/pystra-c6e-installed/run/ddm_example.py"
+      ],
+      "cwd": "/tmp/pystra-c6e-installed/run",
+      "returncode": 0,
+      "seconds": 2.515506455965806,
+      "optional": false,
+      "log": "/tmp/pystra-c6e-installed/logs/ddm_example.log"
+    },
+    {
+      "label": "example",
+      "command": [
+        "/tmp/pystra-c6e-installed/venv/bin/python",
+        "-I",
+        "/tmp/pystra-c6e-installed/run/example.py"
+      ],
+      "cwd": "/tmp/pystra-c6e-installed/run",
+      "returncode": 0,
+      "seconds": 1.7121902839862742,
+      "optional": false,
+      "log": "/tmp/pystra-c6e-installed/logs/example.log"
+    },
+    {
+      "label": "example_parallel_multithreading",
+      "command": [
+        "/tmp/pystra-c6e-installed/venv/bin/python",
+        "-I",
+        "/tmp/pystra-c6e-installed/run/example_parallel_multithreading.py"
+      ],
+      "cwd": "/tmp/pystra-c6e-installed/run",
+      "returncode": 1,
+      "seconds": 0.7432462209835649,
+      "optional": false,
+      "log": "/tmp/pystra-c6e-installed/logs/example_parallel_multithreading.log"
+    },
+    {
+      "label": "gev_example",
+      "command": [
+        "/tmp/pystra-c6e-installed/venv/bin/python",
+        "-I",
+        "/tmp/pystra-c6e-installed/run/gev_example.py"
+      ],
+      "cwd": "/tmp/pystra-c6e-installed/run",
+      "returncode": 0,
+      "seconds": 0.8036811270285398,
+      "optional": false,
+      "log": "/tmp/pystra-c6e-installed/logs/gev_example.log"
+    },
+    {
+      "label": "openseespy_ex",
+      "command": [
+        "/tmp/pystra-c6e-installed/venv/bin/python",
+        "-I",
+        "/tmp/pystra-c6e-installed/run/openseespy_ex.py"
+      ],
+      "cwd": "/tmp/pystra-c6e-installed/run",
+      "returncode": 1,
+      "seconds": 0.05060120002599433,
+      "optional": true,
+      "log": "/tmp/pystra-c6e-installed/logs/openseespy_ex.log"
+    },
+    {
+      "label": "sensitivity",
+      "command": [
+        "/tmp/pystra-c6e-installed/venv/bin/python",
+        "-I",
+        "/tmp/pystra-c6e-installed/run/sensitivity.py"
+      ],
+      "cwd": "/tmp/pystra-c6e-installed/run",
+      "returncode": 0,
+      "seconds": 0.7879346489789896,
+      "optional": false,
+      "log": "/tmp/pystra-c6e-installed/logs/sensitivity.log"
+    },
+    {
+      "label": "timing",
+      "command": [
+        "/tmp/pystra-c6e-installed/venv/bin/python",
+        "-I",
+        "/tmp/pystra-c6e-installed/run/timing.py"
+      ],
+      "cwd": "/tmp/pystra-c6e-installed/run",
+      "returncode": 0,
+      "seconds": 4.8464106600149535,
+      "optional": false,
+      "log": "/tmp/pystra-c6e-installed/logs/timing.log"
+    }
+  ],
+  "environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "MPLBACKEND": "Agg",
+    "MPLCONFIGDIR": "/tmp/pystra-c6e-installed/matplotlib"
+  },
+  "cached_dependencies": [
+    {
+      "name": "matplotlib",
+      "version": "3.11.1",
+      "cache_archive": "/home/ccaprani/.cache/uv/archive-v0/ALOQ3Vwnp5BnnliwKv_yE",
+      "wheel": "matplotlib-3.11.1-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "sha256": "a7a7c4f1f8048f75fe36ff23c7bf4b96f536dbec817d2798ecf7e62df812cf86",
+      "verified_record_entries": 601
+    },
+    {
+      "name": "python-dateutil",
+      "version": "2.9.0.post0",
+      "cache_archive": "/home/ccaprani/.cache/uv/archive-v0/e5JZ0a2XhbGTkWDSLby5T",
+      "wheel": "python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+      "sha256": "85ede5b2fcfe7b4b901a360dc5effbeb9108219a2b3ad5accf5166ad8f2ffc0a",
+      "verified_record_entries": 25
+    },
+    {
+      "name": "six",
+      "version": "1.17.0",
+      "cache_archive": "/home/ccaprani/.cache/uv/archive-v0/xA9_Vd3zIC-jclAK4kzzX",
+      "wheel": "six-1.17.0-py2.py3-none-any.whl",
+      "sha256": "c1f8cb1cab30d609bb3686a9b5e4f0d63eab9f25e0bf78dadb5ac91c32211cd9",
+      "verified_record_entries": 6
+    },
+    {
+      "name": "pyparsing",
+      "version": "3.3.2",
+      "cache_archive": "/home/ccaprani/.cache/uv/archive-v0/e9XXeBeVEf2bnmOe4L11x",
+      "wheel": "pyparsing-3.3.2-py3-none-any.whl",
+      "sha256": "101ee48a654468a826c0ae817f4d85e520e87d21a5bba62a0fb0444e3a07cf35",
+      "verified_record_entries": 23
+    },
+    {
+      "name": "pillow",
+      "version": "12.3.0",
+      "cache_archive": "/home/ccaprani/.cache/uv/archive-v0/AXLWFHOWpnQQTE9DCwXxi",
+      "wheel": "pillow-12.3.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+      "sha256": "67be75f95b3860507f58b1a772cc999b1b838cd31cf2592288d86d35bfd0626c",
+      "verified_record_entries": 140
+    },
+    {
+      "name": "packaging",
+      "version": "26.3",
+      "cache_archive": "/home/ccaprani/.cache/uv/archive-v0/nU6VoMEl_N0qYpn36jrHv",
+      "wheel": "packaging-26.3-py3-none-any.whl",
+      "sha256": "7d87f58108e2878a5043e24dd0c6f547c5ffb0bcff5117b849805dd07ea60f34",
+      "verified_record_entries": 29
+    },
+    {
+      "name": "numpy",
+      "version": "2.5.3",
+      "cache_archive": "/home/ccaprani/.cache/uv/archive-v0/Eyj-p6mieIZMD1RXP8bjm",
+      "wheel": "numpy-2.5.3-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+      "sha256": "7e4ec416cc9431776a71ea4d4bb88e208395725aa1d4971eb266aa21e2391c9f",
+      "verified_record_entries": 926
+    },
+    {
+      "name": "kiwisolver",
+      "version": "1.5.1",
+      "cache_archive": "/home/ccaprani/.cache/uv/archive-v0/H3H_U356pUkxQwKSDXI1E",
+      "wheel": "kiwisolver-1.5.1-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "sha256": "2fbaccca81c887deadd6c56d85bd42f824820ff99b88068c774f6b24aee8b25f",
+      "verified_record_entries": 10
+    },
+    {
+      "name": "fonttools",
+      "version": "4.64.0",
+      "cache_archive": "/home/ccaprani/.cache/uv/archive-v0/fCLAFxq2p-2__iOizVkra",
+      "wheel": "fonttools-4.64.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "sha256": "9ffa7e810ef41a0929774bb1e7d2389043196f741ab79d83e221f77385f5b1fd",
+      "verified_record_entries": 363
+    },
+    {
+      "name": "cycler",
+      "version": "0.12.1",
+      "cache_archive": "/home/ccaprani/.cache/uv/archive-v0/EciFVq8tpjhGjf7klHfFf",
+      "wheel": "cycler-0.12.1-py3-none-any.whl",
+      "sha256": "5e765a8b56b461e924c4a8dc64f1344e942e4cb5ede0c9a0e6fec692d1d05355",
+      "verified_record_entries": 7
+    },
+    {
+      "name": "contourpy",
+      "version": "1.3.3",
+      "cache_archive": "/home/ccaprani/.cache/uv/archive-v0/c_SV4nPspP13wutZCxmaa",
+      "wheel": "contourpy-1.3.3-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+      "sha256": "1cc0ddc3fe7cf15c913df9320c4729c8c22e98d5cb2e2bacbaa03cc97baaeeef",
+      "verified_record_entries": 24
+    },
+    {
+      "name": "pandas",
+      "version": "3.0.5",
+      "cache_archive": "/home/ccaprani/.cache/uv/archive-v0/lMpo1TsrjVz8ktVJpSmoj",
+      "wheel": "pandas-3.0.5-cp313-cp313-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl",
+      "sha256": "cde0690756f2af3823d076a21e539dea93c2510841741785fa81965d2d095497",
+      "verified_record_entries": 1521
+    },
+    {
+      "name": "scipy",
+      "version": "1.18.1",
+      "cache_archive": "/home/ccaprani/.cache/uv/archive-v0/jyJz353YP6Xb0a7IwXlGA",
+      "wheel": "scipy-1.18.1-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+      "sha256": "772216f24e21c977ab2216e45b4a8b5381efb8706016b87a28cc03c4a2c9f9e4",
+      "verified_record_entries": 1432
+    },
+    {
+      "name": "setuptools",
+      "version": "84.0.0",
+      "cache_archive": "/home/ccaprani/.cache/uv/archive-v0/aFrOgvRZ4DX8b_2c5cNFT",
+      "wheel": "setuptools-84.0.0-py3-none-any.whl",
+      "sha256": "0fde7743b0f7de326f7a0dfc94e7f74d04d7b7f04dcc04c410dcf6acb8405345",
+      "verified_record_entries": 343
+    }
+  ],
+  "metadata": {
+    "Name": [
+      "Pystra"
+    ],
+    "Version": [
+      "2.0.0a1"
+    ],
+    "Requires-Python": [
+      ">=3.12"
+    ],
+    "Requires-Dist": [
+      "matplotlib",
+      "numpy",
+      "scipy>=1.11",
+      "pandas",
+      "pytest>=6.2.2; extra == \"test\"",
+      "scikit-learn; extra == \"al\"",
+      "sphinx; extra == \"docs\"",
+      "pydata-sphinx-theme; extra == \"docs\"",
+      "sphinx-autodoc-typehints; extra == \"docs\"",
+      "nbsphinx; extra == \"docs\"",
+      "myst-parser; extra == \"docs\"",
+      "sphinx-copybutton; extra == \"docs\"",
+      "ipykernel; extra == \"docs\"",
+      "openseespy; extra == \"docs\""
+    ],
+    "Description-Content-Type": [
+      "text/x-rst"
+    ],
+    "License-File": [
+      "LICENSE",
+      "THIRD_PARTY_NOTICES"
+    ]
+  },
+  "artifacts": {
+    "pystra-2.0.0a1-py3-none-any.whl": {
+      "sha256": "191063f8faad382812dcb0845f2bfa2c515e77fc990b1ec102241053756e540b",
+      "bytes": 232730
+    },
+    "pystra-2.0.0a1.tar.gz": {
+      "sha256": "22093dd439f177158dd451dd28999ca5879f685213577ad010dcb982ddd3cc03",
+      "bytes": 472070
+    }
+  },
+  "session": {
+    "python": "3.13.12 | packaged by conda-forge | (main, Feb  5 2026, 05:53:46) [GCC 14.3.0]",
+    "prefix": "/tmp/pystra-c6e-installed/venv",
+    "base_prefix": "/home/ccaprani/anaconda3",
+    "cwd": "/tmp/pystra-c6e-installed/run",
+    "sys_path": [
+      "/home/ccaprani/anaconda3/lib/python313.zip",
+      "/home/ccaprani/anaconda3/lib/python3.13",
+      "/home/ccaprani/anaconda3/lib/python3.13/lib-dynload",
+      "/tmp/pystra-c6e-installed/venv/lib/python3.13/site-packages"
+    ],
+    "pystra_file": "/tmp/pystra-c6e-installed/venv/lib/python3.13/site-packages/pystra/__init__.py",
+    "version": "2.0.0a1",
+    "exports": {
+      "PystraError": "type",
+      "ModelError": "type",
+      "AnalysisError": "type",
+      "Distribution": "type",
+      "StdNormal": "type",
+      "Normal": "type",
+      "Lognormal": "type",
+      "Uniform": "type",
+      "Beta": "type",
+      "Gamma": "type",
+      "ChiSquare": "type",
+      "ShiftedExponential": "type",
+      "ShiftedLognormal": "type",
+      "ShiftedRayleigh": "type",
+      "Gumbel": "type",
+      "GumbelMin": "type",
+      "Frechet": "type",
+      "Weibull": "type",
+      "GEV": "type",
+      "GEVmax": "type",
+      "GEVMin": "type",
+      "Maximum": "type",
+      "MaxParent": "type",
+      "ZeroInflated": "type",
+      "ScipyDist": "type",
+      "Constant": "type",
+      "CorrelationMatrix": "type",
+      "JointDistribution": "type",
+      "GaussianCopula": "type",
+      "StudentTCopula": "type",
+      "FrankCopula": "type",
+      "IndependentCopula": "type",
+      "Transformation": "type",
+      "StochasticModel": "type",
+      "LimitState": "type",
+      "AnalysisObject": "type",
+      "FORMOptions": "type",
+      "SORMOptions": "type",
+      "SimulationOptions": "type",
+      "FORM": "type",
+      "SORM": "type",
+      "MonteCarlo": "type",
+      "CrudeMonteCarlo": "type",
+      "ImportanceSampling": "type",
+      "DistributionAnalysis": "type",
+      "LineSampling": "type",
+      "SubsetSimulation": "type",
+      "SensitivityAnalysis": "type",
+      "SystemFORM": "type",
+      "StrongMaximumTest": "type",
+      "FORMResult": "type",
+      "SORMResult": "type",
+      "SimulationResult": "type",
+      "SystemFORMResult": "type",
+      "SensitivityResult": "type",
+      "StrongMaximumResult": "type",
+      "DistributionAnalysisResult": "type",
+      "Component": "type",
+      "System": "type",
+      "SeriesSystem": "type",
+      "ParallelSystem": "type",
+      "CutSetSystem": "type",
+      "TieSetSystem": "type",
+      "KOfNSystem": "type",
+      "ditlevsen_bounds": "function",
+      "FBCProcess": "type",
+      "VariableRoles": "type",
+      "LoadCombination": "type",
+      "ActiveLearning": "type",
+      "ActiveLearningResult": "type"
+    },
+    "modules": [
+      "pystra.model",
+      "pystra.distributions",
+      "pystra.dependence",
+      "pystra.reliability",
+      "pystra.calibration",
+      "pystra.decision",
+      "pystra.active_learning",
+      "pystra.results",
+      "pystra.migrate"
+    ],
+    "dependencies": {
+      "Pystra": "2.0.0a1",
+      "kiwisolver": "1.5.1",
+      "pandas": "3.0.5",
+      "pillow": "12.3.0",
+      "pyparsing": "3.3.2",
+      "six": "1.17.0",
+      "fonttools": "4.64.0",
+      "cycler": "0.12.1",
+      "contourpy": "1.3.3",
+      "scipy": "1.18.1",
+      "numpy": "2.5.3",
+      "matplotlib": "3.11.1",
+      "python-dateutil": "2.9.0.post0",
+      "packaging": "26.3"
+    },
+    "form_beta": 2.2360679774990433,
+    "sorm_failure_probability": 0.012673659338758572,
+    "mc_failure_probability": 0.01305,
+    "reference_probability": 0.012673659338734126,
+    "mc_reference_standard_errors": 0.47578940302403244
+  },
+  "examples": [
+    {
+      "name": "ddm_example.py",
+      "sha256": "91daf8146bdf998c5d4112d9ede4ff20f796789c122ee7d9ef338abc7f6b2864",
+      "returncode": 0,
+      "optional": false
+    },
+    {
+      "name": "example.py",
+      "sha256": "390e02c4fbd2834ca5891c1622291e7e45e799a1daa499767acecf54030a7585",
+      "returncode": 0,
+      "optional": false
+    },
+    {
+      "name": "example_parallel_multithreading.py",
+      "sha256": "fbc6e86fcc66e3006f33d74fd955a75aae4aa72d17d58132364f9ffb932b3c15",
+      "returncode": 1,
+      "optional": false
+    },
+    {
+      "name": "gev_example.py",
+      "sha256": "7d221d1d2eb1961380ca200a986de12fd9a32cad2c2e5b5ecf8649686c9741f9",
+      "returncode": 0,
+      "optional": false
+    },
+    {
+      "name": "openseespy_ex.py",
+      "sha256": "d2e67f13cdaf70dc198be2cf776ed68cfc3ff7de2deee448dfa065cd17bb8800",
+      "returncode": 1,
+      "optional": true
+    },
+    {
+      "name": "sensitivity.py",
+      "sha256": "0ab58748d8162f4c086ef0cae3fadd0f86ba2d9ae98f123b15d0ae9b321c9825",
+      "returncode": 0,
+      "optional": false
+    },
+    {
+      "name": "timing.py",
+      "sha256": "76ce694683be42826f666af71f139e39869e7961bfe8ff0a2fc5c22239e123ff",
+      "returncode": 0,
+      "optional": false
+    }
+  ],
+  "core_passed": false,
+  "optional_passed": false
+}
