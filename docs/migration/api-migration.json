@@ -2171,7 +2171,7 @@
       "current": "pystra.distributions.maximum.Maximum",
       "kind": "class",
       "status": "unchanged",
-      "notes": "Moments use deterministic adaptive quantile integration at absolute/relative tolerance 1e-8 in standardized units, replacing 100 global random draws."
+      "notes": "Moments use deterministic adaptive quantile integration at absolute/relative tolerance 1e-8 in standardized units, replacing 100 global random draws. Moments use deterministic normal-space quadrature (rtol 1e-7, atol 1e-9 in standardized mean/variance), with exact Frechet/Uniform identities. A missed tolerance warns and retains the finest finite estimate; nonfinite estimates and nonpositive variance remain errors."
     },
     {
       "old": "pystra.distributions.maximum.Maximum.__init__",
@@ -2321,7 +2321,7 @@
       "current": "pystra.distributions.parent.MaxParent",
       "kind": "class",
       "status": "unchanged",
-      "notes": "Moments use deterministic adaptive quantile integration at absolute/relative tolerance 1e-8 in standardized units; normal lower-tail inversion operates in log probability."
+      "notes": "Moments use deterministic adaptive quantile integration at absolute/relative tolerance 1e-8 in standardized units; normal lower-tail inversion operates in log probability. Moments use deterministic normal-space quadrature (rtol 1e-7, atol 1e-9 in standardized mean/variance), with exact Frechet/Uniform identities. A missed tolerance warns and retains the finest finite estimate. Quantile inversion uses log probabilities."
     },
     {
       "old": "pystra.distributions.parent.MaxParent.__init__",
@@ -3214,7 +3214,8 @@
       "old": "pystra.ls.LineSampling",
       "current": "pystra.reliability.line_sampling.LineSampling",
       "kind": "class",
-      "status": "unchanged"
+      "status": "unchanged",
+      "notes": "Assigning form after construction takes effect; None restores internal reruns. Scans keep independent and Nataf correlated normal coordinates within [-37, 37]; unresolved truncated scans raise AnalysisError. Relative uncertainty is computed before squaring tiny probabilities."
     },
     {
       "old": "pystra.ls.LineSampling.__init__",
@@ -3439,7 +3440,8 @@
       "old": "pystra.mc.ImportanceSampling",
       "current": "pystra.reliability.importance_sampling.ImportanceSampling",
       "kind": "class",
-      "status": "unchanged"
+      "status": "unchanged",
+      "notes": "Assigning form after construction takes effect; None restores internal reruns. Log likelihood ratios include the proposal determinant, and log weight sums preserve beta and relative uncertainty when probabilities underflow."
     },
     {
       "old": "pystra.mc.ImportanceSampling.__init__",
@@ -3733,7 +3735,7 @@
       "current": "pystra.model.LimitState.evaluate_lsf",
       "kind": "callable",
       "status": "unchanged",
-      "notes": "Nonfinite points, values and gradients or external evaluator exceptions raise AnalysisError. Malformed output shapes raise ModelError. Column-oriented FFD and DDM batches preserve point order."
+      "notes": "Nonfinite points, values and gradients or external evaluator exceptions raise AnalysisError. Malformed output shapes raise ModelError. Column-oriented FFD and DDM batches preserve point order. Signature binding errors raise ModelError; exceptions inside a correctly bound evaluator raise AnalysisError with their cause."
     },
     {
       "old": "pystra.model.LimitState.evaluate_nogradient",
@@ -3847,7 +3849,8 @@
       "old": "pystra.sorm.Sorm",
       "current": "pystra.reliability.sorm.SORM",
       "kind": "class",
-      "status": "renamed"
+      "status": "renamed",
+      "notes": "Assigning form after construction selects the supplied FORM; None requests fresh internal FORM on every run. Correction probabilities, Mills ratios and equivalent beta use log space, retaining finite beta when the reported probability underflows."
     },
     {
       "old": "pystra.sorm.Sorm.__init__",

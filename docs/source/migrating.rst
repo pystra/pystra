@@ -385,6 +385,11 @@ Unknown custom distribution state causes FORM to be recomputed before reuse.
 Changes inside an external solver, a callable closure or other external data
 cannot be detected automatically: rerun FORM after those changes too.
 
+Assigning ``analysis.form = completed_form`` after construction selects that
+FORM analysis for ``SORM``, ``LineSampling`` and ``ImportanceSampling``;
+assigning ``None`` restores a freshly computed FORM on each run. A supplied
+analysis must still match the model, limit-state expression and coordinates.
+
 ``LimitState.evaluate_lsf(x, model, *, differentiation="no",
 ffd_parameter=1000, block_size=1000)`` takes explicit settings instead of an
 options object.
@@ -414,12 +419,16 @@ seeded 1.x estimate is not reproduced exactly, but agrees within its sampling
 error. A ``StrongMaximumTest`` given an integer seed now repeats its sphere
 sample on each run instead of advancing.
 
-``Maximum`` and ``MaxParent`` now compute their moments deterministically by
-adaptive quantile integration. They no longer consume 100 global random draws
-on construction. Both standardized moment integrals use absolute and relative
-tolerances of ``1e-8``; a nonfinite quantile or unmet integration tolerance
-raises ``ModelError``. Moment values and default start points can therefore
-change from the old random estimates. Normal CDF and quantile calculations now
+``Maximum`` and ``MaxParent`` now compute their moments deterministically, by
+Gauss-Hermite quadrature of the quantile function in standard normal space,
+with exact identities for Fréchet and uniform parents. They no longer consume
+100 global random draws on construction. Successive quadrature estimates are
+compared at relative tolerance ``1e-7`` and absolute tolerance ``1e-9`` in
+standardized mean and variance. A missed tolerance emits ``RuntimeWarning`` and
+keeps the finest finite estimate, which serves for start points and
+finite-difference steps; it does not reject an otherwise valid distribution.
+Nonfinite estimates and nonpositive variance remain errors. Moment values and
+default start points can therefore change from the old random estimates. Normal CDF and quantile calculations now
 retain lower-tail probabilities that the former error-function subtraction
 rounded to zero.
 
@@ -635,6 +644,20 @@ SORM can wrap it in a failed record under ``on_failure="return"``. Importance an
 require a converged FORM prerequisite. Line sampling raises when evaluation
 or root refinement fails, with the affected line identified; failed evaluations
 are never treated as safe samples or replaced with a bracket midpoint.
+A limit state whose argument names do not match the model raises
+``ModelError``; an exception inside a correctly bound evaluator raises
+``AnalysisError`` with the original exception as its cause.
+
+SORM evaluates its correction formulas and Mills ratio in log space.
+Importance sampling accumulates log likelihood ratios and log moment sums, and
+line sampling normalizes its probabilities before computing their dispersion.
+A reported probability can therefore underflow to zero while its reliability
+index and relative uncertainty stay finite. No observed failures still gives an
+infinite reliability index and uncertainty. Line sampling restricts its scan to
+standard normal coordinates in ``[-37, 37]``, including the correlated
+coordinates of a Nataf transformation. If that truncates the scan and no
+intersection is found, ``AnalysisError`` reports the unresolved line rather
+than assigning it the probability of the truncated endpoint.
 
 Getters and printing
 --------------------

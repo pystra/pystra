@@ -107,6 +107,29 @@ Fixed
   maximum with large ``N``; it now inverts through the maximum's log-CDF.
 - ``Lognormal.cdf`` accepts arrays, and Student-t copula transformations use
   the upper-tail functions of composite marginals.
+- Nonfinite limit-state values and failing external evaluators could become
+  plausible failure probabilities, and line sampling treated failed scans as
+  safe. They now raise ``AnalysisError`` with the original exception as its
+  cause. A limit state whose argument names do not match the model raises
+  ``ModelError``.
+- Adding a random variable after ``set_correlation`` silently reset the
+  correlation to identity; it now raises ``ModelError``, and correlation
+  dimensions are checked.
+- SORM, importance sampling and line sampling could reuse a stale FORM
+  analysis after the model or limit state changed. Internally generated FORM
+  is rerun on each run, a supplied FORM is checked against the problem, and
+  assigning ``form`` after construction takes effect.
+- SORM raised "Singular rotation matrix" for design directions aligned with a
+  coordinate axis.
+- ``Maximum`` and ``MaxParent`` estimated their moments from 100 global random
+  draws; they now use deterministic quadrature.
+- A fixed-budget simulation (``target_cov=0``) reports ``"completed"`` rather
+  than a missed precision target.
+- SORM, importance sampling and line sampling keep finite reliability indices
+  and relative uncertainties when the failure probability underflows (tested
+  to a reliability index of 40). SORM's Mills ratio no longer overflows above
+  37, and importance-sampling weights no longer overflow for wide proposals in
+  many dimensions.
 
 Changed
 ~~~~~~~
