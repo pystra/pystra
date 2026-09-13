@@ -1,7 +1,7 @@
 Changelog
 =========
 
-All notable changes to Pystra are documented here.
+All notable changes to PySTRA are documented here.
 
 The format follows `Keep a Changelog <https://keepachangelog.com/>`_.
 

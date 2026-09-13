@@ -140,7 +140,7 @@ For continuous marginals, dependence is specified by a copula :math:`C`:
 
 The copula and marginals define the joint law before a transformation is
 chosen. Physical Pearson correlations alone do not determine that law.
-Pystra's legacy Pearson interface assumes a Gaussian copula and calibrates
+PySTRA's legacy Pearson interface assumes a Gaussian copula and calibrates
 its latent correlation using :eq:`eq:2_83`. An explicit ``GaussianCopula``
 already specifies the latent correlation, so that calibration is bypassed.
 Changing to Student-t or Frank changes the dependence law, rather than just
@@ -190,7 +190,7 @@ where :math:`h=H'`. Spherical symmetry makes every unit projection have CDF
 
    P_{f,\mathrm{FORM}}=H(-\beta).
 
-For Student-t, Pystra uses :math:`T_\nu(-\beta)`, while
+For Student-t, PySTRA uses :math:`T_\nu(-\beta)`, while
 ``FORMResult.beta`` reports :math:`-\Phi^{-1}(P_f)`.
 SORM, system FORM, simulation methods and the current Strong Maximum Test
 require independent normal coordinates and reject spherical Student-t Nataf
@@ -210,7 +210,7 @@ A copula supplies the conditional CDFs required by Rosenblatt. For an order
    u_{\pi_k}=\Phi^{-1}(q_{\pi_k}).
 
 The :math:`q_i` are independent uniforms and the :math:`u_i` are independent
-standard normals. Pystra keeps coordinate arrays in original marginal order;
+standard normals. PySTRA keeps coordinate arrays in original marginal order;
 ``u[order[k]]`` denotes the k-th conditional innovation.
 
 For a Student-t copula, reorder the latent vector and shape first, and write
@@ -263,7 +263,7 @@ upper end of the support, which is infinite for most load models. Line
 sampling and importance sampling at high reliability visit such points
 routinely, and FORM does so when the design point lies beyond them.
 
-Pystra evaluates each tail on the side where its probability is small. With
+PySTRA evaluates each tail on the side where its probability is small. With
 the survival function :math:`\bar F_X = 1 - F_X`,
 
 .. math::
@@ -281,7 +281,7 @@ the survival function :math:`\bar F_X = 1 - F_X`,
 Up to :math:`u = 3` the complement :math:`1 - \Phi(u)` keeps its relative
 precision to about :math:`10^{-13}`. Both forms stay exact while the tail
 probability is a normal double, down to about :math:`2.2 \times 10^{-308}` at
-:math:`|u| \approx 37.52`. Pystra switches there to inverting the logarithm
+:math:`|u| \approx 37.52`. PySTRA switches there to inverting the logarithm
 :math:`\log \Phi(u)`, before subnormal probabilities lose precision; they
 remain representable to :math:`|u| \approx 38.5`, although a CDF
 implementation may underflow earlier. The logarithm is inverted in closed form
@@ -299,7 +299,7 @@ equals :math:`q/N` to double precision once :math:`q < 10^{-200}`.
 
 Numerical inverse CDFs can fail silently far into a tail: SciPy's beta
 quantile stalls near :math:`4 \times 10^{-50}` for probabilities below about
-:math:`10^{-100}`. Pystra checks every quantile whose tail probability is
+:math:`10^{-100}`. PySTRA checks every quantile whose tail probability is
 below :math:`10^{-8}` against the log-CDF and solves again where it misses.
 Jacobians :math:`f_X(x)/\varphi(u)` are formed from log densities where
 either density underflows.

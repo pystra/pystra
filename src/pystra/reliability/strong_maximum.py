@@ -2,7 +2,7 @@
 
 The geometry follows the Strong Maximum Test described by Dutfoy and Lebrun
 (2006) and documented by OpenTURNS. This implementation specializes the test
-to Pystra's independent standard-normal space.
+to PySTRA's independent standard-normal space.
 """
 
 from copy import copy

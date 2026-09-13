@@ -29,7 +29,7 @@ class FBCProcess:
 
     This class is intentionally a small distribution factory.  It does not
     run a reliability analysis and does not create load combinations by
-    itself.  It only returns ordinary Pystra distribution objects that can be
+    itself.  It only returns ordinary PySTRA distribution objects that can be
     added to a :class:`~pystra.model.StochasticModel` or used in
     :class:`~pystra.loads.LoadCombination` cases.
 

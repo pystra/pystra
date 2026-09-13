@@ -90,7 +90,7 @@ curves away from the origin (conservative with respect to FORM); negative
 curvature means it curves towards the origin (unconservative).
 
 The key task is to determine the principal curvatures :math:`\kappa_i`.
-Pystra provides two approaches.
+PySTRA provides two approaches.
 
 Curve-Fitting
 -------------
@@ -181,7 +181,7 @@ reliability indices.  The modified formula is:
     \left(1 + \psi\, \kappa_i\right)^{-1/2}
 
 with the obvious extension to asymmetric curvatures from point-fitting.
-Both the standard and modified Breitung results are reported by Pystra.
+Both the standard and modified Breitung results are reported by PySTRA.
 
 Validity and method comparison
 ------------------------------
@@ -216,7 +216,7 @@ Strong Maximum Test
 A converged local FORM design point need not represent every important
 failure region. The Strong Maximum Test [DutfoyLebrun2006]_ probes an enlarged
 sphere around the origin for failure points outside the candidate's vicinity.
-Pystra implements the independent standard-normal case described by
+PySTRA implements the independent standard-normal case described by
 `OpenTURNS <https://openturns.github.io/openturns/latest/theory/reliability_sensitivity/strong_maximum_test.html>`_.
 See :doc:`/notebooks/ex_strong_maximum` for geometric examples and
 :ref:`chap_strong_maximum` for the API.
@@ -252,7 +252,7 @@ sphere samples. A point is near the candidate when
    \cos\angle(u,u^*)>\frac{\beta}{r}.
 
 Crossing near/far with safe/failure gives four retained point groups.
-Pystra classifies failure by :math:`g<0`. Far failure points are possible
+PySTRA classifies failure by :math:`g<0`. Far failure points are possible
 restart locations for additional design-point searches, not optimized design
 points themselves. The magnitude of :math:`g` does not measure a region's
 probability importance.
@@ -279,7 +279,7 @@ For :math:`N` independent samples, nominal cap-detection confidence is
    c_N=1-(1-p_\mathrm{cap})^N,\qquad
    N=\left\lceil\frac{\log(1-c)}{\log(1-p_\mathrm{cap})}\right\rceil.
 
-Pystra rounds upward to meet the requested nominal confidence; OpenTURNS'
+PySTRA rounds upward to meet the requested nominal confidence; OpenTURNS'
 reference implementation rounds to the nearest integer. Users can specify
 confidence or a fixed count, with a hard ``max_points`` budget checked before
 sphere evaluation. The total is :math:`N+2` point evaluations including the

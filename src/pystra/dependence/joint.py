@@ -13,7 +13,7 @@ __all__ = ["JointDistribution", "CopulaTransformation"]
 
 
 class JointDistribution:
-    """Continuous joint law specified by named Pystra marginals and a copula.
+    """Continuous joint law specified by named PySTRA marginals and a copula.
 
     Samples have rows of observations and columns in marginal order. The
     copula is a distribution specification, independent of the transformation

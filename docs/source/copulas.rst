@@ -31,7 +31,7 @@ Specifying a joint distribution
 
 Alternatively, add all random variables to an existing model and then call
 ``model.set_copula(copula)``. Constants may be added afterwards. The copula's
-dimension must equal the number of random variables. Named continuous Pystra
+dimension must equal the number of random variables. Named continuous PySTRA
 marginals, including ``ScipyDist``, are supported; mixed/discrete marginals
 are outside this implementation's scope. Known zero-inflated marginals with
 positive point mass are rejected.

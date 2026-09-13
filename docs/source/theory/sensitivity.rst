@@ -12,7 +12,7 @@ standard deviations, and correlation coefficients of the random variables.
 This information guides decisions about where to invest in data collection
 or quality control.
 
-Pystra computes the sensitivity
+PySTRA computes the sensitivity
 :math:`\partial\beta/\partial\theta_k` for each distribution parameter
 :math:`\theta_k` using two complementary approaches.
 

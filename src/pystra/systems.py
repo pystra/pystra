@@ -5,7 +5,7 @@ reliability. It composes component functions into a scalar limit-state function
 for simulation. The separate SystemFORM class estimates series and parallel
 probabilities from component tangent planes.
 
-The sign convention is the standard Pystra convention: positive values are
+The sign convention is the standard PySTRA convention: positive values are
 safe, and negative values indicate failure.  A series system fails when any
 child fails, so its equivalent limit-state value is the minimum child value.
 A parallel system fails when all children fail, so its equivalent
@@ -71,7 +71,7 @@ class Component:
         return np.asarray(values, dtype=float)
 
     def as_limit_state(self):
-        """Return this component as a Pystra :class:`LimitState`."""
+        """Return this component as a PySTRA :class:`LimitState`."""
 
         # Keep tuple returns intact for direct differentiation. User-supplied
         # gradients must follow the complete stochastic model variable order.
@@ -80,9 +80,9 @@ class Component:
         )
 
     def get_limit_state(self):
-        """Return this component as a Pystra :class:`LimitState`.
+        """Return this component as a PySTRA :class:`LimitState`.
 
-        This legacy-style alias mirrors the existing Pystra getter naming.
+        This legacy-style alias mirrors the existing PySTRA getter naming.
         """
 
         return self.as_limit_state()
@@ -150,14 +150,14 @@ class System:
         return self._combine(values)
 
     def as_limit_state(self):
-        """Return the composed system as a Pystra :class:`LimitState`."""
+        """Return the composed system as a PySTRA :class:`LimitState`."""
 
         return LimitState(lambda **kwargs: self.evaluate(**kwargs))
 
     def get_limit_state(self):
-        """Return the composed system as a Pystra :class:`LimitState`.
+        """Return the composed system as a PySTRA :class:`LimitState`.
 
-        This legacy-style alias mirrors the existing Pystra getter naming.
+        This legacy-style alias mirrors the existing PySTRA getter naming.
         """
 
         return self.as_limit_state()

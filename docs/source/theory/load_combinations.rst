@@ -48,7 +48,7 @@ rule defines which distributions are placed together in each reliability
 case.  This is the convention followed in Sørensen's notes and common load
 combination examples [Sorensen2004]_ [Faber2009]_.
 
-In Pystra, :class:`~pystra.loads.FBCProcess` exposes the process distributions:
+In PySTRA, :class:`~pystra.loads.FBCProcess` exposes the process distributions:
 ``point_in_time()`` returns the basic-interval parent distribution, and
 ``maximum(duration=...)`` returns a maximum distribution for the requested
 duration.  :meth:`~pystra.loads.LoadCombination.turkstra` then uses those

@@ -4,7 +4,7 @@
 System Reliability
 ******************
 
-Pystra separates the system failure event from its probability calculation.
+PySTRA separates the system failure event from its probability calculation.
 The ``pystra.systems`` topology classes compose component limit states for
 simulation. ``SystemFORM`` estimates series and parallel probabilities from
 separate component FORM analyses in one shared standard-normal space.
@@ -13,7 +13,7 @@ Do not use ordinary FORM or SORM on the combined min/max function as a general
 system reliability method. One tangent plane can miss other failure regions,
 and ties can give misleading or zero finite-difference gradients.
 
-The sign convention is the usual Pystra convention: positive values are safe
+The sign convention is the usual PySTRA convention: positive values are safe
 and negative values indicate failure.
 
 Series and Parallel Systems
@@ -161,7 +161,7 @@ Event Topologies
 ================
 
 Structural systems are often specified as event logic once the engineer has
-identified the relevant component limit states.  Pystra provides three small
+identified the relevant component limit states.  PySTRA provides three small
 helpers for that layer:
 
 ``KOfNSystem``
@@ -240,7 +240,7 @@ Scope and Transformations
 
 The system module composes limit-state functions in the original physical
 variables.  The isoprobabilistic transformation to standard space remains the
-responsibility of the selected Pystra analysis method and its options
+responsibility of the selected PySTRA analysis method and its options
 (``FORMOptions`` or ``SimulationOptions``).  This keeps system topology separate from the probability
 transformation, following the same conceptual split used in structural
 reliability methods generally.
@@ -262,7 +262,7 @@ Validation Benchmarks
 =====================
 
 The current validation suite checks exact Boolean behaviour for series,
-parallel, k-of-n, cut-set, and tie-set systems; integration with Pystra's
+parallel, k-of-n, cut-set, and tie-set systems; integration with PySTRA's
 ``LimitState`` evaluation; independent and correlated linear system
 probabilities; identical and opposing component directions; positive rescaling;
 shared components; failed FORM diagnostics; and Ditlevsen input validation.

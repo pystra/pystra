@@ -1,7 +1,7 @@
 """
-Pystra — Python Structural Reliability Analysis.
+PySTRA — Python Structural Reliability Analysis.
 
-Pystra provides tools for computing the probability of failure of
+PySTRA provides tools for computing the probability of failure of
 engineering systems using established structural reliability methods:
 
 - **FORM** (First Order Reliability Method)
@@ -12,7 +12,7 @@ engineering systems using established structural reliability methods:
 - **Design decision optimization** with societal risk acceptance checks
 
 All SciPy continuous distributions can be used as random variables,
-alongside Pystra's own specialised distributions (e.g. Gumbel,
+alongside PySTRA's own specialised distributions (e.g. Gumbel,
 ZeroInflated, Maximum).
 
 Quick start::

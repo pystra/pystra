@@ -38,7 +38,7 @@ with equivalent scalar limit-state function
 
    g_\mathrm{parallel}({\bf X}) = \max_i g_i({\bf X}).
 
-These min/max forms are useful because they preserve the standard Pystra sign
+These min/max forms are useful because they preserve the standard PySTRA sign
 convention: positive means safe and non-positive means failed.  They also
 allow the same system definition to be passed to simulation methods, active
 learning, and, when the envelope is sufficiently smooth near the controlling
@@ -160,7 +160,7 @@ linearised events, and a clear isoprobabilistic transformation.  Rosenblatt
 transformations add an additional ordering issue because the transformed
 standard-space geometry can depend on the conditioning order [Meinen2025]_.
 
-For this reason Pystra currently separates three tasks:
+For this reason PySTRA currently separates three tasks:
 
 1. users encode the system topology using series, parallel, k-of-n, cut-set,
    or tie-set systems;

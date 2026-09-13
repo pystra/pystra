@@ -1,10 +1,10 @@
 .. figure:: docs/source/images/logo/logo_pystra_mid.png
-   :alt: Pystra logo
+   :alt: PySTRA logo
    :align: center
    :scale: 50
 
 ***********************************************
-Pystra - Python Structural Reliability Analysis
+PySTRA - Python Structural Reliability Analysis
 ***********************************************
 
 PySTRA provides a carefully validated implementation of established and
@@ -65,7 +65,7 @@ numerical validation, and pull-request guidance, and the
 
 Credits
 =======
-Pystra is built on PyRe by Jürgen Hackl; FERUM4.1 by Jean-Marc Bourinet; FERUM by Terje Haukaas and Armen Der Kiureghian.
+PySTRA is built on PyRe by Jürgen Hackl; FERUM4.1 by Jean-Marc Bourinet; FERUM by Terje Haukaas and Armen Der Kiureghian.
 
 Copyright 2021 The Pystra Developers.
 
