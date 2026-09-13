@@ -9,7 +9,7 @@ See THIRD_PARTY_NOTICES and docs/uqlab-pce-provenance.md.
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Optional, Sequence, Union
+from collections.abc import Sequence
 
 import numpy as np
 
@@ -52,7 +52,7 @@ class KrigingSurrogate(Surrogate):
     """
 
     def __init__(
-        self, *, n_restarts: int = 2, noise: float = 1e-10, seed: Optional[int] = None
+        self, *, n_restarts: int = 2, noise: float = 1e-10, seed: int | None = None
     ) -> None:
         try:
             from sklearn.gaussian_process import GaussianProcessRegressor
@@ -173,15 +173,15 @@ class PCESurrogate(EnsembleSurrogate):
     def __init__(
         self,
         *,
-        degree: Union[int, Sequence[int]] = (1, 2, 3, 4, 5),
+        degree: int | Sequence[int] = (1, 2, 3, 4, 5),
         method: str = "lars",
-        q_norm: Union[float, Sequence[float]] = 1.0,
-        max_interaction: Optional[int] = None,
+        q_norm: float | Sequence[float] = 1.0,
+        max_interaction: int | None = None,
         degree_early_stop: bool = True,
         q_norm_early_stop: bool = True,
         n_bootstrap: int = 30,
         max_terms: int = 10_000,
-        seed: Optional[int] = None,
+        seed: int | None = None,
     ) -> None:
         degrees = (degree,) if np.isscalar(degree) else tuple(degree)
         self.degree = tuple(_positive_integer(value, "degree") for value in degrees)

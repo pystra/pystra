@@ -15,7 +15,6 @@ does not use, rather than silently ignoring it.
 import math
 from dataclasses import dataclass, field
 from numbers import Integral, Real
-from typing import Optional, Tuple
 
 from .errors import ModelError
 
@@ -95,8 +94,8 @@ class FORMOptions:
     differentiation: str = "ffd"
     ffd_parameter: float = 1000
     block_size: int = 1000
-    transform: Optional[str] = None
-    rosenblatt_order: Optional[Tuple[int, ...]] = None
+    transform: str | None = None
+    rosenblatt_order: tuple[int, ...] | None = None
 
     def __post_init__(self):
         _integer(self.max_iterations, "max_iterations")
@@ -173,9 +172,9 @@ class SimulationOptions:
     block_size: int = 1000
     target_cov: float = 0.05
     sampling_std: float = 1.0
-    bins: Optional[int] = None
-    transform: Optional[str] = None
-    rosenblatt_order: Optional[Tuple[int, ...]] = None
+    bins: int | None = None
+    transform: str | None = None
+    rosenblatt_order: tuple[int, ...] | None = None
 
     def __post_init__(self):
         _integer(self.n_samples, "n_samples")

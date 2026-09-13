@@ -4,11 +4,11 @@ Ferry-Borges-Castanheta rectangular-wave processes, explicit load cases and
 leading-action case generators.
 """
 
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping, Sequence
 from copy import deepcopy
 from dataclasses import dataclass
 from types import MappingProxyType
-from typing import Tuple, Optional, Callable, Union, Sequence, Self
+from typing import Self
 
 import numpy as np
 from pandas import DataFrame
@@ -182,9 +182,7 @@ class FBCProcess:
         return Maximum(self.name, self.parent, N=n_intervals)
 
 
-_Variables = Union[
-    Mapping[str, Union[Distribution, Constant]], Sequence[Union[Distribution, Constant]]
-]
+_Variables = Mapping[str, Distribution | Constant] | Sequence[Distribution | Constant]
 
 
 def _variables(values, *, processes=False):
@@ -220,9 +218,9 @@ class VariableRoles:
     leading actions are specified separately for each case.
     """
 
-    resistance: Tuple[str, ...] = ()
-    other: Tuple[str, ...] = ()
-    variable: Tuple[str, ...] = ()
+    resistance: tuple[str, ...] = ()
+    other: tuple[str, ...] = ()
+    variable: tuple[str, ...] = ()
 
     def __post_init__(self):
         for field in ("resistance", "other", "variable"):
@@ -236,7 +234,7 @@ class VariableRoles:
             raise ValueError("Variable roles must be disjoint and unique")
 
     @property
-    def names(self) -> Tuple[str, ...]:
+    def names(self) -> tuple[str, ...]:
         """All role names in resistance/other/variable order."""
         return self.resistance + self.other + self.variable
 
@@ -269,10 +267,10 @@ class LoadCombination:
         self,
         *,
         cases: Mapping[str, _Variables],
-        limit_state: Optional[Callable] = None,
-        constants: Optional[_Variables] = None,
-        roles: Optional[VariableRoles] = None,
-        leading_actions: Optional[Mapping[str, Sequence[str]]] = None,
+        limit_state: Callable | None = None,
+        constants: _Variables | None = None,
+        roles: VariableRoles | None = None,
+        leading_actions: Mapping[str, Sequence[str]] | None = None,
         correlation: DataFrame | None = None,
     ) -> None:
         if not isinstance(cases, Mapping) or not cases:
@@ -326,17 +324,17 @@ class LoadCombination:
             self.stochastic_model(name)
 
     @property
-    def limit_state(self) -> Optional[Callable]:
+    def limit_state(self) -> Callable | None:
         """Failure-event callable supplied with the case specification."""
         return self._limit_state
 
     @property
-    def roles(self) -> Optional[VariableRoles]:
+    def roles(self) -> VariableRoles | None:
         """Validated, immutable resistance/other/action metadata."""
         return self._roles
 
     @property
-    def case_names(self) -> Tuple[str, ...]:
+    def case_names(self) -> tuple[str, ...]:
         """Stable case order."""
         return tuple(self._cases)
 
@@ -351,11 +349,11 @@ class LoadCombination:
         return deepcopy(self._constants)
 
     @property
-    def leading_actions(self) -> Mapping[str, Tuple[str, ...]]:
+    def leading_actions(self) -> Mapping[str, tuple[str, ...]]:
         """Read-only case-to-leading-action metadata."""
         return MappingProxyType(self._leading_actions)
 
-    def case(self, case_name: Optional[str] = None) -> dict:
+    def case(self, case_name: str | None = None) -> dict:
         """Return a copy of one case; default to the first case."""
         name = self.case_names[0] if case_name is None else case_name
         if name not in self._cases:
@@ -363,7 +361,7 @@ class LoadCombination:
         return deepcopy(self._cases[name])
 
     def stochastic_model(
-        self, case_name: Optional[str] = None, *, overrides: Optional[_Variables] = None
+        self, case_name: str | None = None, *, overrides: _Variables | None = None
     ) -> StochasticModel:
         """Build an isolated model; reject unknown or misnamed overrides."""
         variables = {**deepcopy(self._constants), **self.case(case_name)}
@@ -407,10 +405,10 @@ class LoadCombination:
         maxima: Mapping[str, Distribution],
         companions: Mapping[str, Distribution],
         resistance: _Variables,
-        other: Optional[_Variables] = None,
-        constants: Optional[_Variables] = None,
-        leading_actions: Optional[Mapping[str, Sequence[str]]] = None,
-        limit_state: Optional[Callable] = None,
+        other: _Variables | None = None,
+        constants: _Variables | None = None,
+        leading_actions: Mapping[str, Sequence[str]] | None = None,
+        limit_state: Callable | None = None,
         correlation: DataFrame | None = None,
     ) -> "LoadCombination":
         """Generate cases from explicitly supplied maximum/companion marginals.
@@ -462,13 +460,13 @@ class LoadCombination:
         variable: Mapping[str, FBCProcess],
         reference_period: float,
         *,
-        limit_state: Optional[Callable] = None,
-        resistance: Optional[_Variables] = None,
-        permanent: Optional[_Variables] = None,
-        other: Optional[_Variables] = None,
-        constants: Optional[_Variables] = None,
+        limit_state: Callable | None = None,
+        resistance: _Variables | None = None,
+        permanent: _Variables | None = None,
+        other: _Variables | None = None,
+        constants: _Variables | None = None,
         correlation: DataFrame | None = None,
-        companion_duration: Union[str, float] = "leading_interval",
+        companion_duration: str | float = "leading_interval",
     ) -> "LoadCombination":
         """Generate FBC leading/companion cases using Turkstra's rule.
 

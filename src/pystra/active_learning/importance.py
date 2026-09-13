@@ -6,7 +6,7 @@ It does not automatically discover failure modes or apply a true-model correctio
 """
 
 from dataclasses import dataclass
-from typing import Callable
+from collections.abc import Callable
 
 import numpy as np
 from scipy.special import logsumexp

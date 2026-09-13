@@ -9,7 +9,7 @@ doi:10.1016/j.strusafe.2021.102174; this is a documented variant of that workflo
 """
 
 from dataclasses import dataclass
-from typing import Callable
+from collections.abc import Callable
 
 import numpy as np
 

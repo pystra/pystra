@@ -7,7 +7,7 @@ see THIRD_PARTY_NOTICES and docs/active-learning-provenance.md.
 """
 
 from dataclasses import dataclass
-from typing import Optional, Sequence, Union
+from collections.abc import Sequence
 
 import numpy as np
 from scipy.linalg import cholesky, cho_solve, solve_triangular
@@ -84,15 +84,15 @@ class PCKrigingSurrogate(Surrogate):
     def __init__(
         self,
         *,
-        degree: Union[int, Sequence[int]] = (1, 2, 3),
+        degree: int | Sequence[int] = (1, 2, 3),
         q_norm: float = 1.0,
-        max_interaction: Optional[int] = None,
-        length_scale: Union[float, Sequence[float]] = 1.0,
+        max_interaction: int | None = None,
+        length_scale: float | Sequence[float] = 1.0,
         correlation: str = "matern52",
         optimize: bool = True,
         noise: float = 1e-8,
         n_restarts: int = 0,
-        seed: Optional[int] = None,
+        seed: int | None = None,
     ) -> None:
         self._trend = PCESurrogate(
             degree=degree,

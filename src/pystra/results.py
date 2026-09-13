@@ -37,7 +37,7 @@ sensitivity analysis, which consist of FORM runs, report their total.
 
 from collections.abc import Mapping
 from dataclasses import dataclass, field, fields
-from typing import Any, ClassVar, Optional
+from typing import Any, ClassVar
 
 import numpy as np
 from pandas import DataFrame
@@ -171,8 +171,8 @@ class _Result:
 class _ProbabilityResult(_Result):
     """A record of a failure-probability estimate."""
 
-    failure_probability: Optional[float]
-    beta: Optional[float]
+    failure_probability: float | None
+    beta: float | None
 
     def _rows(self):
         return [
@@ -212,14 +212,14 @@ class FORMResult(_ProbabilityResult):
     direction; its diagnostics remain available.
     """
 
-    design_index: Optional[float]
-    design_point_x: Optional[np.ndarray]
-    design_point_u: Optional[np.ndarray]
-    alpha: Optional[np.ndarray]
+    design_index: float | None
+    design_point_x: np.ndarray | None
+    design_point_u: np.ndarray | None
+    alpha: np.ndarray | None
     standard_space: str
     iterations: int
-    limit_state_error: Optional[float]
-    direction_error: Optional[float]
+    limit_state_error: float | None
+    direction_error: float | None
 
     _arrays: ClassVar[tuple] = ("design_point_x", "design_point_u", "alpha")
 
@@ -443,8 +443,8 @@ class SensitivityResult(_ProbabilityResult):
     form: FORMResult
     approach: str
     marginal: Mapping
-    correlation: Optional[np.ndarray]
-    delta: Optional[float]
+    correlation: np.ndarray | None
+    delta: float | None
     diagnostics: Mapping = field(default_factory=dict, repr=False)
 
     _arrays: ClassVar[tuple] = ("correlation",)

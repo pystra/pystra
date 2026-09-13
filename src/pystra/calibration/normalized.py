@@ -2,7 +2,7 @@
 
 from copy import deepcopy
 from dataclasses import dataclass, fields
-from typing import Optional, Sequence, Tuple, Union
+from collections.abc import Sequence
 
 import numpy as np
 from pandas import DataFrame
@@ -93,14 +93,14 @@ class NormalizedReliabilityModel:
     dead_load, permanent_load, live_load (constants omitted).
     """
 
-    resistance: Union[Distribution, Constant]
-    dead_load: Union[Distribution, Constant]
-    permanent_load: Union[Distribution, Constant]
-    live_load: Union[Distribution, Constant]
-    resistance_error: Union[Distribution, Constant]
-    load_error: Union[Distribution, Constant]
+    resistance: Distribution | Constant
+    dead_load: Distribution | Constant
+    permanent_load: Distribution | Constant
+    live_load: Distribution | Constant
+    resistance_error: Distribution | Constant
+    load_error: Distribution | Constant
     nominal_values: NominalValues
-    copula: Optional[Copula] = None
+    copula: Copula | None = None
 
     def __post_init__(self):
         if not isinstance(self.nominal_values, NominalValues):
@@ -153,7 +153,7 @@ class CodeDesignResult:
     dead_load_ratio: float
     design_value: float
     reliability: ReliabilityResult
-    target_margin: Optional[float]
+    target_margin: float | None
 
 
 @dataclass(frozen=True)
@@ -165,11 +165,11 @@ class CodeCalibrationResult:
     The probability-model snapshot is held privately and returned by copy.
     """
 
-    live_load_ratios: Tuple[float, ...]
-    dead_load_ratios: Tuple[float, ...]
+    live_load_ratios: tuple[float, ...]
+    dead_load_ratios: tuple[float, ...]
     factors: CodeFactors
-    target_beta: Optional[float]
-    cases: Tuple[CodeDesignResult, ...]
+    target_beta: float | None
+    cases: tuple[CodeDesignResult, ...]
     _model: NormalizedReliabilityModel
 
     @property
@@ -232,12 +232,12 @@ class CodeCalibration:
         self._dead_load_ratios = _ratios(dead_load_ratios, "dead_load_ratios")
 
     @property
-    def live_load_ratios(self) -> Tuple[float, ...]:
+    def live_load_ratios(self) -> tuple[float, ...]:
         """Immutable live-load grid coordinates, in evaluation order."""
         return self._live_load_ratios
 
     @property
-    def dead_load_ratios(self) -> Tuple[float, ...]:
+    def dead_load_ratios(self) -> tuple[float, ...]:
         """Immutable dead-load grid coordinates, in evaluation order."""
         return self._dead_load_ratios
 
@@ -270,7 +270,7 @@ class CodeCalibration:
         *,
         options: object = None,
         evaluator: ReliabilityEvaluator | None = None,
-        target_beta: Optional[float] = None,
+        target_beta: float | None = None,
     ) -> CodeCalibrationResult:
         """Evaluate candidate factors, retaining every failed grid point.
 

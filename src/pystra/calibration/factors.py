@@ -9,7 +9,7 @@ general decomposition of arbitrary nonlinear limit states.
 from copy import deepcopy
 from dataclasses import dataclass, replace
 from types import MappingProxyType
-from typing import Mapping, Optional, Tuple, Union
+from collections.abc import Mapping
 
 import numpy as np
 from pandas import DataFrame
@@ -193,8 +193,8 @@ class CalibratedDesign:
     case_name: str
     design_value: float
     target_beta: float
-    reliability: Optional[ReliabilityResult]
-    residual: Optional[float]
+    reliability: ReliabilityResult | None
+    residual: float | None
     converged: bool
     evaluations: int
     message: str
@@ -204,7 +204,7 @@ class CalibratedDesign:
 class TargetDesigns:
     """Target designs and the input problem used to obtain them."""
 
-    designs: Tuple[CalibratedDesign, ...]
+    designs: tuple[CalibratedDesign, ...]
     _problem: FactorCalibrationProblem
 
     @property
@@ -277,10 +277,10 @@ def solve_designs(
     *,
     target_beta: float,
     method: str = "root",
-    initial_value: Optional[float] = None,
+    initial_value: float | None = None,
     tolerance: float = 0.0001,
     max_evaluations: int = 100,
-    bracket: Optional[Tuple[float, float]] = None,
+    bracket: tuple[float, float] | None = None,
     options: object = None,
     evaluator: ReliabilityEvaluator | None = None,
 ) -> TargetDesigns:
@@ -470,7 +470,7 @@ class GoverningFactor:
 
     kind: str
     variable: str
-    case_names: Tuple[str, ...]
+    case_names: tuple[str, ...]
 
 
 @dataclass(frozen=True)
@@ -482,14 +482,14 @@ class FactorSet:
     combination columns use ``load_names``. Leading actions are explicit.
     """
 
-    case_names: Tuple[str, ...]
-    resistance_names: Tuple[str, ...]
-    load_names: Tuple[str, ...]
-    resistance: Tuple[Tuple[float, ...], ...]
-    loads: Tuple[Tuple[float, ...], ...]
-    combinations: Tuple[Tuple[float, ...], ...]
-    leading_actions: Tuple[Tuple[str, ...], ...]
-    governing: Tuple[GoverningFactor, ...] = ()
+    case_names: tuple[str, ...]
+    resistance_names: tuple[str, ...]
+    load_names: tuple[str, ...]
+    resistance: tuple[tuple[float, ...], ...]
+    loads: tuple[tuple[float, ...], ...]
+    combinations: tuple[tuple[float, ...], ...]
+    leading_actions: tuple[tuple[str, ...], ...]
+    governing: tuple[GoverningFactor, ...] = ()
 
     def __post_init__(self):
         for field in ("case_names", "resistance_names", "load_names", "governing"):
@@ -683,11 +683,11 @@ def select_factors(
 class DesignValues:
     """Factored design parameters in named case order."""
 
-    case_names: Tuple[str, ...]
-    values: Tuple[float, ...]
+    case_names: tuple[str, ...]
+    values: tuple[float, ...]
 
     @property
-    def governing_cases(self) -> Tuple[str, ...]:
+    def governing_cases(self) -> tuple[str, ...]:
         """Cases attaining the largest required resistance scale."""
         maximum = max(self.values)
         return tuple(n for n, v in zip(self.case_names, self.values) if v == maximum)
@@ -733,17 +733,17 @@ class DesignVerification:
     case_name: str
     design_value: float
     reliability: ReliabilityResult
-    target_margin: Optional[float]
+    target_margin: float | None
 
 
 def verify_designs(
     problem: FactorCalibrationProblem,
-    design_values: Union[float, Mapping[str, float], DesignValues],
+    design_values: float | Mapping[str, float] | DesignValues,
     *,
-    target_beta: Optional[float] = None,
+    target_beta: float | None = None,
     options: object = None,
     evaluator: ReliabilityEvaluator | None = None,
-) -> Tuple[DesignVerification, ...]:
+) -> tuple[DesignVerification, ...]:
     """Check a common design scale or an explicitly named set of designs.
 
     Parameters

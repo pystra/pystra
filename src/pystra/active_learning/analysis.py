@@ -1,7 +1,6 @@
 """Compose active-learning reliability components."""
 
 from math import comb
-from typing import Optional, Union
 import warnings
 
 import numpy as np
@@ -105,17 +104,17 @@ class ActiveLearning(AnalysisObject):
         limit_state: LimitState,
         *,
         options: SimulationOptions | None = None,
-        surrogate: Union[str, Surrogate] = "kriging",
-        learning_function: Union[str, LearningFunction] = "u",
-        n_initial: Optional[int] = None,
+        surrogate: str | Surrogate = "kriging",
+        learning_function: str | LearningFunction = "u",
+        n_initial: int | None = None,
         n_candidates: int = 10_000,
-        n_estimation: Optional[int] = None,
-        estimator: Optional[ReliabilityEstimator] = None,
+        n_estimation: int | None = None,
+        estimator: ReliabilityEstimator | None = None,
         max_iterations: int = 200,
-        learning_threshold: Optional[float] = None,
-        target_cov: Optional[float] = None,
-        stopping_criterion: Optional[StoppingCriterion] = None,
-        surrogate_kwargs: Optional[dict] = None,
+        learning_threshold: float | None = None,
+        target_cov: float | None = None,
+        stopping_criterion: StoppingCriterion | None = None,
+        surrogate_kwargs: dict | None = None,
         rng: int | np.random.Generator | None = None,
     ) -> None:
         super().__init__(model, limit_state, options)

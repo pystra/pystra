@@ -16,8 +16,8 @@ from __future__ import annotations
 
 import inspect
 import itertools
-from collections.abc import Iterator, Sequence
-from typing import Any, Callable, Iterable
+from collections.abc import Callable, Iterable, Iterator, Sequence
+from typing import Any
 
 import numpy as np
 from numpy.typing import ArrayLike

@@ -1,6 +1,6 @@
 """Reusable reliability figures; plotting never starts or refits an analysis."""
 
-from typing import Callable, Optional, Sequence, Tuple
+from collections.abc import Callable, Sequence
 
 import numpy as np
 from matplotlib.axes import Axes
@@ -89,15 +89,15 @@ def plot_limit_state(
     limit_state: Callable,
     *,
     bounds: Sequence[Sequence[float]],
-    surrogate: Optional[Surrogate] = None,
-    density: Optional[Callable] = None,
-    density_levels: Optional[Sequence[float]] = None,
+    surrogate: Surrogate | None = None,
+    density: Callable | None = None,
+    density_levels: Sequence[float] | None = None,
     n_points: int = 151,
     batch_size: int = 2048,
     labels: Sequence[str] = ("$x_1$", "$x_2$"),
     shade_failure: bool = True,
-    ax: Optional[Axes] = None,
-) -> Tuple[Figure, Axes]:
+    ax: Axes | None = None,
+) -> tuple[Figure, Axes]:
     """Plot a two-dimensional limit-state boundary and optional surrogate.
 
     Parameters
@@ -202,12 +202,12 @@ def plot_limit_state(
 def plot_form_geometry(
     result: FORMResult,
     *,
-    boundary: Optional[np.ndarray] = None,
+    boundary: np.ndarray | None = None,
     tangent_length: float = 4.0,
     label: str = "FORM",
     color: str = "C0",
-    ax: Optional[Axes] = None,
-) -> Tuple[Figure, Axes]:
+    ax: Axes | None = None,
+) -> tuple[Figure, Axes]:
     """Plot a converged two-dimensional FORM point, radius and tangent.
 
     Parameters
@@ -264,11 +264,11 @@ def plot_surrogate_slice(
     points: np.ndarray,
     *,
     coordinate: int = 0,
-    limit_state: Optional[Callable] = None,
+    limit_state: Callable | None = None,
     n_std: float = 2.0,
     batch_size: int = 2048,
-    ax: Optional[Axes] = None,
-) -> Tuple[Figure, Axes]:
+    ax: Axes | None = None,
+) -> tuple[Figure, Axes]:
     """Plot a fitted surrogate along one independent-normal coordinate.
 
     Parameters
@@ -333,10 +333,10 @@ def plot_surrogate_slice(
 def plot_learning_history(
     result: ActiveLearningResult,
     *,
-    band: Optional[str] = "probability",
-    reference_probability: Optional[float] = None,
-    ax: Optional[Axes] = None,
-) -> Tuple[Figure, Axes]:
+    band: str | None = "probability",
+    reference_probability: float | None = None,
+    ax: Axes | None = None,
+) -> tuple[Figure, Axes]:
     """Plot exploratory Pf against cumulative true-model evaluations.
 
     Parameters
@@ -414,8 +414,8 @@ def plot_learning_history(
 
 
 def plot_pce_selection(
-    fit: PCEFitResult, *, ax: Optional[Axes] = None
-) -> Tuple[Figure, Axes]:
+    fit: PCEFitResult, *, ax: Axes | None = None
+) -> tuple[Figure, Axes]:
     """Plot corrected LOO scores by candidate degree and q-norm.
 
     Parameters
@@ -475,8 +475,8 @@ def plot_pce_selection(
 
 
 def plot_strong_maximum(
-    result: StrongMaximumResult, *, ax: Optional[Axes] = None
-) -> Tuple[Figure, Axes]:
+    result: StrongMaximumResult, *, ax: Axes | None = None
+) -> tuple[Figure, Axes]:
     """Plot two-dimensional Strong Maximum Test sample groups in normal space.
 
     Parameters

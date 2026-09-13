@@ -1,7 +1,6 @@
 """Immutable records separating surrogate diagnostics and sampling error."""
 
 from dataclasses import dataclass
-from typing import Optional
 
 import numpy as np
 from scipy.stats import norm
@@ -33,8 +32,8 @@ class ReliabilityEstimate:
 
     failure_probability: float
     sampling_cov: float
-    sampling_interval: Optional[tuple]
-    confidence_level: Optional[float]
+    sampling_interval: tuple | None
+    confidence_level: float | None
     n_samples: int
     method: str
     sampling_dependence: str
@@ -102,8 +101,8 @@ class LearningStep:
     beta_band: tuple
     learning_satisfied: bool
     estimation_converged: bool = True
-    sampling_cov: Optional[float] = None
-    bootstrap_probability_band: Optional[tuple] = None
+    sampling_cov: float | None = None
+    bootstrap_probability_band: tuple | None = None
 
     def __post_init__(self):
         if self.bootstrap_probability_band is not None:
@@ -152,7 +151,7 @@ class ActiveLearningResult:
         return self.estimate.sampling_cov
 
     @property
-    def sampling_interval(self) -> Optional[tuple]:
+    def sampling_interval(self) -> tuple | None:
         """Final estimator's conditional sampling interval, if available."""
         return self.estimate.sampling_interval
 
