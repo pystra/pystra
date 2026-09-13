@@ -30,11 +30,13 @@ class ScipyDist(Distribution):
         return {"dist_obj": self.dist_obj}
 
     @property
-    def sensitivity_params(self):
+    def sensitivity_params(self) -> dict[str, float]:
         """No generic moment perturbation; replace the constructor inputs."""
         return {}
 
-    def __init__(self, name, dist_obj, start_point=None):
+    def __init__(
+        self, name: str, dist_obj: rv_frozen, start_point: float | None = None
+    ) -> None:
         if not isinstance(dist_obj, rv_frozen):
             raise ModelError(
                 f"ScipyDist {name} requires a frozen Scipy distribution object"

@@ -34,7 +34,15 @@ class ShiftedLognormal(Lognormal):
     def _parameter_values(self):
         return {"mean": self.mean, "std": self.std, "lower": self.lower}
 
-    def __init__(self, name, mean, std, lower, *, start_point=None):
+    def __init__(
+        self,
+        name: str,
+        mean: float,
+        std: float,
+        lower: float,
+        *,
+        start_point: float | None = None,
+    ) -> None:
 
         self._mean = mean
         self._std = std
@@ -61,7 +69,7 @@ class ShiftedLognormal(Lognormal):
     def _shift(self):
         return self.lower
 
-    def set_lower(self, lower=0):
+    def set_lower(self, lower: float = 0) -> None:
         """
         Updating the distribution lower parameter.
         For Lognormal, even though we have a SciPy object, it's not being used in the

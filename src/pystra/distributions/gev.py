@@ -1,5 +1,6 @@
 """Generalized extreme value distributions for maxima and minima."""
 
+from numpy.typing import ArrayLike
 import numpy as np
 from scipy.stats import genextreme
 from scipy.special import gamma
@@ -54,15 +55,15 @@ class GEV(Distribution):
 
     def __init__(
         self,
-        name,
-        mean=None,
-        std=None,
-        shape=None,
+        name: str,
+        mean: float | None = None,
+        std: float | None = None,
+        shape: float | None = None,
         *,
-        loc=None,
-        scale=None,
-        start_point=None,
-    ):
+        loc: float | None = None,
+        scale: float | None = None,
+        start_point: float | None = None,
+    ) -> None:
         if shape is None:
             raise TypeError(f"{type(self).__name__} needs shape")
         if shape >= 0.5:
@@ -100,7 +101,7 @@ class GEV(Distribution):
         self.dist_type = "GEV"
 
     @property
-    def sensitivity_params(self):
+    def sensitivity_params(self) -> dict[str, float]:
         r"""Sensitivity parameters for GEV.
 
         Returns ``{"mean": μ, "std": σ, "shape": ξ}``.  The shape
@@ -157,15 +158,15 @@ class GEVMin(Distribution):
 
     def __init__(
         self,
-        name,
-        mean=None,
-        std=None,
-        shape=None,
+        name: str,
+        mean: float | None = None,
+        std: float | None = None,
+        shape: float | None = None,
         *,
-        loc=None,
-        scale=None,
-        start_point=None,
-    ):
+        loc: float | None = None,
+        scale: float | None = None,
+        start_point: float | None = None,
+    ) -> None:
         if shape is None:
             raise TypeError(f"{type(self).__name__} needs shape")
         if shape >= 0.5:
@@ -219,7 +220,7 @@ class GEVMin(Distribution):
         self.dist_type = "GEVMin"
 
     @property
-    def sensitivity_params(self):
+    def sensitivity_params(self) -> dict[str, float]:
         r"""Sensitivity parameters for GEVMin.
 
         Returns ``{"mean": μ, "std": σ, "shape": ξ}``.  The shape
@@ -228,23 +229,23 @@ class GEVMin(Distribution):
         """
         return {"mean": self.mean, "std": self.std, "shape": self.shape}
 
-    def pdf(self, x):
+    def pdf(self, x: ArrayLike) -> float | np.ndarray:
         """
         Probability density function
         """
         return self.dist_obj.pdf(-np.asarray(x, dtype=float))
 
-    def logpdf(self, x):
+    def logpdf(self, x: ArrayLike) -> float | np.ndarray:
         """Log density."""
         return self.dist_obj.logpdf(-np.asarray(x, dtype=float))
 
-    def cdf(self, x):
+    def cdf(self, x: ArrayLike) -> float | np.ndarray:
         """
         Cumulative distribution function
         """
         return self.dist_obj.sf(-np.asarray(x, dtype=float))
 
-    def sf(self, x):
+    def sf(self, x: ArrayLike) -> float | np.ndarray:
         """Survival function."""
         return self.dist_obj.cdf(-np.asarray(x, dtype=float))
 
@@ -254,12 +255,12 @@ class GEVMin(Distribution):
     def _upper_logsf(self, x):
         return self.dist_obj.logcdf(-np.asarray(x, dtype=float))
 
-    def ppf(self, u):
+    def ppf(self, u: ArrayLike) -> float | np.ndarray:
         """
         Inverse cumulative distribution function
         """
         return -self.dist_obj.isf(u)
 
-    def isf(self, q):
+    def isf(self, q: ArrayLike) -> float | np.ndarray:
         """Inverse survival function."""
         return -self.dist_obj.ppf(q)

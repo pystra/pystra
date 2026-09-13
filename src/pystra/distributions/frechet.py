@@ -1,5 +1,6 @@
 """Frechet marginal distribution."""
 
+import numpy as np
 from scipy.stats import invweibull as frechet
 import scipy.optimize as opt
 import scipy.special as spec
@@ -37,8 +38,15 @@ class Frechet(Distribution):
         return {"scale": self.dist_obj.kwds["scale"], "shape": self.dist_obj.kwds["c"]}
 
     def __init__(
-        self, name, mean=None, std=None, *, scale=None, shape=None, start_point=None
-    ):
+        self,
+        name: str,
+        mean: float | None = None,
+        std: float | None = None,
+        *,
+        scale: float | None = None,
+        shape: float | None = None,
+        start_point: float | None = None,
+    ) -> None:
         if not _uses_native_parameters(self, mean, std, scale=scale, shape=shape):
             parameter_guess = [2.000001]
             par = opt.fsolve(
@@ -65,7 +73,9 @@ class Frechet(Distribution):
 
         self.dist_type = "Frechet"
 
-    def frechet_parameter(self, x, *args):
+    def frechet_parameter(
+        self, x: float | np.ndarray, *args: float
+    ) -> float | np.ndarray:
         """Return the moment residual for Fréchet shape fitting.
 
         The optimizer supplies the trial shape x; args contains mean and std.

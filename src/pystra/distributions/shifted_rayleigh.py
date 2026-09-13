@@ -39,8 +39,15 @@ class ShiftedRayleigh(Distribution):
         }
 
     def __init__(
-        self, name, mean=None, std=None, *, scale=None, shift=None, start_point=None
-    ):
+        self,
+        name: str,
+        mean: float | None = None,
+        std: float | None = None,
+        *,
+        scale: float | None = None,
+        shift: float | None = None,
+        start_point: float | None = None,
+    ) -> None:
         if _uses_native_parameters(self, mean, std, scale=scale, shift=shift):
             a = scale
             x_zero = shift

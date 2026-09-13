@@ -4,8 +4,10 @@ import warnings
 from collections.abc import Mapping
 from copy import deepcopy
 from types import MappingProxyType
-from typing import Self
+from typing import Any, Self
 
+from numpy.typing import ArrayLike
+from matplotlib.axes import Axes
 import numpy as np
 from scipy import special as sp
 import matplotlib.pyplot as plt
@@ -121,7 +123,7 @@ class StdNormal:
     """
 
     @staticmethod
-    def pdf(u):
+    def pdf(u: float | np.ndarray) -> float | np.ndarray:
         """Probability density function of the standard normal.
 
         Parameters
@@ -138,7 +140,7 @@ class StdNormal:
         return p
 
     @staticmethod
-    def cdf(u):
+    def cdf(u: ArrayLike) -> float | np.ndarray:
         """Cumulative distribution function of the standard normal.
 
         Parameters
@@ -155,7 +157,7 @@ class StdNormal:
         return p
 
     @staticmethod
-    def ppf(p):
+    def ppf(p: ArrayLike) -> float | np.ndarray:
         """Percent-point (inverse CDF) of the standard normal.
 
         Parameters
@@ -208,20 +210,20 @@ class Constant:
         The fixed value.
     """
 
-    def __init__(self, name, value):
+    def __init__(self, name: str, value: float) -> None:
         self.name = name
         self._value = value
 
-    def get_name(self):
+    def get_name(self) -> str:
         """Return the constant name."""
         return self.name
 
     @property
-    def value(self):
+    def value(self) -> float:
         """The fixed value."""
         return self._value
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Constant({self.name!r}, value={self._value!r})"
 
 
@@ -276,7 +278,14 @@ class Distribution:
 
     std_normal = StdNormal()
 
-    def __init__(self, name="", dist_obj=None, mean=None, std=None, start_point=None):
+    def __init__(
+        self,
+        name: str = "",
+        dist_obj: rv_frozen | None = None,
+        mean: float | None = None,
+        std: float | None = None,
+        start_point: float | None = None,
+    ) -> None:
         self.name = name
         self.dist_type = "BaseCls"
 
@@ -288,21 +297,21 @@ class Distribution:
         self._set_start_point(start_point)
 
     @property
-    def mean(self):
+    def mean(self) -> float:
         """Mean of the distribution."""
         return self._mean
 
     @property
-    def std(self):
+    def std(self) -> float:
         """Standard deviation of the distribution."""
         return self._std
 
     @property
-    def start_point(self):
+    def start_point(self) -> float:
         """Starting point of the design-point search; the mean by default."""
         return self._start_point
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"{type(self).__name__}({self.name!r}, mean={self.mean:.6g}, std={self.std:.6g})"
 
     def _update_moments(self, mean=None, std=None):
@@ -318,7 +327,7 @@ class Distribution:
         if not np.isfinite(self.std) or self.std <= 0:
             raise ModelError("Std. deviation must be a positive noninfinite number.")
 
-    def get_name(self):
+    def get_name(self) -> str:
         """Return the random-variable name."""
         return self.name
 
@@ -331,7 +340,7 @@ class Distribution:
     # The following can be overridden by derived classes to implement more
     # efficient calculations where desirable
 
-    def pdf(self, x):
+    def pdf(self, x: ArrayLike) -> float | np.ndarray:
         """Probability density function.
 
         Parameters
@@ -346,14 +355,14 @@ class Distribution:
         """
         return self.dist_obj.pdf(x)
 
-    def logpdf(self, x):
+    def logpdf(self, x: ArrayLike) -> float | np.ndarray:
         """Log density, ``-inf`` where the density is zero."""
         if self.dist_obj is not None and type(self).pdf is Distribution.pdf:
             return self.dist_obj.logpdf(x)
         with np.errstate(divide="ignore"):
             return np.log(self.pdf(x))
 
-    def cdf(self, x):
+    def cdf(self, x: ArrayLike) -> float | np.ndarray:
         """Cumulative distribution function.
 
         Parameters
@@ -368,13 +377,13 @@ class Distribution:
         """
         return self.dist_obj.cdf(x)
 
-    def sf(self, x):
+    def sf(self, x: ArrayLike) -> float | np.ndarray:
         """Survival function ``1 - F(x)``, accurate in the upper tail."""
         if self._scipy_cdf():
             return self.dist_obj.sf(x)
         return 1 - self.cdf(x)
 
-    def logcdf(self, x):
+    def logcdf(self, x: ArrayLike) -> float | np.ndarray:
         """Logarithm of the CDF, accurate in both tails.
 
         Below the median the logarithm of the CDF itself (or SciPy's
@@ -386,7 +395,7 @@ class Distribution:
             x, c > 0.5, self._lower_logcdf, lambda v: np.log1p(-self.sf(v))
         )
 
-    def logsf(self, x):
+    def logsf(self, x: ArrayLike) -> float | np.ndarray:
         """Logarithm of the survival function, accurate in both tails."""
         c = np.asarray(self.cdf(x), dtype=float)
         return _piecewise(
@@ -411,7 +420,7 @@ class Distribution:
         """Whether the CDF family can be delegated to ``dist_obj``."""
         return self.dist_obj is not None and type(self).cdf is Distribution.cdf
 
-    def ppf(self, u):
+    def ppf(self, u: ArrayLike) -> float | np.ndarray:
         """Percent-point function (inverse CDF).
 
         Parameters
@@ -426,7 +435,7 @@ class Distribution:
         """
         return self.dist_obj.ppf(u)
 
-    def isf(self, q):
+    def isf(self, q: ArrayLike) -> float | np.ndarray:
         """Inverse survival function, accurate for small upper-tail ``q``."""
         if self.dist_obj is not None and type(self).ppf is Distribution.ppf:
             return self.dist_obj.isf(q)
@@ -478,7 +487,7 @@ class Distribution:
             x[deep] = _solve_log_tail(self.logsf, logq[deep], self.isf(_TINY), self.std)
         return x
 
-    def u_to_x(self, u):
+    def u_to_x(self, u: ArrayLike) -> float | np.ndarray:
         """Transform from standard normal space to physical space.
 
         Applies the marginal Nataf mapping ``x = F^{-1}(Phi(u))``. Above
@@ -556,7 +565,7 @@ class Distribution:
             )
         return x
 
-    def x_to_u(self, x):
+    def x_to_u(self, x: ArrayLike) -> float | np.ndarray:
         """Transform from physical space to standard normal space.
 
         Applies the marginal Nataf mapping ``u = Phi^{-1}(F(x))``, as
@@ -602,7 +611,7 @@ class Distribution:
             u[upper] = v
         return u.reshape(shape)[()]
 
-    def jacobian(self, u, x):
+    def jacobian(self, u: ArrayLike, x: ArrayLike) -> np.ndarray:
         """Diagonal Jacobian of the marginal x-to-u transformation.
 
         Returns a diagonal matrix ``J`` where the diagonal entry is
@@ -637,7 +646,7 @@ class Distribution:
         J = np.diag(ratio)
         return J
 
-    def sample(self, n=1000):
+    def sample(self, n: int = 1000) -> np.ndarray:
         """Draw random samples from the distribution.
 
         Uses inverse-transform sampling via ``ppf``.
@@ -656,7 +665,7 @@ class Distribution:
         samples = self.ppf(u)
         return samples
 
-    def plot(self, ax=None, **kwargs):
+    def plot(self, ax: Axes | None = None, **kwargs: Any) -> Axes:
         """Plot the probability density function.
 
         Parameters
@@ -694,7 +703,7 @@ class Distribution:
     # ------------------------------------------------------------------
 
     @property
-    def sensitivity_params(self):
+    def sensitivity_params(self) -> dict[str, float]:
         r"""Distribution parameters for which sensitivities are computed.
 
         Returns a dict ``{param_name: current_value}`` listing every
@@ -824,7 +833,7 @@ class Distribution:
             (d_plus.std - d_minus.std) / (2 * h),
         )
 
-    def cdf_gradient(self, x):
+    def cdf_gradient(self, x: ArrayLike) -> dict[str, float | np.ndarray]:
         r"""Derivatives of the CDF w.r.t. each sensitivity parameter.
 
         Returns ``∂F_X(x)/∂θ`` for every parameter listed by
@@ -896,7 +905,7 @@ class Distribution:
             result[param] = (d_plus.cdf(x) - d_minus.cdf(x)) / (2 * h)
         return result
 
-    def set_location(self, loc=0):
+    def set_location(self, loc: float = 0) -> None:
         """Update the location parameter of the underlying SciPy distribution.
 
         After updating, ``mean`` and ``std`` are recomputed.  This is
@@ -919,7 +928,7 @@ class Distribution:
         else:
             raise ModelError("Distribution is not a SciPy object")
 
-    def set_scale(self, scale=1):
+    def set_scale(self, scale: float = 1) -> None:
         """Update the scale parameter of the underlying SciPy distribution.
 
         After updating, ``mean`` and ``std`` are recomputed.  This is

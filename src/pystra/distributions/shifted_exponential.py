@@ -38,8 +38,15 @@ class ShiftedExponential(Distribution):
         }
 
     def __init__(
-        self, name, mean=None, std=None, *, rate=None, shift=None, start_point=None
-    ):
+        self,
+        name: str,
+        mean: float | None = None,
+        std: float | None = None,
+        *,
+        rate: float | None = None,
+        shift: float | None = None,
+        start_point: float | None = None,
+    ) -> None:
         if _uses_native_parameters(self, mean, std, rate=rate, shift=shift):
             lamb = rate
             x_zero = shift

@@ -37,7 +37,15 @@ class ChiSquare(Distribution):
     def _parameter_values(self):
         return {"df": self.nu}
 
-    def __init__(self, name, mean=None, std=None, *, df=None, start_point=None):
+    def __init__(
+        self,
+        name: str,
+        mean: float | None = None,
+        std: float | None = None,
+        *,
+        df: float | None = None,
+        start_point: float | None = None,
+    ) -> None:
         if not _uses_native_parameters(self, mean, std, df=df):
             lamb = 0.5
             mean_test = lamb * std**2

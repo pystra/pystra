@@ -1,5 +1,6 @@
 """Normal marginal distribution."""
 
+from numpy.typing import ArrayLike
 import numpy as np
 from scipy import special as sp
 
@@ -23,7 +24,9 @@ class Normal(Distribution):
         Starting point for the design-point search. Defaults to the mean.
     """
 
-    def __init__(self, name, mean, std, *, start_point=None):
+    def __init__(
+        self, name: str, mean: float, std: float, *, start_point: float | None = None
+    ) -> None:
         """
         Leave initialization to the base class
         """
@@ -35,7 +38,7 @@ class Normal(Distribution):
         )
         self.dist_type = "Normal"
 
-    def pdf(self, x):
+    def pdf(self, x: float | np.ndarray) -> float | np.ndarray:
         """
         probability density function
         """
@@ -43,7 +46,7 @@ class Normal(Distribution):
         p = self.std_normal.pdf(z) / self.std
         return p
 
-    def cdf(self, x):
+    def cdf(self, x: float | np.ndarray) -> float | np.ndarray:
         """
         cumulative distribution function
         """
@@ -51,7 +54,7 @@ class Normal(Distribution):
         p = self.std_normal.cdf(z)
         return p
 
-    def ppf(self, p):
+    def ppf(self, p: ArrayLike) -> float | np.ndarray:
         """
         inverse cumulative distribution function
         """
@@ -59,24 +62,24 @@ class Normal(Distribution):
         x = self.std * z + self.mean
         return x
 
-    def sf(self, x):
+    def sf(self, x: float | np.ndarray) -> float | np.ndarray:
         """Survival function."""
         return sp.ndtr((self.mean - x) / self.std)
 
-    def isf(self, q):
+    def isf(self, q: ArrayLike) -> float | np.ndarray:
         """Inverse survival function."""
         return self.mean - self.std * sp.ndtri(q)
 
-    def logpdf(self, x):
+    def logpdf(self, x: float | np.ndarray) -> float | np.ndarray:
         """Log density."""
         z = (x - self.mean) / self.std
         return -0.5 * z**2 - np.log(self.std) - 0.5 * np.log(2 * np.pi)
 
-    def logcdf(self, x):
+    def logcdf(self, x: float | np.ndarray) -> float | np.ndarray:
         """Log CDF."""
         return sp.log_ndtr((x - self.mean) / self.std)
 
-    def logsf(self, x):
+    def logsf(self, x: float | np.ndarray) -> float | np.ndarray:
         """Log survival function."""
         return sp.log_ndtr((self.mean - x) / self.std)
 
@@ -86,7 +89,7 @@ class Normal(Distribution):
     def _upper_quantile_log(self, logq):
         return self.mean - self.std * sp.ndtri_exp(logq)
 
-    def sample(self, n=1000):
+    def sample(self, n: int = 1000) -> np.ndarray:
         """
         Override sample from base class due to bespoke implementation
         """
@@ -94,21 +97,21 @@ class Normal(Distribution):
         samples = self.ppf(u)
         return samples
 
-    def u_to_x(self, u):
+    def u_to_x(self, u: float | np.ndarray) -> float | np.ndarray:
         """
         Transformation from u to x
         """
         x = u * self.std + self.mean
         return x
 
-    def x_to_u(self, x):
+    def x_to_u(self, x: float | np.ndarray) -> float | np.ndarray:
         """
         Transformation from x to u
         """
         u = (x - self.mean) / self.std
         return u
 
-    def jacobian(self, u, x):
+    def jacobian(self, u: np.ndarray, x: np.ndarray) -> np.ndarray:
         """
         Compute the Jacobian  (e.g. Lemaire, eq. 4.9)
         For the Normal distribution, the more usual general function can be
@@ -117,7 +120,7 @@ class Normal(Distribution):
         J = np.diag(np.repeat(1 / self.std, u.size))
         return J
 
-    def cdf_gradient(self, x):
+    def cdf_gradient(self, x: float | np.ndarray) -> dict[str, float | np.ndarray]:
         r"""Analytical derivatives of the Normal CDF w.r.t. μ and σ.
 
         .. math::
@@ -133,14 +136,14 @@ class Normal(Distribution):
         dF_dsig = -phi_z * z / self.std
         return {"mean": dF_dmu, "std": dF_dsig}
 
-    def set_location(self, loc=0):
+    def set_location(self, loc: float = 0) -> None:
         """
         Updating the distribution location parameter. For Normal, there is no need to
         update other properties as a result of this change.
         """
         self._mean = loc
 
-    def set_scale(self, scale=1):
+    def set_scale(self, scale: float = 1) -> None:
         """
         Updating the distribution scale parameter. For Normal, there is no need to
         update other properties as a result of this change.

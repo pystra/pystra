@@ -1,5 +1,6 @@
 """Recover parent distributions from laws of independent maxima."""
 
+from numpy.typing import ArrayLike
 import numpy as np
 
 from .distribution import Distribution, _log1mexp, _piecewise
@@ -41,11 +42,18 @@ class MaxParent(Distribution):
         return {"max_dist": self.max_dist, "N": self.N}
 
     @property
-    def sensitivity_params(self):
+    def sensitivity_params(self) -> dict[str, float]:
         """No generic moment perturbation; replace the constructor inputs."""
         return {}
 
-    def __init__(self, name, max_dist, N, *, start_point=None):
+    def __init__(
+        self,
+        name: str,
+        max_dist: Distribution,
+        N: float,
+        *,
+        start_point: float | None = None,
+    ) -> None:
         if not isinstance(max_dist, Distribution):
             raise ModelError(
                 f"MaxParent distribution of maximum requires input of type {type(Distribution)}"
@@ -66,48 +74,48 @@ class MaxParent(Distribution):
 
         self.dist_type = "MaxParent"
 
-    def pdf(self, x):
+    def pdf(self, x: ArrayLike) -> float | np.ndarray:
         """
         Probability density function, from log densities
         """
         with np.errstate(under="ignore"):
             return np.exp(self.logpdf(x))
 
-    def cdf(self, x):
+    def cdf(self, x: ArrayLike) -> float | np.ndarray:
         """
         Cumulative distribution function, ``exp(log F_max(x) / N)``
         """
         with np.errstate(under="ignore"):
             return np.exp(self.logcdf(x))
 
-    def ppf(self, p):
+    def ppf(self, p: ArrayLike) -> float | np.ndarray:
         """
         Inverse cumulative distribution function, from the maximum's tails
         """
         with np.errstate(divide="ignore"):
             return self._ppf_log(np.log(np.asarray(p, dtype=float)))
 
-    def isf(self, q):
+    def isf(self, q: ArrayLike) -> float | np.ndarray:
         """Inverse survival function."""
         with np.errstate(divide="ignore"):
             return self._isf_log(np.log(np.asarray(q, dtype=float)))
 
-    def logpdf(self, x):
+    def logpdf(self, x: ArrayLike) -> float | np.ndarray:
         """Log density."""
         logpdf = self.max_dist.logpdf(x) - np.log(self.N)
         if self.N == 1:
             return logpdf
         return logpdf + (1 / self.N - 1) * self.max_dist.logcdf(x)
 
-    def logcdf(self, x):
+    def logcdf(self, x: ArrayLike) -> float | np.ndarray:
         """Log CDF, the maximum's divided by ``N``."""
         return self.max_dist.logcdf(x) / self.N
 
-    def sf(self, x):
+    def sf(self, x: ArrayLike) -> float | np.ndarray:
         """Survival function ``1 - F_max(x)**(1/N)``."""
         return -np.expm1(self.logcdf(x))
 
-    def logsf(self, x):
+    def logsf(self, x: ArrayLike) -> float | np.ndarray:
         """Log survival function."""
         # Once 1 - F**(1/N) is below 1e-200 it equals (1 - F) / N
         a = np.asarray(self.logcdf(x), dtype=float)
@@ -141,21 +149,21 @@ class MaxParent(Distribution):
             return self.max_dist.mean, self.max_dist.std
         return _quantile_moments(self, self.max_dist.mean, self.max_dist.std)
 
-    def set_location(self, loc=0):
+    def set_location(self, loc: float = 0) -> None:
         """
         Updating the parent distribution location parameter.
         """
         self.max_dist.set_location(loc)
         self._update_stats()
 
-    def set_scale(self, scale=1):
+    def set_scale(self, scale: float = 1) -> None:
         """
         Updating the parent distribution scale parameter.
         """
         self.max_dist.set_scale(scale)
         self._update_stats()
 
-    def set_exponent(self, N=2):
+    def set_exponent(self, N: float = 2) -> None:
         """
         Update the parent distribution exponent parameter.
         """

@@ -1,5 +1,6 @@
 """Weibull marginal distribution."""
 
+import numpy as np
 from scipy.stats import weibull_min as weibull
 import scipy.optimize as opt
 import scipy.special as spec
@@ -44,15 +45,15 @@ class Weibull(Distribution):
 
     def __init__(
         self,
-        name,
-        mean=None,
-        std=None,
+        name: str,
+        mean: float | None = None,
+        std: float | None = None,
         *,
-        scale=None,
-        shape=None,
-        lower=0,
-        start_point=None,
-    ):
+        scale: float | None = None,
+        shape: float | None = None,
+        lower: float = 0,
+        start_point: float | None = None,
+    ) -> None:
         self.lower = lower
         epsilon = lower
 
@@ -81,7 +82,9 @@ class Weibull(Distribution):
 
         self.dist_type = "Weibull"
 
-    def weibull_parameter(self, x, *args):
+    def weibull_parameter(
+        self, x: float | np.ndarray, *args: float
+    ) -> float | np.ndarray:
         """Return the moment residual for Weibull shape fitting.
 
         The optimizer supplies the trial shape x; args contains mean minus

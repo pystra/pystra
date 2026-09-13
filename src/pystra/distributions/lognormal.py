@@ -1,5 +1,6 @@
 """Lognormal marginal distribution."""
 
+from numpy.typing import ArrayLike
 import numpy as np
 from scipy import special as sp
 from scipy.stats import lognorm
@@ -38,14 +39,14 @@ class Lognormal(Distribution):
 
     def __init__(
         self,
-        name,
-        mean=None,
-        std=None,
+        name: str,
+        mean: float | None = None,
+        std: float | None = None,
         *,
-        log_mean=None,
-        log_std=None,
-        start_point=None,
-    ):
+        log_mean: float | None = None,
+        log_std: float | None = None,
+        start_point: float | None = None,
+    ) -> None:
         if _uses_native_parameters(self, mean, std, log_mean=log_mean, log_std=log_std):
             self.lamb = log_mean
             self.zeta = log_std
@@ -86,7 +87,7 @@ class Lognormal(Distribution):
             z = (np.log(y) - self.lamb) / self.zeta
         return np.where(y <= 0, -np.inf, z)[()]
 
-    def pdf(self, x):
+    def pdf(self, x: ArrayLike) -> float | np.ndarray:
         """
         Probability density function
         """
@@ -96,7 +97,7 @@ class Lognormal(Distribution):
             p = np.exp(-0.5 * z**2) / (np.sqrt(2 * np.pi) * self.zeta * y)
         return np.where(y <= 0, 0.0, p)[()]
 
-    def logpdf(self, x):
+    def logpdf(self, x: ArrayLike) -> float | np.ndarray:
         """Log density."""
         y = np.asarray(x, dtype=float) - self._shift
         z = self._z(x)
@@ -104,21 +105,21 @@ class Lognormal(Distribution):
             lp = -0.5 * z**2 - np.log(self.zeta * y) - 0.5 * np.log(2 * np.pi)
         return np.where(y <= 0, -np.inf, lp)[()]
 
-    def cdf(self, x):
+    def cdf(self, x: ArrayLike) -> float | np.ndarray:
         """
         Cumulative distribution function
         """
         return sp.ndtr(self._z(x))
 
-    def sf(self, x):
+    def sf(self, x: ArrayLike) -> float | np.ndarray:
         """Survival function."""
         return sp.ndtr(-self._z(x))
 
-    def logcdf(self, x):
+    def logcdf(self, x: ArrayLike) -> float | np.ndarray:
         """Log CDF."""
         return sp.log_ndtr(self._z(x))
 
-    def logsf(self, x):
+    def logsf(self, x: ArrayLike) -> float | np.ndarray:
         """Log survival function."""
         return sp.log_ndtr(-self._z(x))
 
@@ -128,20 +129,20 @@ class Lognormal(Distribution):
     def _upper_quantile_log(self, logq):
         return self._shift + np.exp(self.lamb - self.zeta * sp.ndtri_exp(logq))
 
-    def u_to_x(self, u):
+    def u_to_x(self, u: float | np.ndarray) -> float | np.ndarray:
         """
         Transformation from u to x
         """
         x = self._shift + np.exp(u * self.zeta + self.lamb)
         return x
 
-    def x_to_u(self, x):
+    def x_to_u(self, x: ArrayLike) -> float | np.ndarray:
         """
         Transformation from x to u
         """
         return self._z(x)
 
-    def cdf_gradient(self, x):
+    def cdf_gradient(self, x: ArrayLike) -> dict[str, float | np.ndarray]:
         r"""Analytical derivatives of the Lognormal CDF w.r.t. μ and σ.
 
         The CDF is ``F(x) = Φ((ln x - λ) / ζ)`` where
@@ -182,7 +183,7 @@ class Lognormal(Distribution):
 
         return {"mean": dF_dmu, "std": dF_dsig}
 
-    def set_location(self, loc=0):
+    def set_location(self, loc: float = 0) -> None:
         """
         Updating the distribution location parameter.
         For Lognormal, even though we have a SciPy object, it's not being used in the
@@ -192,7 +193,7 @@ class Lognormal(Distribution):
         self._update_params(loc, self.std)
         self._mean = loc
 
-    def set_scale(self, scale=1):
+    def set_scale(self, scale: float = 1) -> None:
         """
         Updating the distribution scale parameter.
         For Lognormal, even though we have a SciPy object, it's not being used in the

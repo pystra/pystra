@@ -1,5 +1,6 @@
 """Zero inflated marginal distribution."""
 
+from numpy.typing import ArrayLike
 import numpy as np
 from scipy import special as sp
 
@@ -33,11 +34,18 @@ class ZeroInflated(Distribution):
         return {"dist": self.dist, "p": self.p}
 
     @property
-    def sensitivity_params(self):
+    def sensitivity_params(self) -> dict[str, float]:
         """No generic moment perturbation; replace the constructor inputs."""
         return {}
 
-    def __init__(self, name, dist, p, *, start_point=None):
+    def __init__(
+        self,
+        name: str,
+        dist: Distribution,
+        p: float,
+        *,
+        start_point: float | None = None,
+    ) -> None:
         if not isinstance(dist, Distribution):
             raise ModelError(
                 f"ZeroInflated distribution requires input of type {type(Distribution)}"
@@ -62,7 +70,7 @@ class ZeroInflated(Distribution):
 
         self.dist_type = "ZeroInflated"
 
-    def pdf(self, x):
+    def pdf(self, x: ArrayLike) -> float | np.ndarray:
         """
         Probability density function
         """
@@ -75,7 +83,7 @@ class ZeroInflated(Distribution):
             return zipdf.item()
         return zipdf
 
-    def cdf(self, x):
+    def cdf(self, x: ArrayLike) -> float | np.ndarray:
         """
         Cumulative distribution function
         """
@@ -88,7 +96,7 @@ class ZeroInflated(Distribution):
             return zicdf.item()
         return zicdf
 
-    def ppf(self, p):
+    def ppf(self, p: ArrayLike) -> float | np.ndarray:
         """
         inverse cumulative distribution function
         """
@@ -113,7 +121,7 @@ class ZeroInflated(Distribution):
             return x.item()
         return x
 
-    def sf(self, x):
+    def sf(self, x: ArrayLike) -> float | np.ndarray:
         """Survival function; the zero atom lies on the CDF side."""
         x = np.asarray(x, dtype=float)
         above = x > -self.zero_tol
@@ -121,7 +129,7 @@ class ZeroInflated(Distribution):
             ()
         ]
 
-    def isf(self, q):
+    def isf(self, q: ArrayLike) -> float | np.ndarray:
         """Inverse survival function, from the parent's upper tail."""
         q = np.asarray(q, dtype=float)
         upper = q < self.q * self.dist.sf(0.0)
@@ -192,21 +200,21 @@ class ZeroInflated(Distribution):
 
         return mean, std
 
-    def set_location(self, loc=0):
+    def set_location(self, loc: float = 0) -> None:
         """
         Updating the zero-inflated distribution location parameter.
         """
         self.dist.set_location(loc)
         self._update_stats()
 
-    def set_scale(self, scale=1):
+    def set_scale(self, scale: float = 1) -> None:
         """
         Updating the zero-inflated distribution scale parameter.
         """
         self.dist.set_scale(scale)
         self._update_stats()
 
-    def set_zero_probability(self, p):
+    def set_zero_probability(self, p: float) -> None:
         """
         Update the zero-inflated probability.
         """

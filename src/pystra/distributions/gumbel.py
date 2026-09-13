@@ -38,8 +38,15 @@ class Gumbel(Distribution):
         return {"loc": self.dist_obj.kwds["loc"], "scale": self.dist_obj.kwds["scale"]}
 
     def __init__(
-        self, name, mean=None, std=None, *, loc=None, scale=None, start_point=None
-    ):
+        self,
+        name: str,
+        mean: float | None = None,
+        std: float | None = None,
+        *,
+        loc: float | None = None,
+        scale: float | None = None,
+        start_point: float | None = None,
+    ) -> None:
         if _uses_native_parameters(self, mean, std, loc=loc, scale=scale):
             mu = loc
         else:
@@ -151,8 +158,15 @@ class GumbelMin(Distribution):
         return {"loc": self.dist_obj.kwds["loc"], "scale": self.dist_obj.kwds["scale"]}
 
     def __init__(
-        self, name, mean=None, std=None, *, loc=None, scale=None, start_point=None
-    ):
+        self,
+        name: str,
+        mean: float | None = None,
+        std: float | None = None,
+        *,
+        loc: float | None = None,
+        scale: float | None = None,
+        start_point: float | None = None,
+    ) -> None:
         if _uses_native_parameters(self, mean, std, loc=loc, scale=scale):
             mu = loc
         else:

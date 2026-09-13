@@ -38,8 +38,15 @@ class Gamma(Distribution):
         }
 
     def __init__(
-        self, name, mean=None, std=None, *, rate=None, shape=None, start_point=None
-    ):
+        self,
+        name: str,
+        mean: float | None = None,
+        std: float | None = None,
+        *,
+        rate: float | None = None,
+        shape: float | None = None,
+        start_point: float | None = None,
+    ) -> None:
         if _uses_native_parameters(self, mean, std, rate=rate, shape=shape):
             beta = rate
             alpha = shape

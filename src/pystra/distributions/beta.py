@@ -47,16 +47,16 @@ class Beta(Distribution):
 
     def __init__(
         self,
-        name,
-        mean=None,
-        std=None,
+        name: str,
+        mean: float | None = None,
+        std: float | None = None,
         *,
-        q=None,
-        r=None,
-        lower=0,
-        upper=1,
-        start_point=None,
-    ):
+        q: float | None = None,
+        r: float | None = None,
+        lower: float = 0,
+        upper: float = 1,
+        start_point: float | None = None,
+    ) -> None:
         self.lower = lower
         self.upper = upper
         a = lower
@@ -84,7 +84,7 @@ class Beta(Distribution):
 
         self.dist_type = "Beta"
 
-    def beta_parameter(self, q, *args):
+    def beta_parameter(self, q: float | np.ndarray, *args: float) -> float | np.ndarray:
         """Return the standard-deviation residual for beta shape fitting.
 
         The optimizer supplies q; args contains lower, upper, mean and std.

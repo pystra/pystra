@@ -1,5 +1,6 @@
 """Uniform marginal distribution."""
 
+from numpy.typing import ArrayLike
 import numpy as np
 from scipy.stats import uniform
 
@@ -36,8 +37,15 @@ class Uniform(Distribution):
         return {"lower": self.a, "upper": self.b}
 
     def __init__(
-        self, name, mean=None, std=None, *, lower=None, upper=None, start_point=None
-    ):
+        self,
+        name: str,
+        mean: float | None = None,
+        std: float | None = None,
+        *,
+        lower: float | None = None,
+        upper: float | None = None,
+        start_point: float | None = None,
+    ) -> None:
         if _uses_native_parameters(self, mean, std, lower=lower, upper=upper):
             a = lower
             b = upper
@@ -61,7 +69,7 @@ class Uniform(Distribution):
 
     # Overriding these for performance
 
-    def u_to_x(self, u):
+    def u_to_x(self, u: ArrayLike) -> float | np.ndarray:
         """
         Transformation from u to x, measured from the nearer bound
         """
