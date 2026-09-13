@@ -40,6 +40,9 @@ from dataclasses import dataclass, field, fields
 from typing import Any, ClassVar, Optional
 
 import numpy as np
+from pandas import DataFrame
+
+import pystra as _pystra
 
 __all__ = [
     "FORMResult",
@@ -221,7 +224,7 @@ class FORMResult(_ProbabilityResult):
     _arrays: ClassVar[tuple] = ("design_point_x", "design_point_u", "alpha")
 
     @classmethod
-    def from_analysis(cls, analysis) -> "FORMResult":
+    def from_analysis(cls, analysis: "_pystra.FORM") -> "FORMResult":
         """Copy a completed solver's numerical results and diagnostics."""
         valid = bool(analysis._converged and analysis._results_valid)
         standard_space = getattr(analysis.transform, "standard_space", "normal")
@@ -256,7 +259,7 @@ class FORMResult(_ProbabilityResult):
             rows.append(("Design index", self.design_index))
         return [*rows, ("Iterations", self.iterations)]
 
-    def to_dataframe(self):
+    def to_dataframe(self) -> DataFrame:
         """Return the design point and direction as a table by variable.
 
         Returns
@@ -450,7 +453,7 @@ class SensitivityResult(_ProbabilityResult):
     def _rows(self):
         return [*super()._rows(), ("Approach", self.approach)]
 
-    def to_dataframe(self):
+    def to_dataframe(self) -> DataFrame:
         """Return the marginal sensitivities as a tidy table.
 
         Returns
@@ -521,7 +524,7 @@ class StrongMaximumResult(_Result):
     )
     _read_only: ClassVar[tuple] = ("regions",)
 
-    def points(self, region="far_failure", space="u"):
+    def points(self, region: str = "far_failure", space: str = "u") -> np.ndarray:
         """Return the points of one region as rows.
 
         Parameters

@@ -16,9 +16,11 @@ from __future__ import annotations
 
 import inspect
 import itertools
-from typing import Callable, Iterable
+from collections.abc import Iterator, Sequence
+from typing import Any, Callable, Iterable
 
 import numpy as np
+from numpy.typing import ArrayLike
 
 from .model import LimitState
 
@@ -53,7 +55,11 @@ class Component:
     accepts ``**kwargs``.
     """
 
-    def __init__(self, name, limit_state=None):
+    def __init__(
+        self,
+        name: str | LimitState | Callable[..., Any] | None,
+        limit_state: LimitState | Callable[..., Any] | None = None,
+    ) -> None:
         if limit_state is None:
             limit_state = name
             name = None
@@ -62,7 +68,7 @@ class Component:
         self.name = _component_name(name, self.limit_state)
         self._signature = _call_signature(self.limit_state.expression)
 
-    def evaluate(self, **kwargs):
+    def evaluate(self, **kwargs: ArrayLike) -> np.ndarray:
         """Evaluate the component limit state for one or more samples."""
 
         values = self.limit_state.expression(**self._filter_kwargs(kwargs))
@@ -70,7 +76,7 @@ class Component:
             values = values[0]
         return np.asarray(values, dtype=float)
 
-    def as_limit_state(self):
+    def as_limit_state(self) -> LimitState:
         """Return this component as a PySTRA :class:`LimitState`."""
 
         # Keep tuple returns intact for direct differentiation. User-supplied
@@ -79,7 +85,7 @@ class Component:
             lambda **kwargs: self.limit_state.expression(**self._filter_kwargs(kwargs))
         )
 
-    def get_limit_state(self):
+    def get_limit_state(self) -> LimitState:
         """Return this component as a PySTRA :class:`LimitState`.
 
         This legacy-style alias mirrors the existing PySTRA getter naming.
@@ -87,18 +93,18 @@ class Component:
 
         return self.as_limit_state()
 
-    def iter_components(self):
+    def iter_components(self) -> Iterator[Component]:
         """Yield leaf components in this subtree."""
 
         yield self
 
     @property
-    def components(self):
+    def components(self) -> tuple[Component, ...]:
         """Tuple containing this component."""
 
         return (self,)
 
-    def failure_mask(self, **kwargs):
+    def failure_mask(self, **kwargs: ArrayLike) -> np.bool_ | np.ndarray:
         """Return a boolean mask where the component is failed."""
 
         return self.evaluate(**kwargs) < 0
@@ -123,7 +129,11 @@ class System:
 
     _operator_name = "system"
 
-    def __init__(self, children: Iterable, name=None):
+    def __init__(
+        self,
+        children: Iterable[Component | System | LimitState | Callable[..., Any]],
+        name: str | None = None,
+    ) -> None:
         children = tuple(_as_node(child, index) for index, child in enumerate(children))
         if not children:
             raise ValueError("A system must contain at least one child")
@@ -132,29 +142,29 @@ class System:
         self.name = name or self._operator_name
 
     @property
-    def components(self):
+    def components(self) -> tuple[Component, ...]:
         """Flat tuple of all leaf components in the system."""
 
         return tuple(_unique_components(self.iter_components()))
 
-    def iter_components(self):
+    def iter_components(self) -> Iterator[Component]:
         """Yield all leaf components in the system."""
 
         for child in self.children:
             yield from child.iter_components()
 
-    def evaluate(self, **kwargs):
+    def evaluate(self, **kwargs: ArrayLike) -> float | np.ndarray:
         """Evaluate the equivalent scalar system limit state."""
 
         values = [child.evaluate(**kwargs) for child in self.children]
         return self._combine(values)
 
-    def as_limit_state(self):
+    def as_limit_state(self) -> LimitState:
         """Return the composed system as a PySTRA :class:`LimitState`."""
 
         return LimitState(lambda **kwargs: self.evaluate(**kwargs))
 
-    def get_limit_state(self):
+    def get_limit_state(self) -> LimitState:
         """Return the composed system as a PySTRA :class:`LimitState`.
 
         This legacy-style alias mirrors the existing PySTRA getter naming.
@@ -162,7 +172,7 @@ class System:
 
         return self.as_limit_state()
 
-    def component_values(self, **kwargs):
+    def component_values(self, **kwargs: ArrayLike) -> dict[str, np.ndarray]:
         """Evaluate all leaf component limit states.
 
         Returns
@@ -185,14 +195,16 @@ class System:
             values[component.name] = component.evaluate(**kwargs)
         return values
 
-    def component_failure_masks(self, **kwargs):
+    def component_failure_masks(
+        self, **kwargs: ArrayLike
+    ) -> dict[str, np.bool_ | np.ndarray]:
         """Return failure masks for each leaf component."""
 
         return {
             name: values < 0 for name, values in self.component_values(**kwargs).items()
         }
 
-    def failure_mask(self, **kwargs):
+    def failure_mask(self, **kwargs: ArrayLike) -> np.bool_ | np.ndarray:
         """Return a boolean mask where the system is failed."""
 
         return self.evaluate(**kwargs) < 0
@@ -251,7 +263,12 @@ class KOfNSystem(System):
 
     _operator_name = "k_of_n"
 
-    def __init__(self, children: Iterable, k, name=None):
+    def __init__(
+        self,
+        children: Iterable[Component | System | LimitState | Callable[..., Any]],
+        k: int,
+        name: str | None = None,
+    ) -> None:
         super().__init__(children, name=name)
         self.k = int(k)
         if self.k < 1 or self.k > len(self.children):
@@ -282,7 +299,18 @@ class CutSetSystem(System):
 
     _operator_name = "cut_set"
 
-    def __init__(self, cut_sets, components=None, name=None):
+    def __init__(
+        self,
+        cut_sets: Iterable[
+            Iterable[str | Component | System | LimitState | Callable[..., Any]]
+        ],
+        components: (
+            dict[str, Component | System | LimitState | Callable[..., Any]]
+            | Iterable[Component | System | LimitState | Callable[..., Any]]
+            | None
+        ) = None,
+        name: str | None = None,
+    ) -> None:
         resolved = _resolve_component_sets(cut_sets, components)
         if not resolved:
             raise ValueError("At least one cut set is required")
@@ -316,7 +344,18 @@ class TieSetSystem(System):
 
     _operator_name = "tie_set"
 
-    def __init__(self, tie_sets, components=None, name=None):
+    def __init__(
+        self,
+        tie_sets: Iterable[
+            Iterable[str | Component | System | LimitState | Callable[..., Any]]
+        ],
+        components: (
+            dict[str, Component | System | LimitState | Callable[..., Any]]
+            | Iterable[Component | System | LimitState | Callable[..., Any]]
+            | None
+        ) = None,
+        name: str | None = None,
+    ) -> None:
         resolved = _resolve_component_sets(tie_sets, components)
         if not resolved:
             raise ValueError("At least one tie set is required")
@@ -330,7 +369,12 @@ class TieSetSystem(System):
         return np.max(arrays, axis=0)
 
 
-def ditlevsen_bounds(probabilities, intersections, ordering=None, optimize_order=False):
+def ditlevsen_bounds(
+    probabilities: ArrayLike,
+    intersections: ArrayLike | dict[tuple[int, int], float],
+    ordering: Sequence[int] | np.ndarray | None = None,
+    optimize_order: bool = False,
+) -> tuple[float, float]:
     r"""Return Ditlevsen bounds for the probability of a union of events.
 
     Parameters

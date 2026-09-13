@@ -8,9 +8,10 @@ from collections.abc import Mapping
 from copy import deepcopy
 from dataclasses import dataclass
 from types import MappingProxyType
-from typing import Tuple, Optional, Callable, Union, Sequence
+from typing import Tuple, Optional, Callable, Union, Sequence, Self
 
 import numpy as np
+from pandas import DataFrame
 
 from .distributions import Constant, Distribution, Maximum, MaxParent
 from .model import StochasticModel
@@ -64,7 +65,7 @@ class FBCProcess:
     >>> maximum = Q.maximum(duration=50)
     """
 
-    def __init__(self, name, parent, basic_interval):
+    def __init__(self, name: str, parent: Distribution, basic_interval: float) -> None:
         if not isinstance(parent, Distribution):
             raise ModelError("FBCProcess parent must be a Pystra Distribution")
         if basic_interval <= 0:
@@ -77,7 +78,13 @@ class FBCProcess:
         self.basic_interval = basic_interval
 
     @classmethod
-    def from_maximum(cls, name, maximum, maximum_duration, basic_interval):
+    def from_maximum(
+        cls,
+        name: str,
+        maximum: Distribution,
+        maximum_duration: float,
+        basic_interval: float,
+    ) -> Self:
         """Create a process from a known maximum distribution.
 
         This is useful when a code or model supplies, for example, an annual
@@ -114,7 +121,9 @@ class FBCProcess:
         parent = MaxParent(name, maximum, N=n)
         return cls(name, parent, basic_interval)
 
-    def interval_count(self, duration=None, n=None):
+    def interval_count(
+        self, duration: float | None = None, n: float | None = None
+    ) -> float:
         """Return the number of basic intervals in a duration.
 
         Either ``duration`` or ``n`` may be supplied, but not both.  Durations
@@ -143,7 +152,7 @@ class FBCProcess:
             raise ModelError("FBCProcess duration must be positive")
         return max(1.0, duration / self.basic_interval)
 
-    def point_in_time(self):
+    def point_in_time(self) -> Distribution:
         """Return the interval parent distribution.
 
         Returns
@@ -153,7 +162,7 @@ class FBCProcess:
         """
         return self.parent
 
-    def maximum(self, duration=None, n=None):
+    def maximum(self, duration: float | None = None, n: float | None = None) -> Maximum:
         """Return the distribution of the process maximum.
 
         Parameters
@@ -264,7 +273,7 @@ class LoadCombination:
         constants: Optional[_Variables] = None,
         roles: Optional[VariableRoles] = None,
         leading_actions: Optional[Mapping[str, Sequence[str]]] = None,
-        correlation=None,
+        correlation: DataFrame | None = None,
     ) -> None:
         if not isinstance(cases, Mapping) or not cases:
             raise ValueError("At least one named case is required")
@@ -402,7 +411,7 @@ class LoadCombination:
         constants: Optional[_Variables] = None,
         leading_actions: Optional[Mapping[str, Sequence[str]]] = None,
         limit_state: Optional[Callable] = None,
-        correlation=None,
+        correlation: DataFrame | None = None,
     ) -> "LoadCombination":
         """Generate cases from explicitly supplied maximum/companion marginals.
 
@@ -458,7 +467,7 @@ class LoadCombination:
         permanent: Optional[_Variables] = None,
         other: Optional[_Variables] = None,
         constants: Optional[_Variables] = None,
-        correlation=None,
+        correlation: DataFrame | None = None,
         companion_duration: Union[str, float] = "leading_interval",
     ) -> "LoadCombination":
         """Generate FBC leading/companion cases using Turkstra's rule.

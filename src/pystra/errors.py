@@ -1,5 +1,7 @@
 """Exceptions raised by PySTRA."""
 
+from typing import Any
+
 __all__ = ["PystraError", "ModelError", "AnalysisError"]
 
 
@@ -18,6 +20,6 @@ class AnalysisError(PystraError, RuntimeError):
     remain available.
     """
 
-    def __init__(self, message, result=None):
+    def __init__(self, message: str, result: Any = None) -> None:
         super().__init__(message)
         self.result = result

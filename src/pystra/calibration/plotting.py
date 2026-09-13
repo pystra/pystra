@@ -1,13 +1,26 @@
 """Plotting adapters for completed code-calibration studies."""
 
+from collections.abc import Mapping, Sequence
+from typing import Any
+
 import numpy as np
+from matplotlib.axes import Axes
+from matplotlib.figure import Figure
+
+from .normalized import CodeCalibrationResult
 
 __all__ = ["plot_calibration"]
 
 
 def plot_calibration(
-    results, *, target_beta=None, colors=None, ranges=None, ax=None, figsize=(8, 4)
-):
+    results: Mapping[str, CodeCalibrationResult],
+    *,
+    target_beta: float | None = None,
+    colors: Mapping[str, Any] | None = None,
+    ranges: Sequence[Mapping[str, Any]] | None = None,
+    ax: Axes | None = None,
+    figsize: tuple[float, float] = (8, 4),
+) -> tuple[Figure, Axes]:
     """Plot labeled study envelopes without running analyses or hiding failures.
 
     Parameters

@@ -472,9 +472,9 @@
     {
       "name": "pystra.calibration.plotting.plot_calibration",
       "kind": "callable",
-      "signature": "(results, *, target_beta=None, colors=None, ranges=None, ax=None, figsize=(8, 4))",
+      "signature": "(results: Mapping[str, CodeCalibrationResult], *, target_beta: float | None=None, colors: Mapping[str, Any] | None=None, ranges: Sequence[Mapping[str, Any]] | None=None, ax: Axes | None=None, figsize: tuple[float, float]=(8, 4))",
       "decorators": [],
-      "returns": null
+      "returns": "tuple[Figure, Axes]"
     },
     {
       "name": "pystra.loads.FBCProcess",
@@ -489,39 +489,39 @@
     {
       "name": "pystra.loads.FBCProcess.__init__",
       "kind": "callable",
-      "signature": "(self, name, parent, basic_interval)",
+      "signature": "(self, name: str, parent: Distribution, basic_interval: float)",
       "decorators": [],
-      "returns": null
+      "returns": "None"
     },
     {
       "name": "pystra.loads.FBCProcess.from_maximum",
       "kind": "callable",
-      "signature": "(cls, name, maximum, maximum_duration, basic_interval)",
+      "signature": "(cls, name: str, maximum: Distribution, maximum_duration: float, basic_interval: float)",
       "decorators": [
         "classmethod"
       ],
-      "returns": null
+      "returns": "Self"
     },
     {
       "name": "pystra.loads.FBCProcess.interval_count",
       "kind": "callable",
-      "signature": "(self, duration=None, n=None)",
+      "signature": "(self, duration: float | None=None, n: float | None=None)",
       "decorators": [],
-      "returns": null
+      "returns": "float"
     },
     {
       "name": "pystra.loads.FBCProcess.point_in_time",
       "kind": "callable",
       "signature": "(self)",
       "decorators": [],
-      "returns": null
+      "returns": "Distribution"
     },
     {
       "name": "pystra.loads.FBCProcess.maximum",
       "kind": "callable",
-      "signature": "(self, duration=None, n=None)",
+      "signature": "(self, duration: float | None=None, n: float | None=None)",
       "decorators": [],
-      "returns": null
+      "returns": "Maximum"
     },
     {
       "name": "pystra.loads._variables",
@@ -572,7 +572,7 @@
     {
       "name": "pystra.loads.LoadCombination.__init__",
       "kind": "callable",
-      "signature": "(self, *, cases: Mapping[str, _Variables], limit_state: Optional[Callable]=None, constants: Optional[_Variables]=None, roles: Optional[VariableRoles]=None, leading_actions: Optional[Mapping[str, Sequence[str]]]=None, correlation=None)",
+      "signature": "(self, *, cases: Mapping[str, _Variables], limit_state: Optional[Callable]=None, constants: Optional[_Variables]=None, roles: Optional[VariableRoles]=None, leading_actions: Optional[Mapping[str, Sequence[str]]]=None, correlation: DataFrame | None=None)",
       "decorators": [],
       "returns": "None"
     },
@@ -647,7 +647,7 @@
     {
       "name": "pystra.loads.LoadCombination.from_actions",
       "kind": "callable",
-      "signature": "(cls, *, maxima: Mapping[str, Distribution], companions: Mapping[str, Distribution], resistance: _Variables, other: Optional[_Variables]=None, constants: Optional[_Variables]=None, leading_actions: Optional[Mapping[str, Sequence[str]]]=None, limit_state: Optional[Callable]=None, correlation=None)",
+      "signature": "(cls, *, maxima: Mapping[str, Distribution], companions: Mapping[str, Distribution], resistance: _Variables, other: Optional[_Variables]=None, constants: Optional[_Variables]=None, leading_actions: Optional[Mapping[str, Sequence[str]]]=None, limit_state: Optional[Callable]=None, correlation: DataFrame | None=None)",
       "decorators": [
         "classmethod"
       ],
@@ -656,7 +656,7 @@
     {
       "name": "pystra.loads.LoadCombination.turkstra",
       "kind": "callable",
-      "signature": "(cls, variable: Mapping[str, FBCProcess], reference_period: float, *, limit_state: Optional[Callable]=None, resistance: Optional[_Variables]=None, permanent: Optional[_Variables]=None, other: Optional[_Variables]=None, constants: Optional[_Variables]=None, correlation=None, companion_duration: Union[str, float]='leading_interval')",
+      "signature": "(cls, variable: Mapping[str, FBCProcess], reference_period: float, *, limit_state: Optional[Callable]=None, resistance: Optional[_Variables]=None, permanent: Optional[_Variables]=None, other: Optional[_Variables]=None, constants: Optional[_Variables]=None, correlation: DataFrame | None=None, companion_duration: Union[str, float]='leading_interval')",
       "decorators": [
         "classmethod"
       ],
@@ -826,7 +826,7 @@
     {
       "name": "pystra.results.FORMResult.from_analysis",
       "kind": "callable",
-      "signature": "(cls, analysis)",
+      "signature": "(cls, analysis: '_pystra.FORM')",
       "decorators": [
         "classmethod"
       ],
@@ -844,7 +844,7 @@
       "kind": "callable",
       "signature": "(self)",
       "decorators": [],
-      "returns": null
+      "returns": "DataFrame"
     },
     {
       "name": "pystra.results.SORMResult",
@@ -940,7 +940,7 @@
       "kind": "callable",
       "signature": "(self)",
       "decorators": [],
-      "returns": null
+      "returns": "DataFrame"
     },
     {
       "name": "pystra.results.StrongMaximumResult",
@@ -967,9 +967,9 @@
     {
       "name": "pystra.results.StrongMaximumResult.points",
       "kind": "callable",
-      "signature": "(self, region='far_failure', space='u')",
+      "signature": "(self, region: str='far_failure', space: str='u')",
       "decorators": [],
-      "returns": null
+      "returns": "np.ndarray"
     },
     {
       "name": "pystra.results.StrongMaximumResult._rows",
