@@ -24,7 +24,7 @@
       "pystra.loads.VariableRoles",
       "pystra.loads.LoadCombination.from_actions",
       "pystra.loads.LoadCombination.turkstra",
-      "pystra.calibration.factors.analyze_case"
+      "pystra.assessment.analyze_case"
     ],
     "form_run": [
       "pystra.reliability.form.FORM.run",
@@ -32,14 +32,16 @@
     ]
   },
   "contracts": {
-    "exports": "Public calibration records/functions remain available from pystra.calibration and pystra; Calibration has no alias.",
+    "exports": "Public calibration records/functions remain available from pystra.calibration; calibration.analyze_case re-exports the shared pystra.assessment function. Calibration has no alias.",
     "form_result": "Frozen snapshot. beta normal-equivalent, design_index signed reference-space distance. design_point_x, design_point_u and alpha are read-only arrays in variable_names order. Iteration exhaustion returns status=not_converged and None estimates with warning; invalid inputs/numerical execution errors raise.",
-    "generic_grid": "Finite nonempty 1D ratios in [0,1]. beta fresh array (n_dead_load_ratios,n_live_load_ratios); failed points NaN and retained in cases. to_frame columns: live_load_ratio, dead_load_ratio, design_value, beta, failure_probability, converged, target_margin, message. Model copied; factors/nominals finite positive.",
-    "generic_dependence": "Default independent; explicit copula random-variable order resistance_error,resistance,load_error,dead_load,permanent_load,live_load, omitting constants. Per-run FORMOptions; DDM unsupported for built-in normalized equation.",
-    "specialist_solve": "root (fsolve or bracketed Brent) and alpha. Default beta tolerance=1e-4 and max_evaluations=100 FORM runs per case including final verification. Inner convergence, outer success and final residual required. Failures retained; factor derivation rejects them.",
+    "generic_grid": "Finite nonempty 1D ratios in [0,1]. beta is a fresh array (n_dead_load_ratios,n_live_load_ratios); failed points are NaN and retained in cases. to_frame columns: live_load_ratio, dead_load_ratio, design_value, failure_probability, beta, converged, status, message, method, target_margin. Model copied; factors/nominals finite positive.",
+    "generic_dependence": "Default independent; explicit copula random-variable order resistance_error,resistance,load_error,dead_load,permanent_load,live_load, omitting constants. Per-run evaluator-specific options, default FORMOptions; DDM unsupported for built-in normalized equation.",
+    "specialist_solve": "root (fsolve or bracketed Brent) and alpha. Default beta tolerance=1e-4 and max_evaluations=100 reliability evaluations per case including final verification. Inner convergence, outer success and final residual required. Failures retained; factor derivation rejects them.",
     "specialist_derivation": "coeff/matrix require normal standard space and exactly one leading case per variable action. Explicit names align arrays. Separable resistance-scale equation verified at computed design; arbitrary coupled nonlinear decomposition unsupported. Matrix action coefficient uses its own leading-case inputs, preserving reference convention. Singular systems raise.",
     "factor_results": "Frozen numeric row tuples with case_names/resistance_names/load_names and leading_actions. to_frame(kind) copies. Selection per_case by default; resistance minimum, loads/combinations maximum are explicit. Governing ties retained. Design maximum must be explicitly chosen, then verified.",
-    "load_cases": "Constructor validates/copies but does not analyze. Explicit roles cover random variables; leading metadata identifies variable actions by name. Maxima and companions have separate name-to-distribution mappings. Pearson correlation is a uniquely labelled finite symmetric positive-definite DataFrame with unit diagonal. Unknown overrides raise."
+    "load_cases": "Constructor validates/copies but does not analyze. Explicit roles cover random variables; leading metadata identifies variable actions by name. Maxima and companions have separate name-to-distribution mappings. Pearson correlation is a uniquely labelled finite symmetric positive-definite DataFrame with unit diagonal. Unknown overrides raise. Case names derive from the case mapping; roles and the limit-state callable are read-only properties so validated metadata cannot be replaced independently. No legacy positional/dictionary constructor.",
+    "study_evaluators": "Assessment and calibration default to FORM, with evaluator(model, limit_state, options=options) accepting a method constructor or ReliabilityResult callback. Analyses run on copied inputs. AnalysisError is retained as a failed record; invalid specifications and programming errors raise. Root target solving and verification need normal-equivalent estimates; alpha projection and factor derivation require explicit normal-space design-point capabilities.",
+    "study_reporting": "Shared reliability rows include method, status, converged and message. Failed table estimates and target margins are unavailable; original records retain their diagnostics and any under-resolved estimates. TargetDesigns.reliability_frame reports every root solve, including residual and outer solve status."
   },
   "definitions": [
     {
@@ -50,18 +52,18 @@
       "returns": null
     },
     {
-      "name": "pystra.calibration.factors._run_form",
+      "name": "pystra.calibration.factors._evaluate_case",
       "kind": "callable",
-      "signature": "(cases, case_name, overrides=None, options=None)",
+      "signature": "(cases, case_name, overrides=None, options=None, evaluator=None)",
       "decorators": [],
       "returns": null
     },
     {
-      "name": "pystra.calibration.factors.analyze_case",
+      "name": "pystra.calibration.factors._require_design_point",
       "kind": "callable",
-      "signature": "(cases: LoadCombination, case_name: Optional[str]=None, *, overrides: Optional[Mapping[str, Union[Distribution, Constant]]]=None, options: Optional[FORMOptions]=None)",
+      "signature": "(result, *, alpha=False)",
       "decorators": [],
-      "returns": "FORMResult"
+      "returns": null
     },
     {
       "name": "pystra.calibration.factors.FactorCalibrationProblem",
@@ -162,6 +164,13 @@
       "returns": "DataFrame"
     },
     {
+      "name": "pystra.calibration.factors.TargetDesigns.reliability_frame",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [],
+      "returns": "DataFrame"
+    },
+    {
       "name": "pystra.calibration.factors._InnerFailure",
       "kind": "class",
       "bases": [
@@ -172,7 +181,7 @@
     {
       "name": "pystra.calibration.factors.solve_designs",
       "kind": "callable",
-      "signature": "(problem: FactorCalibrationProblem, *, target_beta: float, method: str='root', initial_value: Optional[float]=None, tolerance: float=0.0001, max_evaluations: int=100, bracket: Optional[Tuple[float, float]]=None, options: Optional[FORMOptions]=None)",
+      "signature": "(problem: FactorCalibrationProblem, *, target_beta: float, method: str='root', initial_value: Optional[float]=None, tolerance: float=0.0001, max_evaluations: int=100, bracket: Optional[Tuple[float, float]]=None, options: object=None, evaluator: Optional[ReliabilityEvaluator]=None)",
       "decorators": [],
       "returns": "TargetDesigns"
     },
@@ -268,7 +277,7 @@
     {
       "name": "pystra.calibration.factors.verify_designs",
       "kind": "callable",
-      "signature": "(problem: FactorCalibrationProblem, design_values: Union[float, Mapping[str, float], DesignValues], *, target_beta: Optional[float]=None, options: Optional[FORMOptions]=None)",
+      "signature": "(problem: FactorCalibrationProblem, design_values: Union[float, Mapping[str, float], DesignValues], *, target_beta: Optional[float]=None, options: object=None, evaluator: Optional[ReliabilityEvaluator]=None)",
       "decorators": [],
       "returns": "Tuple[DesignVerification, ...]"
     },
@@ -456,7 +465,7 @@
     {
       "name": "pystra.calibration.normalized.CodeCalibration.run",
       "kind": "callable",
-      "signature": "(self, model: NormalizedReliabilityModel, factors: CodeFactors, *, options: Optional[FORMOptions]=None, target_beta: Optional[float]=None)",
+      "signature": "(self, model: NormalizedReliabilityModel, factors: CodeFactors, *, options: object=None, evaluator: Optional[ReliabilityEvaluator]=None, target_beta: Optional[float]=None)",
       "decorators": [],
       "returns": "CodeCalibrationResult"
     },
@@ -556,8 +565,8 @@
         "_constants",
         "_correlation",
         "_leading_actions",
-        "limit_state",
-        "roles"
+        "_limit_state",
+        "_roles"
       ]
     },
     {
@@ -566,6 +575,24 @@
       "signature": "(self, *, cases: Mapping[str, _Variables], limit_state: Optional[Callable]=None, constants: Optional[_Variables]=None, roles: Optional[VariableRoles]=None, leading_actions: Optional[Mapping[str, Sequence[str]]]=None, correlation=None)",
       "decorators": [],
       "returns": "None"
+    },
+    {
+      "name": "pystra.loads.LoadCombination.limit_state",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": "Optional[Callable]"
+    },
+    {
+      "name": "pystra.loads.LoadCombination.roles",
+      "kind": "callable",
+      "signature": "(self)",
+      "decorators": [
+        "property"
+      ],
+      "returns": "Optional[VariableRoles]"
     },
     {
       "name": "pystra.loads.LoadCombination.case_names",

@@ -272,7 +272,7 @@ class LoadCombination:
             raise ValueError("Case names must be nonempty strings")
         if limit_state is not None and not callable(limit_state):
             raise TypeError("limit_state must be callable")
-        self.limit_state = limit_state
+        self._limit_state = limit_state
         self._cases = {name: _variables(values) for name, values in cases.items()}
         self._constants = _variables(constants)
         if any(not isinstance(v, Constant) for v in self._constants.values()):
@@ -282,7 +282,7 @@ class LoadCombination:
                 raise ValueError("Case variables duplicate common constants")
         if roles is not None and not isinstance(roles, VariableRoles):
             raise TypeError("roles must be VariableRoles")
-        self.roles = roles
+        self._roles = roles
         if roles is not None:
             for case in self._cases.values():
                 random_names = {
@@ -315,6 +315,16 @@ class LoadCombination:
         # Validate all case-dependent correlation subsets before a study starts.
         for name in self.case_names:
             self.stochastic_model(name)
+
+    @property
+    def limit_state(self) -> Optional[Callable]:
+        """Failure-event callable supplied with the case specification."""
+        return self._limit_state
+
+    @property
+    def roles(self) -> Optional[VariableRoles]:
+        """Validated, immutable resistance/other/action metadata."""
+        return self._roles
 
     @property
     def case_names(self) -> Tuple[str, ...]:

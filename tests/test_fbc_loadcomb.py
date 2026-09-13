@@ -171,3 +171,23 @@ def test_loadcombination_from_actions_copies_inputs_and_preserves_roles():
     assert lc.roles == ra.VariableRoles(
         resistance=("R",), other=("G",), variable=("Q",)
     )
+
+
+def test_case_metadata_cannot_be_replaced_independently_of_validated_variables():
+    roles = ra.VariableRoles(resistance=("R",), variable=("Q",))
+    leading = {"Q_max": ["Q"]}
+    cases = ra.LoadCombination(
+        cases={"Q_max": [ra.Normal("R", 10, 1), ra.Normal("Q", 5, 1)]},
+        roles=roles,
+        leading_actions=leading,
+        limit_state=lambda R, Q: R - Q,
+    )
+    leading["Q_max"].clear()
+    assert cases.leading_actions["Q_max"] == ("Q",)
+    assert cases.case_names == tuple(cases.cases)
+    with pytest.raises(AttributeError):
+        cases.roles = ra.VariableRoles()
+    with pytest.raises(AttributeError):
+        cases.limit_state = lambda R, Q: Q - R
+    with pytest.raises(TypeError):
+        ra.LoadCombination({"legacy": {"R": ra.Normal("R", 10, 1)}})

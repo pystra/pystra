@@ -2,17 +2,17 @@
 
 from copy import deepcopy
 from dataclasses import dataclass, fields
-from typing import Optional, Tuple, Sequence, Union
-from pandas import DataFrame
+from typing import Optional, Sequence, Tuple, Union
 
 import numpy as np
+from pandas import DataFrame
 
-from ..options import FORMOptions
+from ..assessment import ReliabilityEvaluator, ReliabilityResult, evaluate_reliability
 from ..dependence.copula import Copula
 from ..distributions import Constant, Distribution
-from ..reliability.form import FORM
 from ..model import LimitState, StochasticModel
-from ..results import FORMResult
+from ..options import FORMOptions
+from ..reporting import reliability_row
 
 __all__ = [
     "CodeFactors",
@@ -152,7 +152,7 @@ class CodeDesignResult:
     live_load_ratio: float
     dead_load_ratio: float
     design_value: float
-    reliability: FORMResult
+    reliability: ReliabilityResult
     target_margin: Optional[float]
 
 
@@ -202,11 +202,8 @@ class CodeCalibrationResult:
                     "live_load_ratio": c.live_load_ratio,
                     "dead_load_ratio": c.dead_load_ratio,
                     "design_value": c.design_value,
-                    "beta": c.reliability.beta,
-                    "failure_probability": c.reliability.failure_probability,
-                    "converged": c.reliability.converged,
+                    **reliability_row(c.reliability),
                     "target_margin": c.target_margin,
-                    "message": c.reliability.message,
                 }
                 for c in self.cases
             ]
@@ -269,22 +266,23 @@ class CodeCalibration:
         model: NormalizedReliabilityModel,
         factors: CodeFactors,
         *,
-        options: Optional[FORMOptions] = None,
+        options: object = None,
+        evaluator: Optional[ReliabilityEvaluator] = None,
         target_beta: Optional[float] = None,
     ) -> CodeCalibrationResult:
-        """Return an isolated study result, retaining nonconverged FORM cases.
+        """Return an isolated study result, retaining every failed case.
 
-        Invalid inputs or errors in the limit-state evaluation raise normally;
-        iteration-limit failures are represented by unsuccessful FormResults.
-        ``beta`` and target margins are normal-equivalent, including for t space.
+        ``evaluator`` accepts a method constructor or reliability callback,
+        with evaluator-specific ``options``; the default is FORM. AnalysisError
+        and nonconvergence are recorded with diagnostics. Invalid specifications
+        and programming errors still raise. ``beta`` and target margins are
+        normal-equivalent, including for t space. A design point is not required.
         """
         if not isinstance(model, NormalizedReliabilityModel) or not isinstance(
             factors, CodeFactors
         ):
             raise TypeError("Expected NormalizedReliabilityModel and CodeFactors")
-        if options is not None and not isinstance(options, FORMOptions):
-            raise TypeError("options must be FORMOptions")
-        if options is not None and options.differentiation == "ddm":
+        if isinstance(options, FORMOptions) and options.differentiation == "ddm":
             raise ValueError(
                 "The normalized study currently requires finite-difference derivatives"
             )
@@ -312,13 +310,12 @@ class CodeCalibration:
                         (1 - aq) * (ag * G + (1 - ag) * P) + aq * Q
                     )
 
-                analysis = FORM(
+                result = evaluate_reliability(
                     snapshot.stochastic_model(),
                     LimitState(limit_state),
                     options=options,
-                    on_failure="return",
+                    evaluator=evaluator,
                 )
-                result = analysis.run()
                 margin = (
                     result.beta - target_beta
                     if result.converged and target_beta is not None

@@ -9,18 +9,22 @@ general decomposition of arbitrary nonlinear limit states.
 from copy import deepcopy
 from dataclasses import dataclass, replace
 from types import MappingProxyType
-from typing import Optional, Tuple, Mapping, Union
-from pandas import DataFrame
+from typing import Mapping, Optional, Tuple, Union
 
 import numpy as np
+from pandas import DataFrame
 from scipy.optimize import fsolve, root_scalar
 
-from ..options import FORMOptions
+from ..assessment import (
+    ReliabilityEvaluator,
+    ReliabilityResult,
+    _evaluate,
+    analyze_case,
+)
 from ..distributions import Constant, Distribution
-from ..reliability.form import FORM
 from ..loads import LoadCombination
 from ..model import LimitState
-from ..results import FORMResult
+from ..reporting import reliability_row
 
 __all__ = [
     "FactorCalibrationProblem",
@@ -46,32 +50,41 @@ def _scalar(value, name):
     return float(values.item())
 
 
-def _run_form(cases, case_name, overrides=None, options=None):
-    if not isinstance(cases, LoadCombination):
-        raise TypeError("cases must be LoadCombination")
-    if cases.limit_state is None:
-        raise ValueError("A limit_state is required for reliability evaluation")
-    if options is not None and not isinstance(options, FORMOptions):
-        raise TypeError("options must be FORMOptions")
-    solver = FORM(
+def _evaluate_case(cases, case_name, overrides=None, options=None, evaluator=None):
+    return _evaluate(
         cases.stochastic_model(case_name, overrides=overrides),
         LimitState(cases.limit_state),
         options=options,
-        on_failure="return",
+        evaluator=evaluator,
     )
-    result = solver.run()
-    return solver, result
 
 
-def analyze_case(
-    cases: LoadCombination,
-    case_name: Optional[str] = None,
-    *,
-    overrides: Optional[Mapping[str, Union[Distribution, Constant]]] = None,
-    options: Optional[FORMOptions] = None,
-) -> FORMResult:
-    """Evaluate one explicit load case and return a FORM snapshot."""
-    return _run_form(cases, case_name, overrides, options)[1]
+def _require_design_point(result, *, alpha=False):
+    """Declare the stronger capability needed by specialist factor methods."""
+    if result is None or not result.converged:
+        raise ValueError("A converged design-point result is required")
+    if getattr(result, "standard_space", None) != "normal":
+        raise ValueError("Design-point factor methods require normal standard space")
+    names = getattr(result, "variable_names", ())
+    point = getattr(result, "design_point_x", None)
+    if not names or len(set(names)) != len(names) or point is None:
+        raise ValueError(
+            "A named physical design point is required for factor derivation"
+        )
+    if np.asarray(point).shape != (len(names),) or not np.all(np.isfinite(point)):
+        raise ValueError(
+            "The physical design point must be finite in variable_names order"
+        )
+    if alpha:
+        direction = getattr(result, "alpha", None)
+        if (
+            direction is None
+            or np.asarray(direction).shape != (len(names),)
+            or not np.all(np.isfinite(direction))
+        ):
+            raise ValueError(
+                "Alpha projection requires a finite normal-space direction"
+            )
 
 
 class FactorCalibrationProblem:
@@ -180,7 +193,7 @@ class CalibratedDesign:
     case_name: str
     design_value: float
     target_beta: float
-    reliability: Optional[FORMResult]
+    reliability: Optional[ReliabilityResult]
     residual: Optional[float]
     converged: bool
     evaluations: int
@@ -209,6 +222,8 @@ class TargetDesigns:
         if not self.converged:
             raise ValueError("Not all target designs converged")
         roles = self._problem._cases.roles
+        for design in self.designs:
+            _require_design_point(design.reliability)
         rows = []
         for d in self.designs:
             point = dict(
@@ -220,6 +235,35 @@ class TargetDesigns:
             index=[d.case_name for d in self.designs],
             columns=roles.names + (self._problem.design_parameter,),
         )
+
+    def reliability_frame(self) -> DataFrame:
+        """Return every target solve with its design, residual and diagnostics."""
+        rows = []
+        for design in self.designs:
+            row = (
+                reliability_row(design.reliability)
+                if design.reliability is not None
+                else {
+                    "beta": np.nan,
+                    "failure_probability": np.nan,
+                    "converged": False,
+                    "status": "not_converged",
+                    "message": design.message,
+                }
+            )
+            rows.append(
+                {
+                    "case_name": design.case_name,
+                    "design_value": design.design_value,
+                    **row,
+                    "target_beta": design.target_beta,
+                    "residual": design.residual,
+                    "solve_converged": design.converged,
+                    "solve_message": design.message,
+                    "evaluations": design.evaluations,
+                }
+            )
+        return DataFrame(rows)
 
 
 class _InnerFailure(Exception):
@@ -235,15 +279,20 @@ def solve_designs(
     tolerance: float = 0.0001,
     max_evaluations: int = 100,
     bracket: Optional[Tuple[float, float]] = None,
-    options: Optional[FORMOptions] = None,
+    options: object = None,
+    evaluator: Optional[ReliabilityEvaluator] = None,
 ) -> TargetDesigns:
     """Solve each case to a target and return status/residuals for every case.
 
     ``root`` uses fsolve with full diagnostics, or bracketed Brent solving when
     a bracket is supplied. ``alpha`` preserves the normal-space projection
-    method. Both require converged inner FORM results and a final beta residual
-    within ``tolerance``. ``max_evaluations`` limits FORM runs per case,
+    method. Both require converged inner reliability results and a final beta residual
+    within ``tolerance``. ``max_evaluations`` limits reliability runs per case,
     including the final verification. No unsuccessful solve is silently accepted.
+    ``evaluator`` defaults to FORM; a method constructor or callback may be
+    supplied for root solving. Alpha projection additionally requires a named
+    design point in normal space and an analysis exposing its matching
+    ``transform.u_to_x`` and ``model``. Estimate-only callbacks are rejected.
     """
     if not isinstance(problem, FactorCalibrationProblem):
         raise TypeError("Expected FactorCalibrationProblem")
@@ -283,17 +332,21 @@ def solve_designs(
         def evaluate(candidate):
             nonlocal evaluations, result, solver, value
             if evaluations >= max_evaluations:
-                raise _InnerFailure("FORM evaluation budget exhausted")
+                raise _InnerFailure("Reliability evaluation budget exhausted")
             value = _scalar(candidate, "design value")
             evaluations += 1
-            solver, result = _run_form(
+            result = solver = None
+            solver, result = _evaluate_case(
                 snapshot._cases,
                 case_name,
                 {snapshot.design_parameter: Constant(snapshot.design_parameter, value)},
                 options,
+                evaluator,
             )
             if not result.converged:
-                raise _InnerFailure("Inner FORM did not converge")
+                raise _InnerFailure(
+                    f"Inner {result.method} did not converge: {result.message}"
+                )
             return result.beta - target
 
         successful = False
@@ -328,9 +381,18 @@ def solve_designs(
                 residual = evaluate(candidate)
             else:
                 residual = evaluate(start)
-                if result.standard_space != "normal":
-                    raise ValueError("Alpha projection requires normal standard space")
                 for _ in range(max_evaluations):
+                    _require_design_point(result, alpha=True)
+                    if (
+                        solver is None
+                        or not callable(
+                            getattr(getattr(solver, "transform", None), "u_to_x", None)
+                        )
+                        or not hasattr(solver, "model")
+                    ):
+                        raise ValueError(
+                            "Alpha projection requires an analysis with its u-to-x transformation"
+                        )
                     if abs(residual) <= tolerance:
                         successful = True
                         break
@@ -463,6 +525,10 @@ def derive_factors(solutions: TargetDesigns, *, method: str = "matrix") -> Facto
             "Factor derivation needs exactly one leading case per variable action"
         )
     names = roles.names
+    for design in solutions.designs:
+        _require_design_point(design.reliability)
+        if set(design.reliability.variable_names) != set(names):
+            raise ValueError("Design-point names must match the factor problem roles")
     points = np.array(
         [
             [
@@ -472,10 +538,6 @@ def derive_factors(solutions: TargetDesigns, *, method: str = "matrix") -> Facto
             for d in solutions.designs
         ]
     )
-    if any(d.reliability.standard_space != "normal" for d in solutions.designs):
-        raise ValueError(
-            "Design-point factor derivation requires normal standard space"
-        )
     nominals = np.array([problem.nominal_values[n] for n in names])
     normalized = points / nominals
     for action in roles.variable:
@@ -641,7 +703,7 @@ class DesignVerification:
 
     case_name: str
     design_value: float
-    reliability: FORMResult
+    reliability: ReliabilityResult
     target_margin: Optional[float]
 
 
@@ -650,12 +712,15 @@ def verify_designs(
     design_values: Union[float, Mapping[str, float], DesignValues],
     *,
     target_beta: Optional[float] = None,
-    options: Optional[FORMOptions] = None,
+    options: object = None,
+    evaluator: Optional[ReliabilityEvaluator] = None,
 ) -> Tuple[DesignVerification, ...]:
     """Check a common design scale or an explicitly named set of case designs.
 
     To check the governing common design, supply ``max(designs.values)``
     explicitly. Every case is returned, including nonconverged analyses.
+    ``evaluator`` accepts a method constructor or reliability callback, as in
+    :func:`~pystra.assessment.evaluate_reliability`; the default is FORM.
     """
     names = problem._cases.case_names
     if isinstance(design_values, DesignValues):
@@ -676,6 +741,7 @@ def verify_designs(
                 problem.design_parameter: Constant(problem.design_parameter, value)
             },
             options=options,
+            evaluator=evaluator,
         )
         margin = (
             result.beta - target if result.converged and target is not None else None
