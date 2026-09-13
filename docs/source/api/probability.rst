@@ -14,7 +14,7 @@ Public entry points
    * - :class:`~pystra.distributions.normal.Normal`
      - Specify a normal marginal by mean and standard deviation.
    * - :class:`~pystra.distributions.scipy_dist.ScipyDist`
-     - Wrap a parameterised SciPy distribution.
+     - Wrap a parameterized SciPy distribution.
    * - :class:`~pystra.dependence.joint.JointDistribution`
      - Combine marginals with an explicit copula.
    * - :class:`~pystra.dependence.copula.GaussianCopula`

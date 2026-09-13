@@ -32,7 +32,7 @@ uncertainty calculation. ``EnrichmentEstimator`` implementations additionally
 supply new candidate populations and probability diagnostics after each fit.
 ``SubsetSimulationEstimator`` uses this contract for active subset simulation.
 ``ImportanceSamplingEstimator`` provides Gaussian-mixture importance sampling
-with explicit centres and weighted probability diagnostics. See
+with explicit centers and weighted probability diagnostics. See
 :doc:`/notebooks/ex_active_extensions` for its coverage and checks.
 
 Surrogates and uncertainty

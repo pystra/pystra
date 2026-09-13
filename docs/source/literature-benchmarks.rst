@@ -11,7 +11,7 @@ and PySTRA algorithm variants, not replications of every published setting.
 Use the runnable-bundle download on either notebook page to include its helper,
 or download :download:`literature_benchmarks.py <notebooks/literature_benchmarks.py>`
 separately. The helper is
-example code, not a new public modelling API. Only NumPy, SciPy and PySTRA
+example code, not a new public modeling API. Only NumPy, SciPy and PySTRA
 are needed for these two tutorials; their bootstrap-PCE examples do not
 require the optional Kriging dependency.
 

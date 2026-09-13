@@ -51,7 +51,7 @@ is addressed. Hence, the transformation is
            {\bf L}_0{\bf z}
 
 where :math:`\mathbf{L}_0\mathbf{L}_0^T=\mathbf{R}_0` is the
-Cholesky factorisation of the correlation matrix of :math:`\bf Y`. The Jacobian matrix, denoted by :math:`\bf J`,
+Cholesky factorization of the correlation matrix of :math:`\bf Y`. The Jacobian matrix, denoted by :math:`\bf J`,
 for the transformation is given by
 
 .. math::
@@ -144,7 +144,7 @@ PySTRA's legacy Pearson interface assumes a Gaussian copula and calibrates
 its latent correlation using :eq:`eq:2_83`. An explicit ``GaussianCopula``
 already specifies the latent correlation, so that calibration is bypassed.
 Changing to Student-t or Frank changes the dependence law, rather than just
-changing a numerical factorisation.
+changing a numerical factorization.
 
 For Gaussian and Student-t copulas, the pairwise Kendall rank correlations
 and latent unit-diagonal shape entries satisfy
@@ -162,7 +162,7 @@ Generalized Nataf for elliptical copulas
 ----------------------------------------
 
 Following [LebrunDutfoy2009a]_, let :math:`H` be the univariate CDF of a
-centred elliptical representative with unit-diagonal shape matrix
+centered elliptical representative with unit-diagonal shape matrix
 :math:`R=LL^T`. Generalized Nataf is
 
 .. math::

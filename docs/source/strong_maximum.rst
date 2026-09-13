@@ -148,7 +148,7 @@ structural model.
 
 ``competing_region_detected`` means at least one far failure point was found.
 Those points are useful starting locations for further design-point searches
-or for planning multiple-centre importance sampling. They are not themselves
+or for planning multiple-center importance sampling. They are not themselves
 optimized design points. Their raw limit-state magnitudes cannot quantify
 importance: multiplying a limit state by a positive constant preserves the
 event while changing those magnitudes.

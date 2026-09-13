@@ -80,7 +80,7 @@ List of References
 
 [Hackl2013] J. Hackl. Generic Framework for Stochastic Modeling of Reinforced Concrete Deterioration Caused by Corrosion. Master’s thesis, Norwegian University of Science and Technology, Trondheim, Norway, 2013.
 
-Licence
+License
 -------
 
 PySTRA is distributed under the GNU General Public License, version 3 or

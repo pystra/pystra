@@ -47,9 +47,9 @@ Interpreting a calibration study
 
 A candidate set can meet the target for some ratios and fall below it for
 others. The reliability envelope shows that variation; choosing a final
-factor set also requires a stated selection or optimisation criterion and
+factor set also requires a stated selection or optimization criterion and
 representative design cases. The current normalized study evaluates supplied
-factor sets; it does not infer those policy choices or optimise the factors.
+factor sets; it does not infer those policy choices or optimize the factors.
 
 Reference periods and load-process assumptions belong in the input models.
 Changing a normalized load ratio does not by itself convert an annual load
@@ -81,7 +81,7 @@ Worked examples and sources
 * :doc:`/notebooks/ex_load_combinations` explains the load-process assumptions.
 * The `European Commission/JRC reliability background report
   <https://eurocodes.jrc.ec.europa.eu/sites/default/files/2024-11/JRC_Reliability_report_final_23Oct2024_with-ids_corrected.pdf>`_
-  describes design-value and code-optimisation approaches in Eurocode calibration.
+  describes design-value and code-optimization approaches in Eurocode calibration.
 
 **Use this method:** :doc:`/guides/calibration` · :doc:`/notebooks/ex_generic_calibration` · :doc:`/api/calibration`
 

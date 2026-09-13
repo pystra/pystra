@@ -7,7 +7,7 @@ These pages explain the formulations, assumptions and limitations behind
 PySTRA's reliability algorithms and engineering workflows. Begin with the
 fundamentals and probability transformations, then consult the method you are
 using. :doc:`theory/notation` defines coordinates and reliability indices.
-Worked applications are organised in :doc:`tutorial`.
+Worked applications are organized in :doc:`tutorial`.
 
 .. toctree::
    :maxdepth: 1

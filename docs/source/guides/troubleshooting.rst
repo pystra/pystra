@@ -54,7 +54,7 @@ Sampling estimates change between runs
 --------------------------------------
 
 Record seeds, budgets and achieved precision, then repeat independent runs.
-For subset simulation, inspect intermediate thresholds and chain behaviour;
+For subset simulation, inspect intermediate thresholds and chain behavior;
 the reported ``cov`` neglects chain correlation. For surrogate methods, separate
 training variability, surrogate bias and final sampling variability. See
 :doc:`simulation` and :doc:`/active_learning`.

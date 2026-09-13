@@ -47,7 +47,7 @@ failure probability; see :doc:`troubleshooting`.
 Importance sampling concentrates samples using a proposal distribution and
 weights their contributions. The proposal must cover the important failure
 regions. The traditional :class:`~pystra.reliability.importance_sampling.ImportanceSampling` uses a FORM-based
-centre; the separate active-learning estimator supports explicit proposal
+center; the separate active-learning estimator supports explicit proposal
 components, as shown in :doc:`/notebooks/ex_active_extensions`.
 
 Line sampling uses an important direction and searches for intersections along

@@ -74,7 +74,7 @@ direction vector :math:`\boldsymbol{\alpha} = -{\bf z}^*/\beta`, the
 standard normal space is rotated so that :math:`{\bf z}^*` lies at
 distance :math:`\beta` along the last axis.  Let :math:`{\bf R}` denote
 the orthonormal rotation matrix constructed by Gram--Schmidt
-orthonormalisation with :math:`\boldsymbol{\alpha}` in the last row, and
+orthonormalization with :math:`\boldsymbol{\alpha}` in the last row, and
 let :math:`{\bf u}' = {\bf R}\,{\bf z}` be coordinates in the rotated
 space.  In these coordinates the failure surface is approximated as:
 
@@ -99,7 +99,7 @@ The default method (``fit="curve"``) obtains the curvatures from the
 Hessian matrix of the limit state function.  The Hessian :math:`{\bf H}`
 of :math:`g` at the design point :math:`{\bf z}^*` is computed by finite
 differences of the gradient that is already available from FORM.  This
-matrix is then rotated and normalised:
+matrix is then rotated and normalized:
 
 .. math::
 
@@ -144,7 +144,7 @@ displacement along the design-point direction:
 
 Because points are fitted on both the positive and negative sides of each
 axis, the method yields asymmetric curvatures :math:`\kappa_i^+` and
-:math:`\kappa_i^-`.  The generalised Breitung formula for asymmetric
+:math:`\kappa_i^-`.  The generalized Breitung formula for asymmetric
 curvatures is:
 
 .. math::

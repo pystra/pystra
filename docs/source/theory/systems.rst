@@ -113,7 +113,7 @@ engineering judgement or a heuristic.  Mainçon's 100-element series-system
 benchmark is a useful validation case because it reports component and
 pairwise probabilities directly [Maincon2000]_.
 
-Linear-programming bounds generalise this idea to arbitrary systems and
+Linear-programming bounds generalize this idea to arbitrary systems and
 arbitrary available event information.  Song and Der Kiureghian showed that LP
 bounds can use component, pairwise, and higher-order event probabilities for
 general cut-set systems, including the rigid-plastic cantilever-bar benchmark
@@ -156,7 +156,7 @@ First-order system reliability methods approximate each component failure
 surface near its design point and then integrate the resulting system event in
 standard normal space.  This requires more information than a scalar topology:
 component design points, component normal vectors, dependence between
-linearised events, and a clear isoprobabilistic transformation.  Rosenblatt
+linearized events, and a clear isoprobabilistic transformation.  Rosenblatt
 transformations add an additional ordering issue because the transformed
 standard-space geometry can depend on the conditioning order [Meinen2025]_.
 

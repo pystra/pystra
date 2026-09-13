@@ -112,7 +112,7 @@ Component-based system FORM
 
 Use ``ParallelSystem(components)`` for joint failure; the exact result in this
 example is ``p*p``. Homogeneous nesting is flattened and shared component
-objects are analysed once. Component names must be unique. Mixed topology,
+objects are analyzed once. Component names must be unique. Mixed topology,
 k-of-n and cut/tie-set inputs are currently rejected by ``SystemFORM``; use
 original-system simulation for these events.
 
@@ -261,7 +261,7 @@ remain future extensions.
 Validation Benchmarks
 =====================
 
-The current validation suite checks exact Boolean behaviour for series,
+The current validation suite checks exact Boolean behavior for series,
 parallel, k-of-n, cut-set, and tie-set systems; integration with PySTRA's
 ``LimitState`` evaluation; independent and correlated linear system
 probabilities; identical and opposing component directions; positive rescaling;

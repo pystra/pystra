@@ -29,7 +29,7 @@ After 2.0, public API changes follow the documented deprecation and release poli
 
 - Use snake_case for functions, methods, parameters, attributes, and compound
   module names; CapWords for classes; UPPER_SNAKE_CASE for constants.
-- Capitalise every letter of an acronym inside a CapWords class name. PEP 8
+- Capitalize every letter of an acronym inside a CapWords class name. PEP 8
   (*Descriptive: Naming Styles*) states: "When using acronyms in CapWords,
   capitalize all the letters of the acronym. Thus HTTPServerError is better
   than HttpServerError." This is a single rule applied uniformly, not a list
@@ -286,7 +286,7 @@ The migration plan defines the broader release matrix, benchmark comparisons,
 packaging checks, and documentation gates. Small documentation edits do not
 require rerunning the entire numerical suite.
 
-## Licence and method provenance
+## License and method provenance
 
 PySTRA is GPL-3.0-or-later. Preserve copyright and licence notices when adapting
 code, and identify its source and changes. Cite the original papers and benchmark

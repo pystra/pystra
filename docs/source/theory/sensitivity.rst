@@ -87,12 +87,12 @@ also available from the closed-form method. Since the marginal
 transformations do not depend on the correlation coefficients, only the
 second term of Equation :eq:`eq:cf_sens` contributes.
 
-Generalised parameter Support
+Generalized parameter Support
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Beyond mean and standard deviation, distributions may declare additional
 sensitivity parameters — for example, the shape parameter :math:`\xi` of
-the GEV distribution controls the tail behaviour and can significantly
+the GEV distribution controls the tail behavior and can significantly
 influence :math:`\beta`.
 
 Each distribution declares its sensitivity parameters via the
@@ -101,7 +101,7 @@ property.  The base class returns ``{"mean", "std"}``; subclasses with
 extra parameters (e.g. GEV shape) override this to include them.  The
 sensitivity pipeline then iterates over whatever parameters each
 distribution declares, so both the finite-difference and closed-form
-methods generalise automatically.
+methods generalize automatically.
 
 For shape parameters, the partial derivatives
 :math:`\partial F_X / \partial\theta` and

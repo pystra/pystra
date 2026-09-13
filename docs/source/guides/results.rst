@@ -3,7 +3,7 @@ Interpreting results and convergence
 
 Report the event, probability model, method, convergence status and numerical
 precision together. A failure probability without its reference period or
-modelling assumptions is incomplete.
+modeling assumptions is incomplete.
 
 Result records
 --------------

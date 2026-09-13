@@ -85,12 +85,12 @@ of a system must use the same order.
 
 With default analysis options, an explicit Gaussian copula uses Nataf;
 Student-t and Frank use Rosenblatt. Existing models without an explicit
-copula retain their previous Gaussian Nataf behaviour.
+copula retain their previous Gaussian Nataf behavior.
 
 ``FORMOptions(transform="nataf")`` selects generalized Nataf for an elliptical
-copula. ``"cholesky"`` and ``"svd"`` select Nataf factorisations explicitly;
+copula. ``"cholesky"`` and ``"svd"`` select Nataf factorizations explicitly;
 these choices are unavailable for Frank. Conditioning order applies only to
-Rosenblatt. Gaussian Nataf with Cholesky factorisation equals Rosenblatt in
+Rosenblatt. Gaussian Nataf with Cholesky factorization equals Rosenblatt in
 the same order. Different Gaussian orders are related by an orthogonal
 change of normal coordinates, so the optimum FORM probability is invariant.
 For non-Gaussian copulas, changing Rosenblatt order can change the FORM

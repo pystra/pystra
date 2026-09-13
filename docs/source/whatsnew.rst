@@ -42,7 +42,7 @@ A consistent interface
 * Invalid input raises ``ModelError`` and a failed analysis raises
   ``AnalysisError``. A nonconverged analysis raises unless you pass
   ``on_failure="return"``, which returns its record instead.
-* Names follow PEP 8, with acronyms capitalised in class names: ``FORM``,
+* Names follow PEP 8, with acronyms capitalized in class names: ``FORM``,
   ``SORM``, ``SystemFORM``. Extreme-value distributions are named by family,
   such as ``Gumbel``, ``Frechet`` and ``GEVMin``. The top-level namespace is
   curated, and old names raise errors that name their replacements.
@@ -78,7 +78,7 @@ Engineering workflows
   normalized reliability, replacing the stateful ``Calibration`` class.
 * **Assessment** (:doc:`guides/assessment`) and load combinations with explicit
   cases and roles.
-* **Decisions**: design-decision optimisation, the life quality index,
+* **Decisions**: design-decision optimization, the life quality index,
   societal willingness to pay and target reliability, in ``pystra.decision``.
 * **Plotting** (:doc:`plotting`): helpers for common reliability figures.
 
@@ -102,7 +102,7 @@ Numerical accuracy
 Documentation
 -------------
 
-The documentation has a user guide organised by task, 22 executed tutorials,
+The documentation has a user guide organized by task, 22 executed tutorials,
 including an external finite-element solver with OpenSeesPy, published
 benchmark problems with their references, theory pages for each topic, and
 guides to the extreme-value families (:doc:`guides/gev_family`) and to

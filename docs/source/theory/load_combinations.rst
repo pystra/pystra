@@ -42,7 +42,7 @@ each variable action is taken as the leading action in turn, usually as a
 maximum over the reference period, while the other variable actions are taken
 as companion values over a representative interval.  In an FBC setting a
 companion action can be the point-in-time value or the maximum over the
-leading action's basic interval.  The modelling distinction is important:
+leading action's basic interval.  The modeling distinction is important:
 the FBC process defines the distribution of each action over time; Turkstra's
 rule defines which distributions are placed together in each reliability
 case.  This is the convention followed in Sørensen's notes and common load

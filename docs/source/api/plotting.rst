@@ -1,7 +1,7 @@
 Reliability figures
 ===================
 
-Create and customise figures from fitted models and completed results. See the :doc:`/plotting` guide for examples.
+Create and customize figures from fitted models and completed results. See the :doc:`/plotting` guide for examples.
 
 Public entry points
 -------------------
