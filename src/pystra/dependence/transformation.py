@@ -36,7 +36,8 @@ class Transformation:
     ----------
     transform_type : {"cholesky", "svd"}, optional
         Matrix factorization, defaulting to Cholesky. Call :meth:`compute`
-        with the modified normal correlation before transforming a point."""
+        with the modified normal correlation before transforming a point.
+    """
 
     standard_space = "normal"
 
@@ -67,7 +68,8 @@ class Transformation:
         Returns
         -------
         ndarray, shape (dimension,)
-            Independent normal coordinates in the same variable order."""
+            Independent normal coordinates in the same variable order.
+        """
         dimension = len(marg)
         x = np.asarray(x).ravel()
         u = np.zeros(dimension)
@@ -90,7 +92,8 @@ class Transformation:
         Returns
         -------
         ndarray, shape (dimension,)
-            Physical coordinates in marginal order."""
+            Physical coordinates in marginal order.
+        """
         dimension = len(marg)
         u = np.asarray(u).ravel()
         z = np.dot(self.inv_T, u)
@@ -161,7 +164,8 @@ class Transformation:
         Raises
         ------
         numpy.linalg.LinAlgError
-            If factorization or inversion fails."""
+            If factorization or inversion fails.
+        """
         if self.transform_type == self.transform_types[0]:
             self._compute_cholesky(Ro)
         elif self.transform_type == self.transform_types[1]:

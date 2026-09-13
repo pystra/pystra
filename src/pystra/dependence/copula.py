@@ -91,7 +91,8 @@ class Copula:
         Raises
         ------
         ValueError
-            If the coordinates have an invalid shape or lie outside the interior."""
+            If the coordinates have an invalid shape or lie outside the interior.
+        """
         return np.exp(self.logpdf(probabilities))
 
     def rvs(self, size: int = 1, seed: _RandomSeed = None) -> np.ndarray:
@@ -108,7 +109,8 @@ class Copula:
         Returns
         -------
         ndarray, shape (size, dimension)
-            Uniform marginal coordinates with this copula's dependence."""
+            Uniform marginal coordinates with this copula's dependence.
+        """
         rng = np.random.default_rng(seed)
         # Exclude representable endpoints for inverse conditional transforms.
         q = rng.uniform(
@@ -128,7 +130,8 @@ class GaussianCopula(Copula):
     Parameters
     ----------
     correlation : array_like, shape (dimension, dimension)
-        Latent normal correlation, copied and validated at construction."""
+        Latent normal correlation, copied and validated at construction.
+    """
 
     elliptical = True
 
@@ -180,7 +183,8 @@ class GaussianCopula(Copula):
         Returns
         -------
         GaussianCopula
-            An instance of the class on which this method was called."""
+            An instance of the class on which this method was called.
+        """
         tau = np.asarray(tau, dtype=float)
         if not np.all(np.isfinite(tau)) or np.any(np.abs(tau) > 1):
             raise ValueError("Kendall tau must be finite and in [-1, 1]")
@@ -197,7 +201,8 @@ class GaussianCopula(Copula):
         Returns
         -------
         float or ndarray, shape (n_points,)
-            Log density for one point or one value per row of points."""
+            Log density for one point or one value per row of points.
+        """
         p = _points(probabilities, self.dimension, interior=True)
         z = norm.ppf(p)
         return multivariate_normal.logpdf(z, cov=self._correlation) - np.sum(
@@ -217,7 +222,8 @@ class GaussianCopula(Copula):
         Returns
         -------
         float or ndarray, shape (n_points,)
-            Cumulative probability for one point or one value per row of points."""
+            Cumulative probability for one point or one value per row of points.
+        """
         p = _points(probabilities, self.dimension)
 
         def one(row):
@@ -259,7 +265,8 @@ class GaussianCopula(Copula):
         Raises
         ------
         ValueError
-            If coordinates, conditioning order or computed probabilities are invalid."""
+            If coordinates, conditioning order or computed probabilities are invalid.
+        """
         p = _points(probabilities, self.dimension, interior=True)
         ids = _order(order, self.dimension)
         L = np.linalg.cholesky(self._correlation[np.ix_(ids, ids)])
@@ -283,7 +290,8 @@ class GaussianCopula(Copula):
         Returns
         -------
         ndarray
-            Dependent uniform marginal coordinates, with the input shape and order."""
+            Dependent uniform marginal coordinates, with the input shape and order.
+        """
         q = _points(probabilities, self.dimension, interior=True)
         ids = _order(order, self.dimension)
         L = np.linalg.cholesky(self._correlation[np.ix_(ids, ids)])
@@ -298,7 +306,8 @@ class IndependentCopula(GaussianCopula):
     Parameters
     ----------
     dimension : int
-        Positive number of independent uniform coordinates."""
+        Positive number of independent uniform coordinates.
+    """
 
     def __init__(self, dimension: int) -> None:
         dimension = _sample_size(dimension)
@@ -330,7 +339,8 @@ class StudentTCopula(GaussianCopula):
     correlation : array_like, shape (dimension, dimension)
         Finite symmetric positive-definite latent shape with unit diagonal.
     df : float
-        Finite positive degrees of freedom of the latent Student-t law."""
+        Finite positive degrees of freedom of the latent Student-t law.
+    """
 
     def __init__(self, correlation: ArrayLike, df: float) -> None:
         super().__init__(correlation)
@@ -409,7 +419,8 @@ class FrankCopula(Copula):
     ----------
     theta : float
         Finite bivariate Frank dependence parameter, including zero for
-        independence. The implementation requires ``abs(theta) <= 30``."""
+        independence. The implementation requires ``abs(theta) <= 30``.
+    """
 
     dimension = 2
 
@@ -422,7 +433,8 @@ class FrankCopula(Copula):
         """Return the bivariate CDF on the closed unit square.
 
         ``probabilities`` has shape ``(2,)`` or ``(n_points, 2)``. Return a scalar
-        or one probability per row; coordinates must be finite and in [0, 1]."""
+        or one probability per row; coordinates must be finite and in [0, 1].
+        """
         p = _points(probabilities, 2)
         if self.theta == 0:
             return np.prod(p, axis=-1)
@@ -449,7 +461,8 @@ class FrankCopula(Copula):
         """Return log density in the interior of the unit square.
 
         ``probabilities`` has shape ``(2,)`` or ``(n_points, 2)`` with coordinates
-        strictly between zero and one. Return one log density per point."""
+        strictly between zero and one. Return one log density per point.
+        """
         p = _points(probabilities, 2, interior=True)
         if self.theta == 0:
             return np.zeros(p.shape[:-1])
@@ -469,7 +482,8 @@ class FrankCopula(Copula):
 
         ``probabilities`` has shape ``(2,)`` or ``(n_points, 2)`` and lies strictly
         inside the unit square. ``order`` is ``[0, 1]`` by default or ``[1, 0]``.
-        The result retains the input shape and original coordinate positions."""
+        The result retains the input shape and original coordinate positions.
+        """
         p = _points(probabilities, 2, interior=True)
         i, j = _order(order, 2)
         result = p.copy()
@@ -485,7 +499,8 @@ class FrankCopula(Copula):
         """Invert the conditional uniform map for the same conditioning order.
 
         The input, output and ordering contracts match :meth:`rosenblatt`;
-        input uniforms are independent and output marginals have Frank dependence."""
+        input uniforms are independent and output marginals have Frank dependence.
+        """
         q = _points(probabilities, 2, interior=True)
         i, j = _order(order, 2)
         result = q.copy()

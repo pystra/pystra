@@ -25,7 +25,8 @@ class JointDistribution:
     marginals : sequence of Distribution
         Continuous marginals with unique names; their order defines the columns.
     copula : Copula
-        Dependence specification with dimension equal to the marginal count."""
+        Dependence specification with dimension equal to the marginal count.
+    """
 
     def __init__(self, marginals: Sequence[Distribution], copula: Copula) -> None:
         self.marginals = tuple(marginals)
@@ -62,7 +63,8 @@ class JointDistribution:
         Returns
         -------
         float or ndarray, shape (n_points,)
-            Cumulative probability at one point or at each row of points."""
+            Cumulative probability at one point or at each row of points.
+        """
         x = self._points(points)
         p = np.stack([m.cdf(x[..., i]) for i, m in enumerate(self.marginals)], axis=-1)
         return self.copula.cdf(p, **kwargs)
@@ -84,7 +86,8 @@ class JointDistribution:
         ------
         ValueError
             If nonzero marginal densities are nonfinite or negative, or the copula
-            cannot evaluate the transformed probabilities."""
+            cannot evaluate the transformed probabilities.
+        """
         x = self._points(points)
 
         def one(row):
@@ -117,7 +120,8 @@ class JointDistribution:
         Returns
         -------
         ndarray, shape (size, dimension)
-            Physical samples, with columns in marginal order."""
+            Physical samples, with columns in marginal order.
+        """
         p = self.copula.rvs(size, seed)
         return np.column_stack([m.ppf(p[:, i]) for i, m in enumerate(self.marginals)])
 
@@ -141,7 +145,8 @@ class JointDistribution:
         Returns
         -------
         CopulaTransformation
-            A mapping for this joint law and the selected reference coordinates."""
+            A mapping for this joint law and the selected reference coordinates.
+        """
         return CopulaTransformation(self, method, order, factorization)
 
 
@@ -170,7 +175,8 @@ class CopulaTransformation:
     order : sequence of int, optional
         Conditioning permutation for Rosenblatt; outputs retain original positions.
     factorization : {"cholesky", "svd"}, default "cholesky"
-        Nataf matrix factor. Rosenblatt requires ``"cholesky"``."""
+        Nataf matrix factor. Rosenblatt requires ``"cholesky"``.
+    """
 
     def __init__(
         self,
@@ -265,7 +271,8 @@ class CopulaTransformation:
         -------
         ndarray, shape (dimension,)
             Reference coordinates in original variable positions. The reference
-            law is identified by ``standard_space``."""
+            law is identified by ``standard_space``.
+        """
         x = self._vector(x)
         if not self.copula.elliptical:
             p = np.array([m.cdf(x[i]) for i, m in enumerate(self.marginals)])
@@ -301,7 +308,8 @@ class CopulaTransformation:
         Returns
         -------
         ndarray, shape (dimension,)
-            Physical point in original marginal order."""
+            Physical point in original marginal order.
+        """
         u = self._vector(u)
         if not self.copula.elliptical:
             p = self.copula.inverse_rosenblatt(norm.cdf(u), self.order)
