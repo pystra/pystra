@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
+from numpy.typing import ArrayLike
+from scipy import special as sp
 from scipy.stats import gumbel_l, gumbel_r as gumbel
 
 from .distribution import Distribution, _log1mexp, _uses_native_parameters
@@ -45,6 +47,48 @@ class Gumbel(Distribution):
         )
 
         self.dist_type = "Gumbel"
+
+    def u_to_x(self, u: ArrayLike) -> float | np.ndarray:
+        """Map normal coordinates to Gumbel quantiles using logarithmic tails.
+
+        Parameters
+        ----------
+        u : array_like
+            Standard normal coordinates, as a scalar or an array.
+
+        Returns
+        -------
+        float or ndarray
+            Physical quantiles with the same shape as ``u``. Log probabilities
+            retain finite quantiles beyond normal-probability underflow.
+        """
+        if type(self) is not Gumbel:
+            # Preserve quantile overrides supplied by extension distributions.
+            return super().u_to_x(u)
+        u = np.asarray(u, dtype=float)
+        loc, scale = self.dist_obj.kwds["loc"], self.dist_obj.kwds["scale"]
+        if u.ndim == 0:
+            value = float(u)
+            if value > 3.0:
+                logq = sp.log_ndtr(-value)
+                term = logq if logq < -40.0 else np.log(-np.log1p(-sp.ndtr(-value)))
+            elif value < -5.0:
+                term = np.log(-sp.log_ndtr(value))
+            else:
+                term = np.log(-np.log(sp.ndtr(value)))
+            return loc - scale * term
+        shape = u.shape
+        flat = u.ravel()
+        upper = flat > 3.0
+        lower = flat < -5.0
+        central = ~(upper | lower)
+        values = np.empty(flat.shape)
+        values[central] = loc - scale * np.log(-np.log(sp.ndtr(flat[central])))
+        if lower.any():
+            values[lower] = self._lower_quantile_log(sp.log_ndtr(flat[lower]))
+        if upper.any():
+            values[upper] = self._upper_quantile_log(sp.log_ndtr(-flat[upper]))
+        return values.reshape(shape)
 
     def _upper_logsf(self, x):
         # 1 - F(x) = -expm1(-exp(-z)), whose logarithm is -z once exp(-z) < e**-40

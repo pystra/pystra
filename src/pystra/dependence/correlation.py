@@ -240,11 +240,10 @@ def _nataf_correlation(marg, R):
     # copy() ensures the array is writable; np.eye may return a read-only
     # array in NumPy 2.0+.
     Ro = np.eye(n, m).copy()
-    flag_sens = True
     for i in range(nvr):
         for j in range(i):
             rho = R[i][j]
-            if rho != 0 or flag_sens:
+            if rho != 0:
                 margi = marg[i]
                 margj = marg[j]
 
@@ -265,7 +264,6 @@ def _nataf_correlation(marg, R):
 
                 Z1, Z2, X1, X2, WIP, detJ = zi_and_xi(margi, margj, zmax, nIP)
 
-            if rho != 0:
                 par = opt.fmin(
                     absolute_integral_value,
                     rho,

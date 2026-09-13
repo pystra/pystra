@@ -496,17 +496,22 @@ class Distribution:
             Corresponding value(s) in physical (x) space.
         """
         u = np.asarray(u, dtype=float)
+        if u.ndim == 0:
+            value = float(u)
+            upper = value > _U_SWITCH
+            probability = float(sp.ndtr(-value if upper else value))
+            if probability >= 1e-8:
+                quantile = self.isf if upper else self.ppf
+                return np.asarray(quantile(probability), dtype=float).reshape(())[()]
         shape = u.shape
         u = u.ravel()
         p = sp.ndtr(u)
         upper = np.flatnonzero(u > _U_SWITCH)
         lower = np.flatnonzero(u < -5.0)
-        if upper.size or lower.size:
-            # Tail points are inverted below, where their result is checked
-            p = p.copy()
-            p[upper] = 0.5
-            p[lower] = 0.5
-        x = _call(self.ppf, p)
+        central = ~((u > _U_SWITCH) | (u < -5.0))
+        x = np.empty(u.shape)
+        if central.any():
+            x[central] = _call(self.ppf, p[central])
         for index, sign, quantile, log_tail, log_quantile in (
             (upper, -1, self.isf, self.logsf, self._upper_quantile_log),
             (lower, 1, self.ppf, self.logcdf, self._lower_quantile_log),
@@ -568,6 +573,17 @@ class Distribution:
             Corresponding value(s) in standard normal (u) space.
         """
         x = np.asarray(x, dtype=float)
+        if x.ndim == 0:
+            value = float(x)
+            probability = float(np.asarray(self.cdf(value)).item())
+            if probability > _P_SWITCH:
+                survival = float(np.asarray(self.sf(value)).item())
+                if survival < _TINY:
+                    return -sp.ndtri_exp(float(np.asarray(self.logsf(value)).item()))
+                return -sp.ndtri(survival)
+            if probability < _TINY:
+                return sp.ndtri_exp(float(np.asarray(self.logcdf(value)).item()))
+            return sp.ndtri(probability)
         shape = x.shape
         x = x.ravel()
         c = _call(self.cdf, x)

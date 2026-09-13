@@ -59,4 +59,6 @@ class Uniform(Distribution):
         u = np.asarray(u, dtype=float)
         tail = self.std_normal.cdf(-np.abs(u))
         width = self.b - self.a
+        if u.ndim == 0:
+            return self.a + width * tail if u <= 0 else self.b - width * tail
         return np.where(u <= 0, self.a + width * tail, self.b - width * tail)[()]

@@ -121,8 +121,22 @@ class SORM(_FORMReuse, AnalysisObject):
             self._form = form
             form.run()
         _check_form(self.form, self.model, self.limit_state)
-        self.init_run()
-        _check_coordinates(self.form, self.transform)
+        if (
+            self._supplied_form is None
+            and type(self).init_run is AnalysisObject.init_run
+        ):
+            # This run owns a freshly prepared FORM with exactly these options.
+            # Reuse its factorization; an explicitly supplied FORM still receives
+            # the independent coordinate check below.
+            self._nrv = self.model.n_marg
+            self.transform = self.form.transform
+            if self.transform.standard_space != "normal":
+                raise ValueError(
+                    "This analysis requires independent normal space; select Rosenblatt for this copula"
+                )
+        else:
+            self.init_run()
+            _check_coordinates(self.form, self.transform)
         self._fit_type = fit_type
 
     def run(self):

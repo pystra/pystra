@@ -435,50 +435,34 @@ class LimitState:
 
     def _values(self, x, model, block_size):
         """Limit-state values without gradients (used by simulation)."""
-        nrv, nx = x.shape
-        G = np.zeros((1, nx))
-        grad_G = np.zeros((nrv, nx))
-        k = 0
-        while k < nx:
-            block_size = np.min([block_size, nx - k])
-            indx = list(range(k, k + block_size))
-            blockG, _ = self._call(x[:, indx], model)
-            G[:, indx] = blockG
-            k += block_size
-        return G, grad_G, nx
+        nrv, n_points = x.shape
+        values = np.zeros((1, n_points))
+        gradient = np.zeros((nrv, n_points))
+        for start in range(0, n_points, block_size):
+            stop = min(start + block_size, n_points)
+            block, _ = self._call(x[:, start:stop].copy(), model)
+            values[:, start:stop] = block
+        return values, gradient, n_points
 
     def _ffd(self, x, model, block_size, ffdpara):
         """Limit-state values and forward finite-difference gradients."""
-        nrv, nx = x.shape
-        grad_G = np.zeros((nrv, nx))
-        allx = np.repeat(x, 1 + nrv, axis=1)
-        allh = np.zeros(nrv)
-
-        marg = model.get_marginal_distributions()
-
-        for j in range(nrv):
-            allh[j] = marg[j].std / ffdpara
-            indx = list(range(j + 1, 1 + (1 + j + (nx - 1) * (1 + nrv)), (1 + nrv)))
-            allx[j, indx] = x[j] + allh[j] * np.ones(nx)
-
-        allG = np.zeros(nx * (1 + nrv))
-
-        k = 0
-        while k < (nx * (1 + nrv)):
-            block_size = np.min([block_size, nx * (1 + nrv) - k])
-            indx = list(range(k, k + block_size))
-            blockG, _ = self._call(allx[:, indx], model)
-            allG[indx] = blockG.squeeze()
-            k += block_size
-
-        indx = list(range(0, (1 + (nx - 1) * (1 + nrv)), (1 + nrv)))
-        G = allG[indx]
-
-        for j in range(nrv):
-            indx = list(range(j + 1, 1 + (1 + j + (nx - 1) * (1 + nrv)), (1 + nrv)))
-            grad_G[j, :] = (allG[indx] - G) / allh[j]
-
-        return G, grad_G, nx * (1 + nrv)
+        nrv, n_points = x.shape
+        stride = 1 + nrv
+        points = np.repeat(x, stride, axis=1)
+        steps = np.array(
+            [marg.std / ffdpara for marg in model.get_marginal_distributions()]
+        )
+        for variable in range(nrv):
+            points[variable, variable + 1 :: stride] = x[variable] + steps[variable]
+        values = np.empty(n_points * stride)
+        for start in range(0, values.size, block_size):
+            stop = min(start + block_size, values.size)
+            block, _ = self._call(points[:, start:stop].copy(), model)
+            values[start:stop] = block.squeeze()
+        grouped = values.reshape(n_points, stride).T
+        base = grouped[0]
+        gradient = (grouped[1:] - base) / steps[:, None]
+        return base, gradient, n_points * stride
 
     def _ddm(self, x, model):
         """Limit-state values with the user-supplied gradient (direct differentiation)."""
@@ -518,10 +502,10 @@ class LimitState:
                 raise ModelError(
                     f"Limit-state signature does not match model: {error}"
                 ) from error
-        context = f"{nc} point(s), first point {x[:, 0].tolist()}"
         try:
             Gvals = self.expression(**inpdict)
         except Exception as error:
+            context = f"{nc} point(s), first point {x[:, 0].tolist()}"
             raise AnalysisError(
                 f"Limit-state evaluation failed at {context}: {error}"
             ) from error
@@ -549,6 +533,7 @@ class LimitState:
                 f"Limit-state values must have shape ({nc},), got {G.shape}"
             )
         if not np.all(np.isfinite(G)):
+            context = f"{nc} point(s), first point {x[:, 0].tolist()}"
             raise AnalysisError(f"Nonfinite limit-state values at {context}")
         if ddm:
             gradient = np.asarray(gradient, dtype=float)
@@ -557,6 +542,7 @@ class LimitState:
                     "DDM gradient must contain one derivative per random variable"
                 )
             if not np.all(np.isfinite(gradient)):
+                context = f"{nc} point(s), first point {x[:, 0].tolist()}"
                 raise AnalysisError(f"Nonfinite limit-state gradient at {context}")
         return G, gradient
 

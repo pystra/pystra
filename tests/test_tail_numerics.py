@@ -271,3 +271,18 @@ def test_lognormal_functions_propagate_nan(distribution):
         assert np.isnan(function(np.nan))
     lower = distribution._shift
     assert distribution.cdf(lower) == 0.0 and distribution.pdf(lower - 1) == 0.0
+
+
+@pytest.mark.parametrize("name", list(unbounded_tails()))
+def test_scalar_and_batch_maps_agree_at_tail_switches(name):
+    distribution = unbounded_tails()[name]
+    points = np.array([-40.0, -6.0, -5.0, -0.5, 0.0, 3.0, 3.00001, 5.0, 6.0, 40.0])
+    batch = distribution.u_to_x(points)
+    scalar = np.array([distribution.u_to_x(float(u)) for u in points])
+    np.testing.assert_allclose(scalar, batch, rtol=1e-13, atol=1e-13)
+    np.testing.assert_allclose(
+        [distribution.x_to_u(float(x)) for x in batch],
+        distribution.x_to_u(batch),
+        rtol=1e-12,
+        atol=1e-12,
+    )
