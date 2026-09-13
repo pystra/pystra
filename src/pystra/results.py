@@ -111,7 +111,7 @@ def _text(value):
 
 @dataclass(frozen=True, kw_only=True, eq=False)
 class _Result:
-    """Fields and behaviour common to every analysis record."""
+    """Fields and behavior common to every analysis record."""
 
     method: str
     status: str

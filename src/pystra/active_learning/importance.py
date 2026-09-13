@@ -1,7 +1,7 @@
 """Active importance sampling with explicit Gaussian mixture proposals.
 
 Design-point AK-IS: Echard et al. (2013), doi:10.1016/j.ress.2012.10.008.
-This variant supports multiple supplied centres and a defensive normal component.
+This variant supports multiple supplied centers and a defensive normal component.
 It does not automatically discover failure modes or apply a true-model correction.
 """
 
@@ -44,9 +44,9 @@ class ImportanceSamplingEstimator(EnrichmentEstimator):
     Parameters
     ----------
     centers : array_like
-        Explicit row-wise proposal centres in independent normal coordinates,
+        Explicit row-wise proposal centers in independent normal coordinates,
         shape (n_centers, n_variables). A FORM standard_point is one useful
-        centre. Supply all relevant centres for separated failure regions.
+        center. Supply all relevant centers for separated failure regions.
     scale : float
         Common spherical proposal standard deviation, default 1.
     defensive_fraction : float
@@ -68,7 +68,7 @@ class ImportanceSamplingEstimator(EnrichmentEstimator):
     diagnostics. An out-of-range point estimate is retained in diagnostics,
     exposed at the nearest endpoint and marked invalid with infinite CoV.
     Zero/all observed failures and inadequate effective failures are incomplete.
-    Proposal centres remain fixed during a run; learning adapts the surrogate.
+    Proposal centers remain fixed during a run; learning adapts the surrogate.
     Exploration reuses common random numbers; final estimation uses fresh draws.
     """
 

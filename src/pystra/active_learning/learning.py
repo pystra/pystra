@@ -156,7 +156,7 @@ class FBRLearning(EnsembleLearningFunction):
     """
 
     def select_replicates(self, predictions: np.ndarray) -> LearningDecision:
-        """Use actual classification votes, retaining non-Gaussian behaviour."""
+        """Use actual classification votes, retaining non-Gaussian behavior."""
         predictions = _replicates(predictions)
         count = predictions.shape[1]
         failures = np.count_nonzero(predictions <= 0, axis=1)

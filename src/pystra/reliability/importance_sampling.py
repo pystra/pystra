@@ -28,7 +28,7 @@ class ImportanceSampling(_FORMReuse, CrudeMonteCarlo):
         the same stream on every run, a generator advances its own state, and
         None draws fresh entropy.
     form : FORM, optional
-        A completed FORM analysis whose design point centres the samples. If
+        A completed FORM analysis whose design point centers the samples. If
         None, :meth:`run` first runs FORM with this analysis's block size and
         transformation.
     """
@@ -43,7 +43,7 @@ class ImportanceSampling(_FORMReuse, CrudeMonteCarlo):
     def run(self):
         """Run importance sampling and return a :class:`SimulationResult`.
 
-        Samples are centred on the FORM design point. If no completed FORM
+        Samples are centered on the FORM design point. If no completed FORM
         analysis was supplied, FORM is run first with this analysis's block
         size and transformation.
         """
@@ -68,7 +68,7 @@ class ImportanceSampling(_FORMReuse, CrudeMonteCarlo):
         return CrudeMonteCarlo.run(self)
 
     def _set_point(self, point=None):
-        # Monte Carlo prepares its transform before setting the sample centre.
+        # Monte Carlo prepares its transform before setting the sample center.
         _check_coordinates(self.form, self.transform)
         super()._set_point(point)
 

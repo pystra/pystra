@@ -15,8 +15,8 @@ class Transformation:
     Nataf isoprobabilistic transformation between physical space (x) and
     standard normal space (u).
 
-    The transformation relies on a square-root factorisation of the modified
-    correlation matrix Ro, such that Ro = inv_T @ inv_T^T.  Two factorisations
+    The transformation relies on a square-root factorization of the modified
+    correlation matrix Ro, such that Ro = inv_T @ inv_T^T.  Two factorizations
     are available:
 
     - **Cholesky** (default): Ro = L @ L^T where L is lower-triangular.
@@ -28,7 +28,7 @@ class Transformation:
     agree for the same optimum, up to numerical solver error. A fixed numerical
     u vector generally maps to different physical points under the two factors.
 
-    The SVD factorisation is generally more robust because it avoids computing
+    The SVD factorization is generally more robust because it avoids computing
     the explicit inverse of a triangular factor; instead it works with the
     orthogonal eigenstructure of Ro.  It is recommended when Ro is
     near-singular or poorly conditioned.
@@ -150,14 +150,14 @@ class Transformation:
 
     def _compute_cholesky(self, Ro):
         """
-        Compute Cholesky factorisation of the modified correlation matrix.
+        Compute Cholesky factorization of the modified correlation matrix.
 
         Decomposes Ro = L @ L^T where L is lower-triangular, then sets::
 
             inv_T = L
             T     = L^{-1}
 
-        This is the classical Nataf factorisation.  It requires Ro to be
+        This is the classical Nataf factorization.  It requires Ro to be
         symmetric positive-definite (all eigenvalues strictly positive).
         """
         # Ro = self.model.get_modified_correlation()
@@ -174,7 +174,7 @@ class Transformation:
 
     def _compute_svd(self, Ro):
         """
-        Compute SVD-based factorisation of the modified correlation matrix.
+        Compute SVD-based factorization of the modified correlation matrix.
 
         For the symmetric positive-definite matrix Ro the SVD coincides with
         the eigendecomposition: Ro = U @ diag(D) @ U^T.  The square-root
@@ -185,7 +185,7 @@ class Transformation:
 
         This satisfies the same identity as Cholesky (Ro = inv_T @ inv_T^T)
         but is more robust for ill-conditioned correlation matrices because
-        the factorisation exploits the orthogonal eigenstructure rather than
+        the factorization exploits the orthogonal eigenstructure rather than
         relying on triangular back-substitution.
         """
         try:

@@ -286,9 +286,9 @@ def _nataf_correlation(marg, R):
 
 
 def absolute_integral_value(rho0, *args):
-    r"""Objective function for the Nataf correlation optimisation.
+    r"""Objective function for the Nataf correlation optimization.
 
-    Returns ``|rho_target - rho_integral(rho0)|``, which is minimised
+    Returns ``|rho_target - rho_integral(rho0)|``, which is minimized
     by ``scipy.optimize.fmin`` to find the modified correlation
     coefficient ``rho0`` in standard-normal space.
 

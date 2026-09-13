@@ -34,7 +34,7 @@ class SORM(_FORMReuse, AnalysisObject):
 
     Both methods report the Breitung [Breitung1984]_ and the
     Hohenbichler-Rackwitz [Hohenbichler1988]_ failure probabilities and
-    generalised reliability indices.
+    generalized reliability indices.
 
     Parameters
     ----------

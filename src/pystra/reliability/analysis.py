@@ -132,7 +132,7 @@ class AnalysisObject:
         return self.limit_state._evaluate_lsf(x, self.model, **kwargs)
 
     def init_run(self):
-        """Initialise the model's isoprobabilistic transformation.
+        """Initialize the model's isoprobabilistic transformation.
 
         Uses the explicit copula or calibrates the legacy Gaussian Nataf
         correlation. Must be called at the start of every

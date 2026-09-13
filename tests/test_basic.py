@@ -256,7 +256,7 @@ def test_mc_cov_zero_branch():
         model=stochastic_model,
         limit_state=limit_state,
     )
-    # Initialise just enough internal state to call the method
+    # Initialize just enough internal state to call the method
     samples = 10
     Analysis._block_size = samples
     Analysis._q_bar = np.empty(samples)

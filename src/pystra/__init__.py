@@ -12,7 +12,7 @@ engineering systems using established structural reliability methods:
 - **Design decision optimization** with societal risk acceptance checks
 
 All SciPy continuous distributions can be used as random variables,
-alongside PySTRA's own specialised distributions (e.g. Gumbel,
+alongside PySTRA's own specialized distributions (e.g. Gumbel,
 ZeroInflated, Maximum).
 
 Quick start::

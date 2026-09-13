@@ -1,4 +1,4 @@
-"""Reliability of a portal frame analysed with OpenSeesPy.
+"""Reliability of a portal frame analyzed with OpenSeesPy.
 
 The executed version, with a check by direct simulation, is the
 docs/source/notebooks/ex_openseespy.ipynb tutorial.

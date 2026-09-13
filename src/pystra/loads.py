@@ -33,7 +33,7 @@ class FBCProcess:
     added to a :class:`~pystra.model.StochasticModel` or used in
     :class:`~pystra.loads.LoadCombination` cases.
 
-    Load combinations are a separate modelling choice.  For example,
+    Load combinations are a separate modeling choice.  For example,
     :meth:`pystra.loads.LoadCombination.turkstra` uses FBC process objects
     to generate leading-action cases according to Turkstra's rule.
 
@@ -248,7 +248,7 @@ class LoadCombination:
     leading_actions : mapping, optional
         Case names mapped to tuples of leading variable-action names.
     correlation : pandas.DataFrame, optional
-        Physical Pearson correlations labelled by random-variable names.
+        Physical Pearson correlations labeled by random-variable names.
 
     Notes
     -----

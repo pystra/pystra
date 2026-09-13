@@ -98,7 +98,7 @@ class GEV(Distribution):
         r"""Sensitivity parameters for GEV.
 
         Returns ``{"mean": μ, "std": σ, "shape": ξ}``.  The shape
-        parameter ξ controls tail behaviour: ξ < 0 is Weibull (bounded
+        parameter ξ controls tail behavior: ξ < 0 is Weibull (bounded
         upper tail), ξ = 0 is Gumbel, ξ > 0 is Fréchet (heavy-tailed).
         """
         return {"mean": self.mean, "std": self.std, "shape": self.shape}
@@ -209,7 +209,7 @@ class GEVMin(Distribution):
         r"""Sensitivity parameters for GEVMin.
 
         Returns ``{"mean": μ, "std": σ, "shape": ξ}``.  The shape
-        parameter ξ controls tail behaviour: ξ < 0 is Weibull (bounded
+        parameter ξ controls tail behavior: ξ < 0 is Weibull (bounded
         lower tail), ξ = 0 is Gumbel, ξ > 0 is Fréchet (heavy-tailed).
         """
         return {"mean": self.mean, "std": self.std, "shape": self.shape}

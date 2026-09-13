@@ -8,7 +8,7 @@ __all__ = ["plot_calibration"]
 def plot_calibration(
     results, *, target_beta=None, colors=None, ranges=None, ax=None, figsize=(8, 4)
 ):
-    """Plot labelled study envelopes without running analyses or hiding failures.
+    """Plot labeled study envelopes without running analyses or hiding failures.
 
     Parameters
     ----------

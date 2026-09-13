@@ -20,7 +20,7 @@ def rho_integral(rho0, margi, margj, Z1, Z2, X1, X2, WIP, detJ):
     Computes the physical-space correlation that results from a
     standard-normal-space correlation of ``rho0``, by numerically
     integrating the bivariate standard normal density weighted by the
-    normalised marginal values.
+    normalized marginal values.
 
     Parameters
     ----------

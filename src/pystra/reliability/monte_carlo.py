@@ -229,7 +229,7 @@ class CrudeMonteCarlo(MonteCarlo):
         the same stream on every run, a generator advances its own state, and
         None draws fresh entropy.
     point : ndarray, optional
-        Centre of the sampling density in standard coordinates; the origin
+        Center of the sampling density in standard coordinates; the origin
         by default.
     """
 
