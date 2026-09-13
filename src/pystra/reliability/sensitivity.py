@@ -17,6 +17,12 @@ Two methods are available, selected by the ``method`` argument of
   number of variables is large.
 """
 
+import copy
+import math
+from numbers import Real
+
+import numpy as np
+
 from .form import FORM
 from ..errors import AnalysisError, ModelError
 from .analysis import _check_on_failure
@@ -28,11 +34,6 @@ from .._numerics.cholesky_sensitivity import (
     inverse_cholesky_gradient,
 )
 from .._numerics.integration import zi_and_xi, drho_drho0, drho0_dtheta
-import copy
-import math
-from numbers import Real
-
-import numpy as np
 
 __all__ = ["SensitivityAnalysis"]
 

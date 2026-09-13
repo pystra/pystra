@@ -3,6 +3,7 @@
 from scipy.stats import weibull_min as weibull
 import scipy.optimize as opt
 import scipy.special as spec
+
 from .distribution import Distribution, _uses_native_parameters
 
 __all__ = ["Weibull"]

@@ -5,7 +5,6 @@ from scipy.special import logsumexp, ndtri_exp
 
 from .analysis import AnalysisObject, _check_rng, _generator
 from ..distributions import StdNormal
-from ..dependence.correlation import compute_modified_correlation_matrix
 from ..options import SimulationOptions
 from ..results import DistributionAnalysisResult, SimulationResult
 

@@ -2,6 +2,7 @@
 
 import numpy as np
 from scipy.stats import lognorm
+
 from .distribution import Distribution
 from .lognormal import Lognormal
 

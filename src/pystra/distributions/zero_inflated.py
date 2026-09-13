@@ -2,6 +2,7 @@
 
 import numpy as np
 from scipy import special as sp
+
 from .distribution import Distribution, _piecewise
 from ..errors import ModelError
 

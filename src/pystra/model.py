@@ -1,13 +1,13 @@
 """Named stochastic models and physical limit-state evaluation."""
 
 import inspect
-
-from numpy.typing import ArrayLike, NDArray
-
-import numpy as np
-from .distributions import Distribution, Constant
 from collections import OrderedDict
 from types import MappingProxyType
+
+from numpy.typing import ArrayLike, NDArray
+import numpy as np
+
+from .distributions import Distribution, Constant
 from .errors import ModelError, AnalysisError
 
 __all__ = ["StochasticModel", "LimitState"]

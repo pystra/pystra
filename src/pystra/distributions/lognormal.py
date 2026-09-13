@@ -3,6 +3,7 @@
 import numpy as np
 from scipy import special as sp
 from scipy.stats import lognorm
+
 from .distribution import Distribution, _uses_native_parameters
 
 __all__ = ["Lognormal"]

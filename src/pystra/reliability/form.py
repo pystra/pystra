@@ -1,14 +1,15 @@
 """First-order reliability analysis using a design-point search."""
 
-import numpy as np
 import warnings
+
+import numpy as np
 from scipy.stats import norm as normal
+
 from .analysis import AnalysisObject, _check_on_failure
 from ._form_reuse import _problem_state
 from ..errors import AnalysisError
 from ..options import FORMOptions
 from ..results import FORMResult
-from ..dependence.correlation import set_modified_correlation_matrix
 
 __all__ = ["FORM"]
 

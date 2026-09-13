@@ -1,12 +1,12 @@
 """Second-order reliability approximations at a FORM design point."""
 
 import numpy as np
+from scipy.stats import norm as normal
+from scipy.special import log_ndtr, ndtri_exp
 
 from .form import FORM
 from .analysis import AnalysisObject, _check_on_failure
 from ._form_reuse import _check_form, _check_coordinates, _FORMReuse
-from scipy.stats import norm as normal
-from scipy.special import log_ndtr, ndtri_exp
 from ..errors import AnalysisError, ModelError
 from ..options import FORMOptions, SORMOptions
 from ..results import FORMResult, SORMResult

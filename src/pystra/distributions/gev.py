@@ -3,6 +3,7 @@
 import numpy as np
 from scipy.stats import genextreme
 from scipy.special import gamma
+
 from pystra.distributions import Distribution
 from .distribution import _uses_native_parameters
 

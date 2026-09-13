@@ -3,6 +3,7 @@
 import numpy as np
 from scipy.stats import beta
 import scipy.optimize as opt
+
 from .distribution import Distribution, _uses_native_parameters
 
 __all__ = ["Beta"]

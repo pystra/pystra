@@ -1,9 +1,9 @@
 """Frechet marginal distribution."""
 
-import numpy as np
 from scipy.stats import invweibull as frechet
 import scipy.optimize as opt
 import scipy.special as spec
+
 from .distribution import Distribution, _uses_native_parameters
 
 __all__ = ["Frechet"]
