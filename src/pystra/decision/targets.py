@@ -460,7 +460,7 @@ class RackwitzTargetModel:
         safety_costs: Mapping[str, float] | None = None,
         failure_costs: Mapping[str, float] | None = None,
         bounds: tuple[float, float] = (1.0, 15.0),
-        **kwargs,
+        **kwargs: Any,
     ) -> pd.DataFrame:
         """Calculate a Rackwitz-style target-reliability table.
 
@@ -570,7 +570,7 @@ def derive_lqi_target(
     return calibration.run()
 
 
-def rackwitz_table(**kwargs) -> pd.DataFrame:
+def rackwitz_table(**kwargs: Any) -> pd.DataFrame:
     """Calculate the default Rackwitz/Steenbergen target-reliability table."""
 
     return RackwitzTargetModel.table(**kwargs)

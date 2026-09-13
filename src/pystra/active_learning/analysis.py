@@ -9,6 +9,7 @@ from scipy.stats import norm, qmc
 
 from ..reliability.analysis import AnalysisObject, _check_rng, _generator
 from ..options import SimulationOptions
+from ..model import LimitState, StochasticModel
 from ._validation import _positive_integer, _points, _training, _predictions
 from .surrogates import Surrogate, KrigingSurrogate, PCESurrogate, EnsembleSurrogate
 from .pc_kriging import PCKrigingSurrogate
@@ -100,10 +101,10 @@ class ActiveLearning(AnalysisObject):
 
     def __init__(
         self,
-        model,
-        limit_state,
+        model: StochasticModel,
+        limit_state: LimitState,
         *,
-        options=None,
+        options: SimulationOptions | None = None,
         surrogate: Union[str, Surrogate] = "kriging",
         learning_function: Union[str, LearningFunction] = "u",
         n_initial: Optional[int] = None,
@@ -115,8 +116,8 @@ class ActiveLearning(AnalysisObject):
         target_cov: Optional[float] = None,
         stopping_criterion: Optional[StoppingCriterion] = None,
         surrogate_kwargs: Optional[dict] = None,
-        rng=None,
-    ):
+        rng: int | np.random.Generator | None = None,
+    ) -> None:
         super().__init__(model, limit_state, options)
         self.options._require_defaults(
             "ActiveLearning", ("n_samples", "target_cov", "sampling_std", "bins")

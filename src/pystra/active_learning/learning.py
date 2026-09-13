@@ -56,7 +56,7 @@ class UFunction(LearningFunction):
     documented in :func:`learning_u`.
     """
 
-    def __init__(self, *, threshold: float = 2.0):
+    def __init__(self, *, threshold: float = 2.0) -> None:
         if not np.isfinite(threshold) or threshold <= 0:
             raise ValueError("threshold must be finite and positive")
         self.threshold = float(threshold)
@@ -75,7 +75,7 @@ class ExpectedFeasibility(LearningFunction):
     See Bichon et al. (2008) and :func:`learning_eff`.
     """
 
-    def __init__(self, *, threshold: float = 1e-3):
+    def __init__(self, *, threshold: float = 1e-3) -> None:
         if not np.isfinite(threshold) or threshold <= 0:
             raise ValueError("threshold must be finite and positive")
         self.threshold = float(threshold)

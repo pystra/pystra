@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Sequence
+from typing import Any, Sequence
 
+import numpy as np
 import pandas as pd
+from matplotlib.figure import Figure
 
 from .criteria import (
     DDOCriterion,
@@ -105,7 +107,7 @@ class DDO:
         study: DesignStudy | RiskStudy,
         criterion: DDOCriterion,
         objective: DDOObjective | None = None,
-    ):
+    ) -> None:
         self.study = study
         self.criterion = criterion
         self.objective = objective
@@ -223,8 +225,8 @@ class DDO:
         self,
         design: str | None = None,
         quantities: Sequence[str] | None = None,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> tuple[Figure, np.ndarray]:
         """Plot results from the most recent run."""
 
         df = self._results_or_run()

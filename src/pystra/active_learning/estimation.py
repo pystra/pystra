@@ -111,7 +111,7 @@ class MonteCarloEstimator(ReliabilityEstimator):
     All diagnostics are conditional on the supplied surrogate.
     """
 
-    def __init__(self, *, n_samples: int = 100_000):
+    def __init__(self, *, n_samples: int = 100_000) -> None:
         self.n_samples = _positive_integer(n_samples, "n_samples", 2)
 
     def estimate(

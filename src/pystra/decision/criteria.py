@@ -316,7 +316,7 @@ class LQI(DDOCriterion):
         self,
         safety_cost: float | np.ndarray,
         failure_rate: float | np.ndarray,
-    ):
+    ) -> float | np.ndarray:
         """Return the JCSS LQI life-safety risk-cost term."""
 
         swtp, expected = self._swtp_and_expected_fatalities()

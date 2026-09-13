@@ -226,7 +226,7 @@ def jcss_lqi_risk_cost(
     failure_rate: float | np.ndarray,
     swtp: float | SWTP,
     expected_fatalities_given_failure: float,
-):
+) -> float | np.ndarray:
     """Return the JCSS LQI life-safety risk cost.
 
     This implements the canonical LQI optimization term

@@ -93,7 +93,7 @@ class PCKrigingSurrogate(Surrogate):
         noise: float = 1e-8,
         n_restarts: int = 0,
         seed: Optional[int] = None,
-    ):
+    ) -> None:
         self._trend = PCESurrogate(
             degree=degree,
             q_norm=q_norm,

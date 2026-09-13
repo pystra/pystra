@@ -53,7 +53,7 @@ class KrigingSurrogate(Surrogate):
 
     def __init__(
         self, *, n_restarts: int = 2, noise: float = 1e-10, seed: Optional[int] = None
-    ):
+    ) -> None:
         try:
             from sklearn.gaussian_process import GaussianProcessRegressor
             from sklearn.gaussian_process.kernels import ConstantKernel, Matern
@@ -182,7 +182,7 @@ class PCESurrogate(EnsembleSurrogate):
         n_bootstrap: int = 30,
         max_terms: int = 10_000,
         seed: Optional[int] = None,
-    ):
+    ) -> None:
         degrees = (degree,) if np.isscalar(degree) else tuple(degree)
         self.degree = tuple(_positive_integer(value, "degree") for value in degrees)
         if not self.degree or any(b <= a for a, b in zip(self.degree, self.degree[1:])):

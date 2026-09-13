@@ -6,6 +6,8 @@ from typing import Any, Iterable, Mapping, Sequence
 
 import numpy as np
 import pandas as pd
+from matplotlib.axes import Axes
+from matplotlib.figure import Figure
 
 from .objectives import annualized_safety_cost
 
@@ -60,10 +62,10 @@ def plot_summary(
     target_label: str = "LQI target",
     invert_yaxis: Iterable[str] | None = None,
     panel_labels: bool = False,
-    axes: Sequence[Any] | None = None,
+    axes: Axes | Sequence[Axes] | np.ndarray | None = None,
     figsize: tuple[float, float] | None = None,
     line_kwargs: Mapping[str, Any] | None = None,
-):
+) -> tuple[Figure, np.ndarray]:
     """Plot a one-dimensional design decision optimization summary.
 
     The helper is intentionally generic: it expects a dataframe-like object

@@ -80,7 +80,7 @@ class ImportanceSamplingEstimator(EnrichmentEstimator):
         defensive_fraction: float = 0.1,
         n_samples: int = 10_000,
         min_effective_failures: float = 20,
-    ):
+    ) -> None:
         centers = _points(centers)
         self.centers = tuple(tuple(float(value) for value in row) for row in centers)
         if not np.isfinite(scale) or scale <= 0:

@@ -34,7 +34,7 @@ class StoppingCriterion(ABC):
 
     requires_bootstrap = False
 
-    def __init__(self, *, target_cov: float = 0.1):
+    def __init__(self, *, target_cov: float = 0.1) -> None:
         if not np.isfinite(target_cov) or target_cov <= 0:
             raise ValueError("target_cov must be finite and positive")
         self.target_cov = float(target_cov)
@@ -86,7 +86,7 @@ class BetaBounds(StoppingCriterion):
 
     def __init__(
         self, *, tolerance: float = 0.01, consecutive: int = 3, target_cov: float = 0.1
-    ):
+    ) -> None:
         super().__init__(target_cov=target_cov)
         if not np.isfinite(tolerance) or tolerance <= 0:
             raise ValueError("tolerance must be finite and positive")
@@ -124,7 +124,7 @@ class BetaStability(StoppingCriterion):
 
     def __init__(
         self, *, tolerance: float = 0.005, consecutive: int = 3, target_cov: float = 0.1
-    ):
+    ) -> None:
         super().__init__(target_cov=target_cov)
         if not np.isfinite(tolerance) or tolerance <= 0:
             raise ValueError("tolerance must be finite and positive")
@@ -156,7 +156,7 @@ class AllCriteria(StoppingCriterion):
     the final estimate must pass all of them.
     """
 
-    def __init__(self, *, criteria: tuple[StoppingCriterion, ...]):
+    def __init__(self, *, criteria: tuple[StoppingCriterion, ...]) -> None:
         self.criteria = tuple(criteria)
         if not self.criteria or not all(
             isinstance(criterion, StoppingCriterion) for criterion in self.criteria
@@ -194,7 +194,7 @@ class BootstrapBounds(StoppingCriterion):
 
     def __init__(
         self, *, tolerance: float = 0.1, consecutive: int = 2, target_cov: float = 0.1
-    ):
+    ) -> None:
         super().__init__(target_cov=target_cov)
         if not np.isfinite(tolerance) or tolerance <= 0:
             raise ValueError("tolerance must be finite and positive")

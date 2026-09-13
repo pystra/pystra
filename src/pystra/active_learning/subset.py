@@ -136,7 +136,7 @@ class SubsetSimulationEstimator(EnrichmentEstimator):
         proposal_scale: float = 0.5,
         max_levels: int = 12,
         n_replications: int = 4,
-    ):
+    ) -> None:
         self.n_samples = _positive_integer(n_samples, "n_samples", 20)
         if (
             not np.isfinite(conditional_probability)
