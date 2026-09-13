@@ -1,7 +1,7 @@
-.. figure:: docs/source/images/logo/logo_pystra_mid.png
+.. figure:: https://raw.githubusercontent.com/pystra/pystra/main/docs/source/images/logo/logo_pystra_mid.png
    :alt: PySTRA logo
    :align: center
-   :scale: 50
+   :width: 398px
 
 PySTRA - Python Structural Reliability Analysis
 ===============================================
@@ -14,21 +14,19 @@ SciPy and pandas, and supports reliability models defined by Python functions.
 Installation
 ------------
 
-This branch develops **PySTRA 2.0** with a breaking API. Install this branch to
-run its examples::
+Install PySTRA from PyPI::
 
-   git clone --branch v2.0 https://github.com/pystra/pystra.git
-   cd pystra
-   python -m pip install -e .
-   python -c "import pystra; print(pystra.__version__)"
+   python -m pip install pystra
 
-Use ``python -m pip install -e '.[al]'`` for the optional active-learning
-methods. The `installation guide <docs/source/install.md>`_ covers environments
-and notebooks. Existing users should read the
-`migration guide <docs/source/migrating.rst>`_.
+Use ``python -m pip install "pystra[al]"`` for the optional active-learning
+methods. The `installation guide <https://pystra.github.io/pystra/2.0/install.html>`_ covers environments,
+notebooks and installing from source.
 
-For the stable 1.x release, use ``python -m pip install pystra`` and its
-`stable documentation <https://pystra.github.io/pystra/>`_.
+PySTRA 2.0 is not compatible with 1.x. `What's new <https://pystra.github.io/pystra/2.0/whatsnew.html>`_
+summarizes the release, and the `migration guide <https://pystra.github.io/pystra/2.0/migrating.html>`_ shows
+how to update 1.x code; ``python -m pystra.migrate`` makes the unambiguous
+changes for you. To stay on 1.x, install ``"pystra<2"`` and use the
+`1.x documentation <https://pystra.github.io/pystra/>`_.
 
 Features
 --------
@@ -42,25 +40,25 @@ Features
 
 Limit states are Python functions. Each algorithm has response-smoothness,
 transformation and convergence requirements; use the
-`method-selection guide <docs/source/guides/methods.rst>`_ to choose a starting
+`method-selection guide <https://pystra.github.io/pystra/2.0/guides/methods.html>`_ to choose a starting
 point and plan validation.
 
 Getting started
 ---------------
 
-The `first analysis <docs/source/notebooks/ex_first_analysis.ipynb>`_ checks FORM
+The `first analysis <https://pystra.github.io/pystra/2.0/notebooks/ex_first_analysis.html>`_ checks FORM
 against an exact resistance-minus-load probability. Follow the
-`example categories <docs/source/tutorial.rst>`_ for more advanced methods and
-the `benchmark catalogue <docs/source/benchmarks.rst>`_ for published problems.
-See the `contributor guide <CONTRIBUTING.md>`_ to build the v2 documentation locally.
-
+`example categories <https://pystra.github.io/pystra/2.0/tutorial.html>`_ for more advanced methods and the
+`benchmark catalogue <https://pystra.github.io/pystra/2.0/benchmarks.html>`_ for published problems. For
+problems with very small failure probabilities, see the
+`high-reliability guide <https://pystra.github.io/pystra/2.0/guides/high_reliability.html>`_.
 
 Contributing
 ------------
 
-See the `contributor guide <CONTRIBUTING.md>`_ for v2 coding conventions,
-numerical validation, and pull-request guidance, and the
-`2.0 migration plan <docs/v2.0-migration-plan.md>`_ for the release sequence.
+See the `contributor guide <https://github.com/pystra/pystra/blob/v2.0/CONTRIBUTING.md>`_
+for coding conventions, numerical validation, building the documentation and
+pull-request guidance.
 
 Credits
 -------
