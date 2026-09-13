@@ -1,5 +1,4 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
+"""Chi square marginal distribution."""
 
 from scipy.stats import chi2
 

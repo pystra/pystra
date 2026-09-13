@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+"""Monte Carlo reliability estimates and sampled response distributions."""
 
 import numpy as np
 from scipy.special import logsumexp, ndtri_exp

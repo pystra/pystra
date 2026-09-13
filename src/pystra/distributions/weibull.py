@@ -1,5 +1,4 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
+"""Weibull marginal distribution."""
 
 from scipy.stats import weibull_min as weibull
 import scipy.optimize as opt

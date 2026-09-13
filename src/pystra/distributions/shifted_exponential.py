@@ -1,5 +1,4 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
+"""Shifted exponential marginal distribution."""
 
 from scipy.stats import expon
 

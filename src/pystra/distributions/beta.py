@@ -1,5 +1,4 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
+"""Beta marginal distribution."""
 
 import numpy as np
 from scipy.stats import beta

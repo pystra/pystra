@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+"""Distributions of independent maxima and their deterministic moments."""
 
 import numpy as np
 

@@ -1,5 +1,4 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
+"""Second-order reliability approximations at a FORM design point."""
 
 import numpy as np
 

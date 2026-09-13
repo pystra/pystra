@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+"""Recover parent distributions from laws of independent maxima."""
 
 import numpy as np
 

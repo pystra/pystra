@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Sensitivity analysis of the reliability index.
 
 This module computes the sensitivity of the FORM reliability index

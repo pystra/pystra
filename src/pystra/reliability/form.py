@@ -1,5 +1,4 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
+"""First-order reliability analysis using a design-point search."""
 
 import numpy as np
 import warnings

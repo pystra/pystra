@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+"""Adapt frozen continuous SciPy distributions to the marginal interface."""
 
 from scipy.stats._distn_infrastructure import rv_frozen
 from scipy.stats import rv_continuous

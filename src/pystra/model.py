@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+"""Named stochastic models and physical limit-state evaluation."""
 
 import inspect
 

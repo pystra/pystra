@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Line Sampling reliability analysis."""
 
 import numpy as np

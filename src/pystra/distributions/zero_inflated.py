@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+"""Zero inflated marginal distribution."""
 
 import numpy as np
 from scipy import special as sp

@@ -1,5 +1,4 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
+"""Gumbel marginal distribution."""
 
 import numpy as np
 from numpy.typing import ArrayLike

@@ -1,5 +1,4 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
+"""Normal marginal distribution."""
 
 import numpy as np
 from scipy import special as sp

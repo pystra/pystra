@@ -1,3 +1,5 @@
+"""Shifted lognormal marginal distribution."""
+
 import numpy as np
 from scipy.stats import lognorm
 from .distribution import Distribution

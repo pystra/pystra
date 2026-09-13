@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Subset Simulation reliability analysis."""
 
 import numpy as np

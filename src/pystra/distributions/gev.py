@@ -1,3 +1,5 @@
+"""Generalized extreme value distributions for maxima and minima."""
+
 import numpy as np
 from scipy.stats import genextreme
 from scipy.special import gamma

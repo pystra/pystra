@@ -1,5 +1,4 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
+"""Gamma marginal distribution."""
 
 from scipy.stats import gamma
 

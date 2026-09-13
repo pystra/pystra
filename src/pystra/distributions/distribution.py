@@ -1,5 +1,4 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
+"""Marginal distribution interfaces and numerically stable tail mappings."""
 
 import warnings
 from collections.abc import Mapping
