@@ -110,6 +110,12 @@ html_theme_options = {
         },
     ],
     "use_edit_page_button": True,
+    # Shown on the 2.0 pages published under /2.0/ beside the 1.x site
+    "announcement": (
+        "These pages document PySTRA 2.0, which is in development. "
+        'The stable 1.x documentation is at <a href="https://pystra.github.io/pystra/">'
+        "pystra.github.io/pystra</a>."
+    ),
 }
 html_context = {
     "github_user": "pystra",
