@@ -1,5 +1,5 @@
 System reliability
-******************
+==================
 
 .. _id1:
 
@@ -44,7 +44,7 @@ allow the same system definition to be passed to simulation methods, active
 learning, and, when the envelope is sufficiently smooth near the controlling
 point, FORM/SORM.
 
-k-of-n, Cut-Set, and Tie-Set systems
+k-of-n, cut-set, and tie-set systems
 ------------------------------------
 
 More general topologies are often described in terms of events rather than a
@@ -120,7 +120,7 @@ general cut-set systems, including the rigid-plastic cantilever-bar benchmark
 [Song2003]_.  This is a natural extension beyond the current Ditlevsen bounds
 API.
 
-Four-Branch Case
+Four-branch case
 ----------------
 
 The four-branch case is a widely used benchmark for reliability algorithms
@@ -149,7 +149,7 @@ active-learning methods are therefore better suited to estimating the global
 failure probability unless a dedicated first-order system reliability method
 is used.
 
-First-Order system reliability
+First-order system reliability
 ------------------------------
 
 First-order system reliability methods approximate each component failure

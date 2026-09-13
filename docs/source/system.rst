@@ -1,8 +1,7 @@
 .. _chap_system:
 
-******************
-System Reliability
-******************
+System reliability
+==================
 
 PySTRA separates the system failure event from its probability calculation.
 The ``pystra.systems`` topology classes compose component limit states for
@@ -16,8 +15,8 @@ and ties can give misleading or zero finite-difference gradients.
 The sign convention is the usual PySTRA convention: positive values are safe
 and negative values indicate failure.
 
-Series and Parallel Systems
-===========================
+Series and parallel systems
+---------------------------
 
 A series system fails when any child component or subsystem fails.  Its
 equivalent limit-state value is therefore
@@ -39,7 +38,7 @@ system benchmarks such as the :ref:`four-branch series example
 <ref-schueremans-2005>`.
 
 Original-system Monte Carlo
-===========================
+---------------------------
 
 .. code-block:: python
 
@@ -86,7 +85,7 @@ model variables are filtered at the component boundary, which keeps small
 component functions reusable inside larger systems.
 
 Component-based system FORM
-===========================
+---------------------------
 
 .. code-block:: python
 
@@ -157,8 +156,8 @@ standard-normal space. For nonlinear components, compare with original-system
 simulation. The four-branch notebook illustrates the difference between the
 first-order approximation and the nonlinear event probability.
 
-Event Topologies
-================
+Event topologies
+----------------
 
 Structural systems are often specified as event logic once the engineer has
 identified the relevant component limit states.  PySTRA provides three small
@@ -209,8 +208,8 @@ measure. Existing line sampling assumes one failure tail per line, and existing
 importance sampling uses one FORM design point. Neither should be assumed to
 cover arbitrary system failure regions.
 
-Ditlevsen Bounds
-================
+Ditlevsen bounds
+----------------
 
 When component event probabilities and pairwise intersection probabilities are
 available, :func:`pystra.ditlevsen_bounds` computes :ref:`Ditlevsen's
@@ -235,8 +234,8 @@ test suite includes :ref:`Mainçon's identical 100-element series benchmark
 <ref-maincon-2000>`, where the Ditlevsen
 upper bound is approximately ``6.216e-2``.
 
-Scope and Transformations
-=========================
+Scope and transformations
+-------------------------
 
 The system module composes limit-state functions in the original physical
 variables.  The isoprobabilistic transformation to standard space remains the
@@ -258,8 +257,8 @@ Automatic failure-path enumeration,
 load redistribution and importance sampling around multiple design points
 remain future extensions.
 
-Validation Benchmarks
-=====================
+Validation benchmarks
+---------------------
 
 The current validation suite checks exact Boolean behavior for series,
 parallel, k-of-n, cut-set, and tie-set systems; integration with PySTRA's

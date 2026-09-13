@@ -21,7 +21,7 @@ factor sets by the design rules they represent, for example current and
 proposed rules.
 
 Assess a design population
----------------------------
+--------------------------
 
 :class:`~pystra.calibration.normalized.CodeCalibration` evaluates the chosen
 live-load and dead-load ratio grid. Call ``study.run(model, factors,
@@ -35,7 +35,7 @@ records and can show the applicable design ranges. The tutorial's annotated
 ranges are illustrative assumptions, not prescribed domains for a bridge code.
 
 Use another reliability method
--------------------------------
+------------------------------
 
 ``CodeCalibration.run``, ``solve_designs`` and ``verify_designs`` accept
 ``evaluator=`` and evaluator-specific ``options=``. The default is FORM.

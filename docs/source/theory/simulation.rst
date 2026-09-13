@@ -1,5 +1,5 @@
 Simulation methods
-******************
+==================
 
 .. _id1:
 
@@ -41,7 +41,7 @@ failure can be estimated such as [Malioka2009]_
 
 
 Crude Monte Carlo simulation
-============================
+----------------------------
 
 The Crude Monte Carlo simulation (CMC) is the most simple form and corresponds
 to a direct application of Equation :eq:`eq:2_92`. A large number :math:`n` of
@@ -70,7 +70,7 @@ failure. [Lemaire2010]_
 
 
 Importance sampling
-===================
+-------------------
 
 To decrease the number of simulations and the coefficient of variation, other
 methods can be performed. One commonly applied method is the Importance
@@ -129,7 +129,7 @@ the failure domain can be observed.
 
 
 Line sampling
-=============
+-------------
 
 Line Sampling (LS) is a variance-reduction technique that exploits the
 important direction :math:`\boldsymbol{\alpha}` identified by FORM to reduce
@@ -188,7 +188,7 @@ close to :math:`\beta_{\text{FORM}}` and
 
 
 Subset simulation
-=================
+-----------------
 
 Subset Simulation (SS) is an adaptive simulation method that decomposes the
 rare failure event :math:`F = \{g(\mathbf{u}) \le 0\}` into a sequence of

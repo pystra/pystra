@@ -82,7 +82,7 @@ see :doc:`guides/troubleshooting`. To reproduce a paper example, browse the
    developer
 
 Project and community
-----------------------
+---------------------
 
 PySTRA is GPL-3.0-or-later. Its numerical methods build on the work cited in
 :doc:`references`, including the original framework [Hackl2013]_.

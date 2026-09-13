@@ -1,8 +1,8 @@
 Design decisions and societal risk
-**********************************
+==================================
 
-Design Decision optimization and Societal Risk Acceptance
-=========================================================
+Design decision optimization and societal risk acceptance
+---------------------------------------------------------
 
 
 Design decision optimization with societal risk acceptance is normally applied

@@ -1,7 +1,7 @@
 .. _chap_copulas:
 
-Copulas and Isoprobabilistic Transformations
-=================================================
+Copulas and isoprobabilistic transformations
+============================================
 
 For worked examples, see :doc:`notebooks/ex_copulas`; for the derivations,
 see :ref:`theory_copulas`.
@@ -13,7 +13,7 @@ the distinction developed by Lebrun and Dutfoy [LebrunDutfoy2009a]_
 [LebrunDutfoy2009b]_.
 
 Specifying a joint distribution
-------------------------------------
+-------------------------------
 
 .. code-block:: python
 
@@ -65,7 +65,7 @@ copula to prevent confusion between physical and latent correlations. Use
 also works for a legacy model by calibrating its Gaussian copula.
 
 Choosing the transformation
---------------------------------
+---------------------------
 
 .. code-block:: python
 
@@ -113,7 +113,7 @@ are analytic; Frank uses central differences of the inverse transformation,
 without extra limit-state evaluations.
 
 Generalized Nataf is not always normal
--------------------------------------------
+--------------------------------------
 
 For an elliptical copula, generalized Nataf first maps each marginal into
 the elliptical representative and then removes its shape matrix. The result
@@ -140,7 +140,7 @@ assume the legacy physical-Pearson Nataf specification; for explicit copulas,
 use numerical sensitivities, which keep the copula parameters fixed.
 
 Validation and numerical scope
------------------------------------
+------------------------------
 
 The tests compare Gaussian and Student-t joint densities with SciPy's
 multivariate distributions, verify transformation Jacobians against density

@@ -2,9 +2,8 @@
 
 .. _chap_tutorial:
 
-********
 Examples
-********
+========
 
 Start with a first reliability analysis, then choose the methods or engineering
 workflow you need. The categories progress from introductory examples to

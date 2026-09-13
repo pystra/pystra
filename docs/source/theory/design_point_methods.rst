@@ -1,8 +1,8 @@
 FORM, SORM and design-point diagnostics
-***************************************
+=======================================
 
-First-Order reliability method (FORM)
-=====================================
+First-order reliability method (FORM)
+-------------------------------------
 
 
 Let :math:`\bf Z` be a set of uncorrelated and standardized normally distributed random
@@ -55,8 +55,8 @@ FORM corresponds to a linearization of the failure surface :math:`g({\bf Z}) =
 reliability index :math:`\beta` can be computed.
 
 
-Second-Order reliability method (SORM)
-======================================
+Second-order reliability method (SORM)
+--------------------------------------
 
 FORM approximates the failure surface :math:`g({\bf Z}) = 0` by a tangent
 hyperplane at the design point.  When the failure surface has significant
@@ -67,7 +67,7 @@ improves on FORM by fitting a quadratic surface (paraboloid) to
 second-order effects [Baker2010]_.
 
 Quadratic approximation in rotated space
-----------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Starting from the FORM design point :math:`{\bf z}^*` and the unit
 direction vector :math:`\boldsymbol{\alpha} = -{\bf z}^*/\beta`, the
@@ -92,8 +92,8 @@ curvature means it curves towards the origin (unconservative).
 The key task is to determine the principal curvatures :math:`\kappa_i`.
 PySTRA provides two approaches.
 
-Curve-Fitting
--------------
+Curve-fitting
+~~~~~~~~~~~~~
 
 The default method (``fit="curve"``) obtains the curvatures from the
 Hessian matrix of the limit state function.  The Hessian :math:`{\bf H}`
@@ -123,8 +123,8 @@ failure probability:
 
 This result is asymptotically exact as :math:`\beta \to \infty`.
 
-Point-Fitting
--------------
+Point-fitting
+~~~~~~~~~~~~~
 
 An alternative method (``fit="point"``) determines the curvatures by
 locating fitting points directly on the failure surface, without computing
@@ -157,8 +157,8 @@ curvatures is:
 When the curvatures are symmetric (:math:`\kappa_i^+ = \kappa_i^-`), this
 reduces to the standard Breitung formula :eq:`eq:sorm_breitung`.
 
-Hohenbichler--Rackwitz Modification
------------------------------------
+Hohenbichler--Rackwitz modification
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The Breitung formula is asymptotically exact for large :math:`\beta` but
 can be inaccurate for moderate values.  Hohenbichler and Rackwitz
@@ -184,7 +184,7 @@ with the obvious extension to asymmetric curvatures from point-fitting.
 Both the standard and modified Breitung results are reported by PySTRA.
 
 Validity and method comparison
-------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The Breitung and Hohenbichler--Rackwitz formulas require each curvature
 term in the product to be positive.  For the standard Breitung formula
@@ -211,7 +211,7 @@ The two fitting methods offer different trade-offs:
 .. _/theory.rst#theory-strong-maximum:
 
 Strong Maximum Test
-===================
+-------------------
 
 A converged local FORM design point need not represent every important
 failure region. The Strong Maximum Test [DutfoyLebrun2006]_ probes an enlarged
@@ -222,7 +222,7 @@ See :doc:`/notebooks/ex_strong_maximum` for geometric examples and
 :ref:`chap_strong_maximum` for the API.
 
 Sphere geometry
----------------
+~~~~~~~~~~~~~~~
 
 Let the candidate be :math:`u^*`, with :math:`\beta=\|u^*\|>0`, and assume
 that the origin is strictly safe. A density ratio :math:`0<\varepsilon<1`
@@ -258,7 +258,7 @@ points themselves. The magnitude of :math:`g` does not measure a region's
 probability importance.
 
 Cap probability and evaluation budget
--------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The reference detection cap has half-angle
 :math:`\theta=\arccos(r_\varepsilon/r)`, which differs from the candidate
@@ -287,7 +287,7 @@ origin and boundary checks. The cap can become small in high dimensions,
 so inspect the budget before using an expensive structural model.
 
 Interpretation and limitations
-------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Nominal confidence is a sampling statement about hitting a fixed cap under
 the test's local-plane and failure-region extent assumptions. It is not a

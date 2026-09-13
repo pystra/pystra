@@ -1,8 +1,8 @@
 Probability transformations and copulas
-***************************************
+=======================================
 
 Probability transformation
-==========================
+--------------------------
 
 
 Classical FORM uses independent standard-normal coordinates. A probability
@@ -11,7 +11,7 @@ Generalized Nataf also permits spherical non-normal standard spaces, provided
 the reliability calculation uses the corresponding probability law.
 
 Transformation of dependent random variables using Nataf approach
------------------------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 One method to handle this is using the Nataf joint distribution model, if the
 marginal cdfs are known. [Baker2010]_ The correlated random variables
@@ -66,7 +66,7 @@ dependence is limited to correlation coefficients. [Baker2010]_
 [DerKiureghian2006]_
 
 Transformation of dependent random variables using Rosenblatt approach
-----------------------------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 An alternative to the Nataf approach is to consider the joint pdf of
 :math:`\bf X` as a product of conditional pdfs.
@@ -129,7 +129,7 @@ transformations may be useful, for example Nataf transformation.
 .. _/theory.rst#theory-copulas:
 
 Copulas as joint distribution specifications
---------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 For continuous marginals, dependence is specified by a copula :math:`C`:
 
@@ -159,7 +159,7 @@ physical marginals can be used with the same copula. See
 :ref:`chap_copulas` for the supported specification interface.
 
 Generalized Nataf for elliptical copulas
-----------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Following [LebrunDutfoy2009a]_, let :math:`H` be the univariate CDF of a
 centered elliptical representative with unit-diagonal shape matrix
@@ -198,7 +198,7 @@ space. A normal Rosenblatt mapping supports these analyses with the same
 Student-t copula.
 
 Rosenblatt conditioning and approximation invariance
-----------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A copula supplies the conditional CDFs required by Rosenblatt. For an order
 :math:`\pi`, define :math:`p_i=F_i(x_i)` and
@@ -254,7 +254,7 @@ underlying probability for each order.
 .. _very-small-probabilities:
 
 Very small probabilities
-------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 Every marginal mapping above passes through a probability,
 :math:`\Phi(u)` or :math:`F_X(x)`. In double precision :math:`\Phi(u)` rounds

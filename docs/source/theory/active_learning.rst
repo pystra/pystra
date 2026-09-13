@@ -1,8 +1,8 @@
 Active-learning reliability
-***************************
+===========================
 
 Active learning reliability
-===========================
+---------------------------
 
 
 ``pystra.active_learning.ActiveLearning`` combines a surrogate with Monte
@@ -36,7 +36,7 @@ with explicit centers and weighted probability diagnostics. See
 :doc:`/notebooks/ex_active_extensions` for its coverage and checks.
 
 Surrogates and uncertainty
---------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Kriging uses scikit-learn's Matérn 5/2 Gaussian process with response
 normalization and a small numerical nugget. Install the optional ``al`` extra.
@@ -79,7 +79,7 @@ series-system surfaces. Use independent true evaluations, polynomial-degree
 checks and benchmark comparisons before trusting a PCE reliability estimate.
 
 Learning functions
-------------------
+~~~~~~~~~~~~~~~~~~
 
 The U-function [Echard2011]_ selects the smallest value of
 :math:`U=|\mu|/\sigma`, stopping when its minimum reaches the configurable
@@ -100,7 +100,7 @@ EFF. With PCE, the Gaussian assumption is a heuristic applied to bootstrap
 spread; it does not convert that spread into a posterior distribution.
 
 Stopping and interpretation
----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The default ``LearningThreshold`` stops enrichment when the configured score
 threshold is met and the candidate pool contains both predicted failure and
@@ -160,7 +160,7 @@ unfinished estimate for diagnosis.
 
 
 Replicated subset sampling uncertainty
---------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 For conditional level j, let p_j be the indicator mean and S_c the sum of
 centered indicators in chain c. The chain-cluster variance approximation is

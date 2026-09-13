@@ -3,9 +3,8 @@
    :align: center
    :scale: 50
 
-***********************************************
 PySTRA - Python Structural Reliability Analysis
-***********************************************
+===============================================
 
 PySTRA provides a carefully validated implementation of established and
 selected modern structural reliability methods, coupled with practical tools
@@ -13,7 +12,7 @@ for code calibration and structural assessment. It integrates with NumPy,
 SciPy and pandas, and supports reliability models defined by Python functions.
 
 Installation
-============
+------------
 
 This branch develops **PySTRA 2.0** with a breaking API. Install this branch to
 run its examples::
@@ -32,7 +31,7 @@ For the stable 1.x release, use ``python -m pip install pystra`` and its
 `stable documentation <https://pystra.github.io/pystra/>`_.
 
 Features
-========
+--------
 
 * FORM and SORM, direct and importance sampling, line sampling and subset simulation.
 * Explicit copulas and probability transformations, component and system reliability.
@@ -47,7 +46,7 @@ transformation and convergence requirements; use the
 point and plan validation.
 
 Getting started
-===============
+---------------
 
 The `first analysis <docs/source/notebooks/ex_first_analysis.ipynb>`_ checks FORM
 against an exact resistance-minus-load probability. Follow the
@@ -57,20 +56,20 @@ See the `contributor guide <CONTRIBUTING.md>`_ to build the v2 documentation loc
 
 
 Contributing
-============
+------------
 
 See the `contributor guide <CONTRIBUTING.md>`_ for v2 coding conventions,
 numerical validation, and pull-request guidance, and the
 `2.0 migration plan <docs/v2.0-migration-plan.md>`_ for the release sequence.
 
 Credits
-=======
+-------
 PySTRA is built on PyRe by Jürgen Hackl; FERUM4.1 by Jean-Marc Bourinet; FERUM by Terje Haukaas and Armen Der Kiureghian.
 
 Copyright 2021 The Pystra Developers.
 
-List of References
-==================
+List of references
+------------------
 
 [Bourinet2009] J.-M. Bourinet, C. Mattrand, and V Dubourg. A review of recent features and improvements added to FERUM software. In Proc. of the 10th International Conference on Structural Safety and Reliability (ICOSSAR’09), Osaka, Japan, 2009.
 
@@ -81,7 +80,7 @@ List of References
 [Hackl2013] J. Hackl. Generic Framework for Stochastic Modeling of Reinforced Concrete Deterioration Caused by Corrosion. Master’s thesis, Norwegian University of Science and Technology, Trondheim, Norway, 2013.
 
 License
--------
+~~~~~~~
 
 PySTRA is distributed under the GNU General Public License, version 3 or
 later (GPL-3.0-or-later). See ``LICENSE`` for the terms and retained PyRe notice.

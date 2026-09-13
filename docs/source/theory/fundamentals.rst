@@ -1,5 +1,5 @@
 Structural reliability fundamentals
-***********************************
+===================================
 
 .. _structural-reliability:
 
@@ -73,7 +73,7 @@ For this reason various methods have been developed to overcome these chal-
 lenges. The most common ones are the Monte Carlo simulation method and the
 First Order Reliability Method (FORM).
 
-The Classical approach
+The classical approach
 ----------------------
 
 Before discussing more general methods, the principles are shown on a
