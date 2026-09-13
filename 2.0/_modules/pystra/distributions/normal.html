@@ -507,9 +507,9 @@
                 <article class="bd-article">
                   
   <h1>Source code for pystra.distributions.normal</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/python -tt</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
+<span></span><span class="sd">"""Normal marginal distribution."""</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">special</span> <span class="k">as</span> <span class="n">sp</span>
 
@@ -521,22 +521,23 @@
 <div class="viewcode-block" id="Normal">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.normal.Normal.html#pystra.distributions.normal.Normal">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Normal</span><span class="p">(</span><span class="n">Distribution</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Normal distribution</span>
+<span class="w">    </span><span class="sd">"""Normal distribution using direct standard normal formulas.</span>
 
-<span class="sd">    :Attributes:</span>
-<span class="sd">      - name (str):         Name of the random variable\n</span>
-<span class="sd">      - mean (float):       Mean\n</span>
-<span class="sd">      - std (float):       Standard deviation\n</span>
-<span class="sd">      - start_point (float): Start point for seach\n</span>
-
-<span class="sd">    Note: while we could use SciPy norm distribution here, there is a</span>
-<span class="sd">    substantial perfromance hit, so use local implementation.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name of the random variable, matching a limit-state argument.</span>
+<span class="sd">    mean : float</span>
+<span class="sd">        Mean in physical space.</span>
+<span class="sd">    std : float</span>
+<span class="sd">        Standard deviation in physical space.</span>
+<span class="sd">    start_point : float, optional</span>
+<span class="sd">        Starting point for the design-point search. Defaults to the mean.</span>
 <span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">start_point</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Leave initialization to the base class</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mean</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">std</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">start_point</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
             <span class="n">mean</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span>
@@ -547,10 +548,8 @@
 
 <div class="viewcode-block" id="Normal.pdf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.normal.Normal.html#pystra.distributions.normal.Normal.pdf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        probability density function</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Evaluate the probability density function."""</span>
         <span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span>
         <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">std_normal</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span>
         <span class="k">return</span> <span class="n">p</span></div>
@@ -558,10 +557,8 @@
 
 <div class="viewcode-block" id="Normal.cdf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.normal.Normal.html#pystra.distributions.normal.Normal.cdf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        cumulative distribution function</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Evaluate the cumulative distribution function."""</span>
         <span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span>
         <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">std_normal</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">p</span></div>
@@ -569,10 +566,8 @@
 
 <div class="viewcode-block" id="Normal.ppf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.normal.Normal.html#pystra.distributions.normal.Normal.ppf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">ppf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        inverse cumulative distribution function</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ppf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Evaluate the inverse cumulative distribution function."""</span>
         <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">std_normal</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span> <span class="o">*</span> <span class="n">z</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span>
         <span class="k">return</span> <span class="n">x</span></div>
@@ -580,21 +575,21 @@
 
 <div class="viewcode-block" id="Normal.sf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.normal.Normal.html#pystra.distributions.normal.Normal.sf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Survival function."""</span>
         <span class="k">return</span> <span class="n">sp</span><span class="o">.</span><span class="n">ndtr</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Normal.isf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.normal.Normal.html#pystra.distributions.normal.Normal.isf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">isf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Inverse survival function."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span> <span class="o">*</span> <span class="n">sp</span><span class="o">.</span><span class="n">ndtri</span><span class="p">(</span><span class="n">q</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Normal.logpdf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.normal.Normal.html#pystra.distributions.normal.Normal.logpdf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Log density."""</span>
         <span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span>
         <span class="k">return</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">z</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span></div>
@@ -602,14 +597,14 @@
 
 <div class="viewcode-block" id="Normal.logcdf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.normal.Normal.html#pystra.distributions.normal.Normal.logcdf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">logcdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logcdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Log CDF."""</span>
         <span class="k">return</span> <span class="n">sp</span><span class="o">.</span><span class="n">log_ndtr</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Normal.logsf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.normal.Normal.html#pystra.distributions.normal.Normal.logsf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">logsf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logsf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Log survival function."""</span>
         <span class="k">return</span> <span class="n">sp</span><span class="o">.</span><span class="n">log_ndtr</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">)</span></div>
 
@@ -622,10 +617,8 @@
 
 <div class="viewcode-block" id="Normal.sample">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.normal.Normal.html#pystra.distributions.normal.Normal.sample">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Override sample from base class due to bespoke implementation</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Draw n samples by applying the inverse CDF to uniform random draws."""</span>
         <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
         <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">samples</span></div>
@@ -633,31 +626,27 @@
 
 <div class="viewcode-block" id="Normal.u_to_x">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.normal.Normal.html#pystra.distributions.normal.Normal.u_to_x">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">u_to_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Transformation from u to x</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">u_to_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Transform standard normal coordinates to physical values."""</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">u</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span>
         <span class="k">return</span> <span class="n">x</span></div>
 
 
 <div class="viewcode-block" id="Normal.x_to_u">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.normal.Normal.html#pystra.distributions.normal.Normal.x_to_u">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">x_to_u</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Transformation from x to u</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">x_to_u</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Transform physical values to standard normal coordinates."""</span>
         <span class="n">u</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span>
         <span class="k">return</span> <span class="n">u</span></div>
 
 
 <div class="viewcode-block" id="Normal.jacobian">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.normal.Normal.html#pystra.distributions.normal.Normal.jacobian">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Compute the Jacobian  (e.g. Lemaire, eq. 4.9)</span>
-<span class="sd">        For the Normal distribution, the more usual general function can be</span>
-<span class="sd">        specialized as follows.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the diagonal x-to-u Jacobian for one-dimensional input arrays.</span>
+
+<span class="sd">        For a normal marginal the derivative is constant, 1/std (Lemaire,</span>
+<span class="sd">        eq. 4.9). The result has shape (u.size, u.size); x is unused.</span>
 <span class="sd">        """</span>
         <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">J</span></div>
@@ -665,7 +654,7 @@
 
 <div class="viewcode-block" id="Normal.cdf_gradient">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.normal.Normal.html#pystra.distributions.normal.Normal.cdf_gradient">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">cdf_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cdf_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">"""Analytical derivatives of the Normal CDF w.r.t. μ and σ.</span>
 
 <span class="sd">        .. math::</span>
@@ -684,21 +673,15 @@
 
 <div class="viewcode-block" id="Normal.set_location">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.normal.Normal.html#pystra.distributions.normal.Normal.set_location">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Updating the distribution location parameter. For Normal, there is no need to</span>
-<span class="sd">        update other properties as a result of this change.</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Set the stored mean to loc."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mean</span> <span class="o">=</span> <span class="n">loc</span></div>
 
 
 <div class="viewcode-block" id="Normal.set_scale">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.normal.Normal.html#pystra.distributions.normal.Normal.set_scale">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Updating the distribution scale parameter. For Normal, there is no need to</span>
-<span class="sd">        update other properties as a result of this change.</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Set the stored standard deviation to scale."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_std</span> <span class="o">=</span> <span class="n">scale</span></div>
 </div>
 

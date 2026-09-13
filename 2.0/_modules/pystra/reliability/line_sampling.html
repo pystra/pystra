@@ -507,13 +507,14 @@
                 <article class="bd-article">
                   
   <h1>Source code for pystra.reliability.line_sampling</h1><div class="highlight"><pre>
-<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">"""Line Sampling reliability analysis."""</span>
+<span></span><span class="sd">"""Line Sampling reliability analysis."""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">optimize</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.special</span><span class="w"> </span><span class="kn">import</span> <span class="n">log_ndtr</span><span class="p">,</span> <span class="n">logsumexp</span><span class="p">,</span> <span class="n">ndtri_exp</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_pystra</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..dependence.copula</span><span class="w"> </span><span class="kn">import</span> <span class="n">_RandomSeed</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisObject</span><span class="p">,</span> <span class="n">_check_rng</span><span class="p">,</span> <span class="n">_generator</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.form</span><span class="w"> </span><span class="kn">import</span> <span class="n">FORM</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._form_reuse</span><span class="w"> </span><span class="kn">import</span> <span class="n">_check_form</span><span class="p">,</span> <span class="n">_check_coordinates</span><span class="p">,</span> <span class="n">_FORMReuse</span>
@@ -579,7 +580,15 @@
 
     <span class="n">_options_type</span> <span class="o">=</span> <span class="n">SimulationOptions</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="s2">"_pystra.StochasticModel"</span><span class="p">,</span>
+        <span class="n">limit_state</span><span class="p">:</span> <span class="s2">"_pystra.LimitState"</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="s2">"_pystra.SimulationOptions | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">form</span><span class="p">:</span> <span class="s2">"_pystra.FORM | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">rng</span><span class="p">:</span> <span class="n">_RandomSeed</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="n">_check_rng</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">_require_defaults</span><span class="p">(</span>
@@ -598,7 +607,7 @@
 
 <div class="viewcode-block" id="LineSampling.run">
 <a class="viewcode-back" href="../../../gen/pystra.reliability.line_sampling.LineSampling.html#pystra.reliability.line_sampling.LineSampling.run">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"_pystra.SimulationResult"</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Run line sampling and return a :class:`SimulationResult`."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_results_valid</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_Pf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_beta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cov</span> <span class="o">=</span> <span class="kc">None</span>

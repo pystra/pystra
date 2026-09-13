@@ -511,6 +511,8 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_pystra</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..dependence.copula</span><span class="w"> </span><span class="kn">import</span> <span class="n">_RandomSeed</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.form</span><span class="w"> </span><span class="kn">import</span> <span class="n">FORM</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._form_reuse</span><span class="w"> </span><span class="kn">import</span> <span class="n">_check_form</span><span class="p">,</span> <span class="n">_check_coordinates</span><span class="p">,</span> <span class="n">_FORMReuse</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..options</span><span class="w"> </span><span class="kn">import</span> <span class="n">FORMOptions</span>
@@ -544,7 +546,15 @@
 <span class="sd">        transformation.</span>
 <span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="s2">"_pystra.StochasticModel"</span><span class="p">,</span>
+        <span class="n">limit_state</span><span class="p">:</span> <span class="s2">"_pystra.LimitState"</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="s2">"_pystra.SimulationOptions | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">form</span><span class="p">:</span> <span class="s2">"_pystra.FORM | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">rng</span><span class="p">:</span> <span class="n">_RandomSeed</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">form</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">FORM</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"form must be a FORM analysis"</span><span class="p">)</span>
@@ -553,7 +563,7 @@
 
 <div class="viewcode-block" id="ImportanceSampling.run">
 <a class="viewcode-back" href="../../../gen/pystra.reliability.importance_sampling.ImportanceSampling.html#pystra.reliability.importance_sampling.ImportanceSampling.run">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"_pystra.SimulationResult"</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Run importance sampling and return a :class:`SimulationResult`.</span>
 
 <span class="sd">        Samples are centered on the FORM design point. If no completed FORM</span>

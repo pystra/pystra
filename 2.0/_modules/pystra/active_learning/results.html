@@ -510,7 +510,6 @@
 <span></span><span class="sd">"""Immutable records separating surrogate diagnostics and sampling error."""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span>
@@ -544,8 +543,8 @@
 
     <span class="n">failure_probability</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">sampling_cov</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">sampling_interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]</span>
-    <span class="n">confidence_level</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="n">sampling_interval</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">confidence_level</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
     <span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">method</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">sampling_dependence</span><span class="p">:</span> <span class="nb">str</span>
@@ -616,8 +615,8 @@
     <span class="n">beta_band</span><span class="p">:</span> <span class="nb">tuple</span>
     <span class="n">learning_satisfied</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">estimation_converged</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">sampling_cov</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">bootstrap_probability_band</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">sampling_cov</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">bootstrap_probability_band</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bootstrap_probability_band</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -669,7 +668,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">estimate</span><span class="o">.</span><span class="n">sampling_cov</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sampling_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sampling_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Final estimator's conditional sampling interval, if available."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">estimate</span><span class="o">.</span><span class="n">sampling_interval</span>
 

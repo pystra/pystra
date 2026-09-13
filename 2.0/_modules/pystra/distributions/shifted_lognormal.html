@@ -507,8 +507,11 @@
                 <article class="bd-article">
                   
   <h1>Source code for pystra.distributions.shifted_lognormal</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span></span><span class="sd">"""Shifted lognormal marginal distribution."""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">lognorm</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">.distribution</span><span class="w"> </span><span class="kn">import</span> <span class="n">Distribution</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.lognormal</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lognormal</span>
 
@@ -518,20 +521,23 @@
 <div class="viewcode-block" id="ShiftedLognormal">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.shifted_lognormal.ShiftedLognormal.html#pystra.distributions.shifted_lognormal.ShiftedLognormal">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ShiftedLognormal</span><span class="p">(</span><span class="n">Lognormal</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Shifted Lognormal distribution</span>
+<span class="w">    </span><span class="sd">"""Shifted lognormal distribution.</span>
 
-<span class="sd">    If X is a lognormal random variable, then Y = X + lower is a shifted lognormal random variable.</span>
+<span class="sd">    If X is lognormal, Y = X + lower has this distribution. The supplied</span>
+<span class="sd">    mean and standard deviation describe Y.</span>
 
-<span class="sd">    :Arguments:</span>
-<span class="sd">      - name (str):         Name of the random variable</span>
-<span class="sd">      - mean (float):       Mean</span>
-<span class="sd">      - std (float):       Standard deviation\n</span>
-<span class="sd">      - lower (float):      Lower bound of the distribution (i.e. the shift applied to the lognormal)\n</span>
-<span class="sd">      - start_point (float): Start point for seach\n</span>
-
-<span class="sd">    Note: Could use scipy to do the heavy lifting. However, there is a small</span>
-<span class="sd">    performance hit, so for this common dist use bespoke implementation</span>
-<span class="sd">    for the PDF, CDF.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name of the random variable, matching a limit-state argument.</span>
+<span class="sd">    mean : float</span>
+<span class="sd">        Mean in physical space.</span>
+<span class="sd">    std : float</span>
+<span class="sd">        Standard deviation in physical space.</span>
+<span class="sd">    lower : float</span>
+<span class="sd">        Lower bound of the distribution.</span>
+<span class="sd">    start_point : float, optional</span>
+<span class="sd">        Starting point for the design-point search. Defaults to the mean.</span>
 <span class="sd">    """</span>
 
     <span class="n">_native_parameters</span> <span class="o">=</span> <span class="p">()</span>
@@ -539,7 +545,15 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_parameter_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">"mean"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="s2">"std"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">,</span> <span class="s2">"lower"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower</span><span class="p">}</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="n">lower</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">start_point</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">mean</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">std</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">lower</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">start_point</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_mean</span> <span class="o">=</span> <span class="n">mean</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_std</span> <span class="o">=</span> <span class="n">std</span>
@@ -568,7 +582,7 @@
 
 <div class="viewcode-block" id="ShiftedLognormal.set_lower">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.shifted_lognormal.ShiftedLognormal.html#pystra.distributions.shifted_lognormal.ShiftedLognormal.set_lower">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_lower</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_lower</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lower</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Updating the distribution lower parameter.</span>
 <span class="sd">        For Lognormal, even though we have a SciPy object, it's not being used in the</span>

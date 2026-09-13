@@ -507,9 +507,9 @@
                 <article class="bd-article">
                   
   <h1>Source code for pystra.distributions.parent</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/env python3</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
+<span></span><span class="sd">"""Recover parent distributions from laws of independent maxima."""</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.distribution</span><span class="w"> </span><span class="kn">import</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">_log1mexp</span><span class="p">,</span> <span class="n">_piecewise</span>
@@ -522,8 +522,7 @@
 <div class="viewcode-block" id="MaxParent">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.parent.MaxParent.html#pystra.distributions.parent.MaxParent">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MaxParent</span><span class="p">(</span><span class="n">Distribution</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Parent distribution of the provided distribution which represents</span>
-<span class="sd">    the distribution of maxima of a random variable.</span>
+<span class="w">    </span><span class="sd">"""Parent distribution recovered from a distribution of maxima.</span>
 
 <span class="sd">    For example, given an annual maximum distribution of imposed load, find</span>
 <span class="sd">    the parent distribution of imposed load, if the load is applied 6 times</span>
@@ -536,13 +535,16 @@
 <span class="sd">    warns and keeps the finest estimate, which serves for start points and</span>
 <span class="sd">    finite-difference steps. Nonfinite moments raise :class:`~pystra.ModelError`.</span>
 
-<span class="sd">    :Attributes:</span>
-<span class="sd">      - name (str):             Name of the random variable\n</span>
-<span class="sd">      - mean (float):           Mean\n</span>
-<span class="sd">      - std (float):           Standard deviation\n</span>
-<span class="sd">      - maximum (Distribution): Distribution of maximum object</span>
-<span class="sd">      - N (float):              Power to which distribution is raised</span>
-<span class="sd">      - start_point (float):     Start point for seach\n</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name of the random variable, matching a limit-state argument.</span>
+<span class="sd">    max_dist : Distribution</span>
+<span class="sd">        Distribution of maxima whose CDF is raised to the power 1/N.</span>
+<span class="sd">    N : float</span>
+<span class="sd">        Finite exponent, at least 1. Integer N represents N independent observations.</span>
+<span class="sd">    start_point : float, optional</span>
+<span class="sd">        Starting point for the design-point search. Defaults to the mean.</span>
 <span class="sd">    """</span>
 
     <span class="n">_native_parameters</span> <span class="o">=</span> <span class="p">()</span>
@@ -551,11 +553,18 @@
         <span class="k">return</span> <span class="p">{</span><span class="s2">"max_dist"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_dist</span><span class="p">,</span> <span class="s2">"N"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">}</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sensitivity_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sensitivity_params</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""No generic moment perturbation; replace the constructor inputs."""</span>
         <span class="k">return</span> <span class="p">{}</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">max_dist</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">start_point</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">max_dist</span><span class="p">:</span> <span class="n">Distribution</span><span class="p">,</span>
+        <span class="n">N</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">start_point</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">max_dist</span><span class="p">,</span> <span class="n">Distribution</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ModelError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">"MaxParent distribution of maximum requires input of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">Distribution</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
@@ -578,37 +587,31 @@
 
 <div class="viewcode-block" id="MaxParent.pdf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.parent.MaxParent.html#pystra.distributions.parent.MaxParent.pdf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Probability density function, from log densities</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Evaluate the probability density function."""</span>
         <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">under</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="MaxParent.cdf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.parent.MaxParent.html#pystra.distributions.parent.MaxParent.cdf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Cumulative distribution function, ``exp(log F_max(x) / N)``</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Evaluate the cumulative distribution function."""</span>
         <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">under</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logcdf</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="MaxParent.ppf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.parent.MaxParent.html#pystra.distributions.parent.MaxParent.ppf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">ppf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Inverse cumulative distribution function, from the maximum's tails</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ppf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Evaluate the inverse cumulative distribution function."""</span>
         <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ppf_log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)))</span></div>
 
 
 <div class="viewcode-block" id="MaxParent.isf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.parent.MaxParent.html#pystra.distributions.parent.MaxParent.isf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">isf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Inverse survival function."""</span>
         <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isf_log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)))</span></div>
@@ -616,7 +619,7 @@
 
 <div class="viewcode-block" id="MaxParent.logpdf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.parent.MaxParent.html#pystra.distributions.parent.MaxParent.logpdf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Log density."""</span>
         <span class="n">logpdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_dist</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -626,21 +629,21 @@
 
 <div class="viewcode-block" id="MaxParent.logcdf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.parent.MaxParent.html#pystra.distributions.parent.MaxParent.logcdf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">logcdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logcdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Log CDF, the maximum's divided by ``N``."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_dist</span><span class="o">.</span><span class="n">logcdf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span></div>
 
 
 <div class="viewcode-block" id="MaxParent.sf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.parent.MaxParent.html#pystra.distributions.parent.MaxParent.sf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Survival function ``1 - F_max(x)**(1/N)``."""</span>
         <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logcdf</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="MaxParent.logsf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.parent.MaxParent.html#pystra.distributions.parent.MaxParent.logsf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">logsf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logsf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Log survival function."""</span>
         <span class="c1"># Once 1 - F**(1/N) is below 1e-200 it equals (1 - F) / N</span>
         <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logcdf</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
@@ -677,7 +680,7 @@
 
 <div class="viewcode-block" id="MaxParent.set_location">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.parent.MaxParent.html#pystra.distributions.parent.MaxParent.set_location">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Updating the parent distribution location parameter.</span>
 <span class="sd">        """</span>
@@ -687,7 +690,7 @@
 
 <div class="viewcode-block" id="MaxParent.set_scale">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.parent.MaxParent.html#pystra.distributions.parent.MaxParent.set_scale">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Updating the parent distribution scale parameter.</span>
 <span class="sd">        """</span>
@@ -697,7 +700,7 @@
 
 <div class="viewcode-block" id="MaxParent.set_exponent">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.parent.MaxParent.html#pystra.distributions.parent.MaxParent.set_exponent">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_exponent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_exponent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Update the parent distribution exponent parameter.</span>
 <span class="sd">        """</span>
@@ -706,10 +709,7 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_update_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Updates the mean and std estimates - used for sensitivity analysis</span>
-<span class="sd">        where the parent distribution params may change after instantiation</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Recompute moments after an in-place change to the constructor inputs."""</span>
         <span class="n">m</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_stats</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mean</span> <span class="o">=</span> <span class="n">m</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_std</span> <span class="o">=</span> <span class="n">s</span></div>

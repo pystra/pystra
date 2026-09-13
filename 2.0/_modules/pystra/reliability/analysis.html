@@ -516,6 +516,7 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_pystra</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModelError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..model</span><span class="w"> </span><span class="kn">import</span> <span class="n">StochasticModel</span><span class="p">,</span> <span class="n">LimitState</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..dependence.transformation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Transformation</span>
@@ -581,7 +582,12 @@
     <span class="n">_options_type</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">_requires_limit_state</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="s2">"_pystra.StochasticModel"</span><span class="p">,</span>
+        <span class="n">limit_state</span><span class="p">:</span> <span class="s2">"_pystra.LimitState | None"</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="s2">"_pystra.FORMOptions | _pystra.SORMOptions | _pystra.SimulationOptions | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">name</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">StochasticModel</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
@@ -611,7 +617,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_results_valid</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_evaluations</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">names</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_variables</span><span class="p">())</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(variables=</span><span class="si">{</span><span class="n">names</span><span class="si">!r}</span><span class="s2">, options=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="si">!r}</span><span class="s2">)"</span>
 
@@ -644,7 +650,7 @@
 
 <div class="viewcode-block" id="AnalysisObject.init_run">
 <a class="viewcode-back" href="../../../gen/pystra.reliability.analysis.AnalysisObject.html#pystra.reliability.analysis.AnalysisObject.init_run">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">init_run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">init_run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Initialize the model's isoprobabilistic transformation.</span>
 
 <span class="sd">        Uses the explicit copula or calibrates the legacy Gaussian Nataf</span>

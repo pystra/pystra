@@ -507,14 +507,16 @@
                 <article class="bd-article">
                   
   <h1>Source code for pystra.reliability.monte_carlo</h1><div class="highlight"><pre>
-<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span></span><span class="sd">"""Monte Carlo reliability estimates and sampled response distributions."""</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.special</span><span class="w"> </span><span class="kn">import</span> <span class="n">logsumexp</span><span class="p">,</span> <span class="n">ndtri_exp</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_pystra</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..dependence.copula</span><span class="w"> </span><span class="kn">import</span> <span class="n">_RandomSeed</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisObject</span><span class="p">,</span> <span class="n">_check_rng</span><span class="p">,</span> <span class="n">_generator</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..distributions</span><span class="w"> </span><span class="kn">import</span> <span class="n">StdNormal</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..dependence.correlation</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_modified_correlation_matrix</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..options</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimulationOptions</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..results</span><span class="w"> </span><span class="kn">import</span> <span class="n">DistributionAnalysisResult</span><span class="p">,</span> <span class="n">SimulationResult</span>
 
@@ -528,30 +530,21 @@
 <div class="viewcode-block" id="MonteCarlo">
 <a class="viewcode-back" href="../../../gen/pystra.reliability.monte_carlo.MonteCarlo.html#pystra.reliability.monte_carlo.MonteCarlo">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MonteCarlo</span><span class="p">(</span><span class="n">AnalysisObject</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">"""Monte Carlo Simulation</span>
+<span class="w">    </span><span class="sd">"""Base implementation for Monte Carlo simulation analyses.</span>
 
-<span class="sd">    The preceding sections describe some methods for determining the reliability</span>
-<span class="sd">    index :math:`\\beta` for some common forms of the limit state</span>
-<span class="sd">    function. However, it is sometimes extremely difficult or impossible to find</span>
-<span class="sd">    :math:`\\beta`. [Nowak2000]_</span>
-
-<span class="sd">    In this case, the probability of failure :math:`p_f` may also be estimated</span>
-<span class="sd">    by numerical simulation methods. A large variety of simulation techniques</span>
-<span class="sd">    can be found in the literature, indeed, the most commonly used method is the</span>
-<span class="sd">    Monte Carlo method. [Faber2009]_</span>
-
-<span class="sd">    The principle of simulation methods is to carry out random sampling in the</span>
-<span class="sd">    physical (or standardized) space. For each of the samples the limit state</span>
-<span class="sd">    function is evaluated to figure out, whether the configuration is desired or</span>
-<span class="sd">    undesired. The probability of failure :math:`p_f` is estimated by the number</span>
-<span class="sd">    of undesired configurations, respected to the total numbers of</span>
-<span class="sd">    samples. [Lemaire2010]_</span>
+<span class="sd">    Random samples in physical or standard space estimate the failure</span>
+<span class="sd">    probability from limit-state evaluations [Nowak2000]_ [Faber2009]_</span>
+<span class="sd">    [Lemaire2010]_. Use CrudeMonteCarlo for direct sampling or a specialized</span>
+<span class="sd">    subclass for a different sampling scheme.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    model : StochasticModel</span>
+<span class="sd">        Named physical variables and their joint probability model.</span>
 <span class="sd">    limit_state : LimitState</span>
+<span class="sd">        Physical response evaluated at the sample points.</span>
 <span class="sd">    options : SimulationOptions, optional</span>
+<span class="sd">        Sampling, convergence and transformation settings.</span>
 <span class="sd">    rng : int, numpy.random.Generator or None, optional</span>
 <span class="sd">        Random source; NumPy's global generator is not used. A seed recreates</span>
 <span class="sd">        the same stream on every run, a generator advances its own state, and</span>
@@ -561,7 +554,14 @@
     <span class="n">_options_type</span> <span class="o">=</span> <span class="n">SimulationOptions</span>
     <span class="n">_unused_options</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"bins"</span><span class="p">,)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="s2">"_pystra.StochasticModel"</span><span class="p">,</span>
+        <span class="n">limit_state</span><span class="p">:</span> <span class="s2">"_pystra.LimitState"</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="s2">"_pystra.SimulationOptions | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">rng</span><span class="p">:</span> <span class="n">_RandomSeed</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">_require_defaults</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unused_options</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="n">_check_rng</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span>
@@ -600,26 +600,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_bins</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_set_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Set design point"""</span>
+<span class="w">        </span><span class="sd">"""Set design point."""</span>
         <span class="k">if</span> <span class="n">point</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_nrv</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="n">point</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_compute_random_numbers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Compute random numbers"""</span>
+<span class="w">        </span><span class="sd">"""Compute random numbers."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="p">,</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_block_size</span><span class="p">)])</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cholesky_covariance</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_random</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_nrv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_size</span><span class="p">)),</span>
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_compute_transformation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Compute transformation from u to x space</span>
+<span class="w">        </span><span class="sd">"""Transform each sample column from standard to physical space.</span>
 
-<span class="sd">        .. note::</span>
-
-<span class="sd">           TODO: this method takes a lot of time, find some better solution.</span>
-
+<span class="sd">        The stored arrays have shape (n_variables, block_size), with rows in</span>
+<span class="sd">        model variable order. Each transformation receives one sample column.</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_nrv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_size</span><span class="p">))</span>
 
@@ -629,18 +627,18 @@
             <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_compute_limit_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Evaluate limit-state function"""</span>
+<span class="w">        </span><span class="sd">"""Evaluate limit-state function."""</span>
         <span class="n">G</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lsf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_G</span> <span class="o">=</span> <span class="n">G</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_compute_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Collect result of sampling"""</span>
+<span class="w">        </span><span class="sd">"""Collect result of sampling."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_block_size</span><span class="p">)</span>
         <span class="n">indx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_I</span><span class="p">[</span><span class="n">indx</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_compute_sum_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Update summation"""</span>
+<span class="w">        </span><span class="sd">"""Update summation."""</span>
         <span class="c1"># The determinant factor belongs in the exponent too: std**n can</span>
         <span class="c1"># overflow even when the final density ratio is representable.</span>
         <span class="n">active</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_I</span> <span class="o">!=</span> <span class="mi">0</span>
@@ -673,12 +671,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_cov_q_bar</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_compute_percent_done</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Compute percent done"""</span>
+<span class="w">        </span><span class="sd">"""Compute percent done."""</span>
         <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_k</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">n_samples</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_done</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_done</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_k</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">n_samples</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_compute_failure_probability</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Compute probability of failure"""</span>
+<span class="w">        </span><span class="sd">"""Compute probability of failure."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sum_q</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_Pf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_q_bar</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -698,10 +696,18 @@
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_compute_bins</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Return an optimal amount of bins for a histogram</span>
+<span class="w">        </span><span class="sd">"""Choose the configured histogram count or the sample-size rule.</span>
 
-<span class="sd">        :Returns:</span>
-<span class="sd">          - bins (int): Returns amount on bins</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        samples : int</span>
+<span class="sd">            Number of sampled responses.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int or numpy.floating</span>
+<span class="sd">            Configured count, or ceil(4 * samples**0.25). The histogram caller</span>
+<span class="sd">            converts this integer-valued result to int.</span>
 <span class="sd">        """</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">bins</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -715,45 +721,52 @@
 <div class="viewcode-block" id="CrudeMonteCarlo">
 <a class="viewcode-back" href="../../../gen/pystra.reliability.monte_carlo.CrudeMonteCarlo.html#pystra.reliability.monte_carlo.CrudeMonteCarlo">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CrudeMonteCarlo</span><span class="p">(</span><span class="n">MonteCarlo</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Crude Monte Carlo simulation (CMC)</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Crude Monte Carlo simulation (CMC).</span>
 
-<span class="sd">    The Crude Monte Carlo simulation (CMC) is the most simple form and</span>
-<span class="sd">    corresponds to a direct application of Equation (24). A large number</span>
-<span class="sd">    :math:`n` of samples are simulated for the set of random variables</span>
-<span class="sd">    :math:`{\\bf X}`. All samples that lead to a failure are counted :math:`n_f`</span>
-<span class="sd">    and after all simulations the probability of failure :math:`p_f` may be</span>
-<span class="sd">    estimated by [Faber2009]_</span>
+<span class="sd">    With the default sampling density, failure probability is the fraction</span>
+<span class="sd">    of simulated points classified as failures [Faber2009]_. For n points</span>
+<span class="sd">    and n_f failures,</span>
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">               \\tilde{p}_f = \\frac{n_f}{n}</span>
+<span class="sd">        \tilde{p}_f = \frac{n_f}{n}.</span>
 
-<span class="sd">    Theoretically, an infinite number of simulations will provide an exact</span>
-<span class="sd">    probability of failure. However, time and the power of computers are</span>
-<span class="sd">    limited; therefore, a suitable amount of simulations :math:`n` are required</span>
-<span class="sd">    to achieve an acceptable level of accuracy.</span>
+<span class="sd">    Finite sampling introduces uncertainty; use the returned sampling</span>
+<span class="sd">    coefficient of variation to assess it. A shifted or scaled sampling</span>
+<span class="sd">    density uses density-ratio weights instead of unweighted counts.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    model : StochasticModel</span>
+<span class="sd">        Named physical variables and their joint probability model.</span>
 <span class="sd">    limit_state : LimitState</span>
+<span class="sd">        Physical response evaluated at each sample point.</span>
 <span class="sd">    options : SimulationOptions, optional</span>
+<span class="sd">        Sampling, convergence and transformation settings.</span>
+<span class="sd">    point : array_like, optional</span>
+<span class="sd">        Center of the sampling density in standard coordinates; the origin</span>
+<span class="sd">        by default.</span>
 <span class="sd">    rng : int, numpy.random.Generator or None, optional</span>
 <span class="sd">        Random source; NumPy's global generator is not used. A seed recreates</span>
 <span class="sd">        the same stream on every run, a generator advances its own state, and</span>
 <span class="sd">        None draws fresh entropy.</span>
-<span class="sd">    point : ndarray, optional</span>
-<span class="sd">        Center of the sampling density in standard coordinates; the origin</span>
-<span class="sd">        by default.</span>
 <span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="s2">"_pystra.StochasticModel"</span><span class="p">,</span>
+        <span class="n">limit_state</span><span class="p">:</span> <span class="s2">"_pystra.LimitState"</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="s2">"_pystra.SimulationOptions | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">point</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">rng</span><span class="p">:</span> <span class="n">_RandomSeed</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="n">point</span>
 
 <div class="viewcode-block" id="CrudeMonteCarlo.run">
 <a class="viewcode-back" href="../../../gen/pystra.reliability.monte_carlo.CrudeMonteCarlo.html#pystra.reliability.monte_carlo.CrudeMonteCarlo.run">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"_pystra.SimulationResult"</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Run the simulation and return a :class:`SimulationResult`."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_results_valid</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_Pf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_beta</span> <span class="o">=</span> <span class="kc">None</span>
@@ -892,15 +905,13 @@
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_initialize_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Initialization of the simulation variables"""</span>
+<span class="w">        </span><span class="sd">"""Initialization of the simulation variables."""</span>
         <span class="n">stdv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">sampling_std</span>
         <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">n_samples</span>
         <span class="c1"># Establish covariance matrix, its Cholesky decomposition, and its inverse</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_covariance</span> <span class="o">=</span> <span class="n">stdv</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nrv</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cholesky_covariance</span> <span class="o">=</span> <span class="n">stdv</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nrv</span><span class="p">)</span>
-        <span class="c1"># chol_covariance = chol(covariance);</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_inverse_covariance</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="n">stdv</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nrv</span><span class="p">)</span>
-        <span class="c1"># inv_covariance = inv(covariance);</span>
 
         <span class="c1"># Initializations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sum_q</span> <span class="o">=</span> <span class="mi">0</span>
@@ -940,12 +951,19 @@
 
     <span class="n">_unused_options</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"target_cov"</span><span class="p">,)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="s2">"_pystra.StochasticModel"</span><span class="p">,</span>
+        <span class="n">limit_state</span><span class="p">:</span> <span class="s2">"_pystra.LimitState"</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="s2">"_pystra.SimulationOptions | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">rng</span><span class="p">:</span> <span class="n">_RandomSeed</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DistributionAnalysis.run">
 <a class="viewcode-back" href="../../../gen/pystra.reliability.monte_carlo.DistributionAnalysis.html#pystra.reliability.monte_carlo.DistributionAnalysis.run">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"_pystra.DistributionAnalysisResult"</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Sample the model and return a :class:`DistributionAnalysisResult`."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_results_valid</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -999,13 +1017,12 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_initialize_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Initialization of the simulation variables"""</span>
+<span class="w">        </span><span class="sd">"""Initialization of the simulation variables."""</span>
         <span class="n">stdv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">sampling_std</span>
         <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">n_samples</span>
         <span class="c1"># Establish covariance matrix, its Cholesky decomposition, and its inverse</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_covariance</span> <span class="o">=</span> <span class="n">stdv</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nrv</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cholesky_covariance</span> <span class="o">=</span> <span class="n">stdv</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nrv</span><span class="p">)</span>
-        <span class="c1"># chol_covariance = chol(covariance);</span>
 
         <span class="n">ng</span> <span class="o">=</span> <span class="mi">1</span>
 
@@ -1016,13 +1033,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_bins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_bins</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_compute_data_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Update data"""</span>
+<span class="w">        </span><span class="sd">"""Update data."""</span>
         <span class="n">indx</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_k</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_size</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_k</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_all_X</span><span class="p">[:,</span> <span class="n">indx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_all_G</span><span class="p">[:,</span> <span class="n">indx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_G</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_compute_distribution_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Compute data for the distributions"""</span>
+<span class="w">        </span><span class="sd">"""Compute data for the distributions."""</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_G</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_all_G</span> <span class="o">=</span> <span class="n">x</span></div>

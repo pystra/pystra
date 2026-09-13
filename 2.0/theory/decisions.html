@@ -575,12 +575,12 @@ this is of the form</p>
 (typically about 0.1–0.2, e.g. 0.175 in Schubert and Faber, 2009; it is <em>not</em>
 an annual mortality rate), and <span class="math notranslate nohighlight">\(C_x\)</span> depends on the mortality reduction
 scheme, discounting, and the predictive cohort life table
-<a class="reference internal" href="../references.html#rackwitz2004discounting" id="id11"><span>[Rackwitz2004Discounting]</span></a>.  In <a class="reference internal" href="../gen/pystra.decision.ddo.SWTP.html#pystra.decision.ddo.SWTP.from_lqi" title="pystra.decision.ddo.SWTP.from_lqi"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_lqi()</span></code></a> this parameter
+<a class="reference internal" href="../references.html#rackwitz2004discounting" id="id11"><span>[Rackwitz2004Discounting]</span></a>.  In <a class="reference internal" href="../gen/pystra.decision.swtp.SWTP.html#pystra.decision.swtp.SWTP.from_lqi" title="pystra.decision.swtp.SWTP.from_lqi"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_lqi()</span></code></a> this parameter
 is named <code class="docutils literal notranslate"><span class="pre">work_leisure_parameter</span></code>.  This SWTP interpretation is developed in the LQI literature
 <a class="reference internal" href="../references.html#pandeynathwani2004lqi" id="id12"><span>[PandeyNathwani2004LQI]</span></a> <a class="reference internal" href="../references.html#pandeynathwanilind2006lqi" id="id13"><span>[PandeyNathwaniLind2006LQI]</span></a> and used by
 Rackwitz for structural reliability optimization and acceptability
 <a class="reference internal" href="../references.html#rackwitz2002lqi" id="id14"><span>[Rackwitz2002LQI]</span></a>.  The <code class="docutils literal notranslate"><span class="pre">ra.decision.SWTP.from_lqi</span></code> helper
-(<a class="reference internal" href="../gen/pystra.decision.ddo.SWTP.html#pystra.decision.ddo.SWTP.from_lqi" title="pystra.decision.ddo.SWTP.from_lqi"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_lqi()</span></code></a>) implements the relationship for
+(<a class="reference internal" href="../gen/pystra.decision.swtp.SWTP.html#pystra.decision.swtp.SWTP.from_lqi" title="pystra.decision.swtp.SWTP.from_lqi"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_lqi()</span></code></a>) implements the relationship for
 user-supplied demographic values.</p>
 <p>PySTRA also includes a small source-backed country table from Rackwitz’s JCSS
 background document <a class="reference internal" href="../references.html#rackwitz2008lqi" id="id15"><span>[Rackwitz2008LQI]</span></a>.  The anchor values are the
@@ -670,7 +670,7 @@ background document <a class="reference internal" href="../references.html#rackw
 </table>
 </div>
 <p>The anchor table is intentionally not overwritten with newer values.  For
-current studies, <a class="reference internal" href="../gen/pystra.decision.ddo.index_swtp_record.html#pystra.decision.ddo.index_swtp_record" title="pystra.decision.ddo.index_swtp_record"><code class="xref py py-func docutils literal notranslate"><span class="pre">index_swtp_record()</span></code></a> and
+current studies, <a class="reference internal" href="../gen/pystra.decision.swtp.index_swtp_record.html#pystra.decision.swtp.index_swtp_record" title="pystra.decision.swtp.index_swtp_record"><code class="xref py py-func docutils literal notranslate"><span class="pre">index_swtp_record()</span></code></a> and
 <code class="docutils literal notranslate"><span class="pre">swtp_table(indexed=True)</span></code> return a separately traceable indexed table.
 High-level country-based LQI construction requires users to choose
 <code class="docutils literal notranslate"><span class="pre">indexed=True</span></code> or <code class="docutils literal notranslate"><span class="pre">indexed=False</span></code> explicitly.  The built-in indexed view
@@ -685,7 +685,7 @@ rate is the natural reliability measure.  Steenbergen, Rózsás, and
 Vrouwenvelder <a class="reference internal" href="../references.html#steenbergen2018target" id="id18"><span>[Steenbergen2018Target]</span></a> revisit the same framework and
 emphasize annual failure rates as a way to compare targets across design and
 remaining working lives.  In normalized form, the Rackwitz/Steenbergen model
-implemented by <a class="reference internal" href="../gen/pystra.decision.ddo.RackwitzTargetModel.html#pystra.decision.ddo.RackwitzTargetModel" title="pystra.decision.ddo.RackwitzTargetModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">RackwitzTargetModel</span></code></a> maximizes</p>
+implemented by <a class="reference internal" href="../gen/pystra.decision.targets.RackwitzTargetModel.html#pystra.decision.targets.RackwitzTargetModel" title="pystra.decision.targets.RackwitzTargetModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">RackwitzTargetModel</span></code></a> maximizes</p>
 <div class="math notranslate nohighlight" id="equation-eq-rackwitz-target-objective">
 <span class="eqno">(2)<a class="headerlink" href="#equation-eq-rackwitz-target-objective" title="Link to this equation">#</a></span>\[Z(p) = B - C(p)
        - U\frac{\lambda}{\gamma} P_{f,\mathrm{SLS}}(p)
@@ -697,7 +697,7 @@ discount or interest rate, <span class="math notranslate nohighlight">\(\omega\)
 lognormal resistance-demand model for <span class="math notranslate nohighlight">\(P_f(p)\)</span> in this calibration.</p>
 <p>Every cost is normalized by the base construction cost <span class="math notranslate nohighlight">\(C_0\)</span>
 (<code class="docutils literal notranslate"><span class="pre">base_cost</span></code>), so the model’s cost inputs are <em>ratios</em> to <span class="math notranslate nohighlight">\(C_0\)</span>, mapped
-to <a class="reference internal" href="../gen/pystra.decision.ddo.RackwitzTargetModel.html#pystra.decision.ddo.RackwitzTargetModel" title="pystra.decision.ddo.RackwitzTargetModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">RackwitzTargetModel</span></code></a> parameters as follows.</p>
+to <a class="reference internal" href="../gen/pystra.decision.targets.RackwitzTargetModel.html#pystra.decision.targets.RackwitzTargetModel" title="pystra.decision.targets.RackwitzTargetModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">RackwitzTargetModel</span></code></a> parameters as follows.</p>
 <div class="pst-scrollable-table-container"><table class="table" id="id25">
 <caption><span class="caption-text">Normalized cost inputs (fractions of <span class="math notranslate nohighlight">\(C_0\)</span>)</span><a class="headerlink" href="#id25" title="Link to this table">#</a></caption>
 <thead>
@@ -739,7 +739,7 @@ reliabilities tabulated in the JCSS Probabilistic Model Code <a class="reference
 ISO 2394 <a class="reference internal" href="../references.html#iso2394" id="id20"><span>[ISO2394]</span></a>.  A table for other classes is recalculated by passing
 <code class="docutils literal notranslate"><span class="pre">safety_costs</span></code> (the <span class="math notranslate nohighlight">\(C_1/C_0\)</span> values) and <code class="docutils literal notranslate"><span class="pre">failure_costs</span></code> (the
 <span class="math notranslate nohighlight">\(H/C_0\)</span> values) to
-<a class="reference internal" href="../gen/pystra.decision.ddo.RackwitzTargetModel.html#pystra.decision.ddo.RackwitzTargetModel.table" title="pystra.decision.ddo.RackwitzTargetModel.table"><code class="xref py py-meth docutils literal notranslate"><span class="pre">table()</span></code></a>.</p>
+<a class="reference internal" href="../gen/pystra.decision.targets.RackwitzTargetModel.html#pystra.decision.targets.RackwitzTargetModel.table" title="pystra.decision.targets.RackwitzTargetModel.table"><code class="xref py py-meth docutils literal notranslate"><span class="pre">table()</span></code></a>.</p>
 <p>Fischer, Barnardo, and Faber <a class="reference internal" href="../references.html#fischer2012lqi" id="id21"><span>[Fischer2012LQI]</span></a> provide a convenient LQI route
 for turning an SWTP value and expected fatalities given failure into minimum
 target reliabilities; the marginal life-saving cost underlying this route is
@@ -779,12 +779,12 @@ corresponding target classes are approximated as:</p>
 </tbody>
 </table>
 </div>
-<p>For normal studies, <code class="docutils literal notranslate"><span class="pre">ra.decision.LQI</span></code> (<a class="reference internal" href="../gen/pystra.decision.ddo.LQI.html#pystra.decision.ddo.LQI" title="pystra.decision.ddo.LQI"><code class="xref py py-class docutils literal notranslate"><span class="pre">LQI</span></code></a>) builds this target
+<p>For normal studies, <code class="docutils literal notranslate"><span class="pre">ra.decision.LQI</span></code> (<a class="reference internal" href="../gen/pystra.decision.criteria.LQI.html#pystra.decision.criteria.LQI" title="pystra.decision.criteria.LQI"><code class="xref py py-class docutils literal notranslate"><span class="pre">LQI</span></code></a>) builds this target
 directly from a country SWTP value or a user-supplied SWTP value, expected
 fatalities given failure or an explicit consequence model, and marginal safety
 cost.  <code class="docutils literal notranslate"><span class="pre">ra.decision.LQI.lookup_target</span></code> returns the rounded source-table target for a
-given <span class="math notranslate nohighlight">\(K_1\)</span>, while the lower-level <a class="reference internal" href="../gen/pystra.decision.ddo.lqi_k1.html#pystra.decision.ddo.lqi_k1" title="pystra.decision.ddo.lqi_k1"><code class="xref py py-func docutils literal notranslate"><span class="pre">lqi_k1()</span></code></a> and
-<a class="reference internal" href="../gen/pystra.decision.ddo.lqi_target_reliability.html#pystra.decision.ddo.lqi_target_reliability" title="pystra.decision.ddo.lqi_target_reliability"><code class="xref py py-func docutils literal notranslate"><span class="pre">lqi_target_reliability()</span></code></a> helpers remain available in
+given <span class="math notranslate nohighlight">\(K_1\)</span>, while the lower-level <a class="reference internal" href="../gen/pystra.decision.targets.lqi_k1.html#pystra.decision.targets.lqi_k1" title="pystra.decision.targets.lqi_k1"><code class="xref py py-func docutils literal notranslate"><span class="pre">lqi_k1()</span></code></a> and
+<a class="reference internal" href="../gen/pystra.decision.targets.lqi_target_reliability.html#pystra.decision.targets.lqi_target_reliability" title="pystra.decision.targets.lqi_target_reliability"><code class="xref py py-func docutils literal notranslate"><span class="pre">lqi_target_reliability()</span></code></a> helpers remain available in
 <a class="reference internal" href="../api/decisions.html#module-pystra.decision.ddo" title="pystra.decision.ddo"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pystra.decision.ddo</span></code></a>.  When the underlying resistance-demand model should be
 calculated instead of looked up, <code class="docutils literal notranslate"><span class="pre">ra.decision.LQI.derive_target</span></code> solves the marginal
 target problem</p>
@@ -809,8 +809,8 @@ is</p>
 <p><code class="docutils literal notranslate"><span class="pre">ra.decision.LQI</span></code> exposes these operations as methods such as
 <code class="docutils literal notranslate"><span class="pre">risk_cost</span></code>, <code class="docutils literal notranslate"><span class="pre">acceptability_margin_at</span></code>, and <code class="docutils literal notranslate"><span class="pre">acceptability_boundary</span></code>.
 The underlying
-<a class="reference internal" href="../gen/pystra.decision.ddo.jcss_lqi_risk_cost.html#pystra.decision.ddo.jcss_lqi_risk_cost" title="pystra.decision.ddo.jcss_lqi_risk_cost"><code class="xref py py-func docutils literal notranslate"><span class="pre">jcss_lqi_risk_cost()</span></code></a> and
-<a class="reference internal" href="../gen/pystra.decision.ddo.jcss_lqi_acceptability.html#pystra.decision.ddo.jcss_lqi_acceptability" title="pystra.decision.ddo.jcss_lqi_acceptability"><code class="xref py py-func docutils literal notranslate"><span class="pre">jcss_lqi_acceptability()</span></code></a> functions remain available for
+<a class="reference internal" href="../gen/pystra.decision.risk.jcss_lqi_risk_cost.html#pystra.decision.risk.jcss_lqi_risk_cost" title="pystra.decision.risk.jcss_lqi_risk_cost"><code class="xref py py-func docutils literal notranslate"><span class="pre">jcss_lqi_risk_cost()</span></code></a> and
+<a class="reference internal" href="../gen/pystra.decision.criteria.jcss_lqi_acceptability.html#pystra.decision.criteria.jcss_lqi_acceptability" title="pystra.decision.criteria.jcss_lqi_acceptability"><code class="xref py py-func docutils literal notranslate"><span class="pre">jcss_lqi_acceptability()</span></code></a> functions remain available for
 direct reproduction of the JCSS equations.</p>
 <p>The current implementation separates an objective from an acceptability
 criterion and reserves solver logic for future work.  This keeps LQI in its

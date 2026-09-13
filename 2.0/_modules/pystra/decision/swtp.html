@@ -512,7 +512,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">asdict</span><span class="p">,</span> <span class="n">dataclass</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
@@ -555,7 +555,7 @@
 
 
 <div class="viewcode-block" id="SWTPIndexRecord">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.SWTPIndexRecord.html#pystra.decision.ddo.SWTPIndexRecord">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.swtp.SWTPIndexRecord.html#pystra.decision.swtp.SWTPIndexRecord">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">SWTPIndexRecord</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Index data used to update an anchored SWTP value.</span>
@@ -576,7 +576,7 @@
 
 
 <div class="viewcode-block" id="SWTPRecord">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.SWTPRecord.html#pystra.decision.ddo.SWTPRecord">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.swtp.SWTPRecord.html#pystra.decision.swtp.SWTPRecord">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">SWTPRecord</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Country-level societal willingness-to-pay value.</span>
@@ -702,7 +702,7 @@
 
 
 <div class="viewcode-block" id="get_swtp_index_record">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.get_swtp_index_record.html#pystra.decision.ddo.get_swtp_index_record">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.swtp.get_swtp_index_record.html#pystra.decision.swtp.get_swtp_index_record">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_swtp_index_record</span><span class="p">(</span>
     <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index_table</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SWTPIndexRecord</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SWTPIndexRecord</span><span class="p">:</span>
@@ -721,7 +721,7 @@
 
 
 <div class="viewcode-block" id="get_swtp_record">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.get_swtp_record.html#pystra.decision.ddo.get_swtp_record">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.swtp.get_swtp_record.html#pystra.decision.swtp.get_swtp_record">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_swtp_record</span><span class="p">(</span>
     <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">indexed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -762,7 +762,7 @@
 
 
 <div class="viewcode-block" id="index_swtp_record">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.index_swtp_record.html#pystra.decision.ddo.index_swtp_record">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.swtp.index_swtp_record.html#pystra.decision.swtp.index_swtp_record">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">index_swtp_record</span><span class="p">(</span>
     <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index_table</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SWTPIndexRecord</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SWTPRecord</span><span class="p">:</span>
@@ -787,7 +787,7 @@
 
 
 <div class="viewcode-block" id="get_swtp">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.get_swtp.html#pystra.decision.ddo.get_swtp">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.swtp.get_swtp.html#pystra.decision.swtp.get_swtp">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_swtp</span><span class="p">(</span>
     <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">indexed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -806,7 +806,7 @@
 
 
 <div class="viewcode-block" id="swtp_table">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.swtp_table.html#pystra.decision.ddo.swtp_table">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.swtp.swtp_table.html#pystra.decision.swtp.swtp_table">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">swtp_table</span><span class="p">(</span>
     <span class="n">indexed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">index_table</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SWTPIndexRecord</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -838,7 +838,7 @@
 
 
 <div class="viewcode-block" id="SWTP">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.SWTP.html#pystra.decision.ddo.SWTP">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.swtp.SWTP.html#pystra.decision.swtp.SWTP">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">SWTP</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Societal willingness to pay per statistical life."""</span>
@@ -853,7 +853,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"SWTP value_per_life must be positive"</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SWTP.from_country">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.SWTP.html#pystra.decision.ddo.SWTP.from_country">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.swtp.SWTP.html#pystra.decision.swtp.SWTP.from_country">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_country</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">indexed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"SWTP"</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Create an SWTP value from the built-in country table.</span>
@@ -873,7 +873,7 @@
 
 
 <div class="viewcode-block" id="SWTP.from_lqi">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.SWTP.html#pystra.decision.ddo.SWTP.from_lqi">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.swtp.SWTP.html#pystra.decision.swtp.SWTP.from_lqi">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_lqi</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span>
@@ -923,7 +923,7 @@
 
 
 <div class="viewcode-block" id="SWTP.for_lives">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.SWTP.html#pystra.decision.ddo.SWTP.for_lives">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.swtp.SWTP.html#pystra.decision.swtp.SWTP.for_lives">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">for_lives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expected_fatalities</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return the SWTP-equivalent consequence for expected fatalities."""</span>
 

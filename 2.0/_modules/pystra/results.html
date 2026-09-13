@@ -546,9 +546,12 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">fields</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataFrame</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_pystra</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">"FORMResult"</span><span class="p">,</span>
@@ -677,8 +680,8 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">_ProbabilityResult</span><span class="p">(</span><span class="n">_Result</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""A record of a failure-probability estimate."""</span>
 
-    <span class="n">failure_probability</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-    <span class="n">beta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="n">failure_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span>
@@ -720,21 +723,21 @@
 <span class="sd">    direction; its diagnostics remain available.</span>
 <span class="sd">    """</span>
 
-    <span class="n">design_index</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-    <span class="n">design_point_x</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
-    <span class="n">design_point_u</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
-    <span class="n">alpha</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
+    <span class="n">design_index</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">design_point_x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">design_point_u</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">alpha</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span>
     <span class="n">standard_space</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">iterations</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">limit_state_error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-    <span class="n">direction_error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="n">limit_state_error</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">direction_error</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
 
     <span class="n">_arrays</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"design_point_x"</span><span class="p">,</span> <span class="s2">"design_point_u"</span><span class="p">,</span> <span class="s2">"alpha"</span><span class="p">)</span>
 
 <div class="viewcode-block" id="FORMResult.from_analysis">
 <a class="viewcode-back" href="../../gen/pystra.results.FORMResult.html#pystra.results.FORMResult.from_analysis">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_analysis</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">analysis</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"FORMResult"</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_analysis</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">analysis</span><span class="p">:</span> <span class="s2">"_pystra.FORM"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"FORMResult"</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Copy a completed solver's numerical results and diagnostics."""</span>
         <span class="n">valid</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">analysis</span><span class="o">.</span><span class="n">_converged</span> <span class="ow">and</span> <span class="n">analysis</span><span class="o">.</span><span class="n">_results_valid</span><span class="p">)</span>
         <span class="n">standard_space</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">analysis</span><span class="o">.</span><span class="n">transform</span><span class="p">,</span> <span class="s2">"standard_space"</span><span class="p">,</span> <span class="s2">"normal"</span><span class="p">)</span>
@@ -772,7 +775,7 @@
 
 <div class="viewcode-block" id="FORMResult.to_dataframe">
 <a class="viewcode-back" href="../../gen/pystra.results.FORMResult.html#pystra.results.FORMResult.to_dataframe">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">to_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return the design point and direction as a table by variable.</span>
 
 <span class="sd">        Returns</span>
@@ -969,8 +972,8 @@
     <span class="n">form</span><span class="p">:</span> <span class="n">FORMResult</span>
     <span class="n">approach</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">marginal</span><span class="p">:</span> <span class="n">Mapping</span>
-    <span class="n">correlation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
-    <span class="n">delta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="n">correlation</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">delta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
     <span class="n">diagnostics</span><span class="p">:</span> <span class="n">Mapping</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="n">_arrays</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"correlation"</span><span class="p">,)</span>
@@ -981,7 +984,7 @@
 
 <div class="viewcode-block" id="SensitivityResult.to_dataframe">
 <a class="viewcode-back" href="../../gen/pystra.results.SensitivityResult.html#pystra.results.SensitivityResult.to_dataframe">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">to_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return the marginal sensitivities as a tidy table.</span>
 
 <span class="sd">        Returns</span>
@@ -1058,7 +1061,7 @@
 
 <div class="viewcode-block" id="StrongMaximumResult.points">
 <a class="viewcode-back" href="../../gen/pystra.results.StrongMaximumResult.html#pystra.results.StrongMaximumResult.points">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="s2">"far_failure"</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="s2">"u"</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"far_failure"</span><span class="p">,</span> <span class="n">space</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"u"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return the points of one region as rows.</span>
 
 <span class="sd">        Parameters</span>

@@ -514,6 +514,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Sequence</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Protocol</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -657,6 +658,21 @@
     <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_evaluation_method</span><span class="p">(</span><span class="n">evaluator</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">error</span><span class="p">:</span> <span class="n">AnalysisError</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Identify the known solver or callback behind a resultless failure."""</span>
+    <span class="k">if</span> <span class="n">evaluator</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">"FORM"</span>
+    <span class="k">while</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">evaluator</span><span class="p">,</span> <span class="n">partial</span><span class="p">):</span>
+        <span class="n">evaluator</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">func</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">evaluator</span><span class="p">,</span> <span class="s2">"__self__"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">owner</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">evaluator</span> <span class="o">=</span> <span class="n">owner</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">evaluator</span><span class="p">,</span> <span class="s2">"__name__"</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">evaluator</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">"&lt;lambda&gt;"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"external evaluator (</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">error</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">)"</span>
+    <span class="k">return</span> <span class="n">name</span>
+
+
 <span class="k">def</span><span class="w"> </span><span class="nf">_evaluate</span><span class="p">(</span>
     <span class="n">model</span><span class="p">:</span> <span class="n">StochasticModel</span><span class="p">,</span>
     <span class="n">limit_state</span><span class="p">:</span> <span class="n">LimitState</span><span class="p">,</span>
@@ -690,10 +706,8 @@
         <span class="n">result</span> <span class="o">=</span> <span class="n">error</span><span class="o">.</span><span class="n">result</span>
         <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">ReliabilityEstimate</span><span class="p">(</span>
-                <span class="n">method</span><span class="o">=</span><span class="p">(</span>
-                    <span class="nb">getattr</span><span class="p">(</span><span class="n">evaluator</span><span class="p">,</span> <span class="s2">"__name__"</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">evaluator</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">evaluator</span>
-                    <span class="k">else</span> <span class="s2">"FORM"</span>
+                <span class="n">method</span><span class="o">=</span><span class="n">_evaluation_method</span><span class="p">(</span>
+                    <span class="n">analysis</span> <span class="k">if</span> <span class="n">analysis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">evaluator</span><span class="p">,</span> <span class="n">error</span>
                 <span class="p">),</span>
                 <span class="n">status</span><span class="o">=</span><span class="s2">"not_converged"</span><span class="p">,</span>
                 <span class="n">message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span>

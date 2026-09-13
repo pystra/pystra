@@ -517,9 +517,12 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">copy</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.special</span><span class="w"> </span><span class="kn">import</span> <span class="n">betainc</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_pystra</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..dependence.copula</span><span class="w"> </span><span class="kn">import</span> <span class="n">_RandomSeed</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisObject</span><span class="p">,</span> <span class="n">_check_rng</span><span class="p">,</span> <span class="n">_generator</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.form</span><span class="w"> </span><span class="kn">import</span> <span class="n">FORM</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LimitState</span>
@@ -594,19 +597,19 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">form</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">form</span><span class="p">:</span> <span class="s2">"_pystra.FORM | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">limit_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">design_point</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">importance_level</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span>
-        <span class="n">accuracy_level</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
-        <span class="n">confidence_level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">point_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">max_points</span><span class="o">=</span><span class="mi">1000000</span><span class="p">,</span>
-    <span class="p">):</span>
+        <span class="n">model</span><span class="p">:</span> <span class="s2">"_pystra.StochasticModel | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">limit_state</span><span class="p">:</span> <span class="s2">"_pystra.LimitState | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">design_point</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="s2">"_pystra.FORMOptions | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">importance_level</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.15</span><span class="p">,</span>
+        <span class="n">accuracy_level</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">3.0</span><span class="p">,</span>
+        <span class="n">confidence_level</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">point_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">rng</span><span class="p">:</span> <span class="n">_RandomSeed</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000000</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">form</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="p">(</span>
                 <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">FORM</span><span class="p">)</span>
@@ -735,7 +738,7 @@
 
 <div class="viewcode-block" id="StrongMaximumTest.run">
 <a class="viewcode-back" href="../../../gen/pystra.reliability.strong_maximum.StrongMaximumTest.html#pystra.reliability.strong_maximum.StrongMaximumTest.run">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"_pystra.StrongMaximumResult"</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Evaluate the sphere and classify points by failure and vicinity.</span>
 
 <span class="sd">        Returns a :class:`StrongMaximumResult`.</span>

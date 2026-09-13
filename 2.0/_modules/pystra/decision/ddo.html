@@ -507,14 +507,17 @@
                 <article class="bd-article">
                   
   <h1>Source code for pystra.decision.ddo</h1><div class="highlight"><pre>
-<span></span><span class="sd">"""Design decision orchestration and established decision imports."""</span>
+<span></span><span class="sd">"""Design decision orchestration and low-level decision helpers."""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.figure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Figure</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.criteria</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">DDOCriterion</span><span class="p">,</span>
@@ -616,7 +619,7 @@
         <span class="n">study</span><span class="p">:</span> <span class="n">DesignStudy</span> <span class="o">|</span> <span class="n">RiskStudy</span><span class="p">,</span>
         <span class="n">criterion</span><span class="p">:</span> <span class="n">DDOCriterion</span><span class="p">,</span>
         <span class="n">objective</span><span class="p">:</span> <span class="n">DDOObjective</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">study</span> <span class="o">=</span> <span class="n">study</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span> <span class="o">=</span> <span class="n">criterion</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">objective</span> <span class="o">=</span> <span class="n">objective</span>
@@ -751,8 +754,8 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">design</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">quantities</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">):</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Figure</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Plot results from the most recent run."""</span>
 
         <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_results_or_run</span><span class="p">()</span>
@@ -762,27 +765,7 @@
 
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="c1"># Societal value of life</span>
-    <span class="s2">"SWTP"</span><span class="p">,</span>
-    <span class="s2">"FatalityConsequence"</span><span class="p">,</span>
-    <span class="c1"># Acceptability criterion and its result type</span>
-    <span class="s2">"LQI"</span><span class="p">,</span>
-    <span class="s2">"TargetReliability"</span><span class="p">,</span>
-    <span class="c1"># Objective</span>
-    <span class="s2">"CostBenefitModel"</span><span class="p">,</span>
-    <span class="c1"># Studies</span>
-    <span class="s2">"DesignStudy"</span><span class="p">,</span>
-    <span class="s2">"RiskStudy"</span><span class="p">,</span>
-    <span class="s2">"ScenarioRiskModel"</span><span class="p">,</span>
-    <span class="s2">"RiskResult"</span><span class="p">,</span>
-    <span class="c1"># Orchestration</span>
-    <span class="s2">"DDO"</span><span class="p">,</span>
-    <span class="s2">"DDOObjective"</span><span class="p">,</span>
-    <span class="s2">"DDOCriterion"</span><span class="p">,</span>
-    <span class="c1"># Code-calibration target model</span>
-    <span class="s2">"RackwitzTargetModel"</span><span class="p">,</span>
-<span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"DDO"</span><span class="p">]</span>
 </pre></div>
 
                 </article>

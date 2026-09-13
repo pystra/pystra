@@ -507,8 +507,7 @@
                 <article class="bd-article">
                   
   <h1>Source code for pystra.distributions.scipy_dist</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/env python3</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
+<span></span><span class="sd">"""Adapt frozen continuous SciPy distributions to the marginal interface."""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats._distn_infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">rv_frozen</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">rv_continuous</span>
@@ -522,14 +521,18 @@
 <div class="viewcode-block" id="ScipyDist">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.scipy_dist.ScipyDist.html#pystra.distributions.scipy_dist.ScipyDist">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ScipyDist</span><span class="p">(</span><span class="n">Distribution</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Distribution wrapper for a frozen Scipy Stats Distribution object</span>
+<span class="w">    </span><span class="sd">"""Wrapper for a frozen continuous SciPy distribution.</span>
 
-<span class="sd">    Discrete random variables not yet supported.</span>
+<span class="sd">    Discrete random variables are not supported.</span>
 
-<span class="sd">    :Attributes:</span>
-<span class="sd">      - name (str):             Name of the random variable\n</span>
-<span class="sd">      - dist_obj (Scipy dist):  The Scipy distribution object\n</span>
-<span class="sd">      - start_point (float):     Start point for seach\n</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name of the random variable, matching a limit-state argument.</span>
+<span class="sd">    dist_obj : scipy.stats.rv_frozen</span>
+<span class="sd">        Frozen continuous SciPy distribution to wrap.</span>
+<span class="sd">    start_point : float, optional</span>
+<span class="sd">        Starting point for the design-point search. Defaults to the mean.</span>
 <span class="sd">    """</span>
 
     <span class="n">_native_parameters</span> <span class="o">=</span> <span class="p">()</span>
@@ -538,11 +541,13 @@
         <span class="k">return</span> <span class="p">{</span><span class="s2">"dist_obj"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="p">}</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sensitivity_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sensitivity_params</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""No generic moment perturbation; replace the constructor inputs."""</span>
         <span class="k">return</span> <span class="p">{}</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">dist_obj</span><span class="p">,</span> <span class="n">start_point</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dist_obj</span><span class="p">:</span> <span class="n">rv_frozen</span><span class="p">,</span> <span class="n">start_point</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dist_obj</span><span class="p">,</span> <span class="n">rv_frozen</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ModelError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">"ScipyDist </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> requires a frozen Scipy distribution object"</span>

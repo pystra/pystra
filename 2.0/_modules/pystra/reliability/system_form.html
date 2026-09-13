@@ -509,10 +509,13 @@
   <h1>Source code for pystra.reliability.system_form</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""Component FORM approximation for series and parallel failure events."""</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.integrate</span><span class="w"> </span><span class="kn">import</span> <span class="n">quad</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">multivariate_normal</span><span class="p">,</span> <span class="n">norm</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_pystra</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisObject</span><span class="p">,</span> <span class="n">_check_on_failure</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.form</span><span class="w"> </span><span class="kn">import</span> <span class="n">FORM</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..systems</span><span class="w"> </span><span class="kn">import</span> <span class="n">Component</span><span class="p">,</span> <span class="n">SeriesSystem</span><span class="p">,</span> <span class="n">ParallelSystem</span><span class="p">,</span> <span class="n">ditlevsen_bounds</span>
@@ -568,15 +571,15 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">model</span><span class="p">,</span>
-        <span class="n">system</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="s2">"_pystra.StochasticModel"</span><span class="p">,</span>
+        <span class="n">system</span><span class="p">:</span> <span class="n">SeriesSystem</span> <span class="o">|</span> <span class="n">ParallelSystem</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">on_failure</span><span class="o">=</span><span class="s2">"raise"</span><span class="p">,</span>
-        <span class="n">maxpts</span><span class="o">=</span><span class="mi">1000000</span><span class="p">,</span>
-        <span class="n">abseps</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span>
-        <span class="n">releps</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span>
-    <span class="p">):</span>
+        <span class="n">options</span><span class="p">:</span> <span class="s2">"_pystra.FORMOptions | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">on_failure</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"raise"</span><span class="p">,</span> <span class="s2">"return"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"raise"</span><span class="p">,</span>
+        <span class="n">maxpts</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000000</span><span class="p">,</span>
+        <span class="n">abseps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">,</span>
+        <span class="n">releps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">system</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">SeriesSystem</span><span class="p">,</span> <span class="n">ParallelSystem</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"SystemFORM requires a series or parallel system"</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
@@ -715,7 +718,7 @@
 
 <div class="viewcode-block" id="SystemFORM.run">
 <a class="viewcode-back" href="../../../gen/pystra.reliability.system_form.SystemFORM.html#pystra.reliability.system_form.SystemFORM.run">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"_pystra.SystemFORMResult"</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Run each unique component once, then integrate the system event.</span>
 
 <span class="sd">        Returns a :class:`SystemFORMResult`.</span>

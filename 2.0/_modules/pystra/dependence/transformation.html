@@ -507,7 +507,7 @@
                 <article class="bd-article">
                   
   <h1>Source code for pystra.dependence.transformation</h1><div class="highlight"><pre>
-<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span></span><span class="sd">"""Normal Nataf coordinate transforms and directed Jacobians."""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
 
@@ -522,8 +522,7 @@
 <div class="viewcode-block" id="Transformation">
 <a class="viewcode-back" href="../../../gen/pystra.dependence.transformation.Transformation.html#pystra.dependence.transformation.Transformation">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Transformation</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    Nataf isoprobabilistic transformation between physical space (x) and</span>
+<span class="w">    </span><span class="sd">"""Nataf isoprobabilistic transformation between physical space (x) and</span>
 <span class="sd">    standard normal space (u).</span>
 
 <span class="sd">    The transformation relies on a square-root factorization of the modified</span>
@@ -543,14 +542,17 @@
 <span class="sd">    the explicit inverse of a triangular factor; instead it works with the</span>
 <span class="sd">    orthogonal eigenstructure of Ro.  It is recommended when Ro is</span>
 <span class="sd">    near-singular or poorly conditioned.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    transform_type : {"cholesky", "svd"}, optional</span>
+<span class="sd">        Matrix factorization, defaulting to Cholesky. Call :meth:`compute`</span>
+<span class="sd">        with the modified normal correlation before transforming a point.</span>
 <span class="sd">    """</span>
 
     <span class="n">standard_space</span> <span class="o">=</span> <span class="s2">"normal"</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transform_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Initialization of the Transformation class</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transform_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transform_types</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"cholesky"</span><span class="p">,</span> <span class="s2">"svd"</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">transform_type</span> <span class="o">=</span> <span class="n">transform_type</span>
@@ -566,19 +568,25 @@
 
 <div class="viewcode-block" id="Transformation.x_to_u">
 <a class="viewcode-back" href="../../../gen/pystra.dependence.transformation.Transformation.html#pystra.dependence.transformation.Transformation.x_to_u">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">x_to_u</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">marg</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Transformation from x (physical) to u (standard normal) space.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">x_to_u</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">marg</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Distribution</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Map a physical point to independent standard normal coordinates.</span>
 
-<span class="sd">        Callers (e.g. FORM, SORM) may pass x as a 1-D array or as a column</span>
-<span class="sd">        vector of shape (nrv, 1).  Flattening to 1-D with ``ravel()`` ensures</span>
-<span class="sd">        that ``x[i]`` yields a scalar, which is what the marginal ``x_to_u``</span>
-<span class="sd">        methods expect.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : array_like, shape (dimension,) or (dimension, 1)</span>
+<span class="sd">            Physical point, flattened to one dimension before marginal transforms.</span>
+<span class="sd">        marg : sequence of Distribution</span>
+<span class="sd">            Marginals in model variable order, matching the computed correlation.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray, shape (dimension,)</span>
+<span class="sd">            Independent normal coordinates in the same variable order.</span>
 <span class="sd">        """</span>
-        <span class="n">nrv</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">marg</span><span class="p">)</span>
+        <span class="n">dimension</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">marg</span><span class="p">)</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-        <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nrv</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nrv</span><span class="p">):</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">dimension</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dimension</span><span class="p">):</span>
             <span class="n">u</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">marg</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">x_to_u</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
         <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
@@ -587,19 +595,27 @@
 
 <div class="viewcode-block" id="Transformation.u_to_x">
 <a class="viewcode-back" href="../../../gen/pystra.dependence.transformation.Transformation.html#pystra.dependence.transformation.Transformation.u_to_x">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">u_to_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">marg</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Transformation from u (standard normal) to x (physical) space.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">u_to_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">marg</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Distribution</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Map an independent normal point to physical coordinates.</span>
 
-<span class="sd">        As with ``x_to_u``, the input is flattened to 1-D so that element</span>
-<span class="sd">        indexing always produces a scalar for the marginal ``u_to_x`` calls.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        u : array_like, shape (dimension,) or (dimension, 1)</span>
+<span class="sd">            Reference point, flattened to one dimension before transformation.</span>
+<span class="sd">        marg : sequence of Distribution</span>
+<span class="sd">            Marginals in model variable order, matching the computed correlation.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray, shape (dimension,)</span>
+<span class="sd">            Physical coordinates in marginal order.</span>
 <span class="sd">        """</span>
-        <span class="n">nrv</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">marg</span><span class="p">)</span>
+        <span class="n">dimension</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">marg</span><span class="p">)</span>
         <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inv_T</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
 
-        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nrv</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nrv</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">dimension</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dimension</span><span class="p">):</span>
             <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">marg</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">u_to_x</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">x</span></div>
 
@@ -624,13 +640,13 @@
 <span class="sd">            Shape ``(dimension, dimension)``, with reference coordinates in</span>
 <span class="sd">            rows and physical variables in columns, both in model order.</span>
 <span class="sd">        """</span>
-        <span class="n">nrv</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">marg</span><span class="p">)</span>
+        <span class="n">dimension</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">marg</span><span class="p">)</span>
         <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inv_T</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
-        <span class="n">J_u_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nrv</span><span class="p">,</span> <span class="n">nrv</span><span class="p">))</span>
+        <span class="n">J_u_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">dimension</span><span class="p">,</span> <span class="n">dimension</span><span class="p">))</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nrv</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dimension</span><span class="p">):</span>
             <span class="n">Ji</span> <span class="o">=</span> <span class="n">marg</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">jacobian</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
             <span class="n">J_u_x</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Ji</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
 
@@ -662,9 +678,18 @@
 
 <div class="viewcode-block" id="Transformation.compute">
 <a class="viewcode-back" href="../../../gen/pystra.dependence.transformation.Transformation.html#pystra.dependence.transformation.Transformation.compute">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Ro</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Compute the Isoprobabilistic Transformation using the chosen method</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Ro</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Compute and store the selected correlation factors.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        Ro : array_like, shape (dimension, dimension)</span>
+<span class="sd">            Symmetric positive-definite modified normal correlation matrix.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        numpy.linalg.LinAlgError</span>
+<span class="sd">            If factorization or inversion fails.</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform_type</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform_types</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_compute_cholesky</span><span class="p">(</span><span class="n">Ro</span><span class="p">)</span>
@@ -686,7 +711,6 @@
 <span class="sd">        This is the classical Nataf factorization.  It requires Ro to be</span>
 <span class="sd">        symmetric positive-definite (all eigenvalues strictly positive).</span>
 <span class="sd">        """</span>
-        <span class="c1"># Ro = self.model.get_modified_correlation()</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">L</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">Ro</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">LinAlgError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>

@@ -509,7 +509,7 @@
   <h1>Source code for pystra.plotting</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""Reusable reliability figures; plotting never starts or refits an analysis."""</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Sequence</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.axes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Axes</span>
@@ -600,15 +600,15 @@
     <span class="n">limit_state</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">bounds</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
-    <span class="n">surrogate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Surrogate</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">density</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">density_levels</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">surrogate</span><span class="p">:</span> <span class="n">Surrogate</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">density</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">density_levels</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">n_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">151</span><span class="p">,</span>
     <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2048</span><span class="p">,</span>
     <span class="n">labels</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"$x_1$"</span><span class="p">,</span> <span class="s2">"$x_2$"</span><span class="p">),</span>
     <span class="n">shade_failure</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">ax</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Axes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Figure</span><span class="p">,</span> <span class="n">Axes</span><span class="p">]:</span>
+    <span class="n">ax</span><span class="p">:</span> <span class="n">Axes</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Figure</span><span class="p">,</span> <span class="n">Axes</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Plot a two-dimensional limit-state boundary and optional surrogate.</span>
 
 <span class="sd">    Parameters</span>
@@ -716,12 +716,12 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">plot_form_geometry</span><span class="p">(</span>
     <span class="n">result</span><span class="p">:</span> <span class="n">FORMResult</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">boundary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">boundary</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">tangent_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">4.0</span><span class="p">,</span>
     <span class="n">label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"FORM"</span><span class="p">,</span>
     <span class="n">color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"C0"</span><span class="p">,</span>
-    <span class="n">ax</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Axes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Figure</span><span class="p">,</span> <span class="n">Axes</span><span class="p">]:</span>
+    <span class="n">ax</span><span class="p">:</span> <span class="n">Axes</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Figure</span><span class="p">,</span> <span class="n">Axes</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Plot a converged two-dimensional FORM point, radius and tangent.</span>
 
 <span class="sd">    Parameters</span>
@@ -781,11 +781,11 @@
     <span class="n">points</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">coordinate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">limit_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">limit_state</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">n_std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
     <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2048</span><span class="p">,</span>
-    <span class="n">ax</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Axes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Figure</span><span class="p">,</span> <span class="n">Axes</span><span class="p">]:</span>
+    <span class="n">ax</span><span class="p">:</span> <span class="n">Axes</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Figure</span><span class="p">,</span> <span class="n">Axes</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Plot a fitted surrogate along one independent-normal coordinate.</span>
 
 <span class="sd">    Parameters</span>
@@ -853,10 +853,10 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">plot_learning_history</span><span class="p">(</span>
     <span class="n">result</span><span class="p">:</span> <span class="n">ActiveLearningResult</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">band</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"probability"</span><span class="p">,</span>
-    <span class="n">reference_probability</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">ax</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Axes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Figure</span><span class="p">,</span> <span class="n">Axes</span><span class="p">]:</span>
+    <span class="n">band</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">"probability"</span><span class="p">,</span>
+    <span class="n">reference_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">ax</span><span class="p">:</span> <span class="n">Axes</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Figure</span><span class="p">,</span> <span class="n">Axes</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Plot exploratory Pf against cumulative true-model evaluations.</span>
 
 <span class="sd">    Parameters</span>
@@ -937,8 +937,8 @@
 <div class="viewcode-block" id="plot_pce_selection">
 <a class="viewcode-back" href="../../gen/pystra.plotting.plot_pce_selection.html#pystra.plotting.plot_pce_selection">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">plot_pce_selection</span><span class="p">(</span>
-    <span class="n">fit</span><span class="p">:</span> <span class="n">PCEFitResult</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">ax</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Axes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Figure</span><span class="p">,</span> <span class="n">Axes</span><span class="p">]:</span>
+    <span class="n">fit</span><span class="p">:</span> <span class="n">PCEFitResult</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">ax</span><span class="p">:</span> <span class="n">Axes</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Figure</span><span class="p">,</span> <span class="n">Axes</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Plot corrected LOO scores by candidate degree and q-norm.</span>
 
 <span class="sd">    Parameters</span>
@@ -1001,8 +1001,8 @@
 <div class="viewcode-block" id="plot_strong_maximum">
 <a class="viewcode-back" href="../../gen/pystra.plotting.plot_strong_maximum.html#pystra.plotting.plot_strong_maximum">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">plot_strong_maximum</span><span class="p">(</span>
-    <span class="n">result</span><span class="p">:</span> <span class="n">StrongMaximumResult</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">ax</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Axes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Figure</span><span class="p">,</span> <span class="n">Axes</span><span class="p">]:</span>
+    <span class="n">result</span><span class="p">:</span> <span class="n">StrongMaximumResult</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">ax</span><span class="p">:</span> <span class="n">Axes</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Figure</span><span class="p">,</span> <span class="n">Axes</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Plot two-dimensional Strong Maximum Test sample groups in normal space.</span>
 
 <span class="sd">    Parameters</span>

@@ -507,9 +507,7 @@
                 <article class="bd-article">
                   
   <h1>Source code for pystra.dependence.correlation</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/python -tt</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">"""Correlation matrix handling and Nataf correlation modification.</span>
+<span></span><span class="sd">"""Correlation matrix handling and Nataf correlation modification.</span>
 
 <span class="sd">The Nataf model transforms correlated non-normal random variables into</span>
 <span class="sd">correlated standard-normal variables.  When the marginal distributions</span>
@@ -519,8 +517,13 @@
 <span class="sd">procedure that finds ``Ro`` from ``R`` and the marginal distributions.</span>
 <span class="sd">"""</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">opt</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_pystra</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModelError</span>
 
@@ -581,11 +584,11 @@
 <span class="sd">        If the matrix is not a valid correlation matrix.</span>
 <span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_matrix</span> <span class="o">=</span> <span class="n">_validated</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""The matrix, as a read-only array."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matrix</span>
 
@@ -600,21 +603,21 @@
 
 <div class="viewcode-block" id="CorrelationMatrix.get_matrix">
 <a class="viewcode-back" href="../../../gen/pystra.dependence.correlation.CorrelationMatrix.html#pystra.dependence.correlation.CorrelationMatrix.get_matrix">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return the correlation matrix as a read-only NumPy array."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matrix</span></div>
 
 
 <div class="viewcode-block" id="CorrelationMatrix.cholesky">
 <a class="viewcode-back" href="../../../gen/pystra.dependence.correlation.CorrelationMatrix.html#pystra.dependence.correlation.CorrelationMatrix.cholesky">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">cholesky</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cholesky</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return the lower-triangular factor :math:`L` with :math:`R = L L^T`."""</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_matrix</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CorrelationMatrix.nataf">
 <a class="viewcode-back" href="../../../gen/pystra.dependence.correlation.CorrelationMatrix.html#pystra.dependence.correlation.CorrelationMatrix.nataf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">nataf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">nataf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="s2">"_pystra.StochasticModel"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"CorrelationMatrix"</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return the Nataf correlation for this matrix and the model's marginals.</span>
 
 <span class="sd">        The correlation of the standard-normal variables that the Nataf</span>
@@ -649,8 +652,12 @@
 <a class="viewcode-back" href="../../../gen/pystra.dependence.correlation.CorrelationMatrix.html#pystra.dependence.correlation.CorrelationMatrix.nearest_positive_definite">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">nearest_positive_definite</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">min_eigenvalue</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span> <span class="n">max_iterations</span><span class="o">=</span><span class="mi">100</span>
-    <span class="p">):</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">matrix</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">min_eigenvalue</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">,</span>
+        <span class="n">max_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"CorrelationMatrix"</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return the nearest valid correlation matrix to *matrix*.</span>
 
 <span class="sd">        Uses Higham's (2002) alternating projections between the positive</span>
@@ -718,7 +725,9 @@
 
 <div class="viewcode-block" id="compute_modified_correlation_matrix">
 <a class="viewcode-back" href="../../../gen/pystra.dependence.correlation.compute_modified_correlation_matrix.html#pystra.dependence.correlation.compute_modified_correlation_matrix">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_modified_correlation_matrix</span><span class="p">(</span><span class="n">stochastic_model</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_modified_correlation_matrix</span><span class="p">(</span>
+    <span class="n">stochastic_model</span><span class="p">:</span> <span class="s2">"_pystra.StochasticModel"</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">"""Compute the modified (Nataf) correlation matrix.</span>
 
 <span class="sd">    For each pair of non-normal marginals, the physical-space</span>
@@ -812,7 +821,7 @@
 
 <div class="viewcode-block" id="absolute_integral_value">
 <a class="viewcode-back" href="../../../gen/pystra.dependence.correlation.absolute_integral_value.html#pystra.dependence.correlation.absolute_integral_value">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">absolute_integral_value</span><span class="p">(</span><span class="n">rho0</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">absolute_integral_value</span><span class="p">(</span><span class="n">rho0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">"""Objective function for the Nataf correlation optimization.</span>
 
 <span class="sd">    Returns ``|rho_target - rho_integral(rho0)|``, which is minimized</span>
@@ -844,7 +853,9 @@
 
 <div class="viewcode-block" id="set_modified_correlation_matrix">
 <a class="viewcode-back" href="../../../gen/pystra.dependence.correlation.set_modified_correlation_matrix.html#pystra.dependence.correlation.set_modified_correlation_matrix">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">set_modified_correlation_matrix</span><span class="p">(</span><span class="n">stochastic_model</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">set_modified_correlation_matrix</span><span class="p">(</span>
+    <span class="n">stochastic_model</span><span class="p">:</span> <span class="s2">"_pystra.StochasticModel"</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Compute the modified correlation matrix and store it on the model.</span>
 
 <span class="sd">    Convenience wrapper that calls</span>

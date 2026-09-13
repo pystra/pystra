@@ -507,12 +507,13 @@
                 <article class="bd-article">
                   
   <h1>Source code for pystra.distributions.lognormal</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/python -tt</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
+<span></span><span class="sd">"""Lognormal marginal distribution."""</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">special</span> <span class="k">as</span> <span class="n">sp</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">lognorm</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">.distribution</span><span class="w"> </span><span class="kn">import</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">_uses_native_parameters</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Lognormal"</span><span class="p">]</span>
@@ -521,19 +522,25 @@
 <div class="viewcode-block" id="Lognormal">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.lognormal.Lognormal.html#pystra.distributions.lognormal.Lognormal">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Lognormal</span><span class="p">(</span><span class="n">Distribution</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Lognormal distribution</span>
+<span class="w">    </span><span class="sd">"""Lognormal distribution using direct PDF and CDF formulas.</span>
 
-<span class="sd">    :Arguments:</span>
-<span class="sd">      - name (str):         Name of the random variable</span>
-<span class="sd">      - mean (float):       Mean</span>
-<span class="sd">      - std (float):       Standard deviation\n</span>
-<span class="sd">      - log_mean (float): Mean of ln(X), given instead of mean and std\n</span>
-<span class="sd">      - log_std (float): Standard deviation of ln(X), given instead of mean and std\n</span>
-<span class="sd">      - start_point (float): Start point for seach\n</span>
+<span class="sd">    Supply either mean and std or ``log_mean`` and ``log_std``.</span>
+<span class="sd">    The two parameterizations cannot be combined.</span>
 
-<span class="sd">    Note: Could use scipy to do the heavy lifting. However, there is a small</span>
-<span class="sd">    performance hit, so for this common dist use bespoke implementation</span>
-<span class="sd">    for the PDF, CDF.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name of the random variable, matching a limit-state argument.</span>
+<span class="sd">    mean : float, optional</span>
+<span class="sd">        Mean in physical space.</span>
+<span class="sd">    std : float, optional</span>
+<span class="sd">        Standard deviation in physical space.</span>
+<span class="sd">    log_mean : float, optional</span>
+<span class="sd">        Mean of the underlying normal variable, log(X). Supply with the other native parameters instead of mean and std.</span>
+<span class="sd">    log_std : float, optional</span>
+<span class="sd">        Standard deviation of the underlying normal variable, log(X). Supply with the other native parameters instead of mean and std.</span>
+<span class="sd">    start_point : float, optional</span>
+<span class="sd">        Starting point for the design-point search. Defaults to the mean.</span>
 <span class="sd">    """</span>
 
     <span class="n">_native_parameters</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"log_mean"</span><span class="p">,</span> <span class="s2">"log_std"</span><span class="p">)</span>
@@ -543,14 +550,14 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">,</span>
-        <span class="n">mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">std</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">mean</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">log_mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">log_std</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">start_point</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="p">):</span>
+        <span class="n">log_mean</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">log_std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">start_point</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">_uses_native_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="n">log_mean</span><span class="o">=</span><span class="n">log_mean</span><span class="p">,</span> <span class="n">log_std</span><span class="o">=</span><span class="n">log_std</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">lamb</span> <span class="o">=</span> <span class="n">log_mean</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">zeta</span> <span class="o">=</span> <span class="n">log_std</span>
@@ -593,10 +600,8 @@
 
 <div class="viewcode-block" id="Lognormal.pdf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.lognormal.Lognormal.html#pystra.distributions.lognormal.Lognormal.pdf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Probability density function</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Evaluate the probability density function."""</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shift</span>
         <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">):</span>
@@ -606,7 +611,7 @@
 
 <div class="viewcode-block" id="Lognormal.logpdf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.lognormal.Lognormal.html#pystra.distributions.lognormal.Lognormal.logpdf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Log density."""</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shift</span>
         <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -617,30 +622,28 @@
 
 <div class="viewcode-block" id="Lognormal.cdf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.lognormal.Lognormal.html#pystra.distributions.lognormal.Lognormal.cdf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Cumulative distribution function</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Evaluate the cumulative distribution function."""</span>
         <span class="k">return</span> <span class="n">sp</span><span class="o">.</span><span class="n">ndtr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_z</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="Lognormal.sf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.lognormal.Lognormal.html#pystra.distributions.lognormal.Lognormal.sf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Survival function."""</span>
         <span class="k">return</span> <span class="n">sp</span><span class="o">.</span><span class="n">ndtr</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_z</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="Lognormal.logcdf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.lognormal.Lognormal.html#pystra.distributions.lognormal.Lognormal.logcdf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">logcdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logcdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Log CDF."""</span>
         <span class="k">return</span> <span class="n">sp</span><span class="o">.</span><span class="n">log_ndtr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_z</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="Lognormal.logsf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.lognormal.Lognormal.html#pystra.distributions.lognormal.Lognormal.logsf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">logsf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logsf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Log survival function."""</span>
         <span class="k">return</span> <span class="n">sp</span><span class="o">.</span><span class="n">log_ndtr</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_z</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
 
@@ -653,26 +656,22 @@
 
 <div class="viewcode-block" id="Lognormal.u_to_x">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.lognormal.Lognormal.html#pystra.distributions.lognormal.Lognormal.u_to_x">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">u_to_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Transformation from u to x</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">u_to_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Transform standard normal coordinates to physical values."""</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shift</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">u</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">zeta</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">lamb</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x</span></div>
 
 
 <div class="viewcode-block" id="Lognormal.x_to_u">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.lognormal.Lognormal.html#pystra.distributions.lognormal.Lognormal.x_to_u">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">x_to_u</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Transformation from x to u</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">x_to_u</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Transform physical values to standard normal coordinates."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Lognormal.cdf_gradient">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.lognormal.Lognormal.html#pystra.distributions.lognormal.Lognormal.cdf_gradient">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">cdf_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cdf_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">"""Analytical derivatives of the Lognormal CDF w.r.t. μ and σ.</span>
 
 <span class="sd">        The CDF is ``F(x) = Φ((ln x - λ) / ζ)`` where</span>
@@ -716,12 +715,8 @@
 
 <div class="viewcode-block" id="Lognormal.set_location">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.lognormal.Lognormal.html#pystra.distributions.lognormal.Lognormal.set_location">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Updating the distribution location parameter.</span>
-<span class="sd">        For Lognormal, even though we have a SciPy object, it's not being used in the</span>
-<span class="sd">        functions above for performance, so we need to update pe.arams directly.</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Set the physical mean to loc and update the underlying normal parameters."""</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_params</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mean</span> <span class="o">=</span> <span class="n">loc</span></div>
@@ -729,12 +724,8 @@
 
 <div class="viewcode-block" id="Lognormal.set_scale">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.lognormal.Lognormal.html#pystra.distributions.lognormal.Lognormal.set_scale">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Updating the distribution scale parameter.</span>
-<span class="sd">        For Lognormal, even though we have a SciPy object, it's not being used in the</span>
-<span class="sd">        functions above for performance, so we need to update params directly.</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Set the physical standard deviation to scale and update normal parameters."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_params</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_std</span> <span class="o">=</span> <span class="n">scale</span></div>
 </div>

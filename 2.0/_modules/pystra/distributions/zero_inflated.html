@@ -507,10 +507,12 @@
                 <article class="bd-article">
                   
   <h1>Source code for pystra.distributions.zero_inflated</h1><div class="highlight"><pre>
-<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span></span><span class="sd">"""Zero inflated marginal distribution."""</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">special</span> <span class="k">as</span> <span class="n">sp</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">.distribution</span><span class="w"> </span><span class="kn">import</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">_piecewise</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModelError</span>
 
@@ -520,21 +522,21 @@
 <div class="viewcode-block" id="ZeroInflated">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.zero_inflated.ZeroInflated.html#pystra.distributions.zero_inflated.ZeroInflated">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ZeroInflated</span><span class="p">(</span><span class="n">Distribution</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    A Zero-Inflated rendering of the provided distribution.</span>
+<span class="w">    </span><span class="sd">"""Mixture of a point mass at zero and a supplied distribution.</span>
 
-<span class="sd">    Variable loads sometimes have values of zero when they are not occurring.</span>
-<span class="sd">    This distribution creates a mixed distribution where there is a certain</span>
-<span class="sd">    probability `p` of a zero value, otherwise with a probability `1-p` a</span>
-<span class="sd">    realization of the provided distribution occurs.</span>
+<span class="sd">    With probability p the value is zero; with probability 1 - p a value</span>
+<span class="sd">    is drawn from dist.</span>
 
-<span class="sd">    :Attributes:</span>
-<span class="sd">      - name (str):             Name of the random variable\n</span>
-<span class="sd">      - mean (float):           Mean\n</span>
-<span class="sd">      - std (float):           Standard deviation\n</span>
-<span class="sd">      - dist (Distribution):    Distribution to zero-inflate</span>
-<span class="sd">      - p (float):              Probability of zero</span>
-<span class="sd">      - start_point (float):     Start point for seach\n</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name of the random variable, matching a limit-state argument.</span>
+<span class="sd">    dist : Distribution</span>
+<span class="sd">        Distribution realized when the variable is not set to zero.</span>
+<span class="sd">    p : float</span>
+<span class="sd">        Probability of setting the variable to zero; must satisfy 0 &lt;= p &lt; 1.</span>
+<span class="sd">    start_point : float, optional</span>
+<span class="sd">        Starting point for the design-point search. Defaults to the mean.</span>
 <span class="sd">    """</span>
 
     <span class="n">_native_parameters</span> <span class="o">=</span> <span class="p">()</span>
@@ -543,11 +545,18 @@
         <span class="k">return</span> <span class="p">{</span><span class="s2">"dist"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist</span><span class="p">,</span> <span class="s2">"p"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">}</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sensitivity_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sensitivity_params</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""No generic moment perturbation; replace the constructor inputs."""</span>
         <span class="k">return</span> <span class="p">{}</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">start_point</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">dist</span><span class="p">:</span> <span class="n">Distribution</span><span class="p">,</span>
+        <span class="n">p</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">start_point</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">Distribution</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ModelError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">"ZeroInflated distribution requires input of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">Distribution</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
@@ -574,10 +583,8 @@
 
 <div class="viewcode-block" id="ZeroInflated.pdf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.zero_inflated.ZeroInflated.html#pystra.distributions.zero_inflated.ZeroInflated.pdf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Probability density function</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Evaluate the probability density function."""</span>
         <span class="n">scalar_input</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">zipdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">q</span>
@@ -590,10 +597,8 @@
 
 <div class="viewcode-block" id="ZeroInflated.cdf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.zero_inflated.ZeroInflated.html#pystra.distributions.zero_inflated.ZeroInflated.cdf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Cumulative distribution function</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Evaluate the cumulative distribution function."""</span>
         <span class="n">scalar_input</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">zicdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">q</span>
@@ -606,10 +611,8 @@
 
 <div class="viewcode-block" id="ZeroInflated.ppf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.zero_inflated.ZeroInflated.html#pystra.distributions.zero_inflated.ZeroInflated.ppf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">ppf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        inverse cumulative distribution function</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ppf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Evaluate the inverse cumulative distribution function."""</span>
         <span class="n">scalar_input</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
@@ -634,7 +637,7 @@
 
 <div class="viewcode-block" id="ZeroInflated.sf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.zero_inflated.ZeroInflated.html#pystra.distributions.zero_inflated.ZeroInflated.sf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Survival function; the zero atom lies on the CDF side."""</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
         <span class="n">above</span> <span class="o">=</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">zero_tol</span>
@@ -645,7 +648,7 @@
 
 <div class="viewcode-block" id="ZeroInflated.isf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.zero_inflated.ZeroInflated.html#pystra.distributions.zero_inflated.ZeroInflated.isf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">isf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Inverse survival function, from the parent's upper tail."""</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
         <span class="n">upper</span> <span class="o">=</span> <span class="n">q</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">q</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
@@ -719,7 +722,7 @@
 
 <div class="viewcode-block" id="ZeroInflated.set_location">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.zero_inflated.ZeroInflated.html#pystra.distributions.zero_inflated.ZeroInflated.set_location">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Updating the zero-inflated distribution location parameter.</span>
 <span class="sd">        """</span>
@@ -729,7 +732,7 @@
 
 <div class="viewcode-block" id="ZeroInflated.set_scale">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.zero_inflated.ZeroInflated.html#pystra.distributions.zero_inflated.ZeroInflated.set_scale">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Updating the zero-inflated distribution scale parameter.</span>
 <span class="sd">        """</span>
@@ -739,7 +742,7 @@
 
 <div class="viewcode-block" id="ZeroInflated.set_zero_probability">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.zero_inflated.ZeroInflated.html#pystra.distributions.zero_inflated.ZeroInflated.set_zero_probability">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_zero_probability</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_zero_probability</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Update the zero-inflated probability.</span>
 <span class="sd">        """</span>
@@ -749,10 +752,7 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_update_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Updates the mean and std estimates - used for sensitivity analysis</span>
-<span class="sd">        where the parent distribution params may change after instantiation</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Recompute moments after an in-place change to the constructor inputs."""</span>
         <span class="n">m</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_stats</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mean</span> <span class="o">=</span> <span class="n">m</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_std</span> <span class="o">=</span> <span class="n">s</span></div>

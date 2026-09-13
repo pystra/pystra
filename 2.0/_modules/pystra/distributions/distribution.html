@@ -507,19 +507,21 @@
                 <article class="bd-article">
                   
   <h1>Source code for pystra.distributions.distribution</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/python -tt</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
+<span></span><span class="sd">"""Marginal distribution interfaces and numerically stable tail mappings."""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">types</span><span class="w"> </span><span class="kn">import</span> <span class="n">MappingProxyType</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Self</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Self</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.axes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Axes</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">special</span> <span class="k">as</span> <span class="n">sp</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats._distn_infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">rv_frozen</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">..errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModelError</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"StdNormal"</span><span class="p">,</span> <span class="s2">"Constant"</span><span class="p">,</span> <span class="s2">"Distribution"</span><span class="p">]</span>
@@ -634,7 +636,7 @@
 <div class="viewcode-block" id="StdNormal.pdf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.StdNormal.html#pystra.distributions.distribution.StdNormal.pdf">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="n">u</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Probability density function of the standard normal.</span>
 
 <span class="sd">        Parameters</span>
@@ -654,7 +656,7 @@
 <div class="viewcode-block" id="StdNormal.cdf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.StdNormal.html#pystra.distributions.distribution.StdNormal.cdf">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="n">u</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Cumulative distribution function of the standard normal.</span>
 
 <span class="sd">        Parameters</span>
@@ -674,7 +676,7 @@
 <div class="viewcode-block" id="StdNormal.ppf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.StdNormal.html#pystra.distributions.distribution.StdNormal.ppf">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">ppf</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ppf</span><span class="p">(</span><span class="n">p</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Percent-point (inverse CDF) of the standard normal.</span>
 
 <span class="sd">        Parameters</span>
@@ -731,23 +733,23 @@
 <span class="sd">        The fixed value.</span>
 <span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="n">value</span>
 
 <div class="viewcode-block" id="Constant.get_name">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Constant.html#pystra.distributions.distribution.Constant.get_name">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return the constant name."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""The fixed value."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">"Constant(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">, value=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="si">!r}</span><span class="s2">)"</span></div>
 
 
@@ -805,7 +807,14 @@
 
     <span class="n">std_normal</span> <span class="o">=</span> <span class="n">StdNormal</span><span class="p">()</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">dist_obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_point</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="n">dist_obj</span><span class="p">:</span> <span class="n">rv_frozen</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">mean</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">start_point</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dist_type</span> <span class="o">=</span> <span class="s2">"BaseCls"</span>
 
@@ -817,21 +826,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_start_point</span><span class="p">(</span><span class="n">start_point</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Mean of the distribution."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mean</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">std</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">std</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Standard deviation of the distribution."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_std</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">start_point</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start_point</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Starting point of the design-point search; the mean by default."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_point</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">, mean=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="si">:</span><span class="s2">.6g</span><span class="si">}</span><span class="s2">, std=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="si">:</span><span class="s2">.6g</span><span class="si">}</span><span class="s2">)"</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_update_moments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -847,8 +856,12 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ModelError</span><span class="p">(</span><span class="s2">"Std. deviation must be a positive noninfinite number."</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+<div class="viewcode-block" id="Distribution.get_name">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.get_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the random-variable name."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
+
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_set_start_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_point</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">start_point</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -861,7 +874,7 @@
 
 <div class="viewcode-block" id="Distribution.pdf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.pdf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Probability density function.</span>
 
 <span class="sd">        Parameters</span>
@@ -879,7 +892,7 @@
 
 <div class="viewcode-block" id="Distribution.logpdf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.logpdf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Log density, ``-inf`` where the density is zero."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">pdf</span> <span class="ow">is</span> <span class="n">Distribution</span><span class="o">.</span><span class="n">pdf</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -889,7 +902,7 @@
 
 <div class="viewcode-block" id="Distribution.cdf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.cdf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Cumulative distribution function.</span>
 
 <span class="sd">        Parameters</span>
@@ -907,7 +920,7 @@
 
 <div class="viewcode-block" id="Distribution.sf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.sf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Survival function ``1 - F(x)``, accurate in the upper tail."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scipy_cdf</span><span class="p">():</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -916,7 +929,7 @@
 
 <div class="viewcode-block" id="Distribution.logcdf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.logcdf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">logcdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logcdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Logarithm of the CDF, accurate in both tails.</span>
 
 <span class="sd">        Below the median the logarithm of the CDF itself (or SciPy's</span>
@@ -931,7 +944,7 @@
 
 <div class="viewcode-block" id="Distribution.logsf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.logsf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">logsf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logsf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Logarithm of the survival function, accurate in both tails."""</span>
         <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_piecewise</span><span class="p">(</span>
@@ -959,7 +972,7 @@
 
 <div class="viewcode-block" id="Distribution.ppf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.ppf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">ppf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ppf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Percent-point function (inverse CDF).</span>
 
 <span class="sd">        Parameters</span>
@@ -977,7 +990,7 @@
 
 <div class="viewcode-block" id="Distribution.isf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.isf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">isf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Inverse survival function, accurate for small upper-tail ``q``."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">ppf</span> <span class="ow">is</span> <span class="n">Distribution</span><span class="o">.</span><span class="n">ppf</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">isf</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
@@ -1032,7 +1045,7 @@
 
 <div class="viewcode-block" id="Distribution.u_to_x">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.u_to_x">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">u_to_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">u_to_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Transform from standard normal space to physical space.</span>
 
 <span class="sd">        Applies the marginal Nataf mapping ``x = F^{-1}(Phi(u))``. Above</span>
@@ -1113,7 +1126,7 @@
 
 <div class="viewcode-block" id="Distribution.x_to_u">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.x_to_u">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">x_to_u</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">x_to_u</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Transform from physical space to standard normal space.</span>
 
 <span class="sd">        Applies the marginal Nataf mapping ``u = Phi^{-1}(F(x))``, as</span>
@@ -1162,7 +1175,7 @@
 
 <div class="viewcode-block" id="Distribution.jacobian">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.jacobian">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Diagonal Jacobian of the marginal x-to-u transformation.</span>
 
 <span class="sd">        Returns a diagonal matrix ``J`` where the diagonal entry is</span>
@@ -1200,7 +1213,7 @@
 
 <div class="viewcode-block" id="Distribution.sample">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.sample">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Draw random samples from the distribution.</span>
 
 <span class="sd">        Uses inverse-transform sampling via ``ppf``.</span>
@@ -1222,7 +1235,7 @@
 
 <div class="viewcode-block" id="Distribution.plot">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.plot">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">:</span> <span class="n">Axes</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Axes</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Plot the probability density function.</span>
 
 <span class="sd">        Parameters</span>
@@ -1261,7 +1274,7 @@
     <span class="c1"># ------------------------------------------------------------------</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sensitivity_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sensitivity_params</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">"""Distribution parameters for which sensitivities are computed.</span>
 
 <span class="sd">        Returns a dict ``{param_name: current_value}`` listing every</span>
@@ -1396,7 +1409,7 @@
 
 <div class="viewcode-block" id="Distribution.cdf_gradient">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.cdf_gradient">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">cdf_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cdf_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">"""Derivatives of the CDF w.r.t. each sensitivity parameter.</span>
 
 <span class="sd">        Returns ``∂F_X(x)/∂θ`` for every parameter listed by</span>
@@ -1471,12 +1484,11 @@
 
 <div class="viewcode-block" id="Distribution.set_location">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.set_location">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Update the location parameter of the underlying SciPy distribution.</span>
 
 <span class="sd">        After updating, ``mean`` and ``std`` are recomputed.  This is</span>
-<span class="sd">        used by the sensitivity analysis to perturb distribution</span>
-<span class="sd">        parameters.</span>
+<span class="sd">        available for callers that need an in-place parameter update.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1485,7 +1497,7 @@
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">        Exception</span>
+<span class="sd">        ModelError</span>
 <span class="sd">            If the distribution does not wrap a SciPy frozen distribution.</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="p">,</span> <span class="n">rv_frozen</span><span class="p">):</span>
@@ -1498,12 +1510,11 @@
 
 <div class="viewcode-block" id="Distribution.set_scale">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.set_scale">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Update the scale parameter of the underlying SciPy distribution.</span>
 
 <span class="sd">        After updating, ``mean`` and ``std`` are recomputed.  This is</span>
-<span class="sd">        used by the sensitivity analysis to perturb distribution</span>
-<span class="sd">        parameters.</span>
+<span class="sd">        available for callers that need an in-place parameter update.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1512,7 +1523,7 @@
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">        Exception</span>
+<span class="sd">        ModelError</span>
 <span class="sd">            If the distribution does not wrap a SciPy frozen distribution.</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="p">,</span> <span class="n">rv_frozen</span><span class="p">):</span>

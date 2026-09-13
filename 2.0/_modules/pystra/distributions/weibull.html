@@ -507,12 +507,13 @@
                 <article class="bd-article">
                   
   <h1>Source code for pystra.distributions.weibull</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/python -tt</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
+<span></span><span class="sd">"""Weibull marginal distribution."""</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">weibull_min</span> <span class="k">as</span> <span class="n">weibull</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">opt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">scipy.special</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">spec</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">.distribution</span><span class="w"> </span><span class="kn">import</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">_uses_native_parameters</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Weibull"</span><span class="p">]</span>
@@ -523,14 +524,25 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Weibull</span><span class="p">(</span><span class="n">Distribution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Weibull distribution: the Type III extreme value distribution for minima.</span>
 
-<span class="sd">    :Attributes:</span>
-<span class="sd">        - name (str):       Name of the random variable\n</span>
-<span class="sd">        - mean (float):     Mean\n</span>
-<span class="sd">        - std (float):     Standard deviation\n</span>
-<span class="sd">        - lower (float):    Lower bound\n</span>
-<span class="sd">        - scale (float): Scale, measured from the lower bound, given instead of mean and std\n</span>
-<span class="sd">        - shape (float): Shape, given instead of mean and std\n</span>
-<span class="sd">        - start_point (float): Start point for seach\n</span>
+<span class="sd">    Supply either mean and std or ``scale`` and ``shape``.</span>
+<span class="sd">    The two parameterizations cannot be combined.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name of the random variable, matching a limit-state argument.</span>
+<span class="sd">    mean : float, optional</span>
+<span class="sd">        Mean in physical space.</span>
+<span class="sd">    std : float, optional</span>
+<span class="sd">        Standard deviation in physical space.</span>
+<span class="sd">    scale : float, optional</span>
+<span class="sd">        Positive scale parameter. Supply with the other native parameters instead of mean and std.</span>
+<span class="sd">    shape : float, optional</span>
+<span class="sd">        Shape parameter. Supply with the other native parameters instead of mean and std.</span>
+<span class="sd">    lower : float, optional</span>
+<span class="sd">        Lower bound of the distribution. Defaults to 0.</span>
+<span class="sd">    start_point : float, optional</span>
+<span class="sd">        Starting point for the design-point search. Defaults to the mean.</span>
 <span class="sd">    """</span>
 
     <span class="n">_native_parameters</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"scale"</span><span class="p">,</span> <span class="s2">"shape"</span><span class="p">)</span>
@@ -544,15 +556,15 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">,</span>
-        <span class="n">mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">std</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">mean</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">start_point</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="p">):</span>
+        <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">shape</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">lower</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">start_point</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lower</span> <span class="o">=</span> <span class="n">lower</span>
         <span class="n">epsilon</span> <span class="o">=</span> <span class="n">lower</span>
 
@@ -581,12 +593,22 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">dist_type</span> <span class="o">=</span> <span class="s2">"Weibull"</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">weibull_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="Weibull.weibull_parameter">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.weibull.Weibull.html#pystra.distributions.weibull.Weibull.weibull_parameter">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">weibull_parameter</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the moment residual for Weibull shape fitting.</span>
+
+<span class="sd">        The optimizer supplies the trial shape x; args contains mean minus</span>
+<span class="sd">        the lower bound and the standard deviation.</span>
+<span class="sd">        """</span>
         <span class="n">meaneps</span><span class="p">,</span> <span class="n">std</span> <span class="o">=</span> <span class="n">args</span>
         <span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">gamma</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">gamma</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">x</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="p">(</span>
             <span class="n">std</span> <span class="o">/</span> <span class="n">meaneps</span>
         <span class="p">)</span> <span class="o">*</span> <span class="n">spec</span><span class="o">.</span><span class="n">gamma</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">x</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">f</span></div>
+</div>
 
 </pre></div>
 

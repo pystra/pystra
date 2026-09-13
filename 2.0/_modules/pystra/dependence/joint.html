@@ -510,12 +510,13 @@
 <span></span><span class="sd">"""Marginals plus a copula, and their isoprobabilistic transformations."""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span><span class="p">,</span> <span class="n">t</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">.copula</span><span class="w"> </span><span class="kn">import</span> <span class="n">Copula</span><span class="p">,</span> <span class="n">GaussianCopula</span><span class="p">,</span> <span class="n">StudentTCopula</span><span class="p">,</span> <span class="n">_order</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.copula</span><span class="w"> </span><span class="kn">import</span> <span class="n">Copula</span><span class="p">,</span> <span class="n">StudentTCopula</span><span class="p">,</span> <span class="n">_RandomSeed</span><span class="p">,</span> <span class="n">_order</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..distributions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">ZeroInflated</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"JointDistribution"</span><span class="p">,</span> <span class="s2">"CopulaTransformation"</span><span class="p">]</span>
@@ -529,9 +530,16 @@
 <span class="sd">    Samples have rows of observations and columns in marginal order. The</span>
 <span class="sd">    copula is a distribution specification, independent of the transformation</span>
 <span class="sd">    later chosen for reliability analysis. Constants belong in StochasticModel.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    marginals : sequence of Distribution</span>
+<span class="sd">        Continuous marginals with unique names; their order defines the columns.</span>
+<span class="sd">    copula : Copula</span>
+<span class="sd">        Dependence specification with dimension equal to the marginal count.</span>
 <span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marginals</span><span class="p">,</span> <span class="n">copula</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marginals</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Distribution</span><span class="p">],</span> <span class="n">copula</span><span class="p">:</span> <span class="n">Copula</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">marginals</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">marginals</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">copula</span><span class="p">,</span> <span class="n">Copula</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"copula must implement the Copula interface"</span><span class="p">)</span>
@@ -553,12 +561,49 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Expected points in joint marginal order"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="JointDistribution.cdf">
+<a class="viewcode-back" href="../../../gen/pystra.dependence.joint.JointDistribution.html#pystra.dependence.joint.JointDistribution.cdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Evaluate the physical joint cumulative distribution.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        points : array_like, shape (dimension,) or (n_points, dimension)</span>
+<span class="sd">            Physical coordinates in marginal order, without NaN values.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Integration controls forwarded to the copula's CDF.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or ndarray, shape (n_points,)</span>
+<span class="sd">            Cumulative probability at one point or at each row of points.</span>
+<span class="sd">        """</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_points</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">m</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marginals</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copula</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copula</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+
+<div class="viewcode-block" id="JointDistribution.logpdf">
+<a class="viewcode-back" href="../../../gen/pystra.dependence.joint.JointDistribution.html#pystra.dependence.joint.JointDistribution.logpdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Evaluate log joint density in physical coordinates.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        points : array_like, shape (dimension,) or (n_points, dimension)</span>
+<span class="sd">            Physical coordinates in marginal order, without NaN values.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or ndarray, shape (n_points,)</span>
+<span class="sd">            Log density at each point. A zero marginal density gives negative infinity.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If nonzero marginal densities are nonfinite or negative, or the copula</span>
+<span class="sd">            cannot evaluate the transformed probabilities.</span>
+<span class="sd">        """</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_points</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">one</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
@@ -572,21 +617,61 @@
                 <span class="p">)</span>
             <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">copula</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">densities</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
 
-        <span class="k">return</span> <span class="n">one</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">one</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">x</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">one</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">one</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">x</span><span class="p">])</span></div>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">points</span><span class="p">))</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">rvs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="JointDistribution.pdf">
+<a class="viewcode-back" href="../../../gen/pystra.dependence.joint.JointDistribution.html#pystra.dependence.joint.JointDistribution.pdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return physical joint density with the shape of :meth:`logpdf`."""</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">points</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="JointDistribution.rvs">
+<a class="viewcode-back" href="../../../gen/pystra.dependence.joint.JointDistribution.html#pystra.dependence.joint.JointDistribution.rvs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rvs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="n">_RandomSeed</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Draw physical observations with this joint law.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        size : int, default 1</span>
+<span class="sd">            Nonnegative number of observations.</span>
+<span class="sd">        seed : int, sequence of int, SeedSequence, BitGenerator, Generator, optional</span>
+<span class="sd">            NumPy random-generator input, passed to :meth:`Copula.rvs`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray, shape (size, dimension)</span>
+<span class="sd">            Physical samples, with columns in marginal order.</span>
+<span class="sd">        """</span>
         <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copula</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">m</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">p</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marginals</span><span class="p">)])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">m</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">p</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marginals</span><span class="p">)])</span></div>
+
 
 <div class="viewcode-block" id="JointDistribution.make_transformation">
 <a class="viewcode-back" href="../../../gen/pystra.dependence.joint.JointDistribution.html#pystra.dependence.joint.JointDistribution.make_transformation">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">make_transformation</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">"rosenblatt"</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">factorization</span><span class="o">=</span><span class="s2">"cholesky"</span>
-    <span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Build a normal Rosenblatt or spherical generalized Nataf mapping."""</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"rosenblatt"</span><span class="p">,</span>
+        <span class="n">order</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">factorization</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"cholesky"</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"CopulaTransformation"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Build a normal Rosenblatt or spherical generalized Nataf mapping.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        method : {"rosenblatt", "nataf"}, default "rosenblatt"</span>
+<span class="sd">            Nataf requires an elliptical copula and retains its latent family.</span>
+<span class="sd">        order : sequence of int, optional</span>
+<span class="sd">            Rosenblatt conditioning permutation, in original variable indices.</span>
+<span class="sd">        factorization : {"cholesky", "svd"}, default "cholesky"</span>
+<span class="sd">            Matrix factor for Nataf. Rosenblatt requires ``"cholesky"``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        CopulaTransformation</span>
+<span class="sd">            A mapping for this joint law and the selected reference coordinates.</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">CopulaTransformation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">factorization</span><span class="p">)</span></div>
 </div>
 
@@ -608,15 +693,27 @@
 <span class="sd">    conditional normal innovation. factorization='svd' is supported for Nataf.</span>
 <span class="sd">    Jacobians are analytic for elliptical copulas, and use central differences</span>
 <span class="sd">    of the inverse map in normal space for other copulas.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    joint_distribution : JointDistribution</span>
+<span class="sd">        Physical joint law to transform.</span>
+<span class="sd">    method : {"rosenblatt", "nataf"}, default "rosenblatt"</span>
+<span class="sd">        Rosenblatt produces independent normals; Nataf retains the elliptical</span>
+<span class="sd">        copula's latent family.</span>
+<span class="sd">    order : sequence of int, optional</span>
+<span class="sd">        Conditioning permutation for Rosenblatt; outputs retain original positions.</span>
+<span class="sd">    factorization : {"cholesky", "svd"}, default "cholesky"</span>
+<span class="sd">        Nataf matrix factor. Rosenblatt requires ``"cholesky"``.</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">joint_distribution</span><span class="p">,</span>
-        <span class="n">method</span><span class="o">=</span><span class="s2">"rosenblatt"</span><span class="p">,</span>
-        <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">factorization</span><span class="o">=</span><span class="s2">"cholesky"</span><span class="p">,</span>
-    <span class="p">):</span>
+        <span class="n">joint_distribution</span><span class="p">:</span> <span class="n">JointDistribution</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"rosenblatt"</span><span class="p">,</span>
+        <span class="n">order</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">factorization</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"cholesky"</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">joint</span> <span class="o">=</span> <span class="n">joint_distribution</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">copula</span> <span class="o">=</span> <span class="n">joint_distribution</span><span class="o">.</span><span class="n">copula</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">marginals</span> <span class="o">=</span> <span class="n">joint_distribution</span><span class="o">.</span><span class="n">marginals</span>
@@ -687,7 +784,26 @@
             <span class="p">]</span>
         <span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">x_to_u</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">marg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="CopulaTransformation.x_to_u">
+<a class="viewcode-back" href="../../../gen/pystra.dependence.joint.CopulaTransformation.html#pystra.dependence.joint.CopulaTransformation.x_to_u">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">x_to_u</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">marg</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Distribution</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Map one physical point to this transformation's reference space.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : array_like, shape (dimension,) or (dimension, 1)</span>
+<span class="sd">            Finite physical point in original marginal order.</span>
+<span class="sd">        marg : sequence of Distribution, optional</span>
+<span class="sd">            Compatibility argument; the joint distribution supplies the marginals.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray, shape (dimension,)</span>
+<span class="sd">            Reference coordinates in original variable positions. The reference</span>
+<span class="sd">            law is identified by ``standard_space``.</span>
+<span class="sd">        """</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vector</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">copula</span><span class="o">.</span><span class="n">elliptical</span><span class="p">:</span>
             <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">m</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marginals</span><span class="p">)])</span>
@@ -706,9 +822,28 @@
                 <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="n">z</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vector</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vector</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">u_to_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">marg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="CopulaTransformation.u_to_x">
+<a class="viewcode-back" href="../../../gen/pystra.dependence.joint.CopulaTransformation.html#pystra.dependence.joint.CopulaTransformation.u_to_x">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">u_to_x</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">marg</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Distribution</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Map one reference point to physical marginal coordinates.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        u : array_like, shape (dimension,) or (dimension, 1)</span>
+<span class="sd">            Finite reference point in original variable positions.</span>
+<span class="sd">        marg : sequence of Distribution, optional</span>
+<span class="sd">            Compatibility argument; the joint distribution supplies the marginals.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray, shape (dimension,)</span>
+<span class="sd">            Physical point in original marginal order.</span>
+<span class="sd">        """</span>
         <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vector</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">copula</span><span class="o">.</span><span class="n">elliptical</span><span class="p">:</span>
             <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copula</span><span class="o">.</span><span class="n">inverse_rosenblatt</span><span class="p">(</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">u</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
@@ -726,7 +861,8 @@
                 <span class="p">)</span>
         <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">)</span>
         <span class="n">w</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inv_T</span> <span class="o">@</span> <span class="n">z</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_physical</span><span class="p">(</span><span class="n">w</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_physical</span><span class="p">(</span><span class="n">w</span><span class="p">))</span></div>
+
 
 <div class="viewcode-block" id="CopulaTransformation.jacobian_u_wrt_x">
 <a class="viewcode-back" href="../../../gen/pystra.dependence.joint.CopulaTransformation.html#pystra.dependence.joint.CopulaTransformation.jacobian_u_wrt_x">[docs]</a>

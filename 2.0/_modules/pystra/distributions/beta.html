@@ -507,12 +507,12 @@
                 <article class="bd-article">
                   
   <h1>Source code for pystra.distributions.beta</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/python -tt</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
+<span></span><span class="sd">"""Beta marginal distribution."""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">beta</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">opt</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">.distribution</span><span class="w"> </span><span class="kn">import</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">_uses_native_parameters</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Beta"</span><span class="p">]</span>
@@ -521,17 +521,29 @@
 <div class="viewcode-block" id="Beta">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.beta.Beta.html#pystra.distributions.beta.Beta">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Beta</span><span class="p">(</span><span class="n">Distribution</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Beta distribution</span>
+<span class="w">    </span><span class="sd">"""Beta distribution on a bounded interval.</span>
 
-<span class="sd">    :Attributes:</span>
-<span class="sd">      - name (str):   Name of the random variable\n</span>
-<span class="sd">      - mean (float): Mean\n</span>
-<span class="sd">      - std (float): Standard deviation\n</span>
-<span class="sd">      - lower (float): Lower bound\n</span>
-<span class="sd">      - upper (float): Upper bound\n</span>
-<span class="sd">      - q (float): First shape parameter, given instead of mean and std\n</span>
-<span class="sd">      - r (float): Second shape parameter, given instead of mean and std\n</span>
-<span class="sd">      - start_point (float): Start point for seach\n</span>
+<span class="sd">    Supply either mean and std or ``q`` and ``r``.</span>
+<span class="sd">    The two parameterizations cannot be combined.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name of the random variable, matching a limit-state argument.</span>
+<span class="sd">    mean : float, optional</span>
+<span class="sd">        Mean in physical space.</span>
+<span class="sd">    std : float, optional</span>
+<span class="sd">        Standard deviation in physical space.</span>
+<span class="sd">    q : float, optional</span>
+<span class="sd">        First beta shape parameter. Supply with the other native parameters instead of mean and std.</span>
+<span class="sd">    r : float, optional</span>
+<span class="sd">        Second beta shape parameter. Supply with the other native parameters instead of mean and std.</span>
+<span class="sd">    lower : float, optional</span>
+<span class="sd">        Lower bound of the distribution. Defaults to 0.</span>
+<span class="sd">    upper : float, optional</span>
+<span class="sd">        Upper bound of the distribution. Defaults to 1.</span>
+<span class="sd">    start_point : float, optional</span>
+<span class="sd">        Starting point for the design-point search. Defaults to the mean.</span>
 <span class="sd">    """</span>
 
     <span class="n">_native_parameters</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"q"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span>
@@ -546,16 +558,16 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">,</span>
-        <span class="n">mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">std</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">mean</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">q</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">r</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">upper</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">start_point</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="p">):</span>
+        <span class="n">q</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">r</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">lower</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">upper</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">start_point</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lower</span> <span class="o">=</span> <span class="n">lower</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">upper</span> <span class="o">=</span> <span class="n">upper</span>
         <span class="n">a</span> <span class="o">=</span> <span class="n">lower</span>
@@ -583,13 +595,20 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">dist_type</span> <span class="o">=</span> <span class="s2">"Beta"</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">beta_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="Beta.beta_parameter">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.beta.Beta.html#pystra.distributions.beta.Beta.beta_parameter">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">beta_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the standard-deviation residual for beta shape fitting.</span>
+
+<span class="sd">        The optimizer supplies q; args contains lower, upper, mean and std.</span>
+<span class="sd">        """</span>
         <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span> <span class="o">=</span> <span class="n">args</span>
         <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">mean</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">mean</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">q</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span>
             <span class="p">((</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">q</span> <span class="o">+</span> <span class="n">r</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">q</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="p">(</span><span class="n">q</span> <span class="o">+</span> <span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="n">std</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">f</span></div>
+</div>
 
 </pre></div>
 

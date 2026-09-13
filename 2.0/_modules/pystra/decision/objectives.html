@@ -512,7 +512,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
@@ -527,7 +528,7 @@
 
 
 <div class="viewcode-block" id="jcss_systematic_reconstruction_objective">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.jcss_systematic_reconstruction_objective.html#pystra.decision.ddo.jcss_systematic_reconstruction_objective">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.objectives.jcss_systematic_reconstruction_objective.html#pystra.decision.objectives.jcss_systematic_reconstruction_objective">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">jcss_systematic_reconstruction_objective</span><span class="p">(</span>
     <span class="n">benefit_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">safety_cost</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -558,7 +559,7 @@
 
 
 <div class="viewcode-block" id="present_value_factor">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.present_value_factor.html#pystra.decision.ddo.present_value_factor">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.objectives.present_value_factor.html#pystra.decision.objectives.present_value_factor">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">present_value_factor</span><span class="p">(</span><span class="n">interest_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">service_life</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Return the JCSS-style present value factor for a constant annual flow."""</span>
 
@@ -575,7 +576,7 @@
 
 
 <div class="viewcode-block" id="annualized_safety_cost">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.annualized_safety_cost.html#pystra.decision.ddo.annualized_safety_cost">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.objectives.annualized_safety_cost.html#pystra.decision.objectives.annualized_safety_cost">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">annualized_safety_cost</span><span class="p">(</span>
     <span class="n">initial_cost</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">failure_probability</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -608,7 +609,7 @@
 
 
 <div class="viewcode-block" id="DDOObjective">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.DDOObjective.html#pystra.decision.ddo.DDOObjective">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.objectives.DDOObjective.html#pystra.decision.objectives.DDOObjective">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DDOObjective</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Base interface for DDO objectives."""</span>
 
@@ -616,7 +617,7 @@
     <span class="n">objective_column</span> <span class="o">=</span> <span class="s2">"objective"</span>
 
 <div class="viewcode-block" id="DDOObjective.evaluate">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.DDOObjective.html#pystra.decision.ddo.DDOObjective.evaluate">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.objectives.DDOObjective.html#pystra.decision.objectives.DDOObjective.evaluate">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">design</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return successful decision rows with objective-specific columns.</span>
 
@@ -630,7 +631,7 @@
 
 
 <div class="viewcode-block" id="CostBenefitModel">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.CostBenefitModel.html#pystra.decision.ddo.CostBenefitModel">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.objectives.CostBenefitModel.html#pystra.decision.objectives.CostBenefitModel">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">CostBenefitModel</span><span class="p">(</span><span class="n">DDOObjective</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Cost-benefit objective for a reliability design study."""</span>
@@ -646,7 +647,7 @@
         <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 <div class="viewcode-block" id="CostBenefitModel.present_value_factor">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.CostBenefitModel.html#pystra.decision.ddo.CostBenefitModel.present_value_factor">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.objectives.CostBenefitModel.html#pystra.decision.objectives.CostBenefitModel.present_value_factor">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">present_value_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return the present value factor for this model."""</span>
 
@@ -654,7 +655,7 @@
 
 
 <div class="viewcode-block" id="CostBenefitModel.construction">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.CostBenefitModel.html#pystra.decision.ddo.CostBenefitModel.construction">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.objectives.CostBenefitModel.html#pystra.decision.objectives.CostBenefitModel.construction">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">construction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">design</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return the construction or safety cost for a design value."""</span>
 
@@ -662,7 +663,7 @@
 
 
 <div class="viewcode-block" id="CostBenefitModel.consequence">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.CostBenefitModel.html#pystra.decision.ddo.CostBenefitModel.consequence">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.objectives.CostBenefitModel.html#pystra.decision.objectives.CostBenefitModel.consequence">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">consequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">design</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return the failure consequence cost for a design value."""</span>
 
@@ -670,7 +671,7 @@
 
 
 <div class="viewcode-block" id="CostBenefitModel.objective">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.CostBenefitModel.html#pystra.decision.ddo.CostBenefitModel.objective">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.objectives.CostBenefitModel.html#pystra.decision.objectives.CostBenefitModel.objective">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">objective</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">design</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">failure_probability</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return the net present value objective for a design point."""</span>
 
@@ -687,7 +688,7 @@
 
 
 <div class="viewcode-block" id="CostBenefitModel.annualized_safety_cost">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.CostBenefitModel.html#pystra.decision.ddo.CostBenefitModel.annualized_safety_cost">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.objectives.CostBenefitModel.html#pystra.decision.objectives.CostBenefitModel.annualized_safety_cost">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">annualized_safety_cost</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">design</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
@@ -708,7 +709,7 @@
 
 
 <div class="viewcode-block" id="CostBenefitModel.evaluate">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.CostBenefitModel.html#pystra.decision.ddo.CostBenefitModel.evaluate">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.objectives.CostBenefitModel.html#pystra.decision.objectives.CostBenefitModel.evaluate">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">design</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return results with cost-benefit objective columns."""</span>
 

@@ -507,16 +507,19 @@
                 <article class="bd-article">
                   
   <h1>Source code for pystra.model</h1><div class="highlight"><pre>
-<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span></span><span class="sd">"""Named stochastic models and physical limit-state evaluation."""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">NDArray</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.distributions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">Constant</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Mapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderedDict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">types</span><span class="w"> </span><span class="kn">import</span> <span class="n">MappingProxyType</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">NDArray</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_pystra</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.distributions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">Constant</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModelError</span><span class="p">,</span> <span class="n">AnalysisError</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"StochasticModel"</span><span class="p">,</span> <span class="s2">"LimitState"</span><span class="p">]</span>
@@ -525,18 +528,27 @@
 <div class="viewcode-block" id="StochasticModel">
 <a class="viewcode-back" href="../../gen/pystra.model.StochasticModel.html#pystra.model.StochasticModel">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">StochasticModel</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Stochastic model</span>
+<span class="w">    </span><span class="sd">"""Named random variables, constants and their dependence model.</span>
 
 <span class="sd">    Random variables and constants are added with :meth:`add_variable`.</span>
-<span class="sd">    ``model.variable(name)`` returns a random variable, and</span>
-<span class="sd">    ``model.constants`` is a read-only mapping of constant names to values.</span>
+<span class="sd">    Random-variable insertion order defines correlation rows and columns</span>
+<span class="sd">    and the columns accepted by :meth:`LimitState.evaluate`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    joint_distribution : JointDistribution, optional</span>
+<span class="sd">        Initial marginals and explicit copula. Omit it to add variables</span>
+<span class="sd">        individually and specify physical correlation or a copula later.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The names and marginal-distribution properties expose the stored lists;</span>
+<span class="sd">    the constants property is a read-only view of stored constant values.</span>
 <span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint_distribution</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Use ordered dictionary to make sure that the order corresponds to the</span>
-<span class="sd">        correlation matrix</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">joint_distribution</span><span class="p">:</span> <span class="s2">"_pystra.JointDistribution | None"</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_names</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_marg</span> <span class="o">=</span> <span class="p">[]</span>
@@ -557,7 +569,7 @@
 
 <div class="viewcode-block" id="StochasticModel.add_variable">
 <a class="viewcode-back" href="../../gen/pystra.model.StochasticModel.html#pystra.model.StochasticModel.add_variable">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">add_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Distribution</span> <span class="o">|</span> <span class="n">Constant</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Add a random variable or constant to the model.</span>
 
 <span class="sd">        Parameters</span>
@@ -601,7 +613,7 @@
 
     <span class="c1"># ---- Properties (preferred access) ----</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="nb">repr</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_marg</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span>
             <span class="sa">f</span><span class="s2">"Constant(</span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">, value=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">)"</span>
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_consts</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
@@ -609,88 +621,112 @@
         <span class="k">return</span> <span class="sa">f</span><span class="s2">"StochasticModel([</span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">items</span><span class="p">)</span><span class="si">}</span><span class="s2">])"</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">constants</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">constants</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Read-only mapping of constant names to values."""</span>
         <span class="k">return</span> <span class="n">MappingProxyType</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_consts</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""List of all variable and constant names, in insertion order."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">n_marg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">n_marg</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Number of marginal (stochastic) distributions."""</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_marg</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">marginal_distributions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">marginal_distributions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Distribution</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""List of marginal Distribution objects."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_marg</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Correlation matrix (n × n numpy array)."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_correlation</span><span class="p">()</span>
 
     <span class="nd">@correlation</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s2">"_pystra.CorrelationMatrix | ArrayLike"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_correlation</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">copula</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copula</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"_pystra.dependence.copula.Copula | None"</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Explicit dependence specification, or None for legacy Pearson input."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copula</span>
 
     <span class="nd">@copula</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">copula</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copula</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s2">"_pystra.dependence.copula.Copula"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_copula</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">modified_correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">modified_correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Modified (Nataf) correlation matrix Ro."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ro</span>
 
     <span class="nd">@modified_correlation</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">modified_correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">modified_correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_Ro</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">call_function</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">call_function</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Cumulative number of limit-state function evaluations."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_function</span>
 
     <span class="nd">@call_function</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">call_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">call_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_call_function</span> <span class="o">=</span> <span class="n">value</span>
 
-    <span class="c1"># ---- Transitional getter/setter methods pending the result/options redesign ----</span>
+    <span class="c1"># Named access and dependence configuration</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span>
+<div class="viewcode-block" id="StochasticModel.get_variables">
+<a class="viewcode-back" href="../../gen/pystra.model.StochasticModel.html#pystra.model.StochasticModel.get_variables">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Distribution</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Return the stored mapping of random-variable names to distributions."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span></div>
+
 
 <div class="viewcode-block" id="StochasticModel.variable">
 <a class="viewcode-back" href="../../gen/pystra.model.StochasticModel.html#pystra.model.StochasticModel.variable">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Distribution</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return the random variable called *name*."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span>
+<div class="viewcode-block" id="StochasticModel.get_names">
+<a class="viewcode-back" href="../../gen/pystra.model.StochasticModel.html#pystra.model.StochasticModel.get_names">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Return the stored names in variable and constant insertion order."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span></div>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_len_marginal_distributions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_marg</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_marginal_distributions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_marg</span>
+<div class="viewcode-block" id="StochasticModel.get_len_marginal_distributions">
+<a class="viewcode-back" href="../../gen/pystra.model.StochasticModel.html#pystra.model.StochasticModel.get_len_marginal_distributions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_len_marginal_distributions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the number of random variables, excluding constants."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_marg</span><span class="p">)</span></div>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_marginal_distributions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marg</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_marg</span> <span class="o">=</span> <span class="n">marg</span>
+
+<div class="viewcode-block" id="StochasticModel.get_marginal_distributions">
+<a class="viewcode-back" href="../../gen/pystra.model.StochasticModel.html#pystra.model.StochasticModel.get_marginal_distributions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_marginal_distributions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Distribution</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Return the stored marginal list in random-variable insertion order."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_marg</span></div>
+
+
+<div class="viewcode-block" id="StochasticModel.set_marginal_distributions">
+<a class="viewcode-back" href="../../gen/pystra.model.StochasticModel.html#pystra.model.StochasticModel.set_marginal_distributions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_marginal_distributions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marg</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Distribution</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Replace the stored marginal list without copying or reordering it.</span>
+
+<span class="sd">        This low-level setter does not update names, the variable mapping or</span>
+<span class="sd">        dependence. Callers must keep those structures consistent.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_marg</span> <span class="o">=</span> <span class="n">marg</span></div>
+
 
 <div class="viewcode-block" id="StochasticModel.set_correlation">
 <a class="viewcode-back" href="../../gen/pystra.model.StochasticModel.html#pystra.model.StochasticModel.set_correlation">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="s2">"_pystra.CorrelationMatrix | ArrayLike"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Set the physical correlation matrix, replacing any copula.</span>
 
 <span class="sd">        Accepts a :class:`~pystra.CorrelationMatrix`, or an array that is</span>
@@ -708,16 +744,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_Ro</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="StochasticModel.get_correlation">
+<a class="viewcode-back" href="../../gen/pystra.model.StochasticModel.html#pystra.model.StochasticModel.get_correlation">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the stored physical Pearson matrix, or None before variables exist.</span>
+
+<span class="sd">        Raises ValueError when dependence is specified by an explicit copula,</span>
+<span class="sd">        which does not in general determine the physical Pearson matrix.</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copula</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">"Physical Pearson correlation is not specified by an explicit copula; use get_copula()"</span>
             <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_correlation</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_correlation</span></div>
+
 
 <div class="viewcode-block" id="StochasticModel.set_copula">
 <a class="viewcode-back" href="../../gen/pystra.model.StochasticModel.html#pystra.model.StochasticModel.set_copula">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_copula</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">copula</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_copula</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">copula</span><span class="p">:</span> <span class="s2">"_pystra.dependence.copula.Copula"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Replace legacy Pearson dependence with an explicit copula."""</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">.dependence.joint</span><span class="w"> </span><span class="kn">import</span> <span class="n">JointDistribution</span>
 
@@ -727,12 +771,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_Ro</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_copula</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copula</span>
+<div class="viewcode-block" id="StochasticModel.get_copula">
+<a class="viewcode-back" href="../../gen/pystra.model.StochasticModel.html#pystra.model.StochasticModel.get_copula">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_copula</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"_pystra.dependence.copula.Copula | None"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the explicit copula, or None for physical Pearson input."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copula</span></div>
+
 
 <div class="viewcode-block" id="StochasticModel.get_joint_distribution">
 <a class="viewcode-back" href="../../gen/pystra.model.StochasticModel.html#pystra.model.StochasticModel.get_joint_distribution">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_joint_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_joint_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"_pystra.JointDistribution"</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return marginals plus the explicit or calibrated Gaussian copula."""</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">.dependence.joint</span><span class="w"> </span><span class="kn">import</span> <span class="n">JointDistribution</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">.dependence.copula</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianCopula</span>
@@ -744,17 +792,33 @@
         <span class="k">return</span> <span class="n">JointDistribution</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_marg</span><span class="p">,</span> <span class="n">copula</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_modified_correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">correlation</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_Ro</span> <span class="o">=</span> <span class="n">correlation</span>
+<div class="viewcode-block" id="StochasticModel.set_modified_correlation">
+<a class="viewcode-back" href="../../gen/pystra.model.StochasticModel.html#pystra.model.StochasticModel.set_modified_correlation">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_modified_correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">correlation</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Store a Nataf correlation matrix without copying or validating it."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Ro</span> <span class="o">=</span> <span class="n">correlation</span></div>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_modified_correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ro</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">add_call_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">add</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_call_function</span> <span class="o">+=</span> <span class="n">add</span>
+<div class="viewcode-block" id="StochasticModel.get_modified_correlation">
+<a class="viewcode-back" href="../../gen/pystra.model.StochasticModel.html#pystra.model.StochasticModel.get_modified_correlation">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_modified_correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the stored Nataf correlation, or None before it is computed."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ro</span></div>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_call_function</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="StochasticModel.add_call_function">
+<a class="viewcode-back" href="../../gen/pystra.model.StochasticModel.html#pystra.model.StochasticModel.add_call_function">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_call_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">add</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add to the cumulative number of limit-state evaluations."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_call_function</span> <span class="o">+=</span> <span class="n">add</span></div>
+
+
+<div class="viewcode-block" id="StochasticModel.get_call_function">
+<a class="viewcode-back" href="../../gen/pystra.model.StochasticModel.html#pystra.model.StochasticModel.get_call_function">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_call_function</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the cumulative number of limit-state evaluations."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_function</span></div>
+</div>
 
 
 
@@ -762,7 +826,7 @@
 <a class="viewcode-back" href="../../gen/pystra.model.LimitState.html#pystra.model.LimitState">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LimitState</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">"""</span>
-<span class="sd">    The Limit State function definition class.</span>
+<span class="sd">    A physical limit-state callable and its evaluation interface.</span>
 
 <span class="sd">    The limit-state function can be defined in two main ways:</span>
 
@@ -774,7 +838,7 @@
 <span class="sd">        (b) A python function object.</span>
 
 <span class="sd">    2. Using the Direct Differentiation Method (DDM): the limit-state function</span>
-<span class="sd">    is a python function object return both its value and gradient vector at each</span>
+<span class="sd">    is a Python function object returning both its value and gradient vector at each</span>
 <span class="sd">    of the evaluation points.</span>
 
 <span class="sd">    Note in both cases that each parameter (i.e. function argument) may be passed</span>
@@ -791,19 +855,34 @@
 
 <span class="sd">        def lsf(**kwargs):</span>
 <span class="sd">            return sum(v**2 for v in kwargs.values())</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    expression : callable, optional</span>
+<span class="sd">        Physical response called with named variables and constants. Set an</span>
+<span class="sd">        expression before evaluation. In DDM mode it also returns derivatives</span>
+<span class="sd">        in random-variable order; see :meth:`evaluate` for shapes.</span>
 <span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">expression</span> <span class="o">=</span> <span class="n">expression</span>
 <span class="w">        </span><span class="sd">"""Expression of the limit-state function"""</span>
 
     <span class="c1"># Legacy getter/setter methods (expression is already a public attribute)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">expression</span>
+<div class="viewcode-block" id="LimitState.get_expression">
+<a class="viewcode-back" href="../../gen/pystra.model.LimitState.html#pystra.model.LimitState.get_expression">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the stored limit-state callable."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">expression</span></div>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">expression</span> <span class="o">=</span> <span class="n">expression</span>
+
+<div class="viewcode-block" id="LimitState.set_expression">
+<a class="viewcode-back" href="../../gen/pystra.model.LimitState.html#pystra.model.LimitState.set_expression">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Replace the limit-state callable without evaluating it."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expression</span> <span class="o">=</span> <span class="n">expression</span></div>
+
 
 <div class="viewcode-block" id="LimitState.evaluate">
 <a class="viewcode-back" href="../../gen/pystra.model.LimitState.html#pystra.model.LimitState.evaluate">[docs]</a>

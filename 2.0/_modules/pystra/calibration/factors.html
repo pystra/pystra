@@ -518,7 +518,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">replace</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">types</span><span class="w"> </span><span class="kn">import</span> <span class="n">MappingProxyType</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataFrame</span>
@@ -543,7 +543,6 @@
     <span class="s2">"GoverningFactor"</span><span class="p">,</span>
     <span class="s2">"DesignValues"</span><span class="p">,</span>
     <span class="s2">"DesignVerification"</span><span class="p">,</span>
-    <span class="s2">"analyze_case"</span><span class="p">,</span>
     <span class="s2">"solve_designs"</span><span class="p">,</span>
     <span class="s2">"derive_factors"</span><span class="p">,</span>
     <span class="s2">"select_factors"</span><span class="p">,</span>
@@ -710,8 +709,8 @@
     <span class="n">case_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">design_value</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">target_beta</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">reliability</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ReliabilityResult</span><span class="p">]</span>
-    <span class="n">residual</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="n">reliability</span><span class="p">:</span> <span class="n">ReliabilityResult</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">residual</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
     <span class="n">converged</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">evaluations</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">message</span><span class="p">:</span> <span class="nb">str</span></div>
@@ -724,15 +723,17 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">TargetDesigns</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Target designs and the input problem used to obtain them."""</span>
 
-    <span class="n">designs</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">CalibratedDesign</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+    <span class="n">designs</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">CalibratedDesign</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
     <span class="n">_problem</span><span class="p">:</span> <span class="n">FactorCalibrationProblem</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">problem</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FactorCalibrationProblem</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Independent copy of the problem used for these target solves."""</span>
         <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_problem</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">converged</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Whether every target solve met its reliability and root tolerances."""</span>
         <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">converged</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">designs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TargetDesigns.to_frame">
@@ -804,10 +805,10 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">target_beta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"root"</span><span class="p">,</span>
-    <span class="n">initial_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">initial_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0001</span><span class="p">,</span>
     <span class="n">max_evaluations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-    <span class="n">bracket</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">bracket</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">options</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">evaluator</span><span class="p">:</span> <span class="n">ReliabilityEvaluator</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TargetDesigns</span><span class="p">:</span>
@@ -1000,7 +1001,7 @@
 
     <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">variable</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">case_names</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span></div>
+    <span class="n">case_names</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span></div>
 
 
 
@@ -1015,14 +1016,14 @@
 <span class="sd">    combination columns use ``load_names``. Leading actions are explicit.</span>
 <span class="sd">    """</span>
 
-    <span class="n">case_names</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
-    <span class="n">resistance_names</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
-    <span class="n">load_names</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
-    <span class="n">resistance</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>
-    <span class="n">loads</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>
-    <span class="n">combinations</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>
-    <span class="n">leading_actions</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>
-    <span class="n">governing</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">GoverningFactor</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">case_names</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+    <span class="n">resistance_names</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+    <span class="n">load_names</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+    <span class="n">resistance</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>
+    <span class="n">loads</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>
+    <span class="n">combinations</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>
+    <span class="n">leading_actions</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>
+    <span class="n">governing</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">GoverningFactor</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"case_names"</span><span class="p">,</span> <span class="s2">"resistance_names"</span><span class="p">,</span> <span class="s2">"load_names"</span><span class="p">,</span> <span class="s2">"governing"</span><span class="p">):</span>
@@ -1228,11 +1229,11 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">DesignValues</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Factored design parameters in named case order."""</span>
 
-    <span class="n">case_names</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
-    <span class="n">values</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+    <span class="n">case_names</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+    <span class="n">values</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">governing_cases</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">governing_cases</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Cases attaining the largest required resistance scale."""</span>
         <span class="n">maximum</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">case_names</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="n">maximum</span><span class="p">)</span></div>
@@ -1284,7 +1285,7 @@
     <span class="n">case_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">design_value</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">reliability</span><span class="p">:</span> <span class="n">ReliabilityResult</span>
-    <span class="n">target_margin</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span></div>
+    <span class="n">target_margin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span></div>
 
 
 
@@ -1292,12 +1293,12 @@
 <a class="viewcode-back" href="../../../gen/pystra.calibration.factors.verify_designs.html#pystra.calibration.factors.verify_designs">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">verify_designs</span><span class="p">(</span>
     <span class="n">problem</span><span class="p">:</span> <span class="n">FactorCalibrationProblem</span><span class="p">,</span>
-    <span class="n">design_values</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">DesignValues</span><span class="p">],</span>
+    <span class="n">design_values</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="n">DesignValues</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">target_beta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">target_beta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">options</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">evaluator</span><span class="p">:</span> <span class="n">ReliabilityEvaluator</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DesignVerification</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">DesignVerification</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Check a common design scale or an explicitly named set of designs.</span>
 
 <span class="sd">    Parameters</span>

@@ -507,9 +507,9 @@
                 <article class="bd-article">
                   
   <h1>Source code for pystra.distributions.uniform</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/python -tt</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
+<span></span><span class="sd">"""Uniform marginal distribution."""</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">uniform</span>
 
@@ -521,15 +521,25 @@
 <div class="viewcode-block" id="Uniform">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.uniform.Uniform.html#pystra.distributions.uniform.Uniform">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Uniform</span><span class="p">(</span><span class="n">Distribution</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Uniform distribution</span>
+<span class="w">    </span><span class="sd">"""Uniform distribution.</span>
 
-<span class="sd">    :Attributes:</span>
-<span class="sd">      - name (str):   Name of the random variable\n</span>
-<span class="sd">      - mean (float): Mean\n</span>
-<span class="sd">      - std (float): Standard deviation\n</span>
-<span class="sd">      - lower (float): Lower bound, given instead of mean and std\n</span>
-<span class="sd">      - upper (float): Upper bound, given instead of mean and std\n</span>
-<span class="sd">      - start_point (float): Start point for seach\n</span>
+<span class="sd">    Supply either mean and std or ``lower`` and ``upper``.</span>
+<span class="sd">    The two parameterizations cannot be combined.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name of the random variable, matching a limit-state argument.</span>
+<span class="sd">    mean : float, optional</span>
+<span class="sd">        Mean in physical space.</span>
+<span class="sd">    std : float, optional</span>
+<span class="sd">        Standard deviation in physical space.</span>
+<span class="sd">    lower : float, optional</span>
+<span class="sd">        Lower bound of the distribution. Supply with the other native parameters instead of mean and std.</span>
+<span class="sd">    upper : float, optional</span>
+<span class="sd">        Upper bound of the distribution. Supply with the other native parameters instead of mean and std.</span>
+<span class="sd">    start_point : float, optional</span>
+<span class="sd">        Starting point for the design-point search. Defaults to the mean.</span>
 <span class="sd">    """</span>
 
     <span class="n">_native_parameters</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"lower"</span><span class="p">,</span> <span class="s2">"upper"</span><span class="p">)</span>
@@ -538,8 +548,15 @@
         <span class="k">return</span> <span class="p">{</span><span class="s2">"lower"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="s2">"upper"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_point</span><span class="o">=</span><span class="kc">None</span>
-    <span class="p">):</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">mean</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">lower</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">upper</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">start_point</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">_uses_native_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="n">lower</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="n">upper</span><span class="p">):</span>
             <span class="n">a</span> <span class="o">=</span> <span class="n">lower</span>
             <span class="n">b</span> <span class="o">=</span> <span class="n">upper</span>
@@ -565,10 +582,8 @@
 
 <div class="viewcode-block" id="Uniform.u_to_x">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.uniform.Uniform.html#pystra.distributions.uniform.Uniform.u_to_x">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">u_to_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Transformation from u to x, measured from the nearer bound</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">u_to_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Transform standard normal coordinates to physical values."""</span>
         <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
         <span class="n">tail</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">std_normal</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
         <span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span>

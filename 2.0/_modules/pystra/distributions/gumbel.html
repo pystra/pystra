@@ -507,8 +507,7 @@
                 <article class="bd-article">
                   
   <h1>Source code for pystra.distributions.gumbel</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/python -tt</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
+<span></span><span class="sd">"""Gumbel marginal distribution."""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span>
@@ -525,13 +524,23 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Gumbel</span><span class="p">(</span><span class="n">Distribution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Gumbel distribution for maxima: the Type I extreme value distribution.</span>
 
-<span class="sd">    :Attributes:</span>
-<span class="sd">        - name (str):     Name of the random variable\n</span>
-<span class="sd">        - mean (float): Mean\n</span>
-<span class="sd">        - std (float): Standard deviation\n</span>
-<span class="sd">        - loc (float): Location, given instead of mean and std\n</span>
-<span class="sd">        - scale (float): Scale, given instead of mean and std\n</span>
-<span class="sd">        - start_point (float): Start point for seach\n</span>
+<span class="sd">    Supply either mean and std or ``loc`` and ``scale``.</span>
+<span class="sd">    The two parameterizations cannot be combined.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name of the random variable, matching a limit-state argument.</span>
+<span class="sd">    mean : float, optional</span>
+<span class="sd">        Mean in physical space.</span>
+<span class="sd">    std : float, optional</span>
+<span class="sd">        Standard deviation in physical space.</span>
+<span class="sd">    loc : float, optional</span>
+<span class="sd">        Location parameter. Supply with the other native parameters instead of mean and std.</span>
+<span class="sd">    scale : float, optional</span>
+<span class="sd">        Positive scale parameter. Supply with the other native parameters instead of mean and std.</span>
+<span class="sd">    start_point : float, optional</span>
+<span class="sd">        Starting point for the design-point search. Defaults to the mean.</span>
 <span class="sd">    """</span>
 
     <span class="n">_native_parameters</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"loc"</span><span class="p">,</span> <span class="s2">"scale"</span><span class="p">)</span>
@@ -540,8 +549,15 @@
         <span class="k">return</span> <span class="p">{</span><span class="s2">"loc"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">kwds</span><span class="p">[</span><span class="s2">"loc"</span><span class="p">],</span> <span class="s2">"scale"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">kwds</span><span class="p">[</span><span class="s2">"scale"</span><span class="p">]}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_point</span><span class="o">=</span><span class="kc">None</span>
-    <span class="p">):</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">mean</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">loc</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">start_point</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">_uses_native_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">loc</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">):</span>
             <span class="n">mu</span> <span class="o">=</span> <span class="n">loc</span>
         <span class="k">else</span><span class="p">:</span>
@@ -634,13 +650,23 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">GumbelMin</span><span class="p">(</span><span class="n">Distribution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Gumbel distribution for minima: the Type I smallest value distribution.</span>
 
-<span class="sd">    :Attributes:</span>
-<span class="sd">      - name (str):   Name of the random variable\n</span>
-<span class="sd">      - mean (float): Mean\n</span>
-<span class="sd">      - std (float): Standard deviation\n</span>
-<span class="sd">      - loc (float): Location, given instead of mean and std\n</span>
-<span class="sd">      - scale (float): Scale, given instead of mean and std\n</span>
-<span class="sd">      - start_point (float): Start point for seach\n</span>
+<span class="sd">    Supply either mean and std or ``loc`` and ``scale``.</span>
+<span class="sd">    The two parameterizations cannot be combined.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name of the random variable, matching a limit-state argument.</span>
+<span class="sd">    mean : float, optional</span>
+<span class="sd">        Mean in physical space.</span>
+<span class="sd">    std : float, optional</span>
+<span class="sd">        Standard deviation in physical space.</span>
+<span class="sd">    loc : float, optional</span>
+<span class="sd">        Location parameter. Supply with the other native parameters instead of mean and std.</span>
+<span class="sd">    scale : float, optional</span>
+<span class="sd">        Positive scale parameter. Supply with the other native parameters instead of mean and std.</span>
+<span class="sd">    start_point : float, optional</span>
+<span class="sd">        Starting point for the design-point search. Defaults to the mean.</span>
 <span class="sd">    """</span>
 
     <span class="n">_native_parameters</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"loc"</span><span class="p">,</span> <span class="s2">"scale"</span><span class="p">)</span>
@@ -649,8 +675,15 @@
         <span class="k">return</span> <span class="p">{</span><span class="s2">"loc"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">kwds</span><span class="p">[</span><span class="s2">"loc"</span><span class="p">],</span> <span class="s2">"scale"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">kwds</span><span class="p">[</span><span class="s2">"scale"</span><span class="p">]}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_point</span><span class="o">=</span><span class="kc">None</span>
-    <span class="p">):</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">mean</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">loc</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">start_point</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">_uses_native_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">loc</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">):</span>
             <span class="n">mu</span> <span class="o">=</span> <span class="n">loc</span>
         <span class="k">else</span><span class="p">:</span>

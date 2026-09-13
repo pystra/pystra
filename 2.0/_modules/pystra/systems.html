@@ -525,9 +525,11 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LimitState</span>
 
@@ -564,7 +566,11 @@
 <span class="sd">    accepts ``**kwargs``.</span>
 <span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">limit_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">LimitState</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">limit_state</span><span class="p">:</span> <span class="n">LimitState</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">limit_state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">limit_state</span> <span class="o">=</span> <span class="n">name</span>
             <span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
@@ -575,7 +581,7 @@
 
 <div class="viewcode-block" id="Component.evaluate">
 <a class="viewcode-back" href="../../gen/pystra.systems.Component.html#pystra.systems.Component.evaluate">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Evaluate the component limit state for one or more samples."""</span>
 
         <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit_state</span><span class="o">.</span><span class="n">expression</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_filter_kwargs</span><span class="p">(</span><span class="n">kwargs</span><span class="p">))</span>
@@ -586,7 +592,7 @@
 
 <div class="viewcode-block" id="Component.as_limit_state">
 <a class="viewcode-back" href="../../gen/pystra.systems.Component.html#pystra.systems.Component.as_limit_state">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">as_limit_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_limit_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LimitState</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return this component as a PySTRA :class:`LimitState`."""</span>
 
         <span class="c1"># Keep tuple returns intact for direct differentiation. User-supplied</span>
@@ -598,7 +604,7 @@
 
 <div class="viewcode-block" id="Component.get_limit_state">
 <a class="viewcode-back" href="../../gen/pystra.systems.Component.html#pystra.systems.Component.get_limit_state">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_limit_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_limit_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LimitState</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return this component as a PySTRA :class:`LimitState`.</span>
 
 <span class="sd">        This legacy-style alias mirrors the existing PySTRA getter naming.</span>
@@ -609,21 +615,21 @@
 
 <div class="viewcode-block" id="Component.iter_components">
 <a class="viewcode-back" href="../../gen/pystra.systems.Component.html#pystra.systems.Component.iter_components">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">iter_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">iter_components</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Component</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Yield leaf components in this subtree."""</span>
 
         <span class="k">yield</span> <span class="bp">self</span></div>
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">components</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Component</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Tuple containing this component."""</span>
 
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="p">,)</span>
 
 <div class="viewcode-block" id="Component.failure_mask">
 <a class="viewcode-back" href="../../gen/pystra.systems.Component.html#pystra.systems.Component.failure_mask">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">failure_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">failure_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return a boolean mask where the component is failed."""</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span></div>
@@ -652,7 +658,11 @@
 
     <span class="n">_operator_name</span> <span class="o">=</span> <span class="s2">"system"</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">children</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">children</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Component</span> <span class="o">|</span> <span class="n">System</span> <span class="o">|</span> <span class="n">LimitState</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">children</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">_as_node</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">child</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">children</span><span class="p">))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">children</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"A system must contain at least one child"</span><span class="p">)</span>
@@ -661,14 +671,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operator_name</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">components</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Component</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Flat tuple of all leaf components in the system."""</span>
 
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">_unique_components</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iter_components</span><span class="p">()))</span>
 
 <div class="viewcode-block" id="System.iter_components">
 <a class="viewcode-back" href="../../gen/pystra.systems.System.html#pystra.systems.System.iter_components">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">iter_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">iter_components</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Component</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Yield all leaf components in the system."""</span>
 
         <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
@@ -677,7 +687,7 @@
 
 <div class="viewcode-block" id="System.evaluate">
 <a class="viewcode-back" href="../../gen/pystra.systems.System.html#pystra.systems.System.evaluate">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Evaluate the equivalent scalar system limit state."""</span>
 
         <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">child</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">]</span>
@@ -686,7 +696,7 @@
 
 <div class="viewcode-block" id="System.as_limit_state">
 <a class="viewcode-back" href="../../gen/pystra.systems.System.html#pystra.systems.System.as_limit_state">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">as_limit_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_limit_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LimitState</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return the composed system as a PySTRA :class:`LimitState`."""</span>
 
         <span class="k">return</span> <span class="n">LimitState</span><span class="p">(</span><span class="k">lambda</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
@@ -694,7 +704,7 @@
 
 <div class="viewcode-block" id="System.get_limit_state">
 <a class="viewcode-back" href="../../gen/pystra.systems.System.html#pystra.systems.System.get_limit_state">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_limit_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_limit_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LimitState</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return the composed system as a PySTRA :class:`LimitState`.</span>
 
 <span class="sd">        This legacy-style alias mirrors the existing PySTRA getter naming.</span>
@@ -705,7 +715,7 @@
 
 <div class="viewcode-block" id="System.component_values">
 <a class="viewcode-back" href="../../gen/pystra.systems.System.html#pystra.systems.System.component_values">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">component_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">component_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Evaluate all leaf component limit states.</span>
 
 <span class="sd">        Returns</span>
@@ -731,7 +741,9 @@
 
 <div class="viewcode-block" id="System.component_failure_masks">
 <a class="viewcode-back" href="../../gen/pystra.systems.System.html#pystra.systems.System.component_failure_masks">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">component_failure_masks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">component_failure_masks</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">ArrayLike</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Return failure masks for each leaf component."""</span>
 
         <span class="k">return</span> <span class="p">{</span>
@@ -741,7 +753,7 @@
 
 <div class="viewcode-block" id="System.failure_mask">
 <a class="viewcode-back" href="../../gen/pystra.systems.System.html#pystra.systems.System.failure_mask">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">failure_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">failure_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return a boolean mask where the system is failed."""</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span></div>
@@ -810,7 +822,12 @@
 
     <span class="n">_operator_name</span> <span class="o">=</span> <span class="s2">"k_of_n"</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">children</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">children</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Component</span> <span class="o">|</span> <span class="n">System</span> <span class="o">|</span> <span class="n">LimitState</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
+        <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">children</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">):</span>
@@ -844,7 +861,18 @@
 
     <span class="n">_operator_name</span> <span class="o">=</span> <span class="s2">"cut_set"</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cut_sets</span><span class="p">,</span> <span class="n">components</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">cut_sets</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span>
+            <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">Component</span> <span class="o">|</span> <span class="n">System</span> <span class="o">|</span> <span class="n">LimitState</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
+        <span class="p">],</span>
+        <span class="n">components</span><span class="p">:</span> <span class="p">(</span>
+            <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Component</span> <span class="o">|</span> <span class="n">System</span> <span class="o">|</span> <span class="n">LimitState</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
+            <span class="o">|</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Component</span> <span class="o">|</span> <span class="n">System</span> <span class="o">|</span> <span class="n">LimitState</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
+            <span class="o">|</span> <span class="kc">None</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">resolved</span> <span class="o">=</span> <span class="n">_resolve_component_sets</span><span class="p">(</span><span class="n">cut_sets</span><span class="p">,</span> <span class="n">components</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">resolved</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"At least one cut set is required"</span><span class="p">)</span>
@@ -881,7 +909,18 @@
 
     <span class="n">_operator_name</span> <span class="o">=</span> <span class="s2">"tie_set"</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tie_sets</span><span class="p">,</span> <span class="n">components</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">tie_sets</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span>
+            <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">Component</span> <span class="o">|</span> <span class="n">System</span> <span class="o">|</span> <span class="n">LimitState</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
+        <span class="p">],</span>
+        <span class="n">components</span><span class="p">:</span> <span class="p">(</span>
+            <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Component</span> <span class="o">|</span> <span class="n">System</span> <span class="o">|</span> <span class="n">LimitState</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
+            <span class="o">|</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Component</span> <span class="o">|</span> <span class="n">System</span> <span class="o">|</span> <span class="n">LimitState</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
+            <span class="o">|</span> <span class="kc">None</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">resolved</span> <span class="o">=</span> <span class="n">_resolve_component_sets</span><span class="p">(</span><span class="n">tie_sets</span><span class="p">,</span> <span class="n">components</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">resolved</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"At least one tie set is required"</span><span class="p">)</span>
@@ -898,7 +937,12 @@
 
 <div class="viewcode-block" id="ditlevsen_bounds">
 <a class="viewcode-back" href="../../gen/pystra.systems.ditlevsen_bounds.html#pystra.systems.ditlevsen_bounds">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">ditlevsen_bounds</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="n">intersections</span><span class="p">,</span> <span class="n">ordering</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">optimize_order</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ditlevsen_bounds</span><span class="p">(</span>
+    <span class="n">probabilities</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">intersections</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="n">ordering</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">optimize_order</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">"""Return Ditlevsen bounds for the probability of a union of events.</span>
 
 <span class="sd">    Parameters</span>

@@ -507,9 +507,7 @@
                 <article class="bd-article">
                   
   <h1>Source code for pystra.reliability.sensitivity</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/env python3</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">"""Sensitivity analysis of the reliability index.</span>
+<span></span><span class="sd">"""Sensitivity analysis of the reliability index.</span>
 
 <span class="sd">This module computes the sensitivity of the FORM reliability index</span>
 <span class="sd">with respect to each distribution parameter declared by</span>
@@ -528,6 +526,14 @@
 <span class="sd">  number of variables is large.</span>
 <span class="sd">"""</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Real</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_pystra</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.form</span><span class="w"> </span><span class="kn">import</span> <span class="n">FORM</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisError</span><span class="p">,</span> <span class="n">ModelError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">_check_on_failure</span>
@@ -539,11 +545,6 @@
     <span class="n">inverse_cholesky_gradient</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._numerics.integration</span><span class="w"> </span><span class="kn">import</span> <span class="n">zi_and_xi</span><span class="p">,</span> <span class="n">drho_drho0</span><span class="p">,</span> <span class="n">drho0_dtheta</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Real</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"SensitivityAnalysis"</span><span class="p">]</span>
 
@@ -587,14 +588,14 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">model</span><span class="p">,</span>
-        <span class="n">limit_state</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="s2">"_pystra.StochasticModel"</span><span class="p">,</span>
+        <span class="n">limit_state</span><span class="p">:</span> <span class="s2">"_pystra.LimitState"</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">method</span><span class="o">=</span><span class="s2">"numerical"</span><span class="p">,</span>
-        <span class="n">delta</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
-        <span class="n">on_failure</span><span class="o">=</span><span class="s2">"raise"</span><span class="p">,</span>
-    <span class="p">):</span>
+        <span class="n">options</span><span class="p">:</span> <span class="s2">"_pystra.FORMOptions | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"numerical"</span><span class="p">,</span> <span class="s2">"closed_form"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"numerical"</span><span class="p">,</span>
+        <span class="n">delta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">on_failure</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"raise"</span><span class="p">,</span> <span class="s2">"return"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"raise"</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">StochasticModel</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"SensitivityAnalysis requires a StochasticModel"</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">limit_state</span><span class="p">,</span> <span class="n">LimitState</span><span class="p">):</span>
@@ -623,7 +624,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="n">delta</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">on_failure</span> <span class="o">=</span> <span class="n">_check_on_failure</span><span class="p">(</span><span class="n">on_failure</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">names</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_variables</span><span class="p">())</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">"SensitivityAnalysis(variables=</span><span class="si">{</span><span class="n">names</span><span class="si">!r}</span><span class="s2">, method=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="si">!r}</span><span class="s2">, "</span>
@@ -632,7 +633,7 @@
 
 <div class="viewcode-block" id="SensitivityAnalysis.run">
 <a class="viewcode-back" href="../../../gen/pystra.reliability.sensitivity.SensitivityAnalysis.html#pystra.reliability.sensitivity.SensitivityAnalysis.run">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"_pystra.SensitivityResult"</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">"""Run the sensitivity analysis.</span>
 
 <span class="sd">        Returns</span>

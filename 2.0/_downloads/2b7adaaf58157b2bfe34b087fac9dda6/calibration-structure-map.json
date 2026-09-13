@@ -39,7 +39,7 @@
     "specialist_solve": "root (fsolve or bracketed Brent) and alpha. Default beta tolerance=1e-4 and max_evaluations=100 reliability evaluations per case including final verification. Inner convergence, outer success and final residual required. Failures retained; factor derivation rejects them.",
     "specialist_derivation": "coeff/matrix require normal standard space and exactly one leading case per variable action. Explicit names align arrays. Separable resistance-scale equation verified at computed design; arbitrary coupled nonlinear decomposition unsupported. Matrix action coefficient uses its own leading-case inputs, preserving reference convention. Singular systems raise.",
     "factor_results": "Frozen numeric row tuples with case_names/resistance_names/load_names and leading_actions. to_frame(kind) copies. Selection per_case by default; resistance minimum, loads/combinations maximum are explicit. Governing ties retained. Design maximum must be explicitly chosen, then verified.",
-    "load_cases": "Constructor validates/copies but does not analyze. Explicit roles cover random variables; leading metadata identifies variable actions by name. Maxima and companions have separate name-to-distribution mappings. Pearson correlation is a uniquely labelled finite symmetric positive-definite DataFrame with unit diagonal. Unknown overrides raise. Case names derive from the case mapping; roles and the limit-state callable are read-only properties so validated metadata cannot be replaced independently. No legacy positional/dictionary constructor.",
+    "load_cases": "Constructor validates/copies but does not analyze. Explicit roles cover random variables; leading metadata identifies variable actions by name. Maxima and companions have separate name-to-distribution mappings. Pearson correlation is a uniquely labeled finite symmetric positive-definite DataFrame with unit diagonal. Unknown overrides raise. Case names derive from the case mapping; roles and the limit-state callable are read-only properties so validated metadata cannot be replaced independently. No legacy positional/dictionary constructor.",
     "study_evaluators": "Assessment and calibration default to FORM, with evaluator(model, limit_state, options=options) accepting a method constructor or ReliabilityResult callback. Analyses run on copied inputs. AnalysisError is retained as a failed record; invalid specifications and programming errors raise. Root target solving and verification need normal-equivalent estimates; alpha projection and factor derivation require explicit normal-space design-point capabilities.",
     "study_reporting": "Shared reliability rows include method, status, converged and message. Failed table estimates and target margins are unavailable; original records retain their diagnostics and any under-resolved estimates. TargetDesigns.reliability_frame reports every root solve, including residual and outer solve status."
   },
@@ -181,7 +181,7 @@
     {
       "name": "pystra.calibration.factors.solve_designs",
       "kind": "callable",
-      "signature": "(problem: FactorCalibrationProblem, *, target_beta: float, method: str='root', initial_value: Optional[float]=None, tolerance: float=0.0001, max_evaluations: int=100, bracket: Optional[Tuple[float, float]]=None, options: object=None, evaluator: ReliabilityEvaluator | None=None)",
+      "signature": "(problem: FactorCalibrationProblem, *, target_beta: float, method: str='root', initial_value: float | None=None, tolerance: float=0.0001, max_evaluations: int=100, bracket: tuple[float, float] | None=None, options: object=None, evaluator: ReliabilityEvaluator | None=None)",
       "decorators": [],
       "returns": "TargetDesigns"
     },
@@ -254,7 +254,7 @@
       "decorators": [
         "property"
       ],
-      "returns": "Tuple[str, ...]"
+      "returns": "tuple[str, ...]"
     },
     {
       "name": "pystra.calibration.factors.design_with_factors",
@@ -277,9 +277,9 @@
     {
       "name": "pystra.calibration.factors.verify_designs",
       "kind": "callable",
-      "signature": "(problem: FactorCalibrationProblem, design_values: Union[float, Mapping[str, float], DesignValues], *, target_beta: Optional[float]=None, options: object=None, evaluator: ReliabilityEvaluator | None=None)",
+      "signature": "(problem: FactorCalibrationProblem, design_values: float | Mapping[str, float] | DesignValues, *, target_beta: float | None=None, options: object=None, evaluator: ReliabilityEvaluator | None=None)",
       "decorators": [],
-      "returns": "Tuple[DesignVerification, ...]"
+      "returns": "tuple[DesignVerification, ...]"
     },
     {
       "name": "pystra.calibration.normalized._positive",
@@ -442,7 +442,7 @@
       "decorators": [
         "property"
       ],
-      "returns": "Tuple[float, ...]"
+      "returns": "tuple[float, ...]"
     },
     {
       "name": "pystra.calibration.normalized.CodeCalibration.dead_load_ratios",
@@ -451,7 +451,7 @@
       "decorators": [
         "property"
       ],
-      "returns": "Tuple[float, ...]"
+      "returns": "tuple[float, ...]"
     },
     {
       "name": "pystra.calibration.normalized.CodeCalibration.design",
@@ -465,16 +465,16 @@
     {
       "name": "pystra.calibration.normalized.CodeCalibration.run",
       "kind": "callable",
-      "signature": "(self, model: NormalizedReliabilityModel, factors: CodeFactors, *, options: object=None, evaluator: ReliabilityEvaluator | None=None, target_beta: Optional[float]=None)",
+      "signature": "(self, model: NormalizedReliabilityModel, factors: CodeFactors, *, options: object=None, evaluator: ReliabilityEvaluator | None=None, target_beta: float | None=None)",
       "decorators": [],
       "returns": "CodeCalibrationResult"
     },
     {
       "name": "pystra.calibration.plotting.plot_calibration",
       "kind": "callable",
-      "signature": "(results, *, target_beta=None, colors=None, ranges=None, ax=None, figsize=(8, 4))",
+      "signature": "(results: Mapping[str, CodeCalibrationResult], *, target_beta: float | None=None, colors: Mapping[str, Any] | None=None, ranges: Sequence[Mapping[str, Any]] | None=None, ax: Axes | None=None, figsize: tuple[float, float]=(8, 4))",
       "decorators": [],
-      "returns": null
+      "returns": "tuple[Figure, Axes]"
     },
     {
       "name": "pystra.loads.FBCProcess",
@@ -489,39 +489,39 @@
     {
       "name": "pystra.loads.FBCProcess.__init__",
       "kind": "callable",
-      "signature": "(self, name, parent, basic_interval)",
+      "signature": "(self, name: str, parent: Distribution, basic_interval: float)",
       "decorators": [],
-      "returns": null
+      "returns": "None"
     },
     {
       "name": "pystra.loads.FBCProcess.from_maximum",
       "kind": "callable",
-      "signature": "(cls, name, maximum, maximum_duration, basic_interval)",
+      "signature": "(cls, name: str, maximum: Distribution, maximum_duration: float, basic_interval: float)",
       "decorators": [
         "classmethod"
       ],
-      "returns": null
+      "returns": "Self"
     },
     {
       "name": "pystra.loads.FBCProcess.interval_count",
       "kind": "callable",
-      "signature": "(self, duration=None, n=None)",
+      "signature": "(self, duration: float | None=None, n: float | None=None)",
       "decorators": [],
-      "returns": null
+      "returns": "float"
     },
     {
       "name": "pystra.loads.FBCProcess.point_in_time",
       "kind": "callable",
       "signature": "(self)",
       "decorators": [],
-      "returns": null
+      "returns": "Distribution"
     },
     {
       "name": "pystra.loads.FBCProcess.maximum",
       "kind": "callable",
-      "signature": "(self, duration=None, n=None)",
+      "signature": "(self, duration: float | None=None, n: float | None=None)",
       "decorators": [],
-      "returns": null
+      "returns": "Maximum"
     },
     {
       "name": "pystra.loads._variables",
@@ -554,7 +554,7 @@
       "decorators": [
         "property"
       ],
-      "returns": "Tuple[str, ...]"
+      "returns": "tuple[str, ...]"
     },
     {
       "name": "pystra.loads.LoadCombination",
@@ -572,7 +572,7 @@
     {
       "name": "pystra.loads.LoadCombination.__init__",
       "kind": "callable",
-      "signature": "(self, *, cases: Mapping[str, _Variables], limit_state: Optional[Callable]=None, constants: Optional[_Variables]=None, roles: Optional[VariableRoles]=None, leading_actions: Optional[Mapping[str, Sequence[str]]]=None, correlation=None)",
+      "signature": "(self, *, cases: Mapping[str, _Variables], limit_state: Callable | None=None, constants: _Variables | None=None, roles: VariableRoles | None=None, leading_actions: Mapping[str, Sequence[str]] | None=None, correlation: DataFrame | None=None)",
       "decorators": [],
       "returns": "None"
     },
@@ -583,7 +583,7 @@
       "decorators": [
         "property"
       ],
-      "returns": "Optional[Callable]"
+      "returns": "Callable | None"
     },
     {
       "name": "pystra.loads.LoadCombination.roles",
@@ -592,7 +592,7 @@
       "decorators": [
         "property"
       ],
-      "returns": "Optional[VariableRoles]"
+      "returns": "VariableRoles | None"
     },
     {
       "name": "pystra.loads.LoadCombination.case_names",
@@ -601,7 +601,7 @@
       "decorators": [
         "property"
       ],
-      "returns": "Tuple[str, ...]"
+      "returns": "tuple[str, ...]"
     },
     {
       "name": "pystra.loads.LoadCombination.cases",
@@ -628,26 +628,26 @@
       "decorators": [
         "property"
       ],
-      "returns": "Mapping[str, Tuple[str, ...]]"
+      "returns": "Mapping[str, tuple[str, ...]]"
     },
     {
       "name": "pystra.loads.LoadCombination.case",
       "kind": "callable",
-      "signature": "(self, case_name: Optional[str]=None)",
+      "signature": "(self, case_name: str | None=None)",
       "decorators": [],
       "returns": "dict"
     },
     {
       "name": "pystra.loads.LoadCombination.stochastic_model",
       "kind": "callable",
-      "signature": "(self, case_name: Optional[str]=None, *, overrides: Optional[_Variables]=None)",
+      "signature": "(self, case_name: str | None=None, *, overrides: _Variables | None=None)",
       "decorators": [],
       "returns": "StochasticModel"
     },
     {
       "name": "pystra.loads.LoadCombination.from_actions",
       "kind": "callable",
-      "signature": "(cls, *, maxima: Mapping[str, Distribution], companions: Mapping[str, Distribution], resistance: _Variables, other: Optional[_Variables]=None, constants: Optional[_Variables]=None, leading_actions: Optional[Mapping[str, Sequence[str]]]=None, limit_state: Optional[Callable]=None, correlation=None)",
+      "signature": "(cls, *, maxima: Mapping[str, Distribution], companions: Mapping[str, Distribution], resistance: _Variables, other: _Variables | None=None, constants: _Variables | None=None, leading_actions: Mapping[str, Sequence[str]] | None=None, limit_state: Callable | None=None, correlation: DataFrame | None=None)",
       "decorators": [
         "classmethod"
       ],
@@ -656,7 +656,7 @@
     {
       "name": "pystra.loads.LoadCombination.turkstra",
       "kind": "callable",
-      "signature": "(cls, variable: Mapping[str, FBCProcess], reference_period: float, *, limit_state: Optional[Callable]=None, resistance: Optional[_Variables]=None, permanent: Optional[_Variables]=None, other: Optional[_Variables]=None, constants: Optional[_Variables]=None, correlation=None, companion_duration: Union[str, float]='leading_interval')",
+      "signature": "(cls, variable: Mapping[str, FBCProcess], reference_period: float, *, limit_state: Callable | None=None, resistance: _Variables | None=None, permanent: _Variables | None=None, other: _Variables | None=None, constants: _Variables | None=None, correlation: DataFrame | None=None, companion_duration: str | float='leading_interval')",
       "decorators": [
         "classmethod"
       ],
@@ -826,7 +826,7 @@
     {
       "name": "pystra.results.FORMResult.from_analysis",
       "kind": "callable",
-      "signature": "(cls, analysis)",
+      "signature": "(cls, analysis: '_pystra.FORM')",
       "decorators": [
         "classmethod"
       ],
@@ -844,7 +844,7 @@
       "kind": "callable",
       "signature": "(self)",
       "decorators": [],
-      "returns": null
+      "returns": "DataFrame"
     },
     {
       "name": "pystra.results.SORMResult",
@@ -940,7 +940,7 @@
       "kind": "callable",
       "signature": "(self)",
       "decorators": [],
-      "returns": null
+      "returns": "DataFrame"
     },
     {
       "name": "pystra.results.StrongMaximumResult",
@@ -967,9 +967,9 @@
     {
       "name": "pystra.results.StrongMaximumResult.points",
       "kind": "callable",
-      "signature": "(self, region='far_failure', space='u')",
+      "signature": "(self, region: str='far_failure', space: str='u')",
       "decorators": [],
-      "returns": null
+      "returns": "np.ndarray"
     },
     {
       "name": "pystra.results.StrongMaximumResult._rows",

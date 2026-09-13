@@ -509,7 +509,11 @@
   <h1>Source code for pystra.dependence.copula</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""Continuous copula specifications, independent of physical marginals."""</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Self</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">multivariate_normal</span><span class="p">,</span> <span class="n">multivariate_t</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
@@ -519,6 +523,18 @@
     <span class="s2">"FrankCopula"</span><span class="p">,</span>
     <span class="s2">"IndependentCopula"</span><span class="p">,</span>
 <span class="p">]</span>
+
+
+<span class="n">_RandomSeed</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="nb">int</span>
+    <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span>
+    <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">SeedSequence</span>
+    <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">BitGenerator</span>
+    <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">Generator</span>
+    <span class="o">|</span> <span class="kc">None</span>
+<span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_points</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="n">interior</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -570,13 +586,47 @@
 
     <span class="n">elliptical</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">probabilities</span><span class="p">))</span>
+<div class="viewcode-block" id="Copula.pdf">
+<a class="viewcode-back" href="../../../gen/pystra.dependence.copula.Copula.html#pystra.dependence.copula.Copula.pdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Evaluate the copula density at interior uniform coordinates.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        probabilities : array_like, shape (dimension,) or (n_points, dimension)</span>
+<span class="sd">            Marginal probabilities strictly between zero and one, in original order.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or ndarray, shape (n_points,)</span>
+<span class="sd">            Density for one point or one value per row of points.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the coordinates have an invalid shape or lie outside the interior.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">probabilities</span><span class="p">))</span></div>
+
 
 <div class="viewcode-block" id="Copula.rvs">
 <a class="viewcode-back" href="../../../gen/pystra.dependence.copula.Copula.html#pystra.dependence.copula.Copula.rvs">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">rvs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Sample rows using a local NumPy random generator."""</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rvs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="n">_RandomSeed</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Sample rows using a local NumPy random generator.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        size : int, default 1</span>
+<span class="sd">            Nonnegative number of observations.</span>
+<span class="sd">        seed : int, sequence of int, SeedSequence, BitGenerator, Generator, optional</span>
+<span class="sd">            Input to ``numpy.random.default_rng``. A supplied generator is reused</span>
+<span class="sd">            and advances; other seeds construct a local generator.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray, shape (size, dimension)</span>
+<span class="sd">            Uniform marginal coordinates with this copula's dependence.</span>
+<span class="sd">        """</span>
         <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
         <span class="c1"># Exclude representable endpoints for inverse conditional transforms.</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span>
@@ -596,11 +646,16 @@
 
 <span class="sd">    R is not generally the physical Pearson correlation of the marginals.</span>
 <span class="sd">    A finite, symmetric, positive-definite matrix with unit diagonal is required.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    correlation : array_like, shape (dimension, dimension)</span>
+<span class="sd">        Latent normal correlation, copied and validated at construction.</span>
 <span class="sd">    """</span>
 
     <span class="n">elliptical</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">correlation</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">correlation</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">correlation</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="n">matrix</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span>
@@ -623,37 +678,80 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Copy of the latent correlation (shape matrix for Student-t)."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_correlation</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">kendall_tau</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">kendall_tau</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Pairwise Kendall rank correlation implied by this elliptical copula."""</span>
         <span class="k">return</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_correlation</span><span class="p">)</span>
 
 <div class="viewcode-block" id="GaussianCopula.from_kendall_tau">
 <a class="viewcode-back" href="../../../gen/pystra.dependence.copula.GaussianCopula.html#pystra.dependence.copula.GaussianCopula.from_kendall_tau">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_kendall_tau</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Construct from rank correlations, validating the resulting shape."""</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_kendall_tau</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tau</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Construct from rank correlations, validating the resulting shape.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tau : array_like, shape (dimension, dimension)</span>
+<span class="sd">            Finite Kendall rank correlations in [-1, 1]. The transformed latent</span>
+<span class="sd">            matrix must be symmetric positive definite with a unit diagonal.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional subclass constructor arguments, such as ``df`` for</span>
+<span class="sd">            :class:`StudentTCopula`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        GaussianCopula</span>
+<span class="sd">            An instance of the class on which this method was called.</span>
+<span class="sd">        """</span>
         <span class="n">tau</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">tau</span><span class="p">))</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">tau</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Kendall tau must be finite and in [-1, 1]"</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">tau</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">):</span>
+<div class="viewcode-block" id="GaussianCopula.logpdf">
+<a class="viewcode-back" href="../../../gen/pystra.dependence.copula.GaussianCopula.html#pystra.dependence.copula.GaussianCopula.logpdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Evaluate log density at interior uniform coordinates.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        probabilities : array_like, shape (dimension,) or (n_points, dimension)</span>
+<span class="sd">            Marginal probabilities strictly between zero and one, in original order.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or ndarray, shape (n_points,)</span>
+<span class="sd">            Log density for one point or one value per row of points.</span>
+<span class="sd">        """</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">_points</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span> <span class="n">interior</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">z</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">multivariate_normal</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">cov</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_correlation</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
             <span class="n">norm</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span>
-        <span class="p">)</span>
+        <span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="GaussianCopula.cdf">
 <a class="viewcode-back" href="../../../gen/pystra.dependence.copula.GaussianCopula.html#pystra.dependence.copula.GaussianCopula.cdf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Evaluate the copula CDF; kwargs control SciPy integration."""</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Evaluate the copula CDF, including unit-cube boundaries.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        probabilities : array_like, shape (dimension,) or (n_points, dimension)</span>
+<span class="sd">            Marginal probabilities in [0, 1], in original order.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Keyword arguments forwarded to SciPy's multivariate CDF integration.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or ndarray, shape (n_points,)</span>
+<span class="sd">            Cumulative probability for one point or one value per row of points.</span>
+<span class="sd">        """</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">_points</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">one</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
@@ -675,31 +773,81 @@
         <span class="k">return</span> <span class="n">one</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">one</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">p</span><span class="p">])</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">rosenblatt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="GaussianCopula.rosenblatt">
+<a class="viewcode-back" href="../../../gen/pystra.dependence.copula.GaussianCopula.html#pystra.dependence.copula.GaussianCopula.rosenblatt">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rosenblatt</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Map dependent uniforms to independent conditional uniforms.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        probabilities : array_like, shape (dimension,) or (n_points, dimension)</span>
+<span class="sd">            Interior uniform marginal coordinates in original order.</span>
+<span class="sd">        order : sequence of int, optional</span>
+<span class="sd">            Conditioning permutation; the default is original marginal order.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray</span>
+<span class="sd">            Conditional uniforms with the input shape. Column ``order[k]`` holds</span>
+<span class="sd">            the k-th conditional innovation, so original column labels are retained.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If coordinates, conditioning order or computed probabilities are invalid.</span>
+<span class="sd">        """</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">_points</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span> <span class="n">interior</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">ids</span> <span class="o">=</span> <span class="n">_order</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">)</span>
         <span class="n">L</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_correlation</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ix_</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">ids</span><span class="p">)])</span>
         <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">p</span><span class="p">)[</span><span class="o">...</span><span class="p">,</span> <span class="n">ids</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
         <span class="n">result</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">ids</span><span class="p">]</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">_points</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span> <span class="n">interior</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_points</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span> <span class="n">interior</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">inverse_rosenblatt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="GaussianCopula.inverse_rosenblatt">
+<a class="viewcode-back" href="../../../gen/pystra.dependence.copula.GaussianCopula.html#pystra.dependence.copula.GaussianCopula.inverse_rosenblatt">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">inverse_rosenblatt</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Map independent conditional uniforms to dependent marginals.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        probabilities : array_like, shape (dimension,) or (n_points, dimension)</span>
+<span class="sd">            Interior independent uniforms in original column positions.</span>
+<span class="sd">        order : sequence of int, optional</span>
+<span class="sd">            Conditioning permutation used by :meth:`rosenblatt`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray</span>
+<span class="sd">            Dependent uniform marginal coordinates, with the input shape and order.</span>
+<span class="sd">        """</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">_points</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span> <span class="n">interior</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">ids</span> <span class="o">=</span> <span class="n">_order</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">)</span>
         <span class="n">L</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_correlation</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ix_</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">ids</span><span class="p">)])</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
         <span class="n">result</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">ids</span><span class="p">]</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">q</span><span class="p">)[</span><span class="o">...</span><span class="p">,</span> <span class="n">ids</span><span class="p">]</span> <span class="o">@</span> <span class="n">L</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_points</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span> <span class="n">interior</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+</div>
 
 
 
 <div class="viewcode-block" id="IndependentCopula">
 <a class="viewcode-back" href="../../../gen/pystra.dependence.copula.IndependentCopula.html#pystra.dependence.copula.IndependentCopula">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">IndependentCopula</span><span class="p">(</span><span class="n">GaussianCopula</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Product copula of the specified dimension."""</span>
+<span class="w">    </span><span class="sd">"""Product copula of the specified dimension.</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="p">):</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dimension : int</span>
+<span class="sd">        Positive number of independent uniform coordinates.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">dimension</span> <span class="o">=</span> <span class="n">_sample_size</span><span class="p">(</span><span class="n">dimension</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">dimension</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"dimension must be positive"</span><span class="p">)</span>
@@ -707,14 +855,14 @@
 
 <div class="viewcode-block" id="IndependentCopula.cdf">
 <a class="viewcode-back" href="../../../gen/pystra.dependence.copula.IndependentCopula.html#pystra.dependence.copula.IndependentCopula.cdf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">_points</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="IndependentCopula.from_kendall_tau">
 <a class="viewcode-back" href="../../../gen/pystra.dependence.copula.IndependentCopula.html#pystra.dependence.copula.IndependentCopula.from_kendall_tau">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_kendall_tau</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_kendall_tau</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tau</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
         <span class="n">matrix</span> <span class="o">=</span> <span class="n">GaussianCopula</span><span class="o">.</span><span class="n">from_kendall_tau</span><span class="p">(</span><span class="n">tau</span><span class="p">)</span><span class="o">.</span><span class="n">correlation</span>
         <span class="k">if</span> <span class="n">kwargs</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">matrix</span><span class="p">))):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"IndependentCopula requires identity Kendall correlation"</span><span class="p">)</span>
@@ -732,24 +880,34 @@
 <span class="sd">    The shape is not a physical Pearson correlation matrix. df need not exceed</span>
 <span class="sd">    two, since arbitrary physical marginals can have finite moments regardless</span>
 <span class="sd">    of the latent t representative's moments.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    correlation : array_like, shape (dimension, dimension)</span>
+<span class="sd">        Finite symmetric positive-definite latent shape with unit diagonal.</span>
+<span class="sd">    df : float</span>
+<span class="sd">        Finite positive degrees of freedom of the latent Student-t law.</span>
 <span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">correlation</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">correlation</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">correlation</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="ow">or</span> <span class="n">df</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"df must be finite and positive"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">):</span>
+<div class="viewcode-block" id="StudentTCopula.logpdf">
+<a class="viewcode-back" href="../../../gen/pystra.dependence.copula.StudentTCopula.html#pystra.dependence.copula.StudentTCopula.logpdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">_points</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span> <span class="n">interior</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">w</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">multivariate_t</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_correlation</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
             <span class="n">t</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span>
-        <span class="p">)</span>
+        <span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="StudentTCopula.cdf">
 <a class="viewcode-back" href="../../../gen/pystra.dependence.copula.StudentTCopula.html#pystra.dependence.copula.StudentTCopula.cdf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">_points</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">one</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
@@ -772,7 +930,11 @@
         <span class="k">return</span> <span class="n">one</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">one</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">p</span><span class="p">])</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">rosenblatt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="StudentTCopula.rosenblatt">
+<a class="viewcode-back" href="../../../gen/pystra.dependence.copula.StudentTCopula.html#pystra.dependence.copula.StudentTCopula.rosenblatt">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rosenblatt</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">_points</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span> <span class="n">interior</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">ids</span> <span class="o">=</span> <span class="n">_order</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">)</span>
         <span class="n">L</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_correlation</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ix_</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">ids</span><span class="p">)])</span>
@@ -783,9 +945,14 @@
                 <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="n">k</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">+</span> <span class="n">k</span><span class="p">)</span>
             <span class="p">)</span>
             <span class="n">result</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">scale</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">+</span> <span class="n">k</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">_points</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span> <span class="n">interior</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_points</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span> <span class="n">interior</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">inverse_rosenblatt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="StudentTCopula.inverse_rosenblatt">
+<a class="viewcode-back" href="../../../gen/pystra.dependence.copula.StudentTCopula.html#pystra.dependence.copula.StudentTCopula.inverse_rosenblatt">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">inverse_rosenblatt</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">_points</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span> <span class="n">interior</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">ids</span> <span class="o">=</span> <span class="n">_order</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">)</span>
         <span class="n">L</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_correlation</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ix_</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">ids</span><span class="p">)])</span>
@@ -798,6 +965,7 @@
         <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
         <span class="n">result</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">ids</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">z</span> <span class="o">@</span> <span class="n">L</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_points</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span> <span class="n">interior</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+</div>
 
 
 
@@ -808,16 +976,29 @@
 
 <span class="sd">    This initial implementation supports finite ``abs(theta) &lt;= 30`` to keep the</span>
 <span class="sd">    exponential conditional formulas resolved in double precision.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    theta : float</span>
+<span class="sd">        Finite bivariate Frank dependence parameter, including zero for</span>
+<span class="sd">        independence. The implementation requires ``abs(theta) &lt;= 30``.</span>
 <span class="sd">    """</span>
 
     <span class="n">dimension</span> <span class="o">=</span> <span class="mi">2</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">abs</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Frank theta must be finite with |theta| &lt;= 30"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">theta</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">):</span>
+<div class="viewcode-block" id="FrankCopula.cdf">
+<a class="viewcode-back" href="../../../gen/pystra.dependence.copula.FrankCopula.html#pystra.dependence.copula.FrankCopula.cdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the bivariate CDF on the closed unit square.</span>
+
+<span class="sd">        ``probabilities`` has shape ``(2,)`` or ``(n_points, 2)``. Return a scalar</span>
+<span class="sd">        or one probability per row; coordinates must be finite and in [0, 1].</span>
+<span class="sd">        """</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">_points</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">theta</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
@@ -829,7 +1010,8 @@
         <span class="k">return</span> <span class="p">(</span>
             <span class="n">offset</span>
             <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">)))</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">theta</span>
-        <span class="p">)</span>
+        <span class="p">)</span></div>
+
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_denominator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">theta</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -840,7 +1022,14 @@
         <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span> <span class="o">*</span> <span class="n">p</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span> <span class="o">+</span> <span class="n">a</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">a</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">):</span>
+<div class="viewcode-block" id="FrankCopula.logpdf">
+<a class="viewcode-back" href="../../../gen/pystra.dependence.copula.FrankCopula.html#pystra.dependence.copula.FrankCopula.logpdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return log density in the interior of the unit square.</span>
+
+<span class="sd">        ``probabilities`` has shape ``(2,)`` or ``(n_points, 2)`` with coordinates</span>
+<span class="sd">        strictly between zero and one. Return one log density per point.</span>
+<span class="sd">        """</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">_points</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">interior</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">theta</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
@@ -851,9 +1040,20 @@
             <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">D</span><span class="p">))</span>
             <span class="o">-</span> <span class="n">th</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
             <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_denominator</span><span class="p">(</span><span class="n">p</span><span class="p">)))</span>
-        <span class="p">)</span>
+        <span class="p">)</span></div>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">rosenblatt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FrankCopula.rosenblatt">
+<a class="viewcode-back" href="../../../gen/pystra.dependence.copula.FrankCopula.html#pystra.dependence.copula.FrankCopula.rosenblatt">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rosenblatt</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Map dependent uniforms to independent conditional uniforms.</span>
+
+<span class="sd">        ``probabilities`` has shape ``(2,)`` or ``(n_points, 2)`` and lies strictly</span>
+<span class="sd">        inside the unit square. ``order`` is ``[0, 1]`` by default or ``[1, 0]``.</span>
+<span class="sd">        The result retains the input shape and original coordinate positions.</span>
+<span class="sd">        """</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">_points</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">interior</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">_order</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -861,9 +1061,19 @@
             <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span> <span class="o">*</span> <span class="n">p</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">i</span><span class="p">])</span>
             <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span> <span class="o">*</span> <span class="n">p</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
             <span class="n">result</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_denominator</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">_points</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">interior</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_points</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">interior</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">inverse_rosenblatt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FrankCopula.inverse_rosenblatt">
+<a class="viewcode-back" href="../../../gen/pystra.dependence.copula.FrankCopula.html#pystra.dependence.copula.FrankCopula.inverse_rosenblatt">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">inverse_rosenblatt</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Invert the conditional uniform map for the same conditioning order.</span>
+
+<span class="sd">        The input, output and ordering contracts match :meth:`rosenblatt`;</span>
+<span class="sd">        input uniforms are independent and output marginals have Frank dependence.</span>
+<span class="sd">        """</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">_points</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">interior</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">_order</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -877,6 +1087,7 @@
                 <span class="n">b</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="n">denominator</span>
                 <span class="n">result</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">theta</span>
         <span class="k">return</span> <span class="n">_points</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">interior</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+</div>
 
 </pre></div>
 

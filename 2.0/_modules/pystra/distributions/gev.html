@@ -507,9 +507,15 @@
                 <article class="bd-article">
                   
   <h1>Source code for pystra.distributions.gev</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span></span><span class="sd">"""Generalized extreme value distributions for maxima and minima."""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">overload</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">genextreme</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.special</span><span class="w"> </span><span class="kn">import</span> <span class="n">gamma</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">pystra.distributions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Distribution</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.distribution</span><span class="w"> </span><span class="kn">import</span> <span class="n">_uses_native_parameters</span>
 
@@ -519,33 +525,37 @@
 <div class="viewcode-block" id="GEV">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.gev.GEV.html#pystra.distributions.gev.GEV">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">GEV</span><span class="p">(</span><span class="n">Distribution</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Generalized Extreme Value (GEV) distribution for maxima.</span>
+<span class="w">    </span><span class="sd">"""Generalized extreme value (GEV) distribution for maxima.</span>
 
-<span class="sd">    ``GEVmax`` is an alias for this class.</span>
+<span class="sd">    GEVmax is an alias for this class.</span>
 
-<span class="sd">    This distribution unifies the different types of extreme value</span>
-<span class="sd">    distributions: Gumbel (Type I), Fréchet (Type II), and</span>
-<span class="sd">    Weibull (Type III).</span>
+<span class="sd">    Supply either mean and std or ``loc`` and ``scale``.</span>
+<span class="sd">    The two parameterizations cannot be combined.</span>
 
-<span class="sd">    :Arguments:</span>
-<span class="sd">        - name (str):       Name of the random variable\n</span>
-<span class="sd">        - mean (float):     Mean\n</span>
-<span class="sd">        - std (float):     Standard deviation\n</span>
-<span class="sd">        - shape (float):    Shape parameter. shape &lt; 0.0 is Weibull,</span>
-<span class="sd">          shape &gt; 0 is Frechet.\n</span>
-<span class="sd">        - loc (float): Location, given instead of mean and std\n</span>
-<span class="sd">        - scale (float): Scale, given instead of mean and std\n</span>
-<span class="sd">        - start_point (float): Start point for seach\n</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name of the random variable, matching a limit-state argument.</span>
+<span class="sd">    mean : float, optional</span>
+<span class="sd">        Mean in physical space.</span>
+<span class="sd">    std : float, optional</span>
+<span class="sd">        Standard deviation in physical space.</span>
+<span class="sd">    shape : float</span>
+<span class="sd">        Required shape parameter, less than 0.5 for finite variance.</span>
+<span class="sd">        The displayed None default marks a missing argument and is rejected.</span>
+<span class="sd">        Negative, zero and positive values give the Weibull, Gumbel and</span>
+<span class="sd">        Fréchet cases, respectively.</span>
+<span class="sd">    loc : float, optional</span>
+<span class="sd">        Location parameter. Supply with the other native parameters instead of mean and std.</span>
+<span class="sd">    scale : float, optional</span>
+<span class="sd">        Positive scale parameter. Supply with the other native parameters instead of mean and std.</span>
+<span class="sd">    start_point : float, optional</span>
+<span class="sd">        Starting point for the design-point search. Defaults to the mean.</span>
 
-<span class="sd">    :Raises:</span>
-<span class="sd">        - ValueError: If `shape` is greater than or equal to 0.5</span>
-
-<span class="sd">    :Notes:</span>
-<span class="sd">        - The shape parameter `shape` must be less than 0.5 for</span>
-<span class="sd">          finite variance.</span>
-<span class="sd">        - `shape` &lt; 0 is the Weibull case, `shape` = 0 is the</span>
-<span class="sd">          Gumbel case, and `shape` &gt; 0 is the Fréchet case.</span>
-<span class="sd">        - This distribution is to model maxima.</span>
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If shape is greater than or equal to 0.5.</span>
 <span class="sd">    """</span>
 
     <span class="n">_native_parameters</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"loc"</span><span class="p">,</span> <span class="s2">"scale"</span><span class="p">)</span>
@@ -557,17 +567,56 @@
             <span class="s2">"scale"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">kwds</span><span class="p">[</span><span class="s2">"scale"</span><span class="p">],</span>
         <span class="p">}</span>
 
+    <span class="nd">@overload</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">,</span>
-        <span class="n">mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">std</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">mean</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">std</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">shape</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">loc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">start_point</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="p">):</span>
+        <span class="n">loc</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">scale</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">start_point</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">mean</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">std</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">shape</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">loc</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">start_point</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">mean</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">std</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">shape</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">loc</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">start_point</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">mean</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">shape</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">loc</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">start_point</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> needs shape"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">shape</span> <span class="o">&gt;=</span> <span class="mf">0.5</span><span class="p">:</span>
@@ -605,7 +654,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dist_type</span> <span class="o">=</span> <span class="s2">"GEV"</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sensitivity_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sensitivity_params</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">"""Sensitivity parameters for GEV.</span>
 
 <span class="sd">        Returns ``{"mean": μ, "std": σ, "shape": ξ}``.  The shape</span>
@@ -624,26 +673,35 @@
 <div class="viewcode-block" id="GEVMin">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.gev.GEVMin.html#pystra.distributions.gev.GEVMin">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">GEVMin</span><span class="p">(</span><span class="n">Distribution</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Generalized Extreme Value (GEV) distribution for minima.</span>
+<span class="w">    </span><span class="sd">"""Generalized extreme value (GEV) distribution for minima.</span>
 
-<span class="sd">    This distribution unifies the different types of extreme value distributions: Gumbel (Type I), Fréchet (Type II), and Weibull (Type III).</span>
+<span class="sd">    Supply either mean and std or ``loc`` and ``scale``.</span>
+<span class="sd">    The two parameterizations cannot be combined.</span>
 
-<span class="sd">    :Arguments:</span>
-<span class="sd">        - name (str):       Name of the random variable\n</span>
-<span class="sd">        - mean (float):     Mean\n</span>
-<span class="sd">        - std (float):     Standard deviation\n</span>
-<span class="sd">        - shape (float):       Shape parameter. shape &lt; 0.0 is Weibull, shape &gt; 0 is Frechet.\n</span>
-<span class="sd">        - loc (float): Location, given instead of mean and std\n</span>
-<span class="sd">        - scale (float): Scale, given instead of mean and std\n</span>
-<span class="sd">        - start_point (float): Start point for seach\n</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name of the random variable, matching a limit-state argument.</span>
+<span class="sd">    mean : float, optional</span>
+<span class="sd">        Mean in physical space.</span>
+<span class="sd">    std : float, optional</span>
+<span class="sd">        Standard deviation in physical space.</span>
+<span class="sd">    shape : float</span>
+<span class="sd">        Required shape parameter, less than 0.5 for finite variance.</span>
+<span class="sd">        The displayed None default marks a missing argument and is rejected.</span>
+<span class="sd">        Negative, zero and positive values give the Weibull, Gumbel and</span>
+<span class="sd">        Fréchet cases, respectively.</span>
+<span class="sd">    loc : float, optional</span>
+<span class="sd">        Location parameter. Supply with the other native parameters instead of mean and std.</span>
+<span class="sd">    scale : float, optional</span>
+<span class="sd">        Positive scale parameter. Supply with the other native parameters instead of mean and std.</span>
+<span class="sd">    start_point : float, optional</span>
+<span class="sd">        Starting point for the design-point search. Defaults to the mean.</span>
 
-<span class="sd">    :Raises:</span>
-<span class="sd">        - ValueError: If `shape` is greater than or equal to 0.5</span>
-
-<span class="sd">    :Notes:</span>
-<span class="sd">        - The shape parameter `shape` must be less than 0.5 for finite variance.</span>
-<span class="sd">        - `shape` &lt; 0 is the Weibull case, `shape` = 0 is the Gumbel case, and `shape` &gt; 0 is the Fréchet case.</span>
-<span class="sd">        - This distribution is to model minima.</span>
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If shape is greater than or equal to 0.5.</span>
 <span class="sd">    """</span>
 
     <span class="n">_native_parameters</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"loc"</span><span class="p">,</span> <span class="s2">"scale"</span><span class="p">)</span>
@@ -655,17 +713,56 @@
             <span class="s2">"scale"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">kwds</span><span class="p">[</span><span class="s2">"scale"</span><span class="p">],</span>
         <span class="p">}</span>
 
+    <span class="nd">@overload</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">,</span>
-        <span class="n">mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">std</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">mean</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">std</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">shape</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">loc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">start_point</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="p">):</span>
+        <span class="n">loc</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">scale</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">start_point</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">mean</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">std</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">shape</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">loc</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">start_point</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">mean</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">std</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">shape</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">loc</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">start_point</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">mean</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">shape</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">loc</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">start_point</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> needs shape"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">shape</span> <span class="o">&gt;=</span> <span class="mf">0.5</span><span class="p">:</span>
@@ -719,7 +816,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dist_type</span> <span class="o">=</span> <span class="s2">"GEVMin"</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sensitivity_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sensitivity_params</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">"""Sensitivity parameters for GEVMin.</span>
 
 <span class="sd">        Returns ``{"mean": μ, "std": σ, "shape": ξ}``.  The shape</span>
@@ -730,32 +827,28 @@
 
 <div class="viewcode-block" id="GEVMin.pdf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.gev.GEVMin.html#pystra.distributions.gev.GEVMin.pdf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Probability density function</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Evaluate the probability density function."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="GEVMin.logpdf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.gev.GEVMin.html#pystra.distributions.gev.GEVMin.logpdf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Log density."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="GEVMin.cdf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.gev.GEVMin.html#pystra.distributions.gev.GEVMin.cdf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Cumulative distribution function</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Evaluate the cumulative distribution function."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="GEVMin.sf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.gev.GEVMin.html#pystra.distributions.gev.GEVMin.sf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Survival function."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span></div>
 
@@ -768,16 +861,14 @@
 
 <div class="viewcode-block" id="GEVMin.ppf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.gev.GEVMin.html#pystra.distributions.gev.GEVMin.ppf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">ppf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Inverse cumulative distribution function</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ppf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Evaluate the inverse cumulative distribution function."""</span>
         <span class="k">return</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">isf</span><span class="p">(</span><span class="n">u</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="GEVMin.isf">
 <a class="viewcode-back" href="../../../gen/pystra.distributions.gev.GEVMin.html#pystra.distributions.gev.GEVMin.isf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">isf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Inverse survival function."""</span>
         <span class="k">return</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">q</span><span class="p">)</span></div>
 </div>

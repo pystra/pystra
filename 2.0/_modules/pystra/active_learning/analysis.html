@@ -510,7 +510,6 @@
 <span></span><span class="sd">"""Compose active-learning reliability components."""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">comb</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -518,6 +517,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..reliability.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisObject</span><span class="p">,</span> <span class="n">_check_rng</span><span class="p">,</span> <span class="n">_generator</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..options</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimulationOptions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LimitState</span><span class="p">,</span> <span class="n">StochasticModel</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">_positive_integer</span><span class="p">,</span> <span class="n">_points</span><span class="p">,</span> <span class="n">_training</span><span class="p">,</span> <span class="n">_predictions</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.surrogates</span><span class="w"> </span><span class="kn">import</span> <span class="n">Surrogate</span><span class="p">,</span> <span class="n">KrigingSurrogate</span><span class="p">,</span> <span class="n">PCESurrogate</span><span class="p">,</span> <span class="n">EnsembleSurrogate</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.pc_kriging</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCKrigingSurrogate</span>
@@ -611,23 +611,23 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">model</span><span class="p">,</span>
-        <span class="n">limit_state</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">StochasticModel</span><span class="p">,</span>
+        <span class="n">limit_state</span><span class="p">:</span> <span class="n">LimitState</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">surrogate</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Surrogate</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"kriging"</span><span class="p">,</span>
-        <span class="n">learning_function</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">LearningFunction</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"u"</span><span class="p">,</span>
-        <span class="n">n_initial</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="n">SimulationOptions</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">surrogate</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Surrogate</span> <span class="o">=</span> <span class="s2">"kriging"</span><span class="p">,</span>
+        <span class="n">learning_function</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">LearningFunction</span> <span class="o">=</span> <span class="s2">"u"</span><span class="p">,</span>
+        <span class="n">n_initial</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">n_candidates</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10_000</span><span class="p">,</span>
-        <span class="n">n_estimation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">estimator</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ReliabilityEstimator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">n_estimation</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">estimator</span><span class="p">:</span> <span class="n">ReliabilityEstimator</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">max_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span>
-        <span class="n">learning_threshold</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">target_cov</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">stopping_criterion</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StoppingCriterion</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">surrogate_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="p">):</span>
+        <span class="n">learning_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">target_cov</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">stopping_criterion</span><span class="p">:</span> <span class="n">StoppingCriterion</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">surrogate_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">rng</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">Generator</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">_require_defaults</span><span class="p">(</span>
             <span class="s2">"ActiveLearning"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"n_samples"</span><span class="p">,</span> <span class="s2">"target_cov"</span><span class="p">,</span> <span class="s2">"sampling_std"</span><span class="p">,</span> <span class="s2">"bins"</span><span class="p">)</span>

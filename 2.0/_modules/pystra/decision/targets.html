@@ -512,7 +512,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">replace</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Mapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Mapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
@@ -534,7 +535,7 @@
 
 
 <div class="viewcode-block" id="TargetReliability">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.TargetReliability.html#pystra.decision.ddo.TargetReliability">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.targets.TargetReliability.html#pystra.decision.targets.TargetReliability">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">TargetReliability</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Target failure probability and reliability index from a calibration.</span>
@@ -594,7 +595,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"pf must be in [0, 1]"</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TargetReliability.to_dict">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.TargetReliability.html#pystra.decision.ddo.TargetReliability.to_dict">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.targets.TargetReliability.html#pystra.decision.targets.TargetReliability.to_dict">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return the populated scalar quantities as a dictionary."""</span>
 
@@ -616,7 +617,7 @@
 
 
 <div class="viewcode-block" id="TargetReliability.for_period">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.TargetReliability.html#pystra.decision.ddo.TargetReliability.for_period">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.targets.TargetReliability.html#pystra.decision.targets.TargetReliability.for_period">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">for_period</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">years</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dependence_interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"TargetReliability"</span><span class="p">:</span>
@@ -681,7 +682,7 @@
 
 
 <div class="viewcode-block" id="lqi_k1">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.lqi_k1.html#pystra.decision.ddo.lqi_k1">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.targets.lqi_k1.html#pystra.decision.targets.lqi_k1">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">lqi_k1</span><span class="p">(</span>
     <span class="n">safety_cost_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">swtp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">SWTP</span><span class="p">,</span>
@@ -721,7 +722,7 @@
 
 
 <div class="viewcode-block" id="lognormal_ratio_failure_probability">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.lognormal_ratio_failure_probability.html#pystra.decision.ddo.lognormal_ratio_failure_probability">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.targets.lognormal_ratio_failure_probability.html#pystra.decision.targets.lognormal_ratio_failure_probability">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">lognormal_ratio_failure_probability</span><span class="p">(</span>
     <span class="n">design</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
     <span class="n">resistance_cov</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -753,7 +754,7 @@
 
 
 <div class="viewcode-block" id="TargetReliabilityCalibration">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.TargetReliabilityCalibration.html#pystra.decision.ddo.TargetReliabilityCalibration">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.targets.TargetReliabilityCalibration.html#pystra.decision.targets.TargetReliabilityCalibration">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">TargetReliabilityCalibration</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""One-dimensional calibration for deriving a target reliability.</span>
@@ -804,7 +805,7 @@
 
 
 <div class="viewcode-block" id="RackwitzTargetModel">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.RackwitzTargetModel.html#pystra.decision.ddo.RackwitzTargetModel">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.targets.RackwitzTargetModel.html#pystra.decision.targets.RackwitzTargetModel">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">RackwitzTargetModel</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Rackwitz/Steenbergen target-reliability model for code calibration.</span>
@@ -908,7 +909,7 @@
         <span class="p">}</span>
 
 <div class="viewcode-block" id="RackwitzTargetModel.construction_cost">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.RackwitzTargetModel.html#pystra.decision.ddo.RackwitzTargetModel.construction_cost">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.targets.RackwitzTargetModel.html#pystra.decision.targets.RackwitzTargetModel.construction_cost">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">construction_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">design</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return ``C(p) = C0 + C1 p``."""</span>
 
@@ -918,7 +919,7 @@
 
 
 <div class="viewcode-block" id="RackwitzTargetModel.failure_probability">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.RackwitzTargetModel.html#pystra.decision.ddo.RackwitzTargetModel.failure_probability">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.targets.RackwitzTargetModel.html#pystra.decision.targets.RackwitzTargetModel.failure_probability">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">failure_probability</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">design</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return the ULS failure probability for a design value."""</span>
 
@@ -930,7 +931,7 @@
 
 
 <div class="viewcode-block" id="RackwitzTargetModel.serviceability_probability">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.RackwitzTargetModel.html#pystra.decision.ddo.RackwitzTargetModel.serviceability_probability">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.targets.RackwitzTargetModel.html#pystra.decision.targets.RackwitzTargetModel.serviceability_probability">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">serviceability_probability</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">design</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return the SLS failure probability for a design value."""</span>
 
@@ -944,7 +945,7 @@
 
 
 <div class="viewcode-block" id="RackwitzTargetModel.objective">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.RackwitzTargetModel.html#pystra.decision.ddo.RackwitzTargetModel.objective">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.targets.RackwitzTargetModel.html#pystra.decision.targets.RackwitzTargetModel.objective">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">objective</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">design</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return the normalized Rackwitz/Steenbergen life-cycle objective."""</span>
 
@@ -978,7 +979,7 @@
 
 
 <div class="viewcode-block" id="RackwitzTargetModel.calibration">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.RackwitzTargetModel.html#pystra.decision.ddo.RackwitzTargetModel.calibration">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.targets.RackwitzTargetModel.html#pystra.decision.targets.RackwitzTargetModel.calibration">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">calibration</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">bounds</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">)</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TargetReliabilityCalibration</span><span class="p">:</span>
@@ -994,7 +995,7 @@
 
 
 <div class="viewcode-block" id="RackwitzTargetModel.calibrate">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.RackwitzTargetModel.html#pystra.decision.ddo.RackwitzTargetModel.calibrate">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.targets.RackwitzTargetModel.html#pystra.decision.targets.RackwitzTargetModel.calibrate">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">calibrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounds</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">TargetReliability</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return the target reliability implied by this model."""</span>
 
@@ -1002,14 +1003,14 @@
 
 
 <div class="viewcode-block" id="RackwitzTargetModel.table">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.RackwitzTargetModel.html#pystra.decision.ddo.RackwitzTargetModel.table">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.targets.RackwitzTargetModel.html#pystra.decision.targets.RackwitzTargetModel.table">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">table</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span>
         <span class="n">safety_costs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">failure_costs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">bounds</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">),</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Calculate a Rackwitz-style target-reliability table.</span>
 
@@ -1087,7 +1088,7 @@
 
 
 <div class="viewcode-block" id="derive_lqi_target">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.derive_lqi_target.html#pystra.decision.ddo.derive_lqi_target">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.targets.derive_lqi_target.html#pystra.decision.targets.derive_lqi_target">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">derive_lqi_target</span><span class="p">(</span>
     <span class="n">k1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">resistance_cov</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">,</span>
@@ -1125,8 +1126,8 @@
 
 
 <div class="viewcode-block" id="rackwitz_table">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.rackwitz_table.html#pystra.decision.ddo.rackwitz_table">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">rackwitz_table</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<a class="viewcode-back" href="../../../gen/pystra.decision.targets.rackwitz_table.html#pystra.decision.targets.rackwitz_table">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">rackwitz_table</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Calculate the default Rackwitz/Steenbergen target-reliability table."""</span>
 
     <span class="k">return</span> <span class="n">RackwitzTargetModel</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
@@ -1134,7 +1135,7 @@
 
 
 <div class="viewcode-block" id="lqi_target_reliability">
-<a class="viewcode-back" href="../../../gen/pystra.decision.ddo.lqi_target_reliability.html#pystra.decision.ddo.lqi_target_reliability">[docs]</a>
+<a class="viewcode-back" href="../../../gen/pystra.decision.targets.lqi_target_reliability.html#pystra.decision.targets.lqi_target_reliability">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">lqi_target_reliability</span><span class="p">(</span><span class="n">k1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">variability</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"medium"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TargetReliability</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Return an LQI target reliability for a safety cost ratio.</span>
 
