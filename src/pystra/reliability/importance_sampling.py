@@ -3,7 +3,7 @@
 import numpy as np
 
 from .form import FORM
-from ._form_reuse import _check_form, _check_coordinates
+from ._form_reuse import _check_form, _check_coordinates, _FORMReuse
 from ..options import FORMOptions
 from ..results import FORMResult
 from .monte_carlo import CrudeMonteCarlo
@@ -11,7 +11,7 @@ from .monte_carlo import CrudeMonteCarlo
 __all__ = ["ImportanceSampling"]
 
 
-class ImportanceSampling(CrudeMonteCarlo):
+class ImportanceSampling(_FORMReuse, CrudeMonteCarlo):
     """Importance Sampling
 
     To decrease the number of simulations and the coefficient of variation,
@@ -38,7 +38,6 @@ class ImportanceSampling(CrudeMonteCarlo):
         if form is not None and not isinstance(form, FORM):
             raise TypeError("form must be a FORM analysis")
         self.form = form
-        self._supplied_form = form
         self._form_result = None
 
     def run(self):
@@ -62,9 +61,7 @@ class ImportanceSampling(CrudeMonteCarlo):
                 ),
             )
             self._form_result = form.run()
-            self.form = form
-        else:
-            self.form = self._supplied_form
+            self._form = form
         _check_form(self.form, self.model, self.limit_state)
         self._form_result = FORMResult.from_analysis(self.form)
         self.point = np.transpose([self.form._u])

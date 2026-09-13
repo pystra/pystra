@@ -5,8 +5,9 @@ import numpy as np
 
 from .form import FORM
 from .analysis import AnalysisObject, _check_on_failure
-from ._form_reuse import _check_form, _check_coordinates
+from ._form_reuse import _check_form, _check_coordinates, _FORMReuse
 from scipy.stats import norm as normal
+from scipy.special import log_ndtr, ndtri_exp
 from ..errors import AnalysisError, ModelError
 from ..options import FORMOptions, SORMOptions
 from ..results import FORMResult, SORMResult
@@ -14,7 +15,7 @@ from ..results import FORMResult, SORMResult
 __all__ = ["SORM"]
 
 
-class SORM(AnalysisObject):
+class SORM(_FORMReuse, AnalysisObject):
     r"""Second Order Reliability Method (SORM).
 
     Approximates the failure surface in standard normal space using a
@@ -65,7 +66,6 @@ class SORM(AnalysisObject):
         if form is not None and not isinstance(form, FORM):
             raise TypeError("form must be a FORM analysis")
         self.form = form
-        self._supplied_form = form
         super().__init__(model, limit_state, options)
         self.on_failure = _check_on_failure(on_failure)
         if form is not None and self.options.form != FORMOptions():
@@ -106,6 +106,11 @@ class SORM(AnalysisObject):
         """Run FORM if needed and require a converged design point."""
         self._reset_results()
         self._n_evaluations = 0
+        if self._supplied_form is not None and self.options.form != FORMOptions():
+            raise ModelError(
+                "options.form applies only when SORM runs FORM; "
+                "a supplied FORM analysis keeps its own settings"
+            )
         if self._supplied_form is None:
             form = FORM(
                 self.model,
@@ -113,10 +118,8 @@ class SORM(AnalysisObject):
                 options=self.options.form,
                 on_failure="return",
             )
-            self.form = form
+            self._form = form
             form.run()
-        else:
-            self.form = self._supplied_form
         _check_form(self.form, self.model, self.limit_state)
         self.init_run()
         _check_coordinates(self.form, self.transform)
@@ -386,11 +389,12 @@ class SORM(AnalysisObject):
         is_invalid = np.any(terms_plus <= 0) or np.any(terms_minus <= 0)
 
         if not is_invalid:
-            self._pf2_breitung = float(
-                normal.cdf(-beta)
-                * np.prod(0.5 * (terms_plus ** (-0.5) + terms_minus ** (-0.5)))
+            log_pf = log_ndtr(-beta) + np.sum(
+                np.logaddexp(-0.5 * np.log(terms_plus), -0.5 * np.log(terms_minus))
+                - np.log(2.0)
             )
-            self._betag_breitung = float(-normal.ppf(self._pf2_breitung))
+            self._pf2_breitung = float(np.exp(log_pf))
+            self._betag_breitung = float(-ndtri_exp(log_pf))
         else:
             self._undefined.add("breitung")
             self._pf2_breitung = 0.0
@@ -408,17 +412,18 @@ class SORM(AnalysisObject):
         kappa_plus : ndarray
             Curvatures on the positive side of each axis.
         """
-        psi = normal.pdf(beta) / normal.cdf(-beta)
+        psi = np.exp(normal.logpdf(beta) - log_ndtr(-beta))
         terms_plus = 1 + psi * kappa_plus
         terms_minus = 1 + psi * kappa_minus
         is_invalid = np.any(terms_plus <= 0) or np.any(terms_minus <= 0)
 
         if not is_invalid:
-            self._pf2_breitung_m = float(
-                normal.cdf(-beta)
-                * np.prod(0.5 * (terms_plus ** (-0.5) + terms_minus ** (-0.5)))
+            log_pf = log_ndtr(-beta) + np.sum(
+                np.logaddexp(-0.5 * np.log(terms_plus), -0.5 * np.log(terms_minus))
+                - np.log(2.0)
             )
-            self._betag_breitung_m = float(-normal.ppf(self._pf2_breitung_m))
+            self._pf2_breitung_m = float(np.exp(log_pf))
+            self._betag_breitung_m = float(-ndtri_exp(log_pf))
         else:
             self._undefined.add("modified_breitung")
             self._pf2_breitung_m = 0.0
@@ -432,10 +437,9 @@ class SORM(AnalysisObject):
         """
         is_invalid = np.any(kappa < -1 / beta)
         if not is_invalid:
-            self._pf2_breitung = float(
-                normal.cdf(-beta) * np.prod((1 + beta * kappa) ** (-0.5))
-            )
-            self._betag_breitung = float(-normal.ppf(self._pf2_breitung))
+            log_pf = log_ndtr(-beta) - 0.5 * np.sum(np.log1p(beta * kappa))
+            self._pf2_breitung = float(np.exp(log_pf))
+            self._betag_breitung = float(-ndtri_exp(log_pf))
         else:
             self._undefined.add("breitung")
             self._pf2_breitung = 0.0
@@ -448,13 +452,12 @@ class SORM(AnalysisObject):
         Rackwitz [Hohenbichler1988]_. This formula is better for lower values of beta.
 
         """
-        k = normal.pdf(beta) / normal.cdf(-beta)
+        k = np.exp(normal.logpdf(beta) - log_ndtr(-beta))
         is_invalid = np.any(kappa < -1 / k)
         if not is_invalid:
-            self._pf2_breitung_m = float(
-                normal.cdf(-beta) * np.prod((1 + k * kappa) ** (-0.5))
-            )
-            self._betag_breitung_m = float(-normal.ppf(self._pf2_breitung_m))
+            log_pf = log_ndtr(-beta) - 0.5 * np.sum(np.log1p(k * kappa))
+            self._pf2_breitung_m = float(np.exp(log_pf))
+            self._betag_breitung_m = float(-ndtri_exp(log_pf))
         else:
             self._undefined.add("modified_breitung")
             self._pf2_breitung_m = 0.0

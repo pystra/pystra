@@ -11,6 +11,25 @@ from ..errors import AnalysisError, ModelError
 __all__ = []
 
 
+class _FORMReuse:
+    """Keep explicit FORM assignment distinct from an internally computed FORM."""
+
+    @property
+    def form(self):
+        """The last FORM analysis; assigning None requests a fresh FORM each run."""
+        return self._form
+
+    @form.setter
+    def form(self, value):
+        from .form import FORM
+
+        if value is not None and not isinstance(value, FORM):
+            raise TypeError("form must be a FORM analysis")
+        self._form = value
+        self._supplied_form = value
+        self._results_valid = False
+
+
 def _state(value):
     """Snapshot parameter data, excluding SciPy's unrelated random state.
 

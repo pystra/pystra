@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import inspect
+
 import numpy as np
 from .distributions import Distribution, Constant
 from collections import OrderedDict
@@ -427,6 +429,21 @@ class LimitState:
             inpdict[var] = x[i]
         for c, val in constants.items():
             inpdict[c] = val * np.ones(nc)
+        # Binding errors describe the model, whereas exceptions from inside
+        # a correctly bound evaluator describe a failed analysis.
+        if not callable(self.expression):
+            raise ModelError("Limit-state expression must be callable")
+        try:
+            signature = inspect.signature(self.expression)
+        except (TypeError, ValueError):
+            signature = None  # Some extension callables expose no signature.
+        if signature is not None:
+            try:
+                signature.bind(**inpdict)
+            except TypeError as error:
+                raise ModelError(
+                    f"Limit-state signature does not match model: {error}"
+                ) from error
         context = f"{nc} point(s), first point {x[:, 0].tolist()}"
         try:
             Gvals = self.expression(**inpdict)
