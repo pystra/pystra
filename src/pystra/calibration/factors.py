@@ -209,10 +209,12 @@ class TargetDesigns:
 
     @property
     def problem(self) -> FactorCalibrationProblem:
+        """Independent copy of the problem used for these target solves."""
         return deepcopy(self._problem)
 
     @property
     def converged(self) -> bool:
+        """Whether every target solve met its reliability and root tolerances."""
         return all(d.converged for d in self.designs)
 
     def to_frame(self) -> DataFrame:

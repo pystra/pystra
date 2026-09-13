@@ -4,6 +4,7 @@ import numpy as np
 
 
 def _positive_integer(value, name, minimum=1):
+    """Return an integer meeting the lower bound; reject boolean values."""
     if (
         isinstance(value, (bool, np.bool_))
         or not isinstance(value, (int, np.integer))
@@ -14,6 +15,7 @@ def _positive_integer(value, name, minimum=1):
 
 
 def _points(points):
+    """Return a nonempty finite array with rows of points and columns of variables."""
     points = np.asarray(points, dtype=float)
     if points.ndim != 2 or 0 in points.shape or not np.all(np.isfinite(points)):
         raise ValueError(
@@ -23,6 +25,7 @@ def _points(points):
 
 
 def _training(points, values):
+    """Validate training rows and one finite response per row, preserving their order."""
     points = _points(points)
     values = np.asarray(values, dtype=float)
     if values.shape != (len(points),) or not np.all(np.isfinite(values)):
@@ -31,6 +34,7 @@ def _training(points, values):
 
 
 def _predictions(mean, std):
+    """Validate matching finite prediction vectors with nonnegative standard deviations."""
     mean, std = np.asarray(mean, dtype=float), np.asarray(std, dtype=float)
     if mean.ndim != 1 or not mean.size or mean.shape != std.shape:
         raise ValueError(

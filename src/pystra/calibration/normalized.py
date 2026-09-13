@@ -233,10 +233,12 @@ class CodeCalibration:
 
     @property
     def live_load_ratios(self) -> Tuple[float, ...]:
+        """Immutable live-load grid coordinates, in evaluation order."""
         return self._live_load_ratios
 
     @property
     def dead_load_ratios(self) -> Tuple[float, ...]:
+        """Immutable dead-load grid coordinates, in evaluation order."""
         return self._dead_load_ratios
 
     @staticmethod
