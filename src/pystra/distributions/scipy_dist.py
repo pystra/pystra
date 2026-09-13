@@ -21,6 +21,16 @@ class ScipyDist(Distribution):
       - start_point (float):     Start point for seach\n
     """
 
+    _native_parameters = ()
+
+    def _parameter_values(self):
+        return {"dist_obj": self.dist_obj}
+
+    @property
+    def sensitivity_params(self):
+        """No generic moment perturbation; replace the constructor inputs."""
+        return {}
+
     def __init__(self, name, dist_obj, start_point=None):
         if not isinstance(dist_obj, rv_frozen):
             raise ModelError(

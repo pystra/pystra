@@ -253,7 +253,7 @@ def test_gradient_batch_preserves_point_order(differentiation):
         return X + 2 * Y, np.array([1.0, 2.0])
 
     points = np.array([[1, 2, 3], [4, 5, 6]], dtype=float)
-    values, gradient = ra.LimitState(evaluate).evaluate_lsf(
+    values, gradient = ra.LimitState(evaluate)._evaluate_lsf(
         points, model, differentiation=differentiation
     )
     np.testing.assert_allclose(np.ravel(values), [9, 12, 15])

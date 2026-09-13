@@ -2,6 +2,8 @@
 
 import inspect
 
+from numpy.typing import ArrayLike, NDArray
+
 import numpy as np
 from .distributions import Distribution, Constant
 from collections import OrderedDict
@@ -274,7 +276,76 @@ class LimitState:
     def set_expression(self, expression):
         self.expression = expression
 
-    def evaluate_lsf(
+    def evaluate(
+        self,
+        x: ArrayLike,
+        model: StochasticModel,
+        *,
+        differentiation: str = "no",
+        ffd_parameter: float = 1000,
+        block_size: int = 1000,
+    ) -> tuple[float | NDArray[np.float64], NDArray[np.float64]]:
+        """Evaluate physical points, with optional physical-space gradients.
+
+        Parameters
+        ----------
+        x : array_like
+            One point of shape ``(n_variables,)`` or a batch of shape
+            ``(n_samples, n_variables)``. Columns follow random-variable
+            insertion order in ``model``; constants have no column.
+            A square batch always contains rows of points.
+        model : StochasticModel
+            Named random variables and constants passed to the expression.
+        differentiation : {"no", "ffd", "ddm"}, default "no"
+            Zero gradients, forward differences, or analytic gradients
+            returned with the expression value. Analytic gradients follow
+            model variable order; the expression is evaluated point by point.
+        ffd_parameter : float, default 1000
+            Positive divisor of each marginal standard deviation for the
+            forward-difference step, in that variable's physical units.
+        block_size : int, default 1000
+            Positive maximum number of points per value-only expression call.
+
+        Returns
+        -------
+        values : float or ndarray
+            Scalar for one point, or shape ``(n_samples,)`` for a batch.
+            Failure is the event ``values <= 0``.
+        gradients : ndarray
+            Physical derivatives, shape ``(n_variables,)`` for one point or
+            ``(n_samples, n_variables)`` for a batch. Zero in ``"no"`` mode.
+
+        Raises
+        ------
+        ModelError
+            Input or expression output shapes or settings are invalid.
+        AnalysisError
+            Points, values or gradients are nonfinite, or the expression
+            raises an exception (retained as the cause).
+
+        Notes
+        -----
+        Inputs are not modified. The limit state stores no evaluation state.
+        Numerical algorithms use a private adapter for their column batches.
+        """
+        points = np.asarray(x, dtype=float)
+        if points.ndim not in (1, 2) or points.shape[-1] != model.n_marg:
+            raise ModelError(
+                "Evaluation points must have shape (n_variables,) or "
+                "(n_samples, n_variables)"
+            )
+        single = points.ndim == 1
+        values, gradients = self._evaluate_lsf(
+            np.atleast_2d(points).T,
+            model,
+            differentiation=differentiation,
+            ffd_parameter=ffd_parameter,
+            block_size=block_size,
+        )
+        values = np.asarray(values).reshape(-1)
+        return (float(values[0]), gradients[:, 0]) if single else (values, gradients.T)
+
+    def _evaluate_lsf(
         self,
         x,
         stochastic_model,
@@ -330,6 +401,14 @@ class LimitState:
         """
         if differentiation not in ("no", "ffd", "ddm"):
             raise ValueError("differentiation must be 'no', 'ffd' or 'ddm'")
+        if (
+            isinstance(block_size, (bool, np.bool_))
+            or not isinstance(block_size, (int, np.integer))
+            or block_size <= 0
+        ):
+            raise ModelError("block_size must be a positive integer")
+        if not np.isfinite(ffd_parameter) or ffd_parameter <= 0:
+            raise ModelError("ffd_parameter must be finite and positive")
         x = np.asarray(x, dtype=float)
         if x.ndim != 2 or x.shape[0] != stochastic_model.n_marg:
             raise ModelError(

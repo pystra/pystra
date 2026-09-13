@@ -1,6 +1,9 @@
 """Marginals plus a copula, and their isoprobabilistic transformations."""
 
+from collections.abc import Sequence
+
 import numpy as np
+from numpy.typing import ArrayLike
 from scipy.stats import norm, t
 
 from .copula import Copula, GaussianCopula, StudentTCopula, _order
@@ -208,8 +211,18 @@ class CopulaTransformation:
         w[self.order] = self.inv_T @ z
         return self._vector(self._physical(w))
 
-    def jacobian(self, u, x, marg=None):
-        """Return du/dx in original variable order."""
+    def jacobian_u_wrt_x(
+        self, u: ArrayLike, x: ArrayLike, marg: Sequence[Distribution] | None = None
+    ) -> np.ndarray:
+        """Return ``du[i] / dx[j]`` in original joint marginal order.
+
+        ``u`` and ``x`` are corresponding reference and physical vectors of
+        shape ``(dimension,)``. The returned matrix has shape
+        ``(dimension, dimension)``: reference coordinates are rows and
+        physical variables are columns. ``marg`` is unused and is accepted
+        for the shared transformation interface. Rosenblatt innovations stay
+        indexed by original variables even with a noncanonical order.
+        """
         u, x = self._vector(u), self._vector(x)
         if not self.copula.elliptical:
             h = np.cbrt(np.finfo(float).eps) * (1 + np.abs(u))
@@ -242,3 +255,16 @@ class CopulaTransformation:
         if not np.all(np.isfinite(result)):
             raise ValueError("Nonfinite transformation Jacobian")
         return result
+
+    def jacobian_x_wrt_u(
+        self, u: ArrayLike, x: ArrayLike, marg: Sequence[Distribution] | None = None
+    ) -> np.ndarray:
+        """Return ``dx[i] / du[j]`` in original joint marginal order.
+
+        Inputs are corresponding reference/physical points of shape
+        ``(dimension,)``. The returned ``(dimension, dimension)`` matrix has
+        physical variables in rows and reference coordinates in columns.
+        ``marg`` is unused. This is the inverse of :meth:`jacobian_u_wrt_x`
+        at a nonsingular point, for both Nataf and Rosenblatt mappings.
+        """
+        return np.linalg.inv(self.jacobian_u_wrt_x(u, x, marg))

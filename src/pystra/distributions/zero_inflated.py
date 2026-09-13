@@ -26,6 +26,16 @@ class ZeroInflated(Distribution):
       - start_point (float):     Start point for seach\n
     """
 
+    _native_parameters = ()
+
+    def _parameter_values(self):
+        return {"dist": self.dist, "p": self.p}
+
+    @property
+    def sensitivity_params(self):
+        """No generic moment perturbation; replace the constructor inputs."""
+        return {}
+
     def __init__(self, name, dist, p, *, start_point=None):
         if not isinstance(dist, Distribution):
             raise ModelError(

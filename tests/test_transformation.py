@@ -72,7 +72,7 @@ class TestCholeskyTransform:
 
         u = np.array([0.0, 0.0])
         x = t.u_to_x(u, marg)
-        J = t.jacobian(u, x, marg)
+        J = t.jacobian_u_wrt_x(u, x, marg)
         assert J.shape == (2, 2)
 
     def test_jacobian_uncorrelated_normals(self):
@@ -85,7 +85,7 @@ class TestCholeskyTransform:
 
         u = np.array([0.0, 0.0])
         x = t.u_to_x(u, marg)
-        J = t.jacobian(u, x, marg)
+        J = t.jacobian_u_wrt_x(u, x, marg)
         assert pytest.approx(J[0, 0], abs=1e-6) == 1 / 2
         assert pytest.approx(J[1, 1], abs=1e-6) == 1 / 3
 
@@ -177,3 +177,28 @@ class TestTransformationWithMixedDistributions:
         x = t.u_to_x(u, marg)
         u_back = t.x_to_u(x, marg)
         np.testing.assert_allclose(u_back, u, atol=1e-4)
+
+
+@pytest.mark.parametrize("factorization", ["cholesky", "svd"])
+def test_directed_jacobians_against_inverse_map(factorization):
+    marginals = [Lognormal("X", 3, 1), Normal("Y", 2, 0.5)]
+    transform = Transformation(factorization)
+    transform.compute(np.array([[1, 0.4], [0.4, 1]]))
+    u = np.array([0.7, -0.4])
+    x = transform.u_to_x(u, marginals)
+    forward = transform.jacobian_u_wrt_x(u, x, marginals)
+    inverse = transform.jacobian_x_wrt_u(u, x, marginals)
+    steps = np.eye(2) * 1e-5
+    numeric = np.column_stack(
+        [
+            (
+                transform.u_to_x(u + step, marginals)
+                - transform.u_to_x(u - step, marginals)
+            )
+            / 2e-5
+            for step in steps
+        ]
+    )
+    assert transform.dimension == 2
+    np.testing.assert_allclose(inverse, numeric, atol=1e-9)
+    np.testing.assert_allclose(forward @ inverse, np.eye(2), atol=1e-12)

@@ -22,6 +22,15 @@ class Weibull(Distribution):
         - start_point (float): Start point for seach\n
     """
 
+    _native_parameters = ("scale", "shape")
+
+    def _parameter_values(self):
+        return {
+            "scale": self.dist_obj.kwds["scale"],
+            "shape": self.dist_obj.kwds["c"],
+            "lower": self.lower,
+        }
+
     def __init__(
         self,
         name,
@@ -34,7 +43,6 @@ class Weibull(Distribution):
         start_point=None,
     ):
         self.lower = lower
-        self._ctor_kwargs = {"lower": lower}
         epsilon = lower
 
         if not _uses_native_parameters(self, mean, std, scale=scale, shape=shape):

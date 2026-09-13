@@ -573,7 +573,7 @@ class SORM(_FORMReuse, AnalysisObject):
             if u_space:
                 marg = self.model.get_marginal_distributions()
                 u = self.transform.x_to_u(x0, marg)
-                J_u_x = self.transform.jacobian(u, x0, marg)
+                J_u_x = self.transform.jacobian_u_wrt_x(u, x0, marg)
                 J_x_u = np.linalg.inv(J_u_x)
                 grad = np.dot(grad, J_x_u)
         else:

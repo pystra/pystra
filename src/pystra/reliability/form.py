@@ -181,7 +181,7 @@ class FORM(AnalysisObject):
 
     def _compute_jacobian(self):
         """Compute the Jacobian"""
-        J_u_x = self.transform.jacobian(
+        J_u_x = self.transform.jacobian_u_wrt_x(
             self._u, self._x, self.model.get_marginal_distributions()
         )
         J_x_u = np.linalg.inv(J_u_x)

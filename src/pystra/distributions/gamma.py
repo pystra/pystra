@@ -20,6 +20,14 @@ class Gamma(Distribution):
       - start_point (float): Start point for seach\n
     """
 
+    _native_parameters = ("shape", "rate")
+
+    def _parameter_values(self):
+        return {
+            "shape": self.dist_obj.kwds["a"],
+            "rate": 1 / self.dist_obj.kwds["scale"],
+        }
+
     def __init__(
         self, name, mean=None, std=None, *, rate=None, shape=None, start_point=None
     ):

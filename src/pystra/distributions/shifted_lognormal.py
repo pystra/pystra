@@ -23,8 +23,12 @@ class ShiftedLognormal(Lognormal):
     for the PDF, CDF.
     """
 
+    _native_parameters = ()
+
+    def _parameter_values(self):
+        return {"mean": self.mean, "std": self.std, "lower": self.lower}
+
     def __init__(self, name, mean, std, lower, *, start_point=None):
-        self._ctor_kwargs = {"lower": lower}
 
         self._mean = mean
         self._std = std

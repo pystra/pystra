@@ -199,7 +199,7 @@ def test_system_as_limit_state_integrates_with_pystra_evaluation():
             [4.0, 4.0],
         ]
     )
-    values, gradient = limit_state.evaluate_lsf(x, model)
+    values, gradient = limit_state._evaluate_lsf(x, model)
 
     np.testing.assert_allclose(values, np.array([[4.0, -2.0]]))
     assert gradient.shape == x.shape

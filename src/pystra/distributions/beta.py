@@ -23,6 +23,16 @@ class Beta(Distribution):
       - start_point (float): Start point for seach\n
     """
 
+    _native_parameters = ("q", "r")
+
+    def _parameter_values(self):
+        return {
+            "q": self.dist_obj.args[0],
+            "r": self.dist_obj.args[1],
+            "lower": self.lower,
+            "upper": self.upper,
+        }
+
     def __init__(
         self,
         name,
@@ -37,7 +47,6 @@ class Beta(Distribution):
     ):
         self.lower = lower
         self.upper = upper
-        self._ctor_kwargs = {"lower": lower, "upper": upper}
         a = lower
         b = upper
 

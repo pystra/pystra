@@ -37,6 +37,15 @@ class GEV(Distribution):
         - This distribution is to model maxima.
     """
 
+    _native_parameters = ("loc", "scale")
+
+    def _parameter_values(self):
+        return {
+            "shape": self.shape,
+            "loc": self.dist_obj.kwds["loc"],
+            "scale": self.dist_obj.kwds["scale"],
+        }
+
     def __init__(
         self,
         name,
@@ -54,7 +63,6 @@ class GEV(Distribution):
             raise ValueError("`shape` must be less than 0.5 for finite variance")
 
         self.shape = shape
-        self._ctor_kwargs = {"shape": shape}
 
         g1 = gamma(1 - shape)
         g2 = gamma(1 - 2 * shape)
@@ -124,6 +132,15 @@ class GEVMin(Distribution):
         - This distribution is to model minima.
     """
 
+    _native_parameters = ("loc", "scale")
+
+    def _parameter_values(self):
+        return {
+            "shape": self.shape,
+            "loc": -self.dist_obj.kwds["loc"],
+            "scale": self.dist_obj.kwds["scale"],
+        }
+
     def __init__(
         self,
         name,
@@ -141,7 +158,6 @@ class GEVMin(Distribution):
             raise ValueError("`shape` must be less than 0.5 for finite variance")
 
         self.shape = shape
-        self._ctor_kwargs = {"shape": shape}
 
         g1 = gamma(1 - shape)
         g2 = gamma(1 - 2 * shape)

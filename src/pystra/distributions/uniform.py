@@ -21,6 +21,11 @@ class Uniform(Distribution):
       - start_point (float): Start point for seach\n
     """
 
+    _native_parameters = ("lower", "upper")
+
+    def _parameter_values(self):
+        return {"lower": self.a, "upper": self.b}
+
     def __init__(
         self, name, mean=None, std=None, *, lower=None, upper=None, start_point=None
     ):

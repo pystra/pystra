@@ -22,6 +22,11 @@ class Frechet(Distribution):
       - start_point (float): Start point for seach\n
     """
 
+    _native_parameters = ("scale", "shape")
+
+    def _parameter_values(self):
+        return {"scale": self.dist_obj.kwds["scale"], "shape": self.dist_obj.kwds["c"]}
+
     def __init__(
         self, name, mean=None, std=None, *, scale=None, shape=None, start_point=None
     ):

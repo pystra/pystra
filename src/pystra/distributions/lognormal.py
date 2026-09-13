@@ -25,6 +25,11 @@ class Lognormal(Distribution):
     for the PDF, CDF.
     """
 
+    _native_parameters = ("log_mean", "log_std")
+
+    def _parameter_values(self):
+        return {"log_mean": self.lamb, "log_std": self.zeta}
+
     def __init__(
         self,
         name,

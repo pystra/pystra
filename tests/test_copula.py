@@ -90,7 +90,7 @@ def test_transform_jacobian_and_density(copula, order):
     u = np.array([0.7, -0.4])
     x = transform.u_to_x(u)
     np.testing.assert_allclose(transform.x_to_u(x), u, atol=1e-9)
-    J = transform.jacobian(u, x)
+    J = transform.jacobian_u_wrt_x(u, x)
     numeric = np.empty((2, 2))
     h = 1e-5
     for j in range(2):
@@ -348,3 +348,30 @@ def test_numerical_sensitivity_preserves_spherical_t_options():
             options=options,
             method="closed_form",
         ).run()
+
+
+@pytest.mark.parametrize(
+    "copula", [ra.GaussianCopula(R), ra.StudentTCopula(R, 4), ra.FrankCopula(10)]
+)
+@pytest.mark.parametrize("method, order", [("rosenblatt", [1, 0]), ("nataf", None)])
+def test_directed_joint_jacobians(copula, method, order):
+    if method == "nataf" and not copula.elliptical:
+        return
+    joint = ra.JointDistribution(
+        [ra.Lognormal("X", 3, 1), ra.Normal("Y", 2, 0.5)], copula
+    )
+    transform = joint.make_transformation(method, order=order)
+    u = np.array([0.7, -0.4])
+    x = transform.u_to_x(u)
+    inverse = transform.jacobian_x_wrt_u(u, x)
+    steps = np.eye(2) * 1e-5
+    numeric = np.column_stack(
+        [
+            (transform.u_to_x(u + step) - transform.u_to_x(u - step)) / 2e-5
+            for step in steps
+        ]
+    )
+    np.testing.assert_allclose(inverse, numeric, atol=2e-8)
+    np.testing.assert_allclose(
+        transform.jacobian_u_wrt_x(u, x) @ inverse, np.eye(2), atol=1e-12
+    )

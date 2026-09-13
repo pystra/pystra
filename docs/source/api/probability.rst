@@ -39,3 +39,26 @@ Module details
    pystra.dependence.joint
    pystra.dependence.transformation
    pystra.dependence.correlation
+
+Directed transformation derivatives
+-----------------------------------
+
+Both ``Transformation`` and ``CopulaTransformation`` provide
+``jacobian_u_wrt_x(u, x, marg)`` and ``jacobian_x_wrt_u(u, x, marg)``.
+The joint transformation already owns its marginals, so ``marg`` is optional
+there. Inputs are corresponding reference and physical points. Both matrices
+have shape ``(dimension, dimension)`` with output coordinates in rows and input
+coordinates in columns, in original model variable order. They are inverses
+at nonsingular points. ``standard_space`` identifies the reference law: normal
+Rosenblatt coordinates are independent; generalized Nataf with a Student-t
+copula has spherical, dependent Student-t coordinates.
+
+Distribution reconstruction
+---------------------------
+
+``dist.parameters`` is a read-only constructor mapping;
+``type(dist)(**dist.parameters)`` reconstructs the marginal.
+``dist.with_parameters(**changes)`` returns an independent updated marginal,
+including its nested distributions. Native reconstruction parameters and
+``sensitivity_params`` are separate: see :doc:`/development/distributions`
+for moment updates, fixed bounds and custom subclass requirements.

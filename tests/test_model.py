@@ -172,7 +172,7 @@ class TestLimitState:
 
         # evaluate_nogradient only processes nx > 1, so provide multiple samples
         x = np.array([[10.0, 12.0], [5.0, 3.0]])
-        G, grad_G = ls.evaluate_lsf(x, model)
+        G, grad_G = ls._evaluate_lsf(x, model)
         # G should be R - S = [10-5, 12-3] = [5, 9]
         assert pytest.approx(G[0, 0], abs=1e-10) == 5.0
         assert pytest.approx(G[0, 1], abs=1e-10) == 9.0
@@ -191,7 +191,7 @@ class TestLimitState:
 
         # evaluate_nogradient only processes nx > 1
         x = np.array([[10.0, 8.0], [5.0, 3.0]])
-        G, grad_G = ls.evaluate_lsf(x, model)
+        G, grad_G = ls._evaluate_lsf(x, model)
         # G should be c*R - S = [2*10-5, 2*8-3] = [15, 13]
         assert pytest.approx(G[0, 0], abs=1e-10) == 15.0
         assert pytest.approx(G[0, 1], abs=1e-10) == 13.0
@@ -208,7 +208,7 @@ class TestLimitState:
         options = ra.FORMOptions()
 
         x = np.array([[10.0], [5.0]])
-        G, grad_G = ls.evaluate_lsf(x, model, differentiation="ffd")
+        G, grad_G = ls._evaluate_lsf(x, model, differentiation="ffd")
         # Gradient should be approximately [1, -1] (dG/dR=1, dG/dS=-1)
         assert pytest.approx(grad_G[0, 0], abs=1e-2) == 1.0
         assert pytest.approx(grad_G[1, 0], abs=1e-2) == -1.0

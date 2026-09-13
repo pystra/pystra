@@ -29,6 +29,16 @@ class Maximum(Distribution):
       - start_point (float):     Start point for seach\n
     """
 
+    _native_parameters = ()
+
+    def _parameter_values(self):
+        return {"parent": self.parent, "N": self.N}
+
+    @property
+    def sensitivity_params(self):
+        """No generic moment perturbation; replace the constructor inputs."""
+        return {}
+
     def __init__(self, name, parent, N, *, start_point=None):
         if not isinstance(parent, Distribution):
             raise ModelError(

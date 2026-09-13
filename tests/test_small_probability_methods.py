@@ -50,7 +50,7 @@ def test_form_assignment_after_construction_is_used(method, initial_form):
 def test_wrong_argument_names_are_model_errors(differentiation):
     model, _ = _problem()
     with pytest.raises(ra.ModelError, match="signature"):
-        ra.LimitState(lambda X, Z: X + Z).evaluate_lsf(
+        ra.LimitState(lambda X, Z: X + Z)._evaluate_lsf(
             np.zeros((2, 1)), model, differentiation=differentiation
         )
 
@@ -63,7 +63,7 @@ def test_type_error_inside_evaluator_remains_analysis_error():
         raise original
 
     with pytest.raises(ra.AnalysisError) as info:
-        ra.LimitState(evaluate).evaluate_lsf(np.zeros((2, 1)), model)
+        ra.LimitState(evaluate)._evaluate_lsf(np.zeros((2, 1)), model)
     assert info.value.__cause__ is original
 
 
@@ -247,9 +247,9 @@ def test_limit_state_still_pickles_after_evaluation():
 
     model, _ = _problem()
     limit_state = ra.LimitState(_evaluate_with_module_default)
-    limit_state.evaluate_lsf(np.zeros((2, 1)), model)
+    limit_state._evaluate_lsf(np.zeros((2, 1)), model)
     clone = pickle.loads(pickle.dumps(limit_state))
-    values, _ = clone.evaluate_lsf(np.zeros((2, 1)), model)
+    values, _ = clone._evaluate_lsf(np.zeros((2, 1)), model)
     assert np.ravel(values)[0] == 3
 
 

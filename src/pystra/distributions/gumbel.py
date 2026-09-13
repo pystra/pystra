@@ -21,6 +21,11 @@ class Gumbel(Distribution):
         - start_point (float): Start point for seach\n
     """
 
+    _native_parameters = ("loc", "scale")
+
+    def _parameter_values(self):
+        return {"loc": self.dist_obj.kwds["loc"], "scale": self.dist_obj.kwds["scale"]}
+
     def __init__(
         self, name, mean=None, std=None, *, loc=None, scale=None, start_point=None
     ):
@@ -76,6 +81,11 @@ class GumbelMin(Distribution):
       - scale (float): Scale, given instead of mean and std\n
       - start_point (float): Start point for seach\n
     """
+
+    _native_parameters = ("loc", "scale")
+
+    def _parameter_values(self):
+        return {"loc": self.dist_obj.kwds["loc"], "scale": self.dist_obj.kwds["scale"]}
 
     def __init__(
         self, name, mean=None, std=None, *, loc=None, scale=None, start_point=None

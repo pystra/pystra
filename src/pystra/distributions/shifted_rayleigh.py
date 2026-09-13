@@ -21,6 +21,14 @@ class ShiftedRayleigh(Distribution):
       - start_point (float): Start point for seach\n
     """
 
+    _native_parameters = ("scale", "shift")
+
+    def _parameter_values(self):
+        return {
+            "scale": self.dist_obj.kwds["scale"],
+            "shift": self.dist_obj.kwds["loc"],
+        }
+
     def __init__(
         self, name, mean=None, std=None, *, scale=None, shift=None, start_point=None
     ):

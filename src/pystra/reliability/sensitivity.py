@@ -209,9 +209,11 @@ class SensitivityAnalysis:
                 model1 = copy.deepcopy(self.model)
                 dist1 = model1.variable(name)
 
-                # Perturb and replace using _make_copy
+                # Perturb and replace using with_parameters
                 h = delta * dist1.std
-                new_dist = dist1._make_copy(**{param: val + h})
+                new_dist = dist1.with_parameters(
+                    **{**dist1.sensitivity_params, param: val + h}, start_point=None
+                )
                 # Replace in both variables dict and _marg list
                 marg_idx = list(model1.variables.keys()).index(name)
                 model1.variables[name] = new_dist

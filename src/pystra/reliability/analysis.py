@@ -129,7 +129,7 @@ class AnalysisObject:
                 differentiation=settings.differentiation,
                 ffd_parameter=settings.ffd_parameter,
             )
-        return self.limit_state.evaluate_lsf(x, self.model, **kwargs)
+        return self.limit_state._evaluate_lsf(x, self.model, **kwargs)
 
     def init_run(self):
         """Initialise the model's isoprobabilistic transformation.

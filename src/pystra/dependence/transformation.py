@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from collections.abc import Sequence
+
 import numpy as np
+from numpy.typing import ArrayLike
+
+from ..distributions import Distribution
 
 __all__ = ["Transformation"]
 
@@ -82,17 +87,23 @@ class Transformation:
             x[i] = marg[i].u_to_x(z[i])
         return x
 
-    def jacobian(self, u, x, marg):
-        """
-        Jacobian of the u-to-x transformation, J_{u,x}.
+    def jacobian_u_wrt_x(
+        self, u: ArrayLike, x: ArrayLike, marg: Sequence[Distribution]
+    ) -> np.ndarray:
+        """Return physical-to-reference derivatives ``du[i] / dx[j]``.
 
-        Inputs are flattened to 1-D (see ``x_to_u``).  Each marginal
-        ``jacobian(z_i, x_i)`` returns a diagonal ``np.ndarray`` via
-        ``np.diag()``, even when called with scalar arguments — in that case
-        the result is a (1, 1) matrix.  We wrap the scalar inputs with
-        ``np.atleast_1d`` so that ``np.diag`` receives a 1-D array (it
-        raises ``ValueError`` on 0-d input), and then extract the single
-        element with ``.item()`` for assignment into the composite Jacobian.
+        Parameters
+        ----------
+        u, x : array_like
+            Corresponding reference and physical points, shape ``(dimension,)``.
+        marg : sequence of Distribution
+            Marginals in model variable order.
+
+        Returns
+        -------
+        ndarray
+            Shape ``(dimension, dimension)``, with reference coordinates in
+            rows and physical variables in columns, both in model order.
         """
         nrv = len(marg)
         u = np.asarray(u).ravel()
@@ -106,6 +117,25 @@ class Transformation:
 
         J_u_x = np.dot(self.T, J_u_x)
         return J_u_x
+
+    @property
+    def dimension(self) -> int:
+        """Number of coordinates; available after :meth:`compute`."""
+        if self.T is None:
+            raise ValueError("Compute the transformation before requesting dimension")
+        return self.T.shape[0]
+
+    def jacobian_x_wrt_u(
+        self, u: ArrayLike, x: ArrayLike, marg: Sequence[Distribution]
+    ) -> np.ndarray:
+        """Return ``dx[i] / du[j]`` at corresponding reference/physical points.
+
+        Inputs are vectors of shape ``(dimension,)`` in model variable order.
+        The returned matrix has shape ``(dimension, dimension)`` with physical
+        variables in rows and reference coordinates in columns. It is the
+        inverse of :meth:`jacobian_u_wrt_x` at a nonsingular point.
+        """
+        return np.linalg.inv(self.jacobian_u_wrt_x(u, x, marg))
 
     def compute(self, Ro):
         """

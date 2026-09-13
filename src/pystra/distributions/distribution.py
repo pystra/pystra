@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import warnings
+from collections.abc import Mapping
+from copy import deepcopy
+from types import MappingProxyType
+from typing import Self
 
 import numpy as np
 from scipy import special as sp
@@ -275,17 +279,6 @@ class Distribution:
     def __init__(self, name="", dist_obj=None, mean=None, std=None, start_point=None):
         self.name = name
         self.dist_type = "BaseCls"
-
-        # Extra constructor keyword arguments needed to faithfully
-        # reconstruct this distribution beyond (name, mean, std).
-        # Subclasses with additional parameters (e.g. shape for GEV,
-        # bounds for Beta) should set this in their __init__ *before*
-        # calling super().__init__().  These are passed through by
-        # _make_copy() but are NOT sensitivity parameters — they are
-        # treated as fixed constants unless the subclass also adds them
-        # to sensitivity_params.
-        if not hasattr(self, "_ctor_kwargs"):
-            self._ctor_kwargs = {}
 
         # This is the key object that is to be defined in derived classes that
         # are using the base class functionality
@@ -696,10 +689,10 @@ class Distribution:
         additional parameters of interest (e.g. the GEV shape parameter)
         should override this property to include them.
 
-        Parameters listed in :attr:`_ctor_kwargs` but **not** in
-        ``sensitivity_params`` are held fixed during sensitivity analysis
-        — they are only used by :meth:`_make_copy` to faithfully
-        reconstruct the distribution.
+        Fixed constructor settings such as bounds are separate from these
+        sensitivity coordinates. Native reconstruction parameters can be
+        another representation of the same law: sensitivity analysis perturbs
+        the declared coordinates together, keeping other moments fixed.
 
         Returns
         -------
@@ -708,39 +701,75 @@ class Distribution:
         """
         return {"mean": self.mean, "std": self.std}
 
-    def _make_copy(self, **overrides):
-        r"""Construct a copy of this distribution with perturbed parameters.
+    # Native coordinates replaced when the caller supplies physical moments.
+    _native_parameters = ()
 
-        Builds a fresh instance of the same type using the current
-        ``(mean, std)`` and any extra constructor keyword arguments
-        stored in :attr:`_ctor_kwargs`.  The *overrides* dict replaces
-        individual parameter values; its keys must match those of
-        :attr:`sensitivity_params` or :attr:`_ctor_kwargs`.
+    def _parameter_values(self):
+        return {"mean": self.mean, "std": self.std}
+
+    @property
+    def parameters(self) -> Mapping[str, object]:
+        """Read-only snapshot of keyword arguments that rebuild this marginal.
+
+        ``type(dist)(**dist.parameters)`` reproduces its law, name and start
+        point. Built-ins use native parameters where moment fitting could
+        lose precision. Nested marginals and SciPy objects are independent
+        copies, so mutating a snapshot never changes the source distribution.
+        Custom marginals may override this property with their complete
+        constructor mapping. Sensitivity coordinates are specified separately
+        by :attr:`sensitivity_params`.
+        """
+        return MappingProxyType(
+            deepcopy(
+                {
+                    "name": self.name,
+                    **self._parameter_values(),
+                    "start_point": self.start_point,
+                }
+            )
+        )
+
+    def with_parameters(self, **changes: object) -> Self:
+        """Rebuild an independent marginal, replacing constructor parameters.
 
         Parameters
         ----------
-        **overrides
-            Parameter values to override.  For example,
-            ``dist._make_copy(mean=dist.mean + h)`` perturbs the mean.
+        **changes
+            Replacements for keys of :attr:`parameters`. Built-ins supporting
+            moment sensitivities also accept ``mean`` and ``std``; supplying
+            either switches to moment construction, holding the other moment
+            and fixed bounds/shape constant. Native coordinates and moments
+            cannot be supplied together. The start point remains unchanged
+            unless explicitly replaced (``None`` selects the new mean).
 
         Returns
         -------
         Distribution
-            A new distribution instance with the perturbed parameters.
+            Independent instance of the same type, including nested marginals.
+            An empty replacement reproduces the distribution.
 
         Raises
         ------
         TypeError
-            If the subclass constructor does not accept the provided
-            arguments (e.g. a composite distribution that cannot be
-            reconstructed from ``(name, mean, std)``).
+            A replacement is unknown, or mixes moments and native coordinates.
+        ModelError, ValueError
+            Constructor parameters do not define a valid distribution.
         """
-        params = {"mean": self.mean, "std": self.std}
-        params.update(self._ctor_kwargs)
-        params.update(overrides)
-        mean = params.pop("mean")
-        std = params.pop("std")
-        return type(self)(self.name, mean, std, **params)
+        parameters = dict(self.parameters)
+        allowed = parameters.keys() | self.sensitivity_params.keys()
+        unknown = changes.keys() - allowed
+        if unknown:
+            raise TypeError(
+                f"Unknown distribution parameters: {', '.join(sorted(unknown))}"
+            )
+        if changes.keys() & {"mean", "std"} and self._native_parameters:
+            if changes.keys() & set(self._native_parameters):
+                raise TypeError("Specify moments or native parameters, not both")
+            for key in self._native_parameters:
+                parameters.pop(key, None)
+            parameters.update(mean=self.mean, std=self.std)
+        parameters.update(changes)
+        return type(self)(**deepcopy(parameters))
 
     def _dmoments_dtheta(self, param):
         r"""Derivatives of mean and standard deviation w.r.t. a parameter.
@@ -753,7 +782,7 @@ class Distribution:
         For ``"mean"`` and ``"std"`` the derivatives are exact:
         ``(1, 0)`` and ``(0, 1)`` respectively.  For any other parameter
         (e.g. a shape parameter) central finite differences via
-        :meth:`_make_copy` are used.
+        :meth:`with_parameters` are used.
 
         Parameters
         ----------
@@ -771,8 +800,8 @@ class Distribution:
             return (0.0, 1.0)
         val = self.sensitivity_params[param]
         h = max(abs(val) * 1e-6, 1e-10)
-        d_plus = self._make_copy(**{param: val + h})
-        d_minus = self._make_copy(**{param: val - h})
+        d_plus = self.with_parameters(**{**self.sensitivity_params, param: val + h})
+        d_minus = self.with_parameters(**{**self.sensitivity_params, param: val - h})
         return (
             (d_plus.mean - d_minus.mean) / (2 * h),
             (d_plus.std - d_minus.std) / (2 * h),
@@ -783,14 +812,14 @@ class Distribution:
 
         Returns ``∂F_X(x)/∂θ`` for every parameter listed by
         :attr:`sensitivity_params`.  The base-class implementation uses
-        central finite differences on the CDF via :meth:`_make_copy`.
+        central finite differences on the CDF via :meth:`with_parameters`.
 
         Before computing derivatives, a reconstruction sanity check
-        verifies that :meth:`_make_copy` (with no overrides) reproduces
+        verifies that :meth:`with_parameters` (with no overrides) reproduces
         the current distribution.  This catches both constructor
         failures (e.g. composite distributions) and silent mismatches
         (e.g. distributions whose extra constructor arguments are not
-        stored in :attr:`_ctor_kwargs`).
+        stored in :attr:`parameters`).
 
         Subclasses may override this with analytical expressions for
         better accuracy and performance (see :class:`Normal` and
@@ -811,16 +840,20 @@ class Distribution:
         ------
         ValueError
             If the distribution cannot be faithfully reconstructed by
-            :meth:`_make_copy`.
+            :meth:`with_parameters`.
         """
-        # --- Validate that _make_copy reproduces this distribution ---
+        if not self.sensitivity_params:
+            raise ValueError(
+                f"{type(self).__name__} does not support sensitivity analysis"
+            )
+        # Validate that reconstruction reproduces this distribution.
         try:
-            test = self._make_copy()
+            test = self.with_parameters()
         except Exception as e:
             raise ValueError(
                 f"{type(self).__name__} does not support sensitivity "
-                f"analysis.  Set _ctor_kwargs in the subclass __init__ "
-                f"or override _make_copy()."
+                f"analysis.  Define parameters on the subclass "
+                f"or override with_parameters()."
             ) from e
         # Use a scalar test point for validation (x may be an array
         # when called from drho0_dtheta with quadrature grids)
@@ -829,18 +862,20 @@ class Distribution:
         test_cdf = float(test.cdf(x_test))
         if abs(test_cdf - ref_cdf) > 1e-6 * (1 + abs(ref_cdf)):
             raise ValueError(
-                f"{type(self).__name__}._make_copy() does not faithfully "
+                f"{type(self).__name__}.with_parameters() does not faithfully "
                 f"reconstruct the distribution (CDF mismatch at "
                 f"x={x_test}: original={ref_cdf:.8g}, "
                 f"copy={test_cdf:.8g}).  "
-                f"Set _ctor_kwargs correctly in the subclass __init__."
+                f"Define a complete parameters mapping on the subclass."
             )
 
         result = {}
         for param, val in self.sensitivity_params.items():
             h = max(abs(val) * 1e-6, self.std * 1e-8)
-            d_plus = self._make_copy(**{param: val + h})
-            d_minus = self._make_copy(**{param: val - h})
+            d_plus = self.with_parameters(**{**self.sensitivity_params, param: val + h})
+            d_minus = self.with_parameters(
+                **{**self.sensitivity_params, param: val - h}
+            )
             result[param] = (d_plus.cdf(x) - d_minus.cdf(x)) / (2 * h)
         return result
 

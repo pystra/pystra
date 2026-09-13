@@ -20,6 +20,14 @@ class ShiftedExponential(Distribution):
         - start_point (float): Start point for seach\n
     """
 
+    _native_parameters = ("rate", "shift")
+
+    def _parameter_values(self):
+        return {
+            "rate": 1 / self.dist_obj.kwds["scale"],
+            "shift": self.dist_obj.kwds["loc"],
+        }
+
     def __init__(
         self, name, mean=None, std=None, *, rate=None, shift=None, start_point=None
     ):

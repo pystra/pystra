@@ -105,7 +105,8 @@ def test_start_point_is_keyword_only():
 def test_bounds_are_named_keywords():
     weibull = Weibull("W", 10, 3, lower=2)
     beta = Beta("B", 5, 1, lower=3, upper=10)
-    assert weibull._ctor_kwargs == {"lower": 2}
-    assert beta._ctor_kwargs == {"lower": 3, "upper": 10}
-    assert weibull._make_copy().cdf(9.0) == pytest.approx(weibull.cdf(9.0))
-    assert beta._make_copy().cdf(5.5) == pytest.approx(beta.cdf(5.5))
+    assert weibull.parameters["lower"] == 2
+    assert beta.parameters["lower"] == 3
+    assert beta.parameters["upper"] == 10
+    assert weibull.with_parameters().cdf(9.0) == pytest.approx(weibull.cdf(9.0))
+    assert beta.with_parameters().cdf(5.5) == pytest.approx(beta.cdf(5.5))

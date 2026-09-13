@@ -19,6 +19,11 @@ class ChiSquare(Distribution):
       - start_point (float): Start point for seach\n
     """
 
+    _native_parameters = ("df",)
+
+    def _parameter_values(self):
+        return {"df": self.nu}
+
     def __init__(self, name, mean=None, std=None, *, df=None, start_point=None):
         if not _uses_native_parameters(self, mean, std, df=df):
             lamb = 0.5

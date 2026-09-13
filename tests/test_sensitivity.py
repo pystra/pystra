@@ -226,7 +226,7 @@ class TestClosedFormSensitivity:
 
 
 class TestSensitivityParams:
-    """Tests for the sensitivity_params / _make_copy / _ctor_kwargs machinery."""
+    """Tests for the sensitivity_params / with_parameters / parameters machinery."""
 
     def test_default_sensitivity_params(self):
         """Base distributions return {"mean", "std"} by default."""
@@ -251,7 +251,7 @@ class TestSensitivityParams:
         assert sp["shape"] == 0.1
 
     def test_beta_no_extra_sensitivity_params(self):
-        """Beta bounds are in _ctor_kwargs but NOT in sensitivity_params."""
+        """Beta bounds are in parameters but NOT in sensitivity_params."""
         dist = Beta("X", 0.5, 0.1, lower=0, upper=1)
         sp = dist.sensitivity_params
         assert set(sp.keys()) == {"mean", "std"}
@@ -269,38 +269,38 @@ class TestSensitivityParams:
             (GEVMin, {"mean": 100, "std": 20, "shape": 0.1}),
         ],
     )
-    def test_make_copy_roundtrip(self, cls, kwargs):
-        """_make_copy() with no overrides reproduces the original."""
+    def test_with_parameters_roundtrip(self, cls, kwargs):
+        """with_parameters() with no overrides reproduces the original."""
         dist = cls("X", **kwargs)
-        copy = dist._make_copy()
+        copy = dist.with_parameters()
         x_test = dist.mean + 0.5 * dist.std
         assert copy.cdf(x_test) == pytest.approx(dist.cdf(x_test), abs=1e-8)
 
-    def test_make_copy_beta_with_bounds(self):
+    def test_with_parameters_beta_with_bounds(self):
         """Beta with non-default bounds reconstructs faithfully."""
         dist = Beta("X", 5, 1, lower=3, upper=10)
-        copy = dist._make_copy()
+        copy = dist.with_parameters()
         x_test = 5.5
         assert copy.cdf(x_test) == pytest.approx(dist.cdf(x_test), abs=1e-8)
 
-    def test_make_copy_weibull_with_lower_bound(self):
+    def test_with_parameters_weibull_with_lower_bound(self):
         """Weibull with a non-zero lower bound reconstructs faithfully."""
         dist = Weibull("X", 10, 3, lower=2)
-        copy = dist._make_copy()
+        copy = dist.with_parameters()
         x_test = 9.0
         assert copy.cdf(x_test) == pytest.approx(dist.cdf(x_test), abs=1e-8)
 
-    def test_make_copy_perturbed_mean(self):
-        """_make_copy with perturbed mean produces shifted distribution."""
+    def test_with_parameters_perturbed_mean(self):
+        """with_parameters with perturbed mean produces shifted distribution."""
         dist = Normal("X", 10, 2)
-        perturbed = dist._make_copy(mean=10.1)
+        perturbed = dist.with_parameters(mean=10.1)
         assert perturbed.mean == pytest.approx(10.1)
         assert perturbed.std == pytest.approx(2.0)
 
-    def test_make_copy_perturbed_shape(self):
-        """_make_copy with perturbed shape for GEV works correctly."""
+    def test_with_parameters_perturbed_shape(self):
+        """with_parameters with perturbed shape for GEV works correctly."""
         dist = GEV("X", 100, 20, shape=0.1)
-        perturbed = dist._make_copy(shape=0.11)
+        perturbed = dist.with_parameters(shape=0.11)
         # Different shape → different distribution (different CDF)
         x_test = 120.0
         assert perturbed.cdf(x_test) != pytest.approx(dist.cdf(x_test), abs=1e-4)
