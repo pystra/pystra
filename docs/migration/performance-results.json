@@ -1,0 +1,1304 @@
+{
+  "schema_version": 1,
+  "revisions": {
+    "baseline": {
+      "path": "/tmp/pystra-v1.6.0-trials",
+      "revision": "export (see source hash)",
+      "source_sha256": "9b4449b29f437e06e39a2bd0f3ef7e05f4b6ccfeb32ab3ac2cb680004a17ce7c"
+    },
+    "current": {
+      "path": "/home/ccaprani/projects/pystra/.claude/worktrees/v2.0-contracts",
+      "revision": "7f41c6c622efe90da635aff5373f9340dc94e2b1",
+      "source_sha256": "fdebea263784d17cdac9eec76ba70805b63c3cebc55a5c178b8c6db08d7c4295"
+    }
+  },
+  "configuration": {
+    "rounds": 7,
+    "samples": 20000,
+    "block_size": 1000,
+    "minimum_seconds": 0.1,
+    "cpu": 31
+  },
+  "environments": {
+    "baseline": {
+      "python": "3.13.12 | packaged by conda-forge | (main, Feb  5 2026, 05:53:46) [GCC 14.3.0]",
+      "executable": "/home/ccaprani/anaconda3/bin/python",
+      "platform": "Linux-6.17.0-40-generic-x86_64-with-glibc2.39",
+      "cpu": "AMD Ryzen 9 9950X 16-Core Processor",
+      "affinity": [
+        31
+      ],
+      "load_average": [
+        11.5400390625,
+        7.81201171875,
+        8.716796875
+      ],
+      "threads": {
+        "OMP_NUM_THREADS": "1",
+        "OPENBLAS_NUM_THREADS": "1",
+        "MKL_NUM_THREADS": "1"
+      },
+      "pystra": "1.6.0",
+      "pystra_file": "/tmp/pystra-v1.6.0-trials/src/pystra/__init__.py",
+      "dependencies": {
+        "numpy": "2.4.4",
+        "scipy": "1.17.1",
+        "pandas": "3.0.2",
+        "matplotlib": "3.10.8"
+      }
+    },
+    "current": {
+      "python": "3.13.12 | packaged by conda-forge | (main, Feb  5 2026, 05:53:46) [GCC 14.3.0]",
+      "executable": "/home/ccaprani/anaconda3/bin/python",
+      "platform": "Linux-6.17.0-40-generic-x86_64-with-glibc2.39",
+      "cpu": "AMD Ryzen 9 9950X 16-Core Processor",
+      "affinity": [
+        31
+      ],
+      "load_average": [
+        12.1591796875,
+        8.06591796875,
+        8.7900390625
+      ],
+      "threads": {
+        "OMP_NUM_THREADS": "1",
+        "OPENBLAS_NUM_THREADS": "1",
+        "MKL_NUM_THREADS": "1"
+      },
+      "pystra": "2.0.0a1",
+      "pystra_file": "/home/ccaprani/projects/pystra/.claude/worktrees/v2.0-contracts/src/pystra/__init__.py",
+      "dependencies": {
+        "numpy": "2.4.4",
+        "scipy": "1.17.1",
+        "pandas": "3.0.2",
+        "matplotlib": "3.10.8"
+      }
+    }
+  },
+  "cases": {
+    "form_normal": {
+      "baseline": {
+        "run_seconds": {
+          "median": 0.0006732729962095618,
+          "q1": 0.0006632335134781897,
+          "q3": 0.0006786037411075085,
+          "values": [
+            0.0006339940009638667,
+            0.0006653330055996776,
+            0.0006800239789299667,
+            0.0006771835032850504,
+            0.0006611340213567019,
+            0.0006732729962095618,
+            0.0007542844978161156
+          ]
+        },
+        "preparation_seconds": {
+          "median": 0.0003588020335882902,
+          "q1": 0.00034911202965304255,
+          "q3": 0.0004018025065306574,
+          "values": [
+            0.0003381510032340884,
+            0.0003420720458962023,
+            0.0004128529690206051,
+            0.00039075204404070973,
+            0.0003561520134098828,
+            0.0003588020335882902,
+            0.0004148620064370334
+          ]
+        },
+        "evaluations": [
+          12
+        ],
+        "reference": {
+          "seconds": 0.0006751429755240679,
+          "evaluations": 12,
+          "beta": 2.2360679774990433,
+          "failure_probability": 0.012673659338758577
+        },
+        "memory": {
+          "seconds": 0.0033005079603753984,
+          "evaluations": 12,
+          "beta": 2.2360679774990433,
+          "failure_probability": 0.012673659338758577,
+          "traced_retained_bytes": 7224,
+          "traced_peak_bytes": 47024
+        },
+        "memory_runs": [
+          {
+            "seconds": 0.0033005079603753984,
+            "evaluations": 12,
+            "beta": 2.2360679774990433,
+            "failure_probability": 0.012673659338758577,
+            "traced_retained_bytes": 7224,
+            "traced_peak_bytes": 47024
+          },
+          {
+            "seconds": 0.0031965479720383883,
+            "evaluations": 12,
+            "beta": 2.2360679774990433,
+            "failure_probability": 0.012673659338758577,
+            "traced_retained_bytes": 7224,
+            "traced_peak_bytes": 47024
+          },
+          {
+            "seconds": 0.0032021270017139614,
+            "evaluations": 12,
+            "beta": 2.2360679774990433,
+            "failure_probability": 0.012673659338758577,
+            "traced_retained_bytes": 7224,
+            "traced_peak_bytes": 47024
+          }
+        ]
+      },
+      "current": {
+        "run_seconds": {
+          "median": 0.0008778295305091888,
+          "q1": 0.0008558870031265542,
+          "q3": 0.0008992097136797383,
+          "values": [
+            0.0008142039878293872,
+            0.0008921844710130244,
+            0.0008778295305091888,
+            0.0008469489985145628,
+            0.0008648250077385455,
+            0.0009062349563464522,
+            0.0009512949618510902
+          ]
+        },
+        "preparation_seconds": {
+          "median": 0.0003650720464065671,
+          "q1": 0.0003428820054978132,
+          "q3": 0.000376941985450685,
+          "values": [
+            0.00034122198121622205,
+            0.0003829019842669368,
+            0.0003650720464065671,
+            0.0003387819742783904,
+            0.0003445420297794044,
+            0.0003786020097322762,
+            0.00037528196116909385
+          ]
+        },
+        "evaluations": [
+          12
+        ],
+        "reference": {
+          "seconds": 0.0008277039742097259,
+          "evaluations": 12,
+          "beta": 2.2360679774990433,
+          "failure_probability": 0.012673659338758577
+        },
+        "memory": {
+          "seconds": 0.004052343021612614,
+          "evaluations": 12,
+          "beta": 2.2360679774990433,
+          "failure_probability": 0.012673659338758577,
+          "traced_retained_bytes": 11012,
+          "traced_peak_bytes": 46992
+        },
+        "memory_runs": [
+          {
+            "seconds": 0.004052343021612614,
+            "evaluations": 12,
+            "beta": 2.2360679774990433,
+            "failure_probability": 0.012673659338758577,
+            "traced_retained_bytes": 11012,
+            "traced_peak_bytes": 46992
+          },
+          {
+            "seconds": 0.00344392895931378,
+            "evaluations": 12,
+            "beta": 2.2360679774990433,
+            "failure_probability": 0.012673659338758577,
+            "traced_retained_bytes": 11056,
+            "traced_peak_bytes": 46992
+          },
+          {
+            "seconds": 0.004302233981434256,
+            "evaluations": 12,
+            "beta": 2.2360679774990433,
+            "failure_probability": 0.012673659338758577,
+            "traced_retained_bytes": 11007,
+            "traced_peak_bytes": 46992
+          }
+        ]
+      },
+      "run_seconds_change_percent": 30.382405866751405,
+      "preparation_seconds_change_percent": 1.747485307029062,
+      "traced_peak_bytes_change_percent": -0.06805035726437092,
+      "numerical_comparison": {
+        "beta_absolute_difference": 0.0,
+        "tolerance": 1e-10,
+        "passed": true
+      }
+    },
+    "form_nonnormal": {
+      "baseline": {
+        "run_seconds": {
+          "median": 0.001920820475788787,
+          "q1": 0.0018916830158559605,
+          "q3": 0.0019481680064927787,
+          "values": [
+            0.0018334299675188959,
+            0.0018831510096788406,
+            0.001955681014806032,
+            0.0019406549981795251,
+            0.0019002150220330805,
+            0.001920820475788787,
+            0.0020168910268694162
+          ]
+        },
+        "preparation_seconds": {
+          "median": 0.0004931729636155069,
+          "q1": 0.000473307998618111,
+          "q3": 0.0005031129985582083,
+          "values": [
+            0.00046459201257675886,
+            0.00048005301505327225,
+            0.0005168630159460008,
+            0.0004931729636155069,
+            0.0005005029961466789,
+            0.0004665629821829498,
+            0.0005057230009697378
+          ]
+        },
+        "evaluations": [
+          39
+        ],
+        "reference": {
+          "seconds": 0.0018127899966202676,
+          "evaluations": 39,
+          "beta": 2.4115594883556053,
+          "failure_probability": 0.007942230157020771
+        },
+        "memory": {
+          "seconds": 0.012002546980511397,
+          "evaluations": 39,
+          "beta": 2.4115594883556053,
+          "failure_probability": 0.007942230157020771,
+          "traced_retained_bytes": 19036,
+          "traced_peak_bytes": 48354
+        },
+        "memory_runs": [
+          {
+            "seconds": 0.012002546980511397,
+            "evaluations": 39,
+            "beta": 2.4115594883556053,
+            "failure_probability": 0.007942230157020771,
+            "traced_retained_bytes": 18512,
+            "traced_peak_bytes": 48354
+          },
+          {
+            "seconds": 0.012026196985971183,
+            "evaluations": 39,
+            "beta": 2.4115594883556053,
+            "failure_probability": 0.007942230157020771,
+            "traced_retained_bytes": 19119,
+            "traced_peak_bytes": 48354
+          },
+          {
+            "seconds": 0.011964616947807372,
+            "evaluations": 39,
+            "beta": 2.4115594883556053,
+            "failure_probability": 0.007942230157020771,
+            "traced_retained_bytes": 19036,
+            "traced_peak_bytes": 48354
+          }
+        ]
+      },
+      "current": {
+        "run_seconds": {
+          "median": 0.0026785149821080267,
+          "q1": 0.0025917140155797824,
+          "q3": 0.002720709511777386,
+          "values": [
+            0.002572834026068449,
+            0.002698083990253508,
+            0.00276792049407959,
+            0.002610594005091116,
+            0.002567664021626115,
+            0.0026785149821080267,
+            0.002743335033301264
+          ]
+        },
+        "preparation_seconds": {
+          "median": 0.0007283439626917243,
+          "q1": 0.0007161890098359436,
+          "q3": 0.000749923987314105,
+          "values": [
+            0.0006947430083528161,
+            0.000755673972889781,
+            0.0007283439626917243,
+            0.0007107540150173008,
+            0.0007216240046545863,
+            0.0007441740017384291,
+            0.0007590139866806567
+          ]
+        },
+        "evaluations": [
+          39
+        ],
+        "reference": {
+          "seconds": 0.0026477749925106764,
+          "evaluations": 39,
+          "beta": 2.4115594883556053,
+          "failure_probability": 0.007942230157020771
+        },
+        "memory": {
+          "seconds": 0.01617042103316635,
+          "evaluations": 39,
+          "beta": 2.4115594883556053,
+          "failure_probability": 0.007942230157020771,
+          "traced_retained_bytes": 22843,
+          "traced_peak_bytes": 50550
+        },
+        "memory_runs": [
+          {
+            "seconds": 0.01617042103316635,
+            "evaluations": 39,
+            "beta": 2.4115594883556053,
+            "failure_probability": 0.007942230157020771,
+            "traced_retained_bytes": 22843,
+            "traced_peak_bytes": 50501
+          },
+          {
+            "seconds": 0.016196051030419767,
+            "evaluations": 39,
+            "beta": 2.4115594883556053,
+            "failure_probability": 0.007942230157020771,
+            "traced_retained_bytes": 22074,
+            "traced_peak_bytes": 50550
+          },
+          {
+            "seconds": 0.016059549991041422,
+            "evaluations": 39,
+            "beta": 2.4115594883556053,
+            "failure_probability": 0.007942230157020771,
+            "traced_retained_bytes": 22887,
+            "traced_peak_bytes": 50550
+          }
+        ]
+      },
+      "run_seconds_change_percent": 39.44639886286572,
+      "preparation_seconds_change_percent": 47.68529834891033,
+      "traced_peak_bytes_change_percent": 4.5415063903710085,
+      "numerical_comparison": {
+        "beta_absolute_difference": 0.0,
+        "tolerance": 1e-10,
+        "passed": true
+      }
+    },
+    "form_correlated": {
+      "baseline": {
+        "run_seconds": {
+          "median": 0.002886305970605463,
+          "q1": 0.0028484055364970118,
+          "q3": 0.002902973268646747,
+          "values": [
+            0.0027741400117520243,
+            0.002846995019353926,
+            0.0029149104957468808,
+            0.002886305970605463,
+            0.0028498160536400974,
+            0.002891036041546613,
+            0.0030493870144709945
+          ]
+        },
+        "preparation_seconds": {
+          "median": 0.0009732950129546225,
+          "q1": 0.0009133049752563238,
+          "q3": 0.0009771005134098232,
+          "values": [
+            0.0009066149941645563,
+            0.0009939059964381158,
+            0.0009752049809321761,
+            0.0009199949563480914,
+            0.0009053449612110853,
+            0.0009789960458874702,
+            0.0009732950129546225
+          ]
+        },
+        "evaluations": [
+          57
+        ],
+        "reference": {
+          "seconds": 0.0027156950091011822,
+          "evaluations": 57,
+          "beta": 3.11290884065735,
+          "failure_probability": 0.0009262661434597681
+        },
+        "memory": {
+          "seconds": 0.019864150963257998,
+          "evaluations": 57,
+          "beta": 3.11290884065735,
+          "failure_probability": 0.0009262661434597681,
+          "traced_retained_bytes": 20902,
+          "traced_peak_bytes": 84598
+        },
+        "memory_runs": [
+          {
+            "seconds": 0.019864150963257998,
+            "evaluations": 57,
+            "beta": 3.11290884065735,
+            "failure_probability": 0.0009262661434597681,
+            "traced_retained_bytes": 21078,
+            "traced_peak_bytes": 84598
+          },
+          {
+            "seconds": 0.019710050022695214,
+            "evaluations": 57,
+            "beta": 3.11290884065735,
+            "failure_probability": 0.0009262661434597681,
+            "traced_retained_bytes": 20902,
+            "traced_peak_bytes": 84598
+          },
+          {
+            "seconds": 0.01947787799872458,
+            "evaluations": 57,
+            "beta": 3.11290884065735,
+            "failure_probability": 0.0009262661434597681,
+            "traced_retained_bytes": 20402,
+            "traced_peak_bytes": 84598
+          }
+        ]
+      },
+      "current": {
+        "run_seconds": {
+          "median": 0.0037754999939352274,
+          "q1": 0.0037392209633253515,
+          "q3": 0.003835606010397896,
+          "values": [
+            0.0036456350062508136,
+            0.0037754999939352274,
+            0.0037747209426015615,
+            0.0037037209840491414,
+            0.0038450310239568353,
+            0.003826180996838957,
+            0.0039640569884795696
+          ]
+        },
+        "preparation_seconds": {
+          "median": 0.0011762470239773393,
+          "q1": 0.001161166001111269,
+          "q3": 0.001199566526338458,
+          "values": [
+            0.0011223960318602622,
+            0.0011714560096152127,
+            0.0011779660126194358,
+            0.0011762470239773393,
+            0.0011508759926073253,
+            0.0012211670400574803,
+            0.0012420970015227795
+          ]
+        },
+        "evaluations": [
+          57
+        ],
+        "reference": {
+          "seconds": 0.0038330910028889775,
+          "evaluations": 57,
+          "beta": 3.11290884065735,
+          "failure_probability": 0.0009262661434597681
+        },
+        "memory": {
+          "seconds": 0.025251190993003547,
+          "evaluations": 57,
+          "beta": 3.11290884065735,
+          "failure_probability": 0.0009262661434597681,
+          "traced_retained_bytes": 24871,
+          "traced_peak_bytes": 86726
+        },
+        "memory_runs": [
+          {
+            "seconds": 0.025251190993003547,
+            "evaluations": 57,
+            "beta": 3.11290884065735,
+            "failure_probability": 0.0009262661434597681,
+            "traced_retained_bytes": 24758,
+            "traced_peak_bytes": 86726
+          },
+          {
+            "seconds": 0.02423244499368593,
+            "evaluations": 57,
+            "beta": 3.11290884065735,
+            "failure_probability": 0.0009262661434597681,
+            "traced_retained_bytes": 24871,
+            "traced_peak_bytes": 86677
+          },
+          {
+            "seconds": 0.024950449005700648,
+            "evaluations": 57,
+            "beta": 3.11290884065735,
+            "failure_probability": 0.0009262661434597681,
+            "traced_retained_bytes": 24949,
+            "traced_peak_bytes": 86985
+          }
+        ]
+      },
+      "run_seconds_change_percent": 30.807337558299054,
+      "preparation_seconds_change_percent": 20.852054959843812,
+      "traced_peak_bytes_change_percent": 2.515425896593304,
+      "numerical_comparison": {
+        "beta_absolute_difference": 0.0,
+        "tolerance": 1e-10,
+        "passed": true
+      }
+    },
+    "sorm_nonlinear": {
+      "baseline": {
+        "run_seconds": {
+          "median": 0.006415284966351464,
+          "q1": 0.006348719980451278,
+          "q3": 0.006552465973072685,
+          "values": [
+            0.0061964940396137536,
+            0.006598485953873023,
+            0.006378139980370179,
+            0.006415284966351464,
+            0.006319299980532378,
+            0.006506445992272347,
+            0.006909988005645573
+          ]
+        },
+        "preparation_seconds": {
+          "median": 0.0018908099737018347,
+          "q1": 0.001878390001365915,
+          "q3": 0.001907115482026711,
+          "values": [
+            0.0018274100148119032,
+            0.0018672799924388528,
+            0.001889500010292977,
+            0.0018940509762614965,
+            0.0018908099737018347,
+            0.0019201799877919257,
+            0.0019446410005912185
+          ]
+        },
+        "evaluations": [
+          180
+        ],
+        "reference": {
+          "seconds": 0.006186794023960829,
+          "evaluations": 180,
+          "beta": 1.848997968932393,
+          "failure_probability": 0.032229052998923716
+        },
+        "memory": {
+          "seconds": 0.038918986974749714,
+          "evaluations": 180,
+          "beta": 1.848997968932393,
+          "failure_probability": 0.032229052998923716,
+          "traced_retained_bytes": 24584,
+          "traced_peak_bytes": 109669
+        },
+        "memory_runs": [
+          {
+            "seconds": 0.038918986974749714,
+            "evaluations": 180,
+            "beta": 1.848997968932393,
+            "failure_probability": 0.032229052998923716,
+            "traced_retained_bytes": 25513,
+            "traced_peak_bytes": 110681
+          },
+          {
+            "seconds": 0.03862315497826785,
+            "evaluations": 180,
+            "beta": 1.848997968932393,
+            "failure_probability": 0.032229052998923716,
+            "traced_retained_bytes": 24584,
+            "traced_peak_bytes": 109669
+          },
+          {
+            "seconds": 0.039323428994975984,
+            "evaluations": 180,
+            "beta": 1.848997968932393,
+            "failure_probability": 0.032229052998923716,
+            "traced_retained_bytes": 24408,
+            "traced_peak_bytes": 109581
+          }
+        ]
+      },
+      "current": {
+        "run_seconds": {
+          "median": 0.007468875992344692,
+          "q1": 0.00741767551517114,
+          "q3": 0.007711167505476624,
+          "values": [
+            0.007327360013732687,
+            0.00739111501025036,
+            0.007444236020091921,
+            0.007468875992344692,
+            0.0077370229992084205,
+            0.007685312011744827,
+            0.007962443982250988
+          ]
+        },
+        "preparation_seconds": {
+          "median": 0.001887919963337481,
+          "q1": 0.0018671155266929418,
+          "q3": 0.0019118000054731965,
+          "values": [
+            0.0018467900226823986,
+            0.0018385900184512138,
+            0.0019055000157095492,
+            0.001887919963337481,
+            0.001887441030703485,
+            0.0019180999952368438,
+            0.0019492199644446373
+          ]
+        },
+        "evaluations": [
+          180
+        ],
+        "reference": {
+          "seconds": 0.007455929997377098,
+          "evaluations": 180,
+          "beta": 1.8491331850474617,
+          "failure_probability": 0.03221929181140099
+        },
+        "memory": {
+          "seconds": 0.048336911015212536,
+          "evaluations": 180,
+          "beta": 1.8491331850474617,
+          "failure_probability": 0.03221929181140099,
+          "traced_retained_bytes": 33696,
+          "traced_peak_bytes": 118201
+        },
+        "memory_runs": [
+          {
+            "seconds": 0.048336911015212536,
+            "evaluations": 180,
+            "beta": 1.8491331850474617,
+            "failure_probability": 0.03221929181140099,
+            "traced_retained_bytes": 34665,
+            "traced_peak_bytes": 118465
+          },
+          {
+            "seconds": 0.05010899103945121,
+            "evaluations": 180,
+            "beta": 1.8491331850474617,
+            "failure_probability": 0.03221929181140099,
+            "traced_retained_bytes": 33601,
+            "traced_peak_bytes": 118201
+          },
+          {
+            "seconds": 0.05339618900325149,
+            "evaluations": 180,
+            "beta": 1.8491331850474617,
+            "failure_probability": 0.03221929181140099,
+            "traced_retained_bytes": 33696,
+            "traced_peak_bytes": 118069
+          }
+        ]
+      },
+      "run_seconds_change_percent": 16.4231367978098,
+      "preparation_seconds_change_percent": -0.15284509837313331,
+      "traced_peak_bytes_change_percent": 7.779773682626812,
+      "numerical_comparison": {
+        "beta_absolute_difference": 0.00013521611506872588,
+        "tolerance": 0.0002,
+        "passed": true
+      }
+    },
+    "crude_mc": {
+      "baseline": {
+        "run_seconds": {
+          "median": 0.48845688404981047,
+          "q1": 0.4847368379996624,
+          "q3": 0.49898653948912397,
+          "values": [
+            0.4780479919863865,
+            0.4825926379999146,
+            0.48845688404981047,
+            0.48965232097543776,
+            0.4868810379994102,
+            0.5157665670267306,
+            0.5083207580028102
+          ]
+        },
+        "preparation_seconds": {
+          "median": 0.0009422849980182946,
+          "q1": 0.0009347650047857314,
+          "q3": 0.000955735013121739,
+          "values": [
+            0.0008946650195866823,
+            0.0009384650038555264,
+            0.0009439550340175629,
+            0.0009310650057159364,
+            0.0009422849980182946,
+            0.0009675149922259152,
+            0.0010086760157719254
+          ]
+        },
+        "evaluations": [
+          20000
+        ],
+        "reference": {
+          "seconds": 0.47950290999142453,
+          "evaluations": 20000,
+          "beta": 3.0484829030093383,
+          "failure_probability": 0.00115,
+          "n_samples": 20000,
+          "samples_per_second": 41709.86157384881,
+          "stored_sample_bytes": 960000,
+          "storage_arrays": {
+            "u_all": 320000,
+            "x_all": 320000,
+            "all_G1": 160000,
+            "approxMC_beta_all": 160000
+          },
+          "history_bytes": 320000,
+          "coefficient_of_variation": 0.20839448377911834
+        },
+        "memory": {
+          "seconds": 3.8761924649588764,
+          "evaluations": 20000,
+          "beta": 3.0484829030093383,
+          "failure_probability": 0.00115,
+          "n_samples": 20000,
+          "samples_per_second": 5159.70251240148,
+          "stored_sample_bytes": 960000,
+          "storage_arrays": {
+            "u_all": 320000,
+            "x_all": 320000,
+            "all_G1": 160000,
+            "approxMC_beta_all": 160000
+          },
+          "history_bytes": 320000,
+          "coefficient_of_variation": 0.20839448377911834,
+          "traced_retained_bytes": 1368376,
+          "traced_peak_bytes": 1664632
+        },
+        "memory_runs": [
+          {
+            "seconds": 3.8761924649588764,
+            "evaluations": 20000,
+            "beta": 3.0484829030093383,
+            "failure_probability": 0.00115,
+            "n_samples": 20000,
+            "samples_per_second": 5159.70251240148,
+            "stored_sample_bytes": 960000,
+            "storage_arrays": {
+              "u_all": 320000,
+              "x_all": 320000,
+              "all_G1": 160000,
+              "approxMC_beta_all": 160000
+            },
+            "history_bytes": 320000,
+            "coefficient_of_variation": 0.20839448377911834,
+            "traced_retained_bytes": 1372320,
+            "traced_peak_bytes": 1668576
+          },
+          {
+            "seconds": 3.5232159700244665,
+            "evaluations": 20000,
+            "beta": 3.0484829030093383,
+            "failure_probability": 0.00115,
+            "n_samples": 20000,
+            "samples_per_second": 5676.631852875347,
+            "stored_sample_bytes": 960000,
+            "storage_arrays": {
+              "u_all": 320000,
+              "x_all": 320000,
+              "all_G1": 160000,
+              "approxMC_beta_all": 160000
+            },
+            "history_bytes": 320000,
+            "coefficient_of_variation": 0.20839448377911834,
+            "traced_retained_bytes": 1368376,
+            "traced_peak_bytes": 1664632
+          },
+          {
+            "seconds": 3.8221533200121485,
+            "evaluations": 20000,
+            "beta": 3.0484829030093383,
+            "failure_probability": 0.00115,
+            "n_samples": 20000,
+            "samples_per_second": 5232.652467205693,
+            "stored_sample_bytes": 960000,
+            "storage_arrays": {
+              "u_all": 320000,
+              "x_all": 320000,
+              "all_G1": 160000,
+              "approxMC_beta_all": 160000
+            },
+            "history_bytes": 320000,
+            "coefficient_of_variation": 0.20839448377911834,
+            "traced_retained_bytes": 1367283,
+            "traced_peak_bytes": 1663539
+          }
+        ],
+        "sampling_throughput": 40945.272045670456
+      },
+      "current": {
+        "run_seconds": {
+          "median": 0.5271790500264615,
+          "q1": 0.5235491075145546,
+          "q3": 0.5344639145478141,
+          "values": [
+            0.5213834510068409,
+            0.5199031480005942,
+            0.5271790500264615,
+            0.5257147640222684,
+            0.5355676390463486,
+            0.5333601900492795,
+            0.5485482029616833
+          ]
+        },
+        "preparation_seconds": {
+          "median": 0.0011786270188167691,
+          "q1": 0.0011767370160669088,
+          "q3": 0.0012006814940832555,
+          "values": [
+            0.0011786270188167691,
+            0.0011753870057873428,
+            0.0011989870108664036,
+            0.001169236027635634,
+            0.0012023759773001075,
+            0.0011780870263464749,
+            0.0013236679951660335
+          ]
+        },
+        "evaluations": [
+          20000
+        ],
+        "reference": {
+          "seconds": 0.5208352379850112,
+          "evaluations": 20000,
+          "beta": 3.121389149359866,
+          "failure_probability": 0.0009,
+          "n_samples": 20000,
+          "samples_per_second": 38399.859574354625,
+          "stored_sample_bytes": 960000,
+          "storage_arrays": {
+            "u_all": 320000,
+            "x_all": 320000,
+            "all_G1": 160000,
+            "approxMC_beta_all": 160000
+          },
+          "history_bytes": 480000,
+          "coefficient_of_variation": 0.2355961705027387
+        },
+        "memory": {
+          "seconds": 4.107008714985568,
+          "evaluations": 20000,
+          "beta": 3.121389149359866,
+          "failure_probability": 0.0009,
+          "n_samples": 20000,
+          "samples_per_second": 4869.724265990578,
+          "stored_sample_bytes": 960000,
+          "storage_arrays": {
+            "u_all": 320000,
+            "x_all": 320000,
+            "all_G1": 160000,
+            "approxMC_beta_all": 160000
+          },
+          "history_bytes": 480000,
+          "coefficient_of_variation": 0.2355961705027387,
+          "traced_retained_bytes": 1535773,
+          "traced_peak_bytes": 1830335
+        },
+        "memory_runs": [
+          {
+            "seconds": 4.107008714985568,
+            "evaluations": 20000,
+            "beta": 3.121389149359866,
+            "failure_probability": 0.0009,
+            "n_samples": 20000,
+            "samples_per_second": 4869.724265990578,
+            "stored_sample_bytes": 960000,
+            "storage_arrays": {
+              "u_all": 320000,
+              "x_all": 320000,
+              "all_G1": 160000,
+              "approxMC_beta_all": 160000
+            },
+            "history_bytes": 480000,
+            "coefficient_of_variation": 0.2355961705027387,
+            "traced_retained_bytes": 1536188,
+            "traced_peak_bytes": 1830734
+          },
+          {
+            "seconds": 4.296995233045891,
+            "evaluations": 20000,
+            "beta": 3.121389149359866,
+            "failure_probability": 0.0009,
+            "n_samples": 20000,
+            "samples_per_second": 4654.415216984814,
+            "stored_sample_bytes": 960000,
+            "storage_arrays": {
+              "u_all": 320000,
+              "x_all": 320000,
+              "all_G1": 160000,
+              "approxMC_beta_all": 160000
+            },
+            "history_bytes": 480000,
+            "coefficient_of_variation": 0.2355961705027387,
+            "traced_retained_bytes": 1534530,
+            "traced_peak_bytes": 1829086
+          },
+          {
+            "seconds": 3.8963270719978027,
+            "evaluations": 20000,
+            "beta": 3.121389149359866,
+            "failure_probability": 0.0009,
+            "n_samples": 20000,
+            "samples_per_second": 5133.039303537011,
+            "stored_sample_bytes": 960000,
+            "storage_arrays": {
+              "u_all": 320000,
+              "x_all": 320000,
+              "all_G1": 160000,
+              "approxMC_beta_all": 160000
+            },
+            "history_bytes": 480000,
+            "coefficient_of_variation": 0.2355961705027387,
+            "traced_retained_bytes": 1535773,
+            "traced_peak_bytes": 1830335
+          }
+        ],
+        "sampling_throughput": 37937.77464980088
+      },
+      "run_seconds_change_percent": 7.927448100557899,
+      "preparation_seconds_change_percent": 25.081798107315922,
+      "traced_peak_bytes_change_percent": 9.95433224880935,
+      "stored_sample_bytes_change_percent": 0.0,
+      "history_bytes_change_percent": 50.0,
+      "numerical_comparison": {
+        "pooled_standard_errors": 0.7812752735957409,
+        "passed": true
+      }
+    },
+    "importance_sampling": {
+      "baseline": {
+        "run_seconds": {
+          "median": 0.49616479000542313,
+          "q1": 0.4926370259781834,
+          "q3": 0.5062606894935016,
+          "values": [
+            0.4820004240027629,
+            0.4900972999748774,
+            0.49517675198148936,
+            0.5005612599779852,
+            0.49616479000542313,
+            0.5178086280357093,
+            0.5119601190090179
+          ]
+        },
+        "preparation_seconds": {
+          "median": 0.0009404050069861114,
+          "q1": 0.0009309299930464476,
+          "q3": 0.0009659450151957572,
+          "values": [
+            0.0009006350301206112,
+            0.0009455950348637998,
+            0.0009281850070692599,
+            0.0009336749790236354,
+            0.0009404050069861114,
+            0.0009862949955277145,
+            0.00098854600219056
+          ]
+        },
+        "evaluations": [
+          20057
+        ],
+        "reference": {
+          "seconds": 0.47948570002336055,
+          "evaluations": 20057,
+          "beta": 3.085914320798364,
+          "failure_probability": 0.0010146364343920108,
+          "n_samples": 20000,
+          "samples_per_second": 41711.35864745414,
+          "stored_sample_bytes": 960000,
+          "storage_arrays": {
+            "u_all": 320000,
+            "x_all": 320000,
+            "all_G1": 160000,
+            "approxMC_beta_all": 160000
+          },
+          "history_bytes": 320000,
+          "coefficient_of_variation": 0.013485060538509884
+        },
+        "memory": {
+          "seconds": 3.580379267979879,
+          "evaluations": 20057,
+          "beta": 3.085914320798364,
+          "failure_probability": 0.0010146364343920108,
+          "n_samples": 20000,
+          "samples_per_second": 5586.000393551713,
+          "stored_sample_bytes": 960000,
+          "storage_arrays": {
+            "u_all": 320000,
+            "x_all": 320000,
+            "all_G1": 160000,
+            "approxMC_beta_all": 160000
+          },
+          "history_bytes": 320000,
+          "coefficient_of_variation": 0.013485060538509884,
+          "traced_retained_bytes": 1371072,
+          "traced_peak_bytes": 1667328
+        },
+        "memory_runs": [
+          {
+            "seconds": 3.580379267979879,
+            "evaluations": 20057,
+            "beta": 3.085914320798364,
+            "failure_probability": 0.0010146364343920108,
+            "n_samples": 20000,
+            "samples_per_second": 5586.000393551713,
+            "stored_sample_bytes": 960000,
+            "storage_arrays": {
+              "u_all": 320000,
+              "x_all": 320000,
+              "all_G1": 160000,
+              "approxMC_beta_all": 160000
+            },
+            "history_bytes": 320000,
+            "coefficient_of_variation": 0.013485060538509884,
+            "traced_retained_bytes": 1369104,
+            "traced_peak_bytes": 1665409
+          },
+          {
+            "seconds": 3.93467360798968,
+            "evaluations": 20057,
+            "beta": 3.085914320798364,
+            "failure_probability": 0.0010146364343920108,
+            "n_samples": 20000,
+            "samples_per_second": 5083.013736994181,
+            "stored_sample_bytes": 960000,
+            "storage_arrays": {
+              "u_all": 320000,
+              "x_all": 320000,
+              "all_G1": 160000,
+              "approxMC_beta_all": 160000
+            },
+            "history_bytes": 320000,
+            "coefficient_of_variation": 0.013485060538509884,
+            "traced_retained_bytes": 1371814,
+            "traced_peak_bytes": 1668119
+          },
+          {
+            "seconds": 3.8860841509886086,
+            "evaluations": 20057,
+            "beta": 3.085914320798364,
+            "failure_probability": 0.0010146364343920108,
+            "n_samples": 20000,
+            "samples_per_second": 5146.568942649391,
+            "stored_sample_bytes": 960000,
+            "storage_arrays": {
+              "u_all": 320000,
+              "x_all": 320000,
+              "all_G1": 160000,
+              "approxMC_beta_all": 160000
+            },
+            "history_bytes": 320000,
+            "coefficient_of_variation": 0.013485060538509884,
+            "traced_retained_bytes": 1371072,
+            "traced_peak_bytes": 1667328
+          }
+        ],
+        "sampling_throughput": 40309.18840448432
+      },
+      "current": {
+        "run_seconds": {
+          "median": 0.6415818620007485,
+          "q1": 0.634971115476219,
+          "q3": 0.6535052715044003,
+          "values": [
+            0.6316036219941452,
+            0.624325298005715,
+            0.6383386089582928,
+            0.6415818620007485,
+            0.6546362860244699,
+            0.6523742569843307,
+            0.6579515390330926
+          ]
+        },
+        "preparation_seconds": {
+          "median": 0.0012028560158796608,
+          "q1": 0.0011832865129690617,
+          "q3": 0.0012250769650563598,
+          "values": [
+            0.0012217069743201137,
+            0.0011988559854216874,
+            0.001167717040516436,
+            0.00116699596401304,
+            0.0012028560158796608,
+            0.0012284469557926059,
+            0.0012831770000047982
+          ]
+        },
+        "evaluations": [
+          20057
+        ],
+        "reference": {
+          "seconds": 0.6316036219941452,
+          "evaluations": 20057,
+          "beta": 3.087643628281432,
+          "failure_probability": 0.001008751258554732,
+          "n_samples": 20000,
+          "samples_per_second": 31665.429556680716,
+          "stored_sample_bytes": 960000,
+          "storage_arrays": {
+            "u_all": 320000,
+            "x_all": 320000,
+            "all_G1": 160000,
+            "approxMC_beta_all": 160000
+          },
+          "history_bytes": 480000,
+          "coefficient_of_variation": 0.013427254430564715
+        },
+        "memory": {
+          "seconds": 5.175064215029124,
+          "evaluations": 20057,
+          "beta": 3.087643628281432,
+          "failure_probability": 0.001008751258554732,
+          "n_samples": 20000,
+          "samples_per_second": 3864.6863437785273,
+          "stored_sample_bytes": 960000,
+          "storage_arrays": {
+            "u_all": 320000,
+            "x_all": 320000,
+            "all_G1": 160000,
+            "approxMC_beta_all": 160000
+          },
+          "history_bytes": 480000,
+          "coefficient_of_variation": 0.013427254430564715,
+          "traced_retained_bytes": 1547209,
+          "traced_peak_bytes": 1841807
+        },
+        "memory_runs": [
+          {
+            "seconds": 5.175064215029124,
+            "evaluations": 20057,
+            "beta": 3.087643628281432,
+            "failure_probability": 0.001008751258554732,
+            "n_samples": 20000,
+            "samples_per_second": 3864.6863437785273,
+            "stored_sample_bytes": 960000,
+            "storage_arrays": {
+              "u_all": 320000,
+              "x_all": 320000,
+              "all_G1": 160000,
+              "approxMC_beta_all": 160000
+            },
+            "history_bytes": 480000,
+            "coefficient_of_variation": 0.013427254430564715,
+            "traced_retained_bytes": 1546469,
+            "traced_peak_bytes": 1841058
+          },
+          {
+            "seconds": 5.135763719968963,
+            "evaluations": 20057,
+            "beta": 3.087643628281432,
+            "failure_probability": 0.001008751258554732,
+            "n_samples": 20000,
+            "samples_per_second": 3894.2601510726945,
+            "stored_sample_bytes": 960000,
+            "storage_arrays": {
+              "u_all": 320000,
+              "x_all": 320000,
+              "all_G1": 160000,
+              "approxMC_beta_all": 160000
+            },
+            "history_bytes": 480000,
+            "coefficient_of_variation": 0.013427254430564715,
+            "traced_retained_bytes": 1548695,
+            "traced_peak_bytes": 1843444
+          },
+          {
+            "seconds": 4.225041908037383,
+            "evaluations": 20057,
+            "beta": 3.087643628281432,
+            "failure_probability": 0.001008751258554732,
+            "n_samples": 20000,
+            "samples_per_second": 4733.6808569764935,
+            "stored_sample_bytes": 960000,
+            "storage_arrays": {
+              "u_all": 320000,
+              "x_all": 320000,
+              "all_G1": 160000,
+              "approxMC_beta_all": 160000
+            },
+            "history_bytes": 480000,
+            "coefficient_of_variation": 0.013427254430564715,
+            "traced_retained_bytes": 1547209,
+            "traced_peak_bytes": 1841807
+          }
+        ],
+        "sampling_throughput": 31172.951083172404
+      },
+      "run_seconds_change_percent": 29.30822076144015,
+      "preparation_seconds_change_percent": 27.90829556880756,
+      "traced_peak_bytes_change_percent": 10.464587651619839,
+      "stored_sample_bytes_change_percent": 0.0,
+      "history_bytes_change_percent": 50.0,
+      "numerical_comparison": {
+        "pooled_standard_errors": 0.30567928616047046,
+        "passed": true
+      }
+    }
+  },
+  "flags": [
+    {
+      "case": "form_normal",
+      "metric": "run_seconds",
+      "increase_percent": 30.382405866751405
+    },
+    {
+      "case": "form_nonnormal",
+      "metric": "run_seconds",
+      "increase_percent": 39.44639886286572
+    },
+    {
+      "case": "form_nonnormal",
+      "metric": "preparation_seconds",
+      "increase_percent": 47.68529834891033
+    },
+    {
+      "case": "form_correlated",
+      "metric": "run_seconds",
+      "increase_percent": 30.807337558299054
+    },
+    {
+      "case": "form_correlated",
+      "metric": "preparation_seconds",
+      "increase_percent": 20.852054959843812
+    },
+    {
+      "case": "sorm_nonlinear",
+      "metric": "run_seconds",
+      "increase_percent": 16.4231367978098
+    },
+    {
+      "case": "crude_mc",
+      "metric": "preparation_seconds",
+      "increase_percent": 25.081798107315922
+    },
+    {
+      "case": "crude_mc",
+      "metric": "history_bytes",
+      "increase_percent": 50.0
+    },
+    {
+      "case": "importance_sampling",
+      "metric": "run_seconds",
+      "increase_percent": 29.30822076144015
+    },
+    {
+      "case": "importance_sampling",
+      "metric": "preparation_seconds",
+      "increase_percent": 27.90829556880756
+    },
+    {
+      "case": "importance_sampling",
+      "metric": "traced_peak_bytes",
+      "increase_percent": 10.464587651619839
+    },
+    {
+      "case": "importance_sampling",
+      "metric": "history_bytes",
+      "increase_percent": 50.0
+    }
+  ]
+}
