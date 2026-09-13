@@ -251,6 +251,8 @@ For exponential rates 1 and 3, :math:`\theta=10`, and failure event
 about 0.1038. This difference is approximation error, not a different
 underlying probability for each order.
 
+.. _very-small-probabilities:
+
 Very small probabilities
 ------------------------
 
@@ -277,11 +279,14 @@ the survival function :math:`\bar F_X = 1 - F_X`,
    \end{cases}
 
 Up to :math:`u = 3` the complement :math:`1 - \Phi(u)` keeps its relative
-precision to about :math:`10^{-13}`. Both forms stay exact until the tail
-probability itself underflows, at :math:`|u| \approx 37.5`
-(:math:`\Phi(-37.5) \approx 5 \times 10^{-308}`). Beyond that the logarithm
-:math:`\log \Phi(u)` is inverted: in closed form for the normal, lognormal and
-Gumbel families, and otherwise by solving :math:`\log F_X(x) = \log \Phi(u)`.
+precision to about :math:`10^{-13}`. Both forms stay exact while the tail
+probability is a normal double, down to about :math:`2.2 \times 10^{-308}` at
+:math:`|u| \approx 37.52`. Pystra switches there to inverting the logarithm
+:math:`\log \Phi(u)`, before subnormal probabilities lose precision; they
+remain representable to :math:`|u| \approx 38.5`, although a CDF
+implementation may underflow earlier. The logarithm is inverted in closed form
+for the normal, lognormal and Gumbel families, and otherwise by solving
+:math:`\log F_X(x) = \log \Phi(u)`.
 Quantities such as :math:`\log(1 - e^{a})` are computed as
 :math:`\log(-\operatorname{expm1} a)` or :math:`\operatorname{log1p}(-e^{a})`,
 whichever avoids cancellation [Maechler2012]_.
@@ -303,6 +308,7 @@ Two limits remain. A bounded support cannot place :math:`x` closer to its
 bound than one unit in the last place, so a bounded tail loses resolution
 before its probability does. The conditional distributions of non-elliptical
 copulas, such as Frank, are still evaluated in probability space.
+:doc:`/guides/high_reliability` shows these properties in use.
 
 **Use this method:** :doc:`/copulas` · :doc:`/notebooks/ex_copulas` · :doc:`/api/probability`
 

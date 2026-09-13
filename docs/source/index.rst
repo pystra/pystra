@@ -40,6 +40,15 @@ uses the released 1.x API.
 
       :doc:`Assess a structure <guides/assessment>`
 
+   .. container:: workflow-card
+
+      **Estimate very small probabilities**
+
+      Tail-accurate transformations and log-space estimators stay finite far
+      beyond where floating-point probabilities round off.
+
+      :doc:`Work at high reliability <guides/high_reliability>`
+
 .. _indices-and-tables:
 
 Find the right material

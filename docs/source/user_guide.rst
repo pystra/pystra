@@ -13,6 +13,7 @@ For a first run, start with :doc:`get_started`. The guides below focus on tasks;
    guides/models
    guides/form_sorm
    guides/simulation
+   guides/high_reliability
    guides/results
    guides/troubleshooting
 

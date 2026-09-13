@@ -66,7 +66,8 @@ Added
   ``logpdf``, each accurate in its own tail. Marginal transformations evaluate
   the tail that a point lies in and use log probabilities where probabilities
   underflow, so they stay finite and accurate to :math:`|u| \approx 37.5`, and
-  beyond that for the normal, lognormal and Gumbel families.
+  beyond that for the normal, lognormal and Gumbel families. The
+  :doc:`guides/high_reliability` guide shows what this covers in practice.
 
 Fixed
 ~~~~~

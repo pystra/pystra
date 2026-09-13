@@ -57,5 +57,9 @@ to assess stability: the current subset-simulation ``cov`` ignores chain
 correlation and is a lower-bound precision diagnostic, not a calibrated
 confidence interval.
 
+Importance and line sampling stay accurate for very small probabilities. See
+:doc:`high_reliability` for the ranges covered and for reading a probability
+that underflows.
+
 **Continue:** :doc:`results` · :doc:`/api/reliability` ·
 :doc:`/theory/simulation`

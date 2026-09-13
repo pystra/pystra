@@ -53,5 +53,8 @@ Discontinuous functions can be sampled directly when affordable, but ordinary
 FORM and SORM require local derivatives. Strong nonlinearity, multiple failure
 regions and transformation ordering require particular care. PySTRA normally
 uses independent standard-normal coordinates; see :doc:`/theory/notation`.
+Beyond a reliability index of about 8 the probabilities involved fall below
+:math:`10^{-15}`; :doc:`high_reliability` describes how the methods behave
+there.
 
 **Continue:** :doc:`/benchmarks` · :doc:`results` · :doc:`/api/reliability`

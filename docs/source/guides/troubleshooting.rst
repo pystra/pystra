@@ -30,6 +30,26 @@ failures, a one-sided 95% binomial upper confidence limit is
 unchanged to importance weights, correlated subset chains or adaptive stopping.
 Increase the budget or choose a rare-event estimator using :doc:`methods`.
 
+A probability is zero but the reliability index is finite
+---------------------------------------------------------
+
+The probability has underflowed: it is below the double range, about
+:math:`5 \times 10^{-324}`, or it underflowed in an intermediate step. SORM,
+importance sampling and line sampling compute the reliability index from its
+logarithm, so report the index. See :doc:`high_reliability`.
+
+Evaluation stops at nonfinite physical points
+---------------------------------------------
+
+``AnalysisError`` with "requires finite physical points" means that a point
+passed to the limit state contained NaN or infinity. Possible causes are
+nonfinite inputs, overflow in a custom transformation, and a custom
+distribution that overrides ``cdf`` or ``ppf`` without ``sf`` and ``isf``.
+Built-in distributions with unbounded tails stay finite to
+:math:`|u| \approx 37.5`. A bounded support is a different matter: its points
+stay finite but reach the bound itself, where they can no longer be inverted.
+See :doc:`high_reliability`.
+
 Sampling estimates change between runs
 --------------------------------------
 
