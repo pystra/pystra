@@ -68,10 +68,10 @@ class Transformation:
         -------
         ndarray, shape (dimension,)
             Independent normal coordinates in the same variable order."""
-        nrv = len(marg)
+        dimension = len(marg)
         x = np.asarray(x).ravel()
-        u = np.zeros(nrv)
-        for i in range(nrv):
+        u = np.zeros(dimension)
+        for i in range(dimension):
             u[i] = marg[i].x_to_u(x[i])
 
         u = np.dot(self.T, u)
@@ -91,12 +91,12 @@ class Transformation:
         -------
         ndarray, shape (dimension,)
             Physical coordinates in marginal order."""
-        nrv = len(marg)
+        dimension = len(marg)
         u = np.asarray(u).ravel()
         z = np.dot(self.inv_T, u)
 
-        x = np.zeros(nrv)
-        for i in range(nrv):
+        x = np.zeros(dimension)
+        for i in range(dimension):
             x[i] = marg[i].u_to_x(z[i])
         return x
 
@@ -118,13 +118,13 @@ class Transformation:
             Shape ``(dimension, dimension)``, with reference coordinates in
             rows and physical variables in columns, both in model order.
         """
-        nrv = len(marg)
+        dimension = len(marg)
         u = np.asarray(u).ravel()
         x = np.asarray(x).ravel()
         z = np.dot(self.inv_T, u)
-        J_u_x = np.zeros((nrv, nrv))
+        J_u_x = np.zeros((dimension, dimension))
 
-        for i in range(nrv):
+        for i in range(dimension):
             Ji = marg[i].jacobian(np.atleast_1d(z[i]), np.atleast_1d(x[i]))
             J_u_x[i][i] = Ji.item()
 
