@@ -511,6 +511,8 @@
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">special</span> <span class="k">as</span> <span class="n">sp</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">gumbel_l</span><span class="p">,</span> <span class="n">gumbel_r</span> <span class="k">as</span> <span class="n">gumbel</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.distribution</span><span class="w"> </span><span class="kn">import</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">_log1mexp</span><span class="p">,</span> <span class="n">_uses_native_parameters</span>
@@ -556,6 +558,51 @@
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">dist_type</span> <span class="o">=</span> <span class="s2">"Gumbel"</span>
+
+<div class="viewcode-block" id="Gumbel.u_to_x">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.gumbel.Gumbel.html#pystra.distributions.gumbel.Gumbel.u_to_x">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">u_to_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Map normal coordinates to Gumbel quantiles using logarithmic tails.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        u : array_like</span>
+<span class="sd">            Standard normal coordinates, as a scalar or an array.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or ndarray</span>
+<span class="sd">            Physical quantiles with the same shape as ``u``. Log probabilities</span>
+<span class="sd">            retain finite quantiles beyond normal-probability underflow.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">Gumbel</span><span class="p">:</span>
+            <span class="c1"># Preserve quantile overrides supplied by extension distributions.</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">u_to_x</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">loc</span><span class="p">,</span> <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">kwds</span><span class="p">[</span><span class="s2">"loc"</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">kwds</span><span class="p">[</span><span class="s2">"scale"</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="mf">3.0</span><span class="p">:</span>
+                <span class="n">logq</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">log_ndtr</span><span class="p">(</span><span class="o">-</span><span class="n">value</span><span class="p">)</span>
+                <span class="n">term</span> <span class="o">=</span> <span class="n">logq</span> <span class="k">if</span> <span class="n">logq</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">40.0</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="o">-</span><span class="n">sp</span><span class="o">.</span><span class="n">ndtr</span><span class="p">(</span><span class="o">-</span><span class="n">value</span><span class="p">)))</span>
+            <span class="k">elif</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">5.0</span><span class="p">:</span>
+                <span class="n">term</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="o">-</span><span class="n">sp</span><span class="o">.</span><span class="n">log_ndtr</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">term</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">ndtr</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span>
+            <span class="k">return</span> <span class="n">loc</span> <span class="o">-</span> <span class="n">scale</span> <span class="o">*</span> <span class="n">term</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">flat</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="n">upper</span> <span class="o">=</span> <span class="n">flat</span> <span class="o">&gt;</span> <span class="mf">3.0</span>
+        <span class="n">lower</span> <span class="o">=</span> <span class="n">flat</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">5.0</span>
+        <span class="n">central</span> <span class="o">=</span> <span class="o">~</span><span class="p">(</span><span class="n">upper</span> <span class="o">|</span> <span class="n">lower</span><span class="p">)</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">flat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">values</span><span class="p">[</span><span class="n">central</span><span class="p">]</span> <span class="o">=</span> <span class="n">loc</span> <span class="o">-</span> <span class="n">scale</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">ndtr</span><span class="p">(</span><span class="n">flat</span><span class="p">[</span><span class="n">central</span><span class="p">])))</span>
+        <span class="k">if</span> <span class="n">lower</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">values</span><span class="p">[</span><span class="n">lower</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lower_quantile_log</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">log_ndtr</span><span class="p">(</span><span class="n">flat</span><span class="p">[</span><span class="n">lower</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">upper</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">values</span><span class="p">[</span><span class="n">upper</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upper_quantile_log</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">log_ndtr</span><span class="p">(</span><span class="o">-</span><span class="n">flat</span><span class="p">[</span><span class="n">upper</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span></div>
+
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_upper_logsf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="c1"># 1 - F(x) = -expm1(-exp(-z)), whose logarithm is -z once exp(-z) &lt; e**-40</span>

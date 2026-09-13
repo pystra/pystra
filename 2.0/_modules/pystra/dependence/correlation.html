@@ -767,11 +767,10 @@
     <span class="c1"># copy() ensures the array is writable; np.eye may return a read-only</span>
     <span class="c1"># array in NumPy 2.0+.</span>
     <span class="n">Ro</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="n">flag_sens</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nvr</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
             <span class="n">rho</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">rho</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">flag_sens</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">rho</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">margi</span> <span class="o">=</span> <span class="n">marg</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
                 <span class="n">margj</span> <span class="o">=</span> <span class="n">marg</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
 
@@ -792,7 +791,6 @@
 
                 <span class="n">Z1</span><span class="p">,</span> <span class="n">Z2</span><span class="p">,</span> <span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">,</span> <span class="n">WIP</span><span class="p">,</span> <span class="n">detJ</span> <span class="o">=</span> <span class="n">zi_and_xi</span><span class="p">(</span><span class="n">margi</span><span class="p">,</span> <span class="n">margj</span><span class="p">,</span> <span class="n">zmax</span><span class="p">,</span> <span class="n">nIP</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">rho</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">par</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">fmin</span><span class="p">(</span>
                     <span class="n">absolute_integral_value</span><span class="p">,</span>
                     <span class="n">rho</span><span class="p">,</span>

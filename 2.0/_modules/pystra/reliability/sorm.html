@@ -632,8 +632,22 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_form</span> <span class="o">=</span> <span class="n">form</span>
             <span class="n">form</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
         <span class="n">_check_form</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit_state</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">init_run</span><span class="p">()</span>
-        <span class="n">_check_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_supplied_form</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">init_run</span> <span class="ow">is</span> <span class="n">AnalysisObject</span><span class="o">.</span><span class="n">init_run</span>
+        <span class="p">):</span>
+            <span class="c1"># This run owns a freshly prepared FORM with exactly these options.</span>
+            <span class="c1"># Reuse its factorization; an explicitly supplied FORM still receives</span>
+            <span class="c1"># the independent coordinate check below.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nrv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">n_marg</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">transform</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">standard_space</span> <span class="o">!=</span> <span class="s2">"normal"</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">"This analysis requires independent normal space; select Rosenblatt for this copula"</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init_run</span><span class="p">()</span>
+            <span class="n">_check_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fit_type</span> <span class="o">=</span> <span class="n">fit_type</span>
 
 <div class="viewcode-block" id="SORM.run">

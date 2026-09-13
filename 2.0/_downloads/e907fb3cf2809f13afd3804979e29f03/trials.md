@@ -1,9 +1,9 @@
 # PySTRA 1.6.0 → 2.0 migration trials
 
-Recorded 13 September 2026 on `v2.0-contracts`, based on `fcfceb4` plus the
-C4 extension contracts and C6a converter. These are representative user trials
-for the direct 2.0 release, not a performance benchmark or a claim that every
-historical example remains appropriate for every method.
+Recorded 13 September 2026 on `v2.0-contracts`, with the actual revision and
+library source hash retained in the generated artifact. These representative
+user trials support the direct 2.0 release; the separate performance benchmark
+and method-validation tests cover different release gates.
 
 **Result:** all seven 1.6.0 example scripts and eleven tutorial notebooks passed
 conversion/idempotence checks. Eleven complete scripts/tutorials were manually

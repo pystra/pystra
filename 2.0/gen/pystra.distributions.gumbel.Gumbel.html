@@ -977,7 +977,7 @@
 <td><p>Survival function <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">-</span> <span class="pre">F(x)</span></code>, accurate in the upper tail.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pystra.distributions.gumbel.Gumbel.u_to_x" title="pystra.distributions.gumbel.Gumbel.u_to_x"><code class="xref py py-obj docutils literal notranslate"><span class="pre">u_to_x</span></code></a></p></td>
-<td><p>Transform from standard normal space to physical space.</p></td>
+<td><p>Map normal coordinates to Gumbel quantiles using logarithmic tails.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pystra.distributions.gumbel.Gumbel.with_parameters" title="pystra.distributions.gumbel.Gumbel.with_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">with_parameters</span></code></a></p></td>
 <td><p>Rebuild an independent marginal, replacing constructor parameters.</p></td>
@@ -988,6 +988,24 @@
 </tbody>
 </table>
 </div>
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.distributions.gumbel.Gumbel.u_to_x">
+<span class="sig-name descname"><span class="pre">u_to_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/distributions/gumbel.html#Gumbel.u_to_x"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.distributions.gumbel.Gumbel.u_to_x" title="Link to this definition">#</a></dt>
+<dd><p>Map normal coordinates to Gumbel quantiles using logarithmic tails.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>u</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ArrayLike</span></code></span>) – Standard normal coordinates, as a scalar or an array.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Physical quantiles with the same shape as <code class="docutils literal notranslate"><span class="pre">u</span></code>. Log probabilities
+retain finite quantiles beyond normal-probability underflow.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code> | <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="pystra.distributions.gumbel.Gumbel.cdf">
 <span class="sig-name descname"><span class="pre">cdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pystra.distributions.gumbel.Gumbel.cdf" title="Link to this definition">#</a></dt>
@@ -1262,27 +1280,6 @@ parameters.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pystra.distributions.gumbel.Gumbel.u_to_x">
-<span class="sig-name descname"><span class="pre">u_to_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pystra.distributions.gumbel.Gumbel.u_to_x" title="Link to this definition">#</a></dt>
-<dd><p>Transform from standard normal space to physical space.</p>
-<p>Applies the marginal Nataf mapping <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">=</span> <span class="pre">F^{-1}(Phi(u))</span></code>. Above
-<code class="docutils literal notranslate"><span class="pre">u</span> <span class="pre">=</span> <span class="pre">3</span></code> it is evaluated as <code class="docutils literal notranslate"><span class="pre">Fbar^{-1}(Phi(-u))</span></code>, so the
-probability passed on is never rounded towards one; far into either
-tail the log-probability is used (see <code class="xref py py-meth docutils literal notranslate"><span class="pre">_tail_quantiles()</span></code>).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>u</strong> (<em>float</em><em> or </em><em>array_like</em>) – Value(s) in standard normal (u) space.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Corresponding value(s) in physical (x) space.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float or ndarray</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="pystra.distributions.gumbel.Gumbel.with_parameters">
 <span class="sig-name descname"><span class="pre">with_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">changes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pystra.distributions.gumbel.Gumbel.with_parameters" title="Link to this definition">#</a></dt>
 <dd><p>Rebuild an independent marginal, replacing constructor parameters.</p>
@@ -1383,6 +1380,7 @@ where these underflow.</p>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.distributions.gumbel.Gumbel"><code class="docutils literal notranslate"><span class="pre">Gumbel</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.distributions.gumbel.Gumbel.u_to_x"><code class="docutils literal notranslate"><span class="pre">Gumbel.u_to_x()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.distributions.gumbel.Gumbel.cdf"><code class="docutils literal notranslate"><span class="pre">Gumbel.cdf()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.distributions.gumbel.Gumbel.cdf_gradient"><code class="docutils literal notranslate"><span class="pre">Gumbel.cdf_gradient()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.distributions.gumbel.Gumbel.isf"><code class="docutils literal notranslate"><span class="pre">Gumbel.isf()</span></code></a></li>
@@ -1402,7 +1400,6 @@ where these underflow.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.distributions.gumbel.Gumbel.sf"><code class="docutils literal notranslate"><span class="pre">Gumbel.sf()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.distributions.gumbel.Gumbel.start_point"><code class="docutils literal notranslate"><span class="pre">Gumbel.start_point</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.distributions.gumbel.Gumbel.std"><code class="docutils literal notranslate"><span class="pre">Gumbel.std</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.distributions.gumbel.Gumbel.u_to_x"><code class="docutils literal notranslate"><span class="pre">Gumbel.u_to_x()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.distributions.gumbel.Gumbel.with_parameters"><code class="docutils literal notranslate"><span class="pre">Gumbel.with_parameters()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.distributions.gumbel.Gumbel.x_to_u"><code class="docutils literal notranslate"><span class="pre">Gumbel.x_to_u()</span></code></a></li>
 </ul>
