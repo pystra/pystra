@@ -29,8 +29,10 @@ The simplest approach perturbs each parameter by a small amount
    \approx \frac{\beta(\theta_k + \Delta\theta_k) - \beta(\theta_k)}
                {\Delta\theta_k}
 
-This requires :math:`2n + 1` FORM runs (one baseline plus two per
-parameter). The method is straightforward and distribution-agnostic, but
+With :math:`m` declared distribution parameters this requires :math:`m + 1`
+FORM runs: one baseline and one perturbed run per parameter, or :math:`2n + 1`
+when each of :math:`n` variables declares only its mean and standard deviation.
+The method is straightforward and distribution-agnostic, but
 can be numerically unstable when the perturbation changes the Nataf
 transformation significantly — particularly for correlated non-normal
 variables with small sensitivities.
@@ -109,6 +111,6 @@ central differences unless the distribution provides an analytical
 override.  See the :ref:`developer guide <adding_distributions>` for
 implementation details.
 
-**Use this method:** :doc:`/guides/form_sorm` · :doc:`/notebooks/ex_sensitivity` · :doc:`/api/reliability`
+**Use this method:** :doc:`/guides/sensitivity` · :doc:`/notebooks/ex_sensitivity` · :doc:`/api/reliability`
 
 For coordinate conventions, see :doc:`notation`.
