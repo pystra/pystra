@@ -376,6 +376,22 @@ def compare(args, rounds, details):
     return result
 
 
+def write_report(args, report):
+    """Export machine-readable evidence without machine-specific root paths."""
+    roots = {
+        str(args.current.resolve()): "<repo>",
+        str(args.baseline.resolve()): "<baseline>",
+        str(args.output.resolve()): "<output>",
+        sys.executable: "<python>",
+        sys.prefix: "<python-prefix>",
+        str(Path.home()): "<home>",
+    }
+    text = json.dumps(report, indent=2)
+    for root in sorted(roots, key=len, reverse=True):
+        text = text.replace(json.dumps(root)[1:-1], roots[root])
+    (args.output / "results.json").write_text(text + "\n")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--baseline", type=Path)
@@ -434,7 +450,7 @@ def main():
             for flavor in ("baseline", "current")
         }
         report.update(compare(args, rounds, details))
-        (args.output / "results.json").write_text(json.dumps(report, indent=2) + "\n")
+        write_report(args, report)
         if not all(
             case["numerical_comparison"]["passed"] for case in report["cases"].values()
         ):
@@ -530,7 +546,7 @@ def main():
         "environments": {key: value["environment"] for key, value in details.items()},
         **compare(args, rounds, details),
     }
-    (args.output / "results.json").write_text(json.dumps(report, indent=2) + "\n")
+    write_report(args, report)
     print(json.dumps(report["flags"], indent=2))
     print(f"Results: {args.output / 'results.json'}")
     if not all(

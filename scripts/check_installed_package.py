@@ -218,9 +218,14 @@ def main():
             "UV_PYTHON_DOWNLOADS": "never",
         }
     )
+    source_hash = hashlib.sha256()
+    for path in sorted((source / "src/pystra").rglob("*.py")):
+        source_hash.update(str(path.relative_to(source)).encode())
+        source_hash.update(path.read_bytes())
     records = []
     report = {
         "source": str(source),
+        "source_sha256": source_hash.hexdigest(),
         "source_revision": subprocess.check_output(
             ["git", "-C", str(source), "rev-parse", "HEAD"], text=True
         ).strip(),
@@ -231,7 +236,24 @@ def main():
     }
 
     def save():
-        (output / "results.json").write_text(json.dumps(report, indent=2) + "\n")
+        # Commands execute with their real paths; only exported evidence is portable.
+        roots = {
+            str(source): "<repo>",
+            str(output / "venv"): "<venv>",
+            str(output): "<output>",
+            sys.executable: "<python>",
+            sys.prefix: "<python-prefix>",
+            str(Path.home()): "<home>",
+            shutil.which("uv"): "<uv>",
+        }
+        if args.uv_cache_source:
+            roots[str(args.uv_cache_source.resolve())] = "<cache>"
+        if args.wheelhouse:
+            roots[str(args.wheelhouse.resolve())] = "<wheelhouse>"
+        text = json.dumps(report, indent=2)
+        for root in sorted((root for root in roots if root), key=len, reverse=True):
+            text = text.replace(json.dumps(root)[1:-1], roots[root])
+        (output / "results.json").write_text(text + "\n")
 
     def run(label, command, *, required=True, optional=False):
         started = time.perf_counter()

@@ -1,20 +1,18 @@
 # Performance against PySTRA 1.6.0
 
-Measured September 13, 2026, for the C6e release review. The benchmark began at
-`7f41c6c` on `v2.0-contracts`; subsequent profiling overlapped Claude's documentation
-commit `c0fd369`. Both have the same library source as `bcd77e9`. The reference
-is the exact `v1.6.0` export used for the [migration trials](trials.md).
-Source hashes and import paths are captured in the
-[generated results](performance-results.json).
+Measured September 13, 2026, before and after the C6e-perf optimizations on
+`v2.0-contracts`. The reference is the exact `v1.6.0` export used for the
+[migration trials](trials.md). The [initial evidence](performance-before-results.json)
+and [optimized evidence](performance-results.json) retain each run's actual
+revision, library source hash, dependency versions and portable import paths.
+Both benchmarks include uncommitted library contents identified by those hashes;
+the revision alone does not identify the optimized code.
 
-**Outcome:** evaluation counts are unchanged in all six cases and numerical
-comparisons pass. Five workloads have runtime regressions above the provisional
-10% threshold. Four non-normal transformation-preparation measurements also
-exceed it. Stored sample arrays have unchanged size; importance sampling's
-traced peak allocation rises 10.5%, principally because of an additional
-log-probability history. These findings require a maintainer decision or a
-separately validated optimization before closing the performance gate.
-No library code was changed for this package.
+**Outcome:** all six optimized workloads satisfy the 10% runtime threshold
+against 1.6.0. Evaluation counts are unchanged and every numerical comparison
+passes. All transformation-preparation medians also satisfy the threshold.
+The additional simulation log-probability history remains a documented memory
+cost; no tail accuracy, validation or failure diagnostics were removed.
 
 ## Reproduce and interpret the measurements
 
@@ -32,7 +30,9 @@ scheduler. The output directory must be new. The runner uses one interpreter
 with separate `PYTHONPATH` values, asserting that each imported PySTRA comes
 from the requested checkout. It saves raw timing rounds, profiles, allocation
 measurements and a generated `results.json`. The committed results are a copy
-of that summary, without hand-edited measurements. `--summarize` recomputes it
+of that summary, without hand-edited measurements. Exported paths use
+`<repo>`, `<baseline>`, `<output>` and interpreter placeholders; the
+committed JSON was checked byte-for-byte against the generated file. `--summarize` recomputes it
 from existing raw files. A numerical disagreement exits nonzero; performance
 threshold crossings are reported as review flags, not silently accepted.
 
@@ -81,134 +81,116 @@ settings are retained in both versions. These inexpensive callbacks expose
 framework overhead; the relative effect can be smaller when an external solver
 dominates evaluation cost.
 
-## Runtime and evaluation counts
+## Runtime before and after optimization
 
-Times are milliseconds, as median [first quartile, third quartile]. The change
-is current/baseline minus one. Bold changes exceed 10%.
+Times are milliseconds, as median [first quartile, third quartile]. Each
+percentage compares with the baseline measured in the same paired run. The
+initial artifact retains the original baseline timings; the table below shows
+the newly measured baseline alongside both sets of current timings. This shared
+workstation has scheduling and clock variation between measurement sessions.
 
-| Case | 1.6.0 time | Current time | Change | Evaluations, both versions |
+| Case | 1.6.0, new run | Before optimization | After optimization | Before vs 1.6.0 | After vs 1.6.0 | Evaluations, both |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Normal FORM | 0.715 [0.663, 0.722] | 0.878 [0.856, 0.899] | 0.632 [0.624, 0.647] | +30.4% | -11.6% | 12 |
+| Non-normal FORM | 1.981 [1.911, 1.994] | 2.679 [2.592, 2.721] | 1.252 [1.227, 1.266] | +39.4% | -36.8% | 39 |
+| Correlated FORM | 2.976 [2.923, 3.008] | 3.775 [3.739, 3.836] | 2.191 [2.128, 2.213] | +30.8% | -26.4% | 57 |
+| Nonlinear SORM | 6.581 [6.490, 6.662] | 7.469 [7.418, 7.711] | 5.449 [5.340, 5.462] | +16.4% | -17.2% | 180 |
+| Crude Monte Carlo | 491.529 [491.120, 493.270] | 527.179 [523.549, 534.464] | 74.283 [74.154, 74.804] | +7.9% | -84.9% | 20,000 |
+| Importance sampling | 501.792 [497.189, 502.588] | 641.582 [634.971, 653.505] | 78.103 [76.543, 78.314] | +29.3% | -84.4% | 20,057 |
+
+The normal FORM index remains 2.2360679774990433. The non-normal and correlated
+FORM indices agree with the pre-optimization values to floating-point round-off.
+The SORM difference from 1.6.0 remains within the existing `2e-4` beta tolerance
+for the curvature kernel; optimization does not change that comparison policy.
+Independent simulation streams retain the five-pooled-standard-error criterion.
+
+| Simulation | 1.6.0 samples/s | Before samples/s | After samples/s | After throughput change vs 1.6.0 |
 | --- | ---: | ---: | ---: | ---: |
-| Normal FORM | 0.673 [0.663, 0.679] | 0.878 [0.856, 0.899] | **+30.4%** | 12 |
-| Non-normal FORM | 1.921 [1.892, 1.948] | 2.679 [2.592, 2.721] | **+39.4%** | 39 |
-| Correlated FORM | 2.886 [2.848, 2.903] | 3.775 [3.739, 3.836] | **+30.8%** | 57 |
-| Nonlinear SORM | 6.415 [6.349, 6.552] | 7.469 [7.418, 7.711] | **+16.4%** | 180 |
-| Crude Monte Carlo | 488.457 [484.737, 498.987] | 527.179 [523.549, 534.464] | +7.9% | 20,000 |
-| Importance sampling | 496.165 [492.637, 506.261] | 641.582 [634.971, 653.505] | **+29.3%** | 20,057 |
-
-The normal FORM index is exactly matched at 2.2360679774990433; the other FORM
-indices match at 2.4115594883556053 and 3.11290884065735. SORM differs by
-0.000135216 in beta, within the 0.0002 tolerance already declared for the
-migration trial's curvature calculation. The Monte Carlo probability
-comparisons are within 0.79 pooled reported standard errors; the criterion is
-five. These checks protect against comparing a faster but different computation.
-
-| Simulation | 1.6.0 samples/s | Current samples/s | Throughput change |
-| --- | ---: | ---: | ---: |
-| Crude Monte Carlo | 40,945 | 37,938 | -7.3% |
-| Importance sampling | 40,309 | 31,173 | **-22.7%** |
+| Crude Monte Carlo | 40,689 | 37,938 | 269,240 | +561.7% |
+| Importance sampling | 39,857 | 31,173 | 256,073 | +542.5% |
 
 These rates include preparation and, for importance sampling, its FORM run.
-They measure the complete retained-sample workflow, not just random-number
-production. The sample count is fixed in both versions.
+The 20,000-sample retained-storage workflow and evaluation counts are unchanged.
 
 ## Transformation preparation
 
-| Case | 1.6.0, ms | Current, ms | Change |
-| --- | ---: | ---: | ---: |
-| Normal FORM | 0.359 | 0.365 | +1.7% |
-| Non-normal FORM | 0.493 | 0.728 | **+47.7%** |
-| Correlated FORM | 0.973 | 1.176 | **+20.9%** |
-| Nonlinear SORM | 1.891 | 1.888 | -0.2% |
-| Crude Monte Carlo model | 0.942 | 1.179 | **+25.1%** |
-| Importance-sampling model | 0.940 | 1.203 | **+27.9%** |
+| Case | 1.6.0, ms | Before, ms | After, ms | After vs 1.6.0 |
+| --- | ---: | ---: | ---: | ---: |
+| Normal FORM | 0.375 | 0.365 | 0.123 | -67.1% |
+| Non-normal FORM | 0.515 | 0.728 | 0.134 | -73.9% |
+| Correlated FORM | 0.982 | 1.176 | 0.890 | -9.4% |
+| Nonlinear SORM | 1.909 | 1.888 | 1.918 | +0.5% |
+| Crude Monte Carlo | 0.959 | 1.179 | 0.909 | -5.2% |
+| Importance sampling | 0.966 | 1.203 | 0.885 | -8.4% |
 
-The last three two-variable correlated cases use the same model. Their
-preparation measurements vary slightly with scheduling, but all show the
-same regression. The non-normal independent case also prepares a quadrature
-grid in the existing implementation.
+The three correlated two-variable cases use the same preparation model.
+Zero-correlation pairs now skip quadrature whose computed values were unused.
+SORM's preparation measurement still times a fresh FORM initialization; its
+complete runtime also benefits from reusing that preparation within SORM.
 
 ## Stored samples and peak allocations
 
 Memory is measured separately with `tracemalloc`, after imports/model creation
 and garbage collection, over analysis construction and execution. Each case has
 three measurements; the reported peak is their median. NumPy data allocations
-are visible to this tracer in the measured environment. This is the incremental
-traced allocation peak, not total resident process memory or all possible native
-solver allocations. Raw repetitions are included in the generated results.
+are visible to this tracer in this environment. This is the incremental traced
+allocation peak, not total resident memory or every native solver allocation.
+Raw repetitions remain in the generated evidence.
 
-For each simulation, retained `u`, `x`, limit-state and radial-distance arrays
-total **960,000 bytes in both versions**: `(2 * dimension + 2) * samples * 8`.
-Convergence histories occupy 320,000 bytes in 1.6.0 and 480,000 bytes currently,
-a **50% increase**. The added `_log_q_bar` array alone is 160,000 bytes.
+Each simulation retains **960,000 bytes in both versions** for `u`, `x`,
+limit-state values and radial distances: `(2 * dimension + 2) * samples * 8`.
+Convergence histories still occupy 320,000 bytes in 1.6.0 and 480,000 bytes in
+2.0, a **50% increase**. The additional `_log_q_bar` is 160,000 bytes and
+preserves tail probabilities when ordinary probabilities underflow.
 
-| Case | 1.6.0 traced peak, bytes | Current traced peak, bytes | Change |
-| --- | ---: | ---: | ---: |
-| Normal FORM | 47,024 | 46,992 | -0.1% |
-| Non-normal FORM | 48,354 | 50,550 | +4.5% |
-| Correlated FORM | 84,598 | 86,726 | +2.5% |
-| Nonlinear SORM | 109,669 | 118,201 | +7.8% |
-| Crude Monte Carlo | 1,664,632 | 1,830,335 | +9.95% |
-| Importance sampling | 1,667,328 | 1,841,807 | **+10.5%** |
+| Case | 1.6.0 peak, bytes | Before peak, bytes | After peak, bytes | After vs 1.6.0 |
+| --- | ---: | ---: | ---: | ---: |
+| Normal FORM | 47,024 | 46,992 | 15,168 | -67.74% |
+| Non-normal FORM | 48,354 | 50,550 | 23,530 | -51.34% |
+| Correlated FORM | 84,642 | 86,726 | 83,824 | -0.97% |
+| Nonlinear SORM | 109,625 | 118,201 | 99,580 | -9.16% |
+| Crude Monte Carlo | 1,662,888 | 1,830,335 | 1,823,069 | +9.63% |
+| Importance sampling | 1,667,525 | 1,841,807 | 1,833,534 | +9.96% |
 
-Crude Monte Carlo is close to the threshold and should be monitored. The
-importance-sampling increase is 174,479 bytes, of which 160,000 are explained
-by the added log history; the remainder includes result diagnostics, retained
-FORM state and temporary allocations. Exact peaks vary by a few kilobytes.
-Both versions append retained samples repeatedly, so this evidence is limited
-to the stated sample/block sizes and is not a memory-scaling guarantee.
+Neither optimized simulation peak exceeds the 10% threshold in this run.
+The two remaining flags are the 50% history increases. Their allocation is
+explicit in the arrays' recorded byte counts; result diagnostics and the
+retained FORM record contribute smaller allocations.
+Reducing histories to block-end entries would require a separate storage change
+and is not part of this runtime optimization. Repeated sample-array append
+behavior is also unchanged, so these measurements are not a scaling guarantee.
 
-## Causes and candidate fixes
+## Changes and profile evidence
 
-The retained [profiles](performance-profiles/) support the following attribution.
-Profiles are separate instrumented runs: 25 executions for each FORM/SORM case
-and one for each simulation. Their wall times include profiler overhead and
-must not replace the uninstrumented timing table.
+The [original profiles](performance-profiles/before/) and
+[optimized profiles](performance-profiles/) accompany the timing evidence.
+Profiles use 25 executions for each FORM/SORM case and one for each simulation;
+their instrumented elapsed times must not replace the timing table.
 
-1. **Normal FORM runtime (+30.4%, about 0.205 ms):** the normal marginal maps
-   and evaluation count are unchanged. The current path adds evaluator shape,
-   finiteness and signature handling, a checked result record and a model-state
-   snapshot for safe reuse. The profile has 34,975 calls over 25 analyses versus
-   21,875 in 1.6.0; the evaluator and `_problem_state` account for identifiable
-   new work. Candidate: prepare immutable callback metadata once per run and
-   avoid redundant validation inside already validated numerical kernels.
-   Preserve public checks and failure diagnostics.
-2. **Non-normal FORM runtime (+39.4%) and correlated FORM (+30.8%), plus all
-   four flagged preparation measurements:** `zi_and_xi` transforms quadrature
-   nodes spanning [-6, 6]. The current generic Gumbel mapping partitions tails,
-   calls checked quantile adapters and uses survival quantiles; its Jacobian
-   can use logarithmic densities. The baseline directly called a SciPy PPF.
-   The profiles show that added distribution work alongside evaluator checks;
-   preparation regressions are concentrated in the Gumbel cases. Candidates:
-   provide a verified closed-form Gumbel normal-to-physical map, avoid computing
-   placeholder PPF values for entries that will use a tail quantile, and reuse
-   immutable quadrature nodes/weights. Retain accuracy in extreme tails.
-3. **SORM runtime (+16.4%, about 1.054 ms):** both versions use 180 evaluations,
-   21 transformation Jacobians and two correlation preparations. Preparation
-   itself is unchanged within noise. Extra evaluator/Jacobian checks and FORM
-   state/result handling appear in the current profile, including reuse checks
-   and snapshot construction. Candidate: share validated evaluation and prepared
-   transformation state between the underlying FORM and SORM run, with explicit
-   invalidation when model/options change. Do not remove failure or reuse checks.
-4. **Importance-sampling runtime (+29.3%; throughput -22.7%):** moving the
-   proposal to the design point puts many more Gumbel coordinates above the
-   `u > 3` tail switch than crude Monte Carlo. The profile records 3,971 generic
-   ISF calls in the current IS workload, versus no such calls in 1.6.0; crude
-   Monte Carlo has only 23. The current mapping first evaluates a placeholder
-   PPF and then the ISF for those tail points. Per-point array conversion and
-   partitioning inside the 20,000-iteration transformation loop amplify the
-   cost. Candidates: apply the verified marginal transformation to a whole
-   block, or add a safe scalar fast path, while retaining survival/log-tail
-   handling. This is the dominant simulation regression; the new vectorized
-   log-weight reduction is not the dominant cost.
-5. **History storage (+50% for both simulations) and IS peak (+10.5%):**
-   `_log_q_bar` preserves information when probabilities underflow, but it is
-   allocated for every sample although only block-end entries are used for
-   history. Candidate: store all three histories at block ends, with a
-   consistent diagnostic schema; separately consider preallocated sample
-   storage or an explicit optional-storage policy. These require their own
-   correctness and memory-scaling checks.
+* Generic scalar marginal transformations bypass array partitioning in the
+  central region. Array transformations no longer calculate placeholder PPF
+  values for points that will instead use a tail inverse. Survival probabilities,
+  log-tail inversion and inverse checks remain in the generic tail path.
+* Native Gumbel quantiles use the same closed-form inverse with logarithms of
+  normal tail probabilities in extreme tails. This removes per-point SciPy distribution
+  dispatch, which dominated the Gumbel sampling profiles. Extension subclasses
+  retain the generic path so their quantile overrides still apply. The Uniform
+  scalar map also avoids array selection overhead.
+* Independent correlation pairs no longer create unused quadrature grids.
+  Correlated pairs retain the original quadrature and optimization procedure.
+* Finite differences retain the same point order, step sizes, physical
+  evaluations and callback input isolation, using slices and grouped arrays
+  instead of repeated index lists. Shape, signature and finiteness validation
+  remain. Error context is formatted only when an error is reported.
+* SORM uses the transformation prepared by its own fresh FORM run. This is
+  reuse within one run; a later run recomputes it. Supplied-FORM coordinate
+  checks, custom initialization overrides and the normal-space requirement
+  remain active. No reuse cache spans changing input models or options.
 
-These are source/profile-based explanations, not measured speedup claims for
-unimplemented fixes. The attribution does not assign every elapsed microsecond
-to a single cause. Repeat the benchmark after any optimization and on the final
-release commit; retain the numerical and tail-accuracy checks alongside it.
+There are no remaining runtime regressions above 10% in these fixed cases.
+Tail checks include scalar/batch agreement at the branch boundaries for 15
+families, mpmath Gumbel references, logarithmic quantiles beyond double-probability
+underflow, generic inverse refinement and the high-reliability sampling cases.
+The final full-suite count and installed-example results are recorded with the
+[release checks](release-checks.md). Repeat these measurements on the final
+integrated release commit and supported platforms.
