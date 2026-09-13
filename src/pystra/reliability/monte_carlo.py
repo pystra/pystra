@@ -141,8 +141,10 @@ class MonteCarlo(AnalysisObject):
         )
         self._q = np.zeros(self._block_size)
         self._q[active] = np.exp(log_q)
-        self._log_sum_q = np.logaddexp(self._log_sum_q, logsumexp(log_q))
-        self._log_sum_q2 = np.logaddexp(self._log_sum_q2, logsumexp(2 * log_q))
+        if log_q.size:
+            # SciPy before 1.15 rejects an empty array in logsumexp
+            self._log_sum_q = np.logaddexp(self._log_sum_q, logsumexp(log_q))
+            self._log_sum_q2 = np.logaddexp(self._log_sum_q2, logsumexp(2 * log_q))
         self._sum_q += np.sum(self._q)
 
     def _compute_coefficient_of_variation(self):

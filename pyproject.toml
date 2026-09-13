@@ -32,7 +32,7 @@ dependencies = [
     "matplotlib>=3.8",
     "numpy>=1.26",
     "scipy>=1.11.2",
-    "pandas>=2.1",
+    "pandas>=2.1.1",
 ]
 
 [project.readme]
@@ -79,6 +79,13 @@ test = "pytest"
 minversion = "6.0"
 testpaths = [
     "tests"
+]
+# Deprecations raised in PySTRA's own modules fail the tests, so that a
+# dependency's announced change is fixed before it breaks a release.
+filterwarnings = [
+    "error::DeprecationWarning:pystra",
+    "error::PendingDeprecationWarning:pystra",
+    "error::FutureWarning:pystra",
 ]
 
 [tool.black]

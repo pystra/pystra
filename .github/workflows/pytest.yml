@@ -67,7 +67,10 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install the oldest supported dependencies
-        run: python -m pip install -e ".[test,al]" -c ci/minimum-requirements.txt
+        # Wheels only: a missing wheel should fail here, not build from source
+        run: >-
+          python -m pip install -e ".[test,al]" -c ci/minimum-requirements.txt
+          --only-binary numpy,scipy,pandas,matplotlib,scikit-learn
       - name: Record versions
         run: python -m pip list
       - name: Test

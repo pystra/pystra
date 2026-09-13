@@ -53,7 +53,8 @@ def test_contour_uses_rowwise_coordinates_and_bounded_batches():
     )
     assert returned is fig and ax is existing
     assert max(batches) <= 23 and sum(batches) == 17**2
-    boundary = np.concatenate(ax.collections[0].allsegs[0])
+    # get_paths() has the same meaning in every supported Matplotlib
+    boundary = np.concatenate([path.vertices for path in ax.collections[0].get_paths()])
     np.testing.assert_allclose(1 - boundary[:, 0] - 2 * boundary[:, 1], 0, atol=1e-14)
     np.testing.assert_allclose(ax.get_xlim(), [-2, 3])
     np.testing.assert_allclose(ax.get_ylim(), [-4, 5])
