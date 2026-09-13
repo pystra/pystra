@@ -70,12 +70,29 @@ def _problem_state(model):
         return None
 
 
+def _require_converged(form):
+    """Attach only a recorded failed outcome for the current FORM inputs."""
+    if form._results_valid and form._converged:
+        return
+    result = form._last_result
+    if result is not None and (
+        result.converged
+        or form._run_expression is not form.limit_state.expression
+        or form._run_options != form.options
+        or (
+            form._run_model_state is not None
+            and form._run_model_state != _problem_state(form.model)
+        )
+    ):
+        result = None
+    raise AnalysisError(
+        "This method requires a successfully converged FORM analysis", result
+    )
+
+
 def _check_form(form, model, limit_state):
     """Require a converged calculation for this unchanged problem."""
-    if not form._results_valid or not form._converged:
-        raise AnalysisError(
-            "This method requires a successfully converged FORM analysis"
-        )
+    _require_converged(form)
     if (
         form.model is not model
         or form.limit_state.expression is not limit_state.expression
@@ -93,10 +110,7 @@ def _check_form(form, model, limit_state):
     current = _problem_state(model)
     if current is None or form._run_model_state is None:
         form.run()
-        if not form._converged:
-            raise AnalysisError(
-                "This method requires a successfully converged FORM analysis"
-            )
+        _require_converged(form)
     elif current != form._run_model_state:
         raise AnalysisError(
             "FORM model inputs have changed; rerun the supplied FORM analysis"

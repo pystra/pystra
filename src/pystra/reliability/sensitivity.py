@@ -133,6 +133,7 @@ class SensitivityAnalysis:
             is :math:`\partial\beta / \partial\rho_{ij}`, with a zero diagonal.
         """
         self._evaluations, self._converged = 0, True
+        self._diagnostics = {}
         numerical = self.method == "numerical"
         if numerical:
             base, marginal = self._numerical_sens(self.delta)
@@ -165,17 +166,20 @@ class SensitivityAnalysis:
             correlation=correlation if ok else None,
             delta=self.delta if numerical else None,
             options=self.options,
+            diagnostics=self._diagnostics,
         )
         if not ok and self.on_failure == "raise":
             raise AnalysisError(result.message, result)
         return result
 
-    def _form(self, model):
+    def _form(self, model, **context):
         """Run FORM on *model*, recording its evaluations and convergence."""
         form = FORM(model, self.limit_state, options=self.options, on_failure="return")
         result = form.run()
         self._evaluations += result.n_limit_state_evaluations
         self._converged = self._converged and result.converged
+        if not result.converged:
+            self._diagnostics = {"failed_form": result, **context}
         return form, result
 
     # ------------------------------------------------------------------
@@ -200,7 +204,9 @@ class SensitivityAnalysis:
             sensitivities[name] = {p: 0.0 for p in dist.sensitivity_params}
 
         # Get the base result
-        form, base = self._form(self.model)
+        form, base = self._form(self.model, phase="baseline")
+        if not base.converged:
+            return base, {}
         beta0 = form._beta
 
         for name in names:
@@ -221,7 +227,15 @@ class SensitivityAnalysis:
                 delta_actual = new_dist.sensitivity_params[param] - val
 
                 # Run FORM with perturbed model
-                form, _ = self._form(model1)
+                form, perturbed = self._form(
+                    model1,
+                    phase="perturbation",
+                    variable=name,
+                    parameter=param,
+                    step=delta_actual,
+                )
+                if not perturbed.converged:
+                    return base, {}
                 beta1 = form._beta
                 sensitivities[name][param] = (beta1 - beta0) / delta_actual
 
@@ -252,7 +266,9 @@ class SensitivityAnalysis:
                 "Closed-form sensitivities assume legacy physical Pearson input; use numerical=True for explicit copulas"
             )
         # 1. Run FORM
-        form, base = self._form(self.model)
+        form, base = self._form(self.model, phase="baseline")
+        if not base.converged:
+            return base, {}, None
 
         # Extract converged quantities
         alpha = form._alpha[0]  # shape (nrv,)

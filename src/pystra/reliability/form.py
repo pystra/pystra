@@ -68,11 +68,13 @@ class FORM(AnalysisObject):
         self._converged = False
         self._e1 = None
         self._e2 = None
+        self._last_result = None
 
     def run(self) -> FORMResult:
         """
         Execute FORM and return an immutable :class:`FORMResult` snapshot.
         """
+        self._last_result = None
         self._results_valid = False
         self._converged = False
         self._beta = self._Pf = None
@@ -157,7 +159,7 @@ class FORM(AnalysisObject):
         self._run_expression = self.limit_state.expression
         self._run_options = self.options
         self._run_model_state = _problem_state(self.model)
-        result = FORMResult.from_analysis(self)
+        result = self._last_result = FORMResult.from_analysis(self)
         if not self._converged:
             message = "FORM did not converge within the iteration limit"
             if self.on_failure == "raise":

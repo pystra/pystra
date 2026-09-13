@@ -431,6 +431,10 @@ class SensitivityResult(_ProbabilityResult):
         coefficients, symmetric with a zero diagonal.
     delta : float or None
         Numerical only: the relative perturbation.
+    diagnostics : Mapping
+        On nonconvergence, ``failed_form`` retains the failed inner FORM
+        record and ``phase`` identifies the baseline or perturbation. A
+        perturbation also records its variable, parameter and actual step.
     """
 
     form: FORMResult
@@ -438,9 +442,10 @@ class SensitivityResult(_ProbabilityResult):
     marginal: Mapping
     correlation: Optional[np.ndarray]
     delta: Optional[float]
+    diagnostics: Mapping = field(default_factory=dict, repr=False)
 
     _arrays: ClassVar[tuple] = ("correlation",)
-    _read_only: ClassVar[tuple] = ("marginal",)
+    _read_only: ClassVar[tuple] = ("marginal", "diagnostics")
 
     def _rows(self):
         return [*super()._rows(), ("Approach", self.approach)]
