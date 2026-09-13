@@ -243,37 +243,39 @@ class FORM(AnalysisObject):
         c = (np.linalg.norm(u) * np.linalg.norm(gradient) ** (-1)) * 2 + 10
         merit = 0.5 * (np.linalg.norm(u)) ** 2 + c * np.absolute(G)
 
-        ntrial = 6
+        n_trials = 6
 
-        Trial_step_size = np.array([0.5 ** np.arange(0, ntrial)])
+        trial_steps = np.array([0.5 ** np.arange(0, n_trials)])
 
         uT = np.reshape([u], (len(u), -1))
         dT = np.transpose(d)
-        Trial_u = np.dot(uT, np.array([np.ones(ntrial)])) + np.dot(dT, Trial_step_size)
-        Trial_x = np.zeros(Trial_u.shape)
-        for j in range(ntrial):
+        trial_points_u = np.dot(uT, np.array([np.ones(n_trials)])) + np.dot(
+            dT, trial_steps
+        )
+        trial_points_x = np.zeros(trial_points_u.shape)
+        for j in range(n_trials):
             trial_x = self.transform.u_to_x(
-                Trial_u[:, j], self.model.get_marginal_distributions()
+                trial_points_u[:, j], self.model.get_marginal_distributions()
             )
-            Trial_x[:, j] = np.transpose(trial_x)
+            trial_points_x[:, j] = np.transpose(trial_x)
 
-        Trial_G, _ = self._lsf(Trial_x)
-        Merit_new = np.zeros(ntrial)
+        trial_values, _ = self._lsf(trial_points_x)
+        trial_merits = np.zeros(n_trials)
 
-        for j in range(ntrial):
-            merit_new = 0.5 * (np.linalg.norm(Trial_u[:, j])) ** 2 + c * np.absolute(
-                Trial_G[0][j]
-            )
-            Merit_new[j] = merit_new
+        for j in range(n_trials):
+            merit_new = 0.5 * (
+                np.linalg.norm(trial_points_u[:, j])
+            ) ** 2 + c * np.absolute(trial_values[0][j])
+            trial_merits[j] = merit_new
 
-        trial_step_size = Trial_step_size[0][0]
-        merit_new = Merit_new[0]
+        trial_step_size = trial_steps[0][0]
+        merit_new = trial_merits[0]
 
         j = 0
 
-        while merit_new > merit and j < ntrial:
-            trial_step_size = Trial_step_size[0][j]
-            merit_new = Merit_new[j]
+        while merit_new > merit and j < n_trials:
+            trial_step_size = trial_steps[0][j]
+            merit_new = trial_merits[j]
             j += 1
         step_size = trial_step_size
         return step_size
