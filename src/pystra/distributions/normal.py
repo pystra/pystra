@@ -27,9 +27,6 @@ class Normal(Distribution):
     def __init__(
         self, name: str, mean: float, std: float, *, start_point: float | None = None
     ) -> None:
-        """
-        Leave initialization to the base class
-        """
         super().__init__(
             name=name,
             mean=mean,
@@ -39,25 +36,19 @@ class Normal(Distribution):
         self.dist_type = "Normal"
 
     def pdf(self, x: float | np.ndarray) -> float | np.ndarray:
-        """
-        probability density function
-        """
+        """Evaluate the probability density function."""
         z = (x - self.mean) / self.std
         p = self.std_normal.pdf(z) / self.std
         return p
 
     def cdf(self, x: float | np.ndarray) -> float | np.ndarray:
-        """
-        cumulative distribution function
-        """
+        """Evaluate the cumulative distribution function."""
         z = (x - self.mean) / self.std
         p = self.std_normal.cdf(z)
         return p
 
     def ppf(self, p: ArrayLike) -> float | np.ndarray:
-        """
-        inverse cumulative distribution function
-        """
+        """Evaluate the inverse cumulative distribution function."""
         z = self.std_normal.ppf(p)
         x = self.std * z + self.mean
         return x
@@ -90,32 +81,26 @@ class Normal(Distribution):
         return self.mean - self.std * sp.ndtri_exp(logq)
 
     def sample(self, n: int = 1000) -> np.ndarray:
-        """
-        Override sample from base class due to bespoke implementation
-        """
+        """Draw n samples by applying the inverse CDF to uniform random draws."""
         u = np.random.rand(n)
         samples = self.ppf(u)
         return samples
 
     def u_to_x(self, u: float | np.ndarray) -> float | np.ndarray:
-        """
-        Transformation from u to x
-        """
+        """Transform standard normal coordinates to physical values."""
         x = u * self.std + self.mean
         return x
 
     def x_to_u(self, x: float | np.ndarray) -> float | np.ndarray:
-        """
-        Transformation from x to u
-        """
+        """Transform physical values to standard normal coordinates."""
         u = (x - self.mean) / self.std
         return u
 
     def jacobian(self, u: np.ndarray, x: np.ndarray) -> np.ndarray:
-        """
-        Compute the Jacobian  (e.g. Lemaire, eq. 4.9)
-        For the Normal distribution, the more usual general function can be
-        specialized as follows.
+        """Return the diagonal x-to-u Jacobian for one-dimensional input arrays.
+
+        For a normal marginal the derivative is constant, 1/std (Lemaire,
+        eq. 4.9). The result has shape (u.size, u.size); x is unused.
         """
         J = np.diag(np.repeat(1 / self.std, u.size))
         return J
@@ -137,15 +122,9 @@ class Normal(Distribution):
         return {"mean": dF_dmu, "std": dF_dsig}
 
     def set_location(self, loc: float = 0) -> None:
-        """
-        Updating the distribution location parameter. For Normal, there is no need to
-        update other properties as a result of this change.
-        """
+        """Set the stored mean to loc."""
         self._mean = loc
 
     def set_scale(self, scale: float = 1) -> None:
-        """
-        Updating the distribution scale parameter. For Normal, there is no need to
-        update other properties as a result of this change.
-        """
+        """Set the stored standard deviation to scale."""
         self._std = scale

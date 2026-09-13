@@ -88,9 +88,7 @@ class Lognormal(Distribution):
         return np.where(y <= 0, -np.inf, z)[()]
 
     def pdf(self, x: ArrayLike) -> float | np.ndarray:
-        """
-        Probability density function
-        """
+        """Evaluate the probability density function."""
         y = np.asarray(x, dtype=float) - self._shift
         z = self._z(x)
         with np.errstate(divide="ignore", invalid="ignore"):
@@ -106,9 +104,7 @@ class Lognormal(Distribution):
         return np.where(y <= 0, -np.inf, lp)[()]
 
     def cdf(self, x: ArrayLike) -> float | np.ndarray:
-        """
-        Cumulative distribution function
-        """
+        """Evaluate the cumulative distribution function."""
         return sp.ndtr(self._z(x))
 
     def sf(self, x: ArrayLike) -> float | np.ndarray:
@@ -130,16 +126,12 @@ class Lognormal(Distribution):
         return self._shift + np.exp(self.lamb - self.zeta * sp.ndtri_exp(logq))
 
     def u_to_x(self, u: float | np.ndarray) -> float | np.ndarray:
-        """
-        Transformation from u to x
-        """
+        """Transform standard normal coordinates to physical values."""
         x = self._shift + np.exp(u * self.zeta + self.lamb)
         return x
 
     def x_to_u(self, x: ArrayLike) -> float | np.ndarray:
-        """
-        Transformation from x to u
-        """
+        """Transform physical values to standard normal coordinates."""
         return self._z(x)
 
     def cdf_gradient(self, x: ArrayLike) -> dict[str, float | np.ndarray]:
@@ -184,20 +176,12 @@ class Lognormal(Distribution):
         return {"mean": dF_dmu, "std": dF_dsig}
 
     def set_location(self, loc: float = 0) -> None:
-        """
-        Updating the distribution location parameter.
-        For Lognormal, even though we have a SciPy object, it's not being used in the
-        functions above for performance, so we need to update parameters directly.
-        """
+        """Set the physical mean to loc and update the underlying normal parameters."""
 
         self._update_params(loc, self.std)
         self._mean = loc
 
     def set_scale(self, scale: float = 1) -> None:
-        """
-        Updating the distribution scale parameter.
-        For Lognormal, even though we have a SciPy object, it's not being used in the
-        functions above for performance, so we need to update params directly.
-        """
+        """Set the physical standard deviation to scale and update normal parameters."""
         self._update_params(self.mean, scale)
         self._std = scale

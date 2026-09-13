@@ -230,9 +230,7 @@ class GEVMin(Distribution):
         return {"mean": self.mean, "std": self.std, "shape": self.shape}
 
     def pdf(self, x: ArrayLike) -> float | np.ndarray:
-        """
-        Probability density function
-        """
+        """Evaluate the probability density function."""
         return self.dist_obj.pdf(-np.asarray(x, dtype=float))
 
     def logpdf(self, x: ArrayLike) -> float | np.ndarray:
@@ -240,9 +238,7 @@ class GEVMin(Distribution):
         return self.dist_obj.logpdf(-np.asarray(x, dtype=float))
 
     def cdf(self, x: ArrayLike) -> float | np.ndarray:
-        """
-        Cumulative distribution function
-        """
+        """Evaluate the cumulative distribution function."""
         return self.dist_obj.sf(-np.asarray(x, dtype=float))
 
     def sf(self, x: ArrayLike) -> float | np.ndarray:
@@ -256,9 +252,7 @@ class GEVMin(Distribution):
         return self.dist_obj.logcdf(-np.asarray(x, dtype=float))
 
     def ppf(self, u: ArrayLike) -> float | np.ndarray:
-        """
-        Inverse cumulative distribution function
-        """
+        """Evaluate the inverse cumulative distribution function."""
         return -self.dist_obj.isf(u)
 
     def isf(self, q: ArrayLike) -> float | np.ndarray:

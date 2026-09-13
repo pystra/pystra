@@ -75,23 +75,17 @@ class MaxParent(Distribution):
         self.dist_type = "MaxParent"
 
     def pdf(self, x: ArrayLike) -> float | np.ndarray:
-        """
-        Probability density function, from log densities
-        """
+        """Evaluate the probability density function."""
         with np.errstate(under="ignore"):
             return np.exp(self.logpdf(x))
 
     def cdf(self, x: ArrayLike) -> float | np.ndarray:
-        """
-        Cumulative distribution function, ``exp(log F_max(x) / N)``
-        """
+        """Evaluate the cumulative distribution function."""
         with np.errstate(under="ignore"):
             return np.exp(self.logcdf(x))
 
     def ppf(self, p: ArrayLike) -> float | np.ndarray:
-        """
-        Inverse cumulative distribution function, from the maximum's tails
-        """
+        """Evaluate the inverse cumulative distribution function."""
         with np.errstate(divide="ignore"):
             return self._ppf_log(np.log(np.asarray(p, dtype=float)))
 
@@ -171,10 +165,7 @@ class MaxParent(Distribution):
         self._update_stats()
 
     def _update_stats(self):
-        """
-        Updates the mean and std estimates - used for sensitivity analysis
-        where the parent distribution params may change after instantiation
-        """
+        """Recompute moments after an in-place change to the constructor inputs."""
         m, s = self._get_stats()
         self._mean = m
         self._std = s

@@ -38,10 +38,6 @@ class StochasticModel:
     def __init__(
         self, joint_distribution: "_pystra.JointDistribution | None" = None
     ) -> None:
-        """
-        Use ordered dictionary to make sure that the order corresponds to the
-        correlation matrix
-        """
         self.variables = OrderedDict()
         self._names = []
         self._marg = []

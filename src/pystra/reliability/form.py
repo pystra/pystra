@@ -174,7 +174,7 @@ class FORM(AnalysisObject):
         return result
 
     def _compute_starting_point(self):
-        """Compute starting point for the algorithm"""
+        """Compute starting point for the algorithm."""
         x = np.array([])
         marg = self.model.get_marginal_distributions()
         for i in range(len(marg)):
@@ -182,13 +182,13 @@ class FORM(AnalysisObject):
         self._u = self.transform.x_to_u(x, marg)
 
     def _compute_transformation(self):
-        """Compute transformation from u to x space"""
+        """Compute transformation from u to x space."""
         self._x = np.transpose(
             [self.transform.u_to_x(self._u, self.model.get_marginal_distributions())]
         )
 
     def _compute_jacobian(self):
-        """Compute the Jacobian"""
+        """Compute the Jacobian."""
         J_u_x = self.transform.jacobian_u_wrt_x(
             self._u, self._x, self.model.get_marginal_distributions()
         )
@@ -196,29 +196,29 @@ class FORM(AnalysisObject):
         self._J = J_x_u
 
     def _compute_limit_state(self):
-        """Evaluate limit-state function and its gradient"""
+        """Evaluate limit-state function and its gradient."""
         G, gradient = self._lsf(self._x, gradient=True)
         self._G = G
         self._gradient = np.dot(np.transpose(gradient), self._J)
 
     def _compute_alpha(self):
-        """Compute alpha vector"""
+        """Compute alpha vector."""
         self._alpha = -self._gradient * np.linalg.norm(self._gradient) ** (-1)
 
     def _compute_gamma(self):
-        """Compute gamma vector"""
+        """Compute gamma vector."""
         self._gamma = np.diag(np.sqrt(np.diag(np.dot(self._J, np.transpose(self._J)))))
         # Importance vector gamma
         # importance_vector_gamma = matmult / np.linalg.norm(matmult)
 
     def _compute_search_direction(self):
-        """Determine search direction"""
+        """Determine search direction."""
         self._d = (
             self._G * np.linalg.norm(self._gradient) ** (-1) + self._alpha.dot(self._u)
         ) * self._alpha - self._u
 
     def _get_step_size(self):
-        """Determine step size"""
+        """Determine step size."""
         if self.options.step_size == 0:
             self._step = self._compute_step_size(
                 self._G,
@@ -290,11 +290,11 @@ class FORM(AnalysisObject):
         return step_size
 
     def _compute_beta(self):
-        """Compute beta value"""
+        """Compute beta value."""
         self._beta = np.dot(self._alpha, self._u)[0]
 
     def _compute_failure_probability(self):
-        """Compute probability of failure"""
+        """Compute probability of failure."""
         marginal = getattr(self.transform, "standard_marginal", normal)
         self._Pf = float(marginal.sf(self._beta))
 

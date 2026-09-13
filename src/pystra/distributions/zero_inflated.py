@@ -71,9 +71,7 @@ class ZeroInflated(Distribution):
         self.dist_type = "ZeroInflated"
 
     def pdf(self, x: ArrayLike) -> float | np.ndarray:
-        """
-        Probability density function
-        """
+        """Evaluate the probability density function."""
         scalar_input = np.isscalar(x)
         x = np.atleast_1d(x)
         zipdf = self.dist.pdf(x) * self.q
@@ -84,9 +82,7 @@ class ZeroInflated(Distribution):
         return zipdf
 
     def cdf(self, x: ArrayLike) -> float | np.ndarray:
-        """
-        Cumulative distribution function
-        """
+        """Evaluate the cumulative distribution function."""
         scalar_input = np.isscalar(x)
         x = np.atleast_1d(x)
         zicdf = self.dist.cdf(x) * self.q
@@ -97,9 +93,7 @@ class ZeroInflated(Distribution):
         return zicdf
 
     def ppf(self, p: ArrayLike) -> float | np.ndarray:
-        """
-        inverse cumulative distribution function
-        """
+        """Evaluate the inverse cumulative distribution function."""
         scalar_input = np.isscalar(p)
         p = np.atleast_1d(p)
         x = np.zeros_like(p)
@@ -223,10 +217,7 @@ class ZeroInflated(Distribution):
         self._update_stats()
 
     def _update_stats(self):
-        """
-        Updates the mean and std estimates - used for sensitivity analysis
-        where the parent distribution params may change after instantiation
-        """
+        """Recompute moments after an in-place change to the constructor inputs."""
         m, s = self._get_stats()
         self._mean = m
         self._std = s

@@ -70,9 +70,7 @@ class Uniform(Distribution):
     # Overriding these for performance
 
     def u_to_x(self, u: ArrayLike) -> float | np.ndarray:
-        """
-        Transformation from u to x, measured from the nearer bound
-        """
+        """Transform standard normal coordinates to physical values."""
         u = np.asarray(u, dtype=float)
         tail = self.std_normal.cdf(-np.abs(u))
         width = self.b - self.a

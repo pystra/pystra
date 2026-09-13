@@ -89,14 +89,14 @@ class MonteCarlo(AnalysisObject):
         self._bins = None
 
     def _set_point(self, point=None):
-        """Set design point"""
+        """Set design point."""
         if point is None:
             self.point = np.zeros((self._nrv, 1))
         else:
             self.point = point
 
     def _compute_random_numbers(self):
-        """Compute random numbers"""
+        """Compute random numbers."""
         self._u = np.dot(self.point, [np.ones(self._block_size)]) + np.dot(
             self._cholesky_covariance,
             self._random.standard_normal((self._nrv, self._block_size)),
@@ -116,18 +116,18 @@ class MonteCarlo(AnalysisObject):
             )
 
     def _compute_limit_state(self):
-        """Evaluate limit-state function"""
+        """Evaluate limit-state function."""
         G, _ = self._lsf(self._x)
         self._G = G
 
     def _compute_results(self):
-        """Collect result of sampling"""
+        """Collect result of sampling."""
         self._I = np.zeros(self._block_size)
         indx = np.where(self._G[0] < 0)
         self._I[indx] = 1
 
     def _compute_sum_update(self):
-        """Update summation"""
+        """Update summation."""
         # The determinant factor belongs in the exponent too: std**n can
         # overflow even when the final density ratio is representable.
         active = self._I != 0
@@ -160,12 +160,12 @@ class MonteCarlo(AnalysisObject):
             self._cov_q_bar[n] = 1.0
 
     def _compute_percent_done(self):
-        """Compute percent done"""
+        """Compute percent done."""
         if int(self._k * self.options.n_samples ** (-1) * 20) > self._done:
             self._done = int(self._k * self.options.n_samples ** (-1) * 20)
 
     def _compute_failure_probability(self):
-        """Compute probability of failure"""
+        """Compute probability of failure."""
         if self._sum_q > 0:
             self._Pf = self._q_bar[self._k - 1]
         else:
@@ -388,7 +388,7 @@ class CrudeMonteCarlo(MonteCarlo):
         )
 
     def _initialize_variables(self):
-        """Initialization of the simulation variables"""
+        """Initialization of the simulation variables."""
         stdv = self.options.sampling_std
         samples = self.options.n_samples
         # Establish covariance matrix, its Cholesky decomposition, and its inverse
@@ -494,7 +494,7 @@ class DistributionAnalysis(MonteCarlo):
         )
 
     def _initialize_variables(self):
-        """Initialization of the simulation variables"""
+        """Initialization of the simulation variables."""
         stdv = self.options.sampling_std
         samples = self.options.n_samples
         # Establish covariance matrix, its Cholesky decomposition, and its inverse
@@ -510,13 +510,13 @@ class DistributionAnalysis(MonteCarlo):
         self._bins = self._compute_bins(samples)
 
     def _compute_data_update(self):
-        """Update data"""
+        """Update data."""
         indx = list(range((self._k - self._block_size), self._k))
         self._all_X[:, indx] = self._x
         self._all_G[:, indx] = self._G
 
     def _compute_distribution_data(self):
-        """Compute data for the distributions"""
+        """Compute data for the distributions."""
         x = self._all_G
         x = np.transpose(x)
         self._all_G = x
