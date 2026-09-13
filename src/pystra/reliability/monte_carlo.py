@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
+from scipy.special import logsumexp, ndtri_exp
 
 from .analysis import AnalysisObject, _check_rng, _generator
 from ..distributions import StdNormal
@@ -127,37 +128,29 @@ class MonteCarlo(AnalysisObject):
 
     def _compute_sum_update(self):
         """Update summation"""
-        part1 = np.zeros(self._block_size)
-        for i in range(self._block_size):
-            part1[i] = np.vdot(self._u[:, i], self._u[:, i])
-        value1 = self._u - np.dot(self.point, [np.ones(self._block_size)])
-        value2 = np.dot(
-            self._inverse_covariance,
-            (self._u - np.dot(self.point, [np.ones(self._block_size)])),
+        # The determinant factor belongs in the exponent too: std**n can
+        # overflow even when the final density ratio is representable.
+        active = self._I != 0
+        points = self._u[:, active]
+        delta = points - np.asarray(self.point).reshape(-1, 1)
+        log_q = self._log_factors + 0.5 * (
+            np.sum(delta * (self._inverse_covariance @ delta), axis=0)
+            - np.sum(points * points, axis=0)
         )
-        part2 = np.zeros(self._block_size)
-        for i in range(self._block_size):
-            part2[i] = np.vdot(value1[:, i], value2[:, i])
-
-        self._q = self._I * self._factors * np.exp(-0.5 * part1 + 0.5 * part2)
-
+        self._q = np.zeros(self._block_size)
+        self._q[active] = np.exp(log_q)
+        self._log_sum_q = np.logaddexp(self._log_sum_q, logsumexp(log_q))
+        self._log_sum_q2 = np.logaddexp(self._log_sum_q2, logsumexp(2 * log_q))
         self._sum_q += np.sum(self._q)
-        self._sum_q2 += np.sum(self._q**2)
 
     def _compute_coefficient_of_variation(self):
-        """Compute Coefficient of Variation"""
+        """Compute relative uncertainty without squaring tiny probabilities."""
         n = self._k - 1
-        if self._sum_q > 0:
-            self._q_bar[n] = 1 * self._k ** (-1) * self._sum_q
-            variance_q_bar = (
-                1
-                * self._k ** (-1)
-                * (
-                    1 * self._k ** (-1) * self._sum_q2
-                    - (1 * self._k ** (-1) * self._sum_q) ** 2
-                )
-            )
-            self._cov_q_bar[n] = np.sqrt(variance_q_bar) * self._q_bar[n] ** (-1)
+        if np.isfinite(self._log_sum_q):
+            self._log_q_bar[n] = self._log_sum_q - np.log(self._k)
+            self._q_bar[n] = self._sum_q / self._k
+            log_ratio = np.log(self._k) + self._log_sum_q2 - 2 * self._log_sum_q
+            self._cov_q_bar[n] = np.sqrt(max(0.0, np.expm1(log_ratio)) / self._k)
             if self._cov_q_bar[n] == 0:
                 self._cov_q_bar[n] = 1.0
         else:
@@ -183,7 +176,11 @@ class MonteCarlo(AnalysisObject):
         This describes the point estimate; a finite sample cannot establish
         that the true failure probability is zero.
         """
-        self._beta = -StdNormal.ppf(self._Pf)
+        self._beta = float(
+            -StdNormal.ppf(self._Pf)
+            if self._Pf > 0
+            else -ndtri_exp(self._log_sum_q - np.log(self._k))
+        )
 
     def _compute_bins(self, samples):
         """Return an optimal amount of bins for a histogram
@@ -330,7 +327,9 @@ class CrudeMonteCarlo(MonteCarlo):
         """Return the convergence history for the result's diagnostics."""
         ends = np.array(self._ends)
         probability = self._q_bar[ends - 1]
-        cov = np.where(probability > 0, self._cov_q_bar[ends - 1], np.inf)
+        cov = np.where(
+            np.isfinite(self._log_q_bar[ends - 1]), self._cov_q_bar[ends - 1], np.inf
+        )
         return {
             "history": {
                 "n_samples": ends,
@@ -342,7 +341,11 @@ class CrudeMonteCarlo(MonteCarlo):
     def _result(self):
         """Return the immutable record of the completed run."""
         pf = float(self._Pf)
-        cov = float(self._cov_q_bar[self._k - 1]) if pf > 0 else np.inf
+        cov = (
+            float(self._cov_q_bar[self._k - 1])
+            if np.isfinite(self._log_sum_q)
+            else np.inf
+        )
         target = self.options.target_cov
         met = target == 0 or cov <= target
         return SimulationResult(
@@ -381,12 +384,15 @@ class CrudeMonteCarlo(MonteCarlo):
         # Initializations
         self._sum_q = 0
         self._sum_q2 = 0
+        self._log_sum_q = -np.inf
+        self._log_sum_q2 = -np.inf
         self._q_bar = np.zeros(samples)
+        self._log_q_bar = np.full(samples, -np.inf)
         self._cov_q_bar = np.empty(samples)
         self._cov_q_bar[:] = np.nan
 
         # Pre-compute some factors to minimize computations inside simulation loop
-        self._factors = stdv**self._nrv
+        self._log_factors = self._nrv * np.log(stdv)
         self._cov_q_bar[0] = 1.0
         self._done = 0
 

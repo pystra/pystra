@@ -267,6 +267,9 @@ def test_mc_cov_zero_branch():
     Analysis._k = 5
     Analysis._sum_q = 5.0
     Analysis._sum_q2 = 5.0  # same as sum_q → variance = 0
+    Analysis._log_sum_q = np.log(5.0)
+    Analysis._log_sum_q2 = np.log(5.0)
+    Analysis._log_q_bar = np.empty(samples)
 
     Analysis._compute_coefficient_of_variation()
     # Should reach cov_q_bar = 1.0 without AttributeError
