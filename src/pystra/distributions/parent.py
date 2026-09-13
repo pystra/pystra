@@ -18,9 +18,12 @@ class MaxParent(Distribution):
     the parent distribution of imposed load, if the load is applied 6 times
     per year.
 
-    Moments are computed by deterministic quantile integration, with absolute
-    and relative tolerances of 1e-8 in standardized units. Nonfinite quantiles
-    or unmet integration tolerance raise :class:`~pystra.ModelError`.
+    Moments are computed deterministically by Gauss-Hermite quadrature of the
+    quantile function in standard normal space, with exact identities for
+    Frechet and uniform parents. Successive rules are compared at relative
+    tolerance 1e-7 and absolute tolerance 1e-9 in standardized units; a miss
+    warns and keeps the finest estimate, which serves for start points and
+    finite-difference steps. Nonfinite moments raise :class:`~pystra.ModelError`.
 
     :Attributes:
       - name (str):             Name of the random variable\n

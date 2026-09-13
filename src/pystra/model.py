@@ -431,12 +431,7 @@ class LimitState:
             inpdict[c] = val * np.ones(nc)
         # Binding errors describe the model, whereas exceptions from inside
         # a correctly bound evaluator describe a failed analysis.
-        if not callable(self.expression):
-            raise ModelError("Limit-state expression must be callable")
-        try:
-            signature = inspect.signature(self.expression)
-        except (TypeError, ValueError):
-            signature = None  # Some extension callables expose no signature.
+        signature = self._signature()
         if signature is not None:
             try:
                 signature.bind(**inpdict)
@@ -485,3 +480,15 @@ class LimitState:
             if not np.all(np.isfinite(gradient)):
                 raise AnalysisError(f"Nonfinite limit-state gradient at {context}")
         return G, gradient
+
+    def _signature(self):
+        """Signature of the expression, kept until the expression changes."""
+        if not callable(self.expression):
+            raise ModelError("Limit-state expression must be callable")
+        if getattr(self, "_signature_of", None) is not self.expression:
+            try:
+                signature = inspect.signature(self.expression)
+            except (TypeError, ValueError):
+                signature = None  # Some extension callables expose no signature.
+            self._signature_of, self._expression_signature = self.expression, signature
+        return self._expression_signature

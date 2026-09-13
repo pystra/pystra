@@ -61,10 +61,12 @@ class MonteCarlo(AnalysisObject):
         self._cholesky_covariance = None
         self._inverse_covariance = None
         self._sum_q = None
-        self._sum_q2 = None
+        self._log_sum_q = None
+        self._log_sum_q2 = None
         self._q_bar = None
+        self._log_q_bar = None
         self._cov_q_bar = None
-        self._factors = None
+        self._log_factors = None
         self._k = None
         self._done = None
         self._block_size = None
@@ -383,7 +385,6 @@ class CrudeMonteCarlo(MonteCarlo):
 
         # Initializations
         self._sum_q = 0
-        self._sum_q2 = 0
         self._log_sum_q = -np.inf
         self._log_sum_q2 = -np.inf
         self._q_bar = np.zeros(samples)
