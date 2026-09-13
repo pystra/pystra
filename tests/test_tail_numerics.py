@@ -6,6 +6,8 @@ side where its probability is small, with log probabilities where these
 underflow; these tests check that against closed forms and references.
 """
 
+import math
+
 import numpy as np
 import pytest
 from scipy import integrate, stats
@@ -221,3 +223,28 @@ def test_sampling_with_a_gumbel_load_matches_the_exact_integral(resistance_mean)
         model, limit_state, form=form, options=options, rng=1
     ).run()
     assert importance.beta == pytest.approx(beta, abs=0.05)
+
+
+class _ScalarGumbel(ra.Distribution):
+    """A subclass whose overrides accept only scalars, as 1.x examples did."""
+
+    def __init__(self, name):
+        super().__init__(name=name, dist_obj=stats.gumbel_r(loc=8.0, scale=1.5))
+
+    def cdf(self, x):
+        return math.exp(-math.exp(-(x - 8.0) / 1.5))
+
+    def ppf(self, p):
+        return 8.0 - 1.5 * math.log(-math.log(p))
+
+
+def test_scalar_only_subclass_methods_still_work():
+    distribution = _ScalarGumbel("S")
+    for u in (-2.0, 0.5, 2.5):
+        x = float(distribution.u_to_x(u))
+        assert float(distribution.x_to_u(x)) == pytest.approx(u, abs=1e-9)
+    model = ra.StochasticModel()
+    model.add_variable(ra.Normal("R", 20.0, 2.0))
+    model.add_variable(distribution)
+    result = ra.FORM(model, ra.LimitState(lambda R, S: R - S)).run()
+    assert result.converged

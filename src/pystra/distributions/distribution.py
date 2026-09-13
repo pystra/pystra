@@ -32,6 +32,23 @@ def _log1mexp(a):
         return np.where(a > -np.log(2), np.log(-np.expm1(a)), np.log1p(-np.exp(a)))[()]
 
 
+def _call(function, values):
+    """Call a distribution method on an array of points.
+
+    Arrays go to the method at once. A single point is passed as a float,
+    and a method written only for scalars (it raises ``TypeError`` for an
+    array) is called point by point, so subclass overrides from 1.x keep
+    working. Returns a 1-D array.
+    """
+    values = np.asarray(values, dtype=float)
+    if values.size == 1:
+        return np.array(function(float(values.ravel()[0])), dtype=float, ndmin=1)
+    try:
+        return np.array(function(values), dtype=float, ndmin=1)
+    except TypeError:
+        return np.array([function(float(v)) for v in values.ravel()], dtype=float)
+
+
 def _piecewise(values, upper, lower_fn, upper_fn):
     """Apply ``lower_fn`` where ``upper`` is false and ``upper_fn`` where true.
 
@@ -43,9 +60,9 @@ def _piecewise(values, upper, lower_fn, upper_fn):
     upper = np.broadcast_to(upper, values.shape).ravel()
     out = np.empty(flat.shape)
     if not upper.all():
-        out[~upper] = lower_fn(flat[~upper])
+        out[~upper] = _call(lower_fn, flat[~upper])
     if upper.any():
-        out[upper] = upper_fn(flat[upper])
+        out[upper] = _call(upper_fn, flat[upper])
     return out.reshape(values.shape)[()]
 
 
@@ -449,7 +466,7 @@ class Distribution:
         """
         logp = np.atleast_1d(np.asarray(logp, dtype=float))
         with np.errstate(under="ignore"):
-            x = np.array(self.ppf(np.exp(logp)), dtype=float, ndmin=1)
+            x = _call(self.ppf, np.exp(logp))
         deep = (logp < _LOG_TINY) & np.isfinite(logp)
         if deep.any():
             x[deep] = _solve_log_tail(
@@ -461,7 +478,7 @@ class Distribution:
         """Upper-tail quantile from a log-probability of at most log(1/2)."""
         logq = np.atleast_1d(np.asarray(logq, dtype=float))
         with np.errstate(under="ignore"):
-            x = np.array(self.isf(np.exp(logq)), dtype=float, ndmin=1)
+            x = _call(self.isf, np.exp(logq))
         deep = (logq < _LOG_TINY) & np.isfinite(logq)
         if deep.any():
             x[deep] = _solve_log_tail(self.logsf, logq[deep], self.isf(_TINY), self.std)
@@ -496,7 +513,7 @@ class Distribution:
             p = p.copy()
             p[upper] = 0.5
             p[lower] = 0.5
-        x = np.array(self.ppf(p), dtype=float, ndmin=1)
+        x = _call(self.ppf, p)
         for index, sign, quantile, log_tail, log_quantile in (
             (upper, -1, self.isf, self.logsf, self._upper_quantile_log),
             (lower, 1, self.ppf, self.logcdf, self._lower_quantile_log),
@@ -508,7 +525,7 @@ class Distribution:
                     # SciPy warns when its numerical inverse gives up; that
                     # result is checked and solved again
                     warnings.simplefilter("ignore", RuntimeWarning)
-                    xt = np.array(quantile(prob), dtype=float, ndmin=1)
+                    xt = _call(quantile, prob)
                     x[index] = self._tail_quantiles(
                         xt, prob, z, log_quantile, log_tail, -sign
                     )
@@ -532,7 +549,7 @@ class Distribution:
         if deep.any():
             x[index[deep]] = quantile_log(target[deep])
         with np.errstate(all="ignore"):
-            got = np.asarray(log_tail(x[index]), dtype=float)
+            got = _call(log_tail, x[index])
         bad = ~(np.abs(got - target) <= 1e-8 * np.abs(target))
         if bad.any():
             x[index[bad]] = _solve_log_tail(
@@ -560,18 +577,18 @@ class Distribution:
         x = np.asarray(x, dtype=float)
         shape = x.shape
         x = x.ravel()
-        c = np.array(self.cdf(x), dtype=float, ndmin=1).ravel()
+        c = _call(self.cdf, x)
         u = sp.ndtri(c)
         deep = c < _TINY
         if deep.any():
-            u[deep] = sp.ndtri_exp(self.logcdf(x[deep]))
+            u[deep] = sp.ndtri_exp(_call(self.logcdf, x[deep]))
         upper = c > _P_SWITCH
         if upper.any():
-            s = np.array(self.sf(x[upper]), dtype=float, ndmin=1)
+            s = _call(self.sf, x[upper])
             v = -sp.ndtri(s)
             tail = s < _TINY
             if tail.any():
-                v[tail] = -sp.ndtri_exp(self.logsf(x[upper][tail]))
+                v[tail] = -sp.ndtri_exp(_call(self.logsf, x[upper][tail]))
             u[upper] = v
         return u.reshape(shape)[()]
 
