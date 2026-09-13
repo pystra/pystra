@@ -1,10 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Nov  4 16:40:01 2022
-
-@author: shihab
-"""
+"""Factor-calibration reference cases contributed by shihab."""
 
 import pytest
 import numpy as np
@@ -637,7 +631,6 @@ def test_calibration_coeff_opt_3():
         columns=["G", "Q1", "Q2", "Q3"],
         index=["Q1_max", "Q2_max", "Q3_max"],
     )
-    # print(ra.calibration.design_with_factors(problem, ra.calibration.select_factors(factors, resistance="minimum", loads="maximum", combinations="maximum")).values)
     vect_design_z1 = np.array([3.6709, 3.559, 3.3951])
     vect_design_beta1 = np.array([5.0028, 5.0708, 5.1493])
     # validate results
@@ -723,7 +716,6 @@ def test_calibration_mat_opt_3():
     )
     vect_design_z2 = np.array([3.5442, 3.4616, 3.3951])
     vect_design_beta2 = np.array([4.8494, 4.9144, 4.9925])
-    # print(ra.calibration.design_with_factors(problem, ra.calibration.select_factors(factors, resistance="minimum", loads="maximum", combinations="maximum")).values)
     # validate results
     assert pytest.approx(solved.to_frame(), abs=1e-4) == design_points
     assert pytest.approx(factors.to_frame("resistance"), abs=1e-4) == resistance_factors

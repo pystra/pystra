@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Oct  6 22:50:35 2021
+"""Analyze a resistance-load model with a SciPy GEV marginal.
 
-@author: ccaprani
+Author: ccaprani.
 """
 
 from scipy.stats import genextreme as gev

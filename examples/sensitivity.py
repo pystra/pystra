@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Nov  3 23:09:16 2021
+r"""Compare FORM sensitivity methods for Bourinet's correlated lognormals.
 
-@author: ccaprani
+Author: ccaprani.
 
 This is Example 2 of Bourinet (2017), which gives analytical solutions as:
 

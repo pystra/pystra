@@ -14,9 +14,6 @@ def example_limitstatefunction(r, X1, X2, X3):
 # Define a main() function.
 def main():
     # Define limit-state function
-    # - case 1: define directly as lambda function
-    # limit_state = LimitState(lambda X1,X2,X3: 1 - X2*(1000*X3)**(-1) - (X1*(200*X3)**(-1))**2)
-    # - case 2: use predefined function
     limit_state = ra.LimitState(example_limitstatefunction)
 
     # Set some options (optional)
@@ -32,8 +29,8 @@ def main():
     # Define constants
     stochastic_model.add_variable(ra.Constant("r", 1.7))
 
-    # If the random variables are correlatet, then define a correlation matrix,
-    # else no correlatin matrix is needed
+    # If the random variables are correlated, then define a correlation matrix,
+    # else no correlation matrix is needed
     stochastic_model.set_correlation(
         ra.CorrelationMatrix([[1.0, 0.3, 0.2], [0.3, 1.0, 0.2], [0.2, 0.2, 1.0]])
     )

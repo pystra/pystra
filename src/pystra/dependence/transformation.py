@@ -181,7 +181,6 @@ class Transformation:
         This is the classical Nataf factorization.  It requires Ro to be
         symmetric positive-definite (all eigenvalues strictly positive).
         """
-        # Ro = self.model.get_modified_correlation()
         try:
             L = np.linalg.cholesky(Ro)
         except np.linalg.LinAlgError as e:
