@@ -266,6 +266,12 @@ class SORM(_FORMReuse, AnalysisObject):
         for name in self._undefined:
             approximations[name] = None
         estimate = approximations[self.options.formula]
+        # The index comes from the log probability, so it stays finite when
+        # the probability itself underflows to zero.
+        index = {
+            "breitung": self._betag_breitung,
+            "modified_breitung": self._betag_breitung_m,
+        }[self.options.formula]
         return SORMResult(
             method="SORM",
             status="converged" if estimate is not None else "not_converged",
@@ -277,7 +283,7 @@ class SORM(_FORMReuse, AnalysisObject):
             n_limit_state_evaluations=self._n_evaluations,
             variable_names=tuple(self.model.get_variables()),
             failure_probability=estimate,
-            beta=float(-normal.ppf(estimate)) if estimate is not None else None,
+            beta=float(index) if estimate is not None else None,
             form=FORMResult.from_analysis(self.form),
             fit="curve" if self._fit_type == "cf" else "point",
             curvatures=self._kappa if self._fit_type == "cf" else self._kappa_pf,

@@ -251,3 +251,14 @@ def test_limit_state_still_pickles_after_evaluation():
     clone = pickle.loads(pickle.dumps(limit_state))
     values, _ = clone.evaluate_lsf(np.zeros((2, 1)), model)
     assert np.ravel(values)[0] == 3
+
+
+@pytest.mark.parametrize("fit", ["curve", "point"])
+@pytest.mark.parametrize("formula", ["breitung", "modified_breitung"])
+def test_sorm_result_reports_finite_index_after_underflow(fit, formula):
+    model, _ = _problem()
+    limit_state = ra.LimitState(lambda X, Y: 40 + 0.005 * Y**2 - X)
+    options = ra.SORMOptions(fit=fit, formula=formula)
+    result = ra.SORM(model, limit_state, options=options).run()
+    assert result.failure_probability == 0.0
+    assert result.beta == pytest.approx(40.0042, abs=2e-4)
