@@ -236,3 +236,18 @@ def test_unmet_moment_tolerance_warns_and_returns_finite_estimate():
     with pytest.warns(RuntimeWarning, match="finest finite estimate"):
         mean, std = _quantile_moments(distribution, 0, 1)
     assert 0 < mean < 1 and 0 < std <= 0.5
+
+
+def _evaluate_with_module_default(X, Y, numeric=np):
+    return 3 - numeric.asarray(X) - numeric.asarray(Y)
+
+
+def test_limit_state_still_pickles_after_evaluation():
+    import pickle
+
+    model, _ = _problem()
+    limit_state = ra.LimitState(_evaluate_with_module_default)
+    limit_state.evaluate_lsf(np.zeros((2, 1)), model)
+    clone = pickle.loads(pickle.dumps(limit_state))
+    values, _ = clone.evaluate_lsf(np.zeros((2, 1)), model)
+    assert np.ravel(values)[0] == 3

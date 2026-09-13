@@ -492,3 +492,10 @@ class LimitState:
                 signature = None  # Some extension callables expose no signature.
             self._signature_of, self._expression_signature = self.expression, signature
         return self._expression_signature
+
+    def __getstate__(self):
+        # The cached signature is derived, and its defaults need not pickle
+        state = self.__dict__.copy()
+        state.pop("_signature_of", None)
+        state.pop("_expression_signature", None)
+        return state
