@@ -104,7 +104,7 @@ rewritten as a convolution integral, where the probability of failure
              p_f = P(R-S \leq 0) = \int_{-\infty}^{\infty} F_R(x) f_{S}(x) d x
 
 .. figure:: ../images/f-02-07-a.*
-   :alt: Classical Approach R − S.
+   :alt: Overlapping resistance and load densities used in the failure-probability integral.
    :align: center
    :scale: 50
 
@@ -145,7 +145,7 @@ Cornell (1969), and is equal to the number of the standard derivation
 :math:`M` are zero. [Faber2009]_
 
 .. figure:: ../images/f-02-08-a.*
-   :alt: Safety Margin an Reliability Index
+   :alt: Resistance, load and safety-margin densities; beta standard deviations separate the margin mean from zero.
    :align: center
    :scale: 50
 

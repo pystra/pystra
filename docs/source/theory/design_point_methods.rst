@@ -27,7 +27,7 @@ Index. [Madsen2006]_
 
 
 .. figure:: ../images/f-02-09-a.*
-   :alt: FORM a
+   :alt: Joint-density contours and a shaded failure region in physical coordinates.
    :align: center
    :scale: 50
 
@@ -36,7 +36,7 @@ random variables. The shaded area denotes the failure domain and
 :math:`g({\bf X}) = 0` the failure surface.
 
 .. figure:: ../images/f-02-09-b.*
-   :alt: FORM b
+   :alt: Circular normal-density contours and the transformed failure surface.
    :align: center
    :scale: 50
 
@@ -46,7 +46,7 @@ are now uncorrelated and standardized normally distributed, also the failure
 surface is transformed into :math:`g({\bf Z}) = 0`.
 
 .. figure:: ../images/f-02-09-c.*
-   :alt: FORM c
+   :alt: Tangent approximation at the design point, with distance beta from the origin.
    :align: center
    :scale: 50
 

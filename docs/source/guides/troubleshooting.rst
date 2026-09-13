@@ -84,3 +84,5 @@ is installed. Inspect ``sys.executable``, ``pystra.__version__`` and
 ``pystra.__file__`` inside that kernel. Install the ``al`` extra for the
 active-learning tutorials and retain any helper files in the runnable bundle.
 See :doc:`/install` and :doc:`/migrating` for environment and API changes.
+
+**Continue:** :doc:`methods` · :doc:`results` · :doc:`/api/reliability`

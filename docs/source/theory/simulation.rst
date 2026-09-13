@@ -101,7 +101,7 @@ are obtained more frequently from the failure domain. For this reason, often a
 FORM (or SORM) analysis is performed to find a prior design point. [Baker2010]
 
 .. figure:: ../images/f-02-10-a.*
-   :alt: MC a
+   :alt: Joint-density contours and a shaded failure region in physical coordinates.
    :align: center
    :scale: 50
 
@@ -110,7 +110,7 @@ random variables. The shaded area denotes the failure domain and `g({\bf X}) =
 0` the failure surface.
 
 .. figure:: ../images/f-02-10-b.*
-   :alt: MC b
+   :alt: Direct Monte Carlo samples, with failures beyond the limit-state boundary.
    :align: center
    :scale: 50
 
@@ -118,7 +118,7 @@ For the CMC method every dot corresponds to one configuration of the random
 variables :math:`{\bf X}`. Dots in shaded areas lead to a failure.
 
 .. figure:: ../images/f-02-10-c.*
-   :alt: MC c
+   :alt: Importance samples concentrated around the design point on the failure boundary.
    :align: center
    :scale: 50
 
