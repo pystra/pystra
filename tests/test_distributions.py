@@ -303,12 +303,12 @@ class TestMaximum:
         assert np.isscalar(d.u_to_x(0.0))
 
     def test_invalid_parent_raises(self):
-        with pytest.raises(Exception):
+        with pytest.raises(ra.ModelError):
             Maximum("Max", "not_a_dist", N=5)
 
     def test_n_less_than_one_raises(self):
         parent = Normal("N", 10, 2)
-        with pytest.raises(Exception):
+        with pytest.raises(ra.ModelError):
             Maximum("Max", parent, N=0.5)
 
 
@@ -332,11 +332,11 @@ class TestMaxParent:
         assert np.isscalar(d.u_to_x(0.0))
 
     def test_invalid_input_raises(self):
-        with pytest.raises(Exception):
+        with pytest.raises(ra.ModelError):
             MaxParent("MP", "not_a_dist", N=5)
 
     def test_n_less_than_one_raises(self):
-        with pytest.raises(Exception):
+        with pytest.raises(ra.ModelError):
             MaxParent("MP", Normal("N", 0, 1), N=0.5)
 
 
@@ -364,7 +364,7 @@ class TestScipyDist:
             assert pytest.approx(float(u_back), abs=1e-3) == u
 
     def test_invalid_input_raises(self):
-        with pytest.raises(Exception):
+        with pytest.raises(ra.ModelError):
             ScipyDist("bad", "not_a_dist")
 
     def test_set_location(self):
@@ -424,14 +424,14 @@ class TestZeroInflated:
             assert pytest.approx(float(np.squeeze(p_back)), abs=1e-3) == p
 
     def test_invalid_dist_raises(self):
-        with pytest.raises(Exception):
+        with pytest.raises(ra.ModelError):
             ZeroInflated("Z", "not_a_dist", p=0.5)
 
     def test_invalid_p_raises(self):
         base = Normal("N", 5, 1)
-        with pytest.raises(Exception):
+        with pytest.raises(ra.ModelError):
             ZeroInflated("Z", base, p=-0.1)
-        with pytest.raises(Exception):
+        with pytest.raises(ra.ModelError):
             ZeroInflated("Z", base, p=1.0)
 
     def test_set_zero_probability(self):

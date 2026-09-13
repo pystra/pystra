@@ -84,7 +84,7 @@ def test_loadcombination_turkstra_generates_leading_cases_from_fbc_processes():
 def test_loadcombination_explicit_cases_reject_fbc_processes():
     process = ra.FBCProcess("Q", ra.Normal("Q", 10, 2), basic_interval=0.25)
 
-    with pytest.raises(Exception, match="Distribution or Constant"):
+    with pytest.raises(TypeError, match="Distribution or Constant"):
         ra.LoadCombination(cases={"invalid": {"Q": process}})
 
 

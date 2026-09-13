@@ -48,12 +48,12 @@ class TestStochasticModel:
     def test_duplicate_name_raises(self):
         model = ra.model.StochasticModel()
         model.add_variable(Normal("X1", 10, 2))
-        with pytest.raises(Exception, match="already exists"):
+        with pytest.raises(ra.ModelError, match="already exists"):
             model.add_variable(Normal("X1", 5, 1))
 
     def test_invalid_type_raises(self):
         model = ra.model.StochasticModel()
-        with pytest.raises(Exception):
+        with pytest.raises(ra.ModelError):
             model.add_variable("not_a_distribution")
 
     def test_get_variable(self):
