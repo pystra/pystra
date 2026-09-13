@@ -11,6 +11,14 @@ Pystra (Python Structural Reliability Analysis) is a python module for structura
 suite of problems. Along with core reliability analysis functionality, Pystra
 includes methods for summarizing output. Pystra is also closely integrated with the usual python scientific packages workflow, numpy and scipy; in particular, all statistical distributions in Scipy can be used in reliability modeling.
 
+**PySTRA 2.0** is a new major version with a different API. It is developed
+on the `v2.0 branch <https://github.com/pystra/pystra/tree/v2.0>`_ and
+documented at `pystra.github.io/pystra/2.0 <https://pystra.github.io/pystra/2.0/>`_, with a
+`summary of what's new <https://pystra.github.io/pystra/2.0/whatsnew.html>`_ and a
+`migration guide <https://pystra.github.io/pystra/2.0/migrating.html>`_. This branch and the documentation at
+the site root cover 1.x. Once 2.0.0 is released, ``pip install pystra``
+installs 2.0; to stay on 1.x, install ``"pystra<2"``.
+
 Installation
 ============
 
