@@ -8,7 +8,12 @@ from .distributions import StdNormal
 from .correlation import computeModifiedCorrelationMatrix
 from .form import Form
 
-__all__ = ["MonteCarlo", "CrudeMonteCarlo", "ImportanceSampling", "DistributionAnalysis"]
+__all__ = [
+    "MonteCarlo",
+    "CrudeMonteCarlo",
+    "ImportanceSampling",
+    "DistributionAnalysis",
+]
 
 
 class MonteCarlo(AnalysisObject):

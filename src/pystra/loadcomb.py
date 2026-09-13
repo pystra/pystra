@@ -98,7 +98,9 @@ class LoadCombination:
                 dict_comb_cases,
             ]
             if any(arg is not None for arg in legacy_args):
-                raise Exception("Specify either cases or legacy load-combination inputs")
+                raise Exception(
+                    "Specify either cases or legacy load-combination inputs"
+                )
             self._init_from_cases(cases)
         else:
             self._warn_legacy_inputs()
