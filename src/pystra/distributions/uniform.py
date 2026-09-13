@@ -1,6 +1,7 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 
+import numpy as np
 from scipy.stats import uniform
 
 from .distribution import Distribution, _uses_native_parameters
@@ -48,16 +49,9 @@ class Uniform(Distribution):
 
     def u_to_x(self, u):
         """
-        Transformation from u to x
-
-        Note: serious performance hit if scipy normal.cdf used here
+        Transformation from u to x, measured from the nearer bound
         """
-        x = self.a + (self.b - self.a) * self.std_normal.cdf(u)
-        return x
-
-    def x_to_u(self, x):
-        """
-        Transformation from x to u
-        """
-        u = self.std_normal.ppf(self.cdf(x))
-        return u
+        u = np.asarray(u, dtype=float)
+        tail = self.std_normal.cdf(-np.abs(u))
+        width = self.b - self.a
+        return np.where(u <= 0, self.a + width * tail, self.b - width * tail)[()]

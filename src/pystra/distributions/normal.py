@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
+from scipy import special as sp
 
 from .distribution import Distribution
 
@@ -56,6 +57,33 @@ class Normal(Distribution):
         z = self.std_normal.ppf(p)
         x = self.std * z + self.mean
         return x
+
+    def sf(self, x):
+        """Survival function."""
+        return sp.ndtr((self.mean - x) / self.std)
+
+    def isf(self, q):
+        """Inverse survival function."""
+        return self.mean - self.std * sp.ndtri(q)
+
+    def logpdf(self, x):
+        """Log density."""
+        z = (x - self.mean) / self.std
+        return -0.5 * z**2 - np.log(self.std) - 0.5 * np.log(2 * np.pi)
+
+    def logcdf(self, x):
+        """Log CDF."""
+        return sp.log_ndtr((x - self.mean) / self.std)
+
+    def logsf(self, x):
+        """Log survival function."""
+        return sp.log_ndtr((self.mean - x) / self.std)
+
+    def _lower_quantile_log(self, logp):
+        return self.mean + self.std * sp.ndtri_exp(logp)
+
+    def _upper_quantile_log(self, logq):
+        return self.mean - self.std * sp.ndtri_exp(logq)
 
     def sample(self, n=1000):
         """

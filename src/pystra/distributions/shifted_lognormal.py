@@ -1,4 +1,3 @@
-from scipy.special import erf
 import numpy as np
 from scipy.stats import lognorm
 from .distribution import Distribution
@@ -48,31 +47,9 @@ class ShiftedLognormal(Lognormal):
         super()._update_params(mean - lower, std)
         self.lower = lower
 
-    def pdf(self, x):
-        """
-        Probability density function
-        Note: asssumes x>lower for performance, scipy manages this appropriately
-        """
-        return super().pdf(x - self.lower)
-
-    def cdf(self, x):
-        """
-        Cumulative distribution function
-        """
-        return super().cdf(x - self.lower)
-
-    def u_to_x(self, u):
-        """
-        Transformation from u to x
-        """
-        return super().u_to_x(u) + self.lower
-
-    def x_to_u(self, x):
-        """
-        Transformation from x to u
-        Note: asssumes x>lower for performance
-        """
-        return super().x_to_u(x - self.lower)
+    @property
+    def _shift(self):
+        return self.lower
 
     def set_lower(self, lower=0):
         """

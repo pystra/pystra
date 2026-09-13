@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-import math
+from scipy import special as sp
 from scipy.stats import lognorm
 from .distribution import Distribution, _uses_native_parameters
 
@@ -63,37 +63,71 @@ class Lognormal(Distribution):
 
     # Overriding base class implementations for speed
 
+    @property
+    def _shift(self):
+        """Lower bound of the support; :class:`ShiftedLognormal` moves it."""
+        return 0.0
+
+    def _z(self, x):
+        """Standardized log value, ``-inf`` at or below the lower bound."""
+        y = np.asarray(x, dtype=float) - self._shift
+        with np.errstate(divide="ignore", invalid="ignore"):
+            return np.where(y > 0, (np.log(y) - self.lamb) / self.zeta, -np.inf)[()]
+
     def pdf(self, x):
         """
         Probability density function
-        Note: asssumes x>0 for performance, scipy manages this appropriately
         """
-        z = (np.log(x) - self.lamb) / self.zeta
-        p = np.exp(-0.5 * z**2) / (np.sqrt(2 * np.pi) * self.zeta * x)
-        return p  # self.lognormal.pdf(x)
+        y = np.asarray(x, dtype=float) - self._shift
+        z = self._z(x)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            p = np.exp(-0.5 * z**2) / (np.sqrt(2 * np.pi) * self.zeta * y)
+        return np.where(y > 0, p, 0.0)[()]
+
+    def logpdf(self, x):
+        """Log density."""
+        y = np.asarray(x, dtype=float) - self._shift
+        z = self._z(x)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            lp = -0.5 * z**2 - np.log(self.zeta * y) - 0.5 * np.log(2 * np.pi)
+        return np.where(y > 0, lp, -np.inf)[()]
 
     def cdf(self, x):
         """
         Cumulative distribution function
         """
-        z = (np.log(x) - self.lamb) / self.zeta
-        p = 0.5 + math.erf(z / np.sqrt(2)) / 2
-        return p  # self.lognormal.cdf(x)
+        return sp.ndtr(self._z(x))
+
+    def sf(self, x):
+        """Survival function."""
+        return sp.ndtr(-self._z(x))
+
+    def logcdf(self, x):
+        """Log CDF."""
+        return sp.log_ndtr(self._z(x))
+
+    def logsf(self, x):
+        """Log survival function."""
+        return sp.log_ndtr(-self._z(x))
+
+    def _lower_quantile_log(self, logp):
+        return self._shift + np.exp(self.lamb + self.zeta * sp.ndtri_exp(logp))
+
+    def _upper_quantile_log(self, logq):
+        return self._shift + np.exp(self.lamb - self.zeta * sp.ndtri_exp(logq))
 
     def u_to_x(self, u):
         """
         Transformation from u to x
         """
-        x = np.exp(u * self.zeta + self.lamb)
+        x = self._shift + np.exp(u * self.zeta + self.lamb)
         return x
 
     def x_to_u(self, x):
         """
         Transformation from x to u
-        Note: asssumes x>0 for performance
         """
-        u = (np.log(x) - self.lamb) / self.zeta
-        return u
+        return self._z(x)
 
     def cdf_gradient(self, x):
         r"""Analytical derivatives of the Lognormal CDF w.r.t. μ and σ.

@@ -3,7 +3,7 @@
 
 import numpy as np
 
-from .distribution import Distribution
+from .distribution import Distribution, _log1mexp, _piecewise
 from ._moments import _quantile_moments
 from ..errors import ModelError
 
@@ -67,37 +67,56 @@ class Maximum(Distribution):
 
     def ppf(self, p):
         """
-        inverse cumulative distribution function
+        Inverse cumulative distribution function, from the parent's tails
         """
-        scalar_input = np.isscalar(p)
-        x = self.parent.ppf(np.asarray(p) ** (1 / self.N))
-        if scalar_input:
-            return np.asarray(x).item()
-        return x
+        with np.errstate(divide="ignore"):
+            return self._ppf_log(np.log(np.asarray(p, dtype=float)))
 
-    def u_to_x(self, u):
-        """
-        Transformation from u to x
-        """
-        p = self.std_normal.cdf(u)
-        x = self.ppf(p)
-        return x
+    def isf(self, q):
+        """Inverse survival function."""
+        with np.errstate(divide="ignore"):
+            return self._isf_log(np.log(np.asarray(q, dtype=float)))
 
-    def x_to_u(self, x):
-        """
-        Transformation from x to u
-        """
-        u = self.std_normal.ppf(self.cdf(x))
-        return u
+    def logpdf(self, x):
+        """Log density, ``log N + log f(x) + (N - 1) log F(x)``."""
+        logpdf = np.log(self.N) + self.parent.logpdf(x)
+        if self.N == 1:
+            return logpdf
+        return logpdf + (self.N - 1) * self.parent.logcdf(x)
 
-    def jacobian(self, u, x):
-        """
-        Compute the Jacobian (e.g. Lemaire, eq. 4.9)
-        """
-        pdf1 = self.pdf(x)
-        pdf2 = self.std_normal.pdf(u)
-        J = np.diag(pdf1 / pdf2)
-        return J
+    def logcdf(self, x):
+        """Log CDF, ``N`` times the parent's."""
+        return self.N * self.parent.logcdf(x)
+
+    def sf(self, x):
+        """Survival function ``1 - F(x)**N``."""
+        return -np.expm1(self.logcdf(x))
+
+    def logsf(self, x):
+        """Log survival function."""
+        # Once 1 - F**N is below 1e-200 it equals N (1 - F) to double precision
+        a = np.asarray(self.logcdf(x), dtype=float)
+        return _piecewise(
+            x,
+            a > -1e-200,
+            lambda v: _log1mexp(self.logcdf(v)),
+            lambda v: np.log(self.N) + self.parent.logsf(v),
+        )
+
+    def _lower_quantile_log(self, logp):
+        # F(x)**N = p, so the parent's log CDF is log(p) / N
+        return self.parent._ppf_log(np.asarray(logp, dtype=float) / self.N)
+
+    def _upper_quantile_log(self, logq):
+        # 1 - F(x)**N = q gives the parent survival -expm1(log1p(-q) / N),
+        # which is q / N to double precision once q is below 1e-200
+        logq = np.asarray(logq, dtype=float)
+        with np.errstate(divide="ignore", under="ignore"):
+            q = np.exp(logq)
+            log_parent_sf = np.where(
+                q < 1e-200, logq - np.log(self.N), _log1mexp(np.log1p(-q) / self.N)
+            )
+        return self.parent._isf_log(log_parent_sf)
 
     def _get_stats(self):
         """Compute moments deterministically with quantile integration."""

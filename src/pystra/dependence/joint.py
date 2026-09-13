@@ -147,8 +147,8 @@ class CopulaTransformation:
         w = []
         for i, m in enumerate(self.marginals):
             p = float(m.cdf(x[i]))
-            if p > 0.5 and m.dist_obj is not None:
-                w.append(t.isf(m.dist_obj.sf(x[i]), self.copula.df))
+            if p > 0.5:
+                w.append(t.isf(m.sf(x[i]), self.copula.df))
             else:
                 w.append(t.ppf(p, self.copula.df))
         return np.array(w)
@@ -159,8 +159,8 @@ class CopulaTransformation:
         return np.array(
             [
                 (
-                    m.dist_obj.isf(t.sf(w[i], self.copula.df))
-                    if w[i] > 0 and m.dist_obj is not None
+                    m.isf(t.sf(w[i], self.copula.df))
+                    if w[i] > 0
                     else m.ppf(t.cdf(w[i], self.copula.df))
                 )
                 for i, m in enumerate(self.marginals)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from .distribution import Distribution
+from .distribution import Distribution, _piecewise
 from ..errors import ModelError
 
 __all__ = ["ZeroInflated"]
@@ -101,29 +101,59 @@ class ZeroInflated(Distribution):
             return x.item()
         return x
 
-    def u_to_x(self, u):
-        """
-        Transformation from u to x
-        """
-        p = self.std_normal.cdf(u)
-        x = self.ppf(p)
-        return x
+    def sf(self, x):
+        """Survival function; the zero atom lies on the CDF side."""
+        x = np.asarray(x, dtype=float)
+        above = x > -self.zero_tol
+        return np.where(above, self.q * self.dist.sf(x), 1 - self.q * self.dist.cdf(x))[
+            ()
+        ]
 
-    def x_to_u(self, x):
-        """
-        Transformation from x to u
-        """
-        u = self.std_normal.ppf(self.cdf(x))
-        return u
+    def isf(self, q):
+        """Inverse survival function, from the parent's upper tail."""
+        q = np.asarray(q, dtype=float)
+        upper = q < self.q * self.dist.sf(0.0)
+        return _piecewise(
+            q, upper, lambda v: self.ppf(1 - v), lambda v: self.dist.isf(v / self.q)
+        )
 
-    def jacobian(self, u, x):
-        """
-        Compute the Jacobian (e.g. Lemaire, eq. 4.9)
-        """
-        pdf1 = self.pdf(x)
-        pdf2 = self.std_normal.pdf(u)
-        J = np.diag(pdf1 / pdf2)
-        return J
+    def _lower_logcdf(self, x):
+        x = np.asarray(x, dtype=float)
+        with np.errstate(divide="ignore"):
+            return np.where(
+                x > -self.zero_tol,
+                np.log(self.cdf(x)),
+                np.log(self.q) + self.dist.logcdf(x),
+            )[()]
+
+    def _upper_logsf(self, x):
+        x = np.asarray(x, dtype=float)
+        with np.errstate(divide="ignore"):
+            return np.where(
+                x > -self.zero_tol,
+                np.log(self.q) + self.dist.logsf(x),
+                np.log(self.sf(x)),
+            )[()]
+
+    def _lower_quantile_log(self, logp):
+        logp = np.asarray(logp, dtype=float)
+        below = logp - np.log(self.q) < self.dist.logcdf(0.0)
+        return _piecewise(
+            logp,
+            below,
+            lambda v: self.ppf(np.exp(v)),
+            lambda v: self.dist._ppf_log(v - np.log(self.q)),
+        )
+
+    def _upper_quantile_log(self, logq):
+        logq = np.asarray(logq, dtype=float)
+        above = logq - np.log(self.q) < self.dist.logsf(0.0)
+        return _piecewise(
+            logq,
+            above,
+            lambda v: self.ppf(-np.expm1(v)),
+            lambda v: self.dist._isf_log(v - np.log(self.q)),
+        )
 
     def _get_stats(self):
         """

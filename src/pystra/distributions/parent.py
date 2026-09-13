@@ -2,10 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from scipy import special as sp
-import scipy.optimize as opt
 
-from .distribution import Distribution
+from .distribution import Distribution, _log1mexp, _piecewise
 from ._moments import _quantile_moments
 from ..errors import ModelError
 
@@ -56,115 +54,72 @@ class MaxParent(Distribution):
 
     def pdf(self, x):
         """
-        Probability density function
+        Probability density function, from log densities
         """
-        pdf = self.max_dist.pdf(x)
-        cdf = self.cdf(x)
-        p = pdf / (self.N * cdf ** (self.N - 1))
-        return p
+        with np.errstate(under="ignore"):
+            return np.exp(self.logpdf(x))
 
     def cdf(self, x):
         """
-        Cumulative distribution function
+        Cumulative distribution function, ``exp(log F_max(x) / N)``
         """
-        P = (self.max_dist.cdf(x)) ** (1 / self.N)
-        return P
+        with np.errstate(under="ignore"):
+            return np.exp(self.logcdf(x))
 
     def ppf(self, p):
         """
-        inverse cumulative distribution function
+        Inverse cumulative distribution function, from the maximum's tails
         """
-        scalar_input = np.isscalar(p)
-        p = np.atleast_1d(np.asarray(p, dtype=float))
-        x = np.empty_like(p, dtype=float)
+        with np.errstate(divide="ignore"):
+            return self._ppf_log(np.log(np.asarray(p, dtype=float)))
 
-        log_tiny = np.log(np.finfo(float).tiny)
-        log_one = np.log(np.nextafter(1.0, 0.0))
-        center = self.max_dist.mean
-        if not np.isfinite(center):
-            center = 0.0
-        step0 = self.max_dist.std
-        if not np.isfinite(step0) or step0 <= 0:
-            step0 = 1.0
+    def isf(self, q):
+        """Inverse survival function."""
+        with np.errstate(divide="ignore"):
+            return self._isf_log(np.log(np.asarray(q, dtype=float)))
 
-        if (
-            type(self.max_dist).cdf is Distribution.cdf
-            and self.max_dist.dist_obj is not None
-        ):
-            logcdf = self.max_dist.dist_obj.logcdf
-        elif self.max_dist.dist_type == "Normal":
-            logcdf = lambda q: sp.log_ndtr((q - self.max_dist.mean) / self.max_dist.std)
-        else:
+    def logpdf(self, x):
+        """Log density."""
+        logpdf = self.max_dist.logpdf(x) - np.log(self.N)
+        if self.N == 1:
+            return logpdf
+        return logpdf + (1 / self.N - 1) * self.max_dist.logcdf(x)
 
-            def logcdf(q):
-                with np.errstate(divide="ignore"):
-                    return np.log(self.max_dist.cdf(q))
+    def logcdf(self, x):
+        """Log CDF, the maximum's divided by ``N``."""
+        return self.max_dist.logcdf(x) / self.N
 
-        for index, p_val in np.ndenumerate(p):
-            if p_val <= 0:
-                x[index] = self.max_dist.ppf(0)
-                continue
-            if p_val >= 1:
-                x[index] = self.max_dist.ppf(1)
-                continue
+    def sf(self, x):
+        """Survival function ``1 - F_max(x)**(1/N)``."""
+        return -np.expm1(self.logcdf(x))
 
-            target_log_cdf = self.N * np.log(p_val)
-            if self.max_dist.dist_type == "Normal":
-                x[index] = center + step0 * sp.ndtri_exp(target_log_cdf)
-                continue
-            if log_tiny <= target_log_cdf <= log_one:
-                x[index] = self.max_dist.ppf(np.exp(target_log_cdf))
-                continue
+    def logsf(self, x):
+        """Log survival function."""
+        # Once 1 - F**(1/N) is below 1e-200 it equals (1 - F) / N
+        a = np.asarray(self.logcdf(x), dtype=float)
+        return _piecewise(
+            x,
+            a > -1e-200,
+            lambda v: _log1mexp(self.logcdf(v)),
+            lambda v: self.max_dist.logsf(v) - np.log(self.N),
+        )
 
-            residual = lambda q: logcdf(q) - target_log_cdf
-            step = step0
-            lower = center - step
-            upper = center + step
-            for _ in range(100):
-                lower_res = residual(lower)
-                upper_res = residual(upper)
-                if lower_res <= 0 <= upper_res:
-                    x[index] = opt.brentq(
-                        residual, lower, upper, xtol=1e-12, rtol=1e-12
-                    )
-                    break
-                if lower_res > 0:
-                    upper = lower
-                    lower -= step
-                if upper_res < 0:
-                    lower = upper
-                    upper += step
-                step *= 2
-            else:
-                raise RuntimeError("Could not bracket MaxParent inverse CDF.")
+    def _lower_quantile_log(self, logp):
+        # F_max(x)**(1/N) = p, so the maximum's log CDF is N log(p)
+        return self.max_dist._ppf_log(self.N * np.asarray(logp, dtype=float))
 
-        if scalar_input:
-            return x.item()
-        return x
-
-    def u_to_x(self, u):
-        """
-        Transformation from u to x
-        """
-        p = self.std_normal.cdf(u)
-        x = self.ppf(p)
-        return x
-
-    def x_to_u(self, x):
-        """
-        Transformation from x to u
-        """
-        u = self.std_normal.ppf(self.cdf(x))
-        return u
-
-    def jacobian(self, u, x):
-        """
-        Compute the Jacobian (e.g. Lemaire, eq. 4.9)
-        """
-        pdf1 = self.pdf(x)
-        pdf2 = self.std_normal.pdf(u)
-        J = np.diag(pdf1 / pdf2)
-        return J
+    def _upper_quantile_log(self, logq):
+        # 1 - F_max(x)**(1/N) = q gives the maximum's survival
+        # -expm1(N log1p(-q)), which is N q once N q is below 1e-200
+        logq = np.asarray(logq, dtype=float)
+        with np.errstate(divide="ignore", under="ignore"):
+            q = np.exp(logq)
+            log_max_sf = np.where(
+                self.N * q < 1e-200,
+                np.log(self.N) + logq,
+                _log1mexp(self.N * np.log1p(-q)),
+            )
+        return self.max_dist._isf_log(log_max_sf)
 
     def _get_stats(self):
         """Compute moments deterministically with quantile integration."""

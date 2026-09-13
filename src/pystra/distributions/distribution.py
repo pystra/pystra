@@ -1,6 +1,8 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 
+import warnings
+
 import numpy as np
 from scipy import special as sp
 import matplotlib.pyplot as plt
@@ -8,6 +10,84 @@ from scipy.stats._distn_infrastructure import rv_frozen
 from ..errors import ModelError
 
 __all__ = ["StdNormal", "Constant", "Distribution"]
+
+
+_LOG_HALF = np.log(0.5)
+_TINY = np.finfo(float).tiny
+_LOG_TINY = np.log(_TINY)
+# Above u = 3 the complement 1 - Phi(u) would lose more than 1e-13 of its
+# relative precision, so the survival function is used from there on.
+_U_SWITCH = 3.0
+_P_SWITCH = float(sp.ndtr(_U_SWITCH))
+
+
+def _log1mexp(a):
+    """Return ``log(1 - exp(a))`` for ``a <= 0`` without cancellation.
+
+    Uses ``log(-expm1(a))`` for ``a > -log 2`` and ``log1p(-exp(a))``
+    otherwise (Mächler, 2012, "Accurately computing log(1 - exp(-|a|))").
+    """
+    a = np.asarray(a, dtype=float)
+    with np.errstate(divide="ignore", invalid="ignore", under="ignore"):
+        return np.where(a > -np.log(2), np.log(-np.expm1(a)), np.log1p(-np.exp(a)))[()]
+
+
+def _piecewise(values, upper, lower_fn, upper_fn):
+    """Apply ``lower_fn`` where ``upper`` is false and ``upper_fn`` where true.
+
+    Each function receives a 1-D array of the selected values, so only one
+    tail formula is evaluated per element. Scalars give NumPy scalars.
+    """
+    values = np.asarray(values, dtype=float)
+    flat = values.ravel()
+    upper = np.broadcast_to(upper, values.shape).ravel()
+    out = np.empty(flat.shape)
+    if not upper.all():
+        out[~upper] = lower_fn(flat[~upper])
+    if upper.any():
+        out[upper] = upper_fn(flat[upper])
+    return out.reshape(values.shape)[()]
+
+
+def _solve_log_tail(log_tail, targets, start, step):
+    """Solve ``log_tail(x) = target`` where the tail probability underflows.
+
+    ``log_tail`` is a log-CDF (``step < 0``) or a log-survival function
+    (``step > 0``). It exceeds every target at ``start`` and decreases in
+    the direction of ``step``. The bracket is widened by doubling, then
+    bisected until its ends are adjacent doubles. Points past the support,
+    where the logarithm is ``-inf`` or undefined, count as past the
+    solution; a solution beyond the double range gives ``+-inf``.
+    """
+    targets = np.asarray(targets, dtype=float)
+    direction = np.sign(step)
+    inner = np.full(targets.shape, float(start))
+    outer = np.full(targets.shape, direction * np.inf)
+    if not np.isfinite(start):
+        return outer
+    width = abs(float(step))
+    todo = np.ones(targets.shape, dtype=bool)
+    while todo.any() and np.isfinite(width):
+        index = np.flatnonzero(todo)
+        trial = inner[index] + direction * width
+        with np.errstate(all="ignore"):
+            short = log_tail(trial) > targets[index]
+        inner[index[short]] = trial[short]
+        outer[index[~short]] = trial[~short]
+        todo[index[~short]] = False
+        width *= 2
+    found = np.isfinite(outer)
+    lower, upper = inner[found], outer[found]
+    for _ in range(1100):
+        middle = 0.5 * (lower + upper)
+        if not np.any((middle != lower) & (middle != upper)):
+            break
+        with np.errstate(all="ignore"):
+            short = log_tail(middle) > targets[found]
+        lower = np.where(short, middle, lower)
+        upper = np.where(short, upper, middle)
+    outer[found] = 0.5 * (lower + upper)
+    return outer
 
 
 class StdNormal:
@@ -133,8 +213,21 @@ class Distribution:
     transformations (``x_to_u``, ``u_to_x``, ``jacobian``) to it.
 
     Subclasses that do not wrap a SciPy distribution must override the
-    transformation and Jacobian methods directly (see, e.g.,
-    :class:`ZeroInflated`).
+    transformation and Jacobian methods directly, or provide the tail
+    functions below (see, e.g., :class:`Maximum`).
+
+    **Tail accuracy.** Every distribution provides ``cdf``, ``sf``,
+    ``logcdf``, ``logsf``, ``pdf``, ``logpdf``, ``ppf`` and ``isf``, each
+    accurate in its own tail. ``u_to_x`` and ``x_to_u`` evaluate the tail
+    that the point lies in, so a probability near one is never formed:
+    ``x = F^{-1}(Phi(u))`` for ``u <= 0`` and ``x = Fbar^{-1}(Phi(-u))``
+    for ``u > 0``. Beyond the smallest normal double (``|u|`` above about
+    37.5) the log-probability is inverted instead, in closed form where
+    one exists and otherwise by solving the log-CDF or log-survival
+    function. Jacobians switch to log densities when the densities
+    underflow. Subclasses that override ``cdf`` or ``ppf`` should override
+    ``sf`` or ``isf`` as well; the fallbacks ``1 - cdf`` and ``ppf(1 - q)``
+    lose the upper tail.
 
     Parameters
     ----------
@@ -242,6 +335,13 @@ class Distribution:
         """
         return self.dist_obj.pdf(x)
 
+    def logpdf(self, x):
+        """Log density, ``-inf`` where the density is zero."""
+        if self.dist_obj is not None and type(self).pdf is Distribution.pdf:
+            return self.dist_obj.logpdf(x)
+        with np.errstate(divide="ignore"):
+            return np.log(self.pdf(x))
+
     def cdf(self, x):
         """Cumulative distribution function.
 
@@ -256,6 +356,49 @@ class Distribution:
             Probability value(s) in [0, 1].
         """
         return self.dist_obj.cdf(x)
+
+    def sf(self, x):
+        """Survival function ``1 - F(x)``, accurate in the upper tail."""
+        if self._scipy_cdf():
+            return self.dist_obj.sf(x)
+        return 1 - self.cdf(x)
+
+    def logcdf(self, x):
+        """Logarithm of the CDF, accurate in both tails.
+
+        Below the median the logarithm of the CDF itself (or SciPy's
+        ``logcdf``) is used; above it, ``log1p(-sf(x))`` keeps the
+        difference from zero.
+        """
+        c = np.asarray(self.cdf(x), dtype=float)
+        return _piecewise(
+            x, c > 0.5, self._lower_logcdf, lambda v: np.log1p(-self.sf(v))
+        )
+
+    def logsf(self, x):
+        """Logarithm of the survival function, accurate in both tails."""
+        c = np.asarray(self.cdf(x), dtype=float)
+        return _piecewise(
+            x, c > 0.5, lambda v: np.log1p(-self.cdf(v)), self._upper_logsf
+        )
+
+    def _lower_logcdf(self, x):
+        """Log-CDF below the median."""
+        if self._scipy_cdf():
+            return self.dist_obj.logcdf(x)
+        with np.errstate(divide="ignore"):
+            return np.log(self.cdf(x))
+
+    def _upper_logsf(self, x):
+        """Log-survival function above the median."""
+        if self._scipy_cdf():
+            return self.dist_obj.logsf(x)
+        with np.errstate(divide="ignore"):
+            return np.log(self.sf(x))
+
+    def _scipy_cdf(self):
+        """Whether the CDF family can be delegated to ``dist_obj``."""
+        return self.dist_obj is not None and type(self).cdf is Distribution.cdf
 
     def ppf(self, u):
         """Percent-point function (inverse CDF).
@@ -272,40 +415,165 @@ class Distribution:
         """
         return self.dist_obj.ppf(u)
 
+    def isf(self, q):
+        """Inverse survival function, accurate for small upper-tail ``q``."""
+        if self.dist_obj is not None and type(self).ppf is Distribution.ppf:
+            return self.dist_obj.isf(q)
+        return self.ppf(1 - np.asarray(q, dtype=float))
+
+    def _ppf_log(self, logp):
+        """Quantile at which ``logcdf`` equals ``logp``, for any ``logp <= 0``."""
+        logp = np.asarray(logp, dtype=float)
+        return _piecewise(
+            logp,
+            logp > _LOG_HALF,
+            self._lower_quantile_log,
+            lambda v: self._upper_quantile_log(_log1mexp(v)),
+        )
+
+    def _isf_log(self, logq):
+        """Quantile at which ``logsf`` equals ``logq``, for any ``logq <= 0``."""
+        logq = np.asarray(logq, dtype=float)
+        return _piecewise(
+            logq,
+            logq > _LOG_HALF,
+            self._upper_quantile_log,
+            lambda v: self._lower_quantile_log(_log1mexp(v)),
+        )
+
+    def _lower_quantile_log(self, logp):
+        """Lower-tail quantile from a log-probability of at most log(1/2).
+
+        Below the smallest normal double the log-CDF is solved directly.
+        Subclasses with a closed form override this.
+        """
+        logp = np.atleast_1d(np.asarray(logp, dtype=float))
+        with np.errstate(under="ignore"):
+            x = np.array(self.ppf(np.exp(logp)), dtype=float, ndmin=1)
+        deep = (logp < _LOG_TINY) & np.isfinite(logp)
+        if deep.any():
+            x[deep] = _solve_log_tail(
+                self.logcdf, logp[deep], self.ppf(_TINY), -self.std
+            )
+        return x
+
+    def _upper_quantile_log(self, logq):
+        """Upper-tail quantile from a log-probability of at most log(1/2)."""
+        logq = np.atleast_1d(np.asarray(logq, dtype=float))
+        with np.errstate(under="ignore"):
+            x = np.array(self.isf(np.exp(logq)), dtype=float, ndmin=1)
+        deep = (logq < _LOG_TINY) & np.isfinite(logq)
+        if deep.any():
+            x[deep] = _solve_log_tail(self.logsf, logq[deep], self.isf(_TINY), self.std)
+        return x
+
     def u_to_x(self, u):
         """Transform from standard normal space to physical space.
 
-        Applies the marginal Nataf mapping: ``x = F^{-1}(Phi(u))``.
+        Applies the marginal Nataf mapping ``x = F^{-1}(Phi(u))``. Above
+        ``u = 3`` it is evaluated as ``Fbar^{-1}(Phi(-u))``, so the
+        probability passed on is never rounded towards one; far into either
+        tail the log-probability is used (see :meth:`_tail_quantiles`).
 
         Parameters
         ----------
-        u : float
-            Value in standard normal (u) space.
+        u : float or array_like
+            Value(s) in standard normal (u) space.
 
         Returns
         -------
-        float
-            Corresponding value in physical (x) space.
+        float or ndarray
+            Corresponding value(s) in physical (x) space.
         """
-        return self.dist_obj.ppf(self.std_normal.cdf(u))
+        u = np.asarray(u, dtype=float)
+        shape = u.shape
+        u = u.ravel()
+        p = sp.ndtr(u)
+        upper = np.flatnonzero(u > _U_SWITCH)
+        lower = np.flatnonzero(u < -5.0)
+        if upper.size or lower.size:
+            # Tail points are inverted below, where their result is checked
+            p = p.copy()
+            p[upper] = 0.5
+            p[lower] = 0.5
+        x = np.array(self.ppf(p), dtype=float, ndmin=1)
+        for index, sign, quantile, log_tail, log_quantile in (
+            (upper, -1, self.isf, self.logsf, self._upper_quantile_log),
+            (lower, 1, self.ppf, self.logcdf, self._lower_quantile_log),
+        ):
+            if index.size:
+                z = sign * u[index]
+                prob = sp.ndtr(z)
+                with warnings.catch_warnings():
+                    # SciPy warns when its numerical inverse gives up; that
+                    # result is checked and solved again
+                    warnings.simplefilter("ignore", RuntimeWarning)
+                    xt = np.array(quantile(prob), dtype=float, ndmin=1)
+                    x[index] = self._tail_quantiles(
+                        xt, prob, z, log_quantile, log_tail, -sign
+                    )
+        return x.reshape(shape)[()]
+
+    def _tail_quantiles(self, x, prob, z, quantile_log, log_tail, direction):
+        """Refine quantiles whose tail probability is below 1e-8.
+
+        ``prob = Phi(z)`` is the tail probability of each point. Below the
+        smallest normal double the quantile comes from ``log Phi(z)``.
+        Numerical inverse CDFs (SciPy's beta, for example) can also stall
+        or return NaN far into a tail, so each tail quantile is checked
+        against the log-CDF or log-survival function and solved again if
+        it misses by more than 1e-8 in relative log-probability.
+        """
+        index = np.flatnonzero(prob < 1e-8)
+        if index.size == 0:
+            return x
+        target = sp.log_ndtr(z[index])
+        deep = prob[index] < _TINY
+        if deep.any():
+            x[index[deep]] = quantile_log(target[deep])
+        with np.errstate(all="ignore"):
+            got = np.asarray(log_tail(x[index]), dtype=float)
+        bad = ~(np.abs(got - target) <= 1e-8 * np.abs(target))
+        if bad.any():
+            x[index[bad]] = _solve_log_tail(
+                log_tail, target[bad], self.ppf(0.5), direction * self.std
+            )
+        return x
 
     def x_to_u(self, x):
         """Transform from physical space to standard normal space.
 
-        Applies the marginal Nataf mapping: ``u = Phi^{-1}(F(x))``.
+        Applies the marginal Nataf mapping ``u = Phi^{-1}(F(x))``, as
+        ``u = -Phi^{-1}(Fbar(x))`` above ``u = 3``, with log probabilities
+        where these underflow.
 
         Parameters
         ----------
-        x : float
-            Value in physical (x) space.
+        x : float or array_like
+            Value(s) in physical (x) space.
 
         Returns
         -------
-        float
-            Corresponding value in standard normal (u) space.
+        float or ndarray
+            Corresponding value(s) in standard normal (u) space.
         """
-        u = self.std_normal.ppf(self.cdf(x))
-        return u
+        x = np.asarray(x, dtype=float)
+        shape = x.shape
+        x = x.ravel()
+        c = np.array(self.cdf(x), dtype=float, ndmin=1).ravel()
+        u = sp.ndtri(c)
+        deep = c < _TINY
+        if deep.any():
+            u[deep] = sp.ndtri_exp(self.logcdf(x[deep]))
+        upper = c > _P_SWITCH
+        if upper.any():
+            s = np.array(self.sf(x[upper]), dtype=float, ndmin=1)
+            v = -sp.ndtri(s)
+            tail = s < _TINY
+            if tail.any():
+                v[tail] = -sp.ndtri_exp(self.logsf(x[upper][tail]))
+            u[upper] = v
+        return u.reshape(shape)[()]
 
     def jacobian(self, u, x):
         """Diagonal Jacobian of the marginal x-to-u transformation.
@@ -313,6 +581,8 @@ class Distribution:
         Returns a diagonal matrix ``J`` where the diagonal entry is
         ``f_X(x) / phi(u)`` (Lemaire, eq. 4.9).  This is assembled
         into the full Jacobian by the :class:`Transformation` class.
+        The ratio is formed from log densities where either density
+        underflows.
 
         Parameters
         ----------
@@ -327,9 +597,17 @@ class Distribution:
             Diagonal Jacobian matrix of shape ``(n, n)`` where *n* is
             the length of the input arrays.
         """
-        pdf1 = self.pdf(x)
+        u = np.atleast_1d(np.asarray(u, dtype=float))
+        x = np.atleast_1d(np.asarray(x, dtype=float))
+        pdf1 = np.array(self.pdf(x), dtype=float, ndmin=1)
         pdf2 = self.std_normal.pdf(u)
-        J = np.diag(pdf1 / pdf2)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            ratio = pdf1 / pdf2
+        tail = (pdf1 < 1e-300) | (pdf2 < 1e-300)
+        if tail.any():
+            log_phi = -0.5 * u[tail] ** 2 - 0.5 * np.log(2 * np.pi)
+            ratio[tail] = np.exp(self.logpdf(x[tail]) - log_phi)
+        J = np.diag(ratio)
         return J
 
     def sample(self, n=1000):
