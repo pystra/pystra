@@ -47,6 +47,7 @@ def unbounded_tails():
         "Frechet": ra.Frechet("X", 10, 3),
         "ChiSquare": ra.ChiSquare("X", 8, 4),
         "GEV": ra.GEV("X", 10, 3, shape=0.2),
+        "GEVMin": ra.GEVMin("X", 10, 3, shape=0.2),
         "Maximum": ra.Maximum("Q", ra.Gumbel("X", 10, 3), N=50),
         "Maximum of lognormal": ra.Maximum("Q", ra.Lognormal("X", 10, 3), N=5),
         "MaxParent": ra.MaxParent("Q", ra.Gumbel("X", 10, 3), N=50),
@@ -142,6 +143,21 @@ def test_tail_inverse_is_checked_against_the_cdf():
         x = float(beta.u_to_x(u))
         assert float(beta.cdf(x)) == pytest.approx(ndtr(u), rel=1e-10)
 
+
+@pytest.mark.parametrize("shape", [-0.2, 0.0, 0.2])
+def test_gevmin_is_the_reflected_gev(shape):
+    by_moments = ra.GEVMin("X", 10, 3, shape=shape)
+    p = (np.arange(200_000) + 0.5) / 200_000
+    x = by_moments.ppf(p)
+    assert x.mean() == pytest.approx(10, abs=2e-3)
+    assert x.std() == pytest.approx(3, rel=5e-3)
+    minimum = ra.GEVMin("X", shape=shape, loc=12.0, scale=2.5)
+    maximum = ra.GEV("Y", shape=shape, loc=-12.0, scale=2.5)
+    assert minimum.mean == pytest.approx(-maximum.mean)
+    points = np.array([-5.0, 8.0, 12.0, 15.0])
+    np.testing.assert_allclose(minimum.cdf(points), maximum.sf(-points), rtol=1e-12)
+    u = np.array([-8.0, -1.0, 0.0, 2.0, 9.0])
+    np.testing.assert_allclose(minimum.u_to_x(u), -maximum.u_to_x(-u), rtol=1e-12)
 
 
 def test_max_parent_of_lognormal_inverts_for_large_n():

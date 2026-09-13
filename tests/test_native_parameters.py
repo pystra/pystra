@@ -68,11 +68,14 @@ def test_gev_min_native_parameters_reproduce_moments():
     shape = 0.1
     g1, g2 = gamma(1 - shape), gamma(1 - 2 * shape)
     scale = 20 * shape / np.sqrt(g2 - g1**2)
-    loc = 100 - scale / shape * (g1 - 1)
+    # Minima: mean = loc - scale (g1 - 1) / shape, the reflection of the GEV
+    loc = 100 + scale / shape * (g1 - 1)
     by_moments = GEVMin("X", 100, 20, shape)
     native = GEVMin("X", shape=shape, loc=loc, scale=scale)
     assert native.mean == pytest.approx(100)
     assert native.std == pytest.approx(20)
+    reflected = stats.genextreme(c=-shape, loc=-loc, scale=scale)
+    assert native.mean == pytest.approx(-reflected.mean())
     for x in (80.0, 100.0, 120.0):
         assert float(native.cdf(x)) == pytest.approx(float(by_moments.cdf(x)))
 

@@ -152,17 +152,17 @@ class GEVMin(Distribution):
             self._std = std
             if np.isclose(shape, 0):
                 scale = self.std * np.sqrt(6) / np.pi
-                loc = self.mean - scale * np.euler_gamma
+                loc = self.mean + scale * np.euler_gamma
             else:
                 scale = self.std * np.abs(shape) / np.sqrt(g2 - g1**2)
-                loc = self.mean - (scale / shape) * (g1 - 1)
+                loc = self.mean + (scale / shape) * (g1 - 1)
         else:
             # loc and scale are actual GEV parameters
             if np.isclose(shape, 0):
-                self._mean = loc + scale * np.euler_gamma
+                self._mean = loc - scale * np.euler_gamma
                 self._std = scale * np.pi / np.sqrt(6)
             else:
-                self._mean = loc + (g1 - 1) * scale / shape
+                self._mean = loc - (g1 - 1) * scale / shape
                 self._std = np.sqrt((g2 - g1**2) * (scale / shape) ** 2)
 
         # use scipy to do the heavy lifting; note reverse shape sign convention
@@ -202,17 +202,34 @@ class GEVMin(Distribution):
         """
         Probability density function
         """
-        return self.dist_obj.pdf(-x)
+        return self.dist_obj.pdf(-np.asarray(x, dtype=float))
+
+    def logpdf(self, x):
+        """Log density."""
+        return self.dist_obj.logpdf(-np.asarray(x, dtype=float))
 
     def cdf(self, x):
         """
         Cumulative distribution function
         """
-        return 1 - self.dist_obj.cdf(-x)
+        return self.dist_obj.sf(-np.asarray(x, dtype=float))
+
+    def sf(self, x):
+        """Survival function."""
+        return self.dist_obj.cdf(-np.asarray(x, dtype=float))
+
+    def _lower_logcdf(self, x):
+        return self.dist_obj.logsf(-np.asarray(x, dtype=float))
+
+    def _upper_logsf(self, x):
+        return self.dist_obj.logcdf(-np.asarray(x, dtype=float))
 
     def ppf(self, u):
         """
         Inverse cumulative distribution function
         """
-        x = self.dist_obj.ppf(u)
-        return -x
+        return -self.dist_obj.isf(u)
+
+    def isf(self, q):
+        """Inverse survival function."""
+        return -self.dist_obj.ppf(q)
