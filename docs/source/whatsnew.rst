@@ -7,9 +7,6 @@ numerics accurate far into the tails. It is not compatible with 1.x:
 :doc:`migrating` shows how to update a script, and ``python -m pystra.migrate``
 makes the unambiguous changes for you.
 
-This is a pre-release (|release|). The work that remains before 2.0.0 is listed
-at the end of this page.
-
 Highlights
 ----------
 
@@ -99,6 +96,16 @@ Numerical accuracy
   ``GEVMin`` is the correct reflection of the GEV. The :doc:`changelog` lists
   every correction whose results change.
 
+Performance
+-----------
+
+On the fixed benchmark cases in the
+`performance evidence <https://github.com/pystra/pystra/blob/v2.0/docs/migration/performance.md>`_, FORM is 12–37% faster than in 1.6.0 and SORM
+17% faster, with the same number of limit-state evaluations, and crude Monte
+Carlo and importance sampling process more than six times as many samples per
+second. These benchmarks use inexpensive limit states; when an external solver
+dominates the cost, the difference is smaller.
+
 Documentation
 -------------
 
@@ -111,15 +118,8 @@ sensitivity analysis (:doc:`guides/sensitivity`).
 Requirements
 ------------
 
-Python 3.12 or later, NumPy, SciPy 1.11 or later, pandas and Matplotlib. The
-active-learning methods need the ``al`` extra; see :doc:`install`.
-
-Before 2.0.0
-------------
-
-The release plan still includes:
-
-* restructuring of the decision and assessment modules;
-* a consistent writing style and type annotations throughout the code and
-  documentation;
-* performance comparisons with 1.6.0 and the final release checks.
+Python 3.12 or later, NumPy 1.26 or later, SciPy 1.11.2 or later, pandas 2.1.1
+or later and Matplotlib 3.8 or later. The active-learning methods need the
+``al`` extra (scikit-learn 1.3.1 or later); see :doc:`install`. PySTRA is tested
+on Linux, Windows and macOS with Python 3.12 to 3.14, and with the oldest
+supported dependencies.

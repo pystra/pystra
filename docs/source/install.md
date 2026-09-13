@@ -3,9 +3,9 @@
 Installation
 ============
 
-These instructions install **PySTRA** |release| **from the v2.0 branch**, matching
-the API used in these pages. Python 3.12 or later is required for the package;
-Python 3.13 is used for the documentation tools.
+These instructions install **PySTRA** |release|, the version these pages
+describe. Python 3.12 or later is required for the package; Python 3.13 is used
+for the documentation tools.
 
 Create an environment
 ----------------------
@@ -20,27 +20,25 @@ Alternatively, create a Python virtual environment with
 ``source .venv/bin/activate`` on Linux/macOS or
 ``.venv\Scripts\Activate.ps1`` in Windows PowerShell.
 
-Install the development package
--------------------------------
+Install PySTRA
+--------------
 
-Clone the development branch, then install it into the active environment::
+Install the release from PyPI into the active environment::
 
-    git clone --branch v2.0 https://github.com/pystra/pystra.git
-    cd pystra
-    python -m pip install -e .
+    python -m pip install pystra
     python -c "import pystra; print(pystra.__version__)"
 
-The version should begin with ``2.0``; the current version is |release|.
+The version should be |release|.
 The core installation includes NumPy, SciPy, Matplotlib and pandas.
 You can now run :doc:`notebooks/ex_first_analysis`.
 
 Optional active-learning dependencies
 --------------------------------------
 
-The Kriging and PC-Kriging examples additionally require scikit-learn.
-From the same checkout, install::
+The Kriging and PC-Kriging examples additionally require scikit-learn, which
+the ``al`` extra installs::
 
-    python -m pip install -e ".[al]"
+    python -m pip install "pystra[al]"
 
 PCE and the classical reliability algorithms use the core installation.
 Each example states its dependency requirements. Notebook downloads also
@@ -51,16 +49,26 @@ need Jupyter; install ``jupyterlab`` to run them interactively.
 For building all documentation and contributing, follow :doc:`developer`.
 It covers the documentation extras, Pandoc and validation commands.
 
-Using the stable release
--------------------------
+Install from source
+-------------------
 
-To use the released 1.x API, install ``pystra`` from PyPI and follow the
-`stable documentation <https://pystra.github.io/pystra/>`_::
+To use the latest development version, clone the repository and install it in
+editable mode, with the extras you need::
 
-    python -m pip install pystra
+    git clone --branch v2.0 https://github.com/pystra/pystra.git
+    cd pystra
+    python -m pip install -e ".[al]"
 
-The stable release and the development examples use different APIs.
-:doc:`migrating` explains how to update existing code.
+Using PySTRA 1.x
+----------------
+
+To keep the 1.x API, install a 1.x release and follow the
+`1.x documentation <https://pystra.github.io/pystra/>`_::
+
+    python -m pip install "pystra<2"
+
+The two versions use different APIs. :doc:`migrating` explains how to update
+existing code.
 
 .. _bugs-and-feature-requests:
 

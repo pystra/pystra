@@ -8,11 +8,10 @@ methods, with practical tools for code calibration and structural assessment.
 Define your engineering model in Python, quantify its reliability, and inspect
 the assumptions and diagnostics behind the result.
 
-These pages describe **PySTRA** |release|, the **2.0 development API**.
-Follow :doc:`install` to install this version. :doc:`whatsnew` summarizes the
-release, and existing users can consult :doc:`migrating`; the
-`stable documentation <https://pystra.github.io/pystra/>`_ uses the released 1.x
-API.
+These pages describe **PySTRA** |release|. Follow :doc:`install` to install
+it. :doc:`whatsnew` summarizes the release, and :doc:`migrating` shows how to
+update 1.x code; the `1.x documentation <https://pystra.github.io/pystra/>`_
+remains available.
 
 .. container:: workflow-grid
 

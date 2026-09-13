@@ -5,7 +5,7 @@ All notable changes to PySTRA are documented here.
 
 The format follows `Keep a Changelog <https://keepachangelog.com/>`_.
 
-2.0.0 (unreleased)
+2.0.0 (2026-09-13)
 ------------------
 
 The outstanding feature PRs remain unmerged in 1.x. Their functionality and
@@ -145,6 +145,11 @@ Fixed
 
 Changed
 ~~~~~~~
+- Faster transformations and simulation. On the fixed benchmark cases, FORM is
+  12–37% faster than 1.6.0, SORM 17% faster, and crude Monte Carlo and
+  importance sampling about 85% faster, with unchanged limit-state evaluation
+  counts. Simulation convergence histories use 50% more memory, for the
+  log-probability history that keeps tail estimates finite.
 - Renamed ``GenericCalibration`` to ``CodeCalibration`` and ``GenericModel``
   to ``NormalizedReliabilityModel``; factor derivation and verification are
   presented as operations within the same code-calibration workflow.
