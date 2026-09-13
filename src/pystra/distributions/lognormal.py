@@ -186,7 +186,7 @@ class Lognormal(Distribution):
         """
         Updating the distribution location parameter.
         For Lognormal, even though we have a SciPy object, it's not being used in the
-        functions above for performance, so we need to update pe.arams directly.
+        functions above for performance, so we need to update parameters directly.
         """
 
         self._update_params(loc, self.std)

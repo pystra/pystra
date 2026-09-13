@@ -369,9 +369,7 @@ class CrudeMonteCarlo(MonteCarlo):
         # Establish covariance matrix, its Cholesky decomposition, and its inverse
         self._covariance = stdv**2 * np.eye(self._nrv)
         self._cholesky_covariance = stdv * np.eye(self._nrv)
-        # chol_covariance = chol(covariance);
         self._inverse_covariance = 1 * (stdv**2) ** (-1) * np.eye(self._nrv)
-        # inv_covariance = inv(covariance);
 
         # Initializations
         self._sum_q = 0
@@ -470,7 +468,6 @@ class DistributionAnalysis(MonteCarlo):
         # Establish covariance matrix, its Cholesky decomposition, and its inverse
         self._covariance = stdv**2 * np.eye(self._nrv)
         self._cholesky_covariance = stdv * np.eye(self._nrv)
-        # chol_covariance = chol(covariance);
 
         ng = 1
 

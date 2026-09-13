@@ -161,7 +161,7 @@ class StochasticModel:
     def call_function(self, value):
         self._call_function = value
 
-    # ---- Transitional getter/setter methods pending the result/options redesign ----
+    # Named access and dependence configuration
 
     def get_variables(self):
         """Return the stored mapping of random-variable names to distributions."""

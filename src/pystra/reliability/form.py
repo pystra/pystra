@@ -91,7 +91,6 @@ class FORM(AnalysisObject):
         # Convergence is achieved when convergence is set to True
         convergence = False
 
-        # loope
         while not convergence:
             # Compute Transformation from u to x space
             self._compute_transformation()
@@ -133,8 +132,6 @@ class FORM(AnalysisObject):
                 self._converged = bool(condition1 and condition2)
                 convergence = True
 
-            # space for some recording stuff
-
             # Take a step if convergence is not achieved
             if not convergence:
                 # Determine search direction
@@ -147,7 +144,7 @@ class FORM(AnalysisObject):
                 u_new = self._u + self._step * self._d
 
                 # Prepare for a new round in the loop
-                self._u = u_new[0]  # np.transpose(u_new)
+                self._u = u_new[0]
                 i += 1
 
         # Compute beta value
@@ -203,7 +200,6 @@ class FORM(AnalysisObject):
         """Compute gamma vector"""
         self._gamma = np.diag(np.sqrt(np.diag(np.dot(self._J, np.transpose(self._J)))))
         # Importance vector gamma
-        # matmult = np.dot(np.dot(self.alpha, self.J), self.gamma)
         # importance_vector_gamma = matmult / np.linalg.norm(matmult)
 
     def _compute_search_direction(self):
@@ -248,18 +244,11 @@ class FORM(AnalysisObject):
         merit = 0.5 * (np.linalg.norm(u)) ** 2 + c * np.absolute(G)
 
         ntrial = 6
-        """
-        .. note::
-
-             TODO: change fix value to a variable
-        """
 
         Trial_step_size = np.array([0.5 ** np.arange(0, ntrial)])
 
         uT = np.reshape([u], (len(u), -1))
-        dT = np.transpose(d)  # np.reshape(d,(len(d),-1))
-        # zero = np.array([np.ones(ntrial)])
-        # zeroT = np.reshape(zero, (len(zero), -1))
+        dT = np.transpose(d)
         Trial_u = np.dot(uT, np.array([np.ones(ntrial)])) + np.dot(dT, Trial_step_size)
         Trial_x = np.zeros(Trial_u.shape)
         for j in range(ntrial):
