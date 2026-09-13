@@ -20,8 +20,9 @@ interfaces are development history, not released 1.x APIs to migrate from.
 Upgrading a 1.x script
 ----------------------
 
-Most 1.x scripts need the same few edits. Work through them in order; each
-links to its details below.
+Most 1.x scripts need the same few edits. Start with
+``python -m pystra.migrate``, which makes the unambiguous ones and reports the
+rest (`Migration tools`_); each item below links to its details.
 
 #. **Imports.** ``import pystra as ra`` still works. Update imports of moved
    modules (:ref:`moved-modules`) and renamed classes, such as ``Form`` to
@@ -48,8 +49,7 @@ links to its details below.
 
 Results can differ from 1.x where 2.0 corrects a numerical error, and seeded
 simulations differ within sampling error; the :doc:`changelog` lists the
-corrections. There is not yet an automatic converter for user scripts; see
-`Migration tools`_.
+corrections.
 
 .. toctree::
    :hidden:
@@ -904,15 +904,20 @@ distribution as ``dist_obj`` or overrides ``u_to_x``, ``x_to_u`` and
 A subclass that overrides ``cdf``, ``ppf`` or ``pdf`` should also provide
 ``sf``, ``isf`` and ``logpdf`` to keep small probabilities accurate; see
 :doc:`guides/high_reliability`. Sensitivity analysis rebuilds a distribution
-from its constructor arguments, so store any beyond the mean and standard
-deviation in ``_ctor_kwargs``.
+with ``with_parameters``, which passes the ``parameters`` mapping, with any
+changes, back to the constructor. A subclass whose constructor takes further
+arguments overrides ``parameters`` to include them; see
+:doc:`development/distributions`.
 
 A limit-state function receives one keyword argument for each variable and
 constant, so its argument names must match the model's names; otherwise
 ``ModelError`` is raised.
 
-The public contracts for batched evaluators and for extending distributions are
-still being settled and can change before the beta.
+To evaluate a limit state directly, ``LimitState.evaluate(x, model)`` takes a
+point ``(n_variables,)`` or rows ``(n_samples, n_variables)`` in the model's
+variable order; the column-oriented ``evaluate_lsf`` is private. Transformations
+name the direction of their Jacobians: ``jacobian_u_wrt_x`` and
+``jacobian_x_wrt_u`` replace ``jacobian``.
 
 Migration records
 -----------------
@@ -961,10 +966,19 @@ probability; finite-sample uncertainty reporting remains further work.
 Migration tools
 ---------------
 
-There is not yet an automatic converter for user scripts. A conservative
-converter for unambiguous imports, calls and keywords, with dry-run diffs, is
-planned before the beta. Until then, use the checklist at the top of this page,
-the :doc:`migration-map` and the error messages of the signposts.
+``python -m pystra.migrate PATH...`` converts 1.x scripts and notebooks. It
+rewrites only unambiguous code: imports and module paths, renamed classes and
+functions reached through the ``pystra`` module or imported from it, and renamed
+keywords of PySTRA constructors such as ``stdv``. It prints the changes as a diff
+and writes nothing unless you add ``--write``, and a second run changes nothing.
+What needs judgment is reported with its location instead: result getters,
+``AnalysisOptions``, ``input_type``, printing methods, the ``Calibration`` class
+and global NumPy seeding of simulations. Review each report before running the
+script, and use the checklist above and the :doc:`migration-map` for the rest.
+
+The converter was tried on the 1.6.0 examples and tutorials. After the reported
+edits they reproduce their 1.6.0 results within stated tolerances; see the
+:download:`migration trials <../migration/trials.md>`.
 
 The scripts below maintain this repository.
 ``scripts/migrate_names.py`` applies the reviewed map to tracked repository

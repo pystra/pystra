@@ -68,6 +68,17 @@ Added
   underflow, so they stay finite and accurate to :math:`|u| \approx 37.5`, and
   beyond that for the normal, lognormal and Gumbel families. The
   :doc:`guides/high_reliability` guide shows what this covers in practice.
+- ``LimitState.evaluate`` evaluates a point ``(n_variables,)`` or a batch of
+  rows ``(n_samples, n_variables)``, with forward-difference or analytic
+  gradients. Distributions expose ``parameters`` and ``with_parameters`` to
+  rebuild them, and transformations provide ``jacobian_u_wrt_x`` and
+  ``jacobian_x_wrt_u``.
+- ``python -m pystra.migrate`` converts 1.x scripts and notebook code
+  conservatively, with dry-run diffs and reports of the changes that need
+  judgment. Migration trials on the 1.6.0 examples and tutorials record their
+  numerical agreement.
+- User guides for the extreme-value families, with their classical Type I, II
+  and III names, and for reliability sensitivity analysis.
 
 Fixed
 ~~~~~
@@ -221,6 +232,10 @@ Changed
 - SciPy minimum version is 1.11 for multivariate Student-t CDF integration.
 - Metadata and documentation consistently state GPL-3.0-or-later, with
   retained third-party notices for adapted methods.
+- The column-oriented ``LimitState.evaluate_lsf`` is private; the
+  transformations' ambiguous ``jacobian`` gives way to the directed methods; and
+  ``parameters`` and ``with_parameters`` replace the private ``_ctor_kwargs``
+  and ``_make_copy`` reconstruction hooks.
 
 v1.6.0 (2026-03-16)
 -------------------
