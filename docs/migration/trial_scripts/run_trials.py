@@ -8,14 +8,17 @@ records, execution logs, converter diffs, and reviewed manual patches.
 import argparse
 from dataclasses import asdict
 import difflib
+import hashlib
 import json
 import os
 from pathlib import Path
+import platform
 import re
 import subprocess
 import sys
 
 import numpy as np
+import scipy
 
 from pystra.migrate import convert_notebook, convert_source
 
@@ -77,6 +80,36 @@ def baseline_adjustments(source, name):
 
 def flatten(mapping):
     return np.array([value for row in mapping.values() for value in row.values()])
+
+
+def source_state(checkout):
+    """Capture the actual revision and library contents, including uncommitted edits."""
+    digest = hashlib.sha256()
+    for path in sorted((checkout / "src/pystra").rglob("*.py")):
+        digest.update(str(path.relative_to(checkout)).encode())
+        digest.update(path.read_bytes())
+    revision = subprocess.run(
+        ["git", "-C", str(checkout), "rev-parse", "HEAD"],
+        capture_output=True,
+        text=True,
+    )
+    return {
+        "revision": revision.stdout.strip() if revision.returncode == 0 else None,
+        "source_sha256": digest.hexdigest(),
+    }
+
+
+def write_report(path, report, baseline):
+    """Write the complete artifact with portable provenance paths."""
+    text = json.dumps(report, indent=2)
+    roots = {
+        str(ROOT): "<repo>",
+        str(baseline.resolve()): "<baseline>",
+        str(Path.home()): "<home>",
+    }
+    for root in sorted(roots, key=len, reverse=True):
+        text = text.replace(json.dumps(root)[1:-1], roots[root])
+    path.write_text(text + "\n")
 
 
 def compare(baseline, current):
@@ -173,7 +206,23 @@ def main():
         help="skip OpenSees execution, retaining its conversion trial",
     )
     args = parser.parse_args()
+    args.baseline = args.baseline.resolve()
+    args.output = args.output.resolve()
     args.output.mkdir(parents=True, exist_ok=True)
+    report = {
+        "environment": {
+            "baseline": source_state(args.baseline),
+            "current": source_state(ROOT),
+            "python": platform.python_version(),
+            "numpy": np.__version__,
+            "scipy": scipy.__version__,
+            "threads": 1,
+            "numpy_streams": "1.6.0: global RandomState; 2.0: explicit Generator seeds",
+        },
+        "conversion_inventory": [],
+        "trials": [],
+        "numerical_records": {},
+    }
     inventory = []
     for path in [
         *sorted((args.baseline / "examples").glob("*.py")),
@@ -196,7 +245,9 @@ def main():
     (args.output / "conversion-inventory.json").write_text(
         json.dumps(inventory, indent=2) + "\n"
     )
-    outcomes = []
+    report["conversion_inventory"] = inventory
+    outcomes = report["trials"]
+    write_report(args.output / "results.json", report, args.baseline)
     for name, original_path in SCRIPTS.items():
         original = args.baseline / original_path
         source = baseline_adjustments(code(original.read_text(), original.suffix), name)
@@ -217,8 +268,10 @@ def main():
         )
         if name == "openseespy_ex" and args.skip_external:
             outcomes.append({"script": original_path, "status": "external_skipped"})
+            write_report(args.output / "results.json", report, args.baseline)
             continue
         executions = {}
+        records = report["numerical_records"][name] = {}
         for version, checkout, script in [
             ("1.6.0", args.baseline, baseline_script),
             ("2.0", ROOT, TRIALS / (name + ".py")),
@@ -233,6 +286,7 @@ def main():
                 "MPLCONFIGDIR": str(args.output.resolve() / "matplotlib"),
             }
             target = args.output / f"{name}-{version}.json"
+            target.unlink(missing_ok=True)
             with (args.output / f"{name}-{version}.log").open("w") as log:
                 try:
                     process = subprocess.run(
@@ -250,12 +304,14 @@ def main():
                     executions[version] = process.returncode
                 except subprocess.TimeoutExpired:
                     executions[version] = "timeout"
+            if executions[version] == 0:
+                records[version] = json.loads(target.read_text())
         outcome = {"script": original_path, "executions": executions}
         if all(status == 0 for status in executions.values()):
             try:
                 outcome["checks"] = compare(
-                    json.loads((args.output / f"{name}-1.6.0.json").read_text()),
-                    json.loads((args.output / f"{name}-2.0.json").read_text()),
+                    records["1.6.0"],
+                    records["2.0"],
                 )
                 outcome["status"] = "passed"
             except (AssertionError, IndexError, ValueError) as error:
@@ -264,7 +320,7 @@ def main():
             outcome["status"] = "execution_failed"
         outcomes.append(outcome)
         print(name, outcome["status"], flush=True)
-        (args.output / "results.json").write_text(json.dumps(outcomes, indent=2) + "\n")
+        write_report(args.output / "results.json", report, args.baseline)
     return int(
         any(row["status"] not in ("passed", "external_skipped") for row in outcomes)
     )
