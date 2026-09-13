@@ -909,22 +909,52 @@ of the inverse map in normal space for other copulas.</p>
 <p class="rubric">Methods</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.dependence.joint.CopulaTransformation.jacobian" title="pystra.dependence.joint.CopulaTransformation.jacobian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jacobian</span></code></a></p></td>
-<td><p>Return du/dx in original variable order.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.dependence.joint.CopulaTransformation.jacobian_u_wrt_x" title="pystra.dependence.joint.CopulaTransformation.jacobian_u_wrt_x"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jacobian_u_wrt_x</span></code></a></p></td>
+<td><p>Return <code class="docutils literal notranslate"><span class="pre">du[i]</span> <span class="pre">/</span> <span class="pre">dx[j]</span></code> in original joint marginal order.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">u_to_x</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.dependence.joint.CopulaTransformation.jacobian_x_wrt_u" title="pystra.dependence.joint.CopulaTransformation.jacobian_x_wrt_u"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jacobian_x_wrt_u</span></code></a></p></td>
+<td><p>Return <code class="docutils literal notranslate"><span class="pre">dx[i]</span> <span class="pre">/</span> <span class="pre">du[j]</span></code> in original joint marginal order.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">u_to_x</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">x_to_u</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">x_to_u</span></code></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <dl class="py method">
-<dt class="sig sig-object py" id="pystra.dependence.joint.CopulaTransformation.jacobian">
-<span class="sig-name descname"><span class="pre">jacobian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/dependence/joint.html#CopulaTransformation.jacobian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.dependence.joint.CopulaTransformation.jacobian" title="Link to this definition">#</a></dt>
-<dd><p>Return du/dx in original variable order.</p>
+<dt class="sig sig-object py" id="pystra.dependence.joint.CopulaTransformation.jacobian_u_wrt_x">
+<span class="sig-name descname"><span class="pre">jacobian_u_wrt_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/dependence/joint.html#CopulaTransformation.jacobian_u_wrt_x"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.dependence.joint.CopulaTransformation.jacobian_u_wrt_x" title="Link to this definition">#</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">du[i]</span> <span class="pre">/</span> <span class="pre">dx[j]</span></code> in original joint marginal order.</p>
+<p><code class="docutils literal notranslate"><span class="pre">u</span></code> and <code class="docutils literal notranslate"><span class="pre">x</span></code> are corresponding reference and physical vectors of
+shape <code class="docutils literal notranslate"><span class="pre">(dimension,)</span></code>. The returned matrix has shape
+<code class="docutils literal notranslate"><span class="pre">(dimension,</span> <span class="pre">dimension)</span></code>: reference coordinates are rows and
+physical variables are columns. <code class="docutils literal notranslate"><span class="pre">marg</span></code> is unused and is accepted
+for the shared transformation interface. Rosenblatt innovations stay
+indexed by original variables even with a noncanonical order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.dependence.joint.CopulaTransformation.jacobian_x_wrt_u">
+<span class="sig-name descname"><span class="pre">jacobian_x_wrt_u</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/dependence/joint.html#CopulaTransformation.jacobian_x_wrt_u"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.dependence.joint.CopulaTransformation.jacobian_x_wrt_u" title="Link to this definition">#</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">dx[i]</span> <span class="pre">/</span> <span class="pre">du[j]</span></code> in original joint marginal order.</p>
+<p>Inputs are corresponding reference/physical points of shape
+<code class="docutils literal notranslate"><span class="pre">(dimension,)</span></code>. The returned <code class="docutils literal notranslate"><span class="pre">(dimension,</span> <span class="pre">dimension)</span></code> matrix has
+physical variables in rows and reference coordinates in columns.
+<code class="docutils literal notranslate"><span class="pre">marg</span></code> is unused. This is the inverse of <a class="reference internal" href="#pystra.dependence.joint.CopulaTransformation.jacobian_u_wrt_x" title="pystra.dependence.joint.CopulaTransformation.jacobian_u_wrt_x"><code class="xref py py-meth docutils literal notranslate"><span class="pre">jacobian_u_wrt_x()</span></code></a>
+at a nonsingular point, for both Nataf and Rosenblatt mappings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -979,7 +1009,8 @@ of the inverse map in normal space for other copulas.</p>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.dependence.joint.CopulaTransformation"><code class="docutils literal notranslate"><span class="pre">CopulaTransformation</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.dependence.joint.CopulaTransformation.jacobian"><code class="docutils literal notranslate"><span class="pre">CopulaTransformation.jacobian()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.dependence.joint.CopulaTransformation.jacobian_u_wrt_x"><code class="docutils literal notranslate"><span class="pre">CopulaTransformation.jacobian_u_wrt_x()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.dependence.joint.CopulaTransformation.jacobian_x_wrt_u"><code class="docutils literal notranslate"><span class="pre">CopulaTransformation.jacobian_x_wrt_u()</span></code></a></li>
 </ul>
 </li>
 </ul>

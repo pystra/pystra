@@ -475,7 +475,9 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="guides/methods.html">Choosing a reliability method</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/models.html">Specifying a reliability model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/gev_family.html">Choosing an extreme-value distribution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/form_sorm.html">Running FORM and SORM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/sensitivity.html">Computing reliability sensitivities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/simulation.html">Estimating failure probability by simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/high_reliability.html">Working at high reliability</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/results.html">Interpreting results and convergence</a></li>
@@ -644,7 +646,7 @@ approximation, although it cannot change the exact failure probability.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">transform</span> <span class="o">=</span> <span class="n">joint</span><span class="o">.</span><span class="n">make_transformation</span><span class="p">(</span><span class="s2">"rosenblatt"</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">transform</span><span class="o">.</span><span class="n">x_to_u</span><span class="p">([</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">])</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">transform</span><span class="o">.</span><span class="n">u_to_x</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
-<span class="n">du_dx</span> <span class="o">=</span> <span class="n">transform</span><span class="o">.</span><span class="n">jacobian</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="n">du_dx</span> <span class="o">=</span> <span class="n">transform</span><span class="o">.</span><span class="n">jacobian_u_wrt_x</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>These methods take one full vector; joint distribution methods take either

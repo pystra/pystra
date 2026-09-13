@@ -1631,7 +1631,12 @@ looking up a particular name.</p>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">JointDistribution.getTransformation</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CopulaTransformation.jacobian</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pystra.dependence.joint.CopulaTransformation.jacobian_u_wrt_x</span></code>, <code class="docutils literal notranslate"><span class="pre">pystra.dependence.joint.CopulaTransformation.jacobian_x_wrt_u</span></code></p></td>
+<td><p>replaced</p></td>
+<td><p>Directed derivatives replace ambiguous jacobian: rows are output coordinates, columns input coordinates, in model variable order.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">JointDistribution.getTransformation</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">pystra.dependence.joint.JointDistribution.make_transformation</span></code></p></td>
 <td><p>renamed</p></td>
 <td></td>
@@ -1891,116 +1896,121 @@ looking up a particular name.</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">LimitState.compute_lsf</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.LimitState.evaluate_lsf</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.LimitState.evaluate</span></code></p></td>
 <td><p>replaced</p></td>
-<td><p>Private evaluation helpers of LimitState.evaluate_lsf in 2.0; the limit state keeps no evaluation state.</p></td>
+<td><p>Private evaluation helpers of LimitState.evaluate in 2.0; the limit state keeps no evaluation state.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">LimitState.evaluate_ddm</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.LimitState.evaluate_lsf</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.LimitState.evaluate</span></code></p></td>
 <td><p>replaced</p></td>
-<td><p>Private evaluation helpers of LimitState.evaluate_lsf in 2.0; the limit state keeps no evaluation state.</p></td>
+<td><p>Private evaluation helpers of LimitState.evaluate in 2.0; the limit state keeps no evaluation state.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">LimitState.evaluate_ffd</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.LimitState.evaluate_lsf</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.LimitState.evaluate</span></code></p></td>
 <td><p>replaced</p></td>
-<td><p>Private evaluation helpers of LimitState.evaluate_lsf in 2.0; the limit state keeps no evaluation state.</p></td>
+<td><p>Private evaluation helpers of LimitState.evaluate in 2.0; the limit state keeps no evaluation state.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">LimitState.evaluate_nogradient</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.LimitState.evaluate_lsf</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">LimitState.evaluate_lsf</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.LimitState.evaluate</span></code></p></td>
 <td><p>replaced</p></td>
-<td><p>Private evaluation helpers of LimitState.evaluate_lsf in 2.0; the limit state keeps no evaluation state.</p></td>
+<td><p>Public evaluate takes a point (n_variables,) or row batch (n_samples, n_variables), returning scalar/batch values and matching gradients. Square batches are rows; transpose legacy column batches explicitly. Internal column kernels are private.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">LimitState.getExpression</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">LimitState.evaluate_nogradient</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.LimitState.evaluate</span></code></p></td>
+<td><p>replaced</p></td>
+<td><p>Private evaluation helpers of LimitState.evaluate in 2.0; the limit state keeps no evaluation state.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">LimitState.getExpression</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.LimitState.get_expression</span></code></p></td>
 <td><p>renamed</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">LimitState.setExpression</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">LimitState.setExpression</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.LimitState.set_expression</span></code></p></td>
 <td><p>renamed</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.addCallFunction</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.addCallFunction</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.StochasticModel.add_call_function</span></code></p></td>
 <td><p>renamed</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.addVariable</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.addVariable</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.StochasticModel.add_variable</span></code></p></td>
 <td><p>renamed</p></td>
 <td><p>Adding marginals after explicit correlation or copula specification is rejected without changing the model; constants remain allowed.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.getCallFunction</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.getCallFunction</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.StochasticModel.get_call_function</span></code></p></td>
 <td><p>renamed</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.getConstants</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.getConstants</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.StochasticModel</span></code></p></td>
 <td><p>replaced</p></td>
 <td><p>Use the read-only constants mapping.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.getCopula</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.getCopula</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.StochasticModel.get_copula</span></code></p></td>
 <td><p>renamed</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.getCorrelation</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.getCorrelation</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.StochasticModel.get_correlation</span></code></p></td>
 <td><p>renamed</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.getJointDistribution</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.getJointDistribution</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.StochasticModel.get_joint_distribution</span></code></p></td>
 <td><p>renamed</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.getLenMarginalDistributions</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.getLenMarginalDistributions</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.StochasticModel.get_len_marginal_distributions</span></code></p></td>
 <td><p>renamed</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.getMarginalDistributions</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.getMarginalDistributions</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.StochasticModel.get_marginal_distributions</span></code></p></td>
 <td><p>renamed</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.getModifiedCorrelation</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.getModifiedCorrelation</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.StochasticModel.get_modified_correlation</span></code></p></td>
 <td><p>renamed</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.getNames</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.getNames</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.StochasticModel.get_names</span></code></p></td>
 <td><p>renamed</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.getVariable</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.getVariable</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.StochasticModel.variable</span></code></p></td>
 <td><p>renamed</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.getVariables</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.getVariables</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.StochasticModel.get_variables</span></code></p></td>
 <td><p>renamed</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.setCopula</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.setCopula</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.StochasticModel.set_copula</span></code></p></td>
 <td><p>renamed</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.setCorrelation</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.setCorrelation</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.StochasticModel.set_correlation</span></code></p></td>
 <td><p>renamed</p></td>
 <td><p>Correlation dimensions must match the existing random variables; invalid input leaves dependence unchanged.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.setMarginalDistributions</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.setMarginalDistributions</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.StochasticModel.set_marginal_distributions</span></code></p></td>
 <td><p>renamed</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.setModifiedCorrelation</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">StochasticModel.setModifiedCorrelation</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">pystra.model.StochasticModel.set_modified_correlation</span></code></p></td>
 <td><p>renamed</p></td>
 <td></td>
@@ -2291,6 +2301,32 @@ looking up a particular name.</p>
 </table>
 </div>
 </section>
+<section id="pystra-transformation">
+<h2><code class="docutils literal notranslate"><span class="pre">pystra.transformation</span></code><a class="headerlink" href="#pystra-transformation" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 28.0%" />
+<col style="width: 32.0%" />
+<col style="width: 10.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>1.x name</p></th>
+<th class="head"><p>2.0</p></th>
+<th class="head"><p>Change</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Transformation.jacobian</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pystra.dependence.transformation.Transformation.jacobian_u_wrt_x</span></code>, <code class="docutils literal notranslate"><span class="pre">pystra.dependence.transformation.Transformation.jacobian_x_wrt_u</span></code></p></td>
+<td><p>replaced</p></td>
+<td><p>Directed derivatives replace ambiguous jacobian: rows are output coordinates, columns input coordinates, in model variable order.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 </section>
 
 
@@ -2371,6 +2407,7 @@ looking up a particular name.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra-strong-maximum-not-in-1-6-0"><code class="docutils literal notranslate"><span class="pre">pystra.strong_maximum</span></code> (not in 1.6.0)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra-system-not-in-1-6-0"><code class="docutils literal notranslate"><span class="pre">pystra.system</span></code> (not in 1.6.0)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra-system-form-not-in-1-6-0"><code class="docutils literal notranslate"><span class="pre">pystra.system_form</span></code> (not in 1.6.0)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra-transformation"><code class="docutils literal notranslate"><span class="pre">pystra.transformation</span></code></a></li>
 </ul>
   </nav></div>
 

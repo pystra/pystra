@@ -566,8 +566,10 @@ or quality control.</p>
 <span class="eqno">(1)<a class="headerlink" href="#equation-eq-fd-sens" title="Link to this equation">#</a></span>\[\frac{\partial\beta}{\partial\theta_k}
 \approx \frac{\beta(\theta_k + \Delta\theta_k) - \beta(\theta_k)}
             {\Delta\theta_k}\]</div>
-<p>This requires <span class="math notranslate nohighlight">\(2n + 1\)</span> FORM runs (one baseline plus two per
-parameter). The method is straightforward and distribution-agnostic, but
+<p>With <span class="math notranslate nohighlight">\(m\)</span> declared distribution parameters this requires <span class="math notranslate nohighlight">\(m + 1\)</span>
+FORM runs: one baseline and one perturbed run per parameter, or <span class="math notranslate nohighlight">\(2n + 1\)</span>
+when each of <span class="math notranslate nohighlight">\(n\)</span> variables declares only its mean and standard deviation.
+The method is straightforward and distribution-agnostic, but
 can be numerically unstable when the perturbation changes the Nataf
 transformation significantly — particularly for correlated non-normal
 variables with small sensitivities.</p>
@@ -628,7 +630,7 @@ methods generalise automatically.</p>
 central differences unless the distribution provides an analytical
 override.  See the <a class="reference internal" href="../developer.html#adding-distributions"><span class="std std-ref">developer guide</span></a> for
 implementation details.</p>
-<p><strong>Use this method:</strong> <a class="reference internal" href="../guides/form_sorm.html"><span class="doc">Running FORM and SORM</span></a> · <a class="reference internal" href="../notebooks/ex_sensitivity.html"><span class="doc">Reliability sensitivities</span></a> · <a class="reference internal" href="../api/reliability.html"><span class="doc">Reliability algorithms and results</span></a></p>
+<p><strong>Use this method:</strong> <a class="reference internal" href="../guides/sensitivity.html"><span class="doc">Computing reliability sensitivities</span></a> · <a class="reference internal" href="../notebooks/ex_sensitivity.html"><span class="doc">Reliability sensitivities</span></a> · <a class="reference internal" href="../api/reliability.html"><span class="doc">Reliability algorithms and results</span></a></p>
 <p>For coordinate conventions, see <a class="reference internal" href="notation.html"><span class="doc">Notation and probability spaces</span></a>.</p>
 </section>
 </section>

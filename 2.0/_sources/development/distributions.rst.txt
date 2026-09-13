@@ -1,139 +1,135 @@
 Adding a distribution
 =====================
 
-All distributions inherit from
-:class:`~pystra.distributions.distribution.Distribution`.  Two
-approaches are available:
+Marginals inherit from :class:`~pystra.distributions.distribution.Distribution`.
+A subclass normally builds a frozen ``scipy.stats`` distribution and passes it
+as ``dist_obj`` to the base constructor. The base class supplies density,
+CDF, quantile and marginal normal-space transformations. A custom law can
+instead implement these operations directly, including both tails: ``pdf``,
+``logpdf``, ``cdf``, ``sf``, ``logcdf``, ``logsf``, ``ppf`` and ``isf``.
+The marginal ``jacobian(u, x)`` supplies the diagonal derivative ``du/dx``;
+the joint transformations expose the directed methods described in
+:doc:`/api/probability`.
 
-- **Wrapping a SciPy distribution** (most common) — construct a
-  ``scipy.stats`` frozen distribution object and pass it as
-  ``dist_obj`` to ``super().__init__()``.  The base class then
-  delegates ``pdf``, ``cdf``, ``ppf``, and the Nataf-space
-  transformations automatically.
-- **Hardcoded implementation** — override the transformation and
-  Jacobian methods directly (see :class:`~pystra.distributions.zero_inflated.ZeroInflated`
-  for an example).  This is useful for distributions
-  that cannot be expressed as a single SciPy object.
+Continuous transformations require continuous marginals. A reconstruction
+contract for ``ZeroInflated`` does not make FORM or smooth copula transforms
+valid at its atom. Keep the failure convention ``g <= 0`` when evaluating
+mixed distributions through a supported simulation route.
 
-To make the distribution work correctly with **sensitivity analysis**
-there are a few additional conventions to follow.
+Reconstruction and parameter replacement
+----------------------------------------
 
-Extra constructor arguments (``_ctor_kwargs``)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Every marginal exposes a read-only
+:attr:`~pystra.distributions.distribution.Distribution.parameters` mapping.
+It contains the complete keyword arguments needed to rebuild the law, including
+its name, start point and any bounds, shift, shape or nested distributions::
 
-If your distribution's constructor takes arguments beyond
-``(name, mean, std)`` — for instance bounds, shift, or shape
-parameters — store them as attributes *and* populate ``_ctor_kwargs``
-**before** calling ``super().__init__()``::
+    import numpy as np
+    import pystra as ra
 
-    class MyDist(Distribution):
-        def __init__(self, name, mean, std, shape, *, lower=0, start_point=None):
-            self.shape = shape
-            self.lower = lower
-            self._ctor_kwargs = {"shape": shape, "lower": lower}
+    original = ra.Beta("R", q=2.3, r=4.1, lower=3, upper=10, start_point=5)
+    rebuilt = type(original)(**original.parameters)
+    copied = original.with_parameters()
+    np.testing.assert_allclose(rebuilt.cdf([4, 5, 6]), original.cdf([4, 5, 6]))
+    assert copied.start_point == 5
 
-            # Build scipy distribution object ...
-            self.dist_obj = ...
+:meth:`~pystra.distributions.distribution.Distribution.with_parameters` returns
+an independent instance with selected parameters replaced. It rejects unknown
+keywords. Nested marginals and SciPy frozen objects in built-in parameter
+snapshots and copies are detached from the original. The mapping itself is
+read-only; its values need not be immutable.
 
-            super().__init__(
-                name=name, dist_obj=self.dist_obj, start_point=start_point
-            )
+Built-ins with native constructors expose native parameters where fitting
+moments again would lose precision. For example, Beta exposes ``q``, ``r``,
+``lower`` and ``upper``; GEV exposes ``loc``, ``scale`` and ``shape``.
+``ScipyDist`` exposes its frozen ``dist_obj``. ``Maximum``, ``MaxParent`` and
+``ZeroInflated`` expose their nested marginal and exponent or atom probability.
 
-The base-class method
-:meth:`~pystra.distributions.distribution.Distribution._make_copy`
-uses ``_ctor_kwargs`` to reconstruct the distribution when parameters
-are perturbed during sensitivity analysis.  Without it, reconstruction
-fails or silently produces wrong results.
+Moment-parameterised marginals also accept ``mean`` and ``std`` in
+``with_parameters``. Supplying either selects moment construction, preserves
+the other moment, and keeps fixed bounds or the GEV shape. A native parameter
+update keeps the other native parameters. Mixing the two modes raises
+``TypeError``. The start point is preserved; explicitly passing
+``start_point=None`` selects the new mean::
 
-Native parameters
-~~~~~~~~~~~~~~~~~
+    changed = original.with_parameters(mean=6, start_point=None)
+    assert changed.parameters["lower"] == 3
+    assert changed.parameters["upper"] == 10
+    assert changed.start_point == changed.mean
 
-Constructors take the mean and standard deviation positionally. If the
-distribution also has native parameters, accept them as keyword-only
-arguments named as in SciPy, and let
-``_uses_native_parameters(self, mean, std, loc=loc, scale=scale)`` decide which
-set was given. It returns ``True`` for a complete native set and raises
-``TypeError`` for a mixture or an incomplete set. ``_make_copy`` rebuilds a
-distribution from its moments and ``_ctor_kwargs``, so a distribution built from
-native parameters is copied through its moments.
+A custom marginal whose constructor differs from ``(name, mean, std,
+start_point=...)`` must override the public ``parameters`` property.
+The mapping must reconstruct the *current* law, and mutable values must be
+independent snapshots. For a moment-based subclass with an additional bound::
 
-Declaring sensitivity parameters
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-By default, sensitivities are computed with respect to the mean and
-standard deviation.  If your distribution has additional parameters of
-physical interest (e.g. a shape parameter that controls tail
-behaviour), override
-:attr:`~pystra.distributions.distribution.Distribution.sensitivity_params`::
+    from types import MappingProxyType
 
     @property
-    def sensitivity_params(self):
-        return {
+    def parameters(self):
+        return MappingProxyType({
+            "name": self.name,
             "mean": self.mean,
             "std": self.std,
-            "shape": self.shape,
-        }
+            "lower": self.lower,
+            "start_point": self.start_point,
+        })
 
-**Important distinction:** parameters in ``_ctor_kwargs`` but *not* in
-``sensitivity_params`` are held fixed during sensitivity analysis.
-For example, the Beta distribution stores its bounds ``lower`` and ``upper``
-in ``_ctor_kwargs`` (so ``_make_copy`` can reconstruct it) but does
-not add them to ``sensitivity_params`` (bounds are treated as fixed
-constants, not sensitivity parameters).
+The inherited ``with_parameters`` passes this mapping, with replacements,
+to the constructor. A custom class with alternative parameterisations should
+also override ``with_parameters`` to define explicitly which coordinates stay
+fixed. It must preserve independence, reject unknown or mixed parameter sets,
+and reproduce the law when called without replacements. There is no
+``_ctor_kwargs`` or ``_make_copy`` extension hook in 2.0.
 
-Analytical CDF derivatives (optional)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Sensitivity coordinates
+-----------------------
 
-The base class computes :math:`\partial F_X/\partial\theta` numerically
-via central differences.  For better accuracy and performance you can
-override
-:meth:`~pystra.distributions.distribution.Distribution.cdf_gradient`
-with analytical expressions.  The Normal and Lognormal distributions
-do this::
+:attr:`~pystra.distributions.distribution.Distribution.sensitivity_params`
+is separate metadata: it names the coordinates to perturb for sensitivity
+analysis. The default is ``{"mean": self.mean, "std": self.std}``.
+GEV adds ``shape``. Beta bounds participate in reconstruction but remain fixed
+during moment sensitivity analysis.
+
+Sensitivity analysis passes the complete sensitivity mapping to
+``with_parameters`` and changes one coordinate at a time. Thus a GEV shape
+sensitivity holds its mean and standard deviation fixed, even though the
+reconstruction mapping uses native parameters::
+
+    load = ra.GEV("S", 10, 2, shape=0.1)
+    heavier_tail = load.with_parameters(**{**load.sensitivity_params, "shape": 0.2})
+    np.testing.assert_allclose(
+        [heavier_tail.mean, heavier_tail.std], [load.mean, load.std]
+    )
+
+``ScipyDist`` and the composite marginals have empty sensitivity metadata:
+their constructors cannot generically replace a physical mean and standard
+deviation. Their copy contract is supported, but ``cdf_gradient`` raises a
+clear error until a subclass supplies sensitivity coordinates and derivatives.
+
+The base :meth:`~pystra.distributions.distribution.Distribution.cdf_gradient`
+uses central differences. It checks that reconstruction reproduces the law
+before perturbing it. Override it with analytic derivatives when available;
+the returned mapping must have the same keys as ``sensitivity_params``::
 
     def cdf_gradient(self, x):
         z = (x - self.mean) / self.std
-        phi_z = self.std_normal.pdf(z)
+        density = self.std_normal.pdf(z)
         return {
-            "mean": -phi_z / self.std,
-            "std": -(x - self.mean) * phi_z / self.std**2,
+            "mean": -density / self.std,
+            "std": -(x - self.mean) * density / self.std**2,
         }
 
-The returned dict must have the same keys as ``sensitivity_params``.
+Verification
+------------
 
-Verifying your distribution
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Test reconstruction from ``parameters`` and through ``with_parameters``
+against moments, support, CDFs, tails and quantiles. Include native constructor
+inputs, non-default bounds, explicit start points, and independence of mutable
+nested objects. Check that changing a parameter preserves its documented fixed
+coordinates and leaves the original unchanged.
 
-1. **Basic reliability analysis** — the distribution should work in a
-   simple FORM problem.  Build a small model with your distribution,
-   run FORM, and check that the reliability index is sensible::
-
-       model = ra.StochasticModel()
-       model.add_variable(MyDist("X", 100, 15, shape=0.2))
-       model.add_variable(ra.Normal("Y", 50, 10))
-       ls = ra.LimitState(lambda X, Y: X - Y)
-       f = ra.FORM(model, ls)
-       f_result = f.run()
-       print(f_result.summary())
-
-2. **Round-trip reconstruction** — if you set ``_ctor_kwargs``,
-   verify that ``_make_copy()`` with no overrides produces a
-   distribution whose CDF matches the original::
-
-       d = MyDist("X", 100, 15, shape=0.2)
-       d2 = d._make_copy()
-       assert abs(d.cdf(110) - d2.cdf(110)) < 1e-10
-
-3. **Sensitivity analysis** — the closed-form method exercises a lot
-   of the distribution plumbing (``cdf_gradient``, ``_dmoments_dtheta``,
-   ``_make_copy``), so running both methods is a good integration
-   check::
-
-       fd = ra.SensitivityAnalysis(model, limit_state).run()  # finite-difference
-       cf = ra.SensitivityAnalysis(model, limit_state, method="closed_form").run()
-
-   FD and CF sensitivities should agree (typically within 5 % for
-   mean/std, possibly 10–15 % for shape parameters due to inherent
-   FD instability).
-
-See ``tests/test_sensitivity.py`` for concrete examples.
+For continuous marginals, run a small FORM reference case and compare numerical
+and closed-form sensitivities. Tolerances should reflect the finite-difference
+step and reference problem; shape derivatives may be less stable than moment
+derivatives. See ``tests/test_distribution_copy.py`` and
+``tests/test_sensitivity.py`` for examples.

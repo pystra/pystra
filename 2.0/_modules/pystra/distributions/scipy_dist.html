@@ -532,6 +532,16 @@
 <span class="sd">      - start_point (float):     Start point for seach\n</span>
 <span class="sd">    """</span>
 
+    <span class="n">_native_parameters</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parameter_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"dist_obj"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sensitivity_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""No generic moment perturbation; replace the constructor inputs."""</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">dist_obj</span><span class="p">,</span> <span class="n">start_point</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dist_obj</span><span class="p">,</span> <span class="n">rv_frozen</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ModelError</span><span class="p">(</span>

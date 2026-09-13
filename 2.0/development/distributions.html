@@ -46,8 +46,6 @@
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=ccd31ad0"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'development/distributions';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -534,140 +532,129 @@
                   
   <section id="adding-a-distribution">
 <h1>Adding a distribution<a class="headerlink" href="#adding-a-distribution" title="Link to this heading">#</a></h1>
-<p>All distributions inherit from
-<a class="reference internal" href="../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution" title="pystra.distributions.distribution.Distribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">Distribution</span></code></a>.  Two
-approaches are available:</p>
-<ul class="simple">
-<li><p><strong>Wrapping a SciPy distribution</strong> (most common) — construct a
-<code class="docutils literal notranslate"><span class="pre">scipy.stats</span></code> frozen distribution object and pass it as
-<code class="docutils literal notranslate"><span class="pre">dist_obj</span></code> to <code class="docutils literal notranslate"><span class="pre">super().__init__()</span></code>.  The base class then
-delegates <code class="docutils literal notranslate"><span class="pre">pdf</span></code>, <code class="docutils literal notranslate"><span class="pre">cdf</span></code>, <code class="docutils literal notranslate"><span class="pre">ppf</span></code>, and the Nataf-space
-transformations automatically.</p></li>
-<li><p><strong>Hardcoded implementation</strong> — override the transformation and
-Jacobian methods directly (see <a class="reference internal" href="../gen/pystra.distributions.zero_inflated.ZeroInflated.html#pystra.distributions.zero_inflated.ZeroInflated" title="pystra.distributions.zero_inflated.ZeroInflated"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZeroInflated</span></code></a>
-for an example).  This is useful for distributions
-that cannot be expressed as a single SciPy object.</p></li>
-</ul>
-<p>To make the distribution work correctly with <strong>sensitivity analysis</strong>
-there are a few additional conventions to follow.</p>
-<section id="extra-constructor-arguments-ctor-kwargs">
-<h2>Extra constructor arguments (<code class="docutils literal notranslate"><span class="pre">_ctor_kwargs</span></code>)<a class="headerlink" href="#extra-constructor-arguments-ctor-kwargs" title="Link to this heading">#</a></h2>
-<p>If your distribution’s constructor takes arguments beyond
-<code class="docutils literal notranslate"><span class="pre">(name,</span> <span class="pre">mean,</span> <span class="pre">std)</span></code> — for instance bounds, shift, or shape
-parameters — store them as attributes <em>and</em> populate <code class="docutils literal notranslate"><span class="pre">_ctor_kwargs</span></code>
-<strong>before</strong> calling <code class="docutils literal notranslate"><span class="pre">super().__init__()</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyDist</span><span class="p">(</span><span class="n">Distribution</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">start_point</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">shape</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lower</span> <span class="o">=</span> <span class="n">lower</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ctor_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"shape"</span><span class="p">:</span> <span class="n">shape</span><span class="p">,</span> <span class="s2">"lower"</span><span class="p">:</span> <span class="n">lower</span><span class="p">}</span>
+<p>Marginals inherit from <a class="reference internal" href="../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution" title="pystra.distributions.distribution.Distribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">Distribution</span></code></a>.
+A subclass normally builds a frozen <code class="docutils literal notranslate"><span class="pre">scipy.stats</span></code> distribution and passes it
+as <code class="docutils literal notranslate"><span class="pre">dist_obj</span></code> to the base constructor. The base class supplies density,
+CDF, quantile and marginal normal-space transformations. A custom law can
+instead implement these operations directly, including both tails: <code class="docutils literal notranslate"><span class="pre">pdf</span></code>,
+<code class="docutils literal notranslate"><span class="pre">logpdf</span></code>, <code class="docutils literal notranslate"><span class="pre">cdf</span></code>, <code class="docutils literal notranslate"><span class="pre">sf</span></code>, <code class="docutils literal notranslate"><span class="pre">logcdf</span></code>, <code class="docutils literal notranslate"><span class="pre">logsf</span></code>, <code class="docutils literal notranslate"><span class="pre">ppf</span></code> and <code class="docutils literal notranslate"><span class="pre">isf</span></code>.
+The marginal <code class="docutils literal notranslate"><span class="pre">jacobian(u,</span> <span class="pre">x)</span></code> supplies the diagonal derivative <code class="docutils literal notranslate"><span class="pre">du/dx</span></code>;
+the joint transformations expose the directed methods described in
+<a class="reference internal" href="../api/probability.html"><span class="doc">Distributions and dependence</span></a>.</p>
+<p>Continuous transformations require continuous marginals. A reconstruction
+contract for <code class="docutils literal notranslate"><span class="pre">ZeroInflated</span></code> does not make FORM or smooth copula transforms
+valid at its atom. Keep the failure convention <code class="docutils literal notranslate"><span class="pre">g</span> <span class="pre">&lt;=</span> <span class="pre">0</span></code> when evaluating
+mixed distributions through a supported simulation route.</p>
+<section id="reconstruction-and-parameter-replacement">
+<h2>Reconstruction and parameter replacement<a class="headerlink" href="#reconstruction-and-parameter-replacement" title="Link to this heading">#</a></h2>
+<p>Every marginal exposes a read-only
+<a class="reference internal" href="../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.parameters" title="pystra.distributions.distribution.Distribution.parameters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">parameters</span></code></a> mapping.
+It contains the complete keyword arguments needed to rebuild the law, including
+its name, start point and any bounds, shift, shape or nested distributions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pystra</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ra</span>
 
-        <span class="c1"># Build scipy distribution object ...</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span> <span class="o">=</span> <span class="o">...</span>
-
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">dist_obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="p">,</span> <span class="n">start_point</span><span class="o">=</span><span class="n">start_point</span>
-        <span class="p">)</span>
+<span class="n">original</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">Beta</span><span class="p">(</span><span class="s2">"R"</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">2.3</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mf">4.1</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">start_point</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">rebuilt</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">original</span><span class="p">)(</span><span class="o">**</span><span class="n">original</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
+<span class="n">copied</span> <span class="o">=</span> <span class="n">original</span><span class="o">.</span><span class="n">with_parameters</span><span class="p">()</span>
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">rebuilt</span><span class="o">.</span><span class="n">cdf</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]),</span> <span class="n">original</span><span class="o">.</span><span class="n">cdf</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]))</span>
+<span class="k">assert</span> <span class="n">copied</span><span class="o">.</span><span class="n">start_point</span> <span class="o">==</span> <span class="mi">5</span>
 </pre></div>
 </div>
-<p>The base-class method
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">_make_copy()</span></code>
-uses <code class="docutils literal notranslate"><span class="pre">_ctor_kwargs</span></code> to reconstruct the distribution when parameters
-are perturbed during sensitivity analysis.  Without it, reconstruction
-fails or silently produces wrong results.</p>
-</section>
-<section id="native-parameters">
-<h2>Native parameters<a class="headerlink" href="#native-parameters" title="Link to this heading">#</a></h2>
-<p>Constructors take the mean and standard deviation positionally. If the
-distribution also has native parameters, accept them as keyword-only
-arguments named as in SciPy, and let
-<code class="docutils literal notranslate"><span class="pre">_uses_native_parameters(self,</span> <span class="pre">mean,</span> <span class="pre">std,</span> <span class="pre">loc=loc,</span> <span class="pre">scale=scale)</span></code> decide which
-set was given. It returns <code class="docutils literal notranslate"><span class="pre">True</span></code> for a complete native set and raises
-<code class="docutils literal notranslate"><span class="pre">TypeError</span></code> for a mixture or an incomplete set. <code class="docutils literal notranslate"><span class="pre">_make_copy</span></code> rebuilds a
-distribution from its moments and <code class="docutils literal notranslate"><span class="pre">_ctor_kwargs</span></code>, so a distribution built from
-native parameters is copied through its moments.</p>
-</section>
-<section id="declaring-sensitivity-parameters">
-<h2>Declaring sensitivity parameters<a class="headerlink" href="#declaring-sensitivity-parameters" title="Link to this heading">#</a></h2>
-<p>By default, sensitivities are computed with respect to the mean and
-standard deviation.  If your distribution has additional parameters of
-physical interest (e.g. a shape parameter that controls tail
-behaviour), override
-<a class="reference internal" href="../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.sensitivity_params" title="pystra.distributions.distribution.Distribution.sensitivity_params"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sensitivity_params</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@property</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">sensitivity_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="k">return</span> <span class="p">{</span>
+<p><a class="reference internal" href="../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.with_parameters" title="pystra.distributions.distribution.Distribution.with_parameters"><code class="xref py py-meth docutils literal notranslate"><span class="pre">with_parameters()</span></code></a> returns
+an independent instance with selected parameters replaced. It rejects unknown
+keywords. Nested marginals and SciPy frozen objects in built-in parameter
+snapshots and copies are detached from the original. The mapping itself is
+read-only; its values need not be immutable.</p>
+<p>Built-ins with native constructors expose native parameters where fitting
+moments again would lose precision. For example, Beta exposes <code class="docutils literal notranslate"><span class="pre">q</span></code>, <code class="docutils literal notranslate"><span class="pre">r</span></code>,
+<code class="docutils literal notranslate"><span class="pre">lower</span></code> and <code class="docutils literal notranslate"><span class="pre">upper</span></code>; GEV exposes <code class="docutils literal notranslate"><span class="pre">loc</span></code>, <code class="docutils literal notranslate"><span class="pre">scale</span></code> and <code class="docutils literal notranslate"><span class="pre">shape</span></code>.
+<code class="docutils literal notranslate"><span class="pre">ScipyDist</span></code> exposes its frozen <code class="docutils literal notranslate"><span class="pre">dist_obj</span></code>. <code class="docutils literal notranslate"><span class="pre">Maximum</span></code>, <code class="docutils literal notranslate"><span class="pre">MaxParent</span></code> and
+<code class="docutils literal notranslate"><span class="pre">ZeroInflated</span></code> expose their nested marginal and exponent or atom probability.</p>
+<p>Moment-parameterised marginals also accept <code class="docutils literal notranslate"><span class="pre">mean</span></code> and <code class="docutils literal notranslate"><span class="pre">std</span></code> in
+<code class="docutils literal notranslate"><span class="pre">with_parameters</span></code>. Supplying either selects moment construction, preserves
+the other moment, and keeps fixed bounds or the GEV shape. A native parameter
+update keeps the other native parameters. Mixing the two modes raises
+<code class="docutils literal notranslate"><span class="pre">TypeError</span></code>. The start point is preserved; explicitly passing
+<code class="docutils literal notranslate"><span class="pre">start_point=None</span></code> selects the new mean:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">changed</span> <span class="o">=</span> <span class="n">original</span><span class="o">.</span><span class="n">with_parameters</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">start_point</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">changed</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">"lower"</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span>
+<span class="k">assert</span> <span class="n">changed</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">"upper"</span><span class="p">]</span> <span class="o">==</span> <span class="mi">10</span>
+<span class="k">assert</span> <span class="n">changed</span><span class="o">.</span><span class="n">start_point</span> <span class="o">==</span> <span class="n">changed</span><span class="o">.</span><span class="n">mean</span>
+</pre></div>
+</div>
+<p>A custom marginal whose constructor differs from <code class="docutils literal notranslate"><span class="pre">(name,</span> <span class="pre">mean,</span> <span class="pre">std,</span>
+<span class="pre">start_point=...)</span></code> must override the public <code class="docutils literal notranslate"><span class="pre">parameters</span></code> property.
+The mapping must reconstruct the <em>current</em> law, and mutable values must be
+independent snapshots. For a moment-based subclass with an additional bound:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">types</span><span class="w"> </span><span class="kn">import</span> <span class="n">MappingProxyType</span>
+
+<span class="nd">@property</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">MappingProxyType</span><span class="p">({</span>
+        <span class="s2">"name"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
         <span class="s2">"mean"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span>
         <span class="s2">"std"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">,</span>
-        <span class="s2">"shape"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
-    <span class="p">}</span>
+        <span class="s2">"lower"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower</span><span class="p">,</span>
+        <span class="s2">"start_point"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_point</span><span class="p">,</span>
+    <span class="p">})</span>
 </pre></div>
 </div>
-<p><strong>Important distinction:</strong> parameters in <code class="docutils literal notranslate"><span class="pre">_ctor_kwargs</span></code> but <em>not</em> in
-<code class="docutils literal notranslate"><span class="pre">sensitivity_params</span></code> are held fixed during sensitivity analysis.
-For example, the Beta distribution stores its bounds <code class="docutils literal notranslate"><span class="pre">lower</span></code> and <code class="docutils literal notranslate"><span class="pre">upper</span></code>
-in <code class="docutils literal notranslate"><span class="pre">_ctor_kwargs</span></code> (so <code class="docutils literal notranslate"><span class="pre">_make_copy</span></code> can reconstruct it) but does
-not add them to <code class="docutils literal notranslate"><span class="pre">sensitivity_params</span></code> (bounds are treated as fixed
-constants, not sensitivity parameters).</p>
+<p>The inherited <code class="docutils literal notranslate"><span class="pre">with_parameters</span></code> passes this mapping, with replacements,
+to the constructor. A custom class with alternative parameterisations should
+also override <code class="docutils literal notranslate"><span class="pre">with_parameters</span></code> to define explicitly which coordinates stay
+fixed. It must preserve independence, reject unknown or mixed parameter sets,
+and reproduce the law when called without replacements. There is no
+<code class="docutils literal notranslate"><span class="pre">_ctor_kwargs</span></code> or <code class="docutils literal notranslate"><span class="pre">_make_copy</span></code> extension hook in 2.0.</p>
 </section>
-<section id="analytical-cdf-derivatives-optional">
-<h2>Analytical CDF derivatives (optional)<a class="headerlink" href="#analytical-cdf-derivatives-optional" title="Link to this heading">#</a></h2>
-<p>The base class computes <span class="math notranslate nohighlight">\(\partial F_X/\partial\theta\)</span> numerically
-via central differences.  For better accuracy and performance you can
-override
-<a class="reference internal" href="../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.cdf_gradient" title="pystra.distributions.distribution.Distribution.cdf_gradient"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cdf_gradient()</span></code></a>
-with analytical expressions.  The Normal and Lognormal distributions
-do this:</p>
+<section id="sensitivity-coordinates">
+<h2>Sensitivity coordinates<a class="headerlink" href="#sensitivity-coordinates" title="Link to this heading">#</a></h2>
+<p><a class="reference internal" href="../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.sensitivity_params" title="pystra.distributions.distribution.Distribution.sensitivity_params"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sensitivity_params</span></code></a>
+is separate metadata: it names the coordinates to perturb for sensitivity
+analysis. The default is <code class="docutils literal notranslate"><span class="pre">{&quot;mean&quot;:</span> <span class="pre">self.mean,</span> <span class="pre">&quot;std&quot;:</span> <span class="pre">self.std}</span></code>.
+GEV adds <code class="docutils literal notranslate"><span class="pre">shape</span></code>. Beta bounds participate in reconstruction but remain fixed
+during moment sensitivity analysis.</p>
+<p>Sensitivity analysis passes the complete sensitivity mapping to
+<code class="docutils literal notranslate"><span class="pre">with_parameters</span></code> and changes one coordinate at a time. Thus a GEV shape
+sensitivity holds its mean and standard deviation fixed, even though the
+reconstruction mapping uses native parameters:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">load</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">GEV</span><span class="p">(</span><span class="s2">"S"</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">heavier_tail</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">with_parameters</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="n">load</span><span class="o">.</span><span class="n">sensitivity_params</span><span class="p">,</span> <span class="s2">"shape"</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">})</span>
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">heavier_tail</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">heavier_tail</span><span class="o">.</span><span class="n">std</span><span class="p">],</span> <span class="p">[</span><span class="n">load</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">load</span><span class="o">.</span><span class="n">std</span><span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">ScipyDist</span></code> and the composite marginals have empty sensitivity metadata:
+their constructors cannot generically replace a physical mean and standard
+deviation. Their copy contract is supported, but <code class="docutils literal notranslate"><span class="pre">cdf_gradient</span></code> raises a
+clear error until a subclass supplies sensitivity coordinates and derivatives.</p>
+<p>The base <a class="reference internal" href="../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.cdf_gradient" title="pystra.distributions.distribution.Distribution.cdf_gradient"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cdf_gradient()</span></code></a>
+uses central differences. It checks that reconstruction reproduces the law
+before perturbing it. Override it with analytic derivatives when available;
+the returned mapping must have the same keys as <code class="docutils literal notranslate"><span class="pre">sensitivity_params</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">cdf_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
     <span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span>
-    <span class="n">phi_z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">std_normal</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">density</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">std_normal</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">{</span>
-        <span class="s2">"mean"</span><span class="p">:</span> <span class="o">-</span><span class="n">phi_z</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">,</span>
-        <span class="s2">"std"</span><span class="p">:</span> <span class="o">-</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span> <span class="o">*</span> <span class="n">phi_z</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
+        <span class="s2">"mean"</span><span class="p">:</span> <span class="o">-</span><span class="n">density</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">,</span>
+        <span class="s2">"std"</span><span class="p">:</span> <span class="o">-</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span> <span class="o">*</span> <span class="n">density</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
     <span class="p">}</span>
 </pre></div>
 </div>
-<p>The returned dict must have the same keys as <code class="docutils literal notranslate"><span class="pre">sensitivity_params</span></code>.</p>
 </section>
-<section id="verifying-your-distribution">
-<h2>Verifying your distribution<a class="headerlink" href="#verifying-your-distribution" title="Link to this heading">#</a></h2>
-<ol class="arabic">
-<li><p><strong>Basic reliability analysis</strong> — the distribution should work in a
-simple FORM problem.  Build a small model with your distribution,
-run FORM, and check that the reliability index is sensible:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">StochasticModel</span><span class="p">()</span>
-<span class="n">model</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="n">MyDist</span><span class="p">(</span><span class="s2">"X"</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mf">0.2</span><span class="p">))</span>
-<span class="n">model</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s2">"Y"</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="n">ls</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">LimitState</span><span class="p">(</span><span class="k">lambda</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">:</span> <span class="n">X</span> <span class="o">-</span> <span class="n">Y</span><span class="p">)</span>
-<span class="n">f</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">FORM</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">ls</span><span class="p">)</span>
-<span class="n">f_result</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">f_result</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>Round-trip reconstruction</strong> — if you set <code class="docutils literal notranslate"><span class="pre">_ctor_kwargs</span></code>,
-verify that <code class="docutils literal notranslate"><span class="pre">_make_copy()</span></code> with no overrides produces a
-distribution whose CDF matches the original:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">MyDist</span><span class="p">(</span><span class="s2">"X"</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
-<span class="n">d2</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">_make_copy</span><span class="p">()</span>
-<span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="mi">110</span><span class="p">)</span> <span class="o">-</span> <span class="n">d2</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="mi">110</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mf">1e-10</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>Sensitivity analysis</strong> — the closed-form method exercises a lot
-of the distribution plumbing (<code class="docutils literal notranslate"><span class="pre">cdf_gradient</span></code>, <code class="docutils literal notranslate"><span class="pre">_dmoments_dtheta</span></code>,
-<code class="docutils literal notranslate"><span class="pre">_make_copy</span></code>), so running both methods is a good integration
-check:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fd</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">SensitivityAnalysis</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>  <span class="c1"># finite-difference</span>
-<span class="n">cf</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">SensitivityAnalysis</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">limit_state</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">"closed_form"</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>FD and CF sensitivities should agree (typically within 5 % for
-mean/std, possibly 10–15 % for shape parameters due to inherent
-FD instability).</p>
-</li>
-</ol>
-<p>See <code class="docutils literal notranslate"><span class="pre">tests/test_sensitivity.py</span></code> for concrete examples.</p>
+<section id="verification">
+<h2>Verification<a class="headerlink" href="#verification" title="Link to this heading">#</a></h2>
+<p>Test reconstruction from <code class="docutils literal notranslate"><span class="pre">parameters</span></code> and through <code class="docutils literal notranslate"><span class="pre">with_parameters</span></code>
+against moments, support, CDFs, tails and quantiles. Include native constructor
+inputs, non-default bounds, explicit start points, and independence of mutable
+nested objects. Check that changing a parameter preserves its documented fixed
+coordinates and leaves the original unchanged.</p>
+<p>For continuous marginals, run a small FORM reference case and compare numerical
+and closed-form sensitivities. Tolerances should reflect the finite-difference
+step and reference problem; shape derivatives may be less stable than moment
+derivatives. See <code class="docutils literal notranslate"><span class="pre">tests/test_distribution_copy.py</span></code> and
+<code class="docutils literal notranslate"><span class="pre">tests/test_sensitivity.py</span></code> for examples.</p>
 </section>
 </section>
 
@@ -709,11 +696,9 @@ FD instability).</p>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extra-constructor-arguments-ctor-kwargs">Extra constructor arguments (<code class="docutils literal notranslate"><span class="pre">_ctor_kwargs</span></code>)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#native-parameters">Native parameters</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#declaring-sensitivity-parameters">Declaring sensitivity parameters</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analytical-cdf-derivatives-optional">Analytical CDF derivatives (optional)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verifying-your-distribution">Verifying your distribution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reconstruction-and-parameter-replacement">Reconstruction and parameter replacement</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sensitivity-coordinates">Sensitivity coordinates</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verification">Verification</a></li>
 </ul>
   </nav></div>
 

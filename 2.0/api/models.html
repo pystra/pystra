@@ -928,6 +928,33 @@
 </table>
 </div>
 </section>
+<section id="limit-state-evaluation">
+<h2>Limit-state evaluation<a class="headerlink" href="#limit-state-evaluation" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">LimitState.evaluate(x,</span> <span class="pre">model,</span> <span class="pre">differentiation=&quot;ffd&quot;)</span></code> accepts a physical
+point <code class="docutils literal notranslate"><span class="pre">(n_variables,)</span></code> or rows of points <code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_variables)</span></code>.
+Values are scalar for a point and <code class="docutils literal notranslate"><span class="pre">(n_samples,)</span></code> for a batch; gradients
+have the input shape. Columns and gradient entries follow model random-variable
+order, excluding constants. Square batches always contain rows of points.
+<code class="docutils literal notranslate"><span class="pre">differentiation=&quot;ddm&quot;</span></code> uses the expression’s analytic gradient;
+<code class="docutils literal notranslate"><span class="pre">&quot;no&quot;</span></code> returns zero gradients. Failure is <code class="docutils literal notranslate"><span class="pre">g</span> <span class="pre">&lt;=</span> <span class="pre">0</span></code>.</p>
+</section>
+<section id="user-script-migration">
+<h2>User-script migration<a class="headerlink" href="#user-script-migration" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pystra.migrate</span> <span class="pre">path/to/script.py</span> <span class="pre">path/to/notebook.ipynb</span></code> previews
+unified diffs for 1.x code. <code class="docutils literal notranslate"><span class="pre">--write</span></code> applies the same changes. Directories
+are scanned for Python files and notebooks. The converter preserves local
+identifiers, string literals and comments, and changes only resolved PySTRA
+imports, module attributes and constructor keywords. Shadowed names remain
+unchanged. Instance methods, result getters, options, parameter modes and
+calibration workflows require manual review; diagnostics identify their
+locations. A second pass must leave the source unchanged.</p>
+<p>Notebook imports carry across valid Python cells in document order. Cells
+containing IPython syntax are left unchanged and flagged. Only changed code
+source fields are serialized; Markdown, outputs and metadata are preserved.
+Exit status is zero with no review items, one when manual review is needed,
+and two for file or input errors. A successful conversion is not a guarantee
+that the resulting analysis is runnable or numerically appropriate.</p>
+</section>
 </section>
 
 
@@ -979,6 +1006,8 @@
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#public-entry-points">Public entry points</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-details">Module details</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limit-state-evaluation">Limit-state evaluation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#user-script-migration">User-script migration</a></li>
 </ul>
   </nav></div>
 

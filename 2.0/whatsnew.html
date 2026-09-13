@@ -530,7 +530,8 @@
 <p>PySTRA 2.0 is a new major version. It gives every analysis one consistent
 interface, adds reliability methods and engineering workflows, and keeps its
 numerics accurate far into the tails. It is not compatible with 1.x:
-<a class="reference internal" href="migrating.html"><span class="doc">Migrating from 1.x to 2.0</span></a> shows how to update a script.</p>
+<a class="reference internal" href="migrating.html"><span class="doc">Migrating from 1.x to 2.0</span></a> shows how to update a script, and <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pystra.migrate</span></code>
+makes the unambiguous changes for you.</p>
 <p>This is a pre-release (2.0.0a1). The work that remains before 2.0.0 is listed
 at the end of this page.</p>
 <section id="highlights">
@@ -573,6 +574,10 @@ curated, and old names raise errors that name their replacements.</p></li>
 <li><p>Distributions take native parameters as keywords, as in
 <code class="docutils literal notranslate"><span class="pre">Gumbel(&quot;Q&quot;,</span> <span class="pre">loc=8.9,</span> <span class="pre">scale=1.56)</span></code>, and <code class="docutils literal notranslate"><span class="pre">CorrelationMatrix</span></code> is validated
 when it is created.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LimitState.evaluate</span></code> evaluates a point or a batch of rows directly;
+distributions expose <code class="docutils literal notranslate"><span class="pre">parameters</span></code> and <code class="docutils literal notranslate"><span class="pre">with_parameters</span></code> for rebuilding
+them; and transformations name the direction of their Jacobians,
+<code class="docutils literal notranslate"><span class="pre">jacobian_u_wrt_x</span></code> and <code class="docutils literal notranslate"><span class="pre">jacobian_x_wrt_u</span></code>.</p></li>
 </ul>
 </section>
 <section id="new-methods">
@@ -627,7 +632,9 @@ every correction whose results change.</p></li>
 <h2>Documentation<a class="headerlink" href="#documentation" title="Link to this heading">#</a></h2>
 <p>The documentation has a user guide organised by task, 22 executed tutorials,
 including an external finite-element solver with OpenSeesPy, published
-benchmark problems with their references, and theory pages for each topic.</p>
+benchmark problems with their references, theory pages for each topic, and
+guides to the extreme-value families (<a class="reference internal" href="guides/gev_family.html"><span class="doc">Choosing an extreme-value distribution</span></a>) and to
+sensitivity analysis (<a class="reference internal" href="guides/sensitivity.html"><span class="doc">Computing reliability sensitivities</span></a>).</p>
 </section>
 <section id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading">#</a></h2>
@@ -638,13 +645,10 @@ active-learning methods need the <code class="docutils literal notranslate"><spa
 <h2>Before 2.0.0<a class="headerlink" href="#before-2-0-0" title="Link to this heading">#</a></h2>
 <p>The release plan still includes:</p>
 <ul class="simple">
-<li><p>the public contracts for batched evaluators and for extending distributions;</p></li>
 <li><p>restructuring of the decision and assessment modules;</p></li>
-<li><p>a converter for user scripts, and migration trials with representative
-scripts during a public beta;</p></li>
-<li><p>testing on Windows and macOS and with minimum and current dependencies,
-performance baselines and release automation;</p></li>
-<li><p>a release candidate with a frozen API.</p></li>
+<li><p>a consistent writing style and type annotations throughout the code and
+documentation;</p></li>
+<li><p>performance comparisons with 1.6.0 and the final release checks.</p></li>
 </ul>
 </section>
 </section>

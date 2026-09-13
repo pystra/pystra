@@ -509,7 +509,10 @@
   <h1>Source code for pystra.dependence.joint</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""Marginals plus a copula, and their isoprobabilistic transformations."""</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span><span class="p">,</span> <span class="n">t</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.copula</span><span class="w"> </span><span class="kn">import</span> <span class="n">Copula</span><span class="p">,</span> <span class="n">GaussianCopula</span><span class="p">,</span> <span class="n">StudentTCopula</span><span class="p">,</span> <span class="n">_order</span>
@@ -725,10 +728,20 @@
         <span class="n">w</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inv_T</span> <span class="o">@</span> <span class="n">z</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_physical</span><span class="p">(</span><span class="n">w</span><span class="p">))</span>
 
-<div class="viewcode-block" id="CopulaTransformation.jacobian">
-<a class="viewcode-back" href="../../../gen/pystra.dependence.joint.CopulaTransformation.html#pystra.dependence.joint.CopulaTransformation.jacobian">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">marg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Return du/dx in original variable order."""</span>
+<div class="viewcode-block" id="CopulaTransformation.jacobian_u_wrt_x">
+<a class="viewcode-back" href="../../../gen/pystra.dependence.joint.CopulaTransformation.html#pystra.dependence.joint.CopulaTransformation.jacobian_u_wrt_x">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">jacobian_u_wrt_x</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">marg</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Distribution</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return ``du[i] / dx[j]`` in original joint marginal order.</span>
+
+<span class="sd">        ``u`` and ``x`` are corresponding reference and physical vectors of</span>
+<span class="sd">        shape ``(dimension,)``. The returned matrix has shape</span>
+<span class="sd">        ``(dimension, dimension)``: reference coordinates are rows and</span>
+<span class="sd">        physical variables are columns. ``marg`` is unused and is accepted</span>
+<span class="sd">        for the shared transformation interface. Rosenblatt innovations stay</span>
+<span class="sd">        indexed by original variables even with a noncanonical order.</span>
+<span class="sd">        """</span>
         <span class="n">u</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vector</span><span class="p">(</span><span class="n">u</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vector</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">copula</span><span class="o">.</span><span class="n">elliptical</span><span class="p">:</span>
             <span class="n">h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cbrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
@@ -761,6 +774,22 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">result</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Nonfinite transformation Jacobian"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="CopulaTransformation.jacobian_x_wrt_u">
+<a class="viewcode-back" href="../../../gen/pystra.dependence.joint.CopulaTransformation.html#pystra.dependence.joint.CopulaTransformation.jacobian_x_wrt_u">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">jacobian_x_wrt_u</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">marg</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Distribution</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return ``dx[i] / du[j]`` in original joint marginal order.</span>
+
+<span class="sd">        Inputs are corresponding reference/physical points of shape</span>
+<span class="sd">        ``(dimension,)``. The returned ``(dimension, dimension)`` matrix has</span>
+<span class="sd">        physical variables in rows and reference coordinates in columns.</span>
+<span class="sd">        ``marg`` is unused. This is the inverse of :meth:`jacobian_u_wrt_x`</span>
+<span class="sd">        at a nonsingular point, for both Nataf and Rosenblatt mappings.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jacobian_u_wrt_x</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">marg</span><span class="p">))</span></div>
 </div>
 
 </pre></div>

@@ -920,13 +920,16 @@ near-singular or poorly conditioned.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pystra.dependence.transformation.Transformation.compute" title="pystra.dependence.transformation.Transformation.compute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute</span></code></a></p></td>
 <td><p>Compute the Isoprobabilistic Transformation using the chosen method</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pystra.dependence.transformation.Transformation.jacobian" title="pystra.dependence.transformation.Transformation.jacobian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jacobian</span></code></a></p></td>
-<td><p>Jacobian of the u-to-x transformation, J_{u,x}.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.dependence.transformation.Transformation.jacobian_u_wrt_x" title="pystra.dependence.transformation.Transformation.jacobian_u_wrt_x"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jacobian_u_wrt_x</span></code></a></p></td>
+<td><p>Return physical-to-reference derivatives <code class="docutils literal notranslate"><span class="pre">du[i]</span> <span class="pre">/</span> <span class="pre">dx[j]</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.dependence.transformation.Transformation.u_to_x" title="pystra.dependence.transformation.Transformation.u_to_x"><code class="xref py py-obj docutils literal notranslate"><span class="pre">u_to_x</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.dependence.transformation.Transformation.jacobian_x_wrt_u" title="pystra.dependence.transformation.Transformation.jacobian_x_wrt_u"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jacobian_x_wrt_u</span></code></a></p></td>
+<td><p>Return <code class="docutils literal notranslate"><span class="pre">dx[i]</span> <span class="pre">/</span> <span class="pre">du[j]</span></code> at corresponding reference/physical points.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.dependence.transformation.Transformation.u_to_x" title="pystra.dependence.transformation.Transformation.u_to_x"><code class="xref py py-obj docutils literal notranslate"><span class="pre">u_to_x</span></code></a></p></td>
 <td><p>Transformation from u (standard normal) to x (physical) space.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pystra.dependence.transformation.Transformation.x_to_u" title="pystra.dependence.transformation.Transformation.x_to_u"><code class="xref py py-obj docutils literal notranslate"><span class="pre">x_to_u</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.dependence.transformation.Transformation.x_to_u" title="pystra.dependence.transformation.Transformation.x_to_u"><code class="xref py py-obj docutils literal notranslate"><span class="pre">x_to_u</span></code></a></p></td>
 <td><p>Transformation from x (physical) to u (standard normal) space.</p></td>
 </tr>
 </tbody>
@@ -951,16 +954,46 @@ indexing always produces a scalar for the marginal <code class="docutils literal
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pystra.dependence.transformation.Transformation.jacobian">
-<span class="sig-name descname"><span class="pre">jacobian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/dependence/transformation.html#Transformation.jacobian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.dependence.transformation.Transformation.jacobian" title="Link to this definition">#</a></dt>
-<dd><p>Jacobian of the u-to-x transformation, J_{u,x}.</p>
-<p>Inputs are flattened to 1-D (see <code class="docutils literal notranslate"><span class="pre">x_to_u</span></code>).  Each marginal
-<code class="docutils literal notranslate"><span class="pre">jacobian(z_i,</span> <span class="pre">x_i)</span></code> returns a diagonal <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> via
-<code class="docutils literal notranslate"><span class="pre">np.diag()</span></code>, even when called with scalar arguments — in that case
-the result is a (1, 1) matrix.  We wrap the scalar inputs with
-<code class="docutils literal notranslate"><span class="pre">np.atleast_1d</span></code> so that <code class="docutils literal notranslate"><span class="pre">np.diag</span></code> receives a 1-D array (it
-raises <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> on 0-d input), and then extract the single
-element with <code class="docutils literal notranslate"><span class="pre">.item()</span></code> for assignment into the composite Jacobian.</p>
+<dt class="sig sig-object py" id="pystra.dependence.transformation.Transformation.jacobian_u_wrt_x">
+<span class="sig-name descname"><span class="pre">jacobian_u_wrt_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/dependence/transformation.html#Transformation.jacobian_u_wrt_x"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.dependence.transformation.Transformation.jacobian_u_wrt_x" title="Link to this definition">#</a></dt>
+<dd><p>Return physical-to-reference derivatives <code class="docutils literal notranslate"><span class="pre">du[i]</span> <span class="pre">/</span> <span class="pre">dx[j]</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ArrayLike</span></code></span>) – Corresponding reference and physical points, shape <code class="docutils literal notranslate"><span class="pre">(dimension,)</span></code>.</p></li>
+<li><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ArrayLike</span></code></span>) – Corresponding reference and physical points, shape <code class="docutils literal notranslate"><span class="pre">(dimension,)</span></code>.</p></li>
+<li><p><strong>marg</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<a class="reference internal" href="pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution" title="pystra.distributions.distribution.Distribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">Distribution</span></code></a>]</span>) – Marginals in model variable order.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Shape <code class="docutils literal notranslate"><span class="pre">(dimension,</span> <span class="pre">dimension)</span></code>, with reference coordinates in
+rows and physical variables in columns, both in model order.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pystra.dependence.transformation.Transformation.dimension">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">dimension</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#pystra.dependence.transformation.Transformation.dimension" title="Link to this definition">#</a></dt>
+<dd><p>Number of coordinates; available after <a class="reference internal" href="#pystra.dependence.transformation.Transformation.compute" title="pystra.dependence.transformation.Transformation.compute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">compute()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pystra.dependence.transformation.Transformation.jacobian_x_wrt_u">
+<span class="sig-name descname"><span class="pre">jacobian_x_wrt_u</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/dependence/transformation.html#Transformation.jacobian_x_wrt_u"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.dependence.transformation.Transformation.jacobian_x_wrt_u" title="Link to this definition">#</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">dx[i]</span> <span class="pre">/</span> <span class="pre">du[j]</span></code> at corresponding reference/physical points.</p>
+<p>Inputs are vectors of shape <code class="docutils literal notranslate"><span class="pre">(dimension,)</span></code> in model variable order.
+The returned matrix has shape <code class="docutils literal notranslate"><span class="pre">(dimension,</span> <span class="pre">dimension)</span></code> with physical
+variables in rows and reference coordinates in columns. It is the
+inverse of <a class="reference internal" href="#pystra.dependence.transformation.Transformation.jacobian_u_wrt_x" title="pystra.dependence.transformation.Transformation.jacobian_u_wrt_x"><code class="xref py py-meth docutils literal notranslate"><span class="pre">jacobian_u_wrt_x()</span></code></a> at a nonsingular point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1023,7 +1056,9 @@ element with <code class="docutils literal notranslate"><span class="pre">.item(
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.dependence.transformation.Transformation"><code class="docutils literal notranslate"><span class="pre">Transformation</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.dependence.transformation.Transformation.x_to_u"><code class="docutils literal notranslate"><span class="pre">Transformation.x_to_u()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.dependence.transformation.Transformation.u_to_x"><code class="docutils literal notranslate"><span class="pre">Transformation.u_to_x()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.dependence.transformation.Transformation.jacobian"><code class="docutils literal notranslate"><span class="pre">Transformation.jacobian()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.dependence.transformation.Transformation.jacobian_u_wrt_x"><code class="docutils literal notranslate"><span class="pre">Transformation.jacobian_u_wrt_x()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.dependence.transformation.Transformation.dimension"><code class="docutils literal notranslate"><span class="pre">Transformation.dimension</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.dependence.transformation.Transformation.jacobian_x_wrt_u"><code class="docutils literal notranslate"><span class="pre">Transformation.jacobian_x_wrt_u()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.dependence.transformation.Transformation.compute"><code class="docutils literal notranslate"><span class="pre">Transformation.compute()</span></code></a></li>
 </ul>
 </li>

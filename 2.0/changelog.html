@@ -593,6 +593,17 @@ the tail that a point lies in and use log probabilities where probabilities
 underflow, so they stay finite and accurate to <span class="math notranslate nohighlight">\(|u| \approx 37.5\)</span>, and
 beyond that for the normal, lognormal and Gumbel families. The
 <a class="reference internal" href="guides/high_reliability.html"><span class="doc">Working at high reliability</span></a> guide shows what this covers in practice.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LimitState.evaluate</span></code> evaluates a point <code class="docutils literal notranslate"><span class="pre">(n_variables,)</span></code> or a batch of
+rows <code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_variables)</span></code>, with forward-difference or analytic
+gradients. Distributions expose <code class="docutils literal notranslate"><span class="pre">parameters</span></code> and <code class="docutils literal notranslate"><span class="pre">with_parameters</span></code> to
+rebuild them, and transformations provide <code class="docutils literal notranslate"><span class="pre">jacobian_u_wrt_x</span></code> and
+<code class="docutils literal notranslate"><span class="pre">jacobian_x_wrt_u</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pystra.migrate</span></code> converts 1.x scripts and notebook code
+conservatively, with dry-run diffs and reports of the changes that need
+judgment. Migration trials on the 1.6.0 examples and tutorials record their
+numerical agreement.</p></li>
+<li><p>User guides for the extreme-value families, with their classical Type I, II
+and III names, and for reliability sensitivity analysis.</p></li>
 </ul>
 </section>
 <section id="fixed">
@@ -750,6 +761,10 @@ implemented naming map and remaining migration stages.</p></li>
 <li><p>SciPy minimum version is 1.11 for multivariate Student-t CDF integration.</p></li>
 <li><p>Metadata and documentation consistently state GPL-3.0-or-later, with
 retained third-party notices for adapted methods.</p></li>
+<li><p>The column-oriented <code class="docutils literal notranslate"><span class="pre">LimitState.evaluate_lsf</span></code> is private; the
+transformations’ ambiguous <code class="docutils literal notranslate"><span class="pre">jacobian</span></code> gives way to the directed methods; and
+<code class="docutils literal notranslate"><span class="pre">parameters</span></code> and <code class="docutils literal notranslate"><span class="pre">with_parameters</span></code> replace the private <code class="docutils literal notranslate"><span class="pre">_ctor_kwargs</span></code>
+and <code class="docutils literal notranslate"><span class="pre">_make_copy</span></code> reconstruction hooks.</p></li>
 </ul>
 </section>
 </section>

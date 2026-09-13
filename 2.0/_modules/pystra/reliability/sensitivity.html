@@ -723,9 +723,11 @@
                 <span class="n">model1</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
                 <span class="n">dist1</span> <span class="o">=</span> <span class="n">model1</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
-                <span class="c1"># Perturb and replace using _make_copy</span>
+                <span class="c1"># Perturb and replace using with_parameters</span>
                 <span class="n">h</span> <span class="o">=</span> <span class="n">delta</span> <span class="o">*</span> <span class="n">dist1</span><span class="o">.</span><span class="n">std</span>
-                <span class="n">new_dist</span> <span class="o">=</span> <span class="n">dist1</span><span class="o">.</span><span class="n">_make_copy</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">param</span><span class="p">:</span> <span class="n">val</span> <span class="o">+</span> <span class="n">h</span><span class="p">})</span>
+                <span class="n">new_dist</span> <span class="o">=</span> <span class="n">dist1</span><span class="o">.</span><span class="n">with_parameters</span><span class="p">(</span>
+                    <span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="n">dist1</span><span class="o">.</span><span class="n">sensitivity_params</span><span class="p">,</span> <span class="n">param</span><span class="p">:</span> <span class="n">val</span> <span class="o">+</span> <span class="n">h</span><span class="p">},</span> <span class="n">start_point</span><span class="o">=</span><span class="kc">None</span>
+                <span class="p">)</span>
                 <span class="c1"># Replace in both variables dict and _marg list</span>
                 <span class="n">marg_idx</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">model1</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
                 <span class="n">model1</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_dist</span>

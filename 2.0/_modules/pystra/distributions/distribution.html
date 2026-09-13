@@ -511,6 +511,10 @@
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">types</span><span class="w"> </span><span class="kn">import</span> <span class="n">MappingProxyType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Self</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">special</span> <span class="k">as</span> <span class="n">sp</span>
@@ -804,17 +808,6 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">dist_obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_point</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dist_type</span> <span class="o">=</span> <span class="s2">"BaseCls"</span>
-
-        <span class="c1"># Extra constructor keyword arguments needed to faithfully</span>
-        <span class="c1"># reconstruct this distribution beyond (name, mean, std).</span>
-        <span class="c1"># Subclasses with additional parameters (e.g. shape for GEV,</span>
-        <span class="c1"># bounds for Beta) should set this in their __init__ *before*</span>
-        <span class="c1"># calling super().__init__().  These are passed through by</span>
-        <span class="c1"># _make_copy() but are NOT sensitivity parameters — they are</span>
-        <span class="c1"># treated as fixed constants unless the subclass also adds them</span>
-        <span class="c1"># to sensitivity_params.</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_ctor_kwargs"</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_ctor_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="c1"># This is the key object that is to be defined in derived classes that</span>
         <span class="c1"># are using the base class functionality</span>
@@ -1264,10 +1257,10 @@
 <span class="sd">        additional parameters of interest (e.g. the GEV shape parameter)</span>
 <span class="sd">        should override this property to include them.</span>
 
-<span class="sd">        Parameters listed in :attr:`_ctor_kwargs` but **not** in</span>
-<span class="sd">        ``sensitivity_params`` are held fixed during sensitivity analysis</span>
-<span class="sd">        — they are only used by :meth:`_make_copy` to faithfully</span>
-<span class="sd">        reconstruct the distribution.</span>
+<span class="sd">        Fixed constructor settings such as bounds are separate from these</span>
+<span class="sd">        sensitivity coordinates. Native reconstruction parameters can be</span>
+<span class="sd">        another representation of the same law: sensitivity analysis perturbs</span>
+<span class="sd">        the declared coordinates together, keeping other moments fixed.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1276,39 +1269,78 @@
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">"mean"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="s2">"std"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">}</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_make_copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">overrides</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">"""Construct a copy of this distribution with perturbed parameters.</span>
+    <span class="c1"># Native coordinates replaced when the caller supplies physical moments.</span>
+    <span class="n">_native_parameters</span> <span class="o">=</span> <span class="p">()</span>
 
-<span class="sd">        Builds a fresh instance of the same type using the current</span>
-<span class="sd">        ``(mean, std)`` and any extra constructor keyword arguments</span>
-<span class="sd">        stored in :attr:`_ctor_kwargs`.  The *overrides* dict replaces</span>
-<span class="sd">        individual parameter values; its keys must match those of</span>
-<span class="sd">        :attr:`sensitivity_params` or :attr:`_ctor_kwargs`.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parameter_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"mean"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="s2">"std"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Read-only snapshot of keyword arguments that rebuild this marginal.</span>
+
+<span class="sd">        ``type(dist)(**dist.parameters)`` reproduces its law, name and start</span>
+<span class="sd">        point. Built-ins use native parameters where moment fitting could</span>
+<span class="sd">        lose precision. Nested marginals and SciPy objects are independent</span>
+<span class="sd">        copies, so mutating a snapshot never changes the source distribution.</span>
+<span class="sd">        Custom marginals may override this property with their complete</span>
+<span class="sd">        constructor mapping. Sensitivity coordinates are specified separately</span>
+<span class="sd">        by :attr:`sensitivity_params`.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">MappingProxyType</span><span class="p">(</span>
+            <span class="n">deepcopy</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">"name"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_parameter_values</span><span class="p">(),</span>
+                    <span class="s2">"start_point"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_point</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="Distribution.with_parameters">
+<a class="viewcode-back" href="../../../gen/pystra.distributions.distribution.Distribution.html#pystra.distributions.distribution.Distribution.with_parameters">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">with_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">changes</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Rebuild an independent marginal, replacing constructor parameters.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        **overrides</span>
-<span class="sd">            Parameter values to override.  For example,</span>
-<span class="sd">            ``dist._make_copy(mean=dist.mean + h)`` perturbs the mean.</span>
+<span class="sd">        **changes</span>
+<span class="sd">            Replacements for keys of :attr:`parameters`. Built-ins supporting</span>
+<span class="sd">            moment sensitivities also accept ``mean`` and ``std``; supplying</span>
+<span class="sd">            either switches to moment construction, holding the other moment</span>
+<span class="sd">            and fixed bounds/shape constant. Native coordinates and moments</span>
+<span class="sd">            cannot be supplied together. The start point remains unchanged</span>
+<span class="sd">            unless explicitly replaced (``None`` selects the new mean).</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        Distribution</span>
-<span class="sd">            A new distribution instance with the perturbed parameters.</span>
+<span class="sd">            Independent instance of the same type, including nested marginals.</span>
+<span class="sd">            An empty replacement reproduces the distribution.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        TypeError</span>
-<span class="sd">            If the subclass constructor does not accept the provided</span>
-<span class="sd">            arguments (e.g. a composite distribution that cannot be</span>
-<span class="sd">            reconstructed from ``(name, mean, std)``).</span>
+<span class="sd">            A replacement is unknown, or mixes moments and native coordinates.</span>
+<span class="sd">        ModelError, ValueError</span>
+<span class="sd">            Constructor parameters do not define a valid distribution.</span>
 <span class="sd">        """</span>
-        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"mean"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="s2">"std"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">}</span>
-        <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ctor_kwargs</span><span class="p">)</span>
-        <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">overrides</span><span class="p">)</span>
-        <span class="n">mean</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"mean"</span><span class="p">)</span>
-        <span class="n">std</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"std"</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="n">allowed</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">sensitivity_params</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="n">unknown</span> <span class="o">=</span> <span class="n">changes</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="o">-</span> <span class="n">allowed</span>
+        <span class="k">if</span> <span class="n">unknown</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Unknown distribution parameters: </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">unknown</span><span class="p">))</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">changes</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="o">&amp;</span> <span class="p">{</span><span class="s2">"mean"</span><span class="p">,</span> <span class="s2">"std"</span><span class="p">}</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_native_parameters</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">changes</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_native_parameters</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"Specify moments or native parameters, not both"</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_native_parameters</span><span class="p">:</span>
+                <span class="n">parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">parameters</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">)</span>
+        <span class="n">parameters</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">changes</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="o">**</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">parameters</span><span class="p">))</span></div>
+
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_dmoments_dtheta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">"""Derivatives of mean and standard deviation w.r.t. a parameter.</span>
@@ -1321,7 +1353,7 @@
 <span class="sd">        For ``"mean"`` and ``"std"`` the derivatives are exact:</span>
 <span class="sd">        ``(1, 0)`` and ``(0, 1)`` respectively.  For any other parameter</span>
 <span class="sd">        (e.g. a shape parameter) central finite differences via</span>
-<span class="sd">        :meth:`_make_copy` are used.</span>
+<span class="sd">        :meth:`with_parameters` are used.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1339,8 +1371,8 @@
             <span class="k">return</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
         <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sensitivity_params</span><span class="p">[</span><span class="n">param</span><span class="p">]</span>
         <span class="n">h</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="mf">1e-10</span><span class="p">)</span>
-        <span class="n">d_plus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_copy</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">param</span><span class="p">:</span> <span class="n">val</span> <span class="o">+</span> <span class="n">h</span><span class="p">})</span>
-        <span class="n">d_minus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_copy</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">param</span><span class="p">:</span> <span class="n">val</span> <span class="o">-</span> <span class="n">h</span><span class="p">})</span>
+        <span class="n">d_plus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_parameters</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">sensitivity_params</span><span class="p">,</span> <span class="n">param</span><span class="p">:</span> <span class="n">val</span> <span class="o">+</span> <span class="n">h</span><span class="p">})</span>
+        <span class="n">d_minus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_parameters</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">sensitivity_params</span><span class="p">,</span> <span class="n">param</span><span class="p">:</span> <span class="n">val</span> <span class="o">-</span> <span class="n">h</span><span class="p">})</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="p">(</span><span class="n">d_plus</span><span class="o">.</span><span class="n">mean</span> <span class="o">-</span> <span class="n">d_minus</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">h</span><span class="p">),</span>
             <span class="p">(</span><span class="n">d_plus</span><span class="o">.</span><span class="n">std</span> <span class="o">-</span> <span class="n">d_minus</span><span class="o">.</span><span class="n">std</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">h</span><span class="p">),</span>
@@ -1353,14 +1385,14 @@
 
 <span class="sd">        Returns ``∂F_X(x)/∂θ`` for every parameter listed by</span>
 <span class="sd">        :attr:`sensitivity_params`.  The base-class implementation uses</span>
-<span class="sd">        central finite differences on the CDF via :meth:`_make_copy`.</span>
+<span class="sd">        central finite differences on the CDF via :meth:`with_parameters`.</span>
 
 <span class="sd">        Before computing derivatives, a reconstruction sanity check</span>
-<span class="sd">        verifies that :meth:`_make_copy` (with no overrides) reproduces</span>
+<span class="sd">        verifies that :meth:`with_parameters` (with no overrides) reproduces</span>
 <span class="sd">        the current distribution.  This catches both constructor</span>
 <span class="sd">        failures (e.g. composite distributions) and silent mismatches</span>
 <span class="sd">        (e.g. distributions whose extra constructor arguments are not</span>
-<span class="sd">        stored in :attr:`_ctor_kwargs`).</span>
+<span class="sd">        stored in :attr:`parameters`).</span>
 
 <span class="sd">        Subclasses may override this with analytical expressions for</span>
 <span class="sd">        better accuracy and performance (see :class:`Normal` and</span>
@@ -1381,16 +1413,20 @@
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
 <span class="sd">            If the distribution cannot be faithfully reconstructed by</span>
-<span class="sd">            :meth:`_make_copy`.</span>
+<span class="sd">            :meth:`with_parameters`.</span>
 <span class="sd">        """</span>
-        <span class="c1"># --- Validate that _make_copy reproduces this distribution ---</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sensitivity_params</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> does not support sensitivity analysis"</span>
+            <span class="p">)</span>
+        <span class="c1"># Validate that reconstruction reproduces this distribution.</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">test</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_copy</span><span class="p">()</span>
+            <span class="n">test</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_parameters</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> does not support sensitivity "</span>
-                <span class="sa">f</span><span class="s2">"analysis.  Set _ctor_kwargs in the subclass __init__ "</span>
-                <span class="sa">f</span><span class="s2">"or override _make_copy()."</span>
+                <span class="sa">f</span><span class="s2">"analysis.  Define parameters on the subclass "</span>
+                <span class="sa">f</span><span class="s2">"or override with_parameters()."</span>
             <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
         <span class="c1"># Use a scalar test point for validation (x may be an array</span>
         <span class="c1"># when called from drho0_dtheta with quadrature grids)</span>
@@ -1399,18 +1435,20 @@
         <span class="n">test_cdf</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x_test</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">test_cdf</span> <span class="o">-</span> <span class="n">ref_cdf</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e-6</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">ref_cdf</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">._make_copy() does not faithfully "</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.with_parameters() does not faithfully "</span>
                 <span class="sa">f</span><span class="s2">"reconstruct the distribution (CDF mismatch at "</span>
                 <span class="sa">f</span><span class="s2">"x=</span><span class="si">{</span><span class="n">x_test</span><span class="si">}</span><span class="s2">: original=</span><span class="si">{</span><span class="n">ref_cdf</span><span class="si">:</span><span class="s2">.8g</span><span class="si">}</span><span class="s2">, "</span>
                 <span class="sa">f</span><span class="s2">"copy=</span><span class="si">{</span><span class="n">test_cdf</span><span class="si">:</span><span class="s2">.8g</span><span class="si">}</span><span class="s2">).  "</span>
-                <span class="sa">f</span><span class="s2">"Set _ctor_kwargs correctly in the subclass __init__."</span>
+                <span class="sa">f</span><span class="s2">"Define a complete parameters mapping on the subclass."</span>
             <span class="p">)</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sensitivity_params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">h</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span> <span class="o">*</span> <span class="mf">1e-8</span><span class="p">)</span>
-            <span class="n">d_plus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_copy</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">param</span><span class="p">:</span> <span class="n">val</span> <span class="o">+</span> <span class="n">h</span><span class="p">})</span>
-            <span class="n">d_minus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_copy</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">param</span><span class="p">:</span> <span class="n">val</span> <span class="o">-</span> <span class="n">h</span><span class="p">})</span>
+            <span class="n">d_plus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_parameters</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">sensitivity_params</span><span class="p">,</span> <span class="n">param</span><span class="p">:</span> <span class="n">val</span> <span class="o">+</span> <span class="n">h</span><span class="p">})</span>
+            <span class="n">d_minus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_parameters</span><span class="p">(</span>
+                <span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">sensitivity_params</span><span class="p">,</span> <span class="n">param</span><span class="p">:</span> <span class="n">val</span> <span class="o">-</span> <span class="n">h</span><span class="p">}</span>
+            <span class="p">)</span>
             <span class="n">result</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">d_plus</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">d_minus</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span></div>
 

@@ -4,7 +4,8 @@ What's new in PySTRA 2.0
 PySTRA 2.0 is a new major version. It gives every analysis one consistent
 interface, adds reliability methods and engineering workflows, and keeps its
 numerics accurate far into the tails. It is not compatible with 1.x:
-:doc:`migrating` shows how to update a script.
+:doc:`migrating` shows how to update a script, and ``python -m pystra.migrate``
+makes the unambiguous changes for you.
 
 This is a pre-release (|release|). The work that remains before 2.0.0 is listed
 at the end of this page.
@@ -48,6 +49,10 @@ A consistent interface
 * Distributions take native parameters as keywords, as in
   ``Gumbel("Q", loc=8.9, scale=1.56)``, and ``CorrelationMatrix`` is validated
   when it is created.
+* ``LimitState.evaluate`` evaluates a point or a batch of rows directly;
+  distributions expose ``parameters`` and ``with_parameters`` for rebuilding
+  them; and transformations name the direction of their Jacobians,
+  ``jacobian_u_wrt_x`` and ``jacobian_x_wrt_u``.
 
 New methods
 -----------
@@ -99,7 +104,9 @@ Documentation
 
 The documentation has a user guide organised by task, 22 executed tutorials,
 including an external finite-element solver with OpenSeesPy, published
-benchmark problems with their references, and theory pages for each topic.
+benchmark problems with their references, theory pages for each topic, and
+guides to the extreme-value families (:doc:`guides/gev_family`) and to
+sensitivity analysis (:doc:`guides/sensitivity`).
 
 Requirements
 ------------
@@ -112,10 +119,7 @@ Before 2.0.0
 
 The release plan still includes:
 
-* the public contracts for batched evaluators and for extending distributions;
 * restructuring of the decision and assessment modules;
-* a converter for user scripts, and migration trials with representative
-  scripts during a public beta;
-* testing on Windows and macOS and with minimum and current dependencies,
-  performance baselines and release automation;
-* a release candidate with a frozen API.
+* a consistent writing style and type annotations throughout the code and
+  documentation;
+* performance comparisons with 1.6.0 and the final release checks.

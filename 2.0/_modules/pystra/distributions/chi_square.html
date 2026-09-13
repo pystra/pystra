@@ -530,6 +530,11 @@
 <span class="sd">      - start_point (float): Start point for seach\n</span>
 <span class="sd">    """</span>
 
+    <span class="n">_native_parameters</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"df"</span><span class="p">,)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parameter_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"df"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">}</span>
+
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_point</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">_uses_native_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">):</span>
             <span class="n">lamb</span> <span class="o">=</span> <span class="mf">0.5</span>

@@ -103,7 +103,7 @@ Transformations are also available independently of an analysis:
    transform = joint.make_transformation("rosenblatt", order=[1, 0])
    u = transform.x_to_u([10.0, 4.0])
    x = transform.u_to_x(u)
-   du_dx = transform.jacobian(u, x)
+   du_dx = transform.jacobian_u_wrt_x(u, x)
 
 These methods take one full vector; joint distribution methods take either
 one point or rows of points. Copula-level ``rosenblatt`` and

@@ -547,8 +547,9 @@ prerequisite fix. Active learning is also new in 2.0. Earlier feature-branch
 interfaces are development history, not released 1.x APIs to migrate from.</p>
 <section id="upgrading-a-1-x-script">
 <h2>Upgrading a 1.x script<a class="headerlink" href="#upgrading-a-1-x-script" title="Link to this heading">#</a></h2>
-<p>Most 1.x scripts need the same few edits. Work through them in order; each
-links to its details below.</p>
+<p>Most 1.x scripts need the same few edits. Start with
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pystra.migrate</span></code>, which makes the unambiguous ones and reports the
+rest (<a class="reference internal" href="#migration-tools">Migration tools</a>); each item below links to its details.</p>
 <ol class="arabic simple">
 <li><p><strong>Imports.</strong> <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">pystra</span> <span class="pre">as</span> <span class="pre">ra</span></code> still works. Update imports of moved
 modules (<a class="reference internal" href="#moved-modules"><span class="std std-ref">Moved modules</span></a>) and renamed classes, such as <code class="docutils literal notranslate"><span class="pre">Form</span></code> to
@@ -575,8 +576,7 @@ global random state (<a class="reference internal" href="#randomness">Randomness
 </ol>
 <p>Results can differ from 1.x where 2.0 corrects a numerical error, and seeded
 simulations differ within sampling error; the <a class="reference internal" href="changelog.html"><span class="doc">Changelog</span></a> lists the
-corrections. There is not yet an automatic converter for user scripts; see
-<a class="reference internal" href="#migration-tools">Migration tools</a>.</p>
+corrections.</p>
 <div class="toctree-wrapper compound">
 </div>
 </section>
@@ -1486,13 +1486,18 @@ distribution as <code class="docutils literal notranslate"><span class="pre">dis
 A subclass that overrides <code class="docutils literal notranslate"><span class="pre">cdf</span></code>, <code class="docutils literal notranslate"><span class="pre">ppf</span></code> or <code class="docutils literal notranslate"><span class="pre">pdf</span></code> should also provide
 <code class="docutils literal notranslate"><span class="pre">sf</span></code>, <code class="docutils literal notranslate"><span class="pre">isf</span></code> and <code class="docutils literal notranslate"><span class="pre">logpdf</span></code> to keep small probabilities accurate; see
 <a class="reference internal" href="guides/high_reliability.html"><span class="doc">Working at high reliability</span></a>. Sensitivity analysis rebuilds a distribution
-from its constructor arguments, so store any beyond the mean and standard
-deviation in <code class="docutils literal notranslate"><span class="pre">_ctor_kwargs</span></code>.</p>
+with <code class="docutils literal notranslate"><span class="pre">with_parameters</span></code>, which passes the <code class="docutils literal notranslate"><span class="pre">parameters</span></code> mapping, with any
+changes, back to the constructor. A subclass whose constructor takes further
+arguments overrides <code class="docutils literal notranslate"><span class="pre">parameters</span></code> to include them; see
+<a class="reference internal" href="development/distributions.html"><span class="doc">Adding a distribution</span></a>.</p>
 <p>A limit-state function receives one keyword argument for each variable and
 constant, so its argument names must match the model’s names; otherwise
 <code class="docutils literal notranslate"><span class="pre">ModelError</span></code> is raised.</p>
-<p>The public contracts for batched evaluators and for extending distributions are
-still being settled and can change before the beta.</p>
+<p>To evaluate a limit state directly, <code class="docutils literal notranslate"><span class="pre">LimitState.evaluate(x,</span> <span class="pre">model)</span></code> takes a
+point <code class="docutils literal notranslate"><span class="pre">(n_variables,)</span></code> or rows <code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_variables)</span></code> in the model’s
+variable order; the column-oriented <code class="docutils literal notranslate"><span class="pre">evaluate_lsf</span></code> is private. Transformations
+name the direction of their Jacobians: <code class="docutils literal notranslate"><span class="pre">jacobian_u_wrt_x</span></code> and
+<code class="docutils literal notranslate"><span class="pre">jacobian_x_wrt_u</span></code> replace <code class="docutils literal notranslate"><span class="pre">jacobian</span></code>.</p>
 </section>
 <section id="migration-records">
 <h2>Migration records<a class="headerlink" href="#migration-records" title="Link to this heading">#</a></h2>
@@ -1534,10 +1539,18 @@ probability; finite-sample uncertainty reporting remains further work.</p>
 </section>
 <section id="migration-tools">
 <h2>Migration tools<a class="headerlink" href="#migration-tools" title="Link to this heading">#</a></h2>
-<p>There is not yet an automatic converter for user scripts. A conservative
-converter for unambiguous imports, calls and keywords, with dry-run diffs, is
-planned before the beta. Until then, use the checklist at the top of this page,
-the <a class="reference internal" href="migration-map.html"><span class="doc">Complete symbol map</span></a> and the error messages of the signposts.</p>
+<p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pystra.migrate</span> <span class="pre">PATH...</span></code> converts 1.x scripts and notebooks. It
+rewrites only unambiguous code: imports and module paths, renamed classes and
+functions reached through the <code class="docutils literal notranslate"><span class="pre">pystra</span></code> module or imported from it, and renamed
+keywords of PySTRA constructors such as <code class="docutils literal notranslate"><span class="pre">stdv</span></code>. It prints the changes as a diff
+and writes nothing unless you add <code class="docutils literal notranslate"><span class="pre">--write</span></code>, and a second run changes nothing.
+What needs judgment is reported with its location instead: result getters,
+<code class="docutils literal notranslate"><span class="pre">AnalysisOptions</span></code>, <code class="docutils literal notranslate"><span class="pre">input_type</span></code>, printing methods, the <code class="docutils literal notranslate"><span class="pre">Calibration</span></code> class
+and global NumPy seeding of simulations. Review each report before running the
+script, and use the checklist above and the <a class="reference internal" href="migration-map.html"><span class="doc">Complete symbol map</span></a> for the rest.</p>
+<p>The converter was tried on the 1.6.0 examples and tutorials. After the reported
+edits they reproduce their 1.6.0 results within stated tolerances; see the
+<a class="reference download internal" download="" href="_downloads/e907fb3cf2809f13afd3804979e29f03/trials.md"><code class="xref download docutils literal notranslate"><span class="pre">migration</span> <span class="pre">trials</span></code></a>.</p>
 <p>The scripts below maintain this repository.
 <code class="docutils literal notranslate"><span class="pre">scripts/migrate_names.py</span></code> applies the reviewed map to tracked repository
 code and notebook source, with a dry run by default. It preserves notebook

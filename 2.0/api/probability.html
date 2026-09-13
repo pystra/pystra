@@ -940,6 +940,27 @@
 </table>
 </div>
 </section>
+<section id="directed-transformation-derivatives">
+<h2>Directed transformation derivatives<a class="headerlink" href="#directed-transformation-derivatives" title="Link to this heading">#</a></h2>
+<p>Both <code class="docutils literal notranslate"><span class="pre">Transformation</span></code> and <code class="docutils literal notranslate"><span class="pre">CopulaTransformation</span></code> provide
+<code class="docutils literal notranslate"><span class="pre">jacobian_u_wrt_x(u,</span> <span class="pre">x,</span> <span class="pre">marg)</span></code> and <code class="docutils literal notranslate"><span class="pre">jacobian_x_wrt_u(u,</span> <span class="pre">x,</span> <span class="pre">marg)</span></code>.
+The joint transformation already owns its marginals, so <code class="docutils literal notranslate"><span class="pre">marg</span></code> is optional
+there. Inputs are corresponding reference and physical points. Both matrices
+have shape <code class="docutils literal notranslate"><span class="pre">(dimension,</span> <span class="pre">dimension)</span></code> with output coordinates in rows and input
+coordinates in columns, in original model variable order. They are inverses
+at nonsingular points. <code class="docutils literal notranslate"><span class="pre">standard_space</span></code> identifies the reference law: normal
+Rosenblatt coordinates are independent; generalized Nataf with a Student-t
+copula has spherical, dependent Student-t coordinates.</p>
+</section>
+<section id="distribution-reconstruction">
+<h2>Distribution reconstruction<a class="headerlink" href="#distribution-reconstruction" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">dist.parameters</span></code> is a read-only constructor mapping;
+<code class="docutils literal notranslate"><span class="pre">type(dist)(**dist.parameters)</span></code> reconstructs the marginal.
+<code class="docutils literal notranslate"><span class="pre">dist.with_parameters(**changes)</span></code> returns an independent updated marginal,
+including its nested distributions. Native reconstruction parameters and
+<code class="docutils literal notranslate"><span class="pre">sensitivity_params</span></code> are separate: see <a class="reference internal" href="../development/distributions.html"><span class="doc">Adding a distribution</span></a>
+for moment updates, fixed bounds and custom subclass requirements.</p>
+</section>
 </section>
 
 
@@ -991,6 +1012,8 @@
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#public-entry-points">Public entry points</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-details">Module details</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#directed-transformation-derivatives">Directed transformation derivatives</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution-reconstruction">Distribution reconstruction</a></li>
 </ul>
   </nav></div>
 

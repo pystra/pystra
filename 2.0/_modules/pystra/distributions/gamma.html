@@ -531,6 +531,14 @@
 <span class="sd">      - start_point (float): Start point for seach\n</span>
 <span class="sd">    """</span>
 
+    <span class="n">_native_parameters</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"shape"</span><span class="p">,</span> <span class="s2">"rate"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parameter_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">"shape"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">kwds</span><span class="p">[</span><span class="s2">"a"</span><span class="p">],</span>
+            <span class="s2">"rate"</span><span class="p">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">kwds</span><span class="p">[</span><span class="s2">"scale"</span><span class="p">],</span>
+        <span class="p">}</span>
+
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_point</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>

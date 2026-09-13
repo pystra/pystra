@@ -534,6 +534,16 @@
 <span class="sd">      - start_point (float): Start point for seach\n</span>
 <span class="sd">    """</span>
 
+    <span class="n">_native_parameters</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"q"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parameter_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">"q"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="s2">"r"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_obj</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="s2">"lower"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower</span><span class="p">,</span>
+            <span class="s2">"upper"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">upper</span><span class="p">,</span>
+        <span class="p">}</span>
+
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">,</span>
@@ -548,7 +558,6 @@
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lower</span> <span class="o">=</span> <span class="n">lower</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">upper</span> <span class="o">=</span> <span class="n">upper</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ctor_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"lower"</span><span class="p">:</span> <span class="n">lower</span><span class="p">,</span> <span class="s2">"upper"</span><span class="p">:</span> <span class="n">upper</span><span class="p">}</span>
         <span class="n">a</span> <span class="o">=</span> <span class="n">lower</span>
         <span class="n">b</span> <span class="o">=</span> <span class="n">upper</span>
 

@@ -695,7 +695,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_compute_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Compute the Jacobian"""</span>
-        <span class="n">J_u_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">jacobian</span><span class="p">(</span>
+        <span class="n">J_u_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">jacobian_u_wrt_x</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_marginal_distributions</span><span class="p">()</span>
         <span class="p">)</span>
         <span class="n">J_x_u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">J_u_x</span><span class="p">)</span>

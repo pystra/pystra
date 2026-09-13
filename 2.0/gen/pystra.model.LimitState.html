@@ -925,8 +925,8 @@ dimension-agnostic definition:</p>
 <p class="rubric">Methods</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.model.LimitState.evaluate_lsf" title="pystra.model.LimitState.evaluate_lsf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate_lsf</span></code></a></p></td>
-<td><p>Evaluate the limit state function and (optionally) its gradient.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.model.LimitState.evaluate" title="pystra.model.LimitState.evaluate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate</span></code></a></p></td>
+<td><p>Evaluate physical points, with optional physical-space gradients.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_expression</span></code></p></td>
 <td><p></p></td>
@@ -944,46 +944,48 @@ dimension-agnostic definition:</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pystra.model.LimitState.evaluate_lsf">
-<span class="sig-name descname"><span class="pre">evaluate_lsf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stochastic_model</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">differentiation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'no'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ffd_parameter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/model.html#LimitState.evaluate_lsf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.model.LimitState.evaluate_lsf" title="Link to this definition">#</a></dt>
-<dd><p>Evaluate the limit state function and (optionally) its gradient.</p>
-<p>Dispatches to the appropriate evaluation strategy based on the
-differentiation mode: no gradient (<code class="docutils literal notranslate"><span class="pre">&quot;no&quot;</span></code>), forward finite
-difference (<code class="docutils literal notranslate"><span class="pre">&quot;ffd&quot;</span></code>), or direct differentiation (<code class="docutils literal notranslate"><span class="pre">&quot;ddm&quot;</span></code>).
-The limit state keeps no evaluation state and <code class="docutils literal notranslate"><span class="pre">x</span></code> is not modified,
-so analyses sharing a limit state or model cannot interfere.</p>
+<dt class="sig sig-object py" id="pystra.model.LimitState.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">differentiation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'no'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ffd_parameter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pystra/model.html#LimitState.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pystra.model.LimitState.evaluate" title="Link to this definition">#</a></dt>
+<dd><p>Evaluate physical points, with optional physical-space gradients.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>ndarray</em>) – Evaluation points, shape <code class="docutils literal notranslate"><span class="pre">(nrv,</span> <span class="pre">nx)</span></code> where <em>nrv</em> is the
-number of random variables and <em>nx</em> the number of points.</p></li>
-<li><p><strong>stochastic_model</strong> (<a class="reference internal" href="pystra.model.StochasticModel.html#pystra.model.StochasticModel" title="pystra.model.StochasticModel"><em>StochasticModel</em></a>) – The probabilistic model.</p></li>
-<li><p><strong>differentiation</strong> (<em>{&quot;no&quot;</em><em>, </em><em>&quot;ffd&quot;</em><em>, </em><em>&quot;ddm&quot;}</em><em>, </em><em>default &quot;no&quot;</em>) – Values only, forward finite-difference gradients, or the gradient
-returned by the function itself (direct differentiation).</p></li>
-<li><p><strong>ffd_parameter</strong> (<em>float</em><em>, </em><em>default 1000</em>) – Finite-difference step divisor: each variable is perturbed by its
-standard deviation divided by this value.</p></li>
-<li><p><strong>block_size</strong> (<em>int</em><em>, </em><em>default 1000</em>) – Points passed to the limit-state function per call.</p></li>
-<li><p><strong>counter</strong> (<em>callable</em><em>, </em><em>optional</em>) – Called with the number of limit-state function calls made, so
-an analysis can count its own evaluations.</p></li>
+<li><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ArrayLike</span></code></span>) – One point of shape <code class="docutils literal notranslate"><span class="pre">(n_variables,)</span></code> or a batch of shape
+<code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_variables)</span></code>. Columns follow random-variable
+insertion order in <code class="docutils literal notranslate"><span class="pre">model</span></code>; constants have no column.
+A square batch always contains rows of points.</p></li>
+<li><p><strong>model</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="pystra.model.StochasticModel.html#pystra.model.StochasticModel" title="pystra.model.StochasticModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">StochasticModel</span></code></a></span>) – Named random variables and constants passed to the expression.</p></li>
+<li><p><strong>differentiation</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Zero gradients, forward differences, or analytic gradients
+returned with the expression value. Analytic gradients follow
+model variable order; the expression is evaluated point by point.</p></li>
+<li><p><strong>ffd_parameter</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Positive divisor of each marginal standard deviation for the
+forward-difference step, in that variable’s physical units.</p></li>
+<li><p><strong>block_size</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Positive maximum number of points per value-only expression call.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>G</strong> (<em>ndarray</em>) – Limit state function values, shape <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">nx)</span></code>.</p></li>
-<li><p><strong>grad_G</strong> (<em>ndarray</em>) – Gradient matrix, shape <code class="docutils literal notranslate"><span class="pre">(nrv,</span> <span class="pre">nx)</span></code>.  Zero when no
-gradient is computed.</p></li>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">NDArray</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float64</span></code>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">NDArray</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float64</span></code>]]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>values</strong> (<em>float or ndarray</em>) – Scalar for one point, or shape <code class="docutils literal notranslate"><span class="pre">(n_samples,)</span></code> for a batch.
+Failure is the event <code class="docutils literal notranslate"><span class="pre">values</span> <span class="pre">&lt;=</span> <span class="pre">0</span></code>.</p></li>
+<li><p><strong>gradients</strong> (<em>ndarray</em>) – Physical derivatives, shape <code class="docutils literal notranslate"><span class="pre">(n_variables,)</span></code> for one point or
+<code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_variables)</span></code> for a batch. Zero in <code class="docutils literal notranslate"><span class="pre">&quot;no&quot;</span></code> mode.</p></li>
 </ul>
 </p>
 </dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="pystra.errors.ModelError.html#pystra.errors.ModelError" title="pystra.errors.ModelError"><strong>ModelError</strong></a> – Points or returned values/gradients have incompatible dimensions.</p></li>
-<li><p><a class="reference internal" href="pystra.errors.AnalysisError.html#pystra.errors.AnalysisError" title="pystra.errors.AnalysisError"><strong>AnalysisError</strong></a> – Physical points, limit-state values or gradients are nonfinite,
-    or the external evaluator raises. The evaluator exception is
-    retained as the cause; no probability estimate is produced.</p></li>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="pystra.errors.ModelError.html#pystra.errors.ModelError" title="pystra.errors.ModelError"><strong>ModelError</strong></a> – Input or expression output shapes or settings are invalid.</p></li>
+<li><p><a class="reference internal" href="pystra.errors.AnalysisError.html#pystra.errors.AnalysisError" title="pystra.errors.AnalysisError"><strong>AnalysisError</strong></a> – Points, values or gradients are nonfinite, or the expression
+    raises an exception (retained as the cause).</p></li>
 </ul>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>Inputs are not modified. The limit state stores no evaluation state.
+Numerical algorithms use a private adapter for their column batches.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1039,7 +1041,7 @@ gradient is computed.</p></li>
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.model.LimitState"><code class="docutils literal notranslate"><span class="pre">LimitState</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.model.LimitState.expression"><code class="docutils literal notranslate"><span class="pre">LimitState.expression</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.model.LimitState.evaluate_lsf"><code class="docutils literal notranslate"><span class="pre">LimitState.evaluate_lsf()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.model.LimitState.evaluate"><code class="docutils literal notranslate"><span class="pre">LimitState.evaluate()</span></code></a></li>
 </ul>
 </li>
 </ul>

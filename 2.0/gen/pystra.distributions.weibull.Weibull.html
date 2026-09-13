@@ -968,7 +968,10 @@
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">weibull_parameter</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pystra.distributions.weibull.Weibull.x_to_u" title="pystra.distributions.weibull.Weibull.x_to_u"><code class="xref py py-obj docutils literal notranslate"><span class="pre">x_to_u</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pystra.distributions.weibull.Weibull.with_parameters" title="pystra.distributions.weibull.Weibull.with_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">with_parameters</span></code></a></p></td>
+<td><p>Rebuild an independent marginal, replacing constructor parameters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pystra.distributions.weibull.Weibull.x_to_u" title="pystra.distributions.weibull.Weibull.x_to_u"><code class="xref py py-obj docutils literal notranslate"><span class="pre">x_to_u</span></code></a></p></td>
 <td><p>Transform from physical space to standard normal space.</p></td>
 </tr>
 </tbody>
@@ -997,13 +1000,13 @@
 <dd><p>Derivatives of the CDF w.r.t. each sensitivity parameter.</p>
 <p>Returns <code class="docutils literal notranslate"><span class="pre">∂F_X(x)/∂θ</span></code> for every parameter listed by
 <a class="reference internal" href="#pystra.distributions.weibull.Weibull.sensitivity_params" title="pystra.distributions.weibull.Weibull.sensitivity_params"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sensitivity_params</span></code></a>.  The base-class implementation uses
-central finite differences on the CDF via <code class="xref py py-meth docutils literal notranslate"><span class="pre">_make_copy()</span></code>.</p>
+central finite differences on the CDF via <a class="reference internal" href="#pystra.distributions.weibull.Weibull.with_parameters" title="pystra.distributions.weibull.Weibull.with_parameters"><code class="xref py py-meth docutils literal notranslate"><span class="pre">with_parameters()</span></code></a>.</p>
 <p>Before computing derivatives, a reconstruction sanity check
-verifies that <code class="xref py py-meth docutils literal notranslate"><span class="pre">_make_copy()</span></code> (with no overrides) reproduces
+verifies that <a class="reference internal" href="#pystra.distributions.weibull.Weibull.with_parameters" title="pystra.distributions.weibull.Weibull.with_parameters"><code class="xref py py-meth docutils literal notranslate"><span class="pre">with_parameters()</span></code></a> (with no overrides) reproduces
 the current distribution.  This catches both constructor
 failures (e.g. composite distributions) and silent mismatches
 (e.g. distributions whose extra constructor arguments are not
-stored in <code class="xref py py-attr docutils literal notranslate"><span class="pre">_ctor_kwargs</span></code>).</p>
+stored in <a class="reference internal" href="#pystra.distributions.weibull.Weibull.parameters" title="pystra.distributions.weibull.Weibull.parameters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">parameters</span></code></a>).</p>
 <p>Subclasses may override this with analytical expressions for
 better accuracy and performance (see <code class="xref py py-class docutils literal notranslate"><span class="pre">Normal</span></code> and
 <code class="xref py py-class docutils literal notranslate"><span class="pre">Lognormal</span></code>).</p>
@@ -1020,7 +1023,7 @@ better accuracy and performance (see <code class="xref py py-class docutils lite
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>ValueError</strong> – If the distribution cannot be faithfully reconstructed by
-    <code class="xref py py-meth docutils literal notranslate"><span class="pre">_make_copy()</span></code>.</p>
+    <a class="reference internal" href="#pystra.distributions.weibull.Weibull.with_parameters" title="pystra.distributions.weibull.Weibull.with_parameters"><code class="xref py py-meth docutils literal notranslate"><span class="pre">with_parameters()</span></code></a>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1082,6 +1085,19 @@ difference from zero.</p>
 <dt class="sig sig-object py" id="pystra.distributions.weibull.Weibull.mean">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">mean</span></span><a class="headerlink" href="#pystra.distributions.weibull.Weibull.mean" title="Link to this definition">#</a></dt>
 <dd><p>Mean of the distribution.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pystra.distributions.weibull.Weibull.parameters">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parameters</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">object</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#pystra.distributions.weibull.Weibull.parameters" title="Link to this definition">#</a></dt>
+<dd><p>Read-only snapshot of keyword arguments that rebuild this marginal.</p>
+<p><code class="docutils literal notranslate"><span class="pre">type(dist)(**dist.parameters)</span></code> reproduces its law, name and start
+point. Built-ins use native parameters where moment fitting could
+lose precision. Nested marginals and SciPy objects are independent
+copies, so mutating a snapshot never changes the source distribution.
+Custom marginals may override this property with their complete
+constructor mapping. Sensitivity coordinates are specified separately
+by <a class="reference internal" href="#pystra.distributions.weibull.Weibull.sensitivity_params" title="pystra.distributions.weibull.Weibull.sensitivity_params"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sensitivity_params</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1168,10 +1184,10 @@ should be evaluated.</p>
 which is appropriate for most distributions.  Distributions with
 additional parameters of interest (e.g. the GEV shape parameter)
 should override this property to include them.</p>
-<p>Parameters listed in <code class="xref py py-attr docutils literal notranslate"><span class="pre">_ctor_kwargs</span></code> but <strong>not</strong> in
-<code class="docutils literal notranslate"><span class="pre">sensitivity_params</span></code> are held fixed during sensitivity analysis
-— they are only used by <code class="xref py py-meth docutils literal notranslate"><span class="pre">_make_copy()</span></code> to faithfully
-reconstruct the distribution.</p>
+<p>Fixed constructor settings such as bounds are separate from these
+sensitivity coordinates. Native reconstruction parameters can be
+another representation of the same law: sensitivity analysis perturbs
+the declared coordinates together, keeping other moments fixed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">{param_name:</span> <span class="pre">current_value}</span></code></p>
@@ -1256,6 +1272,35 @@ tail the log-probability is used (see <code class="xref py py-meth docutils lite
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pystra.distributions.weibull.Weibull.with_parameters">
+<span class="sig-name descname"><span class="pre">with_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">changes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pystra.distributions.weibull.Weibull.with_parameters" title="Link to this definition">#</a></dt>
+<dd><p>Rebuild an independent marginal, replacing constructor parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>**changes</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></span>) – Replacements for keys of <a class="reference internal" href="#pystra.distributions.weibull.Weibull.parameters" title="pystra.distributions.weibull.Weibull.parameters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">parameters</span></code></a>. Built-ins supporting
+moment sensitivities also accept <code class="docutils literal notranslate"><span class="pre">mean</span></code> and <code class="docutils literal notranslate"><span class="pre">std</span></code>; supplying
+either switches to moment construction, holding the other moment
+and fixed bounds/shape constant. Native coordinates and moments
+cannot be supplied together. The start point remains unchanged
+unless explicitly replaced (<code class="docutils literal notranslate"><span class="pre">None</span></code> selects the new mean).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Independent instance of the same type, including nested marginals.
+An empty replacement reproduces the distribution.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Self</span></code></span></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – A replacement is unknown, or mixes moments and native coordinates.</p></li>
+<li><p><a class="reference internal" href="pystra.errors.ModelError.html#pystra.errors.ModelError" title="pystra.errors.ModelError"><strong>ModelError</strong></a><strong>, </strong><strong>ValueError</strong> – Constructor parameters do not define a valid distribution.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pystra.distributions.weibull.Weibull.x_to_u">
 <span class="sig-name descname"><span class="pre">x_to_u</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pystra.distributions.weibull.Weibull.x_to_u" title="Link to this definition">#</a></dt>
 <dd><p>Transform from physical space to standard normal space.</p>
@@ -1335,6 +1380,7 @@ where these underflow.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.distributions.weibull.Weibull.logpdf"><code class="docutils literal notranslate"><span class="pre">Weibull.logpdf()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.distributions.weibull.Weibull.logsf"><code class="docutils literal notranslate"><span class="pre">Weibull.logsf()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.distributions.weibull.Weibull.mean"><code class="docutils literal notranslate"><span class="pre">Weibull.mean</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.distributions.weibull.Weibull.parameters"><code class="docutils literal notranslate"><span class="pre">Weibull.parameters</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.distributions.weibull.Weibull.pdf"><code class="docutils literal notranslate"><span class="pre">Weibull.pdf()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.distributions.weibull.Weibull.plot"><code class="docutils literal notranslate"><span class="pre">Weibull.plot()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.distributions.weibull.Weibull.ppf"><code class="docutils literal notranslate"><span class="pre">Weibull.ppf()</span></code></a></li>
@@ -1346,6 +1392,7 @@ where these underflow.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.distributions.weibull.Weibull.start_point"><code class="docutils literal notranslate"><span class="pre">Weibull.start_point</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.distributions.weibull.Weibull.std"><code class="docutils literal notranslate"><span class="pre">Weibull.std</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.distributions.weibull.Weibull.u_to_x"><code class="docutils literal notranslate"><span class="pre">Weibull.u_to_x()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.distributions.weibull.Weibull.with_parameters"><code class="docutils literal notranslate"><span class="pre">Weibull.with_parameters()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pystra.distributions.weibull.Weibull.x_to_u"><code class="docutils literal notranslate"><span class="pre">Weibull.x_to_u()</span></code></a></li>
 </ul>
 </li>

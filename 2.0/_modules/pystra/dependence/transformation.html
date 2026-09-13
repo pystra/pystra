@@ -509,7 +509,12 @@
   <h1>Source code for pystra.dependence.transformation</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..distributions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Distribution</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Transformation"</span><span class="p">]</span>
 
@@ -599,19 +604,25 @@
         <span class="k">return</span> <span class="n">x</span></div>
 
 
-<div class="viewcode-block" id="Transformation.jacobian">
-<a class="viewcode-back" href="../../../gen/pystra.dependence.transformation.Transformation.html#pystra.dependence.transformation.Transformation.jacobian">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">marg</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Jacobian of the u-to-x transformation, J_{u,x}.</span>
+<div class="viewcode-block" id="Transformation.jacobian_u_wrt_x">
+<a class="viewcode-back" href="../../../gen/pystra.dependence.transformation.Transformation.html#pystra.dependence.transformation.Transformation.jacobian_u_wrt_x">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">jacobian_u_wrt_x</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">marg</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Distribution</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return physical-to-reference derivatives ``du[i] / dx[j]``.</span>
 
-<span class="sd">        Inputs are flattened to 1-D (see ``x_to_u``).  Each marginal</span>
-<span class="sd">        ``jacobian(z_i, x_i)`` returns a diagonal ``np.ndarray`` via</span>
-<span class="sd">        ``np.diag()``, even when called with scalar arguments — in that case</span>
-<span class="sd">        the result is a (1, 1) matrix.  We wrap the scalar inputs with</span>
-<span class="sd">        ``np.atleast_1d`` so that ``np.diag`` receives a 1-D array (it</span>
-<span class="sd">        raises ``ValueError`` on 0-d input), and then extract the single</span>
-<span class="sd">        element with ``.item()`` for assignment into the composite Jacobian.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        u, x : array_like</span>
+<span class="sd">            Corresponding reference and physical points, shape ``(dimension,)``.</span>
+<span class="sd">        marg : sequence of Distribution</span>
+<span class="sd">            Marginals in model variable order.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray</span>
+<span class="sd">            Shape ``(dimension, dimension)``, with reference coordinates in</span>
+<span class="sd">            rows and physical variables in columns, both in model order.</span>
 <span class="sd">        """</span>
         <span class="n">nrv</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">marg</span><span class="p">)</span>
         <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
@@ -625,6 +636,28 @@
 
         <span class="n">J_u_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">J_u_x</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">J_u_x</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dimension</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Number of coordinates; available after :meth:`compute`."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Compute the transformation before requesting dimension"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Transformation.jacobian_x_wrt_u">
+<a class="viewcode-back" href="../../../gen/pystra.dependence.transformation.Transformation.html#pystra.dependence.transformation.Transformation.jacobian_x_wrt_u">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">jacobian_x_wrt_u</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">marg</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Distribution</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return ``dx[i] / du[j]`` at corresponding reference/physical points.</span>
+
+<span class="sd">        Inputs are vectors of shape ``(dimension,)`` in model variable order.</span>
+<span class="sd">        The returned matrix has shape ``(dimension, dimension)`` with physical</span>
+<span class="sd">        variables in rows and reference coordinates in columns. It is the</span>
+<span class="sd">        inverse of :meth:`jacobian_u_wrt_x` at a nonsingular point.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jacobian_u_wrt_x</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">marg</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="Transformation.compute">

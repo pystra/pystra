@@ -511,6 +511,8 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">NDArray</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.distributions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">Constant</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderedDict</span>
@@ -803,9 +805,79 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">set_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">expression</span> <span class="o">=</span> <span class="n">expression</span>
 
-<div class="viewcode-block" id="LimitState.evaluate_lsf">
-<a class="viewcode-back" href="../../gen/pystra.model.LimitState.html#pystra.model.LimitState.evaluate_lsf">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate_lsf</span><span class="p">(</span>
+<div class="viewcode-block" id="LimitState.evaluate">
+<a class="viewcode-back" href="../../gen/pystra.model.LimitState.html#pystra.model.LimitState.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">StochasticModel</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">differentiation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"no"</span><span class="p">,</span>
+        <span class="n">ffd_parameter</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+        <span class="n">block_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">],</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">"""Evaluate physical points, with optional physical-space gradients.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : array_like</span>
+<span class="sd">            One point of shape ``(n_variables,)`` or a batch of shape</span>
+<span class="sd">            ``(n_samples, n_variables)``. Columns follow random-variable</span>
+<span class="sd">            insertion order in ``model``; constants have no column.</span>
+<span class="sd">            A square batch always contains rows of points.</span>
+<span class="sd">        model : StochasticModel</span>
+<span class="sd">            Named random variables and constants passed to the expression.</span>
+<span class="sd">        differentiation : {"no", "ffd", "ddm"}, default "no"</span>
+<span class="sd">            Zero gradients, forward differences, or analytic gradients</span>
+<span class="sd">            returned with the expression value. Analytic gradients follow</span>
+<span class="sd">            model variable order; the expression is evaluated point by point.</span>
+<span class="sd">        ffd_parameter : float, default 1000</span>
+<span class="sd">            Positive divisor of each marginal standard deviation for the</span>
+<span class="sd">            forward-difference step, in that variable's physical units.</span>
+<span class="sd">        block_size : int, default 1000</span>
+<span class="sd">            Positive maximum number of points per value-only expression call.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        values : float or ndarray</span>
+<span class="sd">            Scalar for one point, or shape ``(n_samples,)`` for a batch.</span>
+<span class="sd">            Failure is the event ``values &lt;= 0``.</span>
+<span class="sd">        gradients : ndarray</span>
+<span class="sd">            Physical derivatives, shape ``(n_variables,)`` for one point or</span>
+<span class="sd">            ``(n_samples, n_variables)`` for a batch. Zero in ``"no"`` mode.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ModelError</span>
+<span class="sd">            Input or expression output shapes or settings are invalid.</span>
+<span class="sd">        AnalysisError</span>
+<span class="sd">            Points, values or gradients are nonfinite, or the expression</span>
+<span class="sd">            raises an exception (retained as the cause).</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Inputs are not modified. The limit state stores no evaluation state.</span>
+<span class="sd">        Numerical algorithms use a private adapter for their column batches.</span>
+<span class="sd">        """</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">points</span><span class="o">.</span><span class="n">ndim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="ow">or</span> <span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">model</span><span class="o">.</span><span class="n">n_marg</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ModelError</span><span class="p">(</span>
+                <span class="s2">"Evaluation points must have shape (n_variables,) or "</span>
+                <span class="s2">"(n_samples, n_variables)"</span>
+            <span class="p">)</span>
+        <span class="n">single</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="n">values</span><span class="p">,</span> <span class="n">gradients</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluate_lsf</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">points</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+            <span class="n">model</span><span class="p">,</span>
+            <span class="n">differentiation</span><span class="o">=</span><span class="n">differentiation</span><span class="p">,</span>
+            <span class="n">ffd_parameter</span><span class="o">=</span><span class="n">ffd_parameter</span><span class="p">,</span>
+            <span class="n">block_size</span><span class="o">=</span><span class="n">block_size</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">gradients</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span> <span class="k">if</span> <span class="n">single</span> <span class="k">else</span> <span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">gradients</span><span class="o">.</span><span class="n">T</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_evaluate_lsf</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">x</span><span class="p">,</span>
         <span class="n">stochastic_model</span><span class="p">,</span>
@@ -861,6 +933,14 @@
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="n">differentiation</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"no"</span><span class="p">,</span> <span class="s2">"ffd"</span><span class="p">,</span> <span class="s2">"ddm"</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"differentiation must be 'no', 'ffd' or 'ddm'"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">block_size</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">))</span>
+            <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">block_size</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">))</span>
+            <span class="ow">or</span> <span class="n">block_size</span> <span class="o">&lt;=</span> <span class="mi">0</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ModelError</span><span class="p">(</span><span class="s2">"block_size must be a positive integer"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">ffd_parameter</span><span class="p">)</span> <span class="ow">or</span> <span class="n">ffd_parameter</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ModelError</span><span class="p">(</span><span class="s2">"ffd_parameter must be finite and positive"</span><span class="p">)</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">stochastic_model</span><span class="o">.</span><span class="n">n_marg</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ModelError</span><span class="p">(</span>
@@ -883,8 +963,7 @@
         <span class="n">stochastic_model</span><span class="o">.</span><span class="n">add_call_function</span><span class="p">(</span><span class="n">calls</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">counter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">counter</span><span class="p">(</span><span class="n">calls</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">G</span><span class="p">,</span> <span class="n">grad_G</span></div>
-
+        <span class="k">return</span> <span class="n">G</span><span class="p">,</span> <span class="n">grad_G</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">block_size</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Limit-state values without gradients (used by simulation)."""</span>
