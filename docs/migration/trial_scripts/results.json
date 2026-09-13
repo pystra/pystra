@@ -1,0 +1,1220 @@
+{
+  "environment": {
+    "baseline": "v1.6.0",
+    "current_base": "fcfceb4 + C4/C6a working changes",
+    "python": "3.13.12",
+    "numpy": "2.4.4",
+    "scipy": "1.17.1",
+    "threads": 1,
+    "numpy_streams": "1.6.0: global RandomState; 2.0: explicit Generator seeds"
+  },
+  "conversion_inventory": [
+    {
+      "path": "examples/ddm_example.py",
+      "changed": true,
+      "idempotent": true,
+      "review_items": 12
+    },
+    {
+      "path": "examples/example.py",
+      "changed": true,
+      "idempotent": true,
+      "review_items": 16
+    },
+    {
+      "path": "examples/example_parallel_multithreading.py",
+      "changed": false,
+      "idempotent": true,
+      "review_items": 6
+    },
+    {
+      "path": "examples/gev_example.py",
+      "changed": true,
+      "idempotent": true,
+      "review_items": 8
+    },
+    {
+      "path": "examples/openseespy_ex.py",
+      "changed": true,
+      "idempotent": true,
+      "review_items": 8
+    },
+    {
+      "path": "examples/sensitivity.py",
+      "changed": true,
+      "idempotent": true,
+      "review_items": 5
+    },
+    {
+      "path": "examples/timing.py",
+      "changed": true,
+      "idempotent": true,
+      "review_items": 12
+    },
+    {
+      "path": "docs/source/notebooks/ex_code_calibration.ipynb",
+      "changed": true,
+      "idempotent": true,
+      "review_items": 24
+    },
+    {
+      "path": "docs/source/notebooks/ex_ddm.ipynb",
+      "changed": true,
+      "idempotent": true,
+      "review_items": 14
+    },
+    {
+      "path": "docs/source/notebooks/ex_factor_calibration.ipynb",
+      "changed": false,
+      "idempotent": true,
+      "review_items": 21
+    },
+    {
+      "path": "docs/source/notebooks/ex_generic_calibration.ipynb",
+      "changed": false,
+      "idempotent": true,
+      "review_items": 14
+    },
+    {
+      "path": "docs/source/notebooks/ex_intro.ipynb",
+      "changed": true,
+      "idempotent": true,
+      "review_items": 21
+    },
+    {
+      "path": "docs/source/notebooks/ex_load_combinations.ipynb",
+      "changed": true,
+      "idempotent": true,
+      "review_items": 21
+    },
+    {
+      "path": "docs/source/notebooks/ex_scipy_distributions.ipynb",
+      "changed": true,
+      "idempotent": true,
+      "review_items": 10
+    },
+    {
+      "path": "docs/source/notebooks/ex_sensitivity.ipynb",
+      "changed": true,
+      "idempotent": true,
+      "review_items": 19
+    },
+    {
+      "path": "docs/source/notebooks/ex_simulation.ipynb",
+      "changed": true,
+      "idempotent": true,
+      "review_items": 42
+    },
+    {
+      "path": "docs/source/notebooks/ex_timing.ipynb",
+      "changed": true,
+      "idempotent": true,
+      "review_items": 14
+    },
+    {
+      "path": "docs/source/notebooks/example_global_calibration.ipynb",
+      "changed": false,
+      "idempotent": true,
+      "review_items": 6
+    }
+  ],
+  "trials": [
+    {
+      "script": "examples/example.py",
+      "executions": {
+        "1.6.0": 0,
+        "2.0": 0
+      },
+      "checks": [
+        {
+          "method": "FORM",
+          "absolute_tolerance": 1e-10
+        },
+        {
+          "method": "SORM",
+          "beta_absolute_tolerance": 0.0002,
+          "probability_relative_tolerance": 0.001
+        },
+        {
+          "method": "CrudeMonteCarlo",
+          "pooled_standard_errors": 1.1547390303218055,
+          "limit": 5
+        },
+        {
+          "method": "ImportanceSampling",
+          "pooled_standard_errors": 1.085497325107355,
+          "limit": 5
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "script": "examples/ddm_example.py",
+      "executions": {
+        "1.6.0": 0,
+        "2.0": 0
+      },
+      "checks": [
+        {
+          "method": "FORM",
+          "absolute_tolerance": 1e-10
+        },
+        {
+          "method": "FORM",
+          "absolute_tolerance": 1e-10
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "script": "examples/gev_example.py",
+      "executions": {
+        "1.6.0": 0,
+        "2.0": 0
+      },
+      "checks": [
+        {
+          "method": "FORM",
+          "absolute_tolerance": 1e-10
+        },
+        {
+          "method": "SORM",
+          "beta_absolute_tolerance": 0.0002,
+          "probability_relative_tolerance": 0.001
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "script": "examples/sensitivity.py",
+      "executions": {
+        "1.6.0": 0,
+        "2.0": 0
+      },
+      "checks": [
+        {
+          "method": "FORM",
+          "absolute_tolerance": 1e-10
+        },
+        {
+          "method": "SensitivityAnalysis",
+          "absolute_tolerance": 1e-09
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "script": "examples/timing.py",
+      "executions": {
+        "1.6.0": 0,
+        "2.0": 0
+      },
+      "checks": [
+        {
+          "method": "SORM",
+          "beta_absolute_tolerance": 0.0002,
+          "probability_relative_tolerance": 0.001
+        },
+        {
+          "method": "SORM",
+          "beta_absolute_tolerance": 0.0002,
+          "probability_relative_tolerance": 0.001
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "script": "examples/openseespy_ex.py",
+      "executions": {
+        "1.6.0": 15,
+        "2.0": 15
+      },
+      "status": "execution_failed"
+    },
+    {
+      "script": "docs/source/notebooks/ex_intro.ipynb",
+      "executions": {
+        "1.6.0": 0,
+        "2.0": 0
+      },
+      "checks": [
+        {
+          "method": "FORM",
+          "absolute_tolerance": 1e-10
+        },
+        {
+          "method": "SORM",
+          "beta_absolute_tolerance": 0.0002,
+          "probability_relative_tolerance": 0.001
+        },
+        {
+          "method": "SORM",
+          "beta_absolute_tolerance": 0.0002,
+          "probability_relative_tolerance": 0.001
+        },
+        {
+          "method": "CrudeMonteCarlo",
+          "pooled_standard_errors": 1.5729421508868238,
+          "limit": 5
+        },
+        {
+          "method": "ImportanceSampling",
+          "pooled_standard_errors": 1.3482990877595507,
+          "limit": 5
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "script": "docs/source/notebooks/ex_ddm.ipynb",
+      "executions": {
+        "1.6.0": 0,
+        "2.0": 0
+      },
+      "checks": [
+        {
+          "method": "FORM",
+          "absolute_tolerance": 1e-10
+        },
+        {
+          "method": "FORM",
+          "absolute_tolerance": 1e-10
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "script": "docs/source/notebooks/ex_scipy_distributions.ipynb",
+      "executions": {
+        "1.6.0": 0,
+        "2.0": 0
+      },
+      "checks": [
+        {
+          "method": "FORM",
+          "absolute_tolerance": 1e-10
+        },
+        {
+          "method": "SORM",
+          "beta_absolute_tolerance": 0.0002,
+          "probability_relative_tolerance": 0.001
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "script": "docs/source/notebooks/ex_sensitivity.ipynb",
+      "executions": {
+        "1.6.0": 0,
+        "2.0": 0
+      },
+      "checks": [
+        {
+          "method": "FORM",
+          "absolute_tolerance": 1e-10
+        },
+        {
+          "method": "SensitivityAnalysis",
+          "absolute_tolerance": 1e-09
+        },
+        {
+          "method": "SensitivityAnalysis",
+          "absolute_tolerance": 1e-09
+        },
+        {
+          "method": "SensitivityAnalysis",
+          "absolute_tolerance": 1e-09
+        },
+        {
+          "method": "SensitivityAnalysis",
+          "absolute_tolerance": 1e-09
+        },
+        {
+          "method": "SensitivityAnalysis",
+          "absolute_tolerance": 1e-09
+        },
+        {
+          "method": "SensitivityAnalysis",
+          "absolute_tolerance": 1e-09
+        },
+        {
+          "method": "FORM",
+          "absolute_tolerance": 1e-10
+        },
+        {
+          "method": "SensitivityAnalysis",
+          "absolute_tolerance": 1e-09
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "script": "docs/source/notebooks/ex_simulation.ipynb",
+      "executions": {
+        "1.6.0": 0,
+        "2.0": 0
+      },
+      "checks": [
+        {
+          "method": "FORM",
+          "absolute_tolerance": 1e-10
+        },
+        {
+          "method": "CrudeMonteCarlo",
+          "pooled_standard_errors": 0.13708441009573874,
+          "limit": 5
+        },
+        {
+          "method": "LineSampling",
+          "pooled_standard_errors": 0.9889190854096253,
+          "limit": 5
+        },
+        {
+          "method": "SubsetSimulation",
+          "pooled_standard_errors": 0.6412440206784668,
+          "limit": 5
+        },
+        {
+          "method": "FORM",
+          "absolute_tolerance": 1e-10
+        },
+        {
+          "method": "CrudeMonteCarlo",
+          "pooled_standard_errors": 0.3868673787226441,
+          "limit": 5
+        },
+        {
+          "method": "LineSampling",
+          "pooled_standard_errors": 0.835322539477306,
+          "limit": 5
+        },
+        {
+          "method": "SubsetSimulation",
+          "pooled_standard_errors": 3.865227669267238,
+          "limit": 5
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "script": "docs/source/notebooks/ex_factor_calibration.ipynb",
+      "executions": {
+        "1.6.0": 0,
+        "2.0": 0
+      },
+      "checks": [
+        {
+          "method": "Calibration",
+          "cases": 8,
+          "absolute_tolerance": 1e-08
+        }
+      ],
+      "status": "passed"
+    }
+  ],
+  "numerical_records": {
+    "example": {
+      "1.6.0": {
+        "records": [
+          {
+            "method": "FORM",
+            "beta": 3.7347665883533754,
+            "probability": 9.394468375662281e-05,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "SORM",
+            "beta": 3.853761436315109,
+            "probability": 5.8158467917764195e-05,
+            "fit": "cf"
+          },
+          {
+            "method": "DistributionAnalysis"
+          },
+          {
+            "method": "CrudeMonteCarlo",
+            "beta": 3.7750119393562818,
+            "probability": 8e-05,
+            "cov": 0.353539248174796
+          },
+          {
+            "method": "FORM",
+            "beta": 3.7347665883533754,
+            "probability": 9.394468375662281e-05,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "ImportanceSampling",
+            "beta": 3.8544829475645623,
+            "probability": 5.798723305494367e-05,
+            "cov": 0.043769090456476416
+          }
+        ]
+      },
+      "2.0": {
+        "records": [
+          {
+            "method": "FORM",
+            "beta": 3.7347665883533763,
+            "probability": 9.394468375662225e-05,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "SORM",
+            "beta": 3.853871211045246,
+            "probability": 5.8132384572908165e-05,
+            "fit": "curve"
+          },
+          {
+            "method": "DistributionAnalysis"
+          },
+          {
+            "method": "CrudeMonteCarlo",
+            "beta": 3.9444000841594518,
+            "probability": 4e-05,
+            "cov": 0.499989999899998
+          },
+          {
+            "method": "ImportanceSampling",
+            "beta": 3.8379971812134395,
+            "probability": 6.202095289056121e-05,
+            "cov": 0.04376312002529364
+          }
+        ]
+      }
+    },
+    "ddm_example": {
+      "1.6.0": {
+        "records": [
+          {
+            "method": "FORM",
+            "beta": 1.6216848416325886,
+            "probability": 0.05243542305129348,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "FORM",
+            "beta": 1.621684998130246,
+            "probability": 0.05243540628833637,
+            "differentiation": "ddm"
+          }
+        ]
+      },
+      "2.0": {
+        "records": [
+          {
+            "method": "FORM",
+            "beta": 1.6216848416325884,
+            "probability": 0.052435423051293506,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "FORM",
+            "beta": 1.621684998130246,
+            "probability": 0.05243540628833637,
+            "differentiation": "ddm"
+          }
+        ]
+      }
+    },
+    "gev_example": {
+      "1.6.0": {
+        "records": [
+          {
+            "method": "FORM",
+            "beta": 1.9610046624999775,
+            "probability": 0.0249392395023559,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "SORM",
+            "beta": 1.9257163705246565,
+            "probability": 0.0270698993290534,
+            "fit": "cf"
+          }
+        ]
+      },
+      "2.0": {
+        "records": [
+          {
+            "method": "FORM",
+            "beta": 1.961004662499978,
+            "probability": 0.02493923950235587,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "SORM",
+            "beta": 1.9257045647610962,
+            "probability": 0.02707063679815608,
+            "fit": "curve"
+          }
+        ]
+      }
+    },
+    "sensitivity": {
+      "1.6.0": {
+        "records": [
+          {
+            "method": "FORM",
+            "beta": 2.1217876053714653,
+            "probability": 0.01692778897588556,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "SensitivityAnalysis",
+            "marginal": {
+              "R": {
+                "mean": 0.5155607441671183,
+                "std": -0.2545723002165811
+              },
+              "S": {
+                "mean": -1.3622997556812944,
+                "std": 0.04167433447071069
+              }
+            }
+          }
+        ]
+      },
+      "2.0": {
+        "records": [
+          {
+            "method": "FORM",
+            "beta": 2.1217876053714653,
+            "probability": 0.01692778897588556,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "SensitivityAnalysis",
+            "marginal": {
+              "R": {
+                "mean": 0.5155607441671183,
+                "std": -0.2545723002165811
+              },
+              "S": {
+                "mean": -1.3622997556812944,
+                "std": 0.04167433447071069
+              }
+            }
+          }
+        ]
+      }
+    },
+    "timing": {
+      "1.6.0": {
+        "records": [
+          {
+            "method": "FORM",
+            "beta": 1.7539761407409624,
+            "probability": 0.03971729775302334,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "SORM",
+            "beta": 1.848997968932393,
+            "probability": 0.032229052998923716,
+            "fit": "cf"
+          },
+          {
+            "method": "FORM",
+            "beta": 1.7539761407409646,
+            "probability": 0.03971729775302315,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "SORM",
+            "beta": 1.8489979687448344,
+            "probability": 0.03222905301246517,
+            "fit": "cf"
+          }
+        ]
+      },
+      "2.0": {
+        "records": [
+          {
+            "method": "SORM",
+            "beta": 1.8491331850474617,
+            "probability": 0.03221929181140099,
+            "fit": "curve"
+          },
+          {
+            "method": "SORM",
+            "beta": 1.8491331845504728,
+            "probability": 0.03221929184727388,
+            "fit": "curve"
+          }
+        ]
+      }
+    },
+    "openseespy_ex": {},
+    "ex_intro": {
+      "1.6.0": {
+        "records": [
+          {
+            "method": "FORM",
+            "beta": 1.7539761407409649,
+            "probability": 0.03971729775302315,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "SORM",
+            "beta": 1.848997968374955,
+            "probability": 0.032229053039169966,
+            "fit": "cf"
+          },
+          {
+            "method": "SORM",
+            "beta": 1.8334886786881461,
+            "probability": 0.03336496533448747,
+            "fit": "pf"
+          },
+          {
+            "method": "DistributionAnalysis"
+          },
+          {
+            "method": "CrudeMonteCarlo",
+            "beta": 1.839556788564568,
+            "probability": 0.032916666666666664,
+            "cov": 0.049480422757762696
+          },
+          {
+            "method": "FORM",
+            "beta": 1.7539761407409649,
+            "probability": 0.03971729775302315,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "ImportanceSampling",
+            "beta": 1.8606728258408602,
+            "probability": 0.0313951967893395,
+            "cov": 0.03851785094183993
+          }
+        ]
+      },
+      "2.0": {
+        "records": [
+          {
+            "method": "FORM",
+            "beta": 1.7539761407409677,
+            "probability": 0.03971729775302287,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "SORM",
+            "beta": 1.8491331843286645,
+            "probability": 0.032219291863284115,
+            "fit": "curve"
+          },
+          {
+            "method": "SORM",
+            "beta": 1.8334886766146599,
+            "probability": 0.03336496548852677,
+            "fit": "point"
+          },
+          {
+            "method": "DistributionAnalysis"
+          },
+          {
+            "method": "CrudeMonteCarlo",
+            "beta": 1.7899960558970243,
+            "probability": 0.036727272727272726,
+            "cov": 0.048829688037539065
+          },
+          {
+            "method": "ImportanceSampling",
+            "beta": 1.8227088743439248,
+            "probability": 0.03417374775490178,
+            "cov": 0.048829151786745094
+          }
+        ]
+      }
+    },
+    "ex_ddm": {
+      "1.6.0": {
+        "records": [
+          {
+            "method": "FORM",
+            "beta": 1.6216848416325886,
+            "probability": 0.05243542305129348,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "FORM",
+            "beta": 1.621684998130246,
+            "probability": 0.05243540628833637,
+            "differentiation": "ddm"
+          }
+        ]
+      },
+      "2.0": {
+        "records": [
+          {
+            "method": "FORM",
+            "beta": 1.6216848416325884,
+            "probability": 0.052435423051293506,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "FORM",
+            "beta": 1.621684998130246,
+            "probability": 0.05243540628833637,
+            "differentiation": "ddm"
+          }
+        ]
+      }
+    },
+    "ex_scipy_distributions": {
+      "1.6.0": {
+        "records": [
+          {
+            "method": "FORM",
+            "beta": 1.9610046624999775,
+            "probability": 0.0249392395023559,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "SORM",
+            "beta": 1.9257163705246565,
+            "probability": 0.0270698993290534,
+            "fit": "cf"
+          }
+        ]
+      },
+      "2.0": {
+        "records": [
+          {
+            "method": "FORM",
+            "beta": 1.961004662499978,
+            "probability": 0.02493923950235587,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "SORM",
+            "beta": 1.9257045647610962,
+            "probability": 0.02707063679815608,
+            "fit": "curve"
+          }
+        ]
+      }
+    },
+    "ex_sensitivity": {
+      "1.6.0": {
+        "records": [
+          {
+            "method": "FORM",
+            "beta": 2.1217876053714653,
+            "probability": 0.01692778897588556,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "SensitivityAnalysis",
+            "marginal": {
+              "R": {
+                "mean": 0.5184405549501673,
+                "std": -0.2547722880542085
+              },
+              "S": {
+                "mean": -1.3630062749619052,
+                "std": 0.04466545021195664
+              }
+            }
+          },
+          {
+            "method": "SensitivityAnalysis",
+            "marginal": {
+              "R": {
+                "mean": 0.5155607441671183,
+                "std": -0.2545723002165811
+              },
+              "S": {
+                "mean": -1.3622997556812944,
+                "std": 0.04167433447071069
+              }
+            }
+          },
+          {
+            "method": "SensitivityAnalysis",
+            "marginal": {
+              "R": {
+                "mean": 0.49294177851024656,
+                "std": -0.2489305800384174
+              },
+              "S": {
+                "mean": -1.3430931198614193,
+                "std": 0.034198111579324404
+              }
+            }
+          },
+          {
+            "method": "SensitivityAnalysis",
+            "marginal": {
+              "R": {
+                "mean": 0.5155607441671183,
+                "std": -0.2545723002165811
+              },
+              "S": {
+                "mean": -1.3622997556812944,
+                "std": 0.04167433447071069
+              }
+            }
+          },
+          {
+            "method": "SensitivityAnalysis",
+            "marginal": {
+              "R": {
+                "mean": 0.4983092397144446,
+                "std": -0.23494198505652145
+              },
+              "S": {
+                "mean": -1.4617977000043691,
+                "std": 0.1433480478634229
+              }
+            }
+          },
+          {
+            "method": "SensitivityAnalysis",
+            "marginal": {
+              "R": {
+                "mean": 0.5485306495266171,
+                "std": -0.28488817300740976
+              },
+              "S": {
+                "mean": -1.2122451266983971,
+                "std": -0.10611032570818014
+              }
+            }
+          },
+          {
+            "method": "FORM",
+            "beta": 1.7727641950497781,
+            "probability": 0.03813389436060028,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "SensitivityAnalysis",
+            "marginal": {
+              "X1": {
+                "mean": -0.005907409468517198,
+                "std": -0.007854610710289004
+              },
+              "X2": {
+                "mean": -0.0008587453191244455,
+                "std": -0.0006215684993912644
+              },
+              "X3": {
+                "mean": 1.260312196353961,
+                "std": -1.1948142518839724
+              }
+            }
+          }
+        ]
+      },
+      "2.0": {
+        "records": [
+          {
+            "method": "FORM",
+            "beta": 2.1217876053714653,
+            "probability": 0.01692778897588556,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "SensitivityAnalysis",
+            "marginal": {
+              "R": {
+                "mean": 0.5184405549501673,
+                "std": -0.2547722880542085
+              },
+              "S": {
+                "mean": -1.3630062749619052,
+                "std": 0.04466545021195664
+              }
+            }
+          },
+          {
+            "method": "SensitivityAnalysis",
+            "marginal": {
+              "R": {
+                "mean": 0.5155607441671183,
+                "std": -0.2545723002165811
+              },
+              "S": {
+                "mean": -1.3622997556812944,
+                "std": 0.04167433447071069
+              }
+            }
+          },
+          {
+            "method": "SensitivityAnalysis",
+            "marginal": {
+              "R": {
+                "mean": 0.49294177851024656,
+                "std": -0.2489305800384174
+              },
+              "S": {
+                "mean": -1.3430931198614193,
+                "std": 0.034198111579324404
+              }
+            }
+          },
+          {
+            "method": "SensitivityAnalysis",
+            "marginal": {
+              "R": {
+                "mean": 0.5155607441671183,
+                "std": -0.2545723002165811
+              },
+              "S": {
+                "mean": -1.3622997556812944,
+                "std": 0.04167433447071069
+              }
+            }
+          },
+          {
+            "method": "SensitivityAnalysis",
+            "marginal": {
+              "R": {
+                "mean": 0.4983092397144446,
+                "std": -0.23494198505652145
+              },
+              "S": {
+                "mean": -1.4617977000043691,
+                "std": 0.1433480478634229
+              }
+            }
+          },
+          {
+            "method": "SensitivityAnalysis",
+            "marginal": {
+              "R": {
+                "mean": 0.5485306495266171,
+                "std": -0.28488817300740976
+              },
+              "S": {
+                "mean": -1.2122451266983971,
+                "std": -0.10611032570818014
+              }
+            }
+          },
+          {
+            "method": "FORM",
+            "beta": 1.7727641950497826,
+            "probability": 0.03813389436059989,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "SensitivityAnalysis",
+            "marginal": {
+              "X1": {
+                "mean": -0.005907409468514196,
+                "std": -0.007854610710293959
+              },
+              "X2": {
+                "mean": -0.0008587453191240316,
+                "std": -0.0006215684993918487
+              },
+              "X3": {
+                "mean": 1.2603121963526678,
+                "std": -1.1948142518834195
+              }
+            }
+          }
+        ]
+      }
+    },
+    "ex_simulation": {
+      "1.6.0": {
+        "records": [
+          {
+            "method": "FORM",
+            "beta": 5.000337015052891,
+            "probability": 2.861509469465866e-07,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "CrudeMonteCarlo",
+            "beta": 2.549104283706181,
+            "probability": 0.0054,
+            "cov": 0.09596488555330672
+          },
+          {
+            "method": "LineSampling",
+            "beta": 3.0925006470063696,
+            "probability": 0.0009923890051695865,
+            "cov": 0.2986982517718678
+          },
+          {
+            "method": "SubsetSimulation",
+            "beta": 2.5669412299988372,
+            "probability": 0.005130000000000001,
+            "cov": 0.09733785938367308
+          },
+          {
+            "method": "FORM",
+            "beta": 2.999999963212832,
+            "probability": 0.001349898194665255,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "CrudeMonteCarlo",
+            "beta": 2.50055179304905,
+            "probability": 0.006200000000000001,
+            "cov": 0.08952382995064642
+          },
+          {
+            "method": "LineSampling",
+            "beta": 2.4756848904658204,
+            "probability": 0.0066490443877459116,
+            "cov": 0.06790163315345953
+          },
+          {
+            "method": "SubsetSimulation",
+            "beta": 2.5669412299988372,
+            "probability": 0.005130000000000001,
+            "cov": 0.09733785938367308
+          }
+        ]
+      },
+      "2.0": {
+        "records": [
+          {
+            "method": "FORM",
+            "beta": 5.000337015052891,
+            "probability": 2.861509469465866e-07,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "CrudeMonteCarlo",
+            "beta": 2.555616077370204,
+            "probability": 0.005300000000000001,
+            "cov": 0.0968708535326851
+          },
+          {
+            "method": "LineSampling",
+            "beta": 2.5153910338043333,
+            "probability": 0.005945021290498001,
+            "cov": 0.8409299916318733
+          },
+          {
+            "method": "SubsetSimulation",
+            "beta": 2.5975187264420225,
+            "probability": 0.004695,
+            "cov": 0.09780062743308235
+          },
+          {
+            "method": "FORM",
+            "beta": 2.999999963212832,
+            "probability": 0.001349898194665255,
+            "differentiation": "ffd"
+          },
+          {
+            "method": "CrudeMonteCarlo",
+            "beta": 2.518069603370247,
+            "probability": 0.0059,
+            "cov": 0.0917854905264794
+          },
+          {
+            "method": "LineSampling",
+            "beta": 2.501672355313447,
+            "probability": 0.006180412985952511,
+            "cov": 0.053884192923599965
+          },
+          {
+            "method": "SubsetSimulation",
+            "beta": 2.3678869795445867,
+            "probability": 0.008945000000000002,
+            "cov": 0.09517862938944795
+          }
+        ]
+      }
+    },
+    "ex_factor_calibration": {
+      "1.6.0": {
+        "calibration": [
+          {
+            "designs": [
+              3.0443253706086537,
+              3.047717273919197
+            ],
+            "beta": [
+              4.306471480120912,
+              4.300005603159019
+            ]
+          },
+          {
+            "designs": [
+              3.0443251139164436,
+              3.047717013955231
+            ],
+            "beta": [
+              4.306471113319907,
+              4.300005235952576
+            ]
+          },
+          {
+            "designs": [
+              3.044317795378173,
+              3.0477095966180037
+            ],
+            "beta": [
+              4.306460647675186,
+              4.299994758739553
+            ]
+          },
+          {
+            "designs": [
+              1.2980498022998281,
+              1.167441804285683
+            ],
+            "beta": [
+              3.7039102295177426,
+              4.28712854669924
+            ]
+          }
+        ]
+      },
+      "2.0": {
+        "calibration": [
+          {
+            "designs": [
+              3.0443253706090787,
+              3.0477172739193117
+            ],
+            "beta": [
+              4.306471480121069,
+              4.30000560315918
+            ]
+          },
+          {
+            "designs": [
+              3.0443251139168637,
+              3.047717013955343
+            ],
+            "beta": [
+              4.3064711133200655,
+              4.30000523595273
+            ]
+          },
+          {
+            "designs": [
+              3.0443177953797087,
+              3.0477095966176173
+            ],
+            "beta": [
+              4.30646064767464,
+              4.29999475873901
+            ]
+          },
+          {
+            "designs": [
+              1.2980498022998281,
+              1.167441804285683
+            ],
+            "beta": [
+              3.7039102295177426,
+              4.28712854669924
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

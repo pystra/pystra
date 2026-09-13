@@ -1,0 +1,83 @@
+--- ex_ddm (converter)
++++ ex_ddm (reviewed)
+@@ -1,6 +1,7 @@
+ import pystra as ra
+ import numpy as np
+ import timeit
++
+ 
+ def lsf(r, X1, X2, X3, X4, X5, X6):
+     """
+@@ -25,28 +26,27 @@
+     )
+     return G, grad_G
+ 
++
+ def run(diff_mode):
+     limit_state = ra.LimitState(lsf)
+ 
+     # Set some options (optional)
+-    options = ra.AnalysisOptions()
+-    options.setPrintOutput(False)
+-    options.setDiffMode(diff_mode)
++    options = ra.FORMOptions(differentiation=diff_mode)
+ 
+     stochastic_model = ra.StochasticModel()
+ 
+     # Define random variables
+-    stochastic_model.addVariable(ra.Lognormal("X1", 500, 100))
+-    stochastic_model.addVariable(ra.Lognormal("X2", 2000, 400))
+-    stochastic_model.addVariable(ra.Uniform("X3", 5, 0.5))
+-    stochastic_model.addVariable(ra.Lognormal("X4", 450, 90))
+-    stochastic_model.addVariable(ra.Lognormal("X5", 1800, 360))
+-    stochastic_model.addVariable(ra.Uniform("X6", 4.5, 0.45))
++    stochastic_model.add_variable(ra.Lognormal("X1", 500, 100))
++    stochastic_model.add_variable(ra.Lognormal("X2", 2000, 400))
++    stochastic_model.add_variable(ra.Uniform("X3", 5, 0.5))
++    stochastic_model.add_variable(ra.Lognormal("X4", 450, 90))
++    stochastic_model.add_variable(ra.Lognormal("X5", 1800, 360))
++    stochastic_model.add_variable(ra.Uniform("X6", 4.5, 0.45))
+ 
+     # Define constants
+-    stochastic_model.addVariable(ra.Constant("r", 1.7))
++    stochastic_model.add_variable(ra.Constant("r", 1.7))
+ 
+-    stochastic_model.setCorrelation(
++    stochastic_model.set_correlation(
+         ra.CorrelationMatrix(
+             [
+                 [1.0, 0.3, 0.2, 0, 0, 0],
+@@ -66,20 +66,27 @@
+         limit_state=limit_state,
+     )
+     # Run it
+-    form.run()
+-    return form
++    form_result = form.run()
++    return form_result
++
+ 
+ ffd_count = 0
++
++
+ def run_ffd():
+     global ffd_count
+-    form = run("ffd")
+-    ffd_count += form.getNoFunctionCalls()
++    form_result = run("ffd")
++    ffd_count += form_result.n_limit_state_evaluations
++
+ 
+ ddm_count = 0
++
++
+ def run_ddm():
+     global ddm_count
+-    form = run("ddm")
+-    ddm_count += form.getNoFunctionCalls()
++    form_result = run("ddm")
++    ddm_count += form_result.n_limit_state_evaluations
++
+ 
+ number = 1
+ time_ffd = timeit.timeit(stmt=run_ffd, number=number)

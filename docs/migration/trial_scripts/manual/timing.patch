@@ -1,0 +1,87 @@
+--- timing (converter)
++++ timing (reviewed)
+@@ -4,12 +4,12 @@
+ """
+ This file examines the speed up possible when using the built-in distribution
+ function implementations, rather than the generic (but more comprehensive) ones
+-provided by SciPy. Where performance is critical, implementation of a 
+-user-defined distribution object that avoids error checks and user input 
++provided by SciPy. Where performance is critical, implementation of a
++user-defined distribution object that avoids error checks and user input
+ validation on each call could be beneficial.
+ 
+ Called as: `$python timing.py` results in output like:
+-    
++
+     ```
+     Total time taken (s)
+     Built-in: 1.8919757150579244; Scipy: 5.2964311360847205
+@@ -19,6 +19,7 @@
+     ```
+ 
+ """
++
+ import pystra as ra
+ from scipy.stats import norm, lognorm, uniform
+ import numpy as np
+@@ -37,12 +38,12 @@
+     limit_state = ra.LimitState(lsf)
+ 
+     stochastic_model = ra.StochasticModel()
+-    stochastic_model.addVariable(ra.Lognormal("X1", 500, 100))
+-    stochastic_model.addVariable(ra.Normal("X2", 2000, 400))
+-    stochastic_model.addVariable(ra.Uniform("X3", 5, 0.5))
+-    stochastic_model.addVariable(ra.Constant("r", 1))
++    stochastic_model.add_variable(ra.Lognormal("X1", 500, 100))
++    stochastic_model.add_variable(ra.Normal("X2", 2000, 400))
++    stochastic_model.add_variable(ra.Uniform("X3", 5, 0.5))
++    stochastic_model.add_variable(ra.Constant("r", 1))
+ 
+-    stochastic_model.setCorrelation(
++    stochastic_model.set_correlation(
+         ra.CorrelationMatrix([[1.0, 0.3, 0.2], [0.3, 1.0, 0.2], [0.2, 0.2, 1.0]])
+     )
+ 
+@@ -50,7 +51,7 @@
+         model=stochastic_model,
+         limit_state=limit_state,
+     )
+-    sorm.run()
++    sorm_result = sorm.run()
+ 
+ 
+ def run_scipy():
+@@ -63,19 +64,19 @@
+     # Lognormal
+     zeta = (np.log(1 + (100 / 500) ** 2)) ** 0.5
+     lamb = np.log(500) - 0.5 * zeta**2
+-    stochastic_model.addVariable(
++    stochastic_model.add_variable(
+         ra.ScipyDist("X1", lognorm(s=zeta, scale=np.exp(lamb)))
+     )
+     # Normal
+-    stochastic_model.addVariable(ra.ScipyDist("X2", norm(loc=2000, scale=400)))
++    stochastic_model.add_variable(ra.ScipyDist("X2", norm(loc=2000, scale=400)))
+     ## Uniform
+     a_b = (0.5**2 * 12) ** (1 / 2)
+     a = (2 * 5 - a_b) / 2
+-    stochastic_model.addVariable(ra.ScipyDist("X3", uniform(loc=a, scale=a_b)))
++    stochastic_model.add_variable(ra.ScipyDist("X3", uniform(loc=a, scale=a_b)))
+     # Constant
+-    stochastic_model.addVariable(ra.Constant("r", 1))
++    stochastic_model.add_variable(ra.Constant("r", 1))
+ 
+-    stochastic_model.setCorrelation(
++    stochastic_model.set_correlation(
+         ra.CorrelationMatrix([[1.0, 0.3, 0.2], [0.3, 1.0, 0.2], [0.2, 0.2, 1.0]])
+     )
+ 
+@@ -83,7 +84,7 @@
+         model=stochastic_model,
+         limit_state=limit_state,
+     )
+-    sorm.run()
++    sorm_result = sorm.run()
+ 
+ 
+ number = 1

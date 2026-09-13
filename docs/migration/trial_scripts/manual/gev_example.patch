@@ -1,0 +1,24 @@
+--- gev_example (converter)
++++ gev_example (reviewed)
+@@ -25,14 +25,14 @@
+ limit_state = ra.LimitState(lsf)
+ 
+ model = ra.StochasticModel()
+-model.addVariable(ra.Normal("X1", 500, 100))
+-model.addVariable(X2)
+-model.addVariable(ra.Constant("C", 50))
++model.add_variable(ra.Normal("X1", 500, 100))
++model.add_variable(X2)
++model.add_variable(ra.Constant("C", 50))
+ 
+ form = ra.FORM(model=model, limit_state=limit_state)
+-form.run()
+-form.showDetailedOutput()
++form_result = form.run()
++print(form_result.summary())
+ 
+ sorm = ra.SORM(model=model, limit_state=limit_state, form=form)
+-sorm.run()
+-sorm.showDetailedOutput()
++sorm_result = sorm.run()
++print(sorm_result.summary())

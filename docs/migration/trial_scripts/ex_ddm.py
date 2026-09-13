@@ -1,0 +1,101 @@
+import pystra as ra
+import numpy as np
+import timeit
+
+
+def lsf(r, X1, X2, X3, X4, X5, X6):
+    """
+    Calrel example from FERUM
+    """
+    G = (
+        r
+        - X2 / (1000 * X3)
+        - (X1 / (200 * X3)) ** 2
+        - X5 / (1000 * X6)
+        - (X4 / (200 * X6)) ** 2
+    )
+    grad_G = np.array(
+        [
+            -X1 / (20000 * X3**2),
+            -1 / (1000 * X3),
+            (20 * X2 * X3 + X1**2) / (20000 * X3**3),
+            -X4 / (20000 * X6**2),
+            -1 / (1000 * X6),
+            (20 * X5 * X6 + X4**2) / (20000 * X6**3),
+        ]
+    )
+    return G, grad_G
+
+
+def run(diff_mode):
+    limit_state = ra.LimitState(lsf)
+
+    # Set some options (optional)
+    options = ra.FORMOptions(differentiation=diff_mode)
+
+    stochastic_model = ra.StochasticModel()
+
+    # Define random variables
+    stochastic_model.add_variable(ra.Lognormal("X1", 500, 100))
+    stochastic_model.add_variable(ra.Lognormal("X2", 2000, 400))
+    stochastic_model.add_variable(ra.Uniform("X3", 5, 0.5))
+    stochastic_model.add_variable(ra.Lognormal("X4", 450, 90))
+    stochastic_model.add_variable(ra.Lognormal("X5", 1800, 360))
+    stochastic_model.add_variable(ra.Uniform("X6", 4.5, 0.45))
+
+    # Define constants
+    stochastic_model.add_variable(ra.Constant("r", 1.7))
+
+    stochastic_model.set_correlation(
+        ra.CorrelationMatrix(
+            [
+                [1.0, 0.3, 0.2, 0, 0, 0],
+                [0.3, 1.0, 0.2, 0, 0, 0],
+                [0.2, 0.2, 1.0, 0, 0, 0],
+                [0, 0, 0, 1.0, 0.3, 0.2],
+                [0, 0, 0, 0.3, 1.0, 0.2],
+                [0, 0, 0, 0.2, 0.2, 1.0],
+            ]
+        )
+    )
+
+    # Set up FORM analysis
+    form = ra.FORM(
+        options=options,
+        model=stochastic_model,
+        limit_state=limit_state,
+    )
+    # Run it
+    form_result = form.run()
+    return form_result
+
+
+ffd_count = 0
+
+
+def run_ffd():
+    global ffd_count
+    form_result = run("ffd")
+    ffd_count += form_result.n_limit_state_evaluations
+
+
+ddm_count = 0
+
+
+def run_ddm():
+    global ddm_count
+    form_result = run("ddm")
+    ddm_count += form_result.n_limit_state_evaluations
+
+
+number = 1
+time_ffd = timeit.timeit(stmt=run_ffd, number=number)
+time_ddm = timeit.timeit(stmt=run_ddm, number=number)
+
+print("Total time taken (s):")
+print(f"FFD: {time_ffd}; DDM: {time_ddm}")
+print("Number of function evaluations:")
+print(f"FFD: {ffd_count}; DDM: {ddm_count}")
+print("Average time per call (s):")
+print(f"FFD: {time_ffd/number}; DDM: {time_ddm/number}")
+print(f"DDM speed-up: {time_ffd/time_ddm:.2f}")

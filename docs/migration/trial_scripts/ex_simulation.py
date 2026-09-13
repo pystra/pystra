@@ -1,0 +1,217 @@
+import numpy as np
+import pystra as ra
+from scipy.stats import chi2, norm
+
+n = 10  # number of standard-normal random variables
+r = 5.0  # hypersphere radius
+
+# Exact solution via chi-squared survival function
+Pf_exact = float(chi2.sf(r**2, df=n))
+beta_exact = float(-norm.ppf(Pf_exact))
+print(f"Exact Pf   = {Pf_exact:.4e}")
+print(f"Exact beta = {beta_exact:.4f}")
+
+
+def lsf(**kwargs):
+    """Hypersphere limit state: failure when ||x||^2 > r^2.
+
+    Accepts any number of N(0,1) variables via **kwargs, so the
+    problem dimension n can be changed without touching this function.
+    """
+    return r**2 - sum(v**2 for v in kwargs.values())
+
+
+def make_model():
+    """Build the stochastic model (n independent N(0,1) variables)."""
+    model = ra.StochasticModel()
+    for i in range(1, n + 1):
+        model.add_variable(ra.Normal(f"X{i}", 0.0, 1.0))
+    limit_state = ra.LimitState(lsf)
+    options = ra.FORMOptions()
+    return model, limit_state, options
+
+
+model, limit_state, options = make_model()
+form = ra.FORM(
+    options=options,
+    model=model,
+    limit_state=limit_state,
+)
+form_result = form.run()
+
+beta_form = float(form_result.beta)
+Pf_form = float(form_result.failure_probability)
+print(f"FORM:  beta = {beta_form:.4f},  Pf = {Pf_form:.4e}")
+print(f"Exact: beta = {beta_exact:.4f},  Pf = {Pf_exact:.4e}")
+print(f"Error ratio Pf_exact / Pf_FORM = {Pf_exact / Pf_form:.0f}x")
+
+model, limit_state, options = make_model()
+
+cmc = ra.CrudeMonteCarlo(
+    rng=1,
+    options=ra.SimulationOptions(n_samples=20000),
+    model=model,
+    limit_state=limit_state,
+)
+cmc_result = cmc.run()
+
+beta_cmc = float(cmc_result.beta)
+Pf_cmc = float(cmc_result.failure_probability)
+print(f"CMC:  beta = {beta_cmc:.4f},  Pf = {Pf_cmc:.4e}")
+
+model, limit_state = form.model, form.limit_state
+
+ls = ra.LineSampling(
+    rng=2,
+    options=ra.SimulationOptions(n_samples=200),
+    model=model,
+    limit_state=limit_state,
+    form=form,  # re-use the FORM result for the important direction
+)
+ls_result = ls.run()
+
+beta_ls = float(ls_result.beta)
+Pf_ls = float(ls_result.failure_probability)
+print(
+    f"LS:  beta = {beta_ls:.4f},  Pf = {Pf_ls:.4e},  CoV = {ls_result.coefficient_of_variation:.3f}"
+)
+
+model, limit_state, options = make_model()
+
+ss = ra.SubsetSimulation(
+    rng=3,
+    options=ra.SimulationOptions(n_samples=2000),
+    model=model,
+    limit_state=limit_state,
+    p0=0.1,
+)
+ss_result = ss.run()
+
+beta_ss = float(ss_result.beta)
+Pf_ss = float(ss_result.failure_probability)
+print(
+    f"SS:  beta = {beta_ss:.4f},  Pf = {Pf_ss:.4e},  CoV = {ss_result.coefficient_of_variation:.3f}"
+)
+print(
+    f"     levels = {ss_result.diagnostics["n_levels"]},  thresholds = {[round(t, 2) for t in ss_result.diagnostics["thresholds"]]}"
+)
+
+import pandas as pd
+
+rows = [
+    ("Exact", beta_exact, Pf_exact, "—"),
+    ("FORM", beta_form, Pf_form, f"{form.model.call_function} LSF calls"),
+    ("CMC", beta_cmc, Pf_cmc, "20 000 samples"),
+    ("Line Sampling", beta_ls, Pf_ls, f"{ls_result.n_samples} lines"),
+    (
+        "Subset Sim.",
+        beta_ss,
+        Pf_ss,
+        f"{ss_result.diagnostics["n_levels"]} × 2 000 samples",
+    ),
+]
+
+df = pd.DataFrame(rows, columns=["Method", "beta", "Pf", "Cost"])
+df["beta"] = df["beta"].map("{:.4f}".format)
+df["Pf"] = df["Pf"].map("{:.4e}".format)
+df
+
+beta0 = 3.0
+kappa = -0.05  # negative → failure surface curves toward origin
+# n = 10 (reused from Example 1)
+
+# SORM (Breitung) reference  — principal curvatures kappa_i = 2*kappa
+Pf_sorm = float(norm.cdf(-beta0) * (1 + 2 * kappa * beta0) ** (-(n - 1) / 2))
+beta_sorm = float(-norm.ppf(Pf_sorm))
+Pf_form2 = float(norm.cdf(-beta0))
+
+print(f"FORM (exact): beta = {beta0:.4f},  Pf = {Pf_form2:.4e}")
+print(f"SORM ref:     beta = {beta_sorm:.4f},  Pf = {Pf_sorm:.4e}")
+print(f"Correction factor: {Pf_sorm / Pf_form2:.1f}x")
+
+
+def lsf_parabolic(**kwargs):
+    """Parabolic limit state. Scalable via **kwargs — works for any n."""
+    vals = list(kwargs.values())
+    u1 = vals[0]
+    return beta0 - u1 + kappa * sum(v**2 for v in vals[1:])
+
+
+def make_parabolic_model():
+    model = ra.StochasticModel()
+    for i in range(1, n + 1):
+        model.add_variable(ra.Normal(f"X{i}", 0.0, 1.0))
+    limit_state = ra.LimitState(lsf_parabolic)
+    options = ra.FORMOptions()
+    return model, limit_state, options
+
+
+# FORM — design point is (beta0, 0,...,0) by construction
+model_p, limit_state_p, options_p = make_parabolic_model()
+form_p = ra.FORM(options=options_p, model=model_p, limit_state=limit_state_p)
+form_p_result = form_p.run()
+beta_form_p = float(form_p_result.beta)
+Pf_form_p = float(form_p_result.failure_probability)
+print(f"FORM:  beta = {beta_form_p:.4f},  Pf = {Pf_form_p:.4e}")
+
+model_p, limit_state_p, options_p = make_parabolic_model()
+cmc_p = ra.CrudeMonteCarlo(
+    rng=4,
+    options=ra.SimulationOptions(n_samples=20000),
+    model=model_p,
+    limit_state=limit_state_p,
+)
+cmc_p_result = cmc_p.run()
+beta_cmc_p = float(cmc_p_result.beta)
+Pf_cmc_p = float(cmc_p_result.failure_probability)
+print(f"CMC:   beta = {beta_cmc_p:.4f},  Pf = {Pf_cmc_p:.4e}")
+
+model_p, limit_state_p = form_p.model, form_p.limit_state
+ls_p = ra.LineSampling(
+    rng=5,
+    options=ra.SimulationOptions(n_samples=200),
+    model=model_p,
+    limit_state=limit_state_p,
+    form=form_p,
+)
+ls_p_result = ls_p.run()
+beta_ls_p = float(ls_p_result.beta)
+Pf_ls_p = float(ls_p_result.failure_probability)
+print(
+    f"LS:    beta = {beta_ls_p:.4f},  Pf = {Pf_ls_p:.4e},  CoV = {ls_p_result.coefficient_of_variation:.3f}"
+)
+
+model_p, limit_state_p, options_p = make_parabolic_model()
+ss_p = ra.SubsetSimulation(
+    rng=6,
+    options=ra.SimulationOptions(n_samples=2000),
+    model=model_p,
+    limit_state=limit_state_p,
+    p0=0.1,
+)
+ss_p_result = ss_p.run()
+beta_ss_p = float(ss_p_result.beta)
+Pf_ss_p = float(ss_p_result.failure_probability)
+print(
+    f"SS:    beta = {beta_ss_p:.4f},  Pf = {Pf_ss_p:.4e},  CoV = {ss_p_result.coefficient_of_variation:.3f}"
+)
+print(
+    f"       levels = {ss_p_result.diagnostics["n_levels"]},  thresholds = {[round(t,2) for t in ss_p_result.diagnostics["thresholds"]]}"
+)
+
+rows_p = [
+    ("SORM ref.", beta_sorm, Pf_sorm, "analytical"),
+    ("FORM", beta_form_p, Pf_form_p, f"{form_p.model.call_function} LSF calls"),
+    ("CMC", beta_cmc_p, Pf_cmc_p, "20 000 samples"),
+    ("Line Sampling", beta_ls_p, Pf_ls_p, f"{ls_p_result.n_samples} lines"),
+    (
+        "Subset Sim.",
+        beta_ss_p,
+        Pf_ss_p,
+        f"{ss_p_result.diagnostics["n_levels"]} × 2 000 samples",
+    ),
+]
+df_p = pd.DataFrame(rows_p, columns=["Method", "beta", "Pf", "Cost"])
+df_p["beta"] = df_p["beta"].map("{:.4f}".format)
+df_p["Pf"] = df_p["Pf"].map("{:.4e}".format)
+df_p
