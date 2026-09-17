@@ -6,11 +6,6 @@ edits most scripts need, the sections after it give the details, and the
 :doc:`migration-map` lists every renamed, replaced and removed name. For what
 2.0 adds, see :doc:`whatsnew`.
 
-PySTRA 2.0 is in pre-release (|release|). The remaining engineering-workflow and
-release work is described in the
-:download:`migration plan <../v2.0-migration-plan.md>`, and details on this page
-can still change before the release candidate.
-
 The outstanding feature PRs remain unmerged in 1.x and are reserved for 2.0.
 Their functionality is new in this release, including the Strong Maximum
 Test, copula/joint-distribution support, DDO/LQI refinements, and the SORM
@@ -263,7 +258,7 @@ derive from ``pystra.PystraError``.
    :widths: 45 55
 
    * - 1.x
-     - Current 2.0 development API
+     - 2.0
    * - ``model.addVariable(rv)``
      - ``model.add_variable(rv)``
    * - ``model.setCorrelation(matrix)``
