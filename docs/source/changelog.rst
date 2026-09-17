@@ -5,7 +5,7 @@ All notable changes to PySTRA are documented here.
 
 The format follows `Keep a Changelog <https://keepachangelog.com/>`_.
 
-2.0.0 (2026-09-13)
+2.0.0 (2026-09-17)
 ------------------
 
 The outstanding feature PRs remain unmerged in 1.x. Their functionality and
