@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Installation &#8212; PySTRA 2.0.0a1 documentation</title>
+    <title>Installation &#8212; PySTRA 2.0.0 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="_static/documentation_options.js?v=944fa962"></script>
+    <script src="_static/documentation_options.js?v=51b770b3"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -54,7 +54,7 @@
     <link rel="prev" title="Get started" href="get_started.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.0.0a1" />
+  <meta name="docsearch:version" content="2.0.0" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -99,7 +99,7 @@
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
 <aside class="bd-header-announcement" aria-label="Announcement">
-  <div class="bd-header-announcement__content">These pages document PySTRA 2.0, which is in development. The stable 1.x documentation is at <a href="https://pystra.github.io/pystra/">pystra.github.io/pystra</a>.</div>
+  <div class="bd-header-announcement__content">These pages document PySTRA 2.0. The 1.x documentation is at <a href="https://pystra.github.io/pystra/">pystra.github.io/pystra</a>.</div>
 </aside>
 
   
@@ -129,13 +129,13 @@
       
     
     
-    <img src="_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 2.0.0a1 documentation - Home"/>
-    <img src="_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 2.0.0a1 documentation - Home"/>
+    <img src="_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 2.0.0 documentation - Home"/>
+    <img src="_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 2.0.0 documentation - Home"/>
   
   
 </a></div>
     
-      <div class="navbar-item"><a class="version-status" href="#" aria-label="Documentation version 2.0.0a1: installation instructions">2.0.0a1 · development</a></div>
+      <div class="navbar-item"><a class="version-status" href="#" aria-label="Documentation version 2.0.0: installation instructions">2.0.0 · development</a></div>
     
   </div>
   
@@ -533,9 +533,9 @@
                   
   <section id="installation">
 <span id="required-dependencies"></span><h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h1>
-<p>These instructions install <strong>PySTRA</strong> 2.0.0a1 <strong>from the v2.0 branch</strong>, matching
-the API used in these pages. Python 3.12 or later is required for the package;
-Python 3.13 is used for the documentation tools.</p>
+<p>These instructions install <strong>PySTRA</strong> 2.0.0, the version these pages
+describe. Python 3.12 or later is required for the package; Python 3.13 is used
+for the documentation tools.</p>
 <section id="create-an-environment">
 <h2>Create an environment<a class="headerlink" href="#create-an-environment" title="Link to this heading">#</a></h2>
 <p>With conda, create and activate an environment:</p>
@@ -548,24 +548,22 @@ Python 3.13 is used for the documentation tools.</p>
 <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">.venv/bin/activate</span></code> on Linux/macOS or
 <code class="docutils literal notranslate"><span class="pre">.venv\Scripts\Activate.ps1</span></code> in Windows PowerShell.</p>
 </section>
-<section id="install-the-development-package">
-<h2>Install the development package<a class="headerlink" href="#install-the-development-package" title="Link to this heading">#</a></h2>
-<p>Clone the development branch, then install it into the active environment:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="o">--</span><span class="n">branch</span> <span class="n">v2</span><span class="mf">.0</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">pystra</span><span class="o">/</span><span class="n">pystra</span><span class="o">.</span><span class="n">git</span>
-<span class="n">cd</span> <span class="n">pystra</span>
-<span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span>
+<section id="install-pystra">
+<h2>Install PySTRA<a class="headerlink" href="#install-pystra" title="Link to this heading">#</a></h2>
+<p>Install the release from PyPI into the active environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">pystra</span>
 <span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s2">"import pystra; print(pystra.__version__)"</span>
 </pre></div>
 </div>
-<p>The version should begin with <code class="docutils literal notranslate"><span class="pre">2.0</span></code>; the current version is 2.0.0a1.
+<p>The version should be 2.0.0.
 The core installation includes NumPy, SciPy, Matplotlib and pandas.
 You can now run <a class="reference internal" href="notebooks/ex_first_analysis.html"><span class="doc">A first reliability analysis</span></a>.</p>
 </section>
 <section id="optional-active-learning-dependencies">
 <h2>Optional active-learning dependencies<a class="headerlink" href="#optional-active-learning-dependencies" title="Link to this heading">#</a></h2>
-<p>The Kriging and PC-Kriging examples additionally require scikit-learn.
-From the same checkout, install:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="s2">".[al]"</span>
+<p>The Kriging and PC-Kriging examples additionally require scikit-learn, which
+the <code class="docutils literal notranslate"><span class="pre">al</span></code> extra installs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="s2">"pystra[al]"</span>
 </pre></div>
 </div>
 <p>PCE and the classical reliability algorithms use the core installation.
@@ -574,15 +572,25 @@ need Jupyter; install <code class="docutils literal notranslate"><span class="pr
 <p id="tests">For building all documentation and contributing, follow <a class="reference internal" href="developer.html"><span class="doc">Contributing to PySTRA</span></a>.
 It covers the documentation extras, Pandoc and validation commands.</p>
 </section>
-<section id="using-the-stable-release">
-<h2>Using the stable release<a class="headerlink" href="#using-the-stable-release" title="Link to this heading">#</a></h2>
-<p>To use the released 1.x API, install <code class="docutils literal notranslate"><span class="pre">pystra</span></code> from PyPI and follow the
-<a class="reference external" href="https://pystra.github.io/pystra/">stable documentation</a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">pystra</span>
+<section id="install-from-source">
+<h2>Install from source<a class="headerlink" href="#install-from-source" title="Link to this heading">#</a></h2>
+<p>To use the latest development version, clone the repository and install it in
+editable mode, with the extras you need:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="o">--</span><span class="n">branch</span> <span class="n">v2</span><span class="mf">.0</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">pystra</span><span class="o">/</span><span class="n">pystra</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">pystra</span>
+<span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="s2">".[al]"</span>
 </pre></div>
 </div>
-<p>The stable release and the development examples use different APIs.
-<a class="reference internal" href="migrating.html"><span class="doc">Migrating from 1.x to 2.0</span></a> explains how to update existing code.</p>
+</section>
+<section id="using-pystra-1-x">
+<h2>Using PySTRA 1.x<a class="headerlink" href="#using-pystra-1-x" title="Link to this heading">#</a></h2>
+<p>To keep the 1.x API, install a 1.x release and follow the
+<a class="reference external" href="https://pystra.github.io/pystra/">1.x documentation</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="s2">"pystra&lt;2"</span>
+</pre></div>
+</div>
+<p>The two versions use different APIs. <a class="reference internal" href="migrating.html"><span class="doc">Migrating from 1.x to 2.0</span></a> explains how to update
+existing code.</p>
 </section>
 <section id="troubleshooting-installation">
 <span id="bugs-and-feature-requests"></span><h2>Troubleshooting installation<a class="headerlink" href="#troubleshooting-installation" title="Link to this heading">#</a></h2>
@@ -648,9 +656,10 @@ help, report the interpreter, package version and error message in the
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-an-environment">Create an environment</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#install-the-development-package">Install the development package</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#install-pystra">Install PySTRA</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-active-learning-dependencies">Optional active-learning dependencies</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-stable-release">Using the stable release</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#install-from-source">Install from source</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-pystra-1-x">Using PySTRA 1.x</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshooting-installation">Troubleshooting installation</a></li>
 </ul>
   </nav></div>

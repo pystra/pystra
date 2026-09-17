@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Changelog &#8212; PySTRA 2.0.0a1 documentation</title>
+    <title>Changelog &#8212; PySTRA 2.0.0 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="_static/documentation_options.js?v=944fa962"></script>
+    <script src="_static/documentation_options.js?v=51b770b3"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -56,7 +56,7 @@
     <link rel="prev" title="Complete symbol map" href="migration-map.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.0.0a1" />
+  <meta name="docsearch:version" content="2.0.0" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -101,7 +101,7 @@
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
 <aside class="bd-header-announcement" aria-label="Announcement">
-  <div class="bd-header-announcement__content">These pages document PySTRA 2.0, which is in development. The stable 1.x documentation is at <a href="https://pystra.github.io/pystra/">pystra.github.io/pystra</a>.</div>
+  <div class="bd-header-announcement__content">These pages document PySTRA 2.0. The 1.x documentation is at <a href="https://pystra.github.io/pystra/">pystra.github.io/pystra</a>.</div>
 </aside>
 
   
@@ -131,13 +131,13 @@
       
     
     
-    <img src="_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 2.0.0a1 documentation - Home"/>
-    <img src="_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 2.0.0a1 documentation - Home"/>
+    <img src="_static/icon_pystra_small.png" class="logo__image only-light" alt="PySTRA 2.0.0 documentation - Home"/>
+    <img src="_static/icon_pystra_small.png" class="logo__image only-dark pst-js-only" alt="PySTRA 2.0.0 documentation - Home"/>
   
   
 </a></div>
     
-      <div class="navbar-item"><a class="version-status" href="install.html" aria-label="Documentation version 2.0.0a1: installation instructions">2.0.0a1 · development</a></div>
+      <div class="navbar-item"><a class="version-status" href="install.html" aria-label="Documentation version 2.0.0: installation instructions">2.0.0 · development</a></div>
     
   </div>
   
@@ -531,8 +531,8 @@
 <h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading">#</a></h1>
 <p>All notable changes to PySTRA are documented here.</p>
 <p>The format follows <a class="reference external" href="https://keepachangelog.com/">Keep a Changelog</a>.</p>
-<section id="unreleased">
-<h2>2.0.0 (unreleased)<a class="headerlink" href="#unreleased" title="Link to this heading">#</a></h2>
+<section id="id1">
+<h2>2.0.0 (2026-09-17)<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <p>The outstanding feature PRs remain unmerged in 1.x. Their functionality and
 fixes are new for 2.0, alongside the breaking API migration described in
 <a class="reference internal" href="migrating.html"><span class="doc">Migrating from 1.x to 2.0</span></a>.</p>
@@ -674,6 +674,11 @@ many dimensions.</p></li>
 <section id="changed">
 <h3>Changed<a class="headerlink" href="#changed" title="Link to this heading">#</a></h3>
 <ul class="simple">
+<li><p>Faster transformations and simulation. On the fixed benchmark cases, FORM is
+12–37% faster than 1.6.0, SORM 17% faster, and crude Monte Carlo and
+importance sampling about 85% faster, with unchanged limit-state evaluation
+counts. Simulation convergence histories use 50% more memory, for the
+log-probability history that keeps tail estimates finite.</p></li>
 <li><p>Renamed <code class="docutils literal notranslate"><span class="pre">GenericCalibration</span></code> to <code class="docutils literal notranslate"><span class="pre">CodeCalibration</span></code> and <code class="docutils literal notranslate"><span class="pre">GenericModel</span></code>
 to <code class="docutils literal notranslate"><span class="pre">NormalizedReliabilityModel</span></code>; factor derivation and verification are
 presented as operations within the same code-calibration workflow.</p></li>
@@ -770,8 +775,8 @@ and <code class="docutils literal notranslate"><span class="pre">_make_copy</spa
 </section>
 <section id="v1-6-0-2026-03-16">
 <h2>v1.6.0 (2026-03-16)<a class="headerlink" href="#v1-6-0-2026-03-16" title="Link to this heading">#</a></h2>
-<section id="id1">
-<h3>Added<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<section id="id2">
+<h3>Added<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Closed-form sensitivity analysis</strong> (Bourinet 2017): computes
 <span class="math notranslate nohighlight">\(\partial\beta/\partial\theta\)</span> from a single FORM run via
@@ -800,8 +805,8 @@ derivation, curvature computation, Hohenbichler–Rackwitz motivation,
 and curve-fitting vs point-fitting comparison.</p></li>
 </ul>
 </section>
-<section id="id2">
-<h3>Fixed<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<section id="id3">
+<h3>Fixed<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>GEVmin <code class="docutils literal notranslate"><span class="pre">_make_copy</span></code> roundtrip: moments are now correctly
 preserved across reconstruction.</p></li>
@@ -814,8 +819,8 @@ preserved across reconstruction.</p></li>
 when the coefficient of variation is exactly zero (issue #64).</p></li>
 </ul>
 </section>
-<section id="id3">
-<h3>Changed<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<section id="id4">
+<h3>Changed<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Sensitivity result dicts now keyed by each distribution’s declared
 <code class="docutils literal notranslate"><span class="pre">sensitivity_params</span></code> (backward-compatible for standard
@@ -826,8 +831,8 @@ distributions).</p></li>
 </section>
 <section id="v1-4-0-2026-03-13">
 <h2>v1.4.0 (2026-03-13)<a class="headerlink" href="#v1-4-0-2026-03-13" title="Link to this heading">#</a></h2>
-<section id="id4">
-<h3>Added<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<section id="id5">
+<h3>Added<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>SORM point-fitting</strong> (<code class="docutils literal notranslate"><span class="pre">fit_type='pf'</span></code>): alternative to
 curve-fitting that locates fitting points on the failure surface via
@@ -844,8 +849,8 @@ model, transformation, sensitivity, and numerics (up from 19).</p></li>
 <li><p>CHANGELOG, improved docstrings across all modules.</p></li>
 </ul>
 </section>
-<section id="id5">
-<h3>Fixed<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<section id="id6">
+<h3>Fixed<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Type II Largest Value distribution</strong>: corrected <code class="docutils literal notranslate"><span class="pre">invweibull</span></code>
 parametrization (<code class="docutils literal notranslate"><span class="pre">c=k</span></code> instead of <code class="docutils literal notranslate"><span class="pre">c=-k-2</span></code>), which previously
@@ -861,8 +866,8 @@ and column-vector inputs in <code class="docutils literal notranslate"><span cla
 calibration module.</p></li>
 </ul>
 </section>
-<section id="id6">
-<h3>Changed<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<section id="id7">
+<h3>Changed<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Build dependency changed from <code class="docutils literal notranslate"><span class="pre">oldest-supported-numpy</span></code> to
 <code class="docutils literal notranslate"><span class="pre">numpy</span></code>.</p></li>
@@ -872,15 +877,15 @@ calibration module.</p></li>
 </section>
 <section id="v1-3-0-2024-04-01">
 <h2>v1.3.0 (2024-04-01)<a class="headerlink" href="#v1-3-0-2024-04-01" title="Link to this heading">#</a></h2>
-<section id="id7">
-<h3>Added<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<section id="id8">
+<h3>Added<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Generic calibration model.</p></li>
 <li><p>Documentation equation display fixes.</p></li>
 </ul>
 </section>
-<section id="id8">
-<h3>Changed<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<section id="id9">
+<h3>Changed<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Tidied tutorial notebooks.</p></li>
 </ul>
@@ -888,21 +893,21 @@ calibration module.</p></li>
 </section>
 <section id="v1-2-3-2023-09-01">
 <h2>v1.2.3 (2023-09-01)<a class="headerlink" href="#v1-2-3-2023-09-01" title="Link to this heading">#</a></h2>
-<section id="id9">
-<h3>Added<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<section id="id10">
+<h3>Added<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Correlation support in <code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code>.</p></li>
 <li><p>Print correlation DataFrame.</p></li>
 </ul>
 </section>
-<section id="id10">
-<h3>Fixed<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<section id="id11">
+<h3>Fixed<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">Calibration</span></code> psi factor estimation via matrix method.</p></li>
 </ul>
 </section>
-<section id="id11">
-<h3>Changed<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<section id="id12">
+<h3>Changed<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Design now uses min phi and max psi by default.</p></li>
 <li><p>Updated build system to <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>.</p></li>
@@ -911,14 +916,14 @@ calibration module.</p></li>
 </section>
 <section id="v1-2-2-2023-06-01">
 <h2>v1.2.2 (2023-06-01)<a class="headerlink" href="#v1-2-2-2023-06-01" title="Link to this heading">#</a></h2>
-<section id="id12">
-<h3>Added<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<section id="id13">
+<h3>Added<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>User-defined correlation and analysis options in load combinations.</p></li>
 </ul>
 </section>
-<section id="id13">
-<h3>Fixed<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<section id="id14">
+<h3>Fixed<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Minor docstring and import fixes.</p></li>
 </ul>
@@ -926,8 +931,8 @@ calibration module.</p></li>
 </section>
 <section id="v1-2-1-2023-04-01">
 <h2>v1.2.1 (2023-04-01)<a class="headerlink" href="#v1-2-1-2023-04-01" title="Link to this heading">#</a></h2>
-<section id="id14">
-<h3>Fixed<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
+<section id="id15">
+<h3>Fixed<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Docstring rendering for GitHub Pages build.</p></li>
 <li><p>Syntax highlighting in notebook examples.</p></li>
@@ -936,8 +941,8 @@ calibration module.</p></li>
 </section>
 <section id="v1-2-0-2023-02-01">
 <h2>v1.2.0 (2023-02-01)<a class="headerlink" href="#v1-2-0-2023-02-01" title="Link to this heading">#</a></h2>
-<section id="id15">
-<h3>Added<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
+<section id="id16">
+<h3>Added<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">Calibration</span></code> class for partial and combination factor calibration.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">LoadCombination</span></code> class for load combination reliability analysis.</p></li>
@@ -949,8 +954,8 @@ calibration module.</p></li>
 </section>
 <section id="v1-1-1-2022-01-01">
 <h2>v1.1.1 (2022-01-01)<a class="headerlink" href="#v1-1-1-2022-01-01" title="Link to this heading">#</a></h2>
-<section id="id16">
-<h3>Fixed<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
+<section id="id17">
+<h3>Fixed<a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Minor fixes and documentation updates.</p></li>
 </ul>
@@ -958,8 +963,8 @@ calibration module.</p></li>
 </section>
 <section id="v1-1-0-2021-09-01">
 <h2>v1.1.0 (2021-09-01)<a class="headerlink" href="#v1-1-0-2021-09-01" title="Link to this heading">#</a></h2>
-<section id="id17">
-<h3>Added<a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
+<section id="id18">
+<h3>Added<a class="headerlink" href="#id18" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">SensitivityAnalysis</span></code> class.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">DistributionAnalysis</span></code> class.</p></li>
@@ -967,8 +972,8 @@ calibration module.</p></li>
 <li><p>Sensitivity analysis tutorial notebook.</p></li>
 </ul>
 </section>
-<section id="id18">
-<h3>Changed<a class="headerlink" href="#id18" title="Link to this heading">#</a></h3>
+<section id="id19">
+<h3>Changed<a class="headerlink" href="#id19" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Improved distribution interface.</p></li>
 </ul>
@@ -1034,55 +1039,55 @@ calibration module.</p></li>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unreleased">2.0.0 (unreleased)</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">2.0.0 (2026-09-17)</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#added">Added</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fixed">Fixed</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#changed">Changed</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-6-0-2026-03-16">v1.6.0 (2026-03-16)</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Added</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Fixed</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Changed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Fixed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Changed</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-4-0-2026-03-13">v1.4.0 (2026-03-13)</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Added</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Fixed</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Changed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Fixed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">Changed</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-3-0-2024-04-01">v1.3.0 (2024-04-01)</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">Added</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">Changed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">Changed</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-2-3-2023-09-01">v1.2.3 (2023-09-01)</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">Added</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">Fixed</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">Changed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">Fixed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">Changed</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-2-2-2023-06-01">v1.2.2 (2023-06-01)</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">Added</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">Fixed</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-2-1-2023-04-01">v1.2.1 (2023-04-01)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">Added</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">Fixed</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-2-1-2023-04-01">v1.2.1 (2023-04-01)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">Fixed</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-2-0-2023-02-01">v1.2.0 (2023-02-01)</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">Added</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-1-1-2022-01-01">v1.1.1 (2022-01-01)</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">Fixed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">Fixed</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-1-0-2021-09-01">v1.1.0 (2021-09-01)</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">Added</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">Changed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">Changed</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-0-0-2021-06-01">v1.0.0 (2021-06-01)</a></li>
