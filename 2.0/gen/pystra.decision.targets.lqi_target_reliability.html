@@ -917,8 +917,20 @@ probabilities about five times larger and low variability about two
 times smaller than the medium case.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="pystra.decision.targets.TargetReliability.html#pystra.decision.targets.TargetReliability" title="pystra.decision.targets.TargetReliability"><code class="xref py py-class docutils literal notranslate"><span class="pre">TargetReliability</span></code></a></span></p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The rounded table target for <code class="docutils literal notranslate"><span class="pre">1e-5</span> <span class="pre">&lt;=</span> <span class="pre">k1</span> <span class="pre">&lt;=</span> <span class="pre">1e-2</span></code>.  Outside that
+range <code class="docutils literal notranslate"><span class="pre">cost_class</span></code> is <code class="docutils literal notranslate"><span class="pre">&quot;extrapolated&quot;</span></code> and the failure probability
+continues the table’s proportionality to <code class="docutils literal notranslate"><span class="pre">k1</span></code> from the nearest edge:
+<code class="docutils literal notranslate"><span class="pre">pf</span> <span class="pre">=</span> <span class="pre">k1</span></code> below <code class="docutils literal notranslate"><span class="pre">1e-5</span></code> and <code class="docutils literal notranslate"><span class="pre">pf</span> <span class="pre">=</span> <span class="pre">k1</span> <span class="pre">/</span> <span class="pre">10</span></code> above <code class="docutils literal notranslate"><span class="pre">1e-2</span></code>, with
+<code class="docutils literal notranslate"><span class="pre">beta</span></code> computed from <code class="docutils literal notranslate"><span class="pre">pf</span></code> rather than rounded.  The failure
+probability is therefore continuous at both table edges; the index
+differs only by the table’s rounding (4.2 is tabulated for
+<code class="docutils literal notranslate"><span class="pre">pf</span> <span class="pre">=</span> <span class="pre">1e-5</span></code>, whose exact index is 4.26).  An extrapolated value is
+not a source-table value; use <a class="reference internal" href="pystra.decision.targets.derive_lqi_target.html#pystra.decision.targets.derive_lqi_target" title="pystra.decision.targets.derive_lqi_target"><code class="xref py py-func docutils literal notranslate"><span class="pre">derive_lqi_target()</span></code></a> to calculate
+a target for a stated resistance-demand model instead.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="pystra.decision.targets.TargetReliability.html#pystra.decision.targets.TargetReliability" title="pystra.decision.targets.TargetReliability"><code class="xref py py-class docutils literal notranslate"><span class="pre">TargetReliability</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>

@@ -850,9 +850,15 @@
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
+<span class="sd">    The default rates and ratios (``interest_rate=0.035``,</span>
+<span class="sd">    ``obsolescence_rate=0.02``, ``serviceability_cost_ratio=0.3``,</span>
+<span class="sd">    ``demolition_cost_ratio=0.2``, ``serviceability_resistance_ratio=1.5``)</span>
+<span class="sd">    are the Case 1 values of Steenbergen, Rózsás, and Vrouwenvelder (2018,</span>
+<span class="sd">    Table 5); Rackwitz (2000, Fig. B.1) uses ``serviceability_cost_ratio=0.2``.</span>
 <span class="sd">    To recalibrate a whole table for your own classes, pass ``safety_costs``</span>
 <span class="sd">    (the ``C1 / C0`` values) and ``failure_costs`` (the ``H / C0`` values) to</span>
-<span class="sd">    :meth:`table`.</span>
+<span class="sd">    :meth:`table`.  The calibrated targets are not a reproduction of the</span>
+<span class="sd">    rounded JCSS or ISO 2394 tables; see :meth:`table`.</span>
 <span class="sd">    """</span>
 
     <span class="n">safety_cost_ratio</span><span class="p">:</span> <span class="nb">float</span>
@@ -1032,10 +1038,29 @@
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        The defaults are representative values from the broad classes used in</span>
-<span class="sd">        the literature, not a retyping of any rounded target table.  Supply your</span>
-<span class="sd">        own ``safety_costs`` and ``failure_costs`` to recalibrate for different</span>
-<span class="sd">        cost and consequence assumptions.</span>
+<span class="sd">        The default classes are ``C1 / C0 = 0.3 / 0.03 / 0.003``, an</span>
+<span class="sd">        order-of-magnitude grading around the ``C1 / C0 = 0.03`` base case of</span>
+<span class="sd">        Rackwitz (2000, Fig. B.1), and ``H / C0 = 0.5 / 2.5 / 6.5``, the</span>
+<span class="sd">        midpoints of the JCSS consequence classes (``rho = 1 + H / C0`` below</span>
+<span class="sd">        2, 2-5 and 5-10).  The remaining defaults are those of Steenbergen et</span>
+<span class="sd">        al. (2018, Table 5).  With ``serviceability_cost_ratio=0.2`` and</span>
+<span class="sd">        ``H / C0 = 3``, the Rackwitz (2000, Fig. B.1) values, the model</span>
+<span class="sd">        reproduces the normal-consequence column of Rackwitz (2000, Table 1):</span>
+<span class="sd">        3.1 / 3.7 / 4.3.</span>
+
+<span class="sd">        The result is a direct optimization, not a reproduction of the rounded</span>
+<span class="sd">        targets in the JCSS Probabilistic Model Code (Part 1, Table 1) or ISO</span>
+<span class="sd">        2394:2015 (Table G.4), and it should not be expected to match them.</span>
+<span class="sd">        Those tables do not state the cost ratios or coefficients of variation</span>
+<span class="sd">        behind each cell; Steenbergen et al. (2018, Table 7) read each tabulated</span>
+<span class="sd">        rate as an upper limit on the optimal rates within a class.  In this</span>
+<span class="sd">        closed-form model the optimum moves by about 0.6 in ``beta`` for each</span>
+<span class="sd">        decade of ``C1 / C0`` but by only about 0.2 across the whole JCSS</span>
+<span class="sd">        consequence range. The tables, in contrast, step by 0.5-0.6 between</span>
+<span class="sd">        consequence classes. With the defaults, the large-consequence column is</span>
+<span class="sd">        3.25 / 3.88 / 4.45 against the tabulated 3.7 / 4.4 / 4.7.  Supply your</span>
+<span class="sd">        own ``safety_costs`` and ``failure_costs`` (and ``resistance_cov`` /</span>
+<span class="sd">        ``load_cov``) to calibrate for a particular structure.</span>
 <span class="sd">        """</span>
 
         <span class="k">if</span> <span class="n">safety_costs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1149,6 +1174,20 @@
 <span class="sd">        source table reports that high variability gives failure</span>
 <span class="sd">        probabilities about five times larger and low variability about two</span>
 <span class="sd">        times smaller than the medium case.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    TargetReliability</span>
+<span class="sd">        The rounded table target for ``1e-5 &lt;= k1 &lt;= 1e-2``.  Outside that</span>
+<span class="sd">        range ``cost_class`` is ``"extrapolated"`` and the failure probability</span>
+<span class="sd">        continues the table's proportionality to ``k1`` from the nearest edge:</span>
+<span class="sd">        ``pf = k1`` below ``1e-5`` and ``pf = k1 / 10`` above ``1e-2``, with</span>
+<span class="sd">        ``beta`` computed from ``pf`` rather than rounded.  The failure</span>
+<span class="sd">        probability is therefore continuous at both table edges; the index</span>
+<span class="sd">        differs only by the table's rounding (4.2 is tabulated for</span>
+<span class="sd">        ``pf = 1e-5``, whose exact index is 4.26).  An extrapolated value is</span>
+<span class="sd">        not a source-table value; use :func:`derive_lqi_target` to calculate</span>
+<span class="sd">        a target for a stated resistance-demand model instead.</span>
 <span class="sd">    """</span>
 
     <span class="k">if</span> <span class="n">k1</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
@@ -1160,16 +1199,26 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"variability must be one of: </span><span class="si">{</span><span class="n">valid</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="n">factor</span> <span class="o">=</span> <span class="n">_VARIABILITY_FACTORS</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
-    <span class="n">cost_class</span> <span class="o">=</span> <span class="s2">"extrapolated"</span>
-    <span class="n">pf</span> <span class="o">=</span> <span class="n">k1</span> <span class="o">/</span> <span class="mf">5.0</span>
-    <span class="n">beta</span> <span class="o">=</span> <span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">pf</span><span class="p">))</span>
-
     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">lower</span><span class="p">,</span> <span class="n">upper</span><span class="p">,</span> <span class="n">table_pf</span><span class="p">,</span> <span class="n">table_beta</span> <span class="ow">in</span> <span class="n">_TARGET_TABLE</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">lower</span> <span class="o">&lt;=</span> <span class="n">k1</span> <span class="o">&lt;=</span> <span class="n">upper</span><span class="p">:</span>
             <span class="n">cost_class</span> <span class="o">=</span> <span class="n">name</span>
             <span class="n">pf</span> <span class="o">=</span> <span class="n">table_pf</span>
             <span class="n">beta</span> <span class="o">=</span> <span class="n">table_beta</span>
             <span class="k">break</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Outside the tabulated range, continue the proportionality between</span>
+        <span class="c1"># pf and K1 from the nearest table edge, so pf is continuous there:</span>
+        <span class="c1"># pf = K1 below the small class (pf = 1e-5 at K1 = 1e-5) and</span>
+        <span class="c1"># pf = K1 / 10 above the large class (pf = 1e-3 at K1 = 1e-2).</span>
+        <span class="n">cost_class</span> <span class="o">=</span> <span class="s2">"extrapolated"</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">table_lower</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">lower_pf</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_TARGET_TABLE</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">table_upper</span><span class="p">,</span> <span class="n">upper_pf</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_TARGET_TABLE</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">k1</span> <span class="o">&lt;</span> <span class="n">table_lower</span><span class="p">:</span>
+            <span class="n">pf</span> <span class="o">=</span> <span class="n">k1</span> <span class="o">*</span> <span class="n">lower_pf</span> <span class="o">/</span> <span class="n">table_lower</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pf</span> <span class="o">=</span> <span class="n">k1</span> <span class="o">*</span> <span class="n">upper_pf</span> <span class="o">/</span> <span class="n">table_upper</span>
+        <span class="n">pf</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">pf</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">pf</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">factor</span> <span class="o">!=</span> <span class="mf">1.0</span><span class="p">:</span>
         <span class="n">pf</span> <span class="o">=</span> <span class="n">pf</span> <span class="o">*</span> <span class="n">factor</span>

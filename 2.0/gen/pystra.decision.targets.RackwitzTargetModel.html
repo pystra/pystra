@@ -940,9 +940,15 @@ does not affect the optimum; defaults to 0.</p></li>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>To recalibrate a whole table for your own classes, pass <code class="docutils literal notranslate"><span class="pre">safety_costs</span></code>
+<p>The default rates and ratios (<code class="docutils literal notranslate"><span class="pre">interest_rate=0.035</span></code>,
+<code class="docutils literal notranslate"><span class="pre">obsolescence_rate=0.02</span></code>, <code class="docutils literal notranslate"><span class="pre">serviceability_cost_ratio=0.3</span></code>,
+<code class="docutils literal notranslate"><span class="pre">demolition_cost_ratio=0.2</span></code>, <code class="docutils literal notranslate"><span class="pre">serviceability_resistance_ratio=1.5</span></code>)
+are the Case 1 values of Steenbergen, Rózsás, and Vrouwenvelder (2018,
+Table 5); Rackwitz (2000, Fig. B.1) uses <code class="docutils literal notranslate"><span class="pre">serviceability_cost_ratio=0.2</span></code>.
+To recalibrate a whole table for your own classes, pass <code class="docutils literal notranslate"><span class="pre">safety_costs</span></code>
 (the <code class="docutils literal notranslate"><span class="pre">C1</span> <span class="pre">/</span> <span class="pre">C0</span></code> values) and <code class="docutils literal notranslate"><span class="pre">failure_costs</span></code> (the <code class="docutils literal notranslate"><span class="pre">H</span> <span class="pre">/</span> <span class="pre">C0</span></code> values) to
-<a class="reference internal" href="#pystra.decision.targets.RackwitzTargetModel.table" title="pystra.decision.targets.RackwitzTargetModel.table"><code class="xref py py-meth docutils literal notranslate"><span class="pre">table()</span></code></a>.</p>
+<a class="reference internal" href="#pystra.decision.targets.RackwitzTargetModel.table" title="pystra.decision.targets.RackwitzTargetModel.table"><code class="xref py py-meth docutils literal notranslate"><span class="pre">table()</span></code></a>.  The calibrated targets are not a reproduction of the
+rounded JCSS or ISO 2394 tables; see <a class="reference internal" href="#pystra.decision.targets.RackwitzTargetModel.table" title="pystra.decision.targets.RackwitzTargetModel.table"><code class="xref py py-meth docutils literal notranslate"><span class="pre">table()</span></code></a>.</p>
 <p class="rubric">Methods</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
@@ -1065,10 +1071,28 @@ values.</p></li>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>The defaults are representative values from the broad classes used in
-the literature, not a retyping of any rounded target table.  Supply your
-own <code class="docutils literal notranslate"><span class="pre">safety_costs</span></code> and <code class="docutils literal notranslate"><span class="pre">failure_costs</span></code> to recalibrate for different
-cost and consequence assumptions.</p>
+<p>The default classes are <code class="docutils literal notranslate"><span class="pre">C1</span> <span class="pre">/</span> <span class="pre">C0</span> <span class="pre">=</span> <span class="pre">0.3</span> <span class="pre">/</span> <span class="pre">0.03</span> <span class="pre">/</span> <span class="pre">0.003</span></code>, an
+order-of-magnitude grading around the <code class="docutils literal notranslate"><span class="pre">C1</span> <span class="pre">/</span> <span class="pre">C0</span> <span class="pre">=</span> <span class="pre">0.03</span></code> base case of
+Rackwitz (2000, Fig. B.1), and <code class="docutils literal notranslate"><span class="pre">H</span> <span class="pre">/</span> <span class="pre">C0</span> <span class="pre">=</span> <span class="pre">0.5</span> <span class="pre">/</span> <span class="pre">2.5</span> <span class="pre">/</span> <span class="pre">6.5</span></code>, the
+midpoints of the JCSS consequence classes (<code class="docutils literal notranslate"><span class="pre">rho</span> <span class="pre">=</span> <span class="pre">1</span> <span class="pre">+</span> <span class="pre">H</span> <span class="pre">/</span> <span class="pre">C0</span></code> below
+2, 2-5 and 5-10).  The remaining defaults are those of Steenbergen et
+al. (2018, Table 5).  With <code class="docutils literal notranslate"><span class="pre">serviceability_cost_ratio=0.2</span></code> and
+<code class="docutils literal notranslate"><span class="pre">H</span> <span class="pre">/</span> <span class="pre">C0</span> <span class="pre">=</span> <span class="pre">3</span></code>, the Rackwitz (2000, Fig. B.1) values, the model
+reproduces the normal-consequence column of Rackwitz (2000, Table 1):
+3.1 / 3.7 / 4.3.</p>
+<p>The result is a direct optimization, not a reproduction of the rounded
+targets in the JCSS Probabilistic Model Code (Part 1, Table 1) or ISO
+2394:2015 (Table G.4), and it should not be expected to match them.
+Those tables do not state the cost ratios or coefficients of variation
+behind each cell; Steenbergen et al. (2018, Table 7) read each tabulated
+rate as an upper limit on the optimal rates within a class.  In this
+closed-form model the optimum moves by about 0.6 in <code class="docutils literal notranslate"><span class="pre">beta</span></code> for each
+decade of <code class="docutils literal notranslate"><span class="pre">C1</span> <span class="pre">/</span> <span class="pre">C0</span></code> but by only about 0.2 across the whole JCSS
+consequence range. The tables, in contrast, step by 0.5-0.6 between
+consequence classes. With the defaults, the large-consequence column is
+3.25 / 3.88 / 4.45 against the tabulated 3.7 / 4.4 / 4.7.  Supply your
+own <code class="docutils literal notranslate"><span class="pre">safety_costs</span></code> and <code class="docutils literal notranslate"><span class="pre">failure_costs</span></code> (and <code class="docutils literal notranslate"><span class="pre">resistance_cov</span></code> /
+<code class="docutils literal notranslate"><span class="pre">load_cov</span></code>) to calibrate for a particular structure.</p>
 </dd></dl>
 
 </dd></dl>

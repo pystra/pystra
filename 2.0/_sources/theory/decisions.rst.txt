@@ -171,12 +171,27 @@ The rates :math:`\gamma`, :math:`\omega`, and :math:`\lambda` are
 ``interest_rate``, ``obsolescence_rate``, and ``load_occurrence_rate``.  Because
 the objective is normalized by :math:`C_0`, the resulting target table depends
 only on these relative cost and consequence ratios, not on a particular
-jurisdiction; the calibrated classes can be compared with the rounded target
-reliabilities tabulated in the JCSS Probabilistic Model Code [JCSSPMC2001]_ and
-ISO 2394 [ISO2394]_.  A table for other classes is recalculated by passing
+jurisdiction.  A table for other classes is recalculated by passing
 ``safety_costs`` (the :math:`C_1/C_0` values) and ``failure_costs`` (the
 :math:`H/C_0` values) to
 :meth:`~pystra.decision.targets.RackwitzTargetModel.table`.
+
+The calculated table is a direct optimization.  It is not a reproduction of the
+rounded targets tabulated in the JCSS Probabilistic Model Code [JCSSPMC2001]_
+(Part 1, Table 1) and ISO 2394 [ISO2394]_ (Table G.4).  Those tables do not
+state the cost ratios and coefficients of variation behind each cell, and
+Steenbergen et al. [Steenbergen2018Target]_ treat each tabulated rate as an
+upper limit on the optimal rates within a class.  With the Rackwitz
+[Rackwitz2000CodeMaking]_ base case (:math:`C_1/C_0 = 0.03`, :math:`H/C_0 = 3`,
+:math:`U/C_0 = A/C_0 = 0.2`) graded by a decade in :math:`C_1/C_0`, and the
+default :math:`V_R = V_S = 0.3`, the model reproduces the normal-consequence column of Rackwitz's
+own Table 1 (3.1, 3.7, 4.3).  In this model, however, the optimum moves by
+about 0.6 in :math:`\beta` for each decade of :math:`C_1/C_0`, but by only
+about 0.2 across the whole JCSS consequence range (:math:`H/C_0` from below 1
+to 9).  The rounded tables step by 0.5 to 0.6 between consequence classes.
+With the default classes the large-consequence column is 3.25, 3.88 and 4.45,
+against the tabulated 3.7, 4.4 and 4.7.  Use the calculation for a stated
+cost and uncertainty model, and the rounded tables as code-level targets.
 
 Fischer, Barnardo, and Faber [Fischer2012LQI]_ provide a convenient LQI route
 for turning an SWTP value and expected fatalities given failure into minimum
@@ -213,6 +228,13 @@ corresponding target classes are approximated as:
      - Small
      - 4.2
      - :math:`10^{-5}`
+
+Outside the tabulated range the lookup continues the table's proportionality
+between :math:`p_f` and :math:`K_1` from the nearest edge: :math:`p_f = K_1`
+below :math:`10^{-5}` and :math:`p_f = K_1/10` above :math:`10^{-2}`, labeled
+``"extrapolated"``.  The failure probability is then continuous at both edges.
+An extrapolated value is not a source-table value; the marginal calculation
+below gives a target for a stated resistance-demand model.
 
 For normal studies, ``ra.decision.LQI`` (:class:`~pystra.decision.criteria.LQI`) builds this target
 directly from a country SWTP value or a user-supplied SWTP value, expected

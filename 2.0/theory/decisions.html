@@ -585,8 +585,8 @@ user-supplied demographic values.</p>
 <p>PySTRA also includes a small source-backed country table from Rackwitz’s JCSS
 background document <a class="reference internal" href="../references.html#rackwitz2008lqi" id="id15"><span>[Rackwitz2008LQI]</span></a>.  The anchor values are the
 <span class="math notranslate nohighlight">\(G_{\Delta \bar{l}}\)</span> column in Table 7, in millions of 1999 PPPUS$:</p>
-<div class="pst-scrollable-table-container"><table class="table" id="id24">
-<caption><span class="caption-text">Built-in SWTP country values</span><a class="headerlink" href="#id24" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id26">
+<caption><span class="caption-text">Built-in SWTP country values</span><a class="headerlink" href="#id26" title="Link to this table">#</a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Code</p></th>
 <th class="head"><p>Country</p></th>
@@ -698,8 +698,8 @@ lognormal resistance-demand model for <span class="math notranslate nohighlight"
 <p>Every cost is normalized by the base construction cost <span class="math notranslate nohighlight">\(C_0\)</span>
 (<code class="docutils literal notranslate"><span class="pre">base_cost</span></code>), so the model’s cost inputs are <em>ratios</em> to <span class="math notranslate nohighlight">\(C_0\)</span>, mapped
 to <a class="reference internal" href="../gen/pystra.decision.targets.RackwitzTargetModel.html#pystra.decision.targets.RackwitzTargetModel" title="pystra.decision.targets.RackwitzTargetModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">RackwitzTargetModel</span></code></a> parameters as follows.</p>
-<div class="pst-scrollable-table-container"><table class="table" id="id25">
-<caption><span class="caption-text">Normalized cost inputs (fractions of <span class="math notranslate nohighlight">\(C_0\)</span>)</span><a class="headerlink" href="#id25" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id27">
+<caption><span class="caption-text">Normalized cost inputs (fractions of <span class="math notranslate nohighlight">\(C_0\)</span>)</span><a class="headerlink" href="#id27" title="Link to this table">#</a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Symbol</p></th>
 <th class="head"><p>Parameter</p></th>
@@ -734,16 +734,30 @@ to <a class="reference internal" href="../gen/pystra.decision.targets.RackwitzTa
 <code class="docutils literal notranslate"><span class="pre">interest_rate</span></code>, <code class="docutils literal notranslate"><span class="pre">obsolescence_rate</span></code>, and <code class="docutils literal notranslate"><span class="pre">load_occurrence_rate</span></code>.  Because
 the objective is normalized by <span class="math notranslate nohighlight">\(C_0\)</span>, the resulting target table depends
 only on these relative cost and consequence ratios, not on a particular
-jurisdiction; the calibrated classes can be compared with the rounded target
-reliabilities tabulated in the JCSS Probabilistic Model Code <a class="reference internal" href="../references.html#jcsspmc2001" id="id19"><span>[JCSSPMC2001]</span></a> and
-ISO 2394 <a class="reference internal" href="../references.html#iso2394" id="id20"><span>[ISO2394]</span></a>.  A table for other classes is recalculated by passing
+jurisdiction.  A table for other classes is recalculated by passing
 <code class="docutils literal notranslate"><span class="pre">safety_costs</span></code> (the <span class="math notranslate nohighlight">\(C_1/C_0\)</span> values) and <code class="docutils literal notranslate"><span class="pre">failure_costs</span></code> (the
 <span class="math notranslate nohighlight">\(H/C_0\)</span> values) to
 <a class="reference internal" href="../gen/pystra.decision.targets.RackwitzTargetModel.html#pystra.decision.targets.RackwitzTargetModel.table" title="pystra.decision.targets.RackwitzTargetModel.table"><code class="xref py py-meth docutils literal notranslate"><span class="pre">table()</span></code></a>.</p>
-<p>Fischer, Barnardo, and Faber <a class="reference internal" href="../references.html#fischer2012lqi" id="id21"><span>[Fischer2012LQI]</span></a> provide a convenient LQI route
+<p>The calculated table is a direct optimization.  It is not a reproduction of the
+rounded targets tabulated in the JCSS Probabilistic Model Code <a class="reference internal" href="../references.html#jcsspmc2001" id="id19"><span>[JCSSPMC2001]</span></a>
+(Part 1, Table 1) and ISO 2394 <a class="reference internal" href="../references.html#iso2394" id="id20"><span>[ISO2394]</span></a> (Table G.4).  Those tables do not
+state the cost ratios and coefficients of variation behind each cell, and
+Steenbergen et al. <a class="reference internal" href="../references.html#steenbergen2018target" id="id21"><span>[Steenbergen2018Target]</span></a> treat each tabulated rate as an
+upper limit on the optimal rates within a class.  With the Rackwitz
+<a class="reference internal" href="../references.html#rackwitz2000codemaking" id="id22"><span>[Rackwitz2000CodeMaking]</span></a> base case (<span class="math notranslate nohighlight">\(C_1/C_0 = 0.03\)</span>, <span class="math notranslate nohighlight">\(H/C_0 = 3\)</span>,
+<span class="math notranslate nohighlight">\(U/C_0 = A/C_0 = 0.2\)</span>) graded by a decade in <span class="math notranslate nohighlight">\(C_1/C_0\)</span>, and the
+default <span class="math notranslate nohighlight">\(V_R = V_S = 0.3\)</span>, the model reproduces the normal-consequence column of Rackwitz’s
+own Table 1 (3.1, 3.7, 4.3).  In this model, however, the optimum moves by
+about 0.6 in <span class="math notranslate nohighlight">\(\beta\)</span> for each decade of <span class="math notranslate nohighlight">\(C_1/C_0\)</span>, but by only
+about 0.2 across the whole JCSS consequence range (<span class="math notranslate nohighlight">\(H/C_0\)</span> from below 1
+to 9).  The rounded tables step by 0.5 to 0.6 between consequence classes.
+With the default classes the large-consequence column is 3.25, 3.88 and 4.45,
+against the tabulated 3.7, 4.4 and 4.7.  Use the calculation for a stated
+cost and uncertainty model, and the rounded tables as code-level targets.</p>
+<p>Fischer, Barnardo, and Faber <a class="reference internal" href="../references.html#fischer2012lqi" id="id23"><span>[Fischer2012LQI]</span></a> provide a convenient LQI route
 for turning an SWTP value and expected fatalities given failure into minimum
 target reliabilities; the marginal life-saving cost underlying this route is
-examined in detail by Fischer et al. <a class="reference internal" href="../references.html#fischer2013marginalcost" id="id22"><span>[Fischer2013MarginalCost]</span></a>.  For medium
+examined in detail by Fischer et al. <a class="reference internal" href="../references.html#fischer2013marginalcost" id="id24"><span>[Fischer2013MarginalCost]</span></a>.  For medium
 variability, define the safety cost ratio</p>
 <div class="math notranslate nohighlight" id="equation-eq-lqi-k1">
 <span class="eqno">(3)<a class="headerlink" href="#equation-eq-lqi-k1" title="Link to this equation">#</a></span>\[K_1 = \frac{C_1(\gamma_S + \omega)}
@@ -751,8 +765,8 @@ variability, define the safety cost ratio</p>
 <p>where <span class="math notranslate nohighlight">\(C_1(\gamma_S + \omega)\)</span> is the marginal safety cost term and
 <span class="math notranslate nohighlight">\(N_F\)</span> is the expected number of fatalities given failure.  The
 corresponding target classes are approximated as:</p>
-<div class="pst-scrollable-table-container"><table class="table" id="id26">
-<caption><span class="caption-text">LQI target reliability classes for medium variability</span><a class="headerlink" href="#id26" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id28">
+<caption><span class="caption-text">LQI target reliability classes for medium variability</span><a class="headerlink" href="#id28" title="Link to this table">#</a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Safety cost ratio <span class="math notranslate nohighlight">\(K_1\)</span></p></th>
 <th class="head"><p>Cost class</p></th>
@@ -779,6 +793,12 @@ corresponding target classes are approximated as:</p>
 </tbody>
 </table>
 </div>
+<p>Outside the tabulated range the lookup continues the table’s proportionality
+between <span class="math notranslate nohighlight">\(p_f\)</span> and <span class="math notranslate nohighlight">\(K_1\)</span> from the nearest edge: <span class="math notranslate nohighlight">\(p_f = K_1\)</span>
+below <span class="math notranslate nohighlight">\(10^{-5}\)</span> and <span class="math notranslate nohighlight">\(p_f = K_1/10\)</span> above <span class="math notranslate nohighlight">\(10^{-2}\)</span>, labeled
+<code class="docutils literal notranslate"><span class="pre">&quot;extrapolated&quot;</span></code>.  The failure probability is then continuous at both edges.
+An extrapolated value is not a source-table value; the marginal calculation
+below gives a target for a stated resistance-demand model.</p>
 <p>For normal studies, <code class="docutils literal notranslate"><span class="pre">ra.decision.LQI</span></code> (<a class="reference internal" href="../gen/pystra.decision.criteria.LQI.html#pystra.decision.criteria.LQI" title="pystra.decision.criteria.LQI"><code class="xref py py-class docutils literal notranslate"><span class="pre">LQI</span></code></a>) builds this target
 directly from a country SWTP value or a user-supplied SWTP value, expected
 fatalities given failure or an explicit consequence model, and marginal safety
@@ -816,7 +836,7 @@ direct reproduction of the JCSS equations.</p>
 criterion and reserves solver logic for future work.  This keeps LQI in its
 proper role as a minimum safety criterion rather than the optimizer itself.
 Life-cycle cost and utility models based on stochastic renewal processes are a
-natural source for future objective implementations <a class="reference internal" href="../references.html#pandeywangcheng2015renewal" id="id23"><span>[PandeyWangCheng2015Renewal]</span></a>.</p>
+natural source for future objective implementations <a class="reference internal" href="../references.html#pandeywangcheng2015renewal" id="id25"><span>[PandeyWangCheng2015Renewal]</span></a>.</p>
 <p><strong>Use this method:</strong> <a class="reference internal" href="../guides/assessment.html"><span class="doc">Comparing structural assessment scenarios</span></a> · <a class="reference internal" href="../notebooks/ex_target_reliability.html"><span class="doc">Calibrating target-reliability tables</span></a> · <a class="reference internal" href="../api/decisions.html"><span class="doc">Design decisions and target reliability</span></a></p>
 <p>For coordinate conventions, see <a class="reference internal" href="notation.html"><span class="doc">Notation and probability spaces</span></a>.</p>
 </section>
