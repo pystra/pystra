@@ -93,6 +93,35 @@ def test_lqi_target_reliability_table_and_ratio():
         assert target.beta == pytest.approx(beta)
 
 
+@pytest.mark.parametrize(
+    ("edge_k1", "outside_k1"),
+    [(1e-5, 0.9999e-5), (1e-2, 1.0001e-2)],
+    ids=["below-small-class", "above-large-class"],
+)
+@pytest.mark.parametrize("variability", ["low", "medium", "high"])
+def test_lqi_target_lookup_is_continuous_at_the_table_edges(
+    edge_k1, outside_k1, variability
+):
+    lookup = ra.decision.ddo.lqi_target_reliability
+    edge = lookup(edge_k1, variability=variability)
+    outside = lookup(outside_k1, variability=variability)
+
+    assert outside.cost_class == "extrapolated"
+    # Crossing the edge by 0.01 % of K1 changes pf by the same amount, not by
+    # the factor of five that the old ``pf = K1 / 5`` fallback produced.
+    assert outside.pf == pytest.approx(edge.pf, rel=1e-3)
+    # The tabulated index is rounded (4.2 for pf = 1e-5 rather than 4.26), so
+    # only the rounding separates the two indices.
+    assert outside.beta == pytest.approx(edge.beta, abs=0.1)
+
+
+def test_lqi_target_lookup_is_monotonic_in_k1():
+    k1_values = np.logspace(-7, -1, 61)
+    pf = [ra.decision.ddo.lqi_target_reliability(k1).pf for k1 in k1_values]
+
+    assert np.all(np.diff(pf) >= 0)
+
+
 def test_lognormal_ratio_failure_probability():
     assert ra.decision.ddo.lognormal_ratio_failure_probability(
         1.0, 0.3, 0.3
@@ -177,6 +206,22 @@ def test_rackwitz_target_table_calculates_class_grid():
 
     normal = table[table["relative_safety_cost"] == "normal"]
     assert normal["beta"].is_monotonic_increasing
+
+
+def test_rackwitz_model_reproduces_rackwitz_2000_normal_consequence_column():
+    # Rackwitz (2000), Appendix B, Fig. B.1 parameters: lognormal R and S,
+    # lambda = 1, gamma = 0.035, U/C0 = A/C0 = 0.2, H/C0 = 3, omega = 0.02,
+    # a = 1.5, with C1/C0 graded by an order of magnitude around 0.03.  Table 1
+    # of the same paper gives 3.1 / 3.7 / 4.3 for normal consequences.
+    safety_costs = {"high": 0.3, "normal": 0.03, "low": 0.003}
+    table = ra.decision.RackwitzTargetModel.table(
+        safety_costs=safety_costs,
+        failure_costs={"normal": 3.0},
+        serviceability_cost_ratio=0.2,
+    )
+
+    assert table["converged"].all()
+    assert np.round(table["beta"].to_numpy(), 1).tolist() == [3.1, 3.7, 4.3]
 
 
 def test_lqi_builds_target_from_country():

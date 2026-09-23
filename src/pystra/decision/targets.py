@@ -321,9 +321,15 @@ class RackwitzTargetModel:
 
     Notes
     -----
+    The default rates and ratios (``interest_rate=0.035``,
+    ``obsolescence_rate=0.02``, ``serviceability_cost_ratio=0.3``,
+    ``demolition_cost_ratio=0.2``, ``serviceability_resistance_ratio=1.5``)
+    are the Case 1 values of Steenbergen, Rózsás, and Vrouwenvelder (2018,
+    Table 5); Rackwitz (2000, Fig. B.1) uses ``serviceability_cost_ratio=0.2``.
     To recalibrate a whole table for your own classes, pass ``safety_costs``
     (the ``C1 / C0`` values) and ``failure_costs`` (the ``H / C0`` values) to
-    :meth:`table`.
+    :meth:`table`.  The calibrated targets are not a reproduction of the
+    rounded JCSS or ISO 2394 tables; see :meth:`table`.
     """
 
     safety_cost_ratio: float
@@ -483,10 +489,29 @@ class RackwitzTargetModel:
 
         Notes
         -----
-        The defaults are representative values from the broad classes used in
-        the literature, not a retyping of any rounded target table.  Supply your
-        own ``safety_costs`` and ``failure_costs`` to recalibrate for different
-        cost and consequence assumptions.
+        The default classes are ``C1 / C0 = 0.3 / 0.03 / 0.003``, an
+        order-of-magnitude grading around the ``C1 / C0 = 0.03`` base case of
+        Rackwitz (2000, Fig. B.1), and ``H / C0 = 0.5 / 2.5 / 6.5``, the
+        midpoints of the JCSS consequence classes (``rho = 1 + H / C0`` below
+        2, 2-5 and 5-10).  The remaining defaults are those of Steenbergen et
+        al. (2018, Table 5).  With ``serviceability_cost_ratio=0.2`` and
+        ``H / C0 = 3``, the Rackwitz (2000, Fig. B.1) values, the model
+        reproduces the normal-consequence column of Rackwitz (2000, Table 1):
+        3.1 / 3.7 / 4.3.
+
+        The result is a direct optimization, not a reproduction of the rounded
+        targets in the JCSS Probabilistic Model Code (Part 1, Table 1) or ISO
+        2394:2015 (Table G.4), and it should not be expected to match them.
+        Those tables do not state the cost ratios or coefficients of variation
+        behind each cell; Steenbergen et al. (2018, Table 7) read each tabulated
+        rate as an upper limit on the optimal rates within a class.  In this
+        closed-form model the optimum moves by about 0.6 in ``beta`` for each
+        decade of ``C1 / C0`` but by only about 0.2 across the whole JCSS
+        consequence range. The tables, in contrast, step by 0.5-0.6 between
+        consequence classes. With the defaults, the large-consequence column is
+        3.25 / 3.88 / 4.45 against the tabulated 3.7 / 4.4 / 4.7.  Supply your
+        own ``safety_costs`` and ``failure_costs`` (and ``resistance_cov`` /
+        ``load_cov``) to calibrate for a particular structure.
         """
 
         if safety_costs is None:
@@ -590,6 +615,20 @@ def lqi_target_reliability(k1: float, variability: str = "medium") -> TargetReli
         source table reports that high variability gives failure
         probabilities about five times larger and low variability about two
         times smaller than the medium case.
+
+    Returns
+    -------
+    TargetReliability
+        The rounded table target for ``1e-5 <= k1 <= 1e-2``.  Outside that
+        range ``cost_class`` is ``"extrapolated"`` and the failure probability
+        continues the table's proportionality to ``k1`` from the nearest edge:
+        ``pf = k1`` below ``1e-5`` and ``pf = k1 / 10`` above ``1e-2``, with
+        ``beta`` computed from ``pf`` rather than rounded.  The failure
+        probability is therefore continuous at both table edges; the index
+        differs only by the table's rounding (4.2 is tabulated for
+        ``pf = 1e-5``, whose exact index is 4.26).  An extrapolated value is
+        not a source-table value; use :func:`derive_lqi_target` to calculate
+        a target for a stated resistance-demand model instead.
     """
 
     if k1 <= 0:
@@ -601,16 +640,26 @@ def lqi_target_reliability(k1: float, variability: str = "medium") -> TargetReli
         raise ValueError(f"variability must be one of: {valid}")
     factor = _VARIABILITY_FACTORS[key]
 
-    cost_class = "extrapolated"
-    pf = k1 / 5.0
-    beta = -float(norm.ppf(pf))
-
     for name, lower, upper, table_pf, table_beta in _TARGET_TABLE:
         if lower <= k1 <= upper:
             cost_class = name
             pf = table_pf
             beta = table_beta
             break
+    else:
+        # Outside the tabulated range, continue the proportionality between
+        # pf and K1 from the nearest table edge, so pf is continuous there:
+        # pf = K1 below the small class (pf = 1e-5 at K1 = 1e-5) and
+        # pf = K1 / 10 above the large class (pf = 1e-3 at K1 = 1e-2).
+        cost_class = "extrapolated"
+        _, table_lower, _, lower_pf, _ = _TARGET_TABLE[-1]
+        _, _, table_upper, upper_pf, _ = _TARGET_TABLE[0]
+        if k1 < table_lower:
+            pf = k1 * lower_pf / table_lower
+        else:
+            pf = k1 * upper_pf / table_upper
+        pf = min(pf, 1.0 - np.finfo(float).eps)
+        beta = -float(norm.ppf(pf))
 
     if factor != 1.0:
         pf = pf * factor
