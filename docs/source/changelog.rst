@@ -142,6 +142,12 @@ Fixed
   to a reliability index of 40). SORM's Mills ratio no longer overflows above
   37, and importance-sampling weights no longer overflow for wide proposals in
   many dimensions.
+- The rounded LQI target lookup (``lqi_target_reliability`` and
+  ``LQI.lookup_target``) fell back to :math:`p_f = K_1/5` outside the
+  tabulated range, so :math:`\beta` jumped from 4.20 at :math:`K_1 = 10^{-5}`
+  to 4.61 just below it. Outside the table, :math:`p_f` now continues from the
+  nearest edge (:math:`p_f = K_1` below :math:`10^{-5}`, :math:`K_1/10` above
+  :math:`10^{-2}`) and is continuous at both edges.
 
 Changed
 ~~~~~~~

@@ -214,6 +214,13 @@ corresponding target classes are approximated as:
      - 4.2
      - :math:`10^{-5}`
 
+Outside the tabulated range the lookup continues the table's proportionality
+between :math:`p_f` and :math:`K_1` from the nearest edge: :math:`p_f = K_1`
+below :math:`10^{-5}` and :math:`p_f = K_1/10` above :math:`10^{-2}`, labeled
+``"extrapolated"``.  The failure probability is then continuous at both edges.
+An extrapolated value is not a source-table value; the marginal calculation
+below gives a target for a stated resistance-demand model.
+
 For normal studies, ``ra.decision.LQI`` (:class:`~pystra.decision.criteria.LQI`) builds this target
 directly from a country SWTP value or a user-supplied SWTP value, expected
 fatalities given failure or an explicit consequence model, and marginal safety

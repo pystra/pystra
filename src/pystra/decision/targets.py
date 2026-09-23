@@ -590,6 +590,20 @@ def lqi_target_reliability(k1: float, variability: str = "medium") -> TargetReli
         source table reports that high variability gives failure
         probabilities about five times larger and low variability about two
         times smaller than the medium case.
+
+    Returns
+    -------
+    TargetReliability
+        The rounded table target for ``1e-5 <= k1 <= 1e-2``.  Outside that
+        range ``cost_class`` is ``"extrapolated"`` and the failure probability
+        continues the table's proportionality to ``k1`` from the nearest edge:
+        ``pf = k1`` below ``1e-5`` and ``pf = k1 / 10`` above ``1e-2``, with
+        ``beta`` computed from ``pf`` rather than rounded.  The failure
+        probability is therefore continuous at both table edges; the index
+        differs only by the table's rounding (4.2 is tabulated for
+        ``pf = 1e-5``, whose exact index is 4.26).  An extrapolated value is
+        not a source-table value; use :func:`derive_lqi_target` to calculate
+        a target for a stated resistance-demand model instead.
     """
 
     if k1 <= 0:
@@ -601,16 +615,26 @@ def lqi_target_reliability(k1: float, variability: str = "medium") -> TargetReli
         raise ValueError(f"variability must be one of: {valid}")
     factor = _VARIABILITY_FACTORS[key]
 
-    cost_class = "extrapolated"
-    pf = k1 / 5.0
-    beta = -float(norm.ppf(pf))
-
     for name, lower, upper, table_pf, table_beta in _TARGET_TABLE:
         if lower <= k1 <= upper:
             cost_class = name
             pf = table_pf
             beta = table_beta
             break
+    else:
+        # Outside the tabulated range, continue the proportionality between
+        # pf and K1 from the nearest table edge, so pf is continuous there:
+        # pf = K1 below the small class (pf = 1e-5 at K1 = 1e-5) and
+        # pf = K1 / 10 above the large class (pf = 1e-3 at K1 = 1e-2).
+        cost_class = "extrapolated"
+        _, table_lower, _, lower_pf, _ = _TARGET_TABLE[-1]
+        _, _, table_upper, upper_pf, _ = _TARGET_TABLE[0]
+        if k1 < table_lower:
+            pf = k1 * lower_pf / table_lower
+        else:
+            pf = k1 * upper_pf / table_upper
+        pf = min(pf, 1.0 - np.finfo(float).eps)
+        beta = -float(norm.ppf(pf))
 
     if factor != 1.0:
         pf = pf * factor
