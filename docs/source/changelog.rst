@@ -148,6 +148,12 @@ Fixed
   to 4.61 just below it. Outside the table, :math:`p_f` now continues from the
   nearest edge (:math:`p_f = K_1` below :math:`10^{-5}`, :math:`K_1/10` above
   :math:`10^{-2}`) and is continuous at both edges.
+- The ``RackwitzTargetModel`` documentation implied that its calculated table
+  can be compared cell by cell with the rounded JCSS and ISO 2394 targets. It
+  now states the provenance of the default classes and that the calculation
+  reproduces Rackwitz (2000) Table 1 in its normal-consequence column, but not
+  the rounded JCSS/ISO table (large-consequence column 3.25/3.88/4.45 against
+  3.7/4.4/4.7). The model and its defaults are unchanged.
 
 Changed
 ~~~~~~~

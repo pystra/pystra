@@ -321,9 +321,15 @@ class RackwitzTargetModel:
 
     Notes
     -----
+    The default rates and ratios (``interest_rate=0.035``,
+    ``obsolescence_rate=0.02``, ``serviceability_cost_ratio=0.3``,
+    ``demolition_cost_ratio=0.2``, ``serviceability_resistance_ratio=1.5``)
+    are the Case 1 values of Steenbergen, Rózsás, and Vrouwenvelder (2018,
+    Table 5); Rackwitz (2000, Fig. B.1) uses ``serviceability_cost_ratio=0.2``.
     To recalibrate a whole table for your own classes, pass ``safety_costs``
     (the ``C1 / C0`` values) and ``failure_costs`` (the ``H / C0`` values) to
-    :meth:`table`.
+    :meth:`table`.  The calibrated targets are not a reproduction of the
+    rounded JCSS or ISO 2394 tables; see :meth:`table`.
     """
 
     safety_cost_ratio: float
@@ -483,10 +489,29 @@ class RackwitzTargetModel:
 
         Notes
         -----
-        The defaults are representative values from the broad classes used in
-        the literature, not a retyping of any rounded target table.  Supply your
-        own ``safety_costs`` and ``failure_costs`` to recalibrate for different
-        cost and consequence assumptions.
+        The default classes are ``C1 / C0 = 0.3 / 0.03 / 0.003``, an
+        order-of-magnitude grading around the ``C1 / C0 = 0.03`` base case of
+        Rackwitz (2000, Fig. B.1), and ``H / C0 = 0.5 / 2.5 / 6.5``, the
+        midpoints of the JCSS consequence classes (``rho = 1 + H / C0`` below
+        2, 2-5 and 5-10).  The remaining defaults are those of Steenbergen et
+        al. (2018, Table 5).  With ``serviceability_cost_ratio=0.2`` and
+        ``H / C0 = 3``, the Rackwitz (2000, Fig. B.1) values, the model
+        reproduces the normal-consequence column of Rackwitz (2000, Table 1):
+        3.1 / 3.7 / 4.3.
+
+        The result is a direct optimization, not a reproduction of the rounded
+        targets in the JCSS Probabilistic Model Code (Part 1, Table 1) or ISO
+        2394:2015 (Table G.4), and it should not be expected to match them.
+        Those tables do not state the cost ratios or coefficients of variation
+        behind each cell; Steenbergen et al. (2018, Table 7) read each tabulated
+        rate as an upper limit on the optimal rates within a class.  In this
+        closed-form model the optimum moves by about 0.6 in ``beta`` for each
+        decade of ``C1 / C0`` but by only about 0.2 across the whole JCSS
+        consequence range. The tables, in contrast, step by 0.5-0.6 between
+        consequence classes. With the defaults, the large-consequence column is
+        3.25 / 3.88 / 4.45 against the tabulated 3.7 / 4.4 / 4.7.  Supply your
+        own ``safety_costs`` and ``failure_costs`` (and ``resistance_cov`` /
+        ``load_cov``) to calibrate for a particular structure.
         """
 
         if safety_costs is None:

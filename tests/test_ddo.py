@@ -208,6 +208,22 @@ def test_rackwitz_target_table_calculates_class_grid():
     assert normal["beta"].is_monotonic_increasing
 
 
+def test_rackwitz_model_reproduces_rackwitz_2000_normal_consequence_column():
+    # Rackwitz (2000), Appendix B, Fig. B.1 parameters: lognormal R and S,
+    # lambda = 1, gamma = 0.035, U/C0 = A/C0 = 0.2, H/C0 = 3, omega = 0.02,
+    # a = 1.5, with C1/C0 graded by an order of magnitude around 0.03.  Table 1
+    # of the same paper gives 3.1 / 3.7 / 4.3 for normal consequences.
+    safety_costs = {"high": 0.3, "normal": 0.03, "low": 0.003}
+    table = ra.decision.RackwitzTargetModel.table(
+        safety_costs=safety_costs,
+        failure_costs={"normal": 3.0},
+        serviceability_cost_ratio=0.2,
+    )
+
+    assert table["converged"].all()
+    assert np.round(table["beta"].to_numpy(), 1).tolist() == [3.1, 3.7, 4.3]
+
+
 def test_lqi_builds_target_from_country():
     criterion = ra.decision.LQI.from_country(
         "CH",
