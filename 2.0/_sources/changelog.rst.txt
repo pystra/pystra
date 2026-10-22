@@ -5,7 +5,7 @@ All notable changes to PySTRA are documented here.
 
 The format follows `Keep a Changelog <https://keepachangelog.com/>`_.
 
-2.0.0 (2026-09-17)
+2.0.0 (unreleased)
 ------------------
 
 The outstanding feature PRs remain unmerged in 1.x. Their functionality and
@@ -148,6 +148,13 @@ Fixed
   to 4.61 just below it. Outside the table, :math:`p_f` now continues from the
   nearest edge (:math:`p_f = K_1` below :math:`10^{-5}`, :math:`K_1/10` above
   :math:`10^{-2}`) and is continuous at both edges.
+- ``TargetReliability.for_period`` compounds probabilities with ``log1p`` and
+  ``expm1``, avoiding cancellation that rounded rare annual probabilities to
+  zero even for a one-year conversion. Tests cover probabilities down to
+  :math:`10^{-300}`, repeated renewals and the zero/unit endpoints.
+- LQI target extrapolation applies variability scaling before clipping the
+  final probability. A low-variability target at :math:`K_1 = 11` now gives
+  :math:`p_f = 0.55`, rather than being capped at 0.5.
 - The ``RackwitzTargetModel`` documentation implied that its calculated table
   can be compared cell by cell with the rounded JCSS and ISO 2394 targets. It
   now states the provenance of the default classes and that the calculation
@@ -243,10 +250,10 @@ Changed
   factor derivation, selection, design and verification operations.
 - ``LoadCombination`` stores explicit cases and roles; separate evaluation and
   maximum/companion factories replace its legacy dictionary constructor.
-- The ``v2.0`` development branch uses snake_case function/method names and
-  consistent class names, without legacy aliases. See :doc:`migrating` for the
-  implemented naming map and remaining migration stages.
-- SciPy minimum version is 1.11 for multivariate Student-t CDF integration.
+- The 2.0 API uses snake_case function/method names and consistent class names,
+  without legacy aliases except ``GEVmax``. See :doc:`migrating` for the
+  completed naming map and migration checklist.
+- SciPy minimum version is 1.11.2 for multivariate Student-t CDF integration.
 - Metadata and documentation consistently state GPL-3.0-or-later, with
   retained third-party notices for adapted methods.
 - The column-oriented ``LimitState.evaluate_lsf`` is private; the
