@@ -141,7 +141,14 @@ class TargetReliability:
 
         annual_pf = float(self.pf)
         periods = years / dependence_interval
-        period_pf = 1.0 - (1.0 - annual_pf) ** periods
+        # Equivalent to 1 - (1 - pf)**periods, but log1p and expm1 preserve
+        # tiny probabilities instead of losing them when 1 - pf rounds to 1.
+        # Handle certainty explicitly to avoid evaluating log1p(-1).
+        period_pf = (
+            1.0
+            if annual_pf == 1.0
+            else float(-np.expm1(periods * np.log1p(-annual_pf)))
+        )
         metadata = dict(self.metadata or {})
         metadata["reference_period_years"] = years
         metadata["dependence_interval"] = dependence_interval
@@ -658,12 +665,12 @@ def lqi_target_reliability(k1: float, variability: str = "medium") -> TargetReli
             pf = k1 * lower_pf / table_lower
         else:
             pf = k1 * upper_pf / table_upper
-        pf = min(pf, 1.0 - np.finfo(float).eps)
-        beta = -float(norm.ppf(pf))
-
-    if factor != 1.0:
-        pf = pf * factor
-        pf = float(np.clip(pf, np.finfo(float).tiny, 1.0 - np.finfo(float).eps))
+    if cost_class == "extrapolated" or factor != 1.0:
+        # Scale before clipping: a medium target above 1 may still yield a
+        # valid low-variability probability after multiplication by 0.5.
+        pf = min(pf * factor, 1.0 - np.finfo(float).eps)
+        if factor != 1.0:
+            pf = max(pf, np.finfo(float).tiny)
         beta = -float(norm.ppf(pf))
 
     return TargetReliability(

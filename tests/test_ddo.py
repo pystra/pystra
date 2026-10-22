@@ -1,6 +1,9 @@
+from decimal import Decimal, localcontext
+
 import numpy as np
 import pandas as pd
 import pytest
+from scipy.stats import norm
 
 import pystra as ra
 
@@ -120,6 +123,22 @@ def test_lqi_target_lookup_is_monotonic_in_k1():
     pf = [ra.decision.ddo.lqi_target_reliability(k1).pf for k1 in k1_values]
 
     assert np.all(np.diff(pf) >= 0)
+
+
+@pytest.mark.parametrize("k1", [1.0, 10.0, 11.0, 19.0, 20.0, 21.0, 100.0])
+@pytest.mark.parametrize(
+    ("variability", "factor"), [("low", 0.5), ("medium", 1.0), ("high", 5.0)]
+)
+def test_lqi_target_extrapolation_applies_variability_before_clipping(
+    k1, variability, factor
+):
+    target = ra.decision.LQI.lookup_target(k1, variability=variability)
+    expected_pf = min((k1 / 10.0) * factor, 1.0 - np.finfo(float).eps)
+
+    assert target.cost_class == "extrapolated"
+    assert target.pf == pytest.approx(expected_pf, rel=1e-14, abs=0.0)
+    assert np.isfinite(target.beta)
+    assert target.beta == pytest.approx(norm.isf(expected_pf))
 
 
 def test_lognormal_ratio_failure_probability():
@@ -393,6 +412,41 @@ def test_target_reliability_for_period():
         target.for_period(0)
     with pytest.raises(ValueError):
         target.for_period(50, dependence_interval=60)
+
+
+@pytest.mark.parametrize("pf", [1e-12, 1e-16, 1e-17, 1e-20, 1e-300])
+@pytest.mark.parametrize(
+    ("years", "dependence_interval"), [(1, 1), (50, 1), (50, 10), (50, 50)]
+)
+def test_target_reliability_for_period_preserves_tiny_probabilities(
+    pf, years, dependence_interval
+):
+    target = ra.decision.TargetReliability(pf=pf, beta=norm.isf(pf), method="test")
+    result = target.for_period(years, dependence_interval=dependence_interval)
+
+    # Independent high-precision reference: enough digits to resolve 1 - 1e-300.
+    with localcontext() as context:
+        context.prec = 350
+        periods = years // dependence_interval
+        expected_pf = float(1 - (1 - Decimal(str(pf))) ** periods)
+
+    assert result.pf == pytest.approx(expected_pf, rel=1e-14, abs=0.0)
+    assert np.isfinite(result.beta)
+    assert result.beta == pytest.approx(norm.isf(expected_pf))
+    assert target.pf == pf
+
+
+@pytest.mark.parametrize("pf", [0.0, 1.0])
+@pytest.mark.parametrize(("years", "dependence_interval"), [(1, 1), (50, 1), (50, 50)])
+def test_target_reliability_for_period_preserves_endpoints(
+    pf, years, dependence_interval
+):
+    target = ra.decision.TargetReliability(pf=pf, beta=norm.isf(pf), method="test")
+    with np.errstate(all="raise"):
+        result = target.for_period(years, dependence_interval=dependence_interval)
+
+    assert result.pf == pf
+    assert result.beta == target.beta
 
 
 def test_target_reliability_validates_pf():
